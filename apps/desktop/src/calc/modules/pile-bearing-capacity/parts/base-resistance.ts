@@ -2,6 +2,7 @@
 import type { Cpt } from "../../../../types/cpt";
 import type { PileTypeSpec, BaseResistanceResult } from "../types";
 import { pileGeometry } from "./geometry";
+import { QcProfile } from "./qc-profile";
 
 interface Args {
   pileToeDepth: number;        // depth onder maaiveld in m
@@ -10,7 +11,10 @@ interface Args {
 }
 
 /**
- * NORM-CITAAT — NEN 9997-1+C2:2017 NB:2019 §7.6.2.3 (Boer/Koppejan, "4D-8D-methode")
+ * Bestaande 4D-8D-rekenprocedure (compatibiliteit met referentiegevallen).
+ * Beperking: de trajectkeuze minimaliseert qc;I. De norm verlangt een
+ * minimum van de volledige puntweerstand; zie NUMERIEKE-VERIFICATIE.md.
+ * Onderstaande beschrijving is geen normcitaat.
  * ────────────────────────────────────────────────────────────────────────────────
  * De maximale puntweerstand q_b;max van een paal wordt berekend uit drie
  * "trajectgemiddelden" van de gemeten conusweerstand q_c rondom de paalpunt:
@@ -184,26 +188,8 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
   // rekenkundig (interpolatie tussen meetpunten). Alléén gebruikt voor de
   // qc;I-optimalisatie (de "down-walk"); qc;II en qc;III gebruiken
   // clippedAvgQcUpward conform Boer/Koppejan.
-  const avgQc = (d1: number, d2: number): number => {
-    let sumQ = 0, sumW = 0;
-    for (let i = 0; i < cpt.points.length - 1; i++) {
-      const a = cpt.points[i], b = cpt.points[i + 1];
-      if (b.depth <= d1 || a.depth >= d2) continue;
-      const lo = Math.max(a.depth, d1);
-      const hi = Math.min(b.depth, d2);
-      const w = hi - lo;
-      if (w <= 0) continue;
-      const qa = a.qc ?? 0, qb = b.qc ?? 0;
-      // Gemiddelde qc over de overlapping zone (lineaire interpolatie)
-      const fracA = (lo - a.depth) / (b.depth - a.depth || 1);
-      const fracB = (hi - a.depth) / (b.depth - a.depth || 1);
-      const qLo = qa + (qb - qa) * fracA;
-      const qHi = qa + (qb - qa) * fracB;
-      sumQ += ((qLo + qHi) / 2) * w;
-      sumW += w;
-    }
-    return sumW > 0 ? sumQ / sumW : 0;
-  };
+  const profile = new QcProfile(cpt);
+  const avgQc = (d1: number, d2: number): number => profile.average(d1, d2);
 
   // qc;I: zoek de optimale critical depth dc ∈ [0,7·Deq, 4·Deq] die qc;I minimaliseert.
   // Down-walk: gewoon rekenkundig gemiddelde, GEEN running-min.

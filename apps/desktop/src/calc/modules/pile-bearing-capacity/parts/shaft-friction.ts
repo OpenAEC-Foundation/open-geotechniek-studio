@@ -3,6 +3,7 @@ import type { Cpt } from "../../../../types/cpt";
 import type { PileTypeSpec, SoilLayer, ShaftFrictionResult } from "../types";
 import { QS_MAX_PER_SOIL } from "../catalog";
 import { pileGeometry } from "./geometry";
+import { QcProfile } from "./qc-profile";
 
 interface Args {
   pileType: PileTypeSpec;
@@ -36,32 +37,14 @@ export function computeShaftFriction(
 
   const groundNap = cpt.metadata.ground_level_nap ?? 0;
 
-  // Helper: gemiddelde qc tussen twee NAP-niveaus (intern depths conversion)
-  const avgQc = (napTop: number, napBot: number): number => {
-    const dTop = groundNap - napTop; // depth onder maaiveld
-    const dBot = groundNap - napBot;
-    let sumQ = 0, sumW = 0;
-    for (let i = 0; i < cpt.points.length - 1; i++) {
-      const a = cpt.points[i], b = cpt.points[i + 1];
-      const lo = Math.max(a.depth, Math.min(dTop, dBot));
-      const hi = Math.min(b.depth, Math.max(dTop, dBot));
-      const w = hi - lo;
-      if (w <= 0) continue;
-      const qa = a.qc ?? 0, qb = b.qc ?? 0;
-      const frac = (lo - a.depth) / (b.depth - a.depth || 1);
-      const qLo = qa + (qb - qa) * frac;
-      sumQ += qLo * w;
-      sumW += w;
-    }
-    return sumW > 0 ? sumQ / sumW : 0;
-  };
+  const profile = new QcProfile(cpt);
 
   const perLayer = layersInZone.map((l) => {
     const layerTop = Math.min(l.startNap, zoneTop);
     const layerBot = Math.max(l.endNap, zoneBot);
     const thickness = layerTop - layerBot;
     // Laag-gemiddelde qc, begrensd op 15 MPa (zie const-comment boven).
-    const qcGemMpa = Math.min(avgQc(layerTop, layerBot), QC_CAP_SHAFT_MPA);
+    const qcGemMpa = Math.min(profile.average(groundNap - layerTop, groundNap - layerBot), QC_CAP_SHAFT_MPA);
     const qsRaw = args.pileType.alphaS * qcGemMpa;
     const qsCap = QS_MAX_PER_SOIL[l.kind];
     const qsMpa = Math.min(qsRaw, qsCap);
