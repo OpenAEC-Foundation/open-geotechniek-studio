@@ -7,6 +7,8 @@ import { QcProfile } from "./qc-profile";
 
 interface Args {
   qcCapMpa?: number;
+  /** Historische zandprocedure: alleen alphaS × de begrensde qc. */
+  useSoilStressCap?: boolean;
   pileType: PileTypeSpec;
   diameterMm: number;
   negKleefBottomNap: number;
@@ -50,7 +52,7 @@ export function computeShaftFriction(
       ? Math.min(profile.average(topDepth, bottomDepth), QC_CAP_SHAFT_MPA)
       : profile.averageCapped(topDepth, bottomDepth, args.qcCapMpa);
     const qsRaw = args.pileType.alphaS * qcGemMpa;
-    const qsCap = QS_MAX_PER_SOIL[l.kind];
+    const qsCap = args.useSoilStressCap === false ? Infinity : QS_MAX_PER_SOIL[l.kind];
     const qsMpa = Math.min(qsRaw, qsCap);
     const rsLayer = Os * qsMpa * thickness * 1000; // kN: m × MPa × m × 1000 = kN
     return { layer: l, qcGemMpa, qsMpa, rsLayer };

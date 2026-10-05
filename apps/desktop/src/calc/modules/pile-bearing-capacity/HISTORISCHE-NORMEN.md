@@ -33,6 +33,8 @@ de hele invloedszone (8 Deq boven, begrensd door maaiveld, tot 4 Deq onder de pu
 Voor positieve schachtwrijving worden alleen zandlagen ondersteund. Pieken
 worden conservatief op 12 MPa afgesneden; de gunstige uitzondering voor lagen
 dikker dan 1 m met een grens tot 15 MPa wordt niet automatisch toegepast.
+De zandwrijving volgt αs·qc; de extra spanningsgrens van het bestaande model
+wordt niet op deze historische procedure toegepast.
 Voor in de grond gevormd beton wordt bij negatieve kleef δ=φ gebruikt; voor
 prefab, hout en stalen omhulling δ=0,75φ.
 

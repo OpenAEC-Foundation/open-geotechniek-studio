@@ -37,4 +37,11 @@ describe("historische trajectprocedure", () => {
     expect(result.perLayer[0].qcGemMpa).toBeCloseTo(10, 8);
     expect(result.rsCalMax).toBeCloseTo(400, 8);
   });
+  it("voegt bij historische zandwrijving geen extra spanningsgrens toe aan alphaS maal qc", () => {
+    const result = computeShaftFriction(cpt([{ depth: 0, qc: 12 }, { depth: 2, qc: 12 }]), {
+      pileType: { ...pileType, alphaS: .014 }, diameterMm: 400,
+      negKleefBottomNap: 0, pileToeNap: -2, qcCapMpa: 12, useSoilStressCap: false,
+    }, [{ kind: "sand-wet", startNap: 0, endNap: -2, gammaK: 20, gammaW: 10, phi: 30 }]);
+    expect(result.perLayer[0].qsMpa).toBeCloseTo(.168, 10);
+  });
 });

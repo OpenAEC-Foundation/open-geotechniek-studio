@@ -149,6 +149,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   const posKleefTopNap = input.posKleefTopNap ?? input.negKleefBottomNap;
   const shaft = computeShaftFriction(cpt, {
     qcCapMpa: historical ? 12 : undefined,
+    useSoilStressCap: !historical,
     pileType,
     diameterMm: input.diameterMm,
     negKleefBottomNap: posKleefTopNap, // = top van shaft-friction-zone
