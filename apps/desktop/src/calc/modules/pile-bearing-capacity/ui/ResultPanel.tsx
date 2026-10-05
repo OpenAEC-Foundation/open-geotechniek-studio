@@ -5,6 +5,7 @@ import type { PileInput, PileResult, SettlementResult } from "../types";
 import { generatePileReport } from "../parts/pile-report-pdf";
 import { computeMultiCptSummary } from "../parts/multi-cpt-summary";
 import { getPileType } from "../catalog";
+import { pileGeometry } from "../parts/geometry";
 import { downloadPdf } from "../../../../utils/downloadPdf";
 import { useCptStore } from "../../../../store/useCptStore";
 import "./styles.css";
@@ -338,7 +339,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
   const { negKleef, base, shaft, settlement, spring, summary } = result;
   const rcCalMine = base.rbCalMax + shaft.rsCalMax;
   const D = input.diameterMm / 1000; // m
-  const Os = Math.PI * D;            // omtrek in m
+  const isCircular = getPileType(input.pileTypeId)?.isCircular ?? true;
+  const Os = pileGeometry(input.diameterMm, isCircular).perimeterM;
   return (
     <div className="pile-result">
       {result.warnings.length > 0 && (
@@ -367,8 +369,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         </p>
         <Formula
           lhs={<>O<sub>s</sub></>}
-          symbolic={<>π · D</>}
-          filled={<>π · {D.toFixed(3)}</>}
+          symbolic={isCircular ? <>π · D</> : <>4 · a</>}
+          filled={<>{isCircular ? "π" : "4"} · {D.toFixed(3)}</>}
           result={<>{Os.toFixed(3)} m</>}
         />
         <table className="pile-formula-table pile-formula-table--wide">
@@ -518,7 +520,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
               />
               <Formula
                 lhs={<>s<sub>b</sub>/D<sub>eq</sub> · 100</>}
-                symbolic={<>{wp.sbMm.toFixed(1)} / {input.diameterMm} · 100 = {((wp.sbMm / input.diameterMm) * 100).toFixed(1)} %</>}
+                symbolic={<>{wp.sbMm.toFixed(1)} / {base.deqMm.toFixed(1)} · 100 = {((wp.sbMm / base.deqMm) * 100).toFixed(1)} %</>}
                 filled={<>→ R<sub>b;1</sub> = {rbPct.toFixed(0)}% · R<sub>b;cal;max</sub> (Fig. 7.n)</>}
                 result={<>{wp.rbMobil.toFixed(0)} kN</>}
               />

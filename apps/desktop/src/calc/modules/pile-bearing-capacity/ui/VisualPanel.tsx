@@ -1130,7 +1130,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
       {zone8DVisible && (() => {
         const groundNap = cpt.metadata.ground_level_nap ?? 0;
         const pileToeDepth = groundNap - input.pileToeNap;
-        const zone8DTopDepth = pileToeDepth - 8 * (input.diameterMm / 1000);
+        const zone8DTopDepth = pileToeDepth - 8 * (result.base.deqMm / 1000);
         const inZone = (result.base.clippedQcCurve ?? []).filter(
           (p) => p.depth >= zone8DTopDepth - 1e-6 && p.depth <= pileToeDepth + 1e-6,
         );

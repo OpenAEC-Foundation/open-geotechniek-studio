@@ -1,14 +1,13 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/parts/base-resistance.ts
 import type { Cpt } from "../../../../types/cpt";
 import type { PileTypeSpec, BaseResistanceResult } from "../types";
+import { pileGeometry } from "./geometry";
 
 interface Args {
   pileToeDepth: number;        // depth onder maaiveld in m
   diameterMm: number;
   pileType: PileTypeSpec;
 }
-
-const PI = Math.PI;
 
 /**
  * NORM-CITAAT — NEN 9997-1+C2:2017 NB:2019 §7.6.2.3 (Boer/Koppejan, "4D-8D-methode")
@@ -159,10 +158,10 @@ function clippedAvgQcUpward(
 }
 
 export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResult {
-  const D = args.diameterMm / 1000;        // m
-  const Deq = D;                            // voor ronde palen
-  const DeqMm = args.diameterMm;
-  const Ab = (PI / 4) * args.diameterMm ** 2; // mm²
+  const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular);
+  const DeqMm = geometry.equivalentDiameterMm;
+  const Deq = DeqMm / 1000;
+  const Ab = geometry.areaMm2;
 
   // Functie: gemiddelde qc tussen depths [d1, d2] (in m vanaf maaiveld)
   // gebruikt depth-gewogen gemiddelde — geen running-min, gewoon

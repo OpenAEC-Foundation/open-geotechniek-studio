@@ -1,6 +1,6 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/ui/InputPanel.tsx
 import { useCptStore } from "../../../../store/useCptStore";
-import { PILE_TYPE_CATALOG } from "../catalog";
+import { PILE_TYPE_CATALOG, getPileType } from "../catalog";
 import type { PileInput, PileResult } from "../types";
 import "./styles.css";
 
@@ -12,6 +12,7 @@ interface Props {
 
 export function InputPanel({ input, onChange }: Props) {
   const cpts = useCptStore((s) => s.cpts);
+  const pileType = getPileType(input.pileTypeId);
   const set = <K extends keyof PileInput>(key: K, value: PileInput[K]) => {
     if (!onChange) return;
     onChange({ ...input, [key]: value });
@@ -38,8 +39,8 @@ export function InputPanel({ input, onChange }: Props) {
             ))}
           </select>
         </label>
-        <label>Diameter [mm]<input type="number" value={input.diameterMm} onChange={(e) => set("diameterMm", +e.target.value)} /></label>
-        <label>Wanddikte [mm]<input type="number" step="0.1" value={input.wallThicknessMm} onChange={(e) => set("wallThicknessMm", +e.target.value)} /></label>
+        <label>{pileType?.isCircular === false ? "Zijlengte [mm]" : "Diameter [mm]"}<input type="number" min="1" value={input.diameterMm} onChange={(e) => set("diameterMm", +e.target.value)} /></label>
+        {pileType?.material !== "concrete" && <label>Wanddikte [mm]<input type="number" min="0.1" step="0.1" value={input.wallThicknessMm} onChange={(e) => set("wallThicknessMm", +e.target.value)} /></label>}
       </fieldset>
 
       <fieldset>

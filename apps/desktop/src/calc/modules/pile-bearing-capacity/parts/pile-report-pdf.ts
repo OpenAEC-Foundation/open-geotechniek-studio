@@ -20,6 +20,8 @@ import type { PileInput, PileResult } from "../types";
 import type { MultiCptSummary } from "./multi-cpt-summary";
 import { renderSonderingChart } from "./pile-report-chart";
 import { renderZakkingDiagram } from "./pile-report-zakking";
+import { getPileType } from "../catalog";
+import { pileGeometry } from "./geometry";
 
 export interface PileReportProject {
   /** Projectnummer (bv. "2705"). */
@@ -349,8 +351,9 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
       "Factoren",
       `: αp = ${nl(inputs.factors.alphaP, 2)}   αs = ${inputs.factors.alphaS.toFixed(3).replace(".", ",")}   αt = ${inputs.factors.alphaT.toFixed(3).replace(".", ",")}   Lastzakkingslijn: 1`,
     );
-    kv(c, "Diameter", `: D = ${inp.diameterMm} mm  (D_eq = ${inp.diameterMm} mm)`);
-    kv(c, "Wanddikte", `: ${nl(inp.wallThicknessMm, 1)} mm`);
+    const isCircular = getPileType(inp.pileTypeId)?.isCircular ?? true;
+    kv(c, isCircular ? "Diameter" : "Zijlengte", `: ${isCircular ? "D" : "a"} = ${inp.diameterMm} mm  (D_eq = ${nl(first.result.base.deqMm, 1)} mm)`);
+    if (getPileType(inp.pileTypeId)?.material !== "concrete") kv(c, "Wanddikte", `: ${nl(inp.wallThicknessMm, 1)} mm`);
     kv(c, "Paalkopniveau", `: ${nlNap(inp.pileTopNap)}`);
     kv(c, "Paalpuntniveau", `: ${nlNap(inp.pileToeNap)}`);
     kv(c, "Waterniveau", `: ${nlNap(inp.waterNap)}`);
@@ -394,7 +397,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
 
     c.y += 2;
     sectionTitle(c, "Berekening");
-    paragraph(c, `D_eq = ${first.input.diameterMm} mm`);
+    paragraph(c, `D_eq = ${nl(first.result.base.deqMm, 1)} mm`);
     paragraph(
       c,
       `Aantal sonderingen in deze analyse: ${inputs.sonderingen.length} (${inputs.sonderingen.map((s) => s.name).join(", ")})`,
@@ -406,8 +409,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
 
 function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileReportInputs["factors"]): void {
   const { input, result } = s;
-  const D = input.diameterMm / 1000;
-  const Os = Math.PI * D;
+  const Os = pileGeometry(input.diameterMm, getPileType(input.pileTypeId)?.isCircular ?? true).perimeterM;
   const wp = result.settlement.sls;
   const L = result.settlement.lM ?? input.pileTopNap - input.pileToeNap;
   const ell = result.settlement.ellM ?? input.pileTopNap - input.negKleefBottomNap;
@@ -552,7 +554,7 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
   formula(
     c,
     "s_b/D_eq · 100",
-    `${nl(wp.sbMm, 1)} / ${input.diameterMm} · 100 = ${nl((wp.sbMm / input.diameterMm) * 100, 1)} %`,
+    `${nl(wp.sbMm, 1)} / ${nl(result.base.deqMm, 1)} · 100 = ${nl((wp.sbMm / result.base.deqMm) * 100, 1)} %`,
     `→ R_b;1 = ${rbPct.toFixed(0)}% · R_b;cal;max = ${rbPct.toFixed(0)}/100 × ${result.base.rbCalMax.toFixed(0)}`,
     `${wp.rbMobil.toFixed(0)} kN`,
     "...(Figuur 7.n)",

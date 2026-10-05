@@ -1,11 +1,13 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/parts/negative-skin-friction.ts
 import type { PileInput, NegKleefResult, NegKleefLayerResult } from "../types";
+import { getPileType } from "../catalog";
+import { pileGeometry } from "./geometry";
 
 const PI = Math.PI;
 const toRad = (deg: number) => (deg * PI) / 180;
 
 export function computeNegKleef(input: PileInput): NegKleefResult {
-  const Os = PI * (input.diameterMm / 1000); // omtrek in m
+  const Os = pileGeometry(input.diameterMm, getPileType(input.pileTypeId)?.isCircular ?? true).perimeterM;
 
   // Filter lagen die in de neg.kleef-zone vallen (boven negKleefBottomNap)
   const zoneTop = input.pileTopNap;

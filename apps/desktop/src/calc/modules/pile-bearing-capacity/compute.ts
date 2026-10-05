@@ -8,6 +8,7 @@ import { computeShaftFriction } from "./parts/shaft-friction";
 import { computeSettlement } from "./parts/settlement";
 import { computeSpringStiffness } from "./parts/spring-stiffness";
 import { computeSummary } from "./parts/summary";
+import { pileGeometry } from "./parts/geometry";
 
 // E-moduli [N/mm²] voor de axiale paalstijfheid EA.
 //  - Staal: 210 000 (EN 1993-1-1)
@@ -61,12 +62,42 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   const pileType = getPileType(input.pileTypeId);
   if (!pileType) return emptyResult(`Onbekend paaltype: ${input.pileTypeId}`);
 
+  const numericFields = [
+    input.diameterMm, input.wallThicknessMm, input.pileTopNap, input.pileToeNap,
+    input.waterNap, input.excavationNap, input.nEd, input.nEk, input.gammaM,
+    input.gammaFnk, input.negKleefBottomNap, input.ksMinFactor,
+    input.posKleefTopNap ?? input.negKleefBottomNap,
+  ];
+  if (!numericFields.every(Number.isFinite)) return emptyResult("Alle invoerwaarden moeten eindige getallen zijn");
+  if (input.diameterMm <= 0) return emptyResult("Diameter of zijlengte moet groter dan nul zijn");
+  if ((pileType.material ?? "steel") === "steel" &&
+      (input.wallThicknessMm <= 0 || 2 * input.wallThicknessMm >= input.diameterMm)) {
+    return emptyResult("Wanddikte moet groter dan nul en kleiner dan de halve diameter zijn");
+  }
+  if (input.pileToeNap >= input.pileTopNap) return emptyResult("Paalpunt moet lager liggen dan de paalkop");
+  if (input.gammaM <= 0 || input.gammaFnk < 0 || input.ksMinFactor < 0) {
+    return emptyResult("γm moet groter dan nul zijn; γf,nk en K0·tan(δ) minimum mogen niet negatief zijn");
+  }
+  if (input.nEd < 0 || input.nEk < 0) return emptyResult("Drukbelastingen mogen niet negatief zijn");
+  const posTop = input.posKleefTopNap ?? input.negKleefBottomNap;
+  if (input.negKleefBottomNap < input.pileToeNap || input.negKleefBottomNap > input.pileTopNap ||
+      posTop < input.pileToeNap || posTop > input.negKleefBottomNap) {
+    return emptyResult("Kleefniveaus moeten tussen paalkop en paalpunt liggen; positieve kleef mag niet overlappen met negatieve kleef");
+  }
+  for (const layer of input.soilProfile) {
+    if (![layer.startNap, layer.endNap, layer.gammaK, layer.gammaW, layer.phi].every(Number.isFinite) ||
+        layer.startNap <= layer.endNap || layer.gammaK <= 0 || layer.gammaW < 0 ||
+        layer.gammaW > layer.gammaK || layer.phi < 0 || layer.phi >= 90) {
+      return emptyResult("Grondlagen vereisen geldige niveaus, volumegewichten en een wrijvingshoek tussen 0 en 90 graden");
+    }
+  }
+
   const groundNap = cpt.metadata.ground_level_nap ?? 0;
   const pileToeDepth = groundNap - input.pileToeNap;
 
   // Edge-case: sondering te ondiep
   const lastDepth = cpt.points[cpt.points.length - 1]?.depth ?? 0;
-  const Deq = input.diameterMm / 1000;
+  const Deq = pileGeometry(input.diameterMm, pileType.isCircular).equivalentDiameterMm / 1000;
   if (lastDepth < pileToeDepth + 0.7 * Deq) {
     return emptyResult(
       `Sondering te ondiep (reikt tot ${lastDepth.toFixed(1)} m, vereist ≥ ${(pileToeDepth + 0.7 * Deq).toFixed(1)} m)`,

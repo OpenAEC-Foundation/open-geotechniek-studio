@@ -2,6 +2,7 @@
 import type { Cpt } from "../../../../types/cpt";
 import type { PileTypeSpec, SoilLayer, ShaftFrictionResult } from "../types";
 import { QS_MAX_PER_SOIL } from "../catalog";
+import { pileGeometry } from "./geometry";
 
 interface Args {
   pileType: PileTypeSpec;
@@ -9,8 +10,6 @@ interface Args {
   negKleefBottomNap: number;
   pileToeNap: number;
 }
-
-const PI = Math.PI;
 
 /** NEN 9997-1 §7.6.2.3: voor de schachtwrijving wordt de in rekening te
  *  brengen conusweerstand begrensd op 15 MPa. Conform de externe
@@ -25,7 +24,7 @@ export function computeShaftFriction(
   args: Args,
   soilProfile: SoilLayer[],
 ): ShaftFrictionResult {
-  const Os = PI * (args.diameterMm / 1000); // m
+  const Os = pileGeometry(args.diameterMm, args.pileType.isCircular).perimeterM;
 
   // Schachtwrijvings-zone: tussen negKleefBottomNap en pileToeNap
   // (alleen POSITIEVE schachtwrijving)

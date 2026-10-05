@@ -56,7 +56,7 @@ function fmtNap(v: number): string {
 /** Render het visual-blad. Gaat uit van een verse pagina met chrome. */
 export function renderSonderingChart(args: ChartPageArgs): void {
   const { doc, startY, name, input, result, cpt } = args;
-  const D_m = input.diameterMm / 1000;
+  const D_m = result.base.deqMm / 1000;
 
   // ─── Layout [mm] ───────────────────────────────────────────────
   const pileX = 22;        // hart van de losse paal-balk links

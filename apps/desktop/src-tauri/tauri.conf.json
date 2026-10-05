@@ -58,7 +58,7 @@
     "resources": {
       "tenants/**/*": "tenants/",
       "icons/file-associations/*.ico": "icons/file-associations/",
-      "vendor/WebView2Loader.dll": "vendor/WebView2Loader.dll"
+      "WebView2Loader.dll": "WebView2Loader.dll"
     },
     "windows": {
       "webviewInstallMode": {
