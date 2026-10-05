@@ -27,6 +27,8 @@
   border-radius: 3px;
   font: 500 0.82rem var(--font-code, "JetBrains Mono"), monospace;
 }
+.pile-input input[type="checkbox"] { flex: 0 0 auto; }
+.pile-input p { font-size: 0.78rem; line-height: 1.4; overflow-wrap: anywhere; }
 
 /* ============================================================
    VisualPanel — CPT-chart met paaloverlays

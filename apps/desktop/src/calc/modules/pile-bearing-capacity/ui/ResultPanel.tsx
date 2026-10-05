@@ -4,7 +4,7 @@ import type { PanelProps } from "../../../framework/types";
 import type { PileInput, PileResult, SettlementResult } from "../types";
 import { generatePileReport } from "../parts/pile-report-pdf";
 import { computeMultiCptSummary } from "../parts/multi-cpt-summary";
-import { getPileType } from "../catalog";
+import { resolvePileType } from "../catalog";
 import { pileGeometry } from "../parts/geometry";
 import { downloadPdf } from "../../../../utils/downloadPdf";
 import { useCptStore } from "../../../../store/useCptStore";
@@ -281,7 +281,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
     if (!result.ok || downloading) return;
     setDownloading(true);
     try {
-      const pileType = getPileType(input.pileTypeId);
+      const pileType = resolvePileType(input);
       // CPT meegeven zodat het rapport ook het visual-blad (qc-grafiek +
       // paal + zones) per sondering bevat.
       const cpt = input.cptId
@@ -310,7 +310,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         project: {
           number: "—",
           description: "Paaldraagvermogen-berekening",
-          norm: "NEN-EN 1997-1+NB:2019 §7.6.2.3",
+          norm: `Rekenmodel §7.6.2.3; factorenset ${pileType?.edition ?? "bestaand model"}`,
           date: new Date().toISOString().slice(0, 10),
           author: "Open Geotechniek Studio",
         },
@@ -339,7 +339,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
   const { negKleef, base, shaft, settlement, spring, summary } = result;
   const rcCalMine = base.rbCalMax + shaft.rsCalMax;
   const D = input.diameterMm / 1000; // m
-  const isCircular = getPileType(input.pileTypeId)?.isCircular ?? true;
+  const isCircular = resolvePileType(input)?.isCircular ?? true;
   const Os = pileGeometry(input.diameterMm, isCircular).perimeterM;
   return (
     <div className="pile-result">
@@ -457,7 +457,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           symbolic={<>½ · α<sub>p</sub> · β · s · ((q<sub>c;I</sub>+q<sub>c;II</sub>)/2 + q<sub>c;III</sub>)</>}
           filled={
             <>
-              ½ · 0,7 · 1 · 1 · ((
+              ½ · {resolvePileType(input)?.alphaP} · {resolvePileType(input)?.beta} · {resolvePileType(input)?.s} · ((
               {base.qcIGemMpa.toFixed(2)}+{base.qcIIGemMpa.toFixed(2)})/2 + {base.qcIIIGemMpa.toFixed(2)})
             </>
           }
@@ -500,6 +500,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         />
       </section>
 
+      {settlement.available !== false && <>
       <section>
         <h3>Zakking (art. 7.6.4.2, lastzakkingslijn 1)</h3>
         {(() => {
@@ -583,6 +584,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           result={<>{spring.kMaxKnPerM.toFixed(0)} kN/m</>}
         />
       </section>
+      </>}
 
       <section>
         <h3>Samenvatting</h3>

@@ -20,7 +20,7 @@ import type { PileInput, PileResult } from "../types";
 import type { MultiCptSummary } from "./multi-cpt-summary";
 import { renderSonderingChart } from "./pile-report-chart";
 import { renderZakkingDiagram } from "./pile-report-zakking";
-import { getPileType } from "../catalog";
+import { resolvePileType } from "../catalog";
 import { pileGeometry } from "./geometry";
 
 export interface PileReportProject {
@@ -345,15 +345,20 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
     const inp = first.input;
     const L = inp.pileTopNap - inp.pileToeNap;
     kv(c, "Type paal", `: ${inputs.pileTypeName}`);
+    kv(c, "Normbasis", `: ${resolvePileType(inp)?.edition ?? "bestaand model"}`);
+    paragraph(c, `Bron: ${resolvePileType(inp)?.source ?? "bestaande catalogus"}`);
+    for (const warning of first.result.warnings) paragraph(c, warning, { size: 7.5 });
+    kv(c, "Puntafmeting", `: ${inp.baseDiameterMm ?? inp.diameterMm} mm`);
+    kv(c, "EA", `: ${nl(first.result.settlement.eaKn ?? 0, 0)} kN`);
     kv(c, "Paallengte", `: ${nl(L, 2)} m`);
     kv(
       c,
       "Factoren",
-      `: αp = ${nl(inputs.factors.alphaP, 2)}   αs = ${inputs.factors.alphaS.toFixed(3).replace(".", ",")}   αt = ${inputs.factors.alphaT.toFixed(3).replace(".", ",")}   Lastzakkingslijn: 1`,
+      `: αp = ${nl(inputs.factors.alphaP, 3)}   αs = ${nl(inputs.factors.alphaS, 4)}   αt = ${nl(inputs.factors.alphaT, 4)}   Lastzakkingslijn: ${resolvePileType(inp)?.settlementLine ?? 1}`,
     );
-    const isCircular = getPileType(inp.pileTypeId)?.isCircular ?? true;
+    const isCircular = resolvePileType(inp)?.isCircular ?? true;
     kv(c, isCircular ? "Diameter" : "Zijlengte", `: ${isCircular ? "D" : "a"} = ${inp.diameterMm} mm  (D_eq = ${nl(first.result.base.deqMm, 1)} mm)`);
-    if (getPileType(inp.pileTypeId)?.material !== "concrete") kv(c, "Wanddikte", `: ${nl(inp.wallThicknessMm, 1)} mm`);
+    if (resolvePileType(inp)?.material === "steel" && !resolvePileType(inp)?.requiresEA) kv(c, "Wanddikte", `: ${nl(inp.wallThicknessMm, 1)} mm`);
     kv(c, "Paalkopniveau", `: ${nlNap(inp.pileTopNap)}`);
     kv(c, "Paalpuntniveau", `: ${nlNap(inp.pileToeNap)}`);
     kv(c, "Waterniveau", `: ${nlNap(inp.waterNap)}`);
@@ -409,7 +414,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
 
 function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileReportInputs["factors"]): void {
   const { input, result } = s;
-  const Os = pileGeometry(input.diameterMm, getPileType(input.pileTypeId)?.isCircular ?? true).perimeterM;
+  const Os = pileGeometry(input.diameterMm, resolvePileType(input)?.isCircular ?? true).perimeterM;
   const wp = result.settlement.sls;
   const L = result.settlement.lM ?? input.pileTopNap - input.pileToeNap;
   const ell = result.settlement.ellM ?? input.pileTopNap - input.negKleefBottomNap;
@@ -483,7 +488,7 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
     c,
     "q_b;max",
     "1/2 · α_p · β · s · ((q_c;I;gem + q_c;II;gem)/2 + q_c;III;gem)",
-    `1/2 × ${nl(factors.alphaP, 2)} × 1,0 × 1,0 × ((${nl(result.base.qcIGemMpa, 2)} + ${nl(result.base.qcIIGemMpa, 2)})/2 + ${nl(result.base.qcIIIGemMpa, 2)})`,
+    `1/2 × ${nl(factors.alphaP, 2)} × ${nl(resolvePileType(input)?.beta ?? 1, 2)} × ${nl(resolvePileType(input)?.s ?? 1, 2)} × ((${nl(result.base.qcIGemMpa, 2)} + ${nl(result.base.qcIIGemMpa, 2)})/2 + ${nl(result.base.qcIIIGemMpa, 2)})`,
     capNote,
   );
   formula(
@@ -538,6 +543,11 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
     `${(result.base.rbCalMax + result.shaft.rsCalMax).toFixed(0)} kN`,
     "...(7.6)",
   );
+
+  if (result.settlement.available === false) {
+    paragraph(c, "Zakking en veerwaarden niet bepaald: de vereiste lastzakkingslijn is nog niet ondersteund.");
+    return;
+  }
 
   // ─── Zakking ───────────────────────────────────────────────────
   sectionTitle(c, "Berekening van de zakking van de paal", "art. 7.6.4.2 (4)");
@@ -750,14 +760,16 @@ export function generatePileReport(inputs: PileReportInputs): Uint8Array {
       });
     }
     renderBerekeningBlad(c, s, inputs.factors);
-    c.newPage();
-    renderZakkingDiagram({
-      doc,
-      startY: HEADER_BOTTOM,
-      name: s.name,
-      input: s.input,
-      result: s.result,
-    });
+    if (s.result.settlement.available !== false) {
+      c.newPage();
+      renderZakkingDiagram({
+        doc,
+        startY: HEADER_BOTTOM,
+        name: s.name,
+        input: s.input,
+        result: s.result,
+      });
+    }
   }
 
   // Slotblad — statistische eindanalyse

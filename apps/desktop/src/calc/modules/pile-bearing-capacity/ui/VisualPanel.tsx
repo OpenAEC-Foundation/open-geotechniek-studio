@@ -200,7 +200,7 @@ function buildQcTicks(qcMax: number): number[] {
 interface PileGraphicProps {
   input: PileInput;
   result: PileResult;
-  material: "steel" | "concrete";
+  material: "steel" | "concrete" | "wood";
   /** Alleen nog relevant voor de doorsnede-subcomponent; het zijaanzicht
    *  is voor ronde én vierkante palen een rechte rechthoek. */
   isCircular?: boolean;
@@ -231,7 +231,7 @@ function PileGraphic({
   pileColCenter,
 }: PileGraphicProps) {
   // Kleurpalet per materiaal — beige voor beton (#d4a574), grijs voor staal.
-  const fill = material === "concrete" ? "#d4a574" : "#9ca3af";
+  const fill = material === "wood" ? "#a57442" : material === "concrete" ? "#d4a574" : "#9ca3af";
   const stroke = "#374151";
 
   // Visuele paal-breedte — gemapped uit werkelijke diameter via min/max
@@ -462,7 +462,7 @@ function PileGraphic({
 interface PileCrossSectionProps {
   diameterMm: number;
   wallThicknessMm: number;
-  material: "steel" | "concrete";
+  material: "steel" | "concrete" | "wood";
   isCircular: boolean;
   hasRebarCage: boolean;
 }
@@ -521,7 +521,7 @@ function PileCrossSection({
         </pattern>
       </defs>
       {isCircular ? (
-        material === "steel" ? (
+        material === "steel" && hasRebarCage ? (
           <>
             {/* Stalen buis (ring) — grijs gevuld */}
             <circle cx={CX} cy={CY} r={R} fill="#9ca3af" stroke="#374151" strokeWidth={1.5} />
@@ -548,7 +548,7 @@ function PileCrossSection({
           </>
         ) : (
           /* Pure beton ronde paal (boorpaal etc.) — beton-arcering */
-          <circle cx={CX} cy={CY} r={R} fill="url(#pile-cs-concrete-hatch)" stroke="#374151" strokeWidth={1.5} />
+          <circle cx={CX} cy={CY} r={R} fill={material === "wood" ? "#a57442" : "url(#pile-cs-concrete-hatch)"} stroke="#374151" strokeWidth={1.5} />
         )
       ) : (
         <>
@@ -586,7 +586,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
 
   // Paaltype voor visualisatie (material, shape).
   const pileType = getPileType(input.pileTypeId);
-  const pileMaterial: "steel" | "concrete" = pileType?.material ?? "steel";
+  const pileMaterial: "steel" | "concrete" | "wood" = pileType?.material ?? "steel";
   const pileIsCircular = pileType?.isCircular ?? true;
 
   const fullExtent = useMemo(
@@ -1563,7 +1563,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         yRebarBot={bounds.napToY(
           Math.max(input.pileToeNap, input.pileTopNap - 4 * (input.diameterMm / 1000)),
         )}
-        hasRebarCage={pileMaterial === "steel"}
+        hasRebarCage={pileMaterial === "steel" && !pileType?.requiresEA}
         pileColCenter={pileColCenter}
       />
 
@@ -1720,11 +1720,11 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
 
   // Pile-type bepaalt material + vorm voor de cross-section onderaan.
   const pileType = getPileType(input.pileTypeId);
-  const csMaterial: "steel" | "concrete" = pileType?.material ?? "steel";
+  const csMaterial: "steel" | "concrete" | "wood" = pileType?.material ?? "steel";
   const csIsCircular = pileType?.isCircular ?? true;
   // Wapeningskorf alleen voor stalen buispalen (betongevulde composiet);
   // bij prefab voorgespannen beton zien we voorspandraden i.p.v. korf.
-  const csHasRebar = csMaterial === "steel";
+  const csHasRebar = csMaterial === "steel" && !pileType?.requiresEA;
   // Korf-lengte in mm voor de info-tekst — 4·D vanaf paalkop, geclampt op
   // paallengte zodat we geen onzin-getal tonen voor korte palen.
   const pileLengthMm = Math.max(0, (input.pileTopNap - input.pileToeNap) * 1000);
@@ -1752,7 +1752,8 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
                 <td>{csIsCircular ? "ø" : "□"}</td>
                 <td>{input.diameterMm.toFixed(0)} mm</td>
               </tr>
-              {csMaterial === "steel" && (
+              <tr><td>puntmaat</td><td>{(input.baseDiameterMm ?? input.diameterMm).toFixed(0)} mm</td></tr>
+              {csMaterial === "steel" && !pileType?.requiresEA && (
                 <tr>
                   <td>wand</td>
                   <td>{input.wallThicknessMm.toFixed(1)} mm</td>
@@ -1767,9 +1768,9 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
               <tr>
                 <td>materiaal</td>
                 <td>
-                  {csMaterial === "steel"
-                    ? "Stalen buispaal, betongevuld"
-                    : "Prefab voorgespannen beton"}
+                  {csMaterial === "wood" ? "Hout, constante doorsnede" : csMaterial === "steel"
+                    ? (pileType?.requiresEA ? "Stalen paal; projectspecifieke EA" : "Stalen buispaal, betongevuld")
+                    : (pileType?.requiresEA ? "In de grond gevormd beton" : "Prefab beton")}
                 </td>
               </tr>
             </tbody>

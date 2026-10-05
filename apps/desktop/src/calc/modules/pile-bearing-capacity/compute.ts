@@ -1,7 +1,7 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/compute.ts
 import type { Cpt } from "../../../types/cpt";
 import type { PileInput, PileResult } from "./types";
-import { getPileType } from "./catalog";
+import { resolvePileType } from "./catalog";
 import { computeNegKleef } from "./parts/negative-skin-friction";
 import { computeBaseResistance } from "./parts/base-resistance";
 import { computeShaftFriction } from "./parts/shaft-friction";
@@ -59,8 +59,23 @@ function anyZero() {
 
 export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   if (!cpt) return emptyResult("Geen actieve sondering");
-  const pileType = getPileType(input.pileTypeId);
+  const pileType = resolvePileType(input);
   if (!pileType) return emptyResult(`Onbekend paaltype: ${input.pileTypeId}`);
+  const baseDiameterMm = input.baseDiameterMm ?? input.diameterMm;
+  if (!Number.isFinite(baseDiameterMm) || baseDiameterMm <= 0) return emptyResult("Puntafmeting moet positief en eindig zijn");
+  if (pileType.id === "steel-pipe-driven-closed-2017" && baseDiameterMm - input.diameterMm > 20) return emptyResult("De voetplaat mag voor dit paaltype maximaal 10 mm per zijde uitsteken");
+  if (pileType.id === "steel-screw-grout" && input.diameterMm < 300) return emptyResult("Deze groutschroefpreset vereist een schachtdiameter van ten minste 300 mm");
+  if (pileType.material === "wood" && baseDiameterMm !== input.diameterMm) return emptyResult("Dit houten paaltype vereist een constante doorsnede zonder oplanger");
+  if (input.axialStiffnessKn !== undefined && (!Number.isFinite(input.axialStiffnessKn) || input.axialStiffnessKn <= 0)) return emptyResult("EA moet positief en eindig zijn");
+  if (pileType.requiresEA && input.axialStiffnessKn === undefined) return emptyResult("Geef de projectspecifieke axiale stijfheid EA voor dit paaltype op");
+  if (input.projectFactors) {
+    const f = input.projectFactors;
+    if (![f.alphaP, f.alphaS, f.alphaT, f.beta, f.s].every(Number.isFinite) ||
+        f.alphaP <= 0 || f.alphaS < 0 || f.alphaT < 0 || f.beta <= 0 || f.beta > 1 || f.s <= 0 ||
+        !f.source?.trim() || !["2017", "2025"].includes(f.edition)) {
+      return emptyResult("Projectfactoren vereisen geldige waarden, een bron en normeditie 2017 of 2025");
+    }
+  }
 
   const numericFields = [
     input.diameterMm, input.wallThicknessMm, input.pileTopNap, input.pileToeNap,
@@ -70,7 +85,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   ];
   if (!numericFields.every(Number.isFinite)) return emptyResult("Alle invoerwaarden moeten eindige getallen zijn");
   if (input.diameterMm <= 0) return emptyResult("Diameter of zijlengte moet groter dan nul zijn");
-  if ((pileType.material ?? "steel") === "steel" &&
+  if ((pileType.material ?? "steel") === "steel" && !pileType.requiresEA &&
       (input.wallThicknessMm <= 0 || 2 * input.wallThicknessMm >= input.diameterMm)) {
     return emptyResult("Wanddikte moet groter dan nul en kleiner dan de halve diameter zijn");
   }
@@ -97,7 +112,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
 
   // Edge-case: sondering te ondiep
   const lastDepth = cpt.points[cpt.points.length - 1]?.depth ?? 0;
-  const Deq = pileGeometry(input.diameterMm, pileType.isCircular).equivalentDiameterMm / 1000;
+  const Deq = pileGeometry(baseDiameterMm, pileType.isCircular).equivalentDiameterMm / 1000;
   if (lastDepth < pileToeDepth + 0.7 * Deq) {
     return emptyResult(
       `Sondering te ondiep (reikt tot ${lastDepth.toFixed(1)} m, vereist ≥ ${(pileToeDepth + 0.7 * Deq).toFixed(1)} m)`,
@@ -107,7 +122,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   const negKleef = computeNegKleef(input);
   const base = computeBaseResistance(cpt, {
     pileToeDepth,
-    diameterMm: input.diameterMm,
+    diameterMm: baseDiameterMm,
     pileType,
   });
   // Positief schachtwrijvings-traject: van posKleefTopNap (boven, default
@@ -125,10 +140,10 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
 
   const fcTotSls = input.nEk + negKleef.fnkD;
   const fcTotUls = input.nEd + negKleef.fnkD;
-  const EA = computeEA_N(
+  const EA = input.axialStiffnessKn !== undefined ? input.axialStiffnessKn * 1000 : computeEA_N(
     input.diameterMm,
     input.wallThicknessMm,
-    pileType.material ?? "steel",
+    pileType.material === "concrete" ? "concrete" : "steel",
     pileType.isCircular,
   );
   const L = input.pileTopNap - input.pileToeNap;
@@ -152,7 +167,13 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
     deltaL_m: deltaL,
   });
 
-  const spring = computeSpringStiffness(settlement);
+  settlement.available = (pileType.settlementLine ?? 1) === 1;
+  if (!settlement.available) {
+    settlement.sls = anyZero();
+    settlement.uls = anyZero();
+    settlement.curve = [];
+  }
+  const spring = settlement.available ? computeSpringStiffness(settlement) : { kSlsKnPerM: 0, kUlsKnPerM: 0, kMinKnPerM: 0, kMaxKnPerM: 0 };
 
   const summary = computeSummary({
     rbCalMax: base.rbCalMax,
@@ -163,6 +184,11 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   });
 
   const warnings: string[] = [];
+  warnings.push(`Factoren: ${pileType.edition ?? "bestaand model"}; ${pileType.source ?? "bestaande catalogus"}.`);
+  if (pileType.conditions) warnings.push(pileType.conditions);
+  if (input.projectFactors?.edition === "2025") warnings.push("Projectfactoren 2025 toegepast; dit is geen volledige omzetting van de rekenmethode naar NEN 9997:2025.");
+  if (!settlement.available) warnings.push(`Lastzakkingslijn ${pileType.settlementLine} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.`);
+  if (baseDiameterMm !== input.diameterMm) warnings.push("Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering.");
   if (base.qbMaxMpaRaw > 15) {
     warnings.push(`qb;max gecapt op 15 MPa (ruwe waarde ${base.qbMaxMpaRaw.toFixed(2)} MPa)`);
   }

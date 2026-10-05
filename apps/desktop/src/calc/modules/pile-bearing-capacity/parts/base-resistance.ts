@@ -157,11 +157,27 @@ function clippedAvgQcUpward(
   return { avg, finalMin: runMin, clippedPoints: clippedAsc };
 }
 
+/** Puntweerstand uit reeds bepaalde trajectgemiddelden. */
+export function computeBaseResistanceFromAverages(
+  args: Omit<Args, "pileToeDepth"> & Pick<BaseResistanceResult, "qcIGemMpa" | "qcIIGemMpa" | "qcIIIGemMpa">,
+): Pick<BaseResistanceResult, "deqMm" | "abMm2" | "qbMaxMpaRaw" | "qbMaxMpa" | "rbCalMax"> {
+  const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular);
+  const { alphaP, beta, s } = args.pileType;
+  const qbMaxMpaRaw = 0.5 * alphaP * beta * s * ((args.qcIGemMpa + args.qcIIGemMpa) / 2 + args.qcIIIGemMpa);
+  const qbMaxMpa = Math.min(qbMaxMpaRaw, 15);
+  return {
+    deqMm: geometry.equivalentDiameterMm,
+    abMm2: geometry.areaMm2,
+    qbMaxMpaRaw,
+    qbMaxMpa,
+    rbCalMax: geometry.areaMm2 * qbMaxMpa / 1000,
+  };
+}
+
 export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResult {
   const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular);
   const DeqMm = geometry.equivalentDiameterMm;
   const Deq = DeqMm / 1000;
-  const Ab = geometry.areaMm2;
 
   // Functie: gemiddelde qc tussen depths [d1, d2] (in m vanaf maaiveld)
   // gebruikt depth-gewogen gemiddelde — geen running-min, gewoon
@@ -220,7 +236,7 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
     cpt,
     args.pileToeDepth,
     Math.max(0, args.pileToeDepth - 8 * Deq),
-    qcIIWalk.finalMin,
+    Math.min(qcIIWalk.finalMin, args.pileType.qcIIIStartCapMpa ?? Infinity),
   );
   const qcIIIGemMpa = qcIIIWalk.avg;
 
@@ -232,23 +248,12 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
     .map((p) => ({ depth: p.depth, qcClipped: p.qcClipped }))
     .sort((a, b) => a.depth - b.depth);
 
-  // qb;max formule 7.6.2.3(e)
-  const { alphaP, beta, s } = args.pileType;
-  const qbMaxMpaRaw = 0.5 * alphaP * beta * s * ((qcIGemMpa + qcIIGemMpa) / 2 + qcIIIGemMpa);
-  const qbMaxMpa = Math.min(qbMaxMpaRaw, 15);
-
-  const rbCalMax = (Ab * qbMaxMpa) / 1000; // kN: mm² × MPa × 1e-3
-
   return {
-    deqMm: DeqMm,
+    ...computeBaseResistanceFromAverages({ ...args, qcIGemMpa, qcIIGemMpa, qcIIIGemMpa }),
     qcIGemMpa,
     qcIIGemMpa,
     qcIIIGemMpa,
     criticalDepthM: bestDc,
-    qbMaxMpaRaw,
-    qbMaxMpa,
-    abMm2: Ab,
-    rbCalMax,
     clippedQcCurve,
   };
 }

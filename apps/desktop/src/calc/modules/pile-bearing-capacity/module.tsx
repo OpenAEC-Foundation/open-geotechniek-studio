@@ -9,7 +9,7 @@
 import type { CalcModule, ProjectContext } from "../../framework/types";
 import type { PileInput, PileResult } from "./types";
 import { computePile } from "./compute";
-import { PILE_TYPE_CATALOG, buildDefaultSoilLayers } from "./catalog";
+import { buildDefaultSoilLayers } from "./catalog";
 import { InputPanel } from "./ui/InputPanel";
 import { VisualPanel } from "./ui/VisualPanel";
 import { ResultPanel } from "./ui/ResultPanel";
@@ -22,7 +22,7 @@ function defaultInput(ctx: ProjectContext): PileInput {
   const water = groundNap - 0.5;
   return {
     cptId: ctx.activeCptId,
-    pileTypeId: PILE_TYPE_CATALOG[0].id,
+    pileTypeId: "steel-pipe-driven-closed-2017",
     diameterMm: 219,
     wallThicknessMm: 8.0,
     pileTopNap: pileTop,
