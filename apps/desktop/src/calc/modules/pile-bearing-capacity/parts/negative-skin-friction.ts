@@ -2,12 +2,15 @@
 import type { PileInput, NegKleefResult, NegKleefLayerResult } from "../types";
 import { getPileType } from "../catalog";
 import { pileGeometry } from "./geometry";
+import { usesHistoricalProcedure } from "../standards";
 
 const PI = Math.PI;
 const toRad = (deg: number) => (deg * PI) / 180;
 
 export function computeNegKleef(input: PileInput): NegKleefResult {
   const Os = pileGeometry(input.diameterMm, getPileType(input.pileTypeId)?.isCircular ?? true).perimeterM;
+  const type = getPileType(input.pileTypeId);
+  const deltaFactor = usesHistoricalProcedure(input.standard) && type?.material === "concrete" && type.requiresEA ? 1 : .75;
 
   // Filter lagen die in de neg.kleef-zone vallen (boven negKleefBottomNap)
   const zoneTop = input.pileTopNap;
@@ -58,7 +61,7 @@ export function computeNegKleef(input: PileInput): NegKleefResult {
 
     const phiRad = toRad(l.phi);
     const k0 = 1 - Math.sin(phiRad);
-    const delta = 0.75 * phiRad;
+    const delta = deltaFactor * phiRad;
     const tanDelta = Math.tan(delta);
     const k0TanDeltaRaw = k0 * tanDelta;
     const k0TanDelta = Math.max(k0TanDeltaRaw, input.ksMinFactor);

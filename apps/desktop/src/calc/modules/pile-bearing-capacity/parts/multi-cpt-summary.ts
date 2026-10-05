@@ -16,6 +16,9 @@
 // niet-stijve bouwwerken (de meest voorkomende casus voor losse palen
 // onder funderingsherstel).
 
+import type { PileInput } from "../types";
+import { historicalXi, usesHistoricalProcedure } from "../standards";
+
 /** Eén sondering-case in de multi-CPT analyse. */
 export interface PerCptCase {
   /** Sondering-id of -naam (voor rapportage). */
@@ -32,6 +35,7 @@ export interface PerCptCase {
 }
 
 export interface MultiCptSummary {
+  historicalXi?: number;
   /** Aantal sonderingen n. */
   n: number;
   /** Gemiddelde Rc;cal over alle sonderingen [kN]. */
@@ -127,6 +131,7 @@ export function getXiFactors(
 }
 
 interface MultiCptInputs {
+  standard?: PileInput["standard"];
   cases: ReadonlyArray<PerCptCase>;
   /** γm voor de paalreactie [Tabel A.10] — typisch 1,20. */
   gammaM: number;
@@ -162,6 +167,7 @@ export function computeMultiCptSummary(inputs: MultiCptInputs): MultiCptSummary 
   const { cases, gammaM, nEd, stiffness = "non-stiff", fnkDOverride, fnkDMode = "max" } = inputs;
   const n = cases.length;
   if (n === 0) throw new Error("multi-CPT summary: geen sonderingen");
+  if (usesHistoricalProcedure(inputs.standard) && n !== 1) throw new Error("Historische paalgroepanalyse is nog niet geverifieerd; gebruik één sondering");
 
   const rcCalValues = cases.map((c) => c.rcCal);
   const rcCalMean = rcCalValues.reduce((a, b) => a + b, 0) / n;
@@ -178,8 +184,9 @@ export function computeMultiCptSummary(inputs: MultiCptInputs): MultiCptSummary 
 
   const { xi3, xi4 } = getXiFactors(n, vcUnder12pct, stiffness);
 
-  const rcKGem = rcCalMean / xi3;
-  const rcKMin = rcCalMin / xi4;
+  const historicalFactor = historicalXi(inputs.standard);
+  const rcKGem = historicalFactor === undefined ? rcCalMean / xi3 : historicalFactor * rcCalMean;
+  const rcKMin = historicalFactor === undefined ? rcCalMin / xi4 : historicalFactor * rcCalMin;
   const rcK = Math.min(rcKGem, rcKMin);
   const rcD = rcK / gammaM;
 
@@ -205,6 +212,7 @@ export function computeMultiCptSummary(inputs: MultiCptInputs): MultiCptSummary 
   const passes = unityCheck <= 1.0;
 
   return {
+    historicalXi: historicalFactor,
     n,
     rcCalMean,
     rcCalMin,

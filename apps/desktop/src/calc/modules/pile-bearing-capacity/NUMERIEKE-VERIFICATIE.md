@@ -17,6 +17,11 @@ garantie voor dezelfde versnelling van de volledige applicatie.
 
 ## Openstaand punt bij de puntweerstand
 
+Deze beperking betreft het behouden projectmodel en het profiel 2017. De
+afzonderlijke historische profielen hebben een nieuwe trajectprocedure, inclusief
+de startregel van traject II, gecontroleerd met de tabellarische normbijlage.
+Zie [historische verificatie](HISTORISCHE-NORMEN.md).
+
 De bestaande puntmethode kiest het traject met het laagste qc;I. NEN
 9997-1:2016+C2:2017, §7.6.2.3(e), vraagt een trajectkeuze op basis van het minimum
 van de volledige puntweerstand. Dit is een bekende beperking; de implementatie

@@ -9,6 +9,7 @@ import { computeSettlement } from "./parts/settlement";
 import { computeSpringStiffness } from "./parts/spring-stiffness";
 import { computeSummary } from "./parts/summary";
 import { pileGeometry } from "./parts/geometry";
+import { getStandard, usesHistoricalProcedure } from "./standards";
 
 // E-moduli [N/mm²] voor de axiale paalstijfheid EA.
 //  - Staal: 210 000 (EN 1993-1-1)
@@ -59,8 +60,10 @@ function anyZero() {
 
 export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   if (!cpt) return emptyResult("Geen actieve sondering");
+  if (!getStandard(input.standard)) return emptyResult("Onbekende normversie");
+  const historical = usesHistoricalProcedure(input.standard);
   const pileType = resolvePileType(input);
-  if (!pileType) return emptyResult(`Onbekend paaltype: ${input.pileTypeId}`);
+  if (!pileType) return emptyResult(`Paaltype niet ondersteund voor deze normversie: ${input.pileTypeId}`);
   const baseDiameterMm = input.baseDiameterMm ?? input.diameterMm;
   if (!Number.isFinite(baseDiameterMm) || baseDiameterMm <= 0) return emptyResult("Puntafmeting moet positief en eindig zijn");
   if (pileType.id === "steel-pipe-driven-closed-2017" && baseDiameterMm - input.diameterMm > 20) return emptyResult("De voetplaat mag voor dit paaltype maximaal 10 mm per zijde uitsteken");
@@ -72,8 +75,8 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
     const f = input.projectFactors;
     if (![f.alphaP, f.alphaS, f.alphaT, f.beta, f.s].every(Number.isFinite) ||
         f.alphaP <= 0 || f.alphaS < 0 || f.alphaT < 0 || f.beta <= 0 || f.beta > 1 || f.s <= 0 ||
-        !f.source?.trim() || !["2017", "2025"].includes(f.edition)) {
-      return emptyResult("Projectfactoren vereisen geldige waarden, een bron en normeditie 2017 of 2025");
+        !f.source?.trim() || !(historical ? [getStandard(input.standard)!.edition] : ["2017", "2025"]).includes(f.edition)) {
+      return emptyResult("Projectfactoren vereisen geldige waarden, een bron en een editie die bij de gekozen norm past");
     }
   }
 
@@ -113,6 +116,18 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   // Edge-case: sondering te ondiep
   const lastDepth = cpt.points[cpt.points.length - 1]?.depth ?? 0;
   const Deq = pileGeometry(baseDiameterMm, pileType.isCircular).equivalentDiameterMm / 1000;
+  if (historical) {
+    if (cpt.points.some((p, i) => !Number.isFinite(p.depth) || !Number.isFinite(p.qc) || p.qc! < 0 || (i > 0 && p.depth <= cpt.points[i - 1].depth))) {
+      return emptyResult("Historische berekening vereist oplopende diepten met volledige, niet-negatieve qc-waarden");
+    }
+    if (lastDepth < pileToeDepth + 4 * Deq || (cpt.points[0]?.depth ?? Infinity) > Math.max(0, pileToeDepth - 8 * Deq)) {
+      return emptyResult("Historische berekening vereist het volledige traject van 8 Deq boven tot 4 Deq onder de paalpunt");
+    }
+    if (input.soilProfile.some(l => l.endNap < posTop && l.startNap > input.pileToeNap && l.kind !== "sand-dry" && l.kind !== "sand-wet")) {
+      return emptyResult("Historische positieve schachtwrijving is alleen geverifieerd voor zand; pas het schachttraject en grondprofiel aan");
+    }
+    if (baseDiameterMm !== input.diameterMm) return emptyResult("Historisch profiel ondersteunt alleen een constante paaldoorsnede");
+  }
   if (lastDepth < pileToeDepth + 0.7 * Deq) {
     return emptyResult(
       `Sondering te ondiep (reikt tot ${lastDepth.toFixed(1)} m, vereist ≥ ${(pileToeDepth + 0.7 * Deq).toFixed(1)} m)`,
@@ -121,6 +136,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
 
   const negKleef = computeNegKleef(input);
   const base = computeBaseResistance(cpt, {
+    method: historical ? "minimum-qb" : "legacy-qci",
     pileToeDepth,
     diameterMm: baseDiameterMm,
     pileType,
@@ -132,6 +148,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   // neg-kleef en pos-kleef zit.
   const posKleefTopNap = input.posKleefTopNap ?? input.negKleefBottomNap;
   const shaft = computeShaftFriction(cpt, {
+    qcCapMpa: historical ? 12 : undefined,
     pileType,
     diameterMm: input.diameterMm,
     negKleefBottomNap: posKleefTopNap, // = top van shaft-friction-zone
@@ -167,7 +184,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
     deltaL_m: deltaL,
   });
 
-  settlement.available = (pileType.settlementLine ?? 1) === 1;
+  settlement.available = !historical && (pileType.settlementLine ?? 1) === 1;
   if (!settlement.available) {
     settlement.sls = anyZero();
     settlement.uls = anyZero();
@@ -176,6 +193,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   const spring = settlement.available ? computeSpringStiffness(settlement) : { kSlsKnPerM: 0, kUlsKnPerM: 0, kMinKnPerM: 0, kMaxKnPerM: 0 };
 
   const summary = computeSummary({
+    standard: input.standard,
     rbCalMax: base.rbCalMax,
     rsCalMax: shaft.rsCalMax,
     fnkD: negKleef.fnkD,
@@ -187,7 +205,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   warnings.push(`Factoren: ${pileType.edition ?? "bestaand model"}; ${pileType.source ?? "bestaande catalogus"}.`);
   if (pileType.conditions) warnings.push(pileType.conditions);
   if (input.projectFactors?.edition === "2025") warnings.push("Projectfactoren 2025 toegepast; dit is geen volledige omzetting van de rekenmethode naar NEN 9997:2025.");
-  if (!settlement.available) warnings.push(`Lastzakkingslijn ${pileType.settlementLine} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.`);
+  if (!settlement.available) warnings.push(historical ? "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald." : `Lastzakkingslijn ${pileType.settlementLine} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.`);
   if (baseDiameterMm !== input.diameterMm) warnings.push("Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering.");
   if (base.qbMaxMpaRaw > 15) {
     warnings.push(`qb;max gecapt op 15 MPa (ruwe waarde ${base.qbMaxMpaRaw.toFixed(2)} MPa)`);

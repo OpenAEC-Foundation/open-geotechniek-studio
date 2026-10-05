@@ -1,7 +1,9 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/parts/summary.ts
-import type { SummaryResult } from "../types";
+import type { PileInput, SummaryResult } from "../types";
+import { historicalXi } from "../standards";
 
 export interface SummaryArgs {
+  standard?: PileInput["standard"];
   rbCalMax: number;
   rsCalMax: number;
   fnkD: number;
@@ -14,11 +16,13 @@ export function computeSummary(args: SummaryArgs): SummaryResult {
   const xi3 = 1.39;
   const xi4 = 1.39;
   const rcCal = args.rbCalMax + args.rsCalMax;
-  const rcK = rcCal / xi3;
+  const xi = historicalXi(args.standard);
+  const rcK = xi === undefined ? rcCal / xi3 : xi * rcCal;
   const rcD = rcK / args.gammaM;
   const rcNetD = rcD - args.fnkD;
   const unityCheck = rcNetD > 0 ? args.nEd / rcNetD : Infinity;
   return {
+    historicalXi: xi,
     xi3,
     xi4,
     rcCal,

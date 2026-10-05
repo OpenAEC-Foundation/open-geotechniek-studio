@@ -7,6 +7,18 @@ import type { PileInput } from "../types";
 const input=fixture.input as PileInput;
 const result=computePile(input,null);
 describe("paaltype-invoer",()=>{
+ it("laat de grondsoort per laag expliciet aanpassen",()=>{
+  const onChange=vi.fn();
+  render(<InputPanel input={input} result={result} onChange={onChange}/>);
+  fireEvent.change(screen.getByLabelText("Grondsoort laag 1"),{target:{value:"sand-wet"}});
+  expect(onChange.mock.calls[0][0].soilProfile[0]).toEqual(expect.objectContaining({kind:"sand-wet",gammaK:20,gammaW:10,phi:32.5}));
+ });
+ it("slaat normkeuze en historische veiligheidsfactor op en verwijdert moderne overrides",()=>{
+  const onChange=vi.fn();
+  render(<InputPanel input={input} result={result} onChange={onChange}/>);
+  fireEvent.change(screen.getByLabelText("Normversie"),{target:{value:"nen-6743-1991"}});
+  expect(onChange).toHaveBeenCalledWith(expect.objectContaining({standard:"nen-6743-1991",gammaM:1.25,pileTypeId:"concrete-prefab-prestressed-driven",projectFactors:undefined}));
+ });
  it("toont de catalogus en vraagt EA bij een boorpaal",()=>{
   render(<InputPanel input={{...input,pileTypeId:"concrete-bored"}} result={result}/>);
   expect(screen.getByRole("option",{name:"Avegaarpaal — beton"})).toBeTruthy();

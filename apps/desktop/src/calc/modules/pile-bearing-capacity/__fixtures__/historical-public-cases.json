@@ -1,0 +1,225 @@
+{
+  "sources": [
+    {
+      "id": "60700963",
+      "url": "https://www.heemskerk.nl/fileadmin/decos/bouwvergunning/c17d60bfc1c691529a130014ce6a350472ba6b2b/p0009.pdf",
+      "page": 8,
+      "sha256": "2fb3ddf94581e5679f3ea8f88dbf950bc69c7131329fdacd03cb98beadd5873a"
+    },
+    {
+      "id": "05290-31",
+      "url": "https://www.heemskerk.nl/fileadmin/decos/bouwvergunning/3497d5ad4f3f57ac9eb86c60e61a4085abaca98f/p0031.pdf",
+      "page": 31,
+      "sha256": "ff16deac171544cefe5686efb6093e85d96d12f97ce9a676c86aed11c166dfaa"
+    },
+    {
+      "id": "05290-32",
+      "url": "https://www.heemskerk.nl/fileadmin/decos/bouwvergunning/3497d5ad4f3f57ac9eb86c60e61a4085abaca98f/p0032.pdf",
+      "page": 32,
+      "sha256": "743db631ca27b19929c92fc6edfa1b6e17f5bf0407f865723b73b96f4c84c13e"
+    }
+  ],
+  "cases": [
+    {
+      "source": "60700963",
+      "standard": "nen-6743-2006",
+      "widthMm": 290,
+      "qcI": 19.9,
+      "qcII": 8.2,
+      "qcIII": 3.3,
+      "qbReference": 8.66,
+      "rbReference": 728,
+      "rsReference": 124,
+      "rcReference": 852,
+      "representativeReference": 614,
+      "shaftLayers": [
+        {
+          "lengthM": 1.95,
+          "qcMpa": 5.5,
+          "rsReference": 124
+        }
+      ]
+    },
+    {
+      "source": "05290-31",
+      "standard": "nen-6743-1991",
+      "widthMm": 220,
+      "qcI": 6.6,
+      "qcII": 4.9,
+      "qcIII": 2.4,
+      "qbReference": 4.1,
+      "rbReference": 196.6,
+      "rsReference": 223.9,
+      "rcReference": 420.5,
+      "representativeReference": 315.4,
+      "designReference": 252.3,
+      "shaftLayers": [
+        {
+          "lengthM": 0.4,
+          "qcMpa": 6.9,
+          "rsReference": 24.2
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 5.3,
+          "rsReference": 2.3
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 2,
+          "rsReference": 0.9
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 3.4,
+          "rsReference": 1.5
+        },
+        {
+          "lengthM": 0.85,
+          "qcMpa": 4.9,
+          "rsReference": 36.7
+        },
+        {
+          "lengthM": 0.1,
+          "qcMpa": 3.6,
+          "rsReference": 3.2
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 3.5,
+          "rsReference": 1.5
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 1.4,
+          "rsReference": 0.6
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 3.5,
+          "rsReference": 1.5
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 3.5,
+          "rsReference": 1.5
+        },
+        {
+          "lengthM": 1,
+          "qcMpa": 5.8,
+          "rsReference": 51.1
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 3.9,
+          "rsReference": 1.7
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 1.4,
+          "rsReference": 0.6
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 2.1,
+          "rsReference": 0.9
+        },
+        {
+          "lengthM": 0.35,
+          "qcMpa": 3,
+          "rsReference": 9.3
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 2.5,
+          "rsReference": 1.1
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 1.4,
+          "rsReference": 0.6
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 2.1,
+          "rsReference": 0.9
+        },
+        {
+          "lengthM": 0.65,
+          "qcMpa": 3.5,
+          "rsReference": 20.2
+        },
+        {
+          "lengthM": 0.25,
+          "qcMpa": 4.5,
+          "rsReference": 9.9
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 9.6,
+          "rsReference": 4.2
+        },
+        {
+          "lengthM": 0.15,
+          "qcMpa": 8.9,
+          "rsReference": 11.8
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 9.3,
+          "rsReference": 4.1
+        },
+        {
+          "lengthM": 0.1,
+          "qcMpa": 6.4,
+          "rsReference": 5.6
+        },
+        {
+          "lengthM": 0.15,
+          "qcMpa": 7.1,
+          "rsReference": 9.4
+        },
+        {
+          "lengthM": 0.3,
+          "qcMpa": 0.6,
+          "rsReference": 1.7
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 1.4,
+          "rsReference": 0.6
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 1.3,
+          "rsReference": 0.5
+        },
+        {
+          "lengthM": 0.1,
+          "qcMpa": 1.2,
+          "rsReference": 1.1
+        },
+        {
+          "lengthM": 0.1,
+          "qcMpa": 1.5,
+          "rsReference": 1.3
+        },
+        {
+          "lengthM": 0.55,
+          "qcMpa": 2.5,
+          "rsReference": 12
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 1.8,
+          "rsReference": 0.8
+        },
+        {
+          "lengthM": 0.05,
+          "qcMpa": 0.7,
+          "rsReference": 0.3
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import { pileGeometry } from "./geometry";
 import { QcProfile } from "./qc-profile";
 
 interface Args {
+  qcCapMpa?: number;
   pileType: PileTypeSpec;
   diameterMm: number;
   negKleefBottomNap: number;
@@ -44,7 +45,10 @@ export function computeShaftFriction(
     const layerBot = Math.max(l.endNap, zoneBot);
     const thickness = layerTop - layerBot;
     // Laag-gemiddelde qc, begrensd op 15 MPa (zie const-comment boven).
-    const qcGemMpa = Math.min(profile.average(groundNap - layerTop, groundNap - layerBot), QC_CAP_SHAFT_MPA);
+    const topDepth = groundNap - layerTop, bottomDepth = groundNap - layerBot;
+    const qcGemMpa = args.qcCapMpa === undefined
+      ? Math.min(profile.average(topDepth, bottomDepth), QC_CAP_SHAFT_MPA)
+      : profile.averageCapped(topDepth, bottomDepth, args.qcCapMpa);
     const qsRaw = args.pileType.alphaS * qcGemMpa;
     const qsCap = QS_MAX_PER_SOIL[l.kind];
     const qsMpa = Math.min(qsRaw, qsCap);

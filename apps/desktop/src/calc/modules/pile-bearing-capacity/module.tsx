@@ -22,6 +22,7 @@ function defaultInput(ctx: ProjectContext): PileInput {
   const water = groundNap - 0.5;
   return {
     cptId: ctx.activeCptId,
+    standard: "nen-9997-2017",
     pileTypeId: "steel-pipe-driven-closed-2017",
     diameterMm: 219,
     wallThicknessMm: 8.0,
@@ -48,10 +49,10 @@ function defaultInput(ctx: ProjectContext): PileInput {
 const pileModuleTyped: CalcModule<PileInput, PileResult> = {
   id: "pile-bearing-capacity",
   name: "Funderingspaal",
-  subtitle: "Paaldraagvermogen (NEN-EN 1997-1 §7.6)",
+  subtitle: "Paaldraagvermogen — NEN 6743 / NEN 9997",
   category: "pile",
   icon: "▼",
-  norm: "NEN-EN 1997-1:2005+A1:2013+NB:2019",
+  norm: "Normversie volgens berekeningsinvoer",
   status: "experimental",
   defaultInput,
   compute: (input, ctx) => {

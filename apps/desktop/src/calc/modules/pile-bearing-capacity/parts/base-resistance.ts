@@ -5,6 +5,7 @@ import { pileGeometry } from "./geometry";
 import { QcProfile } from "./qc-profile";
 
 interface Args {
+  method?: "legacy-qci" | "minimum-qb";
   pileToeDepth: number;        // depth onder maaiveld in m
   diameterMm: number;
   pileType: PileTypeSpec;
@@ -179,6 +180,7 @@ export function computeBaseResistanceFromAverages(
 }
 
 export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResult {
+  if (args.method === "minimum-qb") return computeMinimumBaseResistance(cpt, args);
   const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular);
   const DeqMm = geometry.equivalentDiameterMm;
   const Deq = DeqMm / 1000;
@@ -242,4 +244,33 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
     criticalDepthM: bestDc,
     clippedQcCurve,
   };
+}
+
+/** Historische procedure §5.4.2.2.1: minimaliseer de gehele uitdrukking.
+ * Discrete zoekstap 0,01 Deq plus meetknikken en beide trajectgrenzen.
+ * Traject II start bij de gemeten qc aan de onderkant, III continueert II.
+ */
+function computeMinimumBaseResistance(cpt: Cpt, args: Args): BaseResistanceResult {
+  const profile = new QcProfile(cpt);
+  const deq = pileGeometry(args.diameterMm, args.pileType.isCircular).equivalentDiameterMm / 1000;
+  const toe = args.pileToeDepth;
+  const top = Math.max(0, toe - 8 * deq);
+  const evaluate = (dc: number, capture = false): BaseResistanceResult => {
+    const qcIGemMpa = profile.average(toe, toe + dc);
+    const ii = profile.walkUp(toe + dc, toe, Infinity, capture);
+    const iii = profile.walkUp(toe, top, Math.min(ii.finalMin, args.pileType.qcIIIStartCapMpa ?? Infinity), capture);
+    const averages = { qcIGemMpa, qcIIGemMpa: ii.avg, qcIIIGemMpa: iii.avg };
+    return { ...computeBaseResistanceFromAverages({ ...args, ...averages }), ...averages,
+      criticalDepthM: dc, clippedQcCurve: capture ? [...iii.clippedPoints, ...ii.clippedPoints] : undefined };
+  };
+  const lower = .7 * deq, upper = 4 * deq;
+  const candidates = new Set<number>([lower, upper]);
+  for (let i = 1; i < 330; i++) candidates.add((.7 + i * .01) * deq);
+  for (const depth of profile.depths) if (depth > toe + lower && depth < toe + upper) candidates.add(depth - toe);
+  let best = evaluate(lower);
+  for (const dc of [...candidates].sort((a, b) => a - b)) {
+    const value = evaluate(dc);
+    if (value.qbMaxMpaRaw < best.qbMaxMpaRaw - 1e-12) best = value;
+  }
+  return evaluate(best.criticalDepthM, true);
 }

@@ -46,6 +46,8 @@ export interface ProjectPileFactors {
 }
 
 export interface PileInput {
+  /** Ontbrekend: behoud het bestaande projectmodel. */
+  standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017";
   cptId: string | null;        // referentie naar CPT in project
   pileTypeId: string;          // "steel-pipe-driven-closed"
   diameterMm: number;          // 219
@@ -153,6 +155,8 @@ export interface SpringStiffnessResult {
 }
 
 export interface SummaryResult {
+  /** Historische vermenigvuldigingsfactor; geen Eurocode-deler. */
+  historicalXi?: number;
   xi3: number;
   xi4: number;
   rcCal: number;

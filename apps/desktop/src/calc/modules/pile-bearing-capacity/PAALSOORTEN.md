@@ -4,6 +4,10 @@ De catalogus bevat elf varianten: het behouden stalen-buisprojectmodel, vierkant
 
 ## Bronbasis
 
+De normkeuze voegt historische profielen voor 1991, 2006 en 2011/2012 toe.
+Zie [historische normen en vergelijkingen](HISTORISCHE-NORMEN.md) voor de
+onderbouwde paaltypen, veiligheidsfactoren en rekenbeperkingen.
+
 De nieuwe presets gebruiken NEN 9997-1:2016+C2:2017, tabel 7.c, inclusief het toepassingsgebied zand/zand-grind. Gecontroleerd tegen de lokale norm in `Z:/20_knowhow/Normen/Eurocodes/`; de opgeslagen afdruk bevat de tabel op PDF-pagina's 198–201. De bestaande stalen-buisfactoren uit het referentiemodel blijven onder hun bestaande ID bewaard. Nieuwe berekeningen starten met de expliciete tabelvariant uit 2017.
 
 De kennisbestanden in `Z:/20_knowhow/Constructie/7_fundering_op_palen` ondersteunen het onderscheid tussen schacht en voet en tussen materiaalmodellen. De oudere productbladen leveren geen algemene actuele factorenset.

@@ -5,6 +5,7 @@ import type { PileInput, PileResult, SettlementResult } from "../types";
 import { generatePileReport } from "../parts/pile-report-pdf";
 import { computeMultiCptSummary } from "../parts/multi-cpt-summary";
 import { resolvePileType } from "../catalog";
+import { getStandard } from "../standards";
 import { pileGeometry } from "../parts/geometry";
 import { downloadPdf } from "../../../../utils/downloadPdf";
 import { useCptStore } from "../../../../store/useCptStore";
@@ -295,6 +296,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       };
       const rcCalSingle = result.base.rbCalMax + result.shaft.rsCalMax;
       const summary = computeMultiCptSummary({
+        standard: input.standard,
         cases: [{
           cptId: sondering.name,
           rbCalMax: result.base.rbCalMax,
@@ -310,7 +312,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         project: {
           number: "—",
           description: "Paaldraagvermogen-berekening",
-          norm: `Rekenmodel §7.6.2.3; factorenset ${pileType?.edition ?? "bestaand model"}`,
+          norm: `${getStandard(input.standard)?.label}; factorenset ${pileType?.edition ?? "bestaand model"}`,
           date: new Date().toISOString().slice(0, 10),
           author: "Open Geotechniek Studio",
         },
@@ -588,10 +590,15 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
 
       <section>
         <h3>Samenvatting</h3>
+        <p>{getStandard(input.standard)?.label}</p>
+        <Formula lhs={<>R<sub>c;rep/k</sub></>}
+          symbolic={summary.historicalXi === undefined ? <>R<sub>c;cal</sub> / ξ₃</> : <>ξ · R<sub>c;cal</sub></>}
+          filled={summary.historicalXi === undefined ? <>{summary.rcCal.toFixed(1)} / {summary.xi3}</> : <>{summary.historicalXi} · {summary.rcCal.toFixed(1)}</>}
+          result={<>{summary.rcK.toFixed(1)} kN</>} />
         <Formula
           lhs={<>R<sub>c;d</sub></>}
           symbolic={<>R<sub>c;k</sub> / γ<sub>m</sub></>}
-          filled={<>{(summary.rcK ?? summary.rcCal).toFixed(0)} / 1,20</>}
+          filled={<>{(summary.rcK ?? summary.rcCal).toFixed(0)} / {input.gammaM.toFixed(2)}</>}
           result={<>{summary.rcD.toFixed(0)} kN</>}
         />
         <Formula

@@ -1,5 +1,6 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/catalog.ts
 import type { PileInput, PileTypeSpec, SoilKind, SoilLayer } from "./types";
+import { applyStandard } from "./standards";
 
 const SOURCE_2017 = "NEN 9997-1:2016+C2:2017, tabel 7.c (zand/zand-grind)";
 const normativeType = (spec: PileTypeSpec): PileTypeSpec => ({
@@ -52,7 +53,9 @@ export function getPileType(id: string): PileTypeSpec | undefined {
 
 /** Projectfactoren zijn onderdeel van de opgeslagen invoer, nooit globale catalogusmutaties. */
 export function resolvePileType(input: PileInput): PileTypeSpec | undefined {
-  const type = getPileType(input.pileTypeId);
+  const catalogType = getPileType(input.pileTypeId);
+  if (!catalogType) return undefined;
+  const type = applyStandard(catalogType, input.standard);
   if (!type) return undefined;
   if (!input.projectFactors) return type;
   return { ...type, ...input.projectFactors,

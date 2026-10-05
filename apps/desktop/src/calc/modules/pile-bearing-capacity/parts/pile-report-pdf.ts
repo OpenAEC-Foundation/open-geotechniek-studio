@@ -22,6 +22,7 @@ import { renderSonderingChart } from "./pile-report-chart";
 import { renderZakkingDiagram } from "./pile-report-zakking";
 import { resolvePileType } from "../catalog";
 import { pileGeometry } from "./geometry";
+import { getStandard, isHistorical, usesHistoricalProcedure } from "../standards";
 
 export interface PileReportProject {
   /** Projectnummer (bv. "2705"). */
@@ -349,7 +350,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
     paragraph(c, `Bron: ${resolvePileType(inp)?.source ?? "bestaande catalogus"}`);
     for (const warning of first.result.warnings) paragraph(c, warning, { size: 7.5 });
     kv(c, "Puntafmeting", `: ${inp.baseDiameterMm ?? inp.diameterMm} mm`);
-    kv(c, "EA", `: ${nl(first.result.settlement.eaKn ?? 0, 0)} kN`);
+    if (!usesHistoricalProcedure(inp.standard)) kv(c, "EA", `: ${nl(first.result.settlement.eaKn ?? 0, 0)} kN`);
     kv(c, "Paallengte", `: ${nl(L, 2)} m`);
     kv(
       c,
@@ -428,7 +429,7 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
   c.y += 7;
 
   // ─── Negatieve kleef ───────────────────────────────────────────
-  sectionTitle(c, "Negatieve kleef", "art. 7.3.2.2 (d)");
+  sectionTitle(c, "Negatieve kleef", isHistorical(input.standard) ? (input.standard === "nen-6743-1991" ? "NEN 6740:1991 art. 11.5.1" : "NEN 6743-1:2006 art. 7.2") : "art. 7.3.2.2 (d)");
   paragraph(c, `Niv. negatieve/positieve kleef: ${nlNap(input.negKleefBottomNap)}`);
   paragraph(c, `ΔL_nk = ${nl(result.negKleef.deltaLnk, 2)} m`);
 
@@ -482,7 +483,7 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
   }
 
   // ─── Puntdraagvermogen ─────────────────────────────────────────
-  sectionTitle(c, "Puntdraagvermogen", "art. 7.6.2.3 (e)");
+  sectionTitle(c, "Puntdraagvermogen", isHistorical(input.standard) ? (input.standard === "nen-6743-1991" ? "art. 5.3.3.1" : "art. 5.4.2.2") : "art. 7.6.2.3 (e)");
   const capNote = result.base.qbMaxMpaRaw > 15 ? `${nl(result.base.qbMaxMpa, 2)} MPa (afgekapt op 15,00 MPa)` : `${nl(result.base.qbMaxMpa, 2)} MPa < 15,00 MPa`;
   formula(
     c,
@@ -500,7 +501,7 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
   );
 
   // ─── Maximumschachtwrijving ────────────────────────────────────
-  sectionTitle(c, "Maximumschachtwrijving", "art. 7.6.2.3 (c)");
+  sectionTitle(c, "Maximumschachtwrijving", isHistorical(input.standard) ? (input.standard === "nen-6743-1991" ? "art. 5.3.3.2" : "art. 5.4.2.3") : "art. 7.6.2.3 (c)");
   paragraph(c, `ΔL = ${nl(deltaL, 1)} m`);
   const shaftSum = Os > 0 ? result.shaft.rsCalMax / Os : 0;
   formula(
@@ -523,8 +524,8 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
       ],
       result.shaft.perLayer.map((l) => [
         l.layer.kind,
-        nl(l.layer.startNap, 2),
-        nl(l.layer.endNap, 2),
+        nl(Math.min(l.layer.startNap, input.posKleefTopNap ?? input.negKleefBottomNap), 2),
+        nl(Math.max(l.layer.endNap, input.pileToeNap), 2),
         nl(l.qcGemMpa, 2),
         nl(l.qsMpa, 3),
         nl(l.rsLayer, 1),
@@ -534,18 +535,18 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
   }
 
   // ─── Maximum gronddraagvermogen ────────────────────────────────
-  sectionTitle(c, "Maximum gronddraagvermogen van de paal", "art. 7.6.2.3 (3)");
+  sectionTitle(c, "Maximum gronddraagvermogen van de paal", isHistorical(input.standard) ? "NEN 6743" : "art. 7.6.2.3 (3)");
   formula(
     c,
     "R_c;cal",
     "R_b;cal;max + R_s;cal;max",
     `${result.base.rbCalMax.toFixed(0)} + ${result.shaft.rsCalMax.toFixed(0)}`,
     `${(result.base.rbCalMax + result.shaft.rsCalMax).toFixed(0)} kN`,
-    "...(7.6)",
+    isHistorical(input.standard) ? undefined : "...(7.6)",
   );
 
   if (result.settlement.available === false) {
-    paragraph(c, "Zakking en veerwaarden niet bepaald: de vereiste lastzakkingslijn is nog niet ondersteund.");
+    paragraph(c, usesHistoricalProcedure(input.standard) ? "Historische zakking en veerwaarden zijn nog niet geverifieerd en worden niet bepaald." : "Zakking en veerwaarden niet bepaald: de vereiste lastzakkingslijn is nog niet ondersteund.");
     return;
   }
 
@@ -740,6 +741,13 @@ function renderEndAnalysis(
 // ─── Hoofd-export ────────────────────────────────────────────────
 
 export function generatePileReport(inputs: PileReportInputs): Uint8Array {
+  const first = inputs.sonderingen[0];
+  if (inputs.sonderingen.some(s => (s.input.standard ?? "nen-9997-2017") !== (first?.input.standard ?? "nen-9997-2017"))) {
+    throw new Error("Een rapport mag geen verschillende normversies combineren");
+  }
+  const historical = usesHistoricalProcedure(first?.input.standard);
+  if (historical && inputs.sonderingen.length !== 1) throw new Error("Historische paalgroepanalyse is nog niet geverifieerd");
+  if (historical) inputs = { ...inputs, project: { ...inputs.project, norm: getStandard(first.input.standard)!.label } };
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const c = makeCursor(doc, inputs.project);
 
@@ -774,7 +782,19 @@ export function generatePileReport(inputs: PileReportInputs): Uint8Array {
 
   // Slotblad — statistische eindanalyse
   const totalNEd = inputs.sonderingen[0]?.input.nEd ?? 0;
-  renderEndAnalysis(c, inputs.sonderingen, inputs.summary, totalNEd);
+  if (historical) {
+    c.newPage();
+    sectionTitle(c, "Historische draagkracht");
+    paragraph(c, getStandard(first.input.standard)!.label);
+    const r = first.result.summary;
+    const xi = r.historicalXi;
+    formula(c, "R_c;cal", "R_b + R_s", `${first.result.base.rbCalMax.toFixed(1)} + ${first.result.shaft.rsCalMax.toFixed(1)}`, `${nl(r.rcCal, 1)} kN`);
+    formula(c, "R_c;rep/k", xi === undefined ? "R_c;cal / xi3" : "xi x R_c;cal", xi === undefined ? `${nl(r.rcCal, 1)} / ${nl(r.xi3, 2)}` : `${nl(xi, 2)} x ${nl(r.rcCal, 1)}`, `${nl(r.rcK, 1)} kN`);
+    formula(c, "R_c;d", "R_c;rep/k / gamma_m", `${nl(r.rcK, 1)} / ${nl(first.input.gammaM, 2)}`, `${nl(r.rcD, 1)} kN`);
+    formula(c, "R_c;net;d", "R_c;d - F_nk;d", `${nl(r.rcD, 1)} - ${nl(first.result.negKleef.fnkD, 1)}`, `${nl(r.rcNetD, 1)} kN`);
+    formula(c, "U.C.", "NEd / R_c;net;d", `${nl(first.input.nEd, 1)} / ${nl(r.rcNetD, 1)}`, `${nl(r.unityCheck, 2)}`);
+    paragraph(c, "Alleenstaande drukpaal bij een sondering. Historische zakking en paalgroepwerking niet geverifieerd.");
+  } else renderEndAnalysis(c, inputs.sonderingen, inputs.summary, totalNEd);
 
   // Vervang het {tp}-token door het werkelijke paginatotaal.
   if (typeof doc.putTotalPages === "function") {
