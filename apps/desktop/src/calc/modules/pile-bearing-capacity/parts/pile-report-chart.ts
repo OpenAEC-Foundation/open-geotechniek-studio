@@ -244,7 +244,16 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   doc.setFillColor(...COL_PILE);
   doc.setDrawColor(60);
   doc.setLineWidth(0.3);
-  doc.rect(pileX - 1.6, pTopY, 3.2, pToeY - pTopY, "FD");
+  if (input.timberTaper) {
+    const wToe = 1.6 * input.timberTaper.toeDiameterMm / input.diameterMm;
+    const transitionY = yOf(input.pileTopNap - input.timberTaper.lengthM);
+    doc.lines([
+      [1.6 - wToe, transitionY - pTopY], [0, pToeY - transitionY],
+      [2 * wToe, 0], [0, transitionY - pToeY], [1.6 - wToe, pTopY - transitionY], [-3.2, 0],
+    ], pileX - 1.6, pTopY, [1, 1], "FD", true);
+  } else {
+    doc.rect(pileX - 1.6, pTopY, 3.2, pToeY - pTopY, "FD");
+  }
   // NEd/Nk-pijl boven de paal (rood, omlaag)
   doc.setDrawColor(...COL_NEG);
   doc.setFillColor(...COL_NEG);

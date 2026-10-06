@@ -39,7 +39,8 @@ Voor in de grond gevormd beton wordt bij negatieve kleef δ=φ gebruikt; voor
 prefab, hout en stalen omhulling δ=0,75φ.
 
 Historische zakking, veerwaarden, paalgroepen en afwijkende voetmaten zijn
-uitgesloten. De 1991-keuze beperkt de beschikbare paaltypen. Projectfactoren
+uitgesloten. Voor hout kan in 2006 en 2012 expliciet een taps schachtverloop
+worden opgegeven; zie [paalsoorten](PAALSOORTEN.md). De 1991-keuze beperkt de beschikbare paaltypen. Projectfactoren
 moeten dezelfde editie hebben als het historische profiel; een rapport mag
 geen verschillende normversies combineren. OCR-, korrelgrootte- en
 ontgravingscorrecties zijn niet geïmplementeerd. Invoer moet dus een situatie

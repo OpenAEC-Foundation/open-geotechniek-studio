@@ -44,7 +44,7 @@ export const PILE_TYPE_CATALOG: PileTypeSpec[] = [
   normativeType({ id: "steel-screw-grout", name: "Stalen schroefpaal — groutinjectie", alphaP: .63, alphaS: .009, alphaT: .009, beta: 1, s: 1, isCircular: true, material: "steel", requiresEA: true, conditions: "Groutschacht ≥ 300 mm; tijdens aanbrengen niet op en neer halen. EA betreft staal/kern, niet het grout-schachtoppervlak." }),
   normativeType({ id: "concrete-auger", name: "Avegaarpaal — beton", alphaP: .56, alphaS: .006, alphaT: .0045, beta: 1, s: 1, isCircular: true, requiresEA: true, settlementLine: 2, qcIIIStartCapMpa: 2, conditions: "Editie 2017: start qc;III begrensd op 2 MPa; geen vrijstelling op basis van nasonderingen toegepast." }),
   normativeType({ id: "concrete-bored", name: "Boorpaal — met steunvloeistof", alphaP: .35, alphaS: .006, alphaT: .0045, beta: 1, s: 1, isCircular: true, requiresEA: true, settlementLine: 3 }),
-  normativeType({ id: "timber-uniform", name: "Houten heipaal — constante doorsnede", alphaP: .7, alphaS: .010, alphaT: .007, beta: 1, s: 1, isCircular: true, material: "wood", requiresEA: true, conditions: "Constante ronde doorsnede; tapsheid en betonoplanger zijn niet in dit type opgenomen." }),
+  normativeType({ id: "timber-uniform", name: "Houten heipaal — rond, constant of taps", alphaP: .7, alphaS: .010, alphaT: .007, beta: 1, s: 1, isCircular: true, material: "wood", requiresEA: true, conditions: "Ronde doorsnede, optioneel lineair taps vanaf de kop; zonder betonoplanger. Geen verhoging van paalfactoren wegens coniciteit." }),
 ];
 
 export function getPileType(id: string): PileTypeSpec | undefined {

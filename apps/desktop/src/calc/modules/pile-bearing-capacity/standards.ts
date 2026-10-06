@@ -58,6 +58,7 @@ export function applyStandard(type: PileTypeSpec, standard: PileInput["standard"
 export function changeStandard(input: PileInput, standard: PileStandard): PileInput {
   return { ...input, standard, gammaM: getStandard(standard)!.gammaM,
     projectFactors: undefined,
+    timberTaper: standard === "nen-6743-1991" ? undefined : input.timberTaper,
     pileTypeId: standard === "nen-6743-1991" ? "concrete-prefab-prestressed-driven" : input.pileTypeId,
     baseDiameterMm: undefined, axialStiffnessKn: undefined,
   };

@@ -342,7 +342,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
   const rcCalMine = base.rbCalMax + shaft.rsCalMax;
   const D = input.diameterMm / 1000; // m
   const isCircular = resolvePileType(input)?.isCircular ?? true;
-  const Os = pileGeometry(input.diameterMm, isCircular).perimeterM;
+  const Os = negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, isCircular).perimeterM;
   return (
     <div className="pile-result">
       {result.warnings.length > 0 && (
@@ -371,8 +371,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         </p>
         <Formula
           lhs={<>O<sub>s</sub></>}
-          symbolic={isCircular ? <>π · D</> : <>4 · a</>}
-          filled={<>{isCircular ? "π" : "4"} · {D.toFixed(3)}</>}
+          symbolic={input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : <>4 · a</>}
+          filled={<>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
           result={<>{Os.toFixed(3)} m</>}
         />
         <table className="pile-formula-table pile-formula-table--wide">
@@ -482,7 +482,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         <h3>Maximumschachtwrijving</h3>
         <Formula
           lhs={<>R<sub>s;cal;max</sub></>}
-          symbolic={<>O<sub>s</sub> · Σ α<sub>s</sub> · q<sub>c;gem;j</sub> · Δh<sub>j</sub></>}
+          symbolic={<>Σ O<sub>s;gem;j</sub> · q<sub>s;j</sub> · Δh<sub>j</sub></>}
           filled={
             <>
               {shaft.perLayer.length} laag/lagen — Σ van per-laag bijdragen

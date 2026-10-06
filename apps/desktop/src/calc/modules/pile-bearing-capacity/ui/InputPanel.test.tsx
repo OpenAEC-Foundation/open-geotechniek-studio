@@ -7,6 +7,15 @@ import type { PileInput } from "../types";
 const input=fixture.input as PileInput;
 const result=computePile(input,null);
 describe("paaltype-invoer",()=>{
+ it("slaat de tapse houtgeometrie op en wist die bij materiaalwissel",()=>{
+  const onChange=vi.fn();
+  const tapered={...input,pileTypeId:"timber-uniform",timberTaper:{toeDiameterMm:150,lengthM:10}};
+  render(<InputPanel input={tapered} result={result} onChange={onChange}/>);
+  fireEvent.change(screen.getByLabelText("Tapse lengte vanaf kop [m]"),{target:{value:"8"}});
+  expect(onChange.mock.calls[0][0].timberTaper).toEqual({toeDiameterMm:150,lengthM:8});
+  fireEvent.change(screen.getByLabelText("Type"),{target:{value:"concrete-auger"}});
+  expect(onChange.mock.calls[1][0].timberTaper).toBeUndefined();
+ });
  it("laat de grondsoort per laag expliciet aanpassen",()=>{
   const onChange=vi.fn();
   render(<InputPanel input={input} result={result} onChange={onChange}/>);

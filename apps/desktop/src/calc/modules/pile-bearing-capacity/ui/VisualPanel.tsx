@@ -5,6 +5,7 @@ import type { PanelProps } from "../../../framework/types";
 import type { Cpt, MeasurementPoint } from "../../../../types/cpt";
 import type { PileInput, PileResult } from "../types";
 import { getPileType } from "../catalog";
+import { shaftDiameterAtNap } from "../parts/geometry";
 import "./styles.css";
 
 /** Velden die via drag-to-edit aanpasbaar zijn in de chart. */
@@ -250,6 +251,10 @@ function PileGraphic({
   const yTopClamped = Math.max(plotTop, Math.min(plotBottom, yPileTop));
   const yToeClamped = Math.max(plotTop, Math.min(plotBottom, yPileToe));
   const bodyH = yToeClamped - yTopClamped;
+  const taperNaps = input.timberTaper ? [input.pileTopNap, input.pileTopNap - input.timberTaper.lengthM, input.pileToeNap] : [];
+  const taperY = (nap: number) => yPileTop + (input.pileTopNap - nap) / (input.pileTopNap - input.pileToeNap) * (yPileToe - yPileTop);
+  const taperPoints = [...taperNaps.map(nap => `${cx - diaPx * shaftDiameterAtNap(input, nap) / input.diameterMm / 2},${taperY(nap)}`),
+    ...[...taperNaps].reverse().map(nap => `${cx + diaPx * shaftDiameterAtNap(input, nap) / input.diameterMm / 2},${taperY(nap)}`)].join(" ");
 
   // Paal heeft VLAKKE bovenkant en VLAKKE onderkant — geen tapered tip.
   // De daadwerkelijke paalpunt-conus zit in de werkelijkheid binnen de
@@ -350,6 +355,8 @@ function PileGraphic({
               );
             })()}
           </>
+        ) : input.timberTaper ? (
+          <polygon points={taperPoints} fill={fill} stroke={stroke} strokeWidth={1.5} />
         ) : (
           <rect
             x={xPileLeft}
@@ -1752,7 +1759,8 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
                 <td>{csIsCircular ? "ø" : "□"}</td>
                 <td>{input.diameterMm.toFixed(0)} mm</td>
               </tr>
-              <tr><td>puntmaat</td><td>{(input.baseDiameterMm ?? input.diameterMm).toFixed(0)} mm</td></tr>
+              <tr><td>puntmaat</td><td>{(input.timberTaper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm).toFixed(0)} mm</td></tr>
+              {input.timberTaper && <tr><td>tapse lengte vanaf kop</td><td>{input.timberTaper.lengthM.toFixed(2)} m</td></tr>}
               {csMaterial === "steel" && !pileType?.requiresEA && (
                 <tr>
                   <td>wand</td>

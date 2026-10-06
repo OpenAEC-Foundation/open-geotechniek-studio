@@ -349,8 +349,9 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
     kv(c, "Normbasis", `: ${resolvePileType(inp)?.edition ?? "bestaand model"}`);
     paragraph(c, `Bron: ${resolvePileType(inp)?.source ?? "bestaande catalogus"}`);
     for (const warning of first.result.warnings) paragraph(c, warning, { size: 7.5 });
-    kv(c, "Puntafmeting", `: ${inp.baseDiameterMm ?? inp.diameterMm} mm`);
-    if (!usesHistoricalProcedure(inp.standard)) kv(c, "EA", `: ${nl(first.result.settlement.eaKn ?? 0, 0)} kN`);
+    kv(c, "Puntafmeting", `: ${inp.timberTaper?.toeDiameterMm ?? inp.baseDiameterMm ?? inp.diameterMm} mm`);
+    if (inp.timberTaper) kv(c, "Tapse lengte vanaf kop", `: ${nl(inp.timberTaper.lengthM, 2)} m; daaronder constant`);
+    if (!usesHistoricalProcedure(inp.standard) && !inp.timberTaper) kv(c, "EA", `: ${nl(first.result.settlement.eaKn ?? 0, 0)} kN`);
     kv(c, "Paallengte", `: ${nl(L, 2)} m`);
     kv(
       c,
@@ -358,7 +359,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
       `: αp = ${nl(inputs.factors.alphaP, 3)}   αs = ${nl(inputs.factors.alphaS, 4)}   αt = ${nl(inputs.factors.alphaT, 4)}   Lastzakkingslijn: ${resolvePileType(inp)?.settlementLine ?? 1}`,
     );
     const isCircular = resolvePileType(inp)?.isCircular ?? true;
-    kv(c, isCircular ? "Diameter" : "Zijlengte", `: ${isCircular ? "D" : "a"} = ${inp.diameterMm} mm  (D_eq = ${nl(first.result.base.deqMm, 1)} mm)`);
+    kv(c, inp.timberTaper ? "Kopdiameter" : isCircular ? "Diameter" : "Zijlengte", `: ${isCircular ? "D" : "a"} = ${inp.diameterMm} mm  (D_eq = ${nl(first.result.base.deqMm, 1)} mm)`);
     if (resolvePileType(inp)?.material === "steel" && !resolvePileType(inp)?.requiresEA) kv(c, "Wanddikte", `: ${nl(inp.wallThicknessMm, 1)} mm`);
     kv(c, "Paalkopniveau", `: ${nlNap(inp.pileTopNap)}`);
     kv(c, "Paalpuntniveau", `: ${nlNap(inp.pileToeNap)}`);
@@ -415,7 +416,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
 
 function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileReportInputs["factors"]): void {
   const { input, result } = s;
-  const Os = pileGeometry(input.diameterMm, resolvePileType(input)?.isCircular ?? true).perimeterM;
+  const Os = result.negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, resolvePileType(input)?.isCircular ?? true).perimeterM;
   const wp = result.settlement.sls;
   const L = result.settlement.lM ?? input.pileTopNap - input.pileToeNap;
   const ell = result.settlement.ellM ?? input.pileTopNap - input.negKleefBottomNap;
@@ -507,8 +508,8 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
   formula(
     c,
     "R_s;cal;max",
-    "O_s;gem · Σ (α_s · q_c;j;gem · h_j)",
-    `${nl(Os, 3)} × ${nl(shaftSum, 0)}`,
+    input.timberTaper ? "Σ (O_s;gem;j · q_s;j · h_j)" : "O_s;gem · Σ (α_s · q_c;j;gem · h_j)",
+    input.timberTaper ? result.shaft.perLayer.map(l => nl(l.rsLayer, 1)).join(" + ") : `${nl(Os, 3)} × ${nl(shaftSum, 0)}`,
     `${result.shaft.rsCalMax.toFixed(0)} kN`,
   );
   if (result.shaft.perLayer.length > 0) {
@@ -546,7 +547,7 @@ function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileRe
   );
 
   if (result.settlement.available === false) {
-    paragraph(c, usesHistoricalProcedure(input.standard) ? "Historische zakking en veerwaarden zijn nog niet geverifieerd en worden niet bepaald." : "Zakking en veerwaarden niet bepaald: de vereiste lastzakkingslijn is nog niet ondersteund.");
+    paragraph(c, input.timberTaper ? "Zakking en veerwaarden voor taps hout met variabele EA zijn niet geverifieerd en worden niet bepaald." : usesHistoricalProcedure(input.standard) ? "Historische zakking en veerwaarden zijn nog niet geverifieerd en worden niet bepaald." : "Zakking en veerwaarden niet bepaald: de vereiste lastzakkingslijn is nog niet ondersteund.");
     return;
   }
 

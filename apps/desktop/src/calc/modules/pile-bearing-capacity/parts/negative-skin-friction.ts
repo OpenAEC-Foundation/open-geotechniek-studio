@@ -1,14 +1,14 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/parts/negative-skin-friction.ts
 import type { PileInput, NegKleefResult, NegKleefLayerResult } from "../types";
 import { getPileType } from "../catalog";
-import { pileGeometry } from "./geometry";
+import { meanShaftPerimeter } from "./geometry";
 import { usesHistoricalProcedure } from "../standards";
 
 const PI = Math.PI;
 const toRad = (deg: number) => (deg * PI) / 180;
 
 export function computeNegKleef(input: PileInput): NegKleefResult {
-  const Os = pileGeometry(input.diameterMm, getPileType(input.pileTypeId)?.isCircular ?? true).perimeterM;
+  const Os = meanShaftPerimeter(input, getPileType(input.pileTypeId)?.isCircular ?? true, input.pileTopNap, input.negKleefBottomNap);
   const type = getPileType(input.pileTypeId);
   const deltaFactor = usesHistoricalProcedure(input.standard) && type?.material === "concrete" && type.requiresEA ? 1 : .75;
 
@@ -87,6 +87,7 @@ export function computeNegKleef(input: PileInput): NegKleefResult {
   const fnkD = input.gammaFnk * fnkRep;
 
   return {
+    meanPerimeterM: Os,
     layers,
     fnkRep,
     fnkD,

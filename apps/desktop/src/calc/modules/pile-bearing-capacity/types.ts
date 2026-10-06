@@ -54,6 +54,8 @@ export interface PileInput {
   wallThicknessMm: number;     // 8.0 — voor EA
   /** Ontbrekend betekent dezelfde maat als de schacht (bestaande projecten). */
   baseDiameterMm?: number;
+  /** Hout: lineair verloop vanaf kopdiameter over lengthM, daarna constante puntdiameter. */
+  timberTaper?: { toeDiameterMm: number; lengthM: number };
   /** Projectspecifieke axiale stijfheid EA, in kN. */
   axialStiffnessKn?: number;
   projectFactors?: ProjectPileFactors;
@@ -90,6 +92,7 @@ export interface NegKleefLayerResult {
 }
 
 export interface NegKleefResult {
+  meanPerimeterM?: number;     // gemiddelde over het negatieve-kleeftraject
   layers: NegKleefLayerResult[];
   fnkRep: number;              // sum, kN
   fnkD: number;                // = γf,nk × fnkRep

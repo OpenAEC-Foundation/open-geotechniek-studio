@@ -28,7 +28,7 @@ export function InputPanel({ input, onChange }: Props) {
           <option value="">Bestaand projectmodel — ongewijzigd</option>
           {PILE_STANDARDS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
         </select></label>
-        {usesHistoricalProcedure(input.standard) && <p>Historische drukberekening voor één paal bij één sondering. Positieve schachtwrijving in zand, constante doorsnede; zakking en paalgroepen zijn niet geverifieerd. Bij normwissel worden projectfactoren gewist en γm opnieuw ingesteld.</p>}
+        {usesHistoricalProcedure(input.standard) && <p>Historische drukberekening voor één paal bij één sondering. Positieve schachtwrijving in zand, constante doorsnede of expliciete houttapsheid; zakking en paalgroepen zijn niet geverifieerd. Bij normwissel worden projectfactoren gewist en γm opnieuw ingesteld.</p>}
       </fieldset>
       <fieldset>
         <legend>Sondering</legend>
@@ -43,16 +43,21 @@ export function InputPanel({ input, onChange }: Props) {
       <fieldset>
         <legend>Paal</legend>
         <label>Type
-          <select value={input.pileTypeId} onChange={(e) => onChange?.({ ...input, pileTypeId: e.target.value, projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined })}>
+          <select value={input.pileTypeId} onChange={(e) => onChange?.({ ...input, pileTypeId: e.target.value, projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper: undefined })}>
             {PILE_TYPE_CATALOG.map((p) => (
               <option key={p.id} value={p.id} disabled={!applyStandard(p, input.standard)}>{applyStandard(p, input.standard)?.name ?? p.name}</option>
             ))}
           </select>
         </label>
-        <label>{pileType?.isCircular === false ? "Zijlengte [mm]" : "Diameter [mm]"}<input type="number" min="1" value={input.diameterMm} onChange={(e) => set("diameterMm", +e.target.value)} /></label>
-        <label>Puntafmeting [mm] (leeg = schacht)<input type="number" min="1" value={input.baseDiameterMm ?? ""} onChange={(e) => set("baseDiameterMm", e.target.value === "" ? undefined : +e.target.value)} /></label>
+        <label>{input.timberTaper ? "Kopdiameter [mm]" : pileType?.isCircular === false ? "Zijlengte [mm]" : "Diameter [mm]"}<input type="number" min="1" value={input.diameterMm} onChange={(e) => set("diameterMm", +e.target.value)} /></label>
+        {pileType?.material === "wood" && <label><input type="checkbox" checked={!!input.timberTaper} onChange={e => onChange?.({...input, baseDiameterMm:undefined, timberTaper:e.target.checked ? {toeDiameterMm:input.diameterMm, lengthM:input.pileTopNap-input.pileToeNap} : undefined})}/>Tapse houten paal</label>}
+        {input.timberTaper ? <>
+          <label>Puntdiameter hout [mm]<input type="number" min="1" max={input.diameterMm} value={input.timberTaper.toeDiameterMm} onChange={e => set("timberTaper", {...input.timberTaper!, toeDiameterMm:+e.target.value})}/></label>
+          <label>Tapse lengte vanaf kop [m]<input type="number" min="0.01" step="0.1" max={input.pileTopNap-input.pileToeNap} value={input.timberTaper.lengthM} onChange={e => set("timberTaper", {...input.timberTaper!, lengthM:+e.target.value})}/></label>
+          <p>De diameter neemt lineair af vanaf de kop. Onder het tapse deel blijft de puntdiameter constant. De kleefomtrek volgt het gekozen traject. Zonder betonoplanger; zakking en veerwaarden worden niet bepaald.</p>
+        </> : <label>Puntafmeting [mm] (leeg = schacht)<input type="number" min="1" value={input.baseDiameterMm ?? ""} onChange={(e) => set("baseDiameterMm", e.target.value === "" ? undefined : +e.target.value)} /></label>}
         {pileType?.material === "steel" && !pileType.requiresEA && <label>Wanddikte [mm]<input type="number" min="0.1" step="0.1" value={input.wallThicknessMm} onChange={(e) => set("wallThicknessMm", +e.target.value)} /></label>}
-        <label>Axiale stijfheid EA [kN]{pileType?.requiresEA ? " (verplicht)" : " (optioneel)"}<input type="number" min="1" value={input.axialStiffnessKn ?? ""} onChange={(e) => set("axialStiffnessKn", e.target.value === "" ? undefined : +e.target.value)} /></label>
+        {!input.timberTaper && <label>Axiale stijfheid EA [kN]{pileType?.requiresEA ? " (verplicht)" : " (optioneel)"}<input type="number" min="1" value={input.axialStiffnessKn ?? ""} onChange={(e) => set("axialStiffnessKn", e.target.value === "" ? undefined : +e.target.value)} /></label>}
         <p>{pileType?.conditions}</p>
       </fieldset>
 

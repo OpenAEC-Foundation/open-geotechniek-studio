@@ -1,11 +1,12 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/parts/shaft-friction.ts
 import type { Cpt } from "../../../../types/cpt";
-import type { PileTypeSpec, SoilLayer, ShaftFrictionResult } from "../types";
+import type { PileInput, PileTypeSpec, SoilLayer, ShaftFrictionResult } from "../types";
 import { QS_MAX_PER_SOIL } from "../catalog";
-import { pileGeometry } from "./geometry";
+import { pileGeometry, meanShaftPerimeter } from "./geometry";
 import { QcProfile } from "./qc-profile";
 
 interface Args {
+  shaftGeometry?: Pick<PileInput, "diameterMm" | "pileTopNap" | "timberTaper">;
   qcCapMpa?: number;
   /** Historische zandprocedure: alleen alphaS × de begrensde qc. */
   useSoilStressCap?: boolean;
@@ -46,6 +47,7 @@ export function computeShaftFriction(
     const layerTop = Math.min(l.startNap, zoneTop);
     const layerBot = Math.max(l.endNap, zoneBot);
     const thickness = layerTop - layerBot;
+    const layerOs = args.shaftGeometry ? meanShaftPerimeter(args.shaftGeometry, args.pileType.isCircular, layerTop, layerBot) : Os;
     // Laag-gemiddelde qc, begrensd op 15 MPa (zie const-comment boven).
     const topDepth = groundNap - layerTop, bottomDepth = groundNap - layerBot;
     const qcGemMpa = args.qcCapMpa === undefined
@@ -54,7 +56,7 @@ export function computeShaftFriction(
     const qsRaw = args.pileType.alphaS * qcGemMpa;
     const qsCap = args.useSoilStressCap === false ? Infinity : QS_MAX_PER_SOIL[l.kind];
     const qsMpa = Math.min(qsRaw, qsCap);
-    const rsLayer = Os * qsMpa * thickness * 1000; // kN: m × MPa × m × 1000 = kN
+    const rsLayer = layerOs * qsMpa * thickness * 1000; // kN: m × MPa × m × 1000 = kN
     return { layer: l, qcGemMpa, qsMpa, rsLayer };
   });
 
