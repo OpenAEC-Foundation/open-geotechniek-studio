@@ -4,8 +4,7 @@ import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
 import { useCptStore } from "../../store/useCptStore";
 import { getCurrentReportSections } from "../../store/reportSectionsState";
-import { invoke } from "@tauri-apps/api/core";
-import { save } from "@tauri-apps/plugin-dialog";
+import { reports } from "../../utils/platform";
 
 const downloadIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="7 10 12 15 17 10"/><line stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" y1="15" x2="12" y2="3"/></svg>`;
 const openIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7v7"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14 21 3"/></svg>`;
@@ -23,25 +22,15 @@ export default function RapportTab(_props: RapportTabProps) {
   const cpts = useMemo(() => Array.from(cptsMap.values()), [cptsMap]);
   const projectMeta = useCptStore((s) => s.projectMeta);
   const [busy, setBusy] = useState(false);
+  const [error,setError] = useState<string|null>(null);
 
   async function generatePdf() {
-    const dst = await save({
-      defaultPath: `${projectMeta.title}.pdf`,
-      filters: [{ name: "PDF", extensions: ["pdf"] }],
-    });
-    if (!dst) return;
-    setBusy(true);
+setBusy(true);
     try {
-      await invoke("generate_report", {
-        cptIds: cpts.map((c) => c.id),
-        project: projectMeta,
-        outputPath: dst,
-        // De actuele sectie-vinkjes uit de rapport-preview — zonder deze
-        // parameter exporteerde de ribbon-knop altijd de standaardsecties
-        // en negeerde hij stilletjes wat de gebruiker had aangevinkt.
-        sections: getCurrentReportSections(),
-      });
+      setError(null);
+      await reports.save(cpts,projectMeta,getCurrentReportSections());
     } catch (e) {
+      setError(String(e));
       console.error("generate_report failed", e);
     } finally {
       setBusy(false);
@@ -53,13 +42,10 @@ export default function RapportTab(_props: RapportTabProps) {
   async function openPdf() {
     setBusy(true);
     try {
-      const bytes = await invoke<number[]>("preview_report", {
-        cptIds: cpts.map((c) => c.id),
-        project: projectMeta,
-        sections: getCurrentReportSections(),
-      });
-      await invoke("open_report_pdf", { bytes });
+      setError(null);
+      await reports.generateAndOpen(cpts,projectMeta,getCurrentReportSections());
     } catch (e) {
+      setError(String(e));
       console.error("open_report_pdf failed", e);
     } finally {
       setBusy(false);
@@ -68,6 +54,7 @@ export default function RapportTab(_props: RapportTabProps) {
 
   return (
     <div className="ribbon-content">
+      {error && <p role="alert">{error}</p>}
       <div className="ribbon-groups">
         <RibbonGroup label={t("output")}>
           <RibbonButton

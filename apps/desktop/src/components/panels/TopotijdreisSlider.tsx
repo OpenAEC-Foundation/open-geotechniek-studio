@@ -64,13 +64,18 @@ const DEBOUNCE_MS = 200;
  * the GisLayerPanel currently has on). Indexes 1..N correspond to the
  * TOPO_YEARS entries.
  */
+let savedSliderIdx = 0;
+let savedOpacity = 1;
+export function getTopotijdreisState() {
+  return { entry: savedSliderIdx === 0 ? null : TOPO_YEARS[savedSliderIdx - 1], opacity: savedOpacity };
+}
+
 export default function TopotijdreisSlider() {
   // sliderIdx === 0 → off. Otherwise points into TOPO_YEARS at idx - 1.
-  // Default: 0 (off) so the slider doesn't fight with the user's chosen
-  // base layer on first mount.
-  const [sliderIdx, setSliderIdx] = useState(0);
+  // Start disabled, then restore the choice when returning to this view.
+  const [sliderIdx, setSliderIdx] = useState(savedSliderIdx);
   // Opacity for the topotijdreis tile layer (0..1). Defaults to 100%.
-  const [topoOpacity, setTopoOpacity] = useState(1);
+  const [topoOpacity, setTopoOpacity] = useState(savedOpacity);
   const debounceRef = useRef<number | null>(null);
 
   const max = TOPO_YEARS.length; // slider range 0..N
@@ -90,6 +95,7 @@ export default function TopotijdreisSlider() {
   // a request per pixel of slider movement.
   const onChange = useCallback(
     (idx: number) => {
+      savedSliderIdx = idx;
       setSliderIdx(idx);
       if (debounceRef.current) window.clearTimeout(debounceRef.current);
       debounceRef.current = window.setTimeout(() => {
@@ -100,13 +106,11 @@ export default function TopotijdreisSlider() {
     [dispatchYear],
   );
 
-  // Clean up any pending debounce on unmount — and proactively switch
-  // off the topotijdreis layer so it doesn't linger when the user
-  // navigates away from the Kaart view.
+  // Cancel pending work; the selected year survives a view change.
   useEffect(() => {
     return () => {
       if (debounceRef.current) window.clearTimeout(debounceRef.current);
-      dispatchYear(null);
+
     };
   }, [dispatchYear]);
 
@@ -186,6 +190,7 @@ export default function TopotijdreisSlider() {
           onChange={(e) => {
             const pct = Number(e.currentTarget.value);
             const op = pct / 100;
+            savedOpacity = op;
             setTopoOpacity(op);
             window.dispatchEvent(
               new CustomEvent("ogs:layer-opacity", {

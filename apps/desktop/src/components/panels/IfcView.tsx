@@ -2,6 +2,9 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { useCptStore } from "../../store/useCptStore";
+import { IFC_EXPORT_NOTE } from "../../utils/browserIfc";
+import { IS_TAURI } from "../../utils/platform";
+import { saveBlobAsFile } from "../../utils/browserSave";
 
 /**
  * IfcView — twee-koloms representatie van het actieve document:
@@ -44,6 +47,7 @@ export default function IfcView() {
         <IfcPane
           format="ifc4x3"
           content={ifc4x3}
+          error={cached?.error}
           hasContent={hasCptContent}
           t={t}
         />
@@ -53,6 +57,7 @@ export default function IfcView() {
         <IfcPane
           format="ifcx"
           content={ifcx}
+          error={cached?.error}
           hasContent={hasCptContent}
           t={t}
         />
@@ -76,15 +81,37 @@ const FORMAT_LABEL: Record<IfcFormat, string> = {
 function IfcPane({
   format,
   content,
+  error,
   hasContent,
   t,
 }: {
   format: IfcFormat;
   content: string | undefined;
+  error?: string;
   hasContent: boolean;
   t: TFunction<"ribbon", undefined>;
 }) {
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const onSave = async () => {
+    if (!content) return;
+    setSaveError(null);
+    const extension = format === "ifc4x3" ? "ifc" : "ifcx";
+    try {
+      if (IS_TAURI) {
+        const { save } = await import("@tauri-apps/plugin-dialog");
+        const path = await save({ defaultPath: `sonderingen.${extension}`, filters: [{ name: FORMAT_LABEL[format], extensions: [extension] }] });
+        if (!path) return;
+        const { writeTextFile } = await import("@tauri-apps/plugin-fs");
+        await writeTextFile(path, content);
+      } else {
+        await saveBlobAsFile(new Blob([content], { type: format === "ifcx" ? "application/json" : "text/plain" }), `sonderingen.${extension}`);
+      }
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : String(err));
+    }
+  };
 
   const onCopy = useCallback(async () => {
     if (!content) return;
@@ -116,6 +143,9 @@ function IfcPane({
           )}
         </div>
         <div className="ifc-pane-actions">
+          <button type="button" className="ifc-pane-btn" disabled={!content} onClick={() => void onSave()}>
+            Opslaan
+          </button>
           <button
             type="button"
             className="ifc-pane-btn"
@@ -128,6 +158,8 @@ function IfcPane({
           </button>
         </div>
       </header>
+      <p className="ifc-pane-empty-sub">{IFC_EXPORT_NOTE}</p>
+      {saveError && <p role="alert">Opslaan mislukt: {saveError}</p>}
       <div className="ifc-pane-body">
         {highlighted ? (
           <pre
@@ -145,7 +177,7 @@ function IfcPane({
               </p>
             ) : (
               <p className="ifc-pane-empty-sub">
-                {t("ifc.paneGenerating", "Bezig met genereren...")}
+                {error ? `Genereren mislukt: ${error}` : t("ifc.paneGenerating", "Bezig met genereren...")}
               </p>
             )}
           </div>

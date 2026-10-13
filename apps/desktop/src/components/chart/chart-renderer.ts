@@ -1,3 +1,4 @@
+import { classify } from "../../utils/browserCore";
 /**
  * CPT Chart Renderer — pure Canvas drawing.
  *
@@ -46,42 +47,8 @@ export const ROBERTSON_ZONES: RobertsonZone[] = [
 ];
 
 export function classifyRobertson(qc: number | undefined, rf: number | undefined): RobertsonZone | null {
-  if (qc == null || rf == null) return null;
-  if (qc <= 0 || rf < 0) return null;
-
-  if (qc > 25) {
-    if (rf < 1) return ROBERTSON_ZONES[6];
-    return ROBERTSON_ZONES[7];
-  }
-  if (qc > 10) {
-    if (rf < 0.5) return ROBERTSON_ZONES[6];
-    if (rf < 1.5) return ROBERTSON_ZONES[5];
-    if (rf < 3) return ROBERTSON_ZONES[4];
-    return ROBERTSON_ZONES[7];
-  }
-  if (qc > 5) {
-    if (rf < 1) return ROBERTSON_ZONES[5];
-    if (rf < 2) return ROBERTSON_ZONES[4];
-    if (rf < 4) return ROBERTSON_ZONES[3];
-    if (rf < 6) return ROBERTSON_ZONES[2];
-    return ROBERTSON_ZONES[8];
-  }
-  if (qc > 2) {
-    if (rf < 1) return ROBERTSON_ZONES[4];
-    if (rf < 2.5) return ROBERTSON_ZONES[3];
-    if (rf < 5) return ROBERTSON_ZONES[2];
-    if (rf < 8) return ROBERTSON_ZONES[1];
-    return ROBERTSON_ZONES[0];
-  }
-  if (qc > 0.5) {
-    if (rf < 1.5) return ROBERTSON_ZONES[3];
-    if (rf < 4) return ROBERTSON_ZONES[2];
-    if (rf < 8) return ROBERTSON_ZONES[1];
-    return ROBERTSON_ZONES[0];
-  }
-  if (rf < 5) return ROBERTSON_ZONES[2];
-  if (rf < 10) return ROBERTSON_ZONES[1];
-  return ROBERTSON_ZONES[0];
+  const result = classify(qc, rf);
+  return result ? ROBERTSON_ZONES[result.number - 1] : null;
 }
 
 // ─────────────────────────────────────────────────────────────

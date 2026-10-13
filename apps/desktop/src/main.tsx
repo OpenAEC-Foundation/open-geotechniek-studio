@@ -138,9 +138,10 @@ if (LDraggable?.prototype && typeof L.DomEvent?.on === "function") {
 import "./i18n/config";
 import App from "./App";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { IS_TAURI } from "./utils/platform";
 
 // Production: disable context menu and browser dev shortcuts
-if (import.meta.env.PROD) {
+if (import.meta.env.PROD && IS_TAURI) {
   document.addEventListener("contextmenu", (e) => e.preventDefault());
 
   document.addEventListener("keydown", (e) => {

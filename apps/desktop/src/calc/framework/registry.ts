@@ -40,7 +40,7 @@ const DEV_ONLY_MODULES: CalcModule[] = [
 /** live.yml zet VITE_PUBLIC_WEB="1"; Vite vervangt dit statisch waardoor
  *  Rollup de niet-genomen tak (incl. DEV_ONLY_MODULES en al hun imports)
  *  volledig elimineert in de publieke build. */
-const IS_PUBLIC_WEB = import.meta.env.VITE_PUBLIC_WEB === "1";
+const IS_PUBLIC_WEB = import.meta.env.VITE_PUBLIC_WEB === "1" && import.meta.env.VITE_PLATFORM !== "1";
 
 export const CALC_REGISTRY: CalcModule[] = IS_PUBLIC_WEB
   ? PUBLIC_MODULES

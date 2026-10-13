@@ -1,3 +1,8 @@
+import { IS_TAURI } from "../utils/platform";
+import { generateIfcContent } from "../utils/browserIfc";
+import { looksLikeGefBore, parseGefBore } from "../types/gefBoreParser";
+import { parseProjectFile, isProjectFile, readJson } from "../types/projectFile";
+export { serializeActiveProject } from "./projectSerialization";
 import { create } from "zustand";
 import { invoke } from "@tauri-apps/api/core";
 import type { Cpt, ProjectMeta } from "../types/cpt";
@@ -57,6 +62,8 @@ export interface ProjectDocument {
   title: string;         // shown in tab — typically project meta title
   path?: string;
   meta: ProjectMeta;
+  /** Loaded layout sections retained even before opening the drawing view. */
+  savedLayout?: { tekening?: unknown; title_block?: unknown; gis?: unknown; deliverable?: unknown };
   cpts: Map<string, Cpt>;
   /** Boringen die bij dit project horen (BHR-GT XML, geparsed client-
    *  side). Net als `cpts` keyed by id zodat dedup + remove eenvoudig
@@ -161,7 +168,7 @@ interface DocStore {
    * CPT list/meta changes — so the IFC tab is always live without the
    * user clicking "Genereer". Both formats are cached side-by-side.
    */
-  ifcCache: Map<string, { ifc4x3?: string; ifcx?: string }>;
+  ifcCache: Map<string, { ifc4x3?: string; ifcx?: string; error?: string }>;
   setIfcCacheEntry: (docId: string, format: "ifc4x3" | "ifcx", content: string) => void;
   invalidateIfcCache: (docId: string) => void;
 
@@ -545,7 +552,7 @@ const pdfDebounceTimers: Map<string, number> = new Map();
  */
 interface PdfQueueEntry {
   docId: string;
-  cptIds: string[];
+  cpts: Cpt[];
   meta: ProjectMeta;
 }
 const pdfQueue: PdfQueueEntry[] = [];
@@ -563,10 +570,8 @@ async function runPdfQueue(): Promise<void> {
         if (pdfQueue[i].docId === entry.docId) pdfQueue.splice(i, 1);
       }
       try {
-        const bytes = await invoke<number[]>("preview_report", {
-          cptIds: entry.cptIds,
-          project: entry.meta,
-        });
+        const {reports}=await import('../utils/platform');
+        const bytes=await reports.preview(entry.cpts,entry.meta);
         const state = useCptStore.getState();
         if (!state.documents.some((d) => d.id === entry.docId)) continue;
         state.setPdfCache(entry.docId, new Uint8Array(bytes));
@@ -580,22 +585,13 @@ async function runPdfQueue(): Promise<void> {
 }
 
 export function schedulePdfPreview(doc: AppDocument): void {
-  // Browser: geen Rust PDF-engine beschikbaar — sla het scheduler-
-  // werk over. ReportPreview toont in plaats daarvan een browser-
-  // only melding (zie utils/platform.ts + ReportPreview.tsx).
-  if (typeof window !== "undefined") {
-    const g = globalThis as unknown as { isTauri?: boolean };
-    if (!g.isTauri && !("__TAURI_INTERNALS__" in window) && !("__TAURI__" in window)) {
-      return;
-    }
-  }
   // Boring + GMW-documenten genereren geen CPT-style chart-rapport —
   // sla over zodat de rest van de doc-open pipeline niet faalt.
   if (doc.kind === "bore" || doc.kind === "gwp") return;
-  const cptIds = doc.kind === "cpt"
-    ? [doc.cpt.id]
-    : Array.from(doc.cpts.keys());
-  if (cptIds.length === 0) return;
+  const cpts = doc.kind === "cpt"
+    ? [doc.cpt]
+    : Array.from(doc.cpts.values());
+  if (cpts.length === 0) return;
 
   const meta = doc.kind === "project" ? doc.meta : { ...DEFAULT_PROJECT_META };
   const docId = doc.id;
@@ -611,7 +607,7 @@ export function schedulePdfPreview(doc: AppDocument): void {
     for (let i = pdfQueue.length - 1; i >= 0; i--) {
       if (pdfQueue[i].docId === docId) pdfQueue.splice(i, 1);
     }
-    pdfQueue.push({ docId, cptIds, meta });
+    pdfQueue.push({ docId, cpts, meta });
     void runPdfQueue();
   }, PDF_DEBOUNCE_MS);
   pdfDebounceTimers.set(docId, timer);
@@ -638,13 +634,6 @@ interface GeneratedIfcResult {
 }
 
 export function scheduleIfcGenerate(doc: AppDocument): void {
-  // Browser: geen Rust IFC-generator — sla over zoals schedulePdfPreview.
-  if (typeof window !== "undefined") {
-    const g = globalThis as unknown as { isTauri?: boolean };
-    if (!g.isTauri && !("__TAURI_INTERNALS__" in window) && !("__TAURI__" in window)) {
-      return;
-    }
-  }
   // Boring + GMW-documenten krijgen (nog) geen auto-IFC-export —
   // skip om een lege/foutieve IFCX in de cache te vermijden.
   if (doc.kind === "bore" || doc.kind === "gwp") return;
@@ -661,11 +650,14 @@ export function scheduleIfcGenerate(doc: AppDocument): void {
   void (async () => {
     for (const format of ["ifc4x3", "ifcx"] as const) {
       try {
-        const result = await invoke<GeneratedIfcResult>("generate_ifc", {
-          project: { ...meta, id: docId },
-          cptIds,
-          format,
-        });
+        const result: GeneratedIfcResult = IS_TAURI
+          ? await invoke<GeneratedIfcResult>("generate_ifc", { project: { ...meta, id: docId }, cptIds, format })
+          : (() => {
+              const cpts = doc.kind === "cpt" ? [doc.cpt] : Array.from(doc.cpts.values());
+              const content = generateIfcContent(cpts, meta, format);
+              return { content, format, filename: `${doc.title}.${format === "ifc4x3" ? "ifc" : "ifcx"}`,
+                generated_at: new Date().toISOString(), byte_count: new TextEncoder().encode(content).length, full_path: "" };
+            })();
         // Only commit if the doc is still around.
         const state = useCptStore.getState();
         if (!state.documents.some((d) => d.id === docId)) return;
@@ -687,9 +679,13 @@ export function scheduleIfcGenerate(doc: AppDocument): void {
             },
           }),
         );
-      } catch {
-        // Swallow — IfcView shows the "Bezig met genereren..." state
-        // until a successful generation lands in the cache.
+      } catch (error) {
+        useCptStore.setState(state => {
+          if (!state.documents.some(d => d.id === docId)) return state;
+          const cache = new Map(state.ifcCache);
+          cache.set(docId, { ...cache.get(docId), error: error instanceof Error ? error.message : String(error) });
+          return { ifcCache: cache };
+        });
       }
     }
   })();
@@ -750,7 +746,7 @@ export async function loadBoreFromContent(
   filename: string,
   path?: string,
 ): Promise<Bore> {
-  const bore = parseBhrgtXml(xml, filename);
+  const bore = looksLikeGefBore(xml) ? parseGefBore(xml, filename) : parseBhrgtXml(xml, filename);
   useCptStore.setState((s) => {
     const doc: BoreDocument = {
       kind: "bore",
@@ -838,12 +834,14 @@ export async function openGwpFromBroId(
 export async function addCptToActiveProject(
   content: string,
   filename: string,
+  targetDocId: string | null = useCptStore.getState().activeDocId,
 ): Promise<Cpt> {
   // Eén platform-call — zie utils/platform.ts voor de Tauri/web split.
   const { cpt: cptPlatform } = await import("../utils/platform");
   const cpt = await cptPlatform.parse(content, filename);
   const state = useCptStore.getState();
-  const active = state.documents.find((d) => d.id === state.activeDocId);
+  const active = state.documents.find((d) => d.id === targetDocId);
+  if (targetDocId && !active) throw new Error("Het doelproject is gesloten tijdens het toevoegen.");
   if (!active || active.kind !== "project") {
     // No active project — create a standalone tab instead.
     let createdDoc: CptDocument | null = null;
@@ -906,12 +904,12 @@ export async function addBoreToActiveProject(
   xml: string,
   filename: string,
 ): Promise<Bore> {
-  if (!looksLikeBoringXml(xml)) {
+  if (!looksLikeBoringXml(xml) && !looksLikeGefBore(xml)) {
     throw new Error(
-      `${filename}: lijkt geen BHR-GT XML (geen <BHR_*_O> root gevonden)`,
+      `${filename}: geen ondersteunde BHR-XML- of GEF-boring`,
     );
   }
-  const bore = parseBhrgtXml(xml, filename);
+  const bore = looksLikeGefBore(xml) ? parseGefBore(xml, filename) : parseBhrgtXml(xml, filename);
   const state = useCptStore.getState();
   const active = state.documents.find((d) => d.id === state.activeDocId);
   if (!active || active.kind !== "project") {
@@ -996,43 +994,21 @@ export function removeBoreFromActiveProject(id: string): void {
   }
 }
 
-/**
- * Opens a `.ifcgis` project file via the `open_project_ifcgis_full` Tauri
- * command (ifcgis-0.2 schema, includes optional tekening + title_block)
- * and creates a new ProjectDocument tab. Falls back to the legacy
- * `open_project_ifcgis` command for older 0.1 files that Rust may not
- * be able to parse strictly under 0.2's stricter schema.
- *
- * Tekening + title-block worden in de module-level singleton gezet
- * (`setPendingTekeningRestore`) zodat SonderingstekeningView ze op
- * mount kan oppikken. Een bestaand gemount component krijgt ze niet
- * vanzelf — dat is v2-werk (event dispatch + listener).
- */
+/** Open native project files through the same validated content loader used by the browser. */
 export async function openProjectIfcgis(path: string): Promise<void> {
-  // ifcgis-0.2 full payload: header + project + cpts + bores + crs +
-  // tekening? + title_block?. Snake_case zoals Rust het serialiseert.
-  type IfcgisProjectInfo = {
-    type?: string;
-    title: string;
-    client?: string;
-    location?: string;
-    project_number?: string;
-    author?: string;
-    date: string;
-  };
-  type IfcgisFile = {
-    header: { schema: string; originating_system: string; timestamp: string };
-    project: IfcgisProjectInfo;
-    cpts?: Cpt[];
-    bores?: unknown[];
-    crs?: { epsg: number; name?: string };
-    tekening?: unknown;
-    title_block?: unknown;
-    /** ifcgis-0.4: berekeningen die bij dit project horen. Snake_case
-     *  IFCX-vorm — `fromIfcxArray` zet ze om naar `CalculationInstance`. */
-    calculations?: unknown[];
-  };
-  const result = await invoke<IfcgisFile>("open_project_ifcgis_full", { path });
+  const { readTextFile } = await import("@tauri-apps/plugin-fs");
+  return openProjectFromContent(await readTextFile(path), path.split(/[\\/]/).pop() ?? path, path);
+}
+
+export async function openProjectFromContent(content: string, filename: string, path?: string): Promise<void> {
+  const result = parseProjectFile(content);
+  const { IS_TAURI } = await import("../utils/platform");
+  if (IS_TAURI) {
+    // Register CPT snapshots so native calculations and exports can resolve their IDs.
+    for (const value of result.cpts ?? []) {
+      await invoke("open_cpt", { content: JSON.stringify(value), filename: `${value.id}.ifcgeo` });
+    }
+  }
   const projectMeta: ProjectMeta = {
     title: result.project.title ?? "",
     client: result.project.client ?? "",
@@ -1042,26 +1018,20 @@ export async function openProjectIfcgis(path: string): Promise<void> {
     date: result.project.date ?? "",
   };
   const cptList: Cpt[] = Array.isArray(result.cpts) ? result.cpts : [];
-  // Bores: het ifcgis-bestand bewaart ze als opaque JSON (de Rust-side
-  // doet geen strict parsing). Wij doen hier een minimal cast naar Bore
-  // — als de shape niet klopt valt de UI-rendering terug op de error-
-  // banner van BoreView. Geen exception om de open niet te blokkeren.
-  const boreList: Bore[] = Array.isArray(result.bores)
-    ? (result.bores as Bore[]).filter((b) => b && typeof b === "object" && "id" in b)
-    : [];
+  const boreList: Bore[] = result.bores ?? [];
   let createdDoc: ProjectDocument | null = null;
   useCptStore.setState((s) => {
     const cpts = new Map<string, Cpt>();
     for (const c of cptList) cpts.set(c.id, c);
     const bores = new Map<string, Bore>();
     for (const b of boreList) bores.set(b.id, b);
-    const filename = path.split(/[\\/]/).pop() ?? path;
     const doc: ProjectDocument = {
       kind: "project",
       id: makeId(),
       title: projectMeta.title || filename,
       path,
       meta: projectMeta,
+      savedLayout: { tekening: result.tekening, title_block: result.title_block, gis: result.gis, deliverable: result.deliverable },
       cpts,
       bores,
       activeCptId: cptList[0]?.id ?? null,
@@ -1178,15 +1148,17 @@ export async function openPathByExtension(path: string): Promise<boolean> {
  *   - openPathByExtension (na readTextFile in Tauri)
  *   - de browser-fallback file-picker (web-versie zonder fs-toegang)
  *
- * Voor formats die de Rust-side nodig hebben (GEF, CPT-XML, .ifcgeo
- * project) zal `invoke()` falen in browser-context — de aanroeper
- * moet die error opvangen en een nette UI-melding tonen.
+ * Both browser and desktop use the same project-format detection.
  */
 export async function openContentByFilename(
   content: string,
   filename: string,
   path?: string,
 ): Promise<boolean> {
+  if (looksLikeGefBore(content)) {
+    await loadBoreFromContent(content, filename, path);
+    return true;
+  }
   const lower = filename.toLowerCase();
   // XML: sniff first 4 KB om onderscheid te maken tussen GMW
   // (grondwaterput), BHR (boring) en CPT/GEF. Volgorde matters —
@@ -1204,53 +1176,17 @@ export async function openContentByFilename(
       return true;
     }
   }
-  // `.ifcgeo` is sinds 2026 de gecombineerde extensie voor zowel
-  // project-bestanden (meerdere CPTs + tekening + title-block) als
-  // losse CPT-snapshots. Onderscheiden gebeurt door de eerste ~4 KB
-  // te sniffen op de JSON-shape:
-  //   - project: heeft `"cpts": [` of `"schema": "ifcgis-`
-  //   - single CPT: heeft alleen één `"points"`-array op top-level
-  // Bij twijfel valt-ie terug op de single-CPT-loader (oude .ifcgeo
-  // bestanden); de Rust-side gooit dan een nette parse-error als
-  // het tóch een project-payload blijkt.
-  if (lower.endsWith(".ifcgeo") && looksLikeProjectIfcgeo(content.slice(0, 4096))) {
-    if (!path) {
-      throw new Error(
-        "Projectbestanden (.ifcgeo) zijn alleen ondersteund in de desktop-versie.",
-      );
+  if (/\.(ifcgeo|ifcgis|ifcx)$/i.test(filename)) {
+    const parsed = readJson(content);
+    if (isProjectFile(parsed) || /\.(ifcgis|ifcx)$/i.test(filename)) {
+      await openProjectFromContent(content, filename, path);
+      return true;
     }
-    await openProjectIfcgis(path);
-    return true;
   }
-  if (lower.endsWith(".ifcx") || lower.endsWith(".ifcgis")) {
-    if (!path) {
-      throw new Error(
-        "Projectbestanden (.ifcgis/.ifcx) zijn alleen ondersteund in de desktop-versie.",
-      );
-    }
-    await openProjectIfcgis(path);
-    return true;
-  }
-  // Alles wat overblijft (GEF, generieke XML, single-CPT .ifcgeo) gaat
-  // door de Rust-CPT-parser. In Tauri werkt dat; in browser gooit
-  // invoke() — caller moet daarop voorbereid zijn.
   await loadCptFromContent(content, filename, path);
   return true;
 }
 
-/**
- * Lichtgewicht sniff: is dit `.ifcgeo`-bestand een project (meerdere
- * CPTs + tekening) of een losse CPT? Werkt op de eerste paar KB —
- * we hoeven dus niet de hele payload te parsen om te beslissen welke
- * loader nodig is.
- */
-function looksLikeProjectIfcgeo(head: string): boolean {
-  return (
-    /"schema"\s*:\s*"ifcgis-/i.test(head) ||
-    /"cpts"\s*:\s*\[/i.test(head) ||
-    /"project"\s*:\s*\{/i.test(head)
-  );
-}
 
 /**
  * Fetches a BRO sondering by id and adds it as a CPT to the currently
@@ -1269,7 +1205,7 @@ export async function addBroToActiveProject(broId: string): Promise<Cpt> {
   // Eén platform-call — zie utils/platform.ts (Tauri: Rust-proxy; web: direct fetch).
   const { bro } = await import("../utils/platform");
   const xml = await bro.fetchCptXml(broId);
-  return addCptToActiveProject(xml, `${broId}.xml`);
+  return addCptToActiveProject(xml, `${broId}.xml`, active.id);
 }
 
 /**

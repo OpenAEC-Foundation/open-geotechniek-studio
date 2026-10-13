@@ -15,7 +15,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core";
-import type { Cpt } from "../types/cpt";
+import type { Cpt, Layer, ProjectMeta } from "../types/cpt";
 
 // ════════════════════════════════════════════════════════════════
 // Detectie — éénmalig op module-load
@@ -115,6 +115,10 @@ export const bro = {
 // In web:   pure-TS parsers (gefParser + broCptParser).
 
 export const cpt = {
+ async detectLayers(value:Cpt):Promise<Layer[]> {
+ if(IS_TAURI)return invoke<Layer[]>('detect_layers',{id:value.id});
+ const {detectLayers}=await import('./browserCore');return detectLayers(value);
+ },
   async parse(content: string, filename: string): Promise<Cpt> {
     if (IS_TAURI) {
       // In desktop laten we Rust de error-handling doen. Geen
@@ -122,6 +126,7 @@ export const cpt = {
       // echte fout die de gebruiker moet zien.
       return invoke<Cpt>("open_cpt", { content, filename });
     }
+    if (/\.(ifcgeo|ifcx)$/i.test(filename)) {const {parseCptSnapshot}=await import('../types/projectFile');return parseCptSnapshot(content);}
     // Browser: probeer pure-TS parsers in volgorde van sniff-prijs.
     const [{ looksLikeGef, parseGef }, { looksLikeBroCptXml, parseBroCptXml }] =
       await Promise.all([
@@ -191,4 +196,58 @@ export const files = {
     });
     return picked.map((f) => ({ name: f.name, text: f.text }));
   },
+};
+
+export const reports = {
+    async preview(cpts: Cpt[], project: ProjectMeta, sections?: import('../store/reportSectionsState').ReportSections): Promise<Uint8Array> {
+        if (IS_TAURI)
+            return new Uint8Array(await invoke<number[]>('preview_report', { cptIds: cpts.map(c => c.id), project, sections }));
+        const { generateBrowserReport } = await import('./browserReport');
+        return generateBrowserReport(cpts, project, sections);
+    },
+    async save(cpts: Cpt[], project: ProjectMeta, sections?: import('../store/reportSectionsState').ReportSections): Promise<void> {
+        if (IS_TAURI) {
+            const { save } = await import('@tauri-apps/plugin-dialog');
+            const outputPath = await save({ defaultPath: project.title + '.pdf', filters: [{ name: 'PDF', extensions: ['pdf'] }] });
+            if (outputPath)
+                await invoke('generate_report', { cptIds: cpts.map(c => c.id), project, sections, outputPath });
+            return;
+        }
+        const { downloadPdf } = await import('./downloadPdf');
+        await downloadPdf((project.title || 'rapport') + '.pdf', await reports.preview(cpts, project, sections));
+    },
+    /** Reserve the browser window while the click still grants popup permission. */
+    async generateAndOpen(cpts: Cpt[], project: ProjectMeta, sections?: import('../store/reportSectionsState').ReportSections): Promise<void> {
+        if (IS_TAURI) {
+            await reports.open(await reports.preview(cpts, project, sections));
+            return;
+        }
+        const opened = window.open('about:blank', '_blank');
+        if (!opened) throw new Error('Sta pop-ups toe of gebruik Genereer PDF om te downloaden.');
+        let url: string | undefined;
+        try {
+            opened.opener = null;
+            const bytes = await reports.preview(cpts, project, sections);
+            if (opened.closed) throw new Error('Het PDF-venster is gesloten. Open het rapport opnieuw.');
+            url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
+            opened.location.href = url;
+            const documentUrl = url;
+            setTimeout(() => URL.revokeObjectURL(documentUrl), 60000);
+        } catch (error) {
+            if (url) URL.revokeObjectURL(url);
+            opened.close();
+            throw error;
+        }
+    },
+    async open(bytes: Uint8Array): Promise<void> {
+        if (IS_TAURI)
+            return invoke('open_report_pdf', { bytes: Array.from(bytes) });
+        const url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
+        const opened = window.open(url, '_blank');
+        if (!opened) {
+            URL.revokeObjectURL(url);
+            throw new Error('Sta pop-ups toe of gebruik Genereer PDF om te downloaden.');
+        }
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
 };

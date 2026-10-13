@@ -1,7 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { open as openDialog } from "@tauri-apps/plugin-dialog";
-import { readTextFile } from "@tauri-apps/plugin-fs";
+import { files } from "../../utils/platform";
 import Modal from "../Modal";
 import {
   useCptStore,
@@ -26,6 +25,7 @@ interface ProjectSettingsDialogProps {
  */
 export default function ProjectSettingsDialog({ open, onClose }: ProjectSettingsDialogProps) {
   const { t } = useTranslation("cpt");
+  const [importError, setImportError] = useState("");
   const documents = useCptStore((s) => s.documents);
   const activeDocId = useCptStore((s) => s.activeDocId);
   const activeDoc = useMemo(
@@ -47,21 +47,7 @@ export default function ProjectSettingsDialog({ open, onClose }: ProjectSettings
   );
 
   async function addCpts() {
-    const selected = await openDialog({
-      multiple: true,
-      filters: [{ name: "CPT", extensions: ["gef", "GEF", "xml", "XML"] }],
-    });
-    if (!selected) return;
-    const paths = Array.isArray(selected) ? selected : [selected];
-    for (const p of paths) {
-      try {
-        const content = await readTextFile(p);
-        const filename = p.split(/[\\/]/).pop() ?? p;
-        await addCptToActiveProject(content, filename);
-      } catch (err) {
-        console.error("addCpts: failed to open", p, err);
-      }
-    }
+    await importFiles(addCptToActiveProject);
   }
 
   function removeAllCpts() {
@@ -71,26 +57,26 @@ export default function ProjectSettingsDialog({ open, onClose }: ProjectSettings
   }
 
   /**
-   * Open BHR-GT XML-bestanden en voeg ze als boring aan het project
-   * toe. Faalt stilletjes per bestand (log naar console) zodat één
-   * bad-XML niet de hele batch om zeep helpt.
+   * Voeg BHR-GT XML- of GEF-BORE-bestanden toe en toon fouten per bestand.
    */
   async function addBores() {
-    const selected = await openDialog({
-      multiple: true,
-      filters: [{ name: "BHR-GT XML", extensions: ["xml", "XML"] }],
-    });
-    if (!selected) return;
-    const paths = Array.isArray(selected) ? selected : [selected];
-    for (const p of paths) {
-      try {
-        const content = await readTextFile(p);
-        const filename = p.split(/[\\/]/).pop() ?? p;
-        await addBoreToActiveProject(content, filename);
-      } catch (err) {
-        console.error("addBores: failed to open", p, err);
+    await importFiles(addBoreToActiveProject);
+  }
+
+  async function importFiles(add: (content: string, filename: string) => Promise<unknown>) {
+    const targetDocId = activeDocId;
+    setImportError("");
+    const failures: string[] = [];
+    try {
+      for (const file of await files.pickAndRead(true)) {
+        if (useCptStore.getState().activeDocId !== targetDocId) {
+          throw new Error("Het doelproject is gewijzigd; resterende bestanden zijn niet geïmporteerd.");
+        }
+        try { await add(file.text, file.name); }
+        catch (error) { failures.push(`${file.name}: ${error instanceof Error ? error.message : String(error)}`); }
       }
-    }
+    } catch (error) { failures.push(error instanceof Error ? error.message : String(error)); }
+    setImportError(failures.join("\n"));
   }
 
   function removeAllBores() {
@@ -101,6 +87,7 @@ export default function ProjectSettingsDialog({ open, onClose }: ProjectSettings
 
   return (
     <Modal open={open} onClose={onClose} title={t("projectInfo", "Projectinfo")} width={640}>
+      {importError && <p role="alert" style={{whiteSpace:"pre-wrap"}}>{importError}</p>}
       {!isProject ? (
         <NoProjectHint
           onClose={onClose}
