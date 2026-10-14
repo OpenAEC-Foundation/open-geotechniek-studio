@@ -6,6 +6,7 @@
 - Platformopslag is gecontroleerd op het bewaren van gekoppelde berekeningen, opnieuw openen en versieconflicten.
 - Paaldraagvermogen is rechtstreeks toegankelijk vanuit Berekeningen, ook vanuit een lege werkruimte. De module koppelt aan de actieve sondering en behoudt opgeslagen module-ID's.
 - Op smalle vensters staan de rekenpanelen onder elkaar en blijven grafiek en uitkomsten bereikbaar. Een lege grafiek legt uit hoe een sondering wordt gekoppeld.
+- De paaluitdraai bevat projectgegevens en een samenvatting op het eerste blad. Formules en tabelcellen lopen om binnen de marges; vervolgbladen hebben herkenbare koppen en grafieken blijven binnen hun tekenvak. Iedere pagina is als CONCEPT gemarkeerd.
 
 De paaldraagvermogenmodule blijft concept. Aanvullende projectvergelijkingen zijn lokaal uitgevoerd en leveren geen volledige rekenvalidatie. Private validatiebestanden worden niet meegeleverd.
 

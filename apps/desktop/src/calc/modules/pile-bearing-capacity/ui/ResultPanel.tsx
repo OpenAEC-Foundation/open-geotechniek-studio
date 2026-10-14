@@ -310,11 +310,12 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       });
       const bytes = generatePileReport({
         project: {
-          number: "—",
-          description: "Paaldraagvermogen-berekening",
+          number: useCptStore.getState().projectMeta.project_number || "-",
+          description: useCptStore.getState().projectMeta.title || "Paaldraagvermogen-berekening",
           norm: `${getStandard(input.standard)?.label}; factorenset ${pileType?.edition ?? "bestaand model"}`,
-          date: new Date().toISOString().slice(0, 10),
-          author: "Open Geotechniek Studio",
+          date: (useCptStore.getState().projectMeta.date || new Date().toISOString().slice(0, 10)).slice(0, 10).split("-").reverse().join("-"),
+          author: useCptStore.getState().projectMeta.author || "Open Geotechniek Studio",
+          onderdeel: "Paaldraagvermogen",
         },
         sonderingen: [sondering],
         summary,

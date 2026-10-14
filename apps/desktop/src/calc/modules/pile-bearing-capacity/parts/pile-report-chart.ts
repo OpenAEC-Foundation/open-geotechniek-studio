@@ -158,6 +158,9 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   doc.text("4D", brX - 1.5, (yOf(toe) + yOf(toe - 4 * D_m)) / 2 + 2.5, { align: "right" });
 
   // ─── qc-meetcurve ──────────────────────────────────────────────
+  doc.saveGraphicsState();
+  doc.rect(plotL,plotT,plotR-plotL,plotB-plotT,null);
+  doc.clip(); doc.discardPath();
   doc.setDrawColor(...COL_QC);
   doc.setLineWidth(0.3);
   let prev: { x: number; y: number } | null = null;
@@ -184,6 +187,10 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   }
 
   // ─── Rf-curve ──────────────────────────────────────────────────
+  doc.restoreGraphicsState();
+  doc.saveGraphicsState();
+  doc.rect(rfL,plotT,rfR-rfL,plotB-plotT,null);
+  doc.clip(); doc.discardPath();
   doc.setDrawColor(...COL_QC);
   doc.setLineWidth(0.3);
   let prevRf: { x: number; y: number } | null = null;
@@ -196,6 +203,8 @@ export function renderSonderingChart(args: ChartPageArgs): void {
     if (prevRf) doc.line(prevRf.x, prevRf.y, pt.x, pt.y);
     prevRf = pt;
   }
+
+  doc.restoreGraphicsState();
 
   // ─── Grondlagen-kolom ──────────────────────────────────────────
   doc.setLineWidth(0.15);
