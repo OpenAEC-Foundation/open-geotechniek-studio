@@ -141,7 +141,7 @@ export function CalculationsView() {
       <div className="calc-empty-state">
         <p>Geen berekening geselecteerd.</p>
         <p className="calc-empty-hint">
-          Maak een nieuwe berekening via "+" in de verkenner links.
+          Kies "Paaldraagvermogen toevoegen" of "Nieuwe berekening" in de verkenner links.
         </p>
       </div>
     );

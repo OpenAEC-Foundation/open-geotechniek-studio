@@ -84,7 +84,7 @@ export function drawReportChart(doc: jsPDF, cpt: Cpt, project: ProjectMeta): voi
     for (const value of [5, 10])
         doc.text(String(value), x(545 - value / 10 * 99), y(69), { align: 'center' });
     doc.saveGraphicsState();
-    doc.rect(x(62), y(64), 495 * scale, 653 * scale);
+    doc.rect(x(62), y(64), 495 * scale, 653 * scale, null);
     doc.clip();
     doc.discardPath();
     for (const key of Object.keys(chart.curves) as CurveKey[]) {

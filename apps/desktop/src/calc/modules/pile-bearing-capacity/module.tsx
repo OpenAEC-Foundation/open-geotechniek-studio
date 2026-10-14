@@ -2,8 +2,7 @@
 //
 // ⚠ ALPHA — nog in ontwikkeling. De berekening werkt, maar getallen zijn
 //   nog NIET productie-geverifieerd. Niet gebruiken voor toetsing bij
-//   vergunning of uitvoering. Module is hard-disabled via
-//   NOT_PRODUCTION_READY in useExtensions.ts; CalculationsView toont een
+//   vergunning of uitvoering. CalculationsView toont een
 //   prominente amber tussenstand-banner zodra deze module actief is.
 //
 import type { CalcModule, ProjectContext } from "../../framework/types";
@@ -48,7 +47,7 @@ function defaultInput(ctx: ProjectContext): PileInput {
 
 const pileModuleTyped: CalcModule<PileInput, PileResult> = {
   id: "pile-bearing-capacity",
-  name: "Funderingspaal",
+  name: "Paaldraagvermogen",
   subtitle: "Paaldraagvermogen — NEN 6743 / NEN 9997",
   category: "pile",
   icon: "▼",

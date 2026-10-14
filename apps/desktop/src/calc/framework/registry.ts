@@ -8,28 +8,14 @@ import { laterallyLoadedPileModule } from "../modules/laterally-loaded-pile/modu
 import { sheetPileWallModule } from "../modules/sheet-pile-wall/module";
 import { groundAnchorModule } from "../modules/ground-anchor/module";
 
-/** Productie-gerede modules die PUBLIEK mogen verschijnen. Verplaats een
- *  module hierheen vanuit DEV_ONLY_MODULES om hem vrij te geven. Bewust
- *  expliciet (niet via een status-string) zodat vrijgave een doelbewuste
- *  code-wijziging is, niet een per ongeluk omgezette vlag.
- *
- *  Funderingspaal staat hier weer in op uitdrukkelijk verzoek. Hij houdt
- *  zijn status "experimental": in de UI verschijnt dus de prominente
- *  tussenstand-banner (CalculationsView) + ALPHA-badge (NewCalculation-
- *  Dialog), zodat publiek duidelijk is dat het een in-ontwikkeling-
- *  berekening is en niet geschikt voor toetsing. */
+/** De publieke demo bevat alleen expliciet vrijgegeven rekenmodules. */
 const PUBLIC_MODULES: CalcModule[] = [];
 
-/** Modules die nog NIET vrijgegeven zijn (experimental / coming-soon).
- *  Alleen beschikbaar in desktop- en dev-builds. In de publieke webbuild
- *  (VITE_PUBLIC_WEB="1") wordt de tak hieronder die deze lijst gebruikt
- *  weg-ge-tree-shaket door Rollup, zodat de bijbehorende reken- en UI-code
- *  NIET in de publieke bundle terechtkomt (niet alleen onzichtbaar — echt
- *  afwezig). Geen enkele berekening op de live site (gebruikersinstructie):
- *  zowel Funderingspaal als Kalendering staan hier. */
+/** Conceptmodules zijn beschikbaar in desktop, ontwikkeling en het
+ *  ingesloten platform. De publieke demo bevat deze modules niet. */
 const DEV_ONLY_MODULES: CalcModule[] = [
-  pileBearingCapacityModule,     // ← NIET vrijgeven — geen calc op live site
-  kalenderingModule,             // ← NIET vrijgeven (expliciete instructie)
+  pileBearingCapacityModule,
+  kalenderingModule,
   laterallyLoadedPileModule,
   spreadFoundationDrainedModule,
   spreadFoundationUndrainedModule,

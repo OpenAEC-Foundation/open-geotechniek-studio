@@ -97,6 +97,7 @@ export function NewCalculationDialog({ open, onClose }: Props) {
                           </span>
                         )}
                       </div>
+                      <small>{m.subtitle}</small>
                       <small>{m.norm}</small>
                     </div>
                   </label>

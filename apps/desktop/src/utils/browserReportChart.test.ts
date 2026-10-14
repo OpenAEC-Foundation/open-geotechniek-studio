@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
-import { reportChartModel } from "./browserReportChart";
+import { reportChartModel, drawReportChart } from "./browserReportChart";
+import { jsPDF } from "jspdf";
 it("matches native 595x841 plot axis coordinates and fixed scales", () => {
     const chart = reportChartModel({ id: "ref", metadata: { source_file: "ref.gef", ground_level_nap: 2 }, points: [{ depth: 0, qc: 0, fs: 0, rf: 0, u2: 0 }, { depth: 10, qc: 30, fs: .25, rf: 10, u2: 1 }] });
     expect(chart.napTop).toBe(2);
@@ -19,4 +20,11 @@ it("preserves missing-data gaps and reports true out-of-range peaks", () => {
 it("uses readable metre ticks for a ten metre sounding",()=>{
  const chart=reportChartModel({id:"ticks",metadata:{source_file:"ticks.gef",ground_level_nap:2},points:[{depth:0},{depth:10}]});
  expect(chart.napTicks).toEqual([-8,-7,-6,-5,-4,-3,-2,-1,0,1,2]);
+});
+it("clips out-of-scale curves with a valid PDF path before painting them",()=>{
+ const doc=new jsPDF({unit:"mm",format:"a4",compress:false});
+ drawReportChart(doc,{id:"S1",metadata:{source_file:"S1.gef"},points:[{depth:0,qc:0},{depth:10,qc:100}]},{title:"Controle",client:"",location:"",project_number:"",author:"",date:"2026-10-14"});
+ // A PDF painting operator (such as S) consumes the current path.
+ // W must follow the rectangle directly, otherwise no clipping is applied.
+ expect(/re\s+W\s+n/.test(doc.output())).toBe(true);
 });

@@ -116,7 +116,6 @@ export const bro = {
 
 export const cpt = {
  async detectLayers(value:Cpt):Promise<Layer[]> {
- if(IS_TAURI)return invoke<Layer[]>('detect_layers',{id:value.id});
  const {detectLayers}=await import('./browserCore');return detectLayers(value);
  },
   async parse(content: string, filename: string): Promise<Cpt> {
@@ -200,8 +199,7 @@ export const files = {
 
 export const reports = {
     async preview(cpts: Cpt[], project: ProjectMeta, sections?: import('../store/reportSectionsState').ReportSections): Promise<Uint8Array> {
-        if (IS_TAURI)
-            return new Uint8Array(await invoke<number[]>('preview_report', { cptIds: cpts.map(c => c.id), project, sections }));
+        // Both interfaces render the supplied snapshots through the same engine.
         const { generateBrowserReport } = await import('./browserReport');
         return generateBrowserReport(cpts, project, sections);
     },
@@ -209,8 +207,11 @@ export const reports = {
         if (IS_TAURI) {
             const { save } = await import('@tauri-apps/plugin-dialog');
             const outputPath = await save({ defaultPath: project.title + '.pdf', filters: [{ name: 'PDF', extensions: ['pdf'] }] });
-            if (outputPath)
-                await invoke('generate_report', { cptIds: cpts.map(c => c.id), project, sections, outputPath });
+            if (outputPath) {
+                const bytes = await reports.preview(cpts, project, sections);
+                const { writeFile } = await import('@tauri-apps/plugin-fs');
+                await writeFile(outputPath, bytes);
+            }
             return;
         }
         const { downloadPdf } = await import('./downloadPdf');

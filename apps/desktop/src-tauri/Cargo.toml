@@ -1,6 +1,6 @@
 [package]
 name = "open-geo-studio"
-version = "0.4.2"
+version = "0.4.3"
 license = "MIT"
 description = "Open Geotechniek Studio — desktop CPT viewer and report generator"
 authors = ["Open AEC Foundation"]

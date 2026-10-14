@@ -4,6 +4,8 @@ import { PlatformProjects } from "./PlatformProjects";
 import { registerPlatformStorage, type PlatformStorage } from "../../utils/platformStorage";
 import { useCptStore } from "../../store/useCptStore";
 import { parseGef } from "../../types/gefParser";
+import { useCalculationsStore } from "../../calc/framework/store";
+import { toIfcxArray } from "../../calc/framework/persistence";
 vi.mock("../../utils/platform", () => ({ IS_TAURI: false }));
 const cpt = parseGef("#GEFID=1,1,0\n#TESTID=S-opslag\n#COLUMNINFO=1,m,diepte,1\n#COLUMNINFO=2,MPa,qc,2\n#EOH=\n0.1 2.5\n0.2 3.5", "sondering.gef");
 const payload = { project: {title:"Project A", date:"2026-10-14", client:"", location:"", project_number:"", author:""}, cpts:[cpt], bores:[], calculations:[] };
@@ -12,6 +14,7 @@ let host: PlatformStorage;
 beforeEach(() => {
   vi.useFakeTimers();
   useCptStore.setState({documents:[],activeDocId:null,cpts:new Map(),activeCptId:null});
+  useCalculationsStore.setState({byDoc:new Map(),activeCalcId:null});
   host = {version:1,label:"Projectsite",list:vi.fn(async()=>[{id:"a",name:"Project A",version:"v2"}]),
     open:vi.fn(async(id,version)=>({id,name:"Project A",version:version ?? "v2",content:canonical})),
     versions:vi.fn(async()=>[{id:"a",name:"Project A",version:"v1"}]),
@@ -25,6 +28,33 @@ async function chooseProject() {
   await act(async()=>fireEvent.change(screen.getByLabelText("Project"),{target:{value:"a"}}));
 }
 describe("projectopslag met echte documentstore",()=>{
+  it("bewaart sondering en gekoppelde berekening bij opslaan en opnieuw openen",async()=>{
+    await chooseProject();
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Openen"})));
+    const docId=useCptStore.getState().activeDocId!;
+    const id=useCalculationsStore.getState().addCalculation(docId,"pile-bearing-capacity","Paal A",{cptId:cpt.id,diameterMm:250});
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Nieuwe versie opslaan"})));
+    const saved=vi.mocked(host.save).mock.calls[0][0].content;
+    expect(JSON.parse(saved).calculations).toEqual(toIfcxArray(useCalculationsStore.getState().getList(docId)));
+    vi.mocked(host.open).mockResolvedValueOnce({id:"a",name:"Project A",version:"v3",content:saved});
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Openen"})));
+    const reopened=useCptStore.getState().activeDocId!;
+    expect(useCptStore.getState().cpts.get(cpt.id)).toEqual(cpt);
+    expect(useCalculationsStore.getState().getList(reopened)).toEqual([expect.objectContaining({id,moduleId:"pile-bearing-capacity",input:{cptId:cpt.id,diameterMm:250}})]);
+  });
+
+  it("toont een versieconflict en behoudt lokale wijzigingen en de oorspronkelijke versiebinding",async()=>{
+    await chooseProject();
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Openen"})));
+    const docId=useCptStore.getState().activeDocId!;
+    useCalculationsStore.getState().addCalculation(docId,"pile-bearing-capacity","Lokale aanpassing",{cptId:cpt.id});
+    vi.mocked(host.save).mockRejectedValueOnce(new Error("Versieconflict: project is elders gewijzigd"));
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Nieuwe versie opslaan"})));
+    expect(screen.getByRole("alert")).toHaveTextContent("Versieconflict");
+    expect(useCalculationsStore.getState().getList(docId)).toHaveLength(1);
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Nieuwe versie opslaan"})));
+    expect(host.save).toHaveBeenLastCalledWith(expect.objectContaining({id:"a",expectedVersion:"v2"}));
+  });
   it("opent canonieke projectdata en bewaart verwachte versie bij opslaan",async()=>{
     await chooseProject();
     await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Openen"})));

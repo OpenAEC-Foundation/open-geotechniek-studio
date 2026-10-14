@@ -1702,7 +1702,13 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
   if (!cpt) {
     return (
       <div className="pile-visual">
-        <div className="pile-visual-empty">Geen sondering geselecteerd</div>
+        <div className="pile-visual-empty pile-visual-empty-guide">
+          <h3>Sonderingsgrafiek</h3>
+          <p>Er is nog geen sondering aan deze berekening gekoppeld.</p>
+          <p>Open een GEF-, BRO-XML- of projectbestand via <strong>Openen</strong> bovenin.
+            Kies daarna de sondering bij <strong>Sondering</strong> in het invoerpaneel.</p>
+          <p>Hier verschijnen dan de conusweerstand, de paal en de kleeftrajecten.</p>
+        </div>
       </div>
     );
   }

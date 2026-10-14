@@ -62,3 +62,41 @@ versie.
 De concrete Frappe-endpoints worden door de hostadapter geleverd. Dit
 contract en lokale controles vervangen geen integratietest op een actieve
 Frappe-site.
+
+## Gelijke rapportuitvoer
+
+De desktopinterface en de ingesloten webbundel gebruiken dezelfde
+TypeScript-laagdetectie en PDF-renderer via `platform.ts`. Daardoor zijn
+sectiekeuze, pagina-indeling, grafieken en berekende lagen gelijk voor
+dezelfde invoer en kaartachtergrond. Alleen openen en opslaan gebruiken
+op desktop de native bestandsdialoog. De afzonderlijke Rust-rapport-API
+voor REST/MCP behoudt zijn eigen renderer.
+
+`platformParity.test.ts` vergelijkt de volledige PDF-uitvoer van beide
+platformpaden, met uitzondering van aanmaakdatum en document-ID. De
+controle bevat twee sonderingen en alle acht rapportpagina's, plus
+een export met alleen de geselecteerde sonderingspagina's. De
+laagdetectie wordt daarnaast met uitvoer uit de Rust-kern vergeleken.
+
+De opslagcontracttests openen een project, voegen een gekoppelde berekening
+toe, slaan op en openen opnieuw. Ze controleren ook historische versies,
+versieconflicten, ongeldige bestanden en antwoorden van een eerder
+vervangen adapter. De host moet versiecontrole atomair uitvoeren en de
+bestaande Frappe-sessie en toegangsrechten toepassen; de tool kan die
+serververantwoordelijkheden niet overnemen.
+
+## Verificatie
+
+Vanuit `apps/desktop`:
+
+```sh
+npm test -- --pool=threads --maxWorkers=2
+npm run build:platform
+```
+
+De bundel bevat geen lokale projectgegevens of controlebestanden.
+Publiceer alleen de nieuw gebouwde `dist-platform`-map. Voor een
+inbedding op dezelfde oorsprong kan de host de adapter na het laden
+registreren via `iframe.contentWindow.openGeotechniekStorage` en het
+hierboven beschreven registratie-event. Geef de host geen toegang
+tot projectinhoud die buiten de rechten van de ingelogde gebruiker valt.

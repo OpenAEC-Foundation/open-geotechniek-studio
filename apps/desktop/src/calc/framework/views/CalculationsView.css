@@ -9,12 +9,15 @@
     5px
     var(--calc-input-w, 300px)
     5px
-    1fr
+    minmax(280px, 1fr)
     5px
     var(--calc-right-w, 380px);
   /* 2 rows: optionele banner (auto) + content (1fr). */
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
   height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
   background: var(--theme-bg, #fff);
   color: var(--theme-text, #36363e);
 }
@@ -39,6 +42,9 @@
 }
 
 .calc-pane {
+  min-width: 0;
+  min-height: 0;
+  grid-row: 2;
   overflow: auto;
   padding: 16px;
 }
@@ -47,6 +53,7 @@
 
 /* ─── Resizable splitter — 5 px vertical bar tussen panes ─── */
 .calc-splitter {
+  grid-row: 2;
   background: var(--theme-border, #e7e5e4);
   cursor: col-resize;
   user-select: none;
@@ -321,4 +328,27 @@
 .calc-modal-footer button.primary:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Keep the chart and results accessible when four columns no longer fit. */
+@media (max-width: 1200px) {
+  .calc-view {
+    grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.4fr);
+    grid-template-rows: auto minmax(140px, 180px) minmax(420px, 65vh) minmax(320px, 60vh);
+  }
+  .calc-view > .calc-splitter { display: none; }
+  .calc-pane-left { grid-column: 1 / -1; grid-row: 2; max-height: 180px; }
+  .calc-pane-input { grid-column: 1; grid-row: 3; }
+  .calc-pane-mid { grid-column: 2; grid-row: 3; }
+  .calc-pane-right { grid-column: 1 / -1; grid-row: 4; }
+}
+
+@media (max-width: 650px) {
+  .calc-view {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(140px, 180px) minmax(320px, 60vh) minmax(420px, 65vh) minmax(320px, 60vh);
+  }
+  .calc-pane-input { grid-column: 1; grid-row: 3; }
+  .calc-pane-mid { grid-column: 1; grid-row: 4; }
+  .calc-pane-right { grid-column: 1; grid-row: 5; }
 }

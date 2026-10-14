@@ -56,6 +56,19 @@
   font: 500 0.85rem "Inter", sans-serif;
   font-style: italic;
 }
+.pile-visual-empty-guide {
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  font-style: normal;
+  line-height: 1.5;
+}
+.pile-visual-empty-guide h3,
+.pile-visual-empty-guide p {
+  max-width: 400px;
+  margin: 0;
+}
 .pile-visual-footnote {
   margin: 0;
   font: 500 0.78rem var(--font-code, "JetBrains Mono"), monospace;
