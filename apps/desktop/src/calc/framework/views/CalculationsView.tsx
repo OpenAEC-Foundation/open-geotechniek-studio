@@ -7,17 +7,18 @@ import { ProjectTreePanel } from "./ProjectTreePanel";
 import { NewCalculationDialog } from "./NewCalculationDialog";
 import type { ProjectContext } from "../types";
 import "./CalculationsView.css";
+import { BUILD_MODE } from "../../../utils/buildMode";
 
 /** Min/max breedte voor de zij-panelen (px). */
 const PANE_MIN = 200;
 const PANE_MAX = 600;
-const LS_KEY_LEFT = "calc.leftPaneW";
-const LS_KEY_INPUT = "calc.inputPaneW";
-const LS_KEY_RIGHT = "calc.rightPaneW";
+const LS_KEY_LEFT = "ogs:calc.leftPaneW";
+const LS_KEY_INPUT = "ogs:calc.inputPaneW";
+const LS_KEY_RIGHT = "ogs:calc.rightPaneW";
 
 function loadPaneWidth(key: string, fallback: number): number {
   try {
-    const raw = localStorage.getItem(key);
+    const raw = localStorage.getItem(key) ?? (!BUILD_MODE.embedded ? localStorage.getItem(key.replace(/^ogs:/, "")) : null);
     if (!raw) return fallback;
     const n = Number(raw);
     if (!Number.isFinite(n)) return fallback;
@@ -140,7 +141,7 @@ export function CalculationsView() {
       <div className="calc-empty-state">
         <p>Geen berekening geselecteerd.</p>
         <p className="calc-empty-hint">
-          Maak een nieuwe berekening via "+" in de verkenner links.
+          Kies "Paaldraagvermogen toevoegen" of "Nieuwe berekening" in de verkenner links.
         </p>
       </div>
     );

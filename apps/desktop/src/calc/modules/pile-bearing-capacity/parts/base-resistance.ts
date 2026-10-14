@@ -1,17 +1,21 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/parts/base-resistance.ts
 import type { Cpt } from "../../../../types/cpt";
 import type { PileTypeSpec, BaseResistanceResult } from "../types";
+import { pileGeometry } from "./geometry";
+import { QcProfile } from "./qc-profile";
 
 interface Args {
+  method?: "legacy-qci" | "minimum-qb";
   pileToeDepth: number;        // depth onder maaiveld in m
   diameterMm: number;
   pileType: PileTypeSpec;
 }
 
-const PI = Math.PI;
-
 /**
- * NORM-CITAAT — NEN 9997-1+C2:2017 NB:2019 §7.6.2.3 (Boer/Koppejan, "4D-8D-methode")
+ * Bestaande 4D-8D-rekenprocedure (compatibiliteit met referentiegevallen).
+ * Beperking: de trajectkeuze minimaliseert qc;I. De norm verlangt een
+ * minimum van de volledige puntweerstand; zie NUMERIEKE-VERIFICATIE.md.
+ * Onderstaande beschrijving is geen normcitaat.
  * ────────────────────────────────────────────────────────────────────────────────
  * De maximale puntweerstand q_b;max van een paal wordt berekend uit drie
  * "trajectgemiddelden" van de gemeten conusweerstand q_c rondom de paalpunt:
@@ -158,37 +162,36 @@ function clippedAvgQcUpward(
   return { avg, finalMin: runMin, clippedPoints: clippedAsc };
 }
 
+/** Puntweerstand uit reeds bepaalde trajectgemiddelden. */
+export function computeBaseResistanceFromAverages(
+  args: Omit<Args, "pileToeDepth"> & Pick<BaseResistanceResult, "qcIGemMpa" | "qcIIGemMpa" | "qcIIIGemMpa">,
+): Pick<BaseResistanceResult, "deqMm" | "abMm2" | "qbMaxMpaRaw" | "qbMaxMpa" | "rbCalMax"> {
+  const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular);
+  const { alphaP, beta, s } = args.pileType;
+  const qbMaxMpaRaw = 0.5 * alphaP * beta * s * ((args.qcIGemMpa + args.qcIIGemMpa) / 2 + args.qcIIIGemMpa);
+  const qbMaxMpa = Math.min(qbMaxMpaRaw, 15);
+  return {
+    deqMm: geometry.equivalentDiameterMm,
+    abMm2: geometry.areaMm2,
+    qbMaxMpaRaw,
+    qbMaxMpa,
+    rbCalMax: geometry.areaMm2 * qbMaxMpa / 1000,
+  };
+}
+
 export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResult {
-  const D = args.diameterMm / 1000;        // m
-  const Deq = D;                            // voor ronde palen
-  const DeqMm = args.diameterMm;
-  const Ab = (PI / 4) * args.diameterMm ** 2; // mm²
+  if (args.method === "minimum-qb") return computeMinimumBaseResistance(cpt, args);
+  const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular);
+  const DeqMm = geometry.equivalentDiameterMm;
+  const Deq = DeqMm / 1000;
 
   // Functie: gemiddelde qc tussen depths [d1, d2] (in m vanaf maaiveld)
   // gebruikt depth-gewogen gemiddelde — geen running-min, gewoon
   // rekenkundig (interpolatie tussen meetpunten). Alléén gebruikt voor de
   // qc;I-optimalisatie (de "down-walk"); qc;II en qc;III gebruiken
   // clippedAvgQcUpward conform Boer/Koppejan.
-  const avgQc = (d1: number, d2: number): number => {
-    let sumQ = 0, sumW = 0;
-    for (let i = 0; i < cpt.points.length - 1; i++) {
-      const a = cpt.points[i], b = cpt.points[i + 1];
-      if (b.depth <= d1 || a.depth >= d2) continue;
-      const lo = Math.max(a.depth, d1);
-      const hi = Math.min(b.depth, d2);
-      const w = hi - lo;
-      if (w <= 0) continue;
-      const qa = a.qc ?? 0, qb = b.qc ?? 0;
-      // Gemiddelde qc over de overlapping zone (lineaire interpolatie)
-      const fracA = (lo - a.depth) / (b.depth - a.depth || 1);
-      const fracB = (hi - a.depth) / (b.depth - a.depth || 1);
-      const qLo = qa + (qb - qa) * fracA;
-      const qHi = qa + (qb - qa) * fracB;
-      sumQ += ((qLo + qHi) / 2) * w;
-      sumW += w;
-    }
-    return sumW > 0 ? sumQ / sumW : 0;
-  };
+  const profile = new QcProfile(cpt);
+  const avgQc = (d1: number, d2: number): number => profile.average(d1, d2);
 
   // qc;I: zoek de optimale critical depth dc ∈ [0,7·Deq, 4·Deq] die qc;I minimaliseert.
   // Down-walk: gewoon rekenkundig gemiddelde, GEEN running-min.
@@ -221,7 +224,7 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
     cpt,
     args.pileToeDepth,
     Math.max(0, args.pileToeDepth - 8 * Deq),
-    qcIIWalk.finalMin,
+    Math.min(qcIIWalk.finalMin, args.pileType.qcIIIStartCapMpa ?? Infinity),
   );
   const qcIIIGemMpa = qcIIIWalk.avg;
 
@@ -233,23 +236,41 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
     .map((p) => ({ depth: p.depth, qcClipped: p.qcClipped }))
     .sort((a, b) => a.depth - b.depth);
 
-  // qb;max formule 7.6.2.3(e)
-  const { alphaP, beta, s } = args.pileType;
-  const qbMaxMpaRaw = 0.5 * alphaP * beta * s * ((qcIGemMpa + qcIIGemMpa) / 2 + qcIIIGemMpa);
-  const qbMaxMpa = Math.min(qbMaxMpaRaw, 15);
-
-  const rbCalMax = (Ab * qbMaxMpa) / 1000; // kN: mm² × MPa × 1e-3
-
   return {
-    deqMm: DeqMm,
+    ...computeBaseResistanceFromAverages({ ...args, qcIGemMpa, qcIIGemMpa, qcIIIGemMpa }),
     qcIGemMpa,
     qcIIGemMpa,
     qcIIIGemMpa,
     criticalDepthM: bestDc,
-    qbMaxMpaRaw,
-    qbMaxMpa,
-    abMm2: Ab,
-    rbCalMax,
     clippedQcCurve,
   };
+}
+
+/** Historische procedure §5.4.2.2.1: minimaliseer de gehele uitdrukking.
+ * Discrete zoekstap 0,01 Deq plus meetknikken en beide trajectgrenzen.
+ * Traject II start bij de gemeten qc aan de onderkant, III continueert II.
+ */
+function computeMinimumBaseResistance(cpt: Cpt, args: Args): BaseResistanceResult {
+  const profile = new QcProfile(cpt);
+  const deq = pileGeometry(args.diameterMm, args.pileType.isCircular).equivalentDiameterMm / 1000;
+  const toe = args.pileToeDepth;
+  const top = Math.max(0, toe - 8 * deq);
+  const evaluate = (dc: number, capture = false): BaseResistanceResult => {
+    const qcIGemMpa = profile.average(toe, toe + dc);
+    const ii = profile.walkUp(toe + dc, toe, Infinity, capture);
+    const iii = profile.walkUp(toe, top, Math.min(ii.finalMin, args.pileType.qcIIIStartCapMpa ?? Infinity), capture);
+    const averages = { qcIGemMpa, qcIIGemMpa: ii.avg, qcIIIGemMpa: iii.avg };
+    return { ...computeBaseResistanceFromAverages({ ...args, ...averages }), ...averages,
+      criticalDepthM: dc, clippedQcCurve: capture ? [...iii.clippedPoints, ...ii.clippedPoints] : undefined };
+  };
+  const lower = .7 * deq, upper = 4 * deq;
+  const candidates = new Set<number>([lower, upper]);
+  for (let i = 1; i < 330; i++) candidates.add((.7 + i * .01) * deq);
+  for (const depth of profile.depths) if (depth > toe + lower && depth < toe + upper) candidates.add(depth - toe);
+  let best = evaluate(lower);
+  for (const dc of [...candidates].sort((a, b) => a - b)) {
+    const value = evaluate(dc);
+    if (value.qbMaxMpaRaw < best.qbMaxMpaRaw - 1e-12) best = value;
+  }
+  return evaluate(best.criticalDepthM, true);
 }

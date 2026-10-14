@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
+  readonly VITE_PLATFORM?: string;
   /** "1" in de publieke webbuild (live.yml). Hiermee sluiten we niet-
    *  productie-gerede berekeningsmodules (status !== "available") uit het
    *  register én uit de Extensies-lijst, zodat ze niet via de live site

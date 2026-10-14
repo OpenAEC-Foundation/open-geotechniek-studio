@@ -135,13 +135,16 @@ export interface TekeningFullState {
 }
 
 let latest: TekeningFullState | null = null;
+const latestByDocument = new Map<string, TekeningFullState>();
 let pendingRestore: TekeningFullState | null = null;
 
-export function setLatestTekening(state: TekeningFullState): void {
+export function setLatestTekening(state: TekeningFullState, documentId?: string | null): void {
   latest = state;
+  if (documentId) latestByDocument.set(documentId, state);
 }
 
-export function getLatestTekening(): TekeningFullState | null {
+export function getLatestTekening(documentId?: string): TekeningFullState | null {
+  if (documentId) return latestByDocument.get(documentId) ?? null;
   return latest;
 }
 

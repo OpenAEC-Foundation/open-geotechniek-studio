@@ -4727,7 +4727,7 @@ export default function SonderingstekeningView() {
         : null,
       titleBlock,
     };
-    setLatestTekening(full);
+    setLatestTekening(full, activeDocId);
   }, [
     paperSize,
     scale,

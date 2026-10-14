@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { invoke } from "@tauri-apps/api/core";
+
 import { useCptStore } from "../../store/useCptStore";
-import { IS_TAURI } from "../../utils/platform";
+import { reports } from "../../utils/platform";
 import {
   DEFAULT_SECTIONS,
   sectionsAreDefault,
@@ -20,10 +20,7 @@ import "./ReportPreview.css";
  * the cache if the bytes are missing for the current doc id.
  *
  * The sidebar lists which sections will appear in the generated PDF.
- * Section toggles are stored locally (component state) and not yet wired
- * to the openaec generator — they're a visual preview of an upcoming
- * filtering feature. The "Open project info" button dispatches a window
- * event so any container can open the ProjectSettingsDialog.
+ * Section toggles are shared with the ribbon export actions.
  */
 export default function ReportPreview() {
   const { t } = useTranslation("ribbon");
@@ -61,23 +58,6 @@ export default function ReportPreview() {
       return;
     }
 
-    // Browser-modus: er is geen Rust-side PDF-engine — preview_report
-    // bestaat niet als invoke-target. Toon een nette "alleen desktop"-
-    // melding i.p.v. een onbegrijpelijke runtime-error. Voor de
-    // online webdemo komt later HTML-rendering (zelfde data model,
-    // browser print-to-PDF), maar de native printpdf-stack is voor
-    // nu desktop-only.
-    if (!IS_TAURI) {
-      if (activeUrlRef.current) {
-        URL.revokeObjectURL(activeUrlRef.current);
-        activeUrlRef.current = null;
-      }
-      setPdfUrl(null);
-      setLoading(false);
-      setError("BROWSER_ONLY");
-      return;
-    }
-
     // Fast path: alleen bij de DEFAULT-secties mag de cache gebruikt worden
     // (die is met default-secties gegenereerd). Zodra de gebruiker een sectie
     // aan/uit zet, moeten we hergenereren — anders zie je de oude indeling.
@@ -103,11 +83,7 @@ export default function ReportPreview() {
     setLoading(true);
     setError(null);
 
-    invoke<number[]>("preview_report", {
-      cptIds: cpts.map((c) => c.id),
-      project: projectMeta,
-      sections,
-    })
+    reports.preview(cpts, projectMeta, sections)
       .then((bytes) => {
         if (cancelled) return;
         const u8 = new Uint8Array(bytes);
@@ -152,11 +128,7 @@ export default function ReportPreview() {
   // systeem-PDF-viewer. In de browser valt het terug op window.open.
   const handleOpenPdf = async () => {
     try {
-      if (IS_TAURI && pdfBytes) {
-        await invoke("open_report_pdf", { bytes: Array.from(pdfBytes) });
-      } else if (pdfUrl) {
-        window.open(pdfUrl, "_blank");
-      }
+      if (pdfBytes) await reports.open(pdfBytes);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error("[ReportPreview] PDF openen mislukt:", e);
@@ -280,42 +252,6 @@ export default function ReportPreview() {
         </div>
       </div>
     );
-  } else if (error === "BROWSER_ONLY") {
-    // Vriendelijke webdemo-melding. Linkt naar de Releases-pagina
-    // zodat geïnteresseerden direct kunnen downloaden.
-    previewArea = (
-      <div className="report-pages-wrapper">
-        <div className="report-empty-state">
-          <p className="report-empty-title">
-            PDF-rapport — alleen in desktop-versie
-          </p>
-          <p className="report-empty-subtitle">
-            De PDF-engine (printpdf + resvg) draait nu nog alleen in de
-            Rust-backend van de desktop-app. Voor de webdemo komt later
-            een HTML-versie (zelfde inhoud, browser print-to-PDF).
-          </p>
-          <p style={{ marginTop: 16 }}>
-            <a
-              href="https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases/latest"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-block",
-                padding: "8px 16px",
-                background: "var(--amber, #D97706)",
-                color: "white",
-                textDecoration: "none",
-                borderRadius: 6,
-                fontWeight: 600,
-                fontSize: 13,
-              }}
-            >
-              Download desktop-versie ↗
-            </a>
-          </p>
-        </div>
-      </div>
-    );
   } else if (error) {
     previewArea = (
       <div className="report-pages-wrapper">
@@ -373,7 +309,7 @@ function SectionToggle({
   hint?: string;
 }) {
   return (
-    <label className="report-section-toggle" title={hint ?? "Filteren werkt nog niet — komt eraan"}>
+    <label className="report-section-toggle" title={hint ?? label}>
       <input
         type="checkbox"
         checked={checked}

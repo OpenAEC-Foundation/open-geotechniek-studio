@@ -1,11 +1,18 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/catalog.ts
-import type { PileTypeSpec, SoilKind, SoilLayer } from "./types";
+import type { PileInput, PileTypeSpec, SoilKind, SoilLayer } from "./types";
+import { applyStandard } from "./standards";
 
-/** Tabel 7.c uit Eurocode 7 NB:2019 — paalklassefactoren. */
+const SOURCE_2017 = "NEN 9997-1:2016+C2:2017, tabel 7.c (zand/zand-grind)";
+const normativeType = (spec: PileTypeSpec): PileTypeSpec => ({
+  material: "concrete", settlementLine: 1,
+  edition: "2017", source: SOURCE_2017, ...spec,
+});
+
+/** Bestaande projecttypen blijven ongewijzigd; nieuwe presets zijn expliciet gedateerd. */
 export const PILE_TYPE_CATALOG: PileTypeSpec[] = [
   {
     id: "steel-pipe-driven-closed",
-    name: "Stalen buispaal — geheid (gesloten punt)",
+    name: "Stalen buispaal — geheid (bestaand projectmodel)",
     alphaP: 0.7,
     alphaS: 0.008,
     alphaT: 0.006,
@@ -13,6 +20,9 @@ export const PILE_TYPE_CATALOG: PileTypeSpec[] = [
     s: 1.0,
     isCircular: true,
     material: "steel",
+    edition: "2017/2019 — bestaand projectmodel",
+    source: "Bestaand rekenmodel en referentie-rapport 984.pdf",
+    conditions: "Bestaande factorenset behouden; wijkt af van tabel 7.c:2017 voor gesloten stalen buispalen.",
   },
   {
     id: "concrete-prefab-prestressed-driven",
@@ -24,11 +34,33 @@ export const PILE_TYPE_CATALOG: PileTypeSpec[] = [
     s: 1.0,
     isCircular: false, // vierkante doorsnede — diameterMm = zijlengte a
     material: "concrete",
+    edition: "2017", source: SOURCE_2017,
   },
+  normativeType({ id: "concrete-prefab-round", name: "Prefab betonpaal — rond, geheid", alphaP: .7, alphaS: .010, alphaT: .007, beta: 1, s: 1, isCircular: true }),
+  normativeType({ id: "steel-pipe-driven-closed-2017", name: "Stalen buispaal — gesloten punt (tabel 2017)", alphaP: .7, alphaS: .010, alphaT: .007, beta: 1, s: 1, isCircular: true, material: "steel", conditions: "Voetplaat steekt maximaal 10 mm buiten de buis uit; betongevulde buis." }),
+  normativeType({ id: "concrete-driven-casing-hammered", name: "Betonpaal — mantelbuis terugheiend getrokken", alphaP: .7, alphaS: .014, alphaT: .012, beta: 1, s: 1, isCircular: true, requiresEA: true, conditions: "Beton drukt direct tegen de grond; mantelbuis terugheiend en statisch getrokken." }),
+  normativeType({ id: "concrete-driven-casing-vibrated", name: "Betonpaal — mantelbuis trillend getrokken", alphaP: .7, alphaS: .012, alphaT: .010, beta: 1, s: 1, isCircular: true, requiresEA: true, conditions: "Beton drukt direct tegen de grond; mantelbuis trillend en statisch getrokken." }),
+  normativeType({ id: "concrete-screw-displacement", name: "Betonschroefpaal — verloren punt", alphaP: .63, alphaS: .009, alphaT: .009, beta: 1, s: 1, isCircular: true, requiresEA: true, conditions: "Gladde mantelbuis teruggetrokken; beton drukt direct tegen de grond." }),
+  normativeType({ id: "steel-screw-grout", name: "Stalen schroefpaal — groutinjectie", alphaP: .63, alphaS: .009, alphaT: .009, beta: 1, s: 1, isCircular: true, material: "steel", requiresEA: true, conditions: "Groutschacht ≥ 300 mm; tijdens aanbrengen niet op en neer halen. EA betreft staal/kern, niet het grout-schachtoppervlak." }),
+  normativeType({ id: "concrete-auger", name: "Avegaarpaal — beton", alphaP: .56, alphaS: .006, alphaT: .0045, beta: 1, s: 1, isCircular: true, requiresEA: true, settlementLine: 2, qcIIIStartCapMpa: 2, conditions: "Editie 2017: start qc;III begrensd op 2 MPa; geen vrijstelling op basis van nasonderingen toegepast." }),
+  normativeType({ id: "concrete-bored", name: "Boorpaal — met steunvloeistof", alphaP: .35, alphaS: .006, alphaT: .0045, beta: 1, s: 1, isCircular: true, requiresEA: true, settlementLine: 3 }),
+  normativeType({ id: "timber-uniform", name: "Houten heipaal — rond, constant of taps", alphaP: .7, alphaS: .010, alphaT: .007, beta: 1, s: 1, isCircular: true, material: "wood", requiresEA: true, conditions: "Ronde doorsnede, optioneel lineair taps vanaf de kop; zonder betonoplanger. Geen verhoging van paalfactoren wegens coniciteit." }),
 ];
 
 export function getPileType(id: string): PileTypeSpec | undefined {
   return PILE_TYPE_CATALOG.find((p) => p.id === id);
+}
+
+/** Projectfactoren zijn onderdeel van de opgeslagen invoer, nooit globale catalogusmutaties. */
+export function resolvePileType(input: PileInput): PileTypeSpec | undefined {
+  const catalogType = getPileType(input.pileTypeId);
+  if (!catalogType) return undefined;
+  const type = applyStandard(catalogType, input.standard);
+  if (!type) return undefined;
+  if (!input.projectFactors) return type;
+  return { ...type, ...input.projectFactors,
+    qcIIIStartCapMpa: input.projectFactors.edition === "2025" ? undefined : type.qcIIIStartCapMpa,
+  };
 }
 
 /** Default Φ/γ per grondsoort. γ-waarden afgestemd op de grondsoorten-

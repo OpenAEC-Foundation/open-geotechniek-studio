@@ -23,7 +23,7 @@ fn main() {
             .map(PathBuf::from)
             .unwrap_or_else(|_| manifest_dir.join("target"));
 
-        let src = manifest_dir.join("vendor").join("WebView2Loader.dll");
+        let src = manifest_dir.join("WebView2Loader.dll");
         let dst = target_dir.join(&profile).join("WebView2Loader.dll");
 
         if src.exists() {
@@ -42,7 +42,7 @@ fn main() {
             }
         } else {
             println!(
-                "cargo:warning=vendor/WebView2Loader.dll not found at {}",
+                "cargo:warning=WebView2Loader.dll not found at {}",
                 src.display()
             );
         }

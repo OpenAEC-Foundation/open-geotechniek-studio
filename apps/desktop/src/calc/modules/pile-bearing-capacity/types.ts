@@ -26,14 +26,39 @@ export interface PileTypeSpec {
   isCircular: boolean;         // false → vierkante doorsnede; diameterMm = zijlengte a
   /** Materiaal voor visualisatie + toekomstige EA-berekening.
    *  Defaults naar "steel" als afwezig (back-compat oude IFCX-files). */
-  material?: "steel" | "concrete";
+  material?: "steel" | "concrete" | "wood";
+  source?: string;
+  edition?: string;
+  conditions?: string;
+  settlementLine?: 1 | 2 | 3;
+  requiresEA?: boolean;
+  qcIIIStartCapMpa?: number;
+}
+
+export interface ProjectPileFactors {
+  alphaP: number;
+  alphaS: number;
+  alphaT: number;
+  beta: number;
+  s: number;
+  source: string;
+  edition: string;
 }
 
 export interface PileInput {
+  /** Ontbrekend: behoud het bestaande projectmodel. */
+  standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017";
   cptId: string | null;        // referentie naar CPT in project
   pileTypeId: string;          // "steel-pipe-driven-closed"
   diameterMm: number;          // 219
   wallThicknessMm: number;     // 8.0 — voor EA
+  /** Ontbrekend betekent dezelfde maat als de schacht (bestaande projecten). */
+  baseDiameterMm?: number;
+  /** Hout: lineair verloop vanaf kopdiameter over lengthM, daarna constante puntdiameter. */
+  timberTaper?: { toeDiameterMm: number; lengthM: number };
+  /** Projectspecifieke axiale stijfheid EA, in kN. */
+  axialStiffnessKn?: number;
+  projectFactors?: ProjectPileFactors;
   pileTopNap: number;          // 0.34
   pileToeNap: number;          // -14.50
   waterNap: number;            // -0.16
@@ -67,6 +92,7 @@ export interface NegKleefLayerResult {
 }
 
 export interface NegKleefResult {
+  meanPerimeterM?: number;     // gemiddelde over het negatieve-kleeftraject
   layers: NegKleefLayerResult[];
   fnkRep: number;              // sum, kN
   fnkD: number;                // = γf,nk × fnkRep
@@ -109,6 +135,8 @@ export interface SettlementWorkpoint {
 }
 
 export interface SettlementResult {
+  /** false: de vereiste lastzakkingslijn is nog niet ondersteund. */
+  available?: boolean;
   sls: SettlementWorkpoint;
   uls: SettlementWorkpoint;
   curve: Array<{ sbMm: number; rbKn: number; rsKn: number; totalKn: number }>;
@@ -130,6 +158,8 @@ export interface SpringStiffnessResult {
 }
 
 export interface SummaryResult {
+  /** Historische vermenigvuldigingsfactor; geen Eurocode-deler. */
+  historicalXi?: number;
   xi3: number;
   xi4: number;
   rcCal: number;

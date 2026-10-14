@@ -5,6 +5,7 @@ import type { PanelProps } from "../../../framework/types";
 import type { Cpt, MeasurementPoint } from "../../../../types/cpt";
 import type { PileInput, PileResult } from "../types";
 import { getPileType } from "../catalog";
+import { shaftDiameterAtNap } from "../parts/geometry";
 import "./styles.css";
 
 /** Velden die via drag-to-edit aanpasbaar zijn in de chart. */
@@ -200,7 +201,7 @@ function buildQcTicks(qcMax: number): number[] {
 interface PileGraphicProps {
   input: PileInput;
   result: PileResult;
-  material: "steel" | "concrete";
+  material: "steel" | "concrete" | "wood";
   /** Alleen nog relevant voor de doorsnede-subcomponent; het zijaanzicht
    *  is voor ronde én vierkante palen een rechte rechthoek. */
   isCircular?: boolean;
@@ -231,7 +232,7 @@ function PileGraphic({
   pileColCenter,
 }: PileGraphicProps) {
   // Kleurpalet per materiaal — beige voor beton (#d4a574), grijs voor staal.
-  const fill = material === "concrete" ? "#d4a574" : "#9ca3af";
+  const fill = material === "wood" ? "#a57442" : material === "concrete" ? "#d4a574" : "#9ca3af";
   const stroke = "#374151";
 
   // Visuele paal-breedte — gemapped uit werkelijke diameter via min/max
@@ -250,6 +251,10 @@ function PileGraphic({
   const yTopClamped = Math.max(plotTop, Math.min(plotBottom, yPileTop));
   const yToeClamped = Math.max(plotTop, Math.min(plotBottom, yPileToe));
   const bodyH = yToeClamped - yTopClamped;
+  const taperNaps = input.timberTaper ? [input.pileTopNap, input.pileTopNap - input.timberTaper.lengthM, input.pileToeNap] : [];
+  const taperY = (nap: number) => yPileTop + (input.pileTopNap - nap) / (input.pileTopNap - input.pileToeNap) * (yPileToe - yPileTop);
+  const taperPoints = [...taperNaps.map(nap => `${cx - diaPx * shaftDiameterAtNap(input, nap) / input.diameterMm / 2},${taperY(nap)}`),
+    ...[...taperNaps].reverse().map(nap => `${cx + diaPx * shaftDiameterAtNap(input, nap) / input.diameterMm / 2},${taperY(nap)}`)].join(" ");
 
   // Paal heeft VLAKKE bovenkant en VLAKKE onderkant — geen tapered tip.
   // De daadwerkelijke paalpunt-conus zit in de werkelijkheid binnen de
@@ -350,6 +355,8 @@ function PileGraphic({
               );
             })()}
           </>
+        ) : input.timberTaper ? (
+          <polygon points={taperPoints} fill={fill} stroke={stroke} strokeWidth={1.5} />
         ) : (
           <rect
             x={xPileLeft}
@@ -462,7 +469,7 @@ function PileGraphic({
 interface PileCrossSectionProps {
   diameterMm: number;
   wallThicknessMm: number;
-  material: "steel" | "concrete";
+  material: "steel" | "concrete" | "wood";
   isCircular: boolean;
   hasRebarCage: boolean;
 }
@@ -521,7 +528,7 @@ function PileCrossSection({
         </pattern>
       </defs>
       {isCircular ? (
-        material === "steel" ? (
+        material === "steel" && hasRebarCage ? (
           <>
             {/* Stalen buis (ring) — grijs gevuld */}
             <circle cx={CX} cy={CY} r={R} fill="#9ca3af" stroke="#374151" strokeWidth={1.5} />
@@ -548,7 +555,7 @@ function PileCrossSection({
           </>
         ) : (
           /* Pure beton ronde paal (boorpaal etc.) — beton-arcering */
-          <circle cx={CX} cy={CY} r={R} fill="url(#pile-cs-concrete-hatch)" stroke="#374151" strokeWidth={1.5} />
+          <circle cx={CX} cy={CY} r={R} fill={material === "wood" ? "#a57442" : "url(#pile-cs-concrete-hatch)"} stroke="#374151" strokeWidth={1.5} />
         )
       ) : (
         <>
@@ -586,7 +593,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
 
   // Paaltype voor visualisatie (material, shape).
   const pileType = getPileType(input.pileTypeId);
-  const pileMaterial: "steel" | "concrete" = pileType?.material ?? "steel";
+  const pileMaterial: "steel" | "concrete" | "wood" = pileType?.material ?? "steel";
   const pileIsCircular = pileType?.isCircular ?? true;
 
   const fullExtent = useMemo(
@@ -1130,7 +1137,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
       {zone8DVisible && (() => {
         const groundNap = cpt.metadata.ground_level_nap ?? 0;
         const pileToeDepth = groundNap - input.pileToeNap;
-        const zone8DTopDepth = pileToeDepth - 8 * (input.diameterMm / 1000);
+        const zone8DTopDepth = pileToeDepth - 8 * (result.base.deqMm / 1000);
         const inZone = (result.base.clippedQcCurve ?? []).filter(
           (p) => p.depth >= zone8DTopDepth - 1e-6 && p.depth <= pileToeDepth + 1e-6,
         );
@@ -1563,7 +1570,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         yRebarBot={bounds.napToY(
           Math.max(input.pileToeNap, input.pileTopNap - 4 * (input.diameterMm / 1000)),
         )}
-        hasRebarCage={pileMaterial === "steel"}
+        hasRebarCage={pileMaterial === "steel" && !pileType?.requiresEA}
         pileColCenter={pileColCenter}
       />
 
@@ -1695,7 +1702,13 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
   if (!cpt) {
     return (
       <div className="pile-visual">
-        <div className="pile-visual-empty">Geen sondering geselecteerd</div>
+        <div className="pile-visual-empty pile-visual-empty-guide">
+          <h3>Sonderingsgrafiek</h3>
+          <p>Er is nog geen sondering aan deze berekening gekoppeld.</p>
+          <p>Open een GEF-, BRO-XML- of projectbestand via <strong>Openen</strong> bovenin.
+            Kies daarna de sondering bij <strong>Sondering</strong> in het invoerpaneel.</p>
+          <p>Hier verschijnen dan de conusweerstand, de paal en de kleeftrajecten.</p>
+        </div>
       </div>
     );
   }
@@ -1720,11 +1733,11 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
 
   // Pile-type bepaalt material + vorm voor de cross-section onderaan.
   const pileType = getPileType(input.pileTypeId);
-  const csMaterial: "steel" | "concrete" = pileType?.material ?? "steel";
+  const csMaterial: "steel" | "concrete" | "wood" = pileType?.material ?? "steel";
   const csIsCircular = pileType?.isCircular ?? true;
   // Wapeningskorf alleen voor stalen buispalen (betongevulde composiet);
   // bij prefab voorgespannen beton zien we voorspandraden i.p.v. korf.
-  const csHasRebar = csMaterial === "steel";
+  const csHasRebar = csMaterial === "steel" && !pileType?.requiresEA;
   // Korf-lengte in mm voor de info-tekst — 4·D vanaf paalkop, geclampt op
   // paallengte zodat we geen onzin-getal tonen voor korte palen.
   const pileLengthMm = Math.max(0, (input.pileTopNap - input.pileToeNap) * 1000);
@@ -1752,7 +1765,9 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
                 <td>{csIsCircular ? "ø" : "□"}</td>
                 <td>{input.diameterMm.toFixed(0)} mm</td>
               </tr>
-              {csMaterial === "steel" && (
+              <tr><td>puntmaat</td><td>{(input.timberTaper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm).toFixed(0)} mm</td></tr>
+              {input.timberTaper && <tr><td>tapse lengte vanaf kop</td><td>{input.timberTaper.lengthM.toFixed(2)} m</td></tr>}
+              {csMaterial === "steel" && !pileType?.requiresEA && (
                 <tr>
                   <td>wand</td>
                   <td>{input.wallThicknessMm.toFixed(1)} mm</td>
@@ -1767,9 +1782,9 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
               <tr>
                 <td>materiaal</td>
                 <td>
-                  {csMaterial === "steel"
-                    ? "Stalen buispaal, betongevuld"
-                    : "Prefab voorgespannen beton"}
+                  {csMaterial === "wood" ? "Hout, constante doorsnede" : csMaterial === "steel"
+                    ? (pileType?.requiresEA ? "Stalen paal; projectspecifieke EA" : "Stalen buispaal, betongevuld")
+                    : (pileType?.requiresEA ? "In de grond gevormd beton" : "Prefab beton")}
                 </td>
               </tr>
             </tbody>

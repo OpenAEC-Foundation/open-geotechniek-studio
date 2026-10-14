@@ -10,6 +10,7 @@ import FeedbackDialog from "./components/feedback/FeedbackDialog";
 import WelcomeScreen from "./components/welcome/WelcomeScreen";
 import { StartSidebar } from "./components/welcome/StartSidebar";
 import ProjectSettingsDialog from "./components/project/ProjectSettingsDialog";
+import { PlatformProjects } from "./components/project/PlatformProjects";
 import ReportPreview from "./components/panels/ReportPreview";
 import ChartView from "./components/panels/ChartView";
 import MapView from "./components/panels/MapView";
@@ -26,6 +27,7 @@ import { getSetting, setSetting } from "./store";
 import { openPathByExtension, openContentByFilename, useCptStore } from "./store/useCptStore";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { IS_TAURI } from "./utils/platform";
+import { BUILD_MODE } from "./utils/buildMode";
 import "./themes.css";
 import "./App.css";
 
@@ -269,7 +271,7 @@ function App() {
   // — daar laten we de gebruiker zelf File → Open kiezen.
   const autoloadDoneRef = useRef(false);
   useEffect(() => {
-    if (IS_TAURI || autoloadDoneRef.current) return;
+    if (IS_TAURI || !BUILD_MODE.autoExample || autoloadDoneRef.current) return;
     const docs = useCptStore.getState().documents;
     if (docs.length > 0) {
       autoloadDoneRef.current = true;
@@ -278,7 +280,7 @@ function App() {
     autoloadDoneRef.current = true;
     (async () => {
       try {
-        const res = await fetch("./example.gef");
+        const res = await fetch(`${import.meta.env.BASE_URL}example.gef`);
         if (!res.ok) {
           console.warn("Auto-load example.gef: HTTP", res.status);
           return;
@@ -535,6 +537,7 @@ function App() {
           </aside>
         )}
       </div>
+      <PlatformProjects />
       <StatusBar />
       <Backstage
         open={backstageOpen}

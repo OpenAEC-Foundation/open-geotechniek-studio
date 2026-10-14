@@ -56,7 +56,7 @@ function fmtNap(v: number): string {
 /** Render het visual-blad. Gaat uit van een verse pagina met chrome. */
 export function renderSonderingChart(args: ChartPageArgs): void {
   const { doc, startY, name, input, result, cpt } = args;
-  const D_m = input.diameterMm / 1000;
+  const D_m = result.base.deqMm / 1000;
 
   // ─── Layout [mm] ───────────────────────────────────────────────
   const pileX = 22;        // hart van de losse paal-balk links
@@ -158,6 +158,9 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   doc.text("4D", brX - 1.5, (yOf(toe) + yOf(toe - 4 * D_m)) / 2 + 2.5, { align: "right" });
 
   // ─── qc-meetcurve ──────────────────────────────────────────────
+  doc.saveGraphicsState();
+  doc.rect(plotL,plotT,plotR-plotL,plotB-plotT,null);
+  doc.clip(); doc.discardPath();
   doc.setDrawColor(...COL_QC);
   doc.setLineWidth(0.3);
   let prev: { x: number; y: number } | null = null;
@@ -184,6 +187,10 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   }
 
   // ─── Rf-curve ──────────────────────────────────────────────────
+  doc.restoreGraphicsState();
+  doc.saveGraphicsState();
+  doc.rect(rfL,plotT,rfR-rfL,plotB-plotT,null);
+  doc.clip(); doc.discardPath();
   doc.setDrawColor(...COL_QC);
   doc.setLineWidth(0.3);
   let prevRf: { x: number; y: number } | null = null;
@@ -196,6 +203,8 @@ export function renderSonderingChart(args: ChartPageArgs): void {
     if (prevRf) doc.line(prevRf.x, prevRf.y, pt.x, pt.y);
     prevRf = pt;
   }
+
+  doc.restoreGraphicsState();
 
   // ─── Grondlagen-kolom ──────────────────────────────────────────
   doc.setLineWidth(0.15);
@@ -244,7 +253,16 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   doc.setFillColor(...COL_PILE);
   doc.setDrawColor(60);
   doc.setLineWidth(0.3);
-  doc.rect(pileX - 1.6, pTopY, 3.2, pToeY - pTopY, "FD");
+  if (input.timberTaper) {
+    const wToe = 1.6 * input.timberTaper.toeDiameterMm / input.diameterMm;
+    const transitionY = yOf(input.pileTopNap - input.timberTaper.lengthM);
+    doc.lines([
+      [1.6 - wToe, transitionY - pTopY], [0, pToeY - transitionY],
+      [2 * wToe, 0], [0, transitionY - pToeY], [1.6 - wToe, pTopY - transitionY], [-3.2, 0],
+    ], pileX - 1.6, pTopY, [1, 1], "FD", true);
+  } else {
+    doc.rect(pileX - 1.6, pTopY, 3.2, pToeY - pTopY, "FD");
+  }
   // NEd/Nk-pijl boven de paal (rood, omlaag)
   doc.setDrawColor(...COL_NEG);
   doc.setFillColor(...COL_NEG);

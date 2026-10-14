@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useCalculationsStore } from "../store";
-import { useCptStore } from "../../../store/useCptStore";
+import { useCptStore, newProjectDocument } from "../../../store/useCptStore";
 import { getCalcModule } from "../registry";
 import type { CalculationInstance } from "../types";
 
@@ -33,10 +33,25 @@ export function ProjectTreePanel({ onAddClick }: Props) {
   const [renaming, setRenaming] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
 
+  const pileModule = getCalcModule("pile-bearing-capacity");
+  const addPile = () => {
+    if (!pileModule) return;
+    if (!useCptStore.getState().activeDocId) newProjectDocument();
+    const ctx = useCptStore.getState();
+    const store = useCalculationsStore.getState();
+    const docId = ctx.activeDocId!;
+    const number = store.getList(docId).filter(c => c.moduleId === pileModule.id).length + 1;
+    store.addCalculation(docId, pileModule.id, `${pileModule.name} ${number}`, pileModule.defaultInput(ctx));
+  };
+  const pileButton = pileModule && (
+    <button className="calc-tree-add" onClick={addPile}>Paaldraagvermogen toevoegen</button>
+  );
+
   if (!activeDocId) {
     return (
       <div className="calc-tree-empty">
-        <p>Open een project om berekeningen toe te voegen.</p>
+        {pileButton}
+        <p>Open een project of begin een nieuwe paaldraagvermogenberekening.</p>
       </div>
     );
   }
@@ -59,6 +74,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
 
   return (
     <div className="calc-tree">
+      {pileButton}
       <button className="calc-tree-add" onClick={onAddClick}>
         + Nieuwe berekening
       </button>

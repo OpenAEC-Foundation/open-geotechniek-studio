@@ -9,8 +9,8 @@ interface Release {
   html_url: string;
 }
 
-const REPO = "OpenAEC-Foundation/OpenAEC-style-book";
-const CACHE_KEY = "openaec-releases-cache-v1";
+const REPO = "OpenAEC-Foundation/open-geotechniek-studio";
+const CACHE_KEY = "ogs:releases-cache-v1";
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
 // Bundled fallback for offline / API-blocked situations.
