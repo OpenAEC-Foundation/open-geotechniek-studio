@@ -9,6 +9,8 @@
 // blijft eigenaar (schrijft), de ribbon leest op klik-moment.
 
 export interface ReportSections {
+  chartScale?: number | null;
+  coverTitle?: string;
   cover: boolean;
   coordTable: boolean;
   map: boolean;
@@ -27,7 +29,7 @@ export const DEFAULT_SECTIONS: ReportSections = {
 };
 
 export function sectionsAreDefault(s: ReportSections): boolean {
-  return (Object.keys(DEFAULT_SECTIONS) as Array<keyof ReportSections>).every(
+  return s.chartScale == null && !s.coverTitle && (Object.keys(DEFAULT_SECTIONS) as Array<keyof ReportSections>).every(
     (k) => s[k] === DEFAULT_SECTIONS[k],
   );
 }

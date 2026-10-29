@@ -1,361 +1,512 @@
-/**
- * Browser-zijdige GEF-parser — pure TypeScript port van cpt-core's
- * Rust GEF-parser (crates-warehouse/cpt-core/src/gef/*.rs).
- *
- * Bedoeld als fallback voor de webversie van de app waar de Rust
- * `open_cpt`-command via `invoke()` niet beschikbaar is. Voor de
- * desktop-versie blijft de Rust-parser autoritair (uitgebreidere
- * validatie + meer kolom-quantities) — deze TS-versie dekt de
- * BRO-CPT-Report dialect die in de praktijk 99% van de GEF-bestanden
- * is die gebruikers openen.
- *
- * Houd in sync met:
- *   - crates-warehouse/cpt-core/src/gef/header.rs
- *   - crates-warehouse/cpt-core/src/gef/data.rs
- *   - crates-warehouse/cpt-core/src/gef/columns.rs
- */
-
 import type { Cpt, MeasurementPoint } from "./cpt";
+import {
+  attachValidation,
+  type ValidationReport,
+  type Diagnostic,
+} from "../validation/report";
 
-/**
- * Sniff — is dit content waarschijnlijk een GEF-bestand? Werkt op de
- * eerste paar regels, geen volle parse.
- */
-export function looksLikeGef(text: string): boolean {
-  const head = text.slice(0, 2048);
-  return /^#GEFID\s*=/m.test(head) || /^#TESTID\s*=/m.test(head);
-}
-
-/** GEF kolom-quantity → veldnaam in onze Cpt struct. */
-type GefField =
-  | "length"
-  | "qc"
-  | "fs"
-  | "rf"
-  | "u1"
-  | "u2"
-  | "u3"
-  | "inclination"
-  | "inclNs"
-  | "inclEw"
-  | "depth"
-  | "time"
-  | "correctedQc"
-  | "netQc"
-  | "poreRatio"
-  | "speed"
-  | "temp"
-  | "electricCond"
-  | "frictionTotal"
-  | "unknown";
-
-function fieldFromQuantity(q: number): GefField {
-  switch (q) {
-    case 1: return "length";
-    case 2: return "qc";
-    case 3: return "fs";
-    case 4: return "rf";
-    case 5: return "u1";
-    case 6: return "u2";
-    case 7: return "u3";
-    case 8: return "inclination";
-    case 9: return "inclNs";
-    case 10: return "inclEw";
-    case 11: return "depth";
-    case 12: return "time";
-    case 13: return "correctedQc";
-    case 14: return "netQc";
-    case 15: return "poreRatio";
-    case 20: return "speed";
-    case 21: return "temp";
-    case 23: return "electricCond";
-    case 39: return "frictionTotal";
-    default: return "unknown";
-  }
-}
-
-interface ColumnSpec {
-  /** 1-based GEF kolom-index. */
+/** CUR GEF-CPT-Report 1.1.2, §3.4. Unknown columns and headers are retained. */
+const fields: Record<number, string> = {
+  1: "penetration_length",
+  2: "qc",
+  3: "fs",
+  4: "rf",
+  5: "u1",
+  6: "u2",
+  7: "u3",
+  8: "inclination",
+  9: "inclination_ns",
+  10: "inclination_ew",
+  11: "corrected_depth",
+  12: "time",
+  13: "corrected_qc",
+  14: "net_qc",
+  15: "pore_ratio",
+  16: "cone_resistance_number",
+  17: "unit_weight",
+  18: "initial_pore_pressure",
+  19: "total_vertical_stress",
+  20: "effective_vertical_stress",
+  21: "inclination_x",
+  22: "inclination_y",
+  23: "electric_conductivity",
+};
+interface Column {
   index: number;
-  field: GefField;
+  quantity: number;
+  unit: string;
+  name: string;
+  line: number;
 }
-
-interface GefHeader {
-  testId?: string;
-  projectId?: string;
-  projectName?: string;
-  companyId?: string;
-  startDate?: string;       // ISO YYYY-MM-DD
-  fileDate?: string;        // ISO YYYY-MM-DD
-  xRd?: number;
-  yRd?: number;
-  zNap?: number;
-  columns: ColumnSpec[];
-  /** (1-based kolom-index, void waarde) — rauwe waarden die we als
-   *  "geen meting" interpreteren. */
-  columnVoid: Array<[number, number]>;
-  extra: Record<string, string>;
+export function looksLikeGef(text: string): boolean {
+  return /^\s*#(?:GEFID|TESTID)\s*=/im.test(
+    text.slice(0, 4096).replace(/^\uFEFF/, ""),
+  );
 }
-
-/**
- * Parse een GEF-bestand naar onze Cpt-struct. Gooit een Error met een
- * uitleg-string als de header malformed is (b.v. ontbrekend `#EOH=`).
- */
 export function parseGef(text: string, filename: string): Cpt {
-  const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-  const lines = normalized.split("\n");
-  const { header, dataStart } = parseHeader(lines);
-  const { colSep, recSep } = extractSeparators(lines);
-  const body = lines.slice(dataStart).join("\n");
-
-  const records = recSep ? body.split(recSep) : body.split("\n");
-  const points: MeasurementPoint[] = [];
-  for (const rec of records) {
-    const trimmed = rec.trim();
-    if (!trimmed) continue;
-    const tokens = colSep ? trimmed.split(colSep) : trimmed.split(/\s+/);
-    const nums: number[] = [];
-    for (const tok of tokens) {
-      const v = parseNum(tok);
-      if (v !== null) nums.push(v);
-    }
-    if (nums.length === 0) continue;
-    const pt = buildPoint(nums, header);
-    if (pt) points.push(pt);
-  }
-
-  return {
-    id: header.testId ?? "Unknown",
-    metadata: {
-      project_name: header.projectName,
-      project_number: header.projectId,
-      // STARTDATE (echte meetdatum) heeft voorrang boven FILEDATE.
-      date: header.startDate ?? header.fileDate,
-      equipment: header.companyId,
-      ground_level_nap: header.zNap,
-      source_file: filename,
-      extra: Object.keys(header.extra).length > 0 ? header.extra : undefined,
-    },
-    position:
-      typeof header.xRd === "number" && typeof header.yRd === "number"
-        ? { x_rd: header.xRd, y_rd: header.yRd, z_nap: header.zNap }
-        : undefined,
-    points,
+  const report: ValidationReport = {
+    format: "GEF-CPT",
+    diagnostics: [],
+    records: 0,
+    points: 0,
+    voids: 0,
+    omittedRecords: 0,
+    measurementVariables: {},
+    coordinateSystem: {},
   };
-}
-
-// ── Header parsing ───────────────────────────────────────────────
-
-function parseHeader(lines: string[]): { header: GefHeader; dataStart: number } {
-  const header: GefHeader = {
-    columns: [],
-    columnVoid: [],
-    extra: {},
-  };
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (line === "#EOH=" || line === "#EOH") {
-      return { header, dataStart: i + 1 };
-    }
-    if (!line.startsWith("#")) continue;
-    const rest = line.slice(1);
-    const eqIdx = rest.indexOf("=");
-    if (eqIdx < 0) continue;
-    const key = rest.slice(0, eqIdx).trim().toUpperCase();
-    const value = rest.slice(eqIdx + 1).trim();
-    switch (key) {
-      case "TESTID":
-        header.testId = value;
-        break;
-      case "PROJECTID":
-        header.projectId = value;
-        break;
-      case "PROJECTNAME":
-        header.projectName = value;
-        break;
-      case "COMPANYID":
-        // Eerste kolom van de comma-list — rest is meestal "wordt niet
-        // uitgeleverd, -" of vergelijkbare placeholder.
-        header.companyId = value.split(",")[0].trim();
-        break;
-      case "STARTDATE":
-        header.startDate = parseFiledate(value);
-        pushExtra(header.extra, key, value);
-        break;
-      case "FILEDATE":
-        header.fileDate = parseFiledate(value);
-        break;
-      case "XYID":
-        parseXyid(value, header);
-        break;
-      case "ZID":
-        parseZid(value, header);
-        break;
-      case "COLUMNINFO":
-        parseColumninfo(value, header);
-        pushExtra(header.extra, key, value);
-        break;
-      case "COLUMNVOID":
-        parseColumnvoid(value, header);
-        pushExtra(header.extra, key, value);
-        break;
-      case "EOH":
-      case "GEFID":
-      case "COLUMNSEPARATOR":
-      case "RECORDSEPARATOR":
-      case "DATAFORMAT":
-      case "COLUMN":
-        pushExtra(header.extra, key, value);
-        break;
-      default:
-        pushExtra(header.extra, key, value);
-    }
+  const diag = (
+    severity: Diagnostic["severity"],
+    code: string,
+    message: string,
+    line?: number,
+    record?: number,
+    column?: number,
+  ) =>
+    report.diagnostics.push({ severity, code, message, line, record, column });
+  if (text.startsWith("\uFEFF")) {
+    diag("info", "BOM", "UTF-8 BOM verwijderd.", 1);
+    text = text.slice(1);
   }
-  throw new Error("GEF parse-fout: ontbrekende #EOH= terminator");
-}
-
-function pushExtra(extras: Record<string, string>, key: string, value: string): void {
-  if (key in extras) extras[key] = `${extras[key]} | ${value}`;
-  else extras[key] = value;
-}
-
-function parseFiledate(value: string): string | undefined {
-  // FILEDATE format: "YYYY, MM, DD"
-  const parts = value
-    .split(",")
-    .map((s) => parseInt(s.trim(), 10))
-    .filter((n) => !isNaN(n));
-  if (parts.length < 3) return undefined;
-  const [y, mo, d] = parts;
-  const yyyy = String(y).padStart(4, "0");
-  const mm = String(mo).padStart(2, "0");
-  const dd = String(d).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
-}
-
-function parseXyid(value: string, h: GefHeader): void {
-  // XYID: "1, x, y, ..."
-  const parts = value.split(",").map((s) => s.trim());
-  if (parts.length < 3) return;
-  const x = parseFloat(parts[1]);
-  const y = parseFloat(parts[2]);
-  if (!isNaN(x) && !isNaN(y)) {
-    h.xRd = x;
-    h.yRd = y;
-  }
-}
-
-function parseZid(value: string, h: GefHeader): void {
-  // ZID: "31000, z, ..."
-  const parts = value.split(",").map((s) => s.trim());
-  if (parts.length < 2) return;
-  const z = parseFloat(parts[1]);
-  if (!isNaN(z)) h.zNap = z;
-}
-
-function parseColumninfo(value: string, h: GefHeader): void {
-  // COLUMNINFO: "<col>, <unit>, <name>, <quantity>"
-  const parts = value.split(",").map((s) => s.trim());
-  if (parts.length < 4) return;
-  const col = parseInt(parts[0], 10);
-  const q = parseInt(parts[3], 10);
-  if (isNaN(col) || isNaN(q)) return;
-  h.columns.push({ index: col, field: fieldFromQuantity(q) });
-}
-
-function parseColumnvoid(value: string, h: GefHeader): void {
-  const parts = value.split(",").map((s) => s.trim());
-  if (parts.length < 2) return;
-  const c = parseInt(parts[0], 10);
-  const v = parseFloat(parts[1]);
-  if (!isNaN(c) && !isNaN(v)) h.columnVoid.push([c, v]);
-}
-
-// ── Data parsing ─────────────────────────────────────────────────
-
-function extractSeparators(lines: string[]): { colSep?: string; recSep?: string } {
-  let colSep: string | undefined;
-  let recSep: string | undefined;
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (line.startsWith("#COLUMNSEPARATOR=")) {
-      const v = line.slice("#COLUMNSEPARATOR=".length).trim();
-      if (v.length > 0) colSep = v[0];
-    } else if (line.startsWith("#RECORDSEPARATOR=")) {
-      const v = line.slice("#RECORDSEPARATOR=".length).trim();
-      if (v.length > 0) recSep = v[0];
-    }
-  }
-  return { colSep, recSep };
-}
-
-function parseNum(s: string): number | null {
-  const trimmed = s.trim();
-  if (!trimmed) return null;
-  // Sommige GEF-velden bevatten een terminator-marker `!` of `*` aan
-  // het einde — strippen voor we parseFloat aanroepen.
-  const cleaned = trimmed.replace(/[!*]+$/g, "");
-  if (!cleaned) return null;
-  const v = parseFloat(cleaned);
-  return isNaN(v) ? null : v;
-}
-
-function buildPoint(nums: number[], header: GefHeader): MeasurementPoint | null {
-  const p: MeasurementPoint = { depth: 0 };
-  let haveDepth = false;
-
-  for (const spec of header.columns) {
-    const raw = nums[spec.index - 1];
-    if (raw === undefined) continue;
-    const voided = header.columnVoid.some(
-      ([c, v]) => c === spec.index && Math.abs(raw - v) < 1e-6,
+  if (/[\uFFFD]|Ã[\u0080-\u00BF]|Â[\u0080-\u00BF]/.test(text))
+    diag(
+      "warning",
+      "ENCODING",
+      "Mogelijk onjuiste tekencodering; controleer de oorspronkelijke tekst.",
     );
-    const value = voided ? undefined : raw;
-    switch (spec.field) {
-      case "length":
-      case "depth":
-        // Sign-normalize — sommige (Belgische) GEFs gebruiken een
-        // negatieve diepte. Mirror bedrock-engineer/gef-parser-ts +
-        // de Rust-parser: absolute waarde zodat positieve diepte =
-        // onder maaiveld blijft.
-        if (value !== undefined) {
-          p.depth = Math.abs(value);
-          haveDepth = true;
-        }
-        break;
-      case "qc":
-        p.qc = value;
-        break;
-      case "fs":
-        p.fs = value;
-        break;
-      case "rf":
-        p.rf = value;
-        break;
-      case "u2":
-        p.u2 = value;
-        break;
-      case "inclination":
-        p.inclination = value;
-        break;
-      default:
-        // Andere kolommen worden (nog) niet in MeasurementPoint
-        // opgeslagen — geen plek in de struct voor InclNs/EW, time,
-        // speed enz.
-        break;
+  const lines = text.replace(/\r\n?/g, "\n").split("\n"),
+    header = new Map<string, Array<{ value: string; line: number }>>();
+  let start = -1;
+  const unparsedHeader: string[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    const match = /^\s*#(\w+)\s*=?\s*(.*)$/.exec(lines[i]);
+    if (!match) {
+      if (lines[i].trim()) {
+        unparsedHeader.push(lines[i]);
+        diag(
+          "warning",
+          "HEADER_LINE",
+          "Onherkende headerregel bewaard.",
+          i + 1,
+        );
+      }
+      continue;
     }
+    const key = match[1].toUpperCase();
+    if (key === "EOH") {
+      start = i + 1;
+      break;
+    }
+    header.set(key, [
+      ...(header.get(key) ?? []),
+      { value: match[2].trim(), line: i + 1 },
+    ]);
   }
-
-  if (!haveDepth) return null;
-
-  // Derive Rf = 100 * fs / qc als de kolom ontbreekt.
-  if (p.rf === undefined && p.qc !== undefined && p.fs !== undefined && p.qc > 0) {
-    p.rf = (100 * p.fs) / p.qc;
+  if (start < 0)
+    throw new Error("GEF parse-fout: ontbrekende #EOH= terminator");
+  const first = (key: string) => header.get(key)?.[0]?.value;
+  const extra: Record<string, string> = {};
+  if (unparsedHeader.length)
+    extra["ogs:unparsed-header"] = unparsedHeader.join("\n");
+  for (const [key, values] of header)
+    extra[key] = values.map((v) => v.value).join(" | ");
+  for (const required of ["GEFID", "TESTID", "COLUMN", "COLUMNINFO"])
+    if (!header.has(required))
+      diag(
+        "error",
+        "MISSING_HEADER",
+        `Verplichte header #${required} ontbreekt.`,
+      );
+  const number = (
+    raw: string,
+    line?: number,
+    record?: number,
+    column?: number,
+  ): number | undefined => {
+    let value = raw.trim();
+    if (!value) {
+      diag(
+        "warning",
+        "EMPTY_NUMBER",
+        "Lege meetwaarde wordt void.",
+        line,
+        record,
+        column,
+      );
+      return undefined;
+    }
+    if (/^[-+]?\d{1,3}(\.\d{3})+,\d+$/.test(value)) {
+      value = value.replace(/\./g, "").replace(",", ".");
+      diag(
+        "warning",
+        "NUMBER_LOCALE",
+        "Duizendtalscheiding en decimale komma omgezet.",
+        line,
+        record,
+        column,
+      );
+    } else if (/^[-+]?\d{1,3}(,\d{3})+\.\d+$/.test(value)) {
+      value = value.replace(/,/g, "");
+      diag(
+        "warning",
+        "NUMBER_LOCALE",
+        "Duizendtalscheiding omgezet.",
+        line,
+        record,
+        column,
+      );
+    } else if (/^[-+]?\d+,\d+(?:[eE][-+]?\d+)?$/.test(value)) {
+      value = value.replace(",", ".");
+      diag(
+        "warning",
+        "DECIMAL_COMMA",
+        "Decimale komma omgezet.",
+        line,
+        record,
+        column,
+      );
+    }
+    if (
+      !/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?$/.test(value) ||
+      !Number.isFinite(Number(value))
+    ) {
+      diag(
+        "warning",
+        "INVALID_NUMBER",
+        `Ongeldig getal '${raw}' wordt void; kolom blijft behouden.`,
+        line,
+        record,
+        column,
+      );
+      return undefined;
+    }
+    return Number(value);
+  };
+  const columns: Column[] = [];
+  const quantities = new Set<number>(),
+    indices = new Set<number>();
+  for (const item of header.get("COLUMNINFO") ?? []) {
+    const parts = item.value.split(",").map((v) => v.trim()),
+      index = Number(parts[0]),
+      quantity = Number(parts[3]);
+    if (!Number.isInteger(index) || index < 1 || !Number.isInteger(quantity)) {
+      diag("error", "COLUMNINFO", "Ongeldige kolomdefinitie.", item.line);
+      continue;
+    }
+    if (indices.has(index) || quantities.has(quantity))
+      diag(
+        "warning",
+        "DUPLICATE_QUANTITY",
+        "Dubbele kolom of kwantiteit; eerste waarde heeft voorrang.",
+        item.line,
+        undefined,
+        index,
+      );
+    indices.add(index);
+    quantities.add(quantity);
+    columns.push({
+      index,
+      quantity,
+      unit: parts[1],
+      name: parts[2],
+      line: item.line,
+    });
+    if (!fields[quantity])
+      diag(
+        "warning",
+        "UNKNOWN_COLUMN",
+        `Kwantiteit ${quantity} is onbekend; bewaard in parameters.`,
+        item.line,
+        undefined,
+        index,
+      );
   }
-
-  if (typeof header.zNap === "number") {
-    p.depth_nap = header.zNap - p.depth;
+  const voids = new Map<number, number>();
+  for (const item of header.get("COLUMNVOID") ?? []) {
+    const [col, value] = item.value.split(",");
+    const v = number(value ?? "", item.line);
+    if (v !== undefined) voids.set(Number(col), v);
   }
-
-  return p;
+  for (const item of header.get("MEASUREMENTVAR") ?? []) {
+    const [key, value, unit, ...description] = item.value
+      .split(",")
+      .map((v) => v.trim());
+    report.measurementVariables![key] = {
+      value: number(value, item.line) ?? null,
+      unit,
+      description: description.join(","),
+    };
+  }
+  const xy = first("XYID")
+      ?.split(",")
+      .map((v) => v.trim()),
+    z = first("ZID")
+      ?.split(",")
+      .map((v) => v.trim());
+  report.coordinateSystem = { xy: xy?.[0], z: z?.[0] };
+  let x: number | undefined, y: number | undefined, ground: number | undefined;
+  if (xy) {
+    if (xy[0] === "31000") {
+      x = number(xy[1] ?? "");
+      y = number(xy[2] ?? "");
+    } else
+      diag(
+        "warning",
+        "UNKNOWN_XY_CRS",
+        `XYID ${xy[0]} is geen RD (31000); locatie wordt niet stil omgezet.`,
+      );
+  }
+  if (z) {
+    if (z[0] === "31000") ground = number(z[1] ?? "");
+    else
+      diag(
+        "warning",
+        "UNKNOWN_Z_DATUM",
+        `ZID ${z[0]} is geen NAP (31000); hoogte niet als NAP gebruikt.`,
+      );
+    if (ground === undefined)
+      diag("warning", "MISSING_GROUND", "ZID zonder geldige maaiveldhoogte.");
+  }
+  const declared = Number(first("COLUMN")),
+    expected =
+      Number.isInteger(declared) && declared > 0
+        ? declared
+        : Math.max(0, ...columns.map((c) => c.index));
+  for (let i = 1; i <= expected; i++)
+    if (!indices.has(i))
+      diag(
+        "warning",
+        "MISSING_COLUMNINFO",
+        `Kolom ${i} heeft geen COLUMNINFO; ruwe waarde blijft onder column_${i} bewaard.`,
+        undefined,
+        undefined,
+        i,
+      );
+  let colSep = first("COLUMNSEPARATOR")?.replace(/^['"]|['"]$/g, ""),
+    recSep = first("RECORDSEPARATOR")?.replace(/^['"]|['"]$/g, "");
+  if (colSep === "\\t" || colSep?.toLowerCase() === "tab") colSep = "\t";
+  if (recSep === "\\n") recSep = "\n";
+  if (colSep && colSep.length !== 1)
+    throw new Error("GEF: COLUMNSEPARATOR moet één teken zijn.");
+  if (recSep && recSep.length !== 1)
+    throw new Error("GEF: RECORDSEPARATOR moet één teken zijn.");
+  const body = lines.slice(start).join("\n"),
+    records = body.split(recSep || "\n"),
+    points: MeasurementPoint[] = [];
+  const ranges = new Map<number, { min: number; max: number }>();
+  let line = start + 1,
+    previousLength = 0,
+    corrected = 0;
+  for (const raw of records) {
+    const lineAt = line;
+    line +=
+      (raw.match(/\n/g)?.length ?? 0) + (recSep === "\n" || !recSep ? 1 : 0);
+    let value = raw.trim();
+    if (!value) continue;
+    report.records++;
+    const record = report.records;
+    if (!recSep && /[;!*]$/.test(value)) {
+      value = value.replace(/[;!*]+$/, "");
+      diag(
+        "warning",
+        "RECORD_TERMINATOR",
+        "Niet gedeclareerd eindteken verwijderd.",
+        lineAt,
+        record,
+      );
+    }
+    const tokens =
+      colSep && !/\s/.test(colSep) ? value.split(colSep) : value.split(/\s+/);
+    if (tokens.length !== expected)
+      diag(
+        "error",
+        "COLUMN_COUNT",
+        `Verwacht ${expected} kolommen, ontvangen ${tokens.length}; ontbrekende velden blijven void.`,
+        lineAt,
+        record,
+      );
+    const nums = tokens.map((tok, i) => number(tok, lineAt, record, i + 1));
+    for (let i = 0; i < nums.length; i++) {
+      const v = nums[i];
+      if (v === undefined) continue;
+      if (v === -999999 || v === voids.get(i + 1)) {
+        nums[i] = undefined;
+        report.voids++;
+        diag("info", "VOID", "Void-waarde gefilterd.", lineAt, record, i + 1);
+      } else {
+        const prev = ranges.get(i + 1);
+        ranges.set(i + 1, {
+          min: Math.min(prev?.min ?? v, v),
+          max: Math.max(prev?.max ?? v, v),
+        });
+      }
+    }
+    const p: MeasurementPoint = {
+      depth: 0,
+      parameters: Object.fromEntries(
+        nums.map((v, i) => [`column_${i + 1}`, v ?? null]),
+      ),
+    };
+    const seen = new Set<string>();
+    for (const col of columns) {
+      const v = nums[col.index - 1],
+        field = fields[col.quantity] ?? `quantity_${col.quantity}`;
+      if (!(`${col.quantity}` in p.parameters!))
+        p.parameters![`${col.quantity}`] = v ?? null;
+      if (v !== undefined && !seen.has(field)) {
+        seen.add(field);
+        if (["qc", "fs", "rf", "u2", "inclination"].includes(field))
+          (p as unknown as Record<string, unknown>)[field] = v;
+      }
+    }
+    const get = (q: number) => {
+      const col = columns.find((c) => c.quantity === q);
+      return col ? nums[col.index - 1] : undefined;
+    };
+    const measured = get(11),
+      length = get(1);
+    let depth = measured ?? length;
+    if (depth === undefined) {
+      report.omittedRecords++;
+      diag(
+        "error",
+        "MISSING_DEPTH",
+        "Record zonder diepte weggelaten.",
+        lineAt,
+        record,
+      );
+      continue;
+    }
+    if (depth < 0) {
+      diag(
+        "warning",
+        "NEGATIVE_DEPTH",
+        "Negatieve diepte naar positieve afstand onder maaiveld omgezet.",
+        lineAt,
+        record,
+      );
+      depth = Math.abs(depth);
+    }
+    if (measured !== undefined) report.depthMethod = "corrected-depth";
+    else {
+      let angle = get(8);
+      const ns = get(9) ?? get(21),
+        ew = get(10) ?? get(22);
+      if (angle === undefined && ns !== undefined && ew !== undefined)
+        angle =
+          (Math.atan(
+            Math.hypot(
+              Math.tan((ns * Math.PI) / 180),
+              Math.tan((ew * Math.PI) / 180),
+            ),
+          ) *
+            180) /
+          Math.PI;
+      if (angle !== undefined && Math.abs(angle) < 90) {
+        corrected +=
+          (depth - previousLength) * Math.cos((angle * Math.PI) / 180);
+        previousLength = depth;
+        depth = corrected;
+        report.depthMethod = "inclination-corrected";
+      } else {
+        if (previousLength !== 0)
+          diag(
+            "warning",
+            "MISSING_INCLINATION",
+            "Helling ontbreekt of is ongeldig; dit interval is verticaal aangenomen.",
+            lineAt,
+            record,
+          );
+        corrected += depth - previousLength;
+        previousLength = depth;
+        depth = corrected;
+        report.depthMethod = "penetration-length";
+      }
+    }
+    p.depth = depth;
+    if (ground !== undefined) p.depth_nap = ground - depth;
+    if (
+      p.rf === undefined &&
+      p.qc !== undefined &&
+      p.fs !== undefined &&
+      p.qc > 0
+    )
+      p.rf = (100 * p.fs) / p.qc;
+    if (points.length && depth < points[points.length - 1].depth)
+      diag(
+        "warning",
+        "DEPTH_ORDER",
+        "Diepte neemt af; bronvolgorde blijft behouden.",
+        lineAt,
+        record,
+      );
+    points.push(p);
+  }
+  if (report.depthMethod === "inclination-corrected")
+    diag(
+      "warning",
+      "INCLINATION_CORRECTION",
+      "Diepte geïntegreerd uit sondeerlengte en hellingresultante; controleer de meetmethode.",
+    );
+  const count = Number(first("LASTSCAN"));
+  if (first("LASTSCAN") && count !== report.records)
+    diag(
+      "warning",
+      "LASTSCAN",
+      `LASTSCAN ${count} wijkt af van ${report.records} records.`,
+    );
+  for (const item of header.get("COLUMNMINMAX") ?? []) {
+    const [col, min, max] = item.value.split(",").map(Number),
+      range = ranges.get(col);
+    if (
+      range &&
+      (Math.abs(range.min - min) > 1e-6 || Math.abs(range.max - max) > 1e-6)
+    )
+      diag(
+        "warning",
+        "COLUMNMINMAX",
+        `Kolom ${col}: gemeten min/max wijkt af van de header.`,
+        item.line,
+        undefined,
+        col,
+      );
+  }
+  report.points = points.length;
+  const date = (first("STARTDATE") ?? first("FILEDATE"))
+    ?.split(",")
+    .map((v) => v.trim().padStart(2, "0"))
+    .join("-");
+  return attachValidation(
+    {
+      id: first("TESTID") ?? "Unknown",
+      metadata: {
+        pre_excavated_depth_m:
+          report.measurementVariables?.["13"]?.value ?? undefined,
+        removed_layers: (header.get("SPECIMENVAR") ?? []).flatMap((item) => {
+          const parts = item.value.split(","),
+            bottom = number(parts[1] ?? "", item.line);
+          return bottom === undefined
+            ? []
+            : [
+                {
+                  bottom_depth_m: bottom,
+                  description: parts.slice(3).join(",").trim(),
+                },
+              ];
+        }),
+        source_file: filename,
+        project_name: first("PROJECTNAME"),
+        project_number: first("PROJECTID"),
+        date,
+        equipment: first("COMPANYID")?.split(",")[0],
+        ground_level_nap: ground,
+        extra,
+      },
+      position:
+        x !== undefined && y !== undefined
+          ? { x_rd: x, y_rd: y, z_nap: ground }
+          : undefined,
+      points,
+    },
+    report,
+  );
 }

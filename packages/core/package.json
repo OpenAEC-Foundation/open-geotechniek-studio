@@ -1,0 +1,23 @@
+{
+  "name": "@openaec/geotechniek-core",
+  "version": "2026.44.1",
+  "type": "module",
+  "description": "Headless geotechnical parsing, validation and settlement calculations",
+  "license": "MIT",
+  "main": "dist/index.mjs",
+  "exports": "./dist/index.mjs",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build-core.mjs",
+    "test": "node --test test.mjs",
+    "serve": "node dist/server.mjs",
+    "mcp": "node dist/mcp.mjs"
+  }
+}

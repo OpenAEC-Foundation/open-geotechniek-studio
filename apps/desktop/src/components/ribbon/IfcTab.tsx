@@ -38,7 +38,7 @@ export default function IfcTab() {
   if (!hasContent) {
     statusLabel = t("ifc.autoNoCpt", "Geen sonderingen — voeg eerst toe");
   } else if (ifc4x3Ready && ifcxReady) {
-    statusLabel = t("ifc.autoReady", "Live — IFC4x3 + IFCX");
+    statusLabel = t("ifc.autoReady", "Live — experimentele IFCX-snapshot");
   } else {
     statusLabel = t("ifc.autoGenerating", "Bezig met genereren...");
   }
@@ -52,7 +52,7 @@ export default function IfcTab() {
             <div className="ribbon-info-sub">
               {t(
                 "ifc.autoHint",
-                "IFC4x3 en IFCX worden live bijgewerkt zodra sonderingen veranderen.",
+                "Experimentele IFCX-snapshots worden bijgewerkt. IFC4x3-export is uitgeschakeld.",
               )}
             </div>
           </div>

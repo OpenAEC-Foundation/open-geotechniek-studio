@@ -1,0 +1,32 @@
+/* Blueprint: a 240px explorer, white working area, thin separators, 12px body. */
+.calc-workspace { display: grid; grid-template-columns: var(--oa-shell-panel-width) minmax(0, 1fr); height: 100%; min-height: 0; color: var(--oa-text); background: var(--oa-workspace); }
+.worksheet-explorer { background: var(--oa-panel); border-right: 1px solid var(--oa-border); overflow: auto; }
+.worksheet-panel-heading { height: var(--oa-shell-panel-header); display: flex; align-items: center; padding: 0 8px; border-bottom: 1px solid var(--oa-border); color: var(--oa-text-secondary); font: 10px var(--oa-font-mono); text-transform: uppercase; letter-spacing: .04em; }
+.worksheet-explorer .calc-tree { padding: 12px 0; gap: 16px; }
+.worksheet-explorer .calc-tree-add { margin: 0 12px; padding: 6px 10px; background: var(--oa-panel); color: var(--oa-text); border: 1px solid var(--oa-border-strong); border-radius: var(--oa-radius-small); font: 500 12px var(--oa-font-body); }
+.worksheet-explorer .calc-tree-add:hover { background: var(--oa-hover); }
+.worksheet-explorer .calc-tree-group-title { padding: 0 12px 6px; font: 10px var(--oa-font-mono); color: var(--oa-text-secondary); }
+.worksheet-explorer .calc-tree-group ul { padding: 0; }
+.worksheet-explorer .calc-tree-group li { border-radius: 0; padding: 4px 8px 4px 12px; border-left: 3px solid transparent; }
+.worksheet-explorer .calc-tree-group li.active { background: var(--oa-selected); border-left-color: var(--oa-selected-bar); }
+.worksheet-explorer .calc-tree-item { font-size: 12px; color: var(--oa-text); padding: 4px 0; }
+.worksheet-explorer .calc-tree-empty-hint, .worksheet-explorer .calc-tree-empty { padding: 0 12px; font-size: 12px; }
+.worksheet-scroll { min-width: 0; overflow: auto; background: var(--oa-workspace); }
+.worksheet { max-width: 1120px; padding: 28px 32px 48px; margin: 0 auto; }
+.worksheet-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; }
+.worksheet-eyebrow { font: 10px var(--oa-font-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--oa-text-secondary); margin-bottom: 6px; }
+.worksheet-header h1 { font: 500 22px/1.3 var(--oa-font-heading); letter-spacing: -.02em; margin-bottom: 6px; }
+.worksheet-header p:last-child { color: var(--oa-text-secondary); }
+.worksheet-badge { font-size: 11px; padding: 3px 8px; border: 1px solid var(--oa-border); border-radius: 3px; color: var(--oa-text-secondary); white-space: nowrap; }
+.worksheet-notice { display: flex; align-items: center; gap: 10px; padding: 9px 12px; margin-bottom: 24px; background: var(--oa-warning-tint); border-left: 3px solid var(--oa-warning); color: var(--oa-text); font-size: 11px; }
+.worksheet-notice > span { color: var(--oa-warning); font-size: 18px; }
+.worksheet-columns { display: grid; grid-template-columns: minmax(240px, .85fr) minmax(300px, 1.15fr); gap: 32px; align-items: start; }
+.worksheet-input, .worksheet-results { min-width: 0; }
+.worksheet-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100%; padding: 40px; text-align: center; gap: 16px; }
+.worksheet-empty svg { color: var(--oa-text-secondary); }
+.worksheet-empty h1 { font: 500 22px var(--oa-font-heading); }
+.worksheet-empty p { color: var(--oa-text-secondary); line-height: 1.8; }
+.worksheet-primary { padding: 7px 14px; border: 1px solid var(--oa-accent); border-radius: 3px; background: var(--oa-accent); color: var(--oa-text-on-accent); cursor: pointer; }
+.worksheet-primary:disabled { opacity: .5; cursor: default; }
+@media (max-width: 1100px) { .calc-workspace { grid-template-columns: 200px minmax(0,1fr); } .worksheet { padding: 24px; } .worksheet-columns { gap: 24px; } }
+@media (max-width: 850px) { .worksheet-columns { grid-template-columns: minmax(0,1fr); } .worksheet { padding: 20px; } }

@@ -18,7 +18,8 @@
     "forge": "Forge (dark)",
     "dark": "OpenAEC (dark)",
     "blueprint": "Blueprint",
-    "contrast": "High contrast"
+    "contrast": "High contrast",
+    "contrastLight": "High contrast light"
   },
   "about": {
     "appName": "Open Geotechniek Studio",

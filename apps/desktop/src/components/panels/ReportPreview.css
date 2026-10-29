@@ -395,3 +395,7 @@
   margin: 0;
   opacity: 0.8;
 }
+
+.report-layout-options { display: grid; gap: 10px; padding: 12px; border-top: 1px solid var(--oa-border); }
+.report-layout-options label { display: grid; gap: 5px; font-size: 11px; color: var(--oa-text-secondary); }
+.report-layout-options input, .report-layout-options select { width: 100%; padding: 6px; background: var(--oa-panel); color: var(--oa-text); border: 1px solid var(--oa-border-strong); border-radius: 3px; }

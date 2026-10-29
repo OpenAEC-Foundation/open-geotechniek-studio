@@ -23,7 +23,9 @@ pub fn open_cpt_core(content: &str, filename: &str, state: &AppState) -> Result<
     } else {
         parse_auto(content).map_err(|e| e.to_string())?
     };
-    cpt.metadata.source_file = filename.to_string();
+    if !lower.ends_with(".ifcgeo") || cpt.metadata.source_file.is_empty() {
+        cpt.metadata.source_file = filename.to_string();
+    }
     state.cpts.lock().unwrap().insert(cpt.id.clone(), cpt.clone());
     Ok(cpt)
 }

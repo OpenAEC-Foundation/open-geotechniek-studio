@@ -1,3 +1,4 @@
+import { drawingViewport, parseDrawingScale } from "../../utils/drawingViewport";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -4193,52 +4194,24 @@ export default function SonderingstekeningView() {
       await new Promise((res) => setTimeout(res, 180));
       await new Promise((res) => requestAnimationFrame(() => res(null)));
       try {
-        // Twee-staps capture i.p.v. html-to-image's toPng/toJpeg:
-        //  1. toSvg — serialiseert het papier (tiles inline als data-URLs).
-        //     Gemeten betrouwbaar en snel (±0,5 s).
-        //  2. Eigen rasterisatie: Image + canvas + toDataURL("image/jpeg").
-        // Reden: html-to-image's interne SVG→canvas-stap bleek in
-        // Chromium/WebView2 te kunnen hangen (promise resolvet nooit →
-        // "PDF exporteren…" voor altijd), en het oude PNG-pad joeg jsPDF
-        // door een pure-JS decode/hercompressie met meerdere bitmap-
-        // kopieën (WebView2 OOM → crash + corrupt bestand). JPEG is
-        // 1-3 MB en gaat ONGEWIJZIGD (passthrough) het PDF in; de eigen
-        // rasterisatie heeft een harde time-out zodat de export nooit
-        // meer eindeloos kan blijven hangen.
-        const { toSvg } = await import("html-to-image");
-        const svgUrl = await toSvg(paperEl, { backgroundColor: "#ffffff" });
-        const ratio = Math.max(1, Math.min(3, 3000 / paperEl.clientWidth));
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const img = new Image();
-          const timer = window.setTimeout(
-            () => reject(new Error("rasterisatie-time-out (30 s)")),
-            30000,
-          );
-          img.onload = () => {
-            window.clearTimeout(timer);
-            try {
-              const c = document.createElement("canvas");
-              c.width = Math.round(paperEl.clientWidth * ratio);
-              c.height = Math.round(paperEl.clientHeight * ratio);
-              const ctx = c.getContext("2d");
-              if (!ctx) {
-                reject(new Error("geen canvas-context"));
-                return;
-              }
-              ctx.fillStyle = "#ffffff";
-              ctx.fillRect(0, 0, c.width, c.height);
-              ctx.drawImage(img, 0, 0, c.width, c.height);
-              resolve(c.toDataURL("image/jpeg", 0.92));
-            } catch (e) {
-              reject(e instanceof Error ? e : new Error(String(e)));
-            }
-          };
-          img.onerror = () => {
-            window.clearTimeout(timer);
-            reject(new Error("SVG-rasterisatie mislukt"));
-          };
-          img.src = svgUrl;
-        });
+        // Canvas rendering avoids the SVG/foreignObject security failure in WebKit.
+        // Capture the physical paper, independently of its on-screen zoom transform.
+        const { default: html2canvas } = await import("html2canvas");
+        const ratio = Math.max(1, Math.min(2, 3000 / paperEl.clientWidth));
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const canvas = await Promise.race([
+          html2canvas(paperEl, {
+            scale: ratio, useCORS: true, allowTaint: false, backgroundColor: "#ffffff",
+            imageTimeout: 10000, logging: false,
+            width: paperEl.clientWidth, height: paperEl.clientHeight,
+            onclone: (_document, clone) => {
+              clone.style.transform = "none"; clone.style.position = "relative";
+              clone.style.left = "0"; clone.style.top = "0"; clone.style.margin = "0";
+            },
+          }),
+          new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("PDF-rasterisatie duurde langer dan 30 seconden")), 30000); }),
+        ]).finally(() => { if (timer) clearTimeout(timer); });
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
 
         const { jsPDF } = await import("jspdf");
         const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [wMm, hMm] });
@@ -4318,6 +4291,13 @@ export default function SonderingstekeningView() {
     // Properties-panel ↔ view bridge.
     const onSetTitleBlock = (e: Event) => {
       const ce = e as CustomEvent<{ field: keyof TitleBlockData; value: string }>;
+      if (ce.detail.field === "scale") {
+        const next = parseDrawingScale(ce.detail.value);
+        if (next == null) { setToast("Ongeldige schaal: gebruik bijvoorbeeld 1:850 (50–100.000)."); return; }
+        setScale(next);
+        setTitleBlock((tb) => ({ ...tb, scale: `1:${next}` }));
+        return;
+      }
       setTitleBlock((tb) => ({ ...tb, [ce.detail.field]: ce.detail.value }));
     };
     const onUpdateSelectedRaster = (e: Event) => {
@@ -4727,7 +4707,7 @@ export default function SonderingstekeningView() {
         : null,
       titleBlock,
     };
-    setLatestTekening(full);
+    setLatestTekening(full, activeDocId);
   }, [
     paperSize,
     scale,
@@ -4834,7 +4814,7 @@ export default function SonderingstekeningView() {
     } else {
       setOverlay(null);
     }
-    setMapView(pending.center);
+
     // Herstel de opgeslagen VIEWPORT alleen wanneer dat de sondering-fit
     // niet in de weg zit:
     //  • expliciete .ifcgis-open → altijd (de gebruiker opent díe tekening);
@@ -4854,6 +4834,8 @@ export default function SonderingstekeningView() {
         : activeD?.kind === "project"
           ? Array.from(activeD.cpts.values()).some((c) => c.position != null)
           : false;
+    const restoredViewport = drawingViewport(pending.center, ds.lastMapView, !!explicit, soundingOpen);
+    setMapView(restoredViewport);
     const alreadyFitted =
       fittedTekeningKey === `cpts:${ds.activeDocId}:${pending.paperSize}`;
     if (explicit != null || !soundingOpen || alreadyFitted) {
@@ -4866,7 +4848,7 @@ export default function SonderingstekeningView() {
         const map = mapRef.current;
         if (!map) return;
         try {
-          map.panTo([pending.center.lat, pending.center.lon], { animate: false });
+          map.panTo([restoredViewport.lat, restoredViewport.lon], { animate: false });
           // Trigger scale-effect re-run zodat 1:N opnieuw wordt toegepast
           // op de nieuwe centre-positie (mPerPx kan iets verschillen
           // door cos(lat) verschil tussen oude en nieuwe centre).

@@ -68,7 +68,7 @@ export default function PdfCropDialog({
     (async () => {
       try {
         const { getDocument } = await import("../../utils/pdfjsSetup");
-        const task = getDocument(pdfSrc);
+        const task = getDocument({ url: pdfSrc });
         const doc = await task.promise;
         const out: string[] = [];
         for (let i = 1; i <= doc.numPages; i++) {
@@ -112,7 +112,7 @@ export default function PdfCropDialog({
       try {
         setPageImage(null);
         const { getDocument } = await import("../../utils/pdfjsSetup");
-        const task = getDocument(pdfSrc);
+        const task = getDocument({ url: pdfSrc });
         const doc = await task.promise;
         const page = await doc.getPage(selectedPage);
         const viewport = page.getViewport({ scale: PAGE_SCALE });

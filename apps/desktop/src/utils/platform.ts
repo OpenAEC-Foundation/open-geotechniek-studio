@@ -15,7 +15,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core";
-import type { Cpt } from "../types/cpt";
+import type { Cpt, Layer, ProjectMeta } from "../types/cpt";
 
 // ════════════════════════════════════════════════════════════════
 // Detectie — éénmalig op module-load
@@ -115,21 +115,24 @@ export const bro = {
 // In web:   pure-TS parsers (gefParser + broCptParser).
 
 export const cpt = {
+ async detectLayers(value:Cpt):Promise<Layer[]> {
+ const {detectLayers}=await import('./browserCore');return detectLayers(value);
+ },
   async parse(content: string, filename: string): Promise<Cpt> {
-    if (IS_TAURI) {
-      // In desktop laten we Rust de error-handling doen. Geen
-      // silent TS-fallback — als Rust een GEF afwijst is dat een
-      // echte fout die de gebruiker moet zien.
-      return invoke<Cpt>("open_cpt", { content, filename });
+    // GEF uses the same diagnostic parser in desktop, browser and the headless package.
+    const { looksLikeGef, parseGef } = await import('../types/gefParser');
+    if (looksLikeGef(content)) {
+      const parsed = parseGef(content, filename);
+      if (IS_TAURI) await invoke('open_cpt', { content: JSON.stringify(parsed), filename: filename + '.ifcgeo' });
+      return parsed;
     }
-    // Browser: probeer pure-TS parsers in volgorde van sniff-prijs.
-    const [{ looksLikeGef, parseGef }, { looksLikeBroCptXml, parseBroCptXml }] =
-      await Promise.all([
-        import("../types/gefParser"),
-        import("../types/broCptParser"),
-      ]);
-    if (looksLikeGef(content)) return parseGef(content, filename);
-    if (looksLikeBroCptXml(content)) return parseBroCptXml(content, filename);
+    if (/\.(ifcgeo|ifcx)$/i.test(filename)) {const {parseCptSnapshot}=await import('../types/projectFile');return parseCptSnapshot(content);}
+    const { looksLikeBroCptXml, parseBroCptXml } = await import("../types/broCptParser");
+    if (looksLikeBroCptXml(content)) {
+      const parsed=parseBroCptXml(content,filename);
+      if(IS_TAURI)await invoke('open_cpt',{content:JSON.stringify(parsed),filename:filename+'.ifcgeo'});
+      return parsed;
+    }
     throw new Error(
       `Onbekend CPT-formaat (${filename}). Verwacht GEF of BRO CPT XML.`,
     );
@@ -191,4 +194,60 @@ export const files = {
     });
     return picked.map((f) => ({ name: f.name, text: f.text }));
   },
+};
+
+export const reports = {
+    async preview(cpts: Cpt[], project: ProjectMeta, sections?: import('../store/reportSectionsState').ReportSections): Promise<Uint8Array> {
+        // Both interfaces render the supplied snapshots through the same engine.
+        const { generateBrowserReport } = await import('./browserReport');
+        return generateBrowserReport(cpts, project, sections);
+    },
+    async save(cpts: Cpt[], project: ProjectMeta, sections?: import('../store/reportSectionsState').ReportSections): Promise<void> {
+        if (IS_TAURI) {
+            const { save } = await import('@tauri-apps/plugin-dialog');
+            const outputPath = await save({ defaultPath: project.title + '.pdf', filters: [{ name: 'PDF', extensions: ['pdf'] }] });
+            if (outputPath) {
+                const bytes = await reports.preview(cpts, project, sections);
+                const { writeFile } = await import('@tauri-apps/plugin-fs');
+                await writeFile(outputPath, bytes);
+            }
+            return;
+        }
+        const { downloadPdf } = await import('./downloadPdf');
+        await downloadPdf((project.title || 'rapport') + '.pdf', await reports.preview(cpts, project, sections));
+    },
+    /** Reserve the browser window while the click still grants popup permission. */
+    async generateAndOpen(cpts: Cpt[], project: ProjectMeta, sections?: import('../store/reportSectionsState').ReportSections): Promise<void> {
+        if (IS_TAURI) {
+            await reports.open(await reports.preview(cpts, project, sections));
+            return;
+        }
+        const opened = window.open('about:blank', '_blank');
+        if (!opened) throw new Error('Sta pop-ups toe of gebruik Genereer PDF om te downloaden.');
+        let url: string | undefined;
+        try {
+            opened.opener = null;
+            const bytes = await reports.preview(cpts, project, sections);
+            if (opened.closed) throw new Error('Het PDF-venster is gesloten. Open het rapport opnieuw.');
+            url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
+            opened.location.href = url;
+            const documentUrl = url;
+            setTimeout(() => URL.revokeObjectURL(documentUrl), 60000);
+        } catch (error) {
+            if (url) URL.revokeObjectURL(url);
+            opened.close();
+            throw error;
+        }
+    },
+    async open(bytes: Uint8Array): Promise<void> {
+        if (IS_TAURI)
+            return invoke('open_report_pdf', { bytes: Array.from(bytes) });
+        const url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
+        const opened = window.open(url, '_blank');
+        if (!opened) {
+            URL.revokeObjectURL(url);
+            throw new Error('Sta pop-ups toe of gebruik Genereer PDF om te downloaden.');
+        }
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
 };

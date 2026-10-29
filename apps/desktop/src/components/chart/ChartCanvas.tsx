@@ -10,6 +10,8 @@ import {
   moveMarkerTo,
 } from "./chart-renderer";
 
+import { markersFor } from "./markers";
+
 // Marker = horizontale annotatie-lijn, gekoppeld aan één CPT via `cptId`
 // zodat hij alleen in die sondering-kolom verschijnt (niet globaal).
 type Marker = { nap?: number; depth?: number; cptId?: string };
@@ -41,7 +43,13 @@ export default function ChartCanvas() {
   /** Per-CPT column width ratios. Length must match cpts.length. */
   const [columnRatios, setColumnRatios] = useState<number[]>([]);
   /** Reference markers — list of horizontal lines. Double-click adds; right-click deletes one. */
-  const [markers, setMarkers] = useState<Marker[]>([]);
+  const markers = useMemo(() => cpts.flatMap(markersFor), [cpts]);
+  const setMarkers = (update: Marker[] | ((current: Marker[]) => Marker[])) => {
+    const state = useCptStore.getState();
+    const visible = Array.from(state.cpts.values()).filter((cpt) => !state.hiddenCptIds.has(cpt.id));
+    const current = visible.flatMap(markersFor);
+    state.setChartMarkers(visible.map((cpt) => cpt.id), typeof update === 'function' ? update(current) : update);
+  };
   /** Right-click context menu for marker (screen coords + which marker idx). */
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; markerIdx: number } | null>(null);
   /** Hover indicator — depth + which CPT is under the cursor. */

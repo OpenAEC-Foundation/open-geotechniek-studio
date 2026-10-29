@@ -9,12 +9,14 @@
     5px
     var(--calc-input-w, 300px)
     5px
-    1fr
+    minmax(260px, 1fr)
     5px
     var(--calc-right-w, 380px);
   /* 2 rows: optionele banner (auto) + content (1fr). */
   grid-template-rows: auto 1fr;
   height: 100%;
+  min-width: 0;
+  overflow: auto;
   background: var(--theme-bg, #fff);
   color: var(--theme-text, #36363e);
 }

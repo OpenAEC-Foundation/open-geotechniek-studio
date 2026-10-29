@@ -1,0 +1,12 @@
+[package]
+name = "openaec-geotechniek-sdk"
+version = "2026.44.1"
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "openaec_geotechniek"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde_json = "1"

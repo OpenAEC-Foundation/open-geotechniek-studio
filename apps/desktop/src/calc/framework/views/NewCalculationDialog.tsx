@@ -23,7 +23,7 @@ export function NewCalculationDialog({ open, onClose }: Props) {
   const activeCptId = useCptStore((s) => s.activeCptId);
   const addCalc = useCalculationsStore((s) => s.addCalculation);
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(CALC_REGISTRY[0]?.id ?? null);
   const [name, setName] = useState("");
 
   const grouped = useMemo(() => {
@@ -42,7 +42,7 @@ export function NewCalculationDialog({ open, onClose }: Props) {
     if (!mod) return;
     const ctx = { cpts, activeCptId, projectMeta };
     const input = mod.defaultInput(ctx);
-    const finalName = name.trim() || `${mod.name} ${Date.now().toString(36).slice(-4)}`;
+    const finalName = name.trim() || mod.name;
     // Atomic: input meegeven aan addCalculation in plaats van een aparte
     // updateCalc-aanroep. Met de oude 2-step (addCalc → updateCalc) was
     // er een korte tussenstand waarin `instance.input === {}` was, en
@@ -66,12 +66,12 @@ export function NewCalculationDialog({ open, onClose }: Props) {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="bv. Hoofdgebouw paalfundering"
+              placeholder="Bijvoorbeeld: Zetting ophoging"
             />
           </label>
 
           <div className="calc-modal-modules">
-            {(Object.keys(CATEGORY_LABELS) as CalcCategory[]).map((cat) => (
+            {(Object.keys(CATEGORY_LABELS) as CalcCategory[]).filter((cat) => grouped[cat]?.length).map((cat) => (
               <div key={cat} className="calc-modal-category">
                 <div className="calc-modal-category-title">{CATEGORY_LABELS[cat]}</div>
                 {(grouped[cat] ?? []).map((m) => (

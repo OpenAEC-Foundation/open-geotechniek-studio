@@ -64,10 +64,10 @@
     "copied": "Copied",
     "saveAs": "Save as...",
     "autoGroup": "Auto-generated",
-    "autoReady": "Live — IFC4x3 + IFCX",
+    "autoReady": "Live — IFCX snapshot",
     "autoGenerating": "Generating...",
     "autoNoCpt": "No CPTs — add one first",
-    "autoHint": "IFC4x3 and IFCX update live whenever your CPTs change.",
+    "autoHint": "Experimental IFCX snapshots update live. IFC4x3 export is disabled.",
     "autoLive": "Live — auto-generated",
     "paneNoCpt": "No CPTs in this project — add a CPT first.",
     "paneGenerating": "Generating..."

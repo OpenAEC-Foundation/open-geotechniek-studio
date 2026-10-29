@@ -1,41 +1,21 @@
-import { useMemo } from "react";
-import { useCalculationsStore } from "../../calc/framework/store";
-import { useCptStore } from "../../store/useCptStore";
-import type { CalculationInstance } from "../../calc/framework/types";
-
-// Stabiele empty-array fallback om de zustand re-render loop te
-// voorkomen die `?? []` binnen een selector veroorzaakt.
-const EMPTY_LIST: readonly never[] = [];
-
-/** Ribbon-tab content voor "Berekeningen". Toont een snel-selecteer-lijst
- *  van bestaande berekeningen in het actieve project. De "+ Nieuwe
- *  berekening" knop is verwijderd uit de ribbon — die functionaliteit
- *  zit nu enkel in het project-paneel (ProjectTreePanel). */
+import { useCalculationsStore } from '../../calc/framework/store';
+import { useCptStore } from '../../store/useCptStore';
+import { getCalcModule } from '../../calc/framework/registry';
+import RibbonGroup from './RibbonGroup';
+import RibbonButton from './RibbonButton';
+import { infoIcon } from './icons';
+const newIcon = '<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5zM14 3v6h5M8 15h8m-4-4v8"/></svg>';
 export function BerekeningenTab() {
   const activeDocId = useCptStore((s) => s.activeDocId);
+  const activeCalcId = useCalculationsStore((s) => s.activeCalcId);
   const byDoc = useCalculationsStore((s) => s.byDoc);
-  const list = useMemo(
-    () => (activeDocId ? byDoc.get(activeDocId) ?? EMPTY_LIST : EMPTY_LIST),
-    [activeDocId, byDoc],
-  ) as CalculationInstance[];
-  const setActive = useCalculationsStore((s) => s.setActive);
-
-  return (
-    <div className="ribbon-content ribbon-berekeningen">
-      <div className="ribbon-calc-list">
-        {list.length === 0 && (
-          <span className="ribbon-empty">Nog geen berekeningen</span>
-        )}
-        {list.map((c) => (
-          <button
-            key={c.id}
-            className="ribbon-btn ribbon-btn-tab"
-            onClick={() => setActive(c.id)}
-          >
-            {c.name}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+  const active = (activeDocId ? byDoc.get(activeDocId) : [])?.find((c) => c.id === activeCalcId && getCalcModule(c.moduleId));
+  return <div className="ribbon-content ribbon-berekeningen">
+    <RibbonGroup label="Berekening"><RibbonButton icon={newIcon} label="Nieuw" title="Nieuwe zettingsberekening" disabled={!activeDocId} onClick={() => window.dispatchEvent(new Event('ogs:open-new-calc'))} /></RibbonGroup>
+    <RibbonGroup label="Methode"><RibbonButton icon={infoIcon} label="Toelichting" disabled={!active} onClick={() => {
+      const reference = document.querySelector<HTMLDetailsElement>('.settlement-reference');
+      if (reference) { reference.open = true; reference.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    }} /></RibbonGroup>
+    <div className="ribbon-calculation-context"><strong>{active?.name ?? 'Zetting van één laag'}</strong><span>1D-compressie · constante modulus</span><span>Conceptberekening</span></div>
+  </div>;
 }

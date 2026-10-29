@@ -38,4 +38,12 @@ docs/*
 !docs/superpowers/
 # REST/MCP-API-documentatie hoort in de repo.
 !docs/API.md
+!docs/READINESS.md
 /export/
+
+# Additional web verification outputs
+dist-public/
+dist-platform/
+
+__pycache__/
+*.pyc

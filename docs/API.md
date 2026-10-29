@@ -1,3 +1,9 @@
+# Integration entry points
+
+For new integrations use the stateless [headless Node core/API/MCP](../packages/core/README.md). It runs without a desktop UI, has explicit version/validation endpoints, an external-client smoke test and a trusted custom-importer boundary. The [native C ABI](../packages/native/README.md) covers settlement and snapshot validation. The [AWS deployment candidate](../deploy/aws/README.md) is separate and awaits runtime verification.
+
+The legacy desktop-binary API below remains loopback-only and stateful. Its raw GEF/BRO parsers and native reports are older implementations; they do not provide the new frontend parser diagnostics, report scale controls or importer registration. Do not expose this legacy service through a network proxy. For validated parsing use the Node core and pass CPT JSON snapshots into the desktop. IFC4x3 generation has been disabled because the legacy writer is not schema-valid; explicitly request experimental `ifcx` where needed. The default legacy IFC request will now return an error.
+
 # Open Geotechniek Studio — REST API
 
 Start de lokale API met:
@@ -24,12 +30,12 @@ beide roepen dezelfde interne `*_core`-functies aan als de desktop-GUI.
 | POST    | `/api/cpts`                  | GEF- of BRO-XML parsen en cachen |
 | GET     | `/api/cpts/:id`              | Eén CPT (incl. meetdata) |
 | DELETE  | `/api/cpts/:id`              | CPT uit de cache verwijderen |
-| GET     | `/api/cpts/:id/layers`       | Robertson-laagdetectie |
+| GET     | `/api/cpts/:id/layers`       | Indicatieve qc/Rf-laagdetectie |
 | GET     | `/api/cpts/:id/csv`          | Meetdata als CSV (`text/csv`) |
 | POST    | `/api/export/geojson`        | GeoJSON FeatureCollection van CPT-locaties |
 | POST    | `/api/export/dwg`            | Tekening-geometrie naar DXF/DWG (bytes) |
 | POST    | `/api/report`                | Multi-CPT PDF-rapport (`application/pdf`) |
-| POST    | `/api/ifc`                   | IFC4x3 of IFCX genereren uit geladen CPT's |
+| POST    | `/api/ifc`                   | Experimentele IFCX-snapshot genereren |
 | POST    | `/api/project/ifcx`          | IFCX-preview van een tekening-state |
 | POST    | `/api/bro/area`              | BRO-sonderingen binnen een bbox |
 | POST    | `/api/bro/bores`             | BRO-boringen binnen een bbox |

@@ -1,3 +1,4 @@
+import { classify } from "../../utils/browserCore";
 /**
  * CPT Chart Renderer — pure Canvas drawing.
  *
@@ -46,42 +47,8 @@ export const ROBERTSON_ZONES: RobertsonZone[] = [
 ];
 
 export function classifyRobertson(qc: number | undefined, rf: number | undefined): RobertsonZone | null {
-  if (qc == null || rf == null) return null;
-  if (qc <= 0 || rf < 0) return null;
-
-  if (qc > 25) {
-    if (rf < 1) return ROBERTSON_ZONES[6];
-    return ROBERTSON_ZONES[7];
-  }
-  if (qc > 10) {
-    if (rf < 0.5) return ROBERTSON_ZONES[6];
-    if (rf < 1.5) return ROBERTSON_ZONES[5];
-    if (rf < 3) return ROBERTSON_ZONES[4];
-    return ROBERTSON_ZONES[7];
-  }
-  if (qc > 5) {
-    if (rf < 1) return ROBERTSON_ZONES[5];
-    if (rf < 2) return ROBERTSON_ZONES[4];
-    if (rf < 4) return ROBERTSON_ZONES[3];
-    if (rf < 6) return ROBERTSON_ZONES[2];
-    return ROBERTSON_ZONES[8];
-  }
-  if (qc > 2) {
-    if (rf < 1) return ROBERTSON_ZONES[4];
-    if (rf < 2.5) return ROBERTSON_ZONES[3];
-    if (rf < 5) return ROBERTSON_ZONES[2];
-    if (rf < 8) return ROBERTSON_ZONES[1];
-    return ROBERTSON_ZONES[0];
-  }
-  if (qc > 0.5) {
-    if (rf < 1.5) return ROBERTSON_ZONES[3];
-    if (rf < 4) return ROBERTSON_ZONES[2];
-    if (rf < 8) return ROBERTSON_ZONES[1];
-    return ROBERTSON_ZONES[0];
-  }
-  if (rf < 5) return ROBERTSON_ZONES[2];
-  if (rf < 10) return ROBERTSON_ZONES[1];
-  return ROBERTSON_ZONES[0];
+  const result = classify(qc, rf);
+  return result ? ROBERTSON_ZONES[result.number - 1] : null;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1360,9 +1327,9 @@ export function moveMarkerTo(
   const depth = yToDepth(clampedY, shared, owner.depthViewMin, owner.depthViewMax);
   const groundNap = owner.cpt.metadata.ground_level_nap;
   if (marker.nap != null && typeof groundNap === "number") {
-    return { nap: groundNap - depth, cptId: marker.cptId };
+    return { nap: groundNap - depth, cptId: owner.cpt.id };
   }
-  return { depth, cptId: marker.cptId };
+  return { depth, cptId: owner.cpt.id };
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -1457,7 +1424,7 @@ export function renderChart(
       ctx.fillText(label, tabL + tabW / 2, tabTop + (tabBot - tabTop) / 2);
     }
 
-    drawPanelHeader(ctx, colors, shared, c.layout.soil, "SBT", colors.textBright, null, null);
+    drawPanelHeader(ctx, colors, shared, c.layout.soil, "qc/Rf*", colors.textBright, null, null);
     drawPanelHeader(ctx, colors, shared, c.layout.qc,   "Conusweerstand (qc, MPa)",  colors.qc, c.qcViewMin, c.qcViewMax, QC_LADDER);
     drawPanelHeader(ctx, colors, shared, c.layout.fs,   "Plaatselijke wrijving (fs, MPa)", colors.fs, c.fsViewMin, c.fsViewMax, FS_LADDER);
     // Rf header is mirrored — pass max/min swapped so label "0" lands on

@@ -1,3 +1,4 @@
+import { APP_VERSION } from "../../version";
 import { useState, useEffect, useRef, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { LANGUAGES, changeLanguage } from "../../i18n/config";
@@ -10,11 +11,11 @@ import "../ThemedSelect.css";
 import "./SettingsDialog.css";
 
 const THEME_OPTIONS = [
-  { value: "light",     labelKey: "appearance.light",     swatches: ["#FAFAF9", "#FFFFFF", "#D97706", "#36363E"] },
-  { value: "forge",     labelKey: "appearance.forge",     swatches: ["#36363E", "#44444C", "#D97706", "#FAFAF9"] },
-  { value: "openaec",   labelKey: "appearance.dark",      swatches: ["#27272A", "#1C1917", "#D97706", "#FAFAF9"] },
-  { value: "blueprint", labelKey: "appearance.blueprint", swatches: ["#0F1B2D", "#1A2C45", "#60A5FA", "#E0E7FF"] },
-  { value: "contrast",  labelKey: "appearance.contrast",  swatches: ["#000000", "#0A0A0A", "#FFD700", "#FFFFFF"] },
+  { value: "light", labelKey: "appearance.light", swatches: ["#F1EEEA", "#FFFFFF", "#D97706", "#2A2A32"] },
+  { value: "dark", labelKey: "appearance.dark", swatches: ["#2A2A32", "#33333C", "#D97706", "#EDEBE8"] },
+  { value: "blueprint", labelKey: "appearance.blueprint", swatches: ["#142842", "#1B3556", "#60A5FA", "#E0E7FF"] },
+  { value: "high-contrast-dark", labelKey: "appearance.contrast", swatches: ["#000000", "#FFFFFF", "#FFD700", "#FFFFFF"] },
+  { value: "high-contrast-light", labelKey: "appearance.contrastLight", swatches: ["#FFFFFF", "#000000", "#92400E", "#000000"] },
 ];
 
 /* ─── Tab configuratie ──────────────────────────────────────
@@ -27,7 +28,12 @@ const THEME_OPTIONS = [
 const TAB_IDS = ["general", "appearance", "extensions", "about"] as const;
 
 export function applyTheme(theme?: string) {
-  document.documentElement.setAttribute("data-theme", theme || "light");
+  const aliases: Record<string, string> = { forge: "dark", openaec: "dark", contrast: "high-contrast-dark" };
+  const selected = aliases[theme ?? ""] ?? theme ?? "light";
+  const resolved = THEME_OPTIONS.some((option) => option.value === selected) ? selected : "light";
+  document.documentElement.setAttribute("data-theme", resolved);
+  document.documentElement.setAttribute("data-oa-theme", resolved);
+  return resolved;
 }
 
 interface SettingsDialogProps {
@@ -368,7 +374,7 @@ function AboutTabContent() {
     <div className="settings-section">
       <h3>{t("about.appName")}</h3>
       <div style={{ fontSize: 11, lineHeight: 1.8 }}>
-        <p><strong>{t("about.version")}:</strong> 0.1.0</p>
+        <p><strong>{t("about.version")}:</strong> {APP_VERSION}</p>
         <p><strong>{t("about.license")}:</strong> MIT</p>
         <p style={{ marginTop: 8, color: "var(--theme-dialog-content-secondary)" }}>
           {t("about.description")}

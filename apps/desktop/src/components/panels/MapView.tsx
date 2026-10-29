@@ -3,6 +3,8 @@ import * as L from "leaflet";
 import { toPng } from "html-to-image";
 import { fetchBagPanden, fetchKadasterPercelen } from "../../utils/pdokWfs";
 import { AdressenLayer } from "../../utils/adressenLayer";
+import { getTopotijdreisState } from "./TopotijdreisSlider";
+import { statesFor } from "./GisLayerPanel";
 import MapAddressSearch from "./MapAddressSearch";
 import "leaflet/dist/leaflet.css";
 import proj4 from "proj4";
@@ -12,6 +14,7 @@ import {
   loadBoreFromContent,
   mergeIntoNewProject,
   addBroToActiveProject,
+  newProjectDocument,
   openGwpFromBroId,
 } from "../../store/useCptStore";
 import { setLayerLive } from "../../store/tekeningState";
@@ -236,6 +239,8 @@ const BRO_REFETCH_DEBOUNCE_MS = 500;
  * draws a line + distance label between the two markers, then exits the
  * mode. Esc cancels.
  */
+let lastMapDocId: string | null | undefined;
+
 export default function MapView() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -287,11 +292,7 @@ export default function MapView() {
    *  and to remember the value when new markers get added later
    *  (e.g. after a BRO archive reload). */
   const layerOpacityRef = useRef<Record<string, number>>({});
-  /** Last document id we auto-fitted the map for. `null` until the
-   *  first fit. Mismatch with `activeDocId` triggers a force-fit even
-   *  when the markers are already in the current view — used so a
-   *  tab-switch into Kaart with a project loaded snaps to the
-   *  sonderingen immediately. */
+  /** Fit once for each newly opened document; keep the viewport on return. */
   const fittedDocIdRef = useRef<string | null>(null);
 
   /** When a topotijdreis layer is active it replaces the base layers, so
@@ -317,12 +318,16 @@ export default function MapView() {
   /** Disable export-knop tijdens bezig — voorkomt dubbele invokes als
    *  de gebruiker meerdere keren klikt tijdens een trage canvas-render. */
   const [exporting, setExporting] = useState(false);
+  const [selectedBroIds, setSelectedBroIds] = useState<string[]>([]);
+  const [addingBro, setAddingBro] = useState(false);
+  const addingBroRef = useRef(false);
 
   // CPTs from store — used to render project markers + connecting distance lines.
   // Hidden CPTs are filtered out so they don't clutter the map.
   const cptsMap = useCptStore((s) => s.cpts);
   const activeCptId = useCptStore((s) => s.activeCptId);
   const activeDocId = useCptStore((s) => s.activeDocId);
+  const previousActiveCptRef = useRef(activeCptId);
   const hiddenCptIds = useCptStore((s) => s.hiddenCptIds);
   // CPT-selectie state (Ctrl/Cmd+klik = toggle, Shift+drag = box-select).
   // Wordt door dit component zelf onderhouden via store-actions; andere
@@ -352,33 +357,8 @@ export default function MapView() {
   // ── 1. Init map (one-time) ─────────────────────────────────
   useEffect(() => {
     if (!containerRef.current) return;
-    // Lifecycle-guards: `disposed` wordt aan het einde van het effect
-    // op true gezet bij cleanup. Hoog up gedeclareerd zodat reloadBag/
-    // reloadKadaster (verderop gedefinieerd binnen dit effect) er bij
-    // kunnen. autoEnableTimeouts collecteert setTimeout-IDs voor de
-    // staggered toggle-dispatch, ook in cleanup leeggemaakt.
     let disposed = false;
-    const autoEnableTimeouts: number[] = [];
-    // Default-locatie: Lange Geldersekade 2, 3311CJ Dordrecht — onze
-    // home-base. WGS84 (4.66003133, 51.81435338) gevalideerd via PDOK
-    // LocatieServer. Zoom 17 = ~150m bredegezichtsveld, "iets verder
-    // uitgezoomd" zodat de straat + omgeving in beeld zijn, niet enkel
-    // het pand.
-    //
-    // Prioriteit:
-    //   1. Actief project mét positionele CPTs → centreer op het
-    //      geografisch midden (zoom 17, project-overzicht).
-    //   2. Actieve losse CPT-tab mét positie → centreer op die
-    //      sondering (zoom 18, pand-zicht).
-    //   3. Leeg project (project zonder positionele CPTs) → home-base.
-    //   4. Geen document open (geen project, geen CPT) → home-base.
-    //      Override lastMapView expliciet zodat de Kaart-tab altijd op
-    //      Lange Geldersekade opent zodra er niks geladen is —
-    //      gebruiker-verzoek.
-    //   5. Alleen wanneer er een document is dat een wenselijke vorige
-    //      positie heeft (zou case 1/2 zijn) gebruiken we lastMapView
-    //      als fallback. In de praktijk is dat hier niet langer een
-    //      pad omdat docCenter dan al gezet is.
+    // Restore the viewport when returning to the same document.
     const DEFAULT_LAT = 51.81435338;
     const DEFAULT_LON = 4.66003133;
     const DEFAULT_ZOOM = 17;
@@ -387,8 +367,6 @@ export default function MapView() {
       (d) => d.id === docState.activeDocId,
     );
     let docCenter: { lat: number; lon: number; zoom: number } | null = null;
-    let isEmptyProject = false;
-    const noDocAtAll = !activeDoc;
     if (activeDoc && activeDoc.kind === "project") {
       const positioned = Array.from(activeDoc.cpts.values()).filter(
         (c) => c.position != null,
@@ -402,10 +380,6 @@ export default function MapView() {
           positioned.length;
         const ll = rdToWgs84(meanX, meanY);
         docCenter = { lat: ll.lat, lon: ll.lon, zoom: 17 };
-      } else {
-        // Leeg project — geen sonderingen met positie. Forceer
-        // home-base, NIET lastMapView.
-        isEmptyProject = true;
       }
     } else if (activeDoc && activeDoc.kind === "cpt" && activeDoc.cpt.position) {
       const pos = activeDoc.cpt.position;
@@ -413,17 +387,12 @@ export default function MapView() {
       docCenter = { lat: ll.lat, lon: ll.lon, zoom: 18 };
     }
     const seed = useCptStore.getState().lastMapView;
-    // Force-default als er niks geladen is OF als het project leeg is.
-    // Alleen wanneer er een document zonder direct bruikbare positie is
-    // (geen kind matched, theoretisch onmogelijk maar veilig) vallen we
-    // op lastMapView terug — anders altijd home-base.
-    const forceDefault = noDocAtAll || isEmptyProject;
-    const initLat =
-      docCenter?.lat ?? (forceDefault ? DEFAULT_LAT : seed?.lat ?? DEFAULT_LAT);
-    const initLon =
-      docCenter?.lon ?? (forceDefault ? DEFAULT_LON : seed?.lon ?? DEFAULT_LON);
-    const initZoom =
-      docCenter?.zoom ?? (forceDefault ? DEFAULT_ZOOM : seed?.zoom ?? DEFAULT_ZOOM);
+    const restoreView = seed && (lastMapDocId === docState.activeDocId || !activeDoc);
+    const initialView = restoreView ? seed : docCenter ?? seed;
+    const initLat = initialView?.lat ?? DEFAULT_LAT;
+    const initLon = initialView?.lon ?? DEFAULT_LON;
+    const initZoom = initialView?.zoom ?? DEFAULT_ZOOM;
+    if (restoreView) fittedDocIdRef.current = docState.activeDocId;
     const map = L.map(containerRef.current).setView(
       [initLat, initLon],
       initZoom,
@@ -580,16 +549,10 @@ export default function MapView() {
       },
     );
     baseLayersRef.current = baseLayers;
-    // Default base: BRT als achtergrond + luchtfoto op 50% er
-    // bovenop. Luchtfoto wordt OOK direct geattacht zodat de
-    // gebruiker bij Kaart-tab open meteen de luchtfoto ziet — niet
-    // pas na een toggle vanuit het lagen-paneel.
-    baseLayers["brt"].addTo(map);
-    baseLayers["luchtfoto-actueel"].addTo(map);
-    baseLayers["luchtfoto-actueel"].setOpacity(0.5);
-    enabledLayersRef.current["brt"] = true;
-    enabledLayersRef.current["luchtfoto-actueel"] = true;
-    layerOpacityRef.current["luchtfoto-actueel"] = 0.5;
+    enabledLayersRef.current = {};
+    hiddenBaseLayersRef.current = [];
+    topotijdreisLayerRef.current = null;
+    layerOpacityRef.current = { ...statesFor("map").opacity };
 
     // Data layer groups — kept always attached so we just clear/refill.
     broLayerRef.current = L.layerGroup().addTo(map);
@@ -1031,7 +994,17 @@ export default function MapView() {
      */
     const onPopupClick = async (e: MouseEvent) => {
       const target = e.target;
-      if (!(target instanceof Element)) return;
+      if (!(target instanceof Element) || !containerRef.current?.contains(target)) return;
+      const select = target.closest("a.bro-popup-select");
+      if (select) {
+        e.preventDefault();
+        const id = select.getAttribute("data-id");
+        if (id && !addingBroRef.current) {
+          setSelectedBroIds(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id]);
+          map.closePopup();
+        }
+        return;
+      }
       // Grondwaterput-link: aparte class + data-attribuut zodat we
       // 'm los kunnen routeren naar de GMW-loader (geen Tauri
       // fetch nodig — BRO REST is direct CORS-vriendelijk).
@@ -1082,14 +1055,11 @@ export default function MapView() {
           await loadCptFromContent(xml, `${id}.xml`);
         }
         map.closePopup();
-        // Jump the ribbon back to Home so the user immediately sees the
-        // freshly-opened sondering or boring instead of being stranded on
-        // the Kaart tab. The Ribbon component listens for this event.
-        window.dispatchEvent(
-          new CustomEvent("ogs:ribbon-switch", { detail: { tab: "start" } }),
-        );
+        if (open) {
+          window.dispatchEvent(new CustomEvent("ogs:ribbon-switch", { detail: { tab: "start" } }));
+        }
       } catch (err) {
-        console.error("BRO popup action failed", err);
+        setStatus(`Toevoegen mislukt: ${String(err)}`);
       }
     };
     document.addEventListener("click", onPopupClick);
@@ -1109,6 +1079,7 @@ export default function MapView() {
       const { id, enabled } = ce.detail;
       const wasEnabled = enabledLayersRef.current[id] === true;
       enabledLayersRef.current[id] = enabled;
+      (statesFor("map").enabled as Record<string, boolean>)[id] = enabled;
       // Mirror naar de tekeningState-singleton zodat Backstage's
       // save-flow weet welke lagen actief zijn in de `gis`-sectie
       // van het .ifcgis bestand.
@@ -1159,6 +1130,11 @@ export default function MapView() {
       // Base layers — directly add/remove the TileLayer.
       const base = baseLayersRef.current[id];
       if (base) {
+        if (topotijdreisLayerRef.current) {
+          hiddenBaseLayersRef.current = hiddenBaseLayersRef.current.filter(layerId => layerId !== id);
+          if (enabled) hiddenBaseLayersRef.current.push(id);
+          return;
+        }
         if (enabled) {
           if (!map.hasLayer(base)) base.addTo(map);
         } else {
@@ -1197,6 +1173,7 @@ export default function MapView() {
       const dataLayer =
         id === "bro-sonderingen" ? broLayerRef.current :
         id === "bro-boringen" ? broBoresLayerRef.current :
+        id === "bro-grondwaterputten" ? broGwpLayerRef.current :
         id === "project-sonderingen" ? cptLayerRef.current :
         null;
       if (!dataLayer) return;
@@ -1416,6 +1393,7 @@ export default function MapView() {
       const { id, opacity } = ce.detail;
       const clamped = Math.max(0, Math.min(1, opacity));
       layerOpacityRef.current[id] = clamped;
+      (statesFor("map").opacity as Record<string, number>)[id] = clamped;
       // Mirror naar tekeningState (preserveert enabled-state).
       setLayerLive(id, enabledLayersRef.current[id] === true, clamped);
 
@@ -1471,47 +1449,26 @@ export default function MapView() {
     window.addEventListener("ogs:topotijdreis-year", onTopoYear as EventListener);
     window.addEventListener("keydown", onKey);
 
-    // ── Default overlay-stack op de Kaart-tab ─────────────────────
-    // Activeer bag + kadaster + adressen via dezelfde toggle-flow die
-    // het lagen-paneel ook gebruikt. STAGGER ze (350ms tussen elk) +
-    // wacht tot de map "ready" is voordat de eerste toggle vuurt.
-    // Anders kwamen er 3 simultane WFS-fetches op zoom 18 binnen,
-    // met ieder honderden polygonen in de Leaflet-render-pipeline —
-    // dat veroorzaakte een hard-freeze van de Kaart-tab.
-    //
-    // Belangrijk: timeout-IDs worden ge-collecteerd in
-    // autoEnableTimeouts (al hoog up gedeclareerd) en in cleanup
-    // gecleared zodat een snelle tab-switch (binnen 1.5s) geen
-    // toggle-events dispatcht naar een al gedestroyed map. De
-    // whenReady-callback checkt `disposed` om hetzelfde te vermijden.
-    map.whenReady(() => {
-      if (disposed) return;
-      const fire = (id: string, enabled: boolean) => {
-        if (disposed) return;
-        window.dispatchEvent(
-          new CustomEvent("ogs:layer-toggle", {
-            detail: { view: "map", id, enabled },
-          }),
-        );
-      };
-      // BAG eerst (lichtste payload — 1 polygon/pand), dan kadaster.
-      // Adressen NIET meer auto-enabled op Kaart — gebruiker-verzoek
-      // ("standaard uit op Kaart"). Op Situatietekening blijft de
-      // adressen-laag wél standaard aan via GisLayerPanel's per-view
-      // defaultState. Tussen elk 350ms ademruimte voor de Leaflet-render-
-      // loop.
-      autoEnableTimeouts.push(
-        window.setTimeout(() => fire("bag", true), 350),
-      );
-      autoEnableTimeouts.push(
-        window.setTimeout(() => fire("kadaster", true), 700),
-      );
-    });
+    // Reapply all layer choices after the map's handlers are ready.
+    for (const [id, enabled] of Object.entries(statesFor("map").enabled)) {
+      onLayerToggle(new CustomEvent("ogs:layer-toggle", { detail: { id, enabled } }));
+      onLayerOpacity(new CustomEvent("ogs:layer-opacity", {
+        detail: { id, opacity: layerOpacityRef.current[id] ?? 1 },
+      }));
+    }
+    const topo = getTopotijdreisState();
+    if (topo.entry) {
+      layerOpacityRef.current.topotijdreis = topo.opacity;
+      onTopoYear(new CustomEvent("ogs:topotijdreis-year", { detail: topo.entry }));
+    }
     return () => {
-      // Disposed-flag eerst: voorkomt dat lopende whenReady-callbacks
-      // of staged timeouts nog acties dispatchen op een gedestroyed map.
+      // Ignore outstanding network responses after the map is removed.
       disposed = true;
-      for (const id of autoEnableTimeouts) window.clearTimeout(id);
+      const center = map.getCenter();
+      useCptStore.getState().setLastMapView({ lat: center.lat, lon: center.lng, zoom: map.getZoom() });
+      lastMapDocId = useCptStore.getState().activeDocId;
+      bagAbortRef.current?.abort();
+      kadasterAbortRef.current?.abort();
       window.removeEventListener("ogs:bro-load-area", onLoad);
       window.removeEventListener("ogs:bro-clear", onClear);
       window.removeEventListener("ogs:layer-toggle", onLayerToggle as EventListener);
@@ -1531,6 +1488,7 @@ export default function MapView() {
       adressenLayerRef.current = null;
       try { ro.disconnect(); } catch { /* noop */ }
       map.remove();
+      mapRef.current = null;
     };
   }, []);
 
@@ -1656,20 +1614,7 @@ export default function MapView() {
       }
     }
 
-    // Auto-fit logic:
-    //  - On MOUNT (`fittedDocIdRef.current === null`) → always fit to
-    //    the project sonderingen, so opening Kaart with a project
-    //    loaded immediately zooms onto the markers.
-    //  - When the active document CHANGES (user opens another project
-    //    while still on Kaart) → re-fit.
-    //  - Otherwise (same doc, marker added/removed) → only fit when
-    //    markers escape the current view, so casual edits don't yank
-    //    the user's zoom away.
-    // On a fresh mount (tab-switch into Kaart) the map element may not
-    // have its final pixel size yet — Leaflet's `getBounds()` then
-    // returns a degenerate viewport and `fitBounds` over-zooms onto a
-    // single pixel. Defer the fit to the next animation frame and call
-    // `invalidateSize()` first so the projection is honest.
+    // Fit only for a newly opened document, preserving manual pan and zoom on return.
     const isInitialOrDocChange = fittedDocIdRef.current !== activeDocId;
     const doFit = () => {
       const m = mapRef.current;
@@ -1691,14 +1636,12 @@ export default function MapView() {
     };
     if (isInitialOrDocChange) {
       requestAnimationFrame(doFit);
-    } else {
-      doFit();
     }
     fittedDocIdRef.current = activeDocId;
 
     // Whenever the active CPT changes, gently pan to centre it (without
     // changing zoom — the user's zoom level is preserved).
-    if (activeCptId) {
+    if (activeCptId && previousActiveCptRef.current !== activeCptId) {
       const active = positioned.find((p) => p.cpt.id === activeCptId);
       if (active) {
         const targetLatLng = L.latLng(active.lat, active.lon);
@@ -1707,6 +1650,7 @@ export default function MapView() {
         }
       }
     }
+    previousActiveCptRef.current = activeCptId;
     // selectedCptIds + toggleCptSelection in deps zodat de markers
     // opnieuw renderen met de juiste highlight wanneer de selectie
     // wijzigt (en de click-closure een verse toggle-functie heeft).
@@ -1860,6 +1804,42 @@ export default function MapView() {
     return () => window.removeEventListener("ogs:export-map", onExport);
   }, [handleExportImage]);
 
+  const addSelectedBro = async () => {
+    if (addingBroRef.current || selectedBroIds.length === 0) return;
+    addingBroRef.current = true;
+    setAddingBro(true);
+    const ids = [...selectedBroIds];
+    let targetDocId = useCptStore.getState().activeDocId;
+    let added = 0;
+    try {
+      for (const id of ids) {
+        const state = useCptStore.getState();
+        if (state.activeDocId !== targetDocId) throw new Error("Het actieve document is gewijzigd; resterende selectie behouden.");
+        const active = state.documents.find(doc => doc.id === targetDocId);
+        if (active?.kind === "cpt") {
+          const xml = await broPlatform.fetchCptXml(id);
+          if (useCptStore.getState().activeDocId !== targetDocId) throw new Error("Het actieve document is gewijzigd.");
+          await mergeIntoNewProject(active.cpt.id, xml, `${id}.xml`);
+          targetDocId = useCptStore.getState().activeDocId;
+        } else {
+          if (active?.kind !== "project") {
+            newProjectDocument();
+            targetDocId = useCptStore.getState().activeDocId;
+          }
+          await addBroToActiveProject(id);
+        }
+        added++;
+        setSelectedBroIds(current => current.filter(value => value !== id));
+      }
+      setStatus(`${added} BRO-sondering(en) toegevoegd`);
+    } catch (error) {
+      setStatus(`${added} toegevoegd. ${String(error)}`);
+    } finally {
+      addingBroRef.current = false;
+      setAddingBro(false);
+    }
+  };
+
   return (
     <div className="map-view-wrap">
       <div ref={containerRef} className={`map-view-container${measureMode ? " measuring" : ""}`} />
@@ -1876,6 +1856,15 @@ export default function MapView() {
           >
             Wis
           </button>
+        </div>
+      )}
+      {selectedBroIds.length > 0 && (
+        <div style={{ position: "absolute", top: 55, left: 12, zIndex: 1000, background: "white", padding: 8, borderRadius: 6 }}>
+          <span role="status">{selectedBroIds.length} BRO-sondering(en) geselecteerd </span>
+          <button type="button" disabled={addingBro} onClick={() => void addSelectedBro()}>
+            {addingBro ? "Toevoegen…" : "Voeg selectie toe aan project"}
+          </button>
+          <button type="button" disabled={addingBro} onClick={() => setSelectedBroIds([])}>Wis BRO-selectie</button>
         </div>
       )}
       <MapAddressSearch />
@@ -1961,7 +1950,7 @@ function buildPopupHtml(f: BroFeature, loadable: boolean, action: PopupAction): 
           ? `<a href="#" class="bro-popup-add-to-project" data-id="${id}">Voeg toe aan project</a>`
           : "";
   const actionRow = openAction || secondaryAction
-    ? `<div class="bro-popup-actions">${openAction}${secondaryAction}</div>`
+    ? `<div class="bro-popup-actions">${openAction}${secondaryAction}${f.kind === "cpt" ? `<a href="#" class="bro-popup-select" data-id="${id}">Selecteer / deselecteer voor toevoegen</a>` : ""}</div>`
     : "";
   return `
     <div class="bro-popup">

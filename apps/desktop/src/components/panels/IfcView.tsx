@@ -26,7 +26,6 @@ export default function IfcView() {
 
   const doc = activeDocId ? documents.find((d) => d.id === activeDocId) : undefined;
   const cached = doc ? ifcCache.get(doc.id) : undefined;
-  const ifc4x3 = cached?.ifc4x3;
   const ifcx = cached?.ifcx;
 
   const cptCount = !doc
@@ -41,12 +40,8 @@ export default function IfcView() {
   return (
     <div className="ifc-view-split">
       <div className="ifc-split-col ifc-split-col-left">
-        <IfcPane
-          format="ifc4x3"
-          content={ifc4x3}
-          hasContent={hasCptContent}
-          t={t}
-        />
+        <h3>IFC4x3-export uitgeschakeld</h3>
+        <p>De oude STEP-export voldoet niet aan het IFC-schema. Gebruik het projectbestand om alle gegevens te bewaren. De IFCX-snapshot is experimenteel.</p>
       </div>
       <div className="ifc-split-divider" aria-hidden />
       <div className="ifc-split-col ifc-split-col-right">
