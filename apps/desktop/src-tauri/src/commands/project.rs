@@ -26,7 +26,7 @@ pub struct ProjectMetaInput {
 #[derive(Debug, Serialize)]
 pub struct ProjectOpenResult {
     pub project: ProjectMetaInput,
-    pub cpts: Vec<Cpt>,
+    pub cpts: Vec<serde_json::Value>,
 }
 
 fn parse_date(s: &str) -> NaiveDate {
@@ -52,15 +52,22 @@ pub fn save_project_ifcgis_core(
         date: parse_date(&project.date),
     };
     let text = ifcgis::save(info, cpts).map_err(|e| e.to_string())?;
+    let mut value:serde_json::Value=serde_json::from_str(&text).map_err(|e|e.to_string())?;
+    value["header"]["metadata"]["openGeoStudio"]["cpts"]=serde_json::json!(crate::commands::cpt::list_snapshots_core(state));
+    let text=serde_json::to_string_pretty(&value).map_err(|e|e.to_string())?;
     std::fs::write(PathBuf::from(path), text).map_err(|e| e.to_string())
 }
 
 pub fn open_project_ifcgis_core(path: &str, state: &AppState) -> Result<ProjectOpenResult, String> {
     let text = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
     let file = ifcgis::load(&text).map_err(|e| e.to_string())?;
+    let raw:serde_json::Value=serde_json::from_str(&text).map_err(|e|e.to_string())?;
+    let payload=raw.pointer("/header/metadata/openGeoStudio").cloned().unwrap_or(raw);
 
     let mut cpts_map = state.cpts.lock().unwrap();
     for cpt in &file.cpts {
+        let original=payload.get("cpts").and_then(|v|v.as_array()).and_then(|values|values.iter().find(|value|value.get("id").and_then(|id|id.as_str())==Some(cpt.id.as_str()))).cloned().unwrap_or(serde_json::to_value(cpt).map_err(|e|e.to_string())?);
+        state.cpt_snapshots.lock().unwrap().insert(cpt.id.clone(),original);
         cpts_map.insert(cpt.id.clone(), cpt.clone());
     }
 
@@ -73,22 +80,24 @@ pub fn open_project_ifcgis_core(path: &str, state: &AppState) -> Result<ProjectO
             author: file.project.author,
             date: file.project.date.to_string(),
         },
-        cpts: file.cpts,
+        cpts: payload.get("cpts").and_then(|v|v.as_array()).cloned().unwrap_or_default(),
     })
 }
 
 pub fn save_project_ifcgis_full_core(payload: serde_json::Value, path: &str) -> Result<(), String> {
-    let file: ifcgis::ProjectFile = serde_json::from_value(payload)
-        .map_err(|e| format!("invalid ifcgis payload: {e}"))?;
-    let text = ifcgis::to_ifcx_json(&file)
-        .map_err(|e| format!("ifcgis serialize: {e}"))?;
+    let text=preview_project_ifcx_core(payload)?;
     std::fs::write(PathBuf::from(path), text).map_err(|e| e.to_string())
 }
 
 pub fn preview_project_ifcx_core(payload: serde_json::Value) -> Result<String, String> {
-    let file: ifcgis::ProjectFile = serde_json::from_value(payload)
+    // Validate the known schema, but retain the complete source payload in the
+    // editable IFCX header. Typed rendering entities must not own the source data.
+    let file: ifcgis::ProjectFile = serde_json::from_value(payload.clone())
         .map_err(|e| format!("invalid ifcgis payload: {e}"))?;
-    ifcgis::to_ifcx_json(&file).map_err(|e| format!("ifcgis serialize: {e}"))
+    let text=ifcgis::to_ifcx_json(&file).map_err(|e|format!("ifcgis serialize: {e}"))?;
+    let mut value:serde_json::Value=serde_json::from_str(&text).map_err(|e|e.to_string())?;
+    value["header"]["metadata"]["openGeoStudio"]=payload;
+    serde_json::to_string_pretty(&value).map_err(|e|e.to_string())
 }
 
 pub fn open_project_ifcgis_full_core(
@@ -97,12 +106,16 @@ pub fn open_project_ifcgis_full_core(
 ) -> Result<serde_json::Value, String> {
     let text = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
     let file = ifcgis::load(&text).map_err(|e| e.to_string())?;
+    let raw:serde_json::Value=serde_json::from_str(&text).map_err(|e|e.to_string())?;
+    let payload=raw.pointer("/header/metadata/openGeoStudio").cloned().unwrap_or(raw);
     let mut cpts_map = state.cpts.lock().unwrap();
     for cpt in &file.cpts {
+        let original=payload.get("cpts").and_then(|v|v.as_array()).and_then(|values|values.iter().find(|value|value.get("id").and_then(|id|id.as_str())==Some(cpt.id.as_str()))).cloned().unwrap_or(serde_json::to_value(cpt).map_err(|e|e.to_string())?);
+        state.cpt_snapshots.lock().unwrap().insert(cpt.id.clone(),original);
         cpts_map.insert(cpt.id.clone(), cpt.clone());
     }
     drop(cpts_map);
-    serde_json::to_value(&file).map_err(|e| format!("serialize for return: {e}"))
+    Ok(payload)
 }
 
 // ─── Tauri command wrappers ────────────────────────────────────────
@@ -154,4 +167,25 @@ pub fn open_project_ifcgis_full(
     state: State<'_, AppState>,
 ) -> Result<serde_json::Value, String> {
     open_project_ifcgis_full_core(&path, state.inner())
+}
+
+
+#[cfg(test)]
+mod source_fidelity_tests {
+    use super::*;
+    #[test]
+    fn full_project_source_survives_ifcx_save_and_native_reopen() {
+        let cpt=serde_json::json!({"id":"PROJECT-CPT","metadata":{"source_file":"source.gef","pre_excavated_depth_m":0.5},"points":[{"depth":1,"qc":2,"parameters":{"future":42}}]});
+        let payload=serde_json::json!({"header":{"schema":"ifcgis-0.4","originating_system":"Open Geotechniek Studio","timestamp":"2026-10-29T00:00:00Z"},"project":{"type":"OpenGeoProject","title":"Synthetic","client":"","location":"","project_number":"","author":"","date":"2026-10-29"},"cpts":[cpt.clone()],"bores":[],"futureProjectField":{"retain":true},"calculations":[]});
+        let preview:serde_json::Value=serde_json::from_str(&preview_project_ifcx_core(payload.clone()).unwrap()).unwrap();
+        assert_eq!(preview.pointer("/header/metadata/openGeoStudio").unwrap(),&payload);
+        let nonce=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
+        let path=std::env::temp_dir().join(format!("ogs-project-{}-{nonce}.ifcx",std::process::id()));
+        save_project_ifcgis_full_core(payload.clone(),path.to_str().unwrap()).unwrap();
+        let state=AppState::default();
+        let opened=open_project_ifcgis_full_core(path.to_str().unwrap(),&state).unwrap();
+        std::fs::remove_file(path).unwrap();
+        assert_eq!(opened,payload);
+        assert_eq!(crate::commands::cpt::cpt_snapshot_core("PROJECT-CPT",&state).unwrap(),cpt);
+    }
 }

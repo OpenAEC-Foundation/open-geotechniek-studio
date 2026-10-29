@@ -23,6 +23,7 @@ pub fn open_cpt_core(content: &str, filename: &str, state: &AppState) -> Result<
     if !lower.ends_with(".ifcgeo") {
         return Err("Legacy raw GEF/BRO import is disabled: parse with the diagnostic Node core or desktop importer, then submit the CPT JSON snapshot with filename ending in .ifcgeo. See docs/API.md.".to_string());
     }
+    let mut snapshot: serde_json::Value = serde_json::from_str(content).map_err(|e|e.to_string())?;
     let mut cpt = write::read_ifcgeo(content).map_err(|e| e.to_string())?;
     if cpt.id.trim().is_empty() || cpt.points.is_empty() || cpt.points.iter().any(|point| !point.depth.is_finite() || point.depth < 0.0) {
         return Err("Invalid CPT snapshot: require an id and non-empty points with finite non-negative depths".to_string());
@@ -30,17 +31,31 @@ pub fn open_cpt_core(content: &str, filename: &str, state: &AppState) -> Result<
     if !lower.ends_with(".ifcgeo") || cpt.metadata.source_file.is_empty() {
         cpt.metadata.source_file = filename.to_string();
     }
+    snapshot["metadata"]["source_file"]=serde_json::json!(cpt.metadata.source_file);
+    state.cpt_snapshots.lock().unwrap().insert(cpt.id.clone(), snapshot);
     state.cpts.lock().unwrap().insert(cpt.id.clone(), cpt.clone());
     Ok(cpt)
 }
 
 pub fn close_cpt_core(id: &str, state: &AppState) -> Result<(), String> {
     state.cpts.lock().unwrap().remove(id);
+    state.cpt_snapshots.lock().unwrap().remove(id);
     Ok(())
 }
 
 pub fn list_cpts_core(state: &AppState) -> Vec<Cpt> {
     state.cpts.lock().unwrap().values().cloned().collect()
+}
+
+pub fn cpt_snapshot_core(id: &str, state: &AppState) -> Result<serde_json::Value, String> {
+    if let Some(value)=state.cpt_snapshots.lock().unwrap().get(id).cloned(){return Ok(value);}
+    let cpts=state.cpts.lock().unwrap();
+    let value=cpts.get(id).ok_or_else(||format!("unknown CPT id: {id}"))?;
+    serde_json::to_value(value).map_err(|e|e.to_string())
+}
+pub fn list_snapshots_core(state: &AppState) -> Vec<serde_json::Value> {
+    let ids:Vec<String>=state.cpts.lock().unwrap().keys().cloned().collect();
+    ids.iter().filter_map(|id|cpt_snapshot_core(id,state).ok()).collect()
 }
 
 pub fn detect_layers_core(id: &str, state: &AppState) -> Result<Vec<Layer>, String> {
@@ -57,6 +72,11 @@ pub fn save_cpt_as_core(
     path: &str,
     state: &AppState,
 ) -> Result<(), String> {
+    if format=="ifcgeo" {
+        let value=cpt_snapshot_core(cpt_id,state)?;
+        let text=serde_json::to_string_pretty(&value).map_err(|e|e.to_string())?;
+        return std::fs::write(path,text).map_err(|e|format!("write {path}: {e}"));
+    }
     let cpts = state.cpts.lock().unwrap();
     let cpt = cpts
         .get(cpt_id)
@@ -73,8 +93,9 @@ pub fn save_cpt_as_core(
 // ─── Tauri command wrappers ────────────────────────────────────────
 
 #[tauri::command]
-pub fn open_cpt(content: String, filename: String, state: State<'_, AppState>) -> Result<Cpt, String> {
-    open_cpt_core(&content, &filename, state.inner())
+pub fn open_cpt(content: String, filename: String, state: State<'_, AppState>) -> Result<serde_json::Value, String> {
+    let value=open_cpt_core(&content, &filename, state.inner())?;
+    cpt_snapshot_core(&value.id,state.inner())
 }
 
 #[tauri::command]
@@ -83,8 +104,8 @@ pub fn close_cpt(id: String, state: State<'_, AppState>) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn list_cpts(state: State<'_, AppState>) -> Vec<Cpt> {
-    list_cpts_core(state.inner())
+pub fn list_cpts(state: State<'_, AppState>) -> Vec<serde_json::Value> {
+    list_snapshots_core(state.inner())
 }
 
 #[tauri::command]
@@ -123,4 +144,22 @@ mod diagnostic_import_tests {
         assert_eq!(value.metadata.source_file, "original.gef");
         assert_eq!(value.points[0].qc, Some(2.0));
     }
+    #[test]
+    fn full_snapshot_fields_survive_native_cache_and_file_roundtrip() {
+        let state=AppState::default();
+        let source=serde_json::json!({"id":"FULL","metadata":{"source_file":"original.gef","pre_excavated_depth_m":0.5,"measurements":[{"name":"coneSurfaceArea","value":1000,"unit":"mm2"}]},"points":[{"depth":1,"qc":2,"parameters":{"99":42,"future":null},"pre_excavated":true}],"future":{"keep":true}});
+        open_cpt_core(&source.to_string(),"full.ifcgeo",&state).unwrap();
+        assert_eq!(cpt_snapshot_core("FULL",&state).unwrap(),source);
+        assert_eq!(list_snapshots_core(&state),vec![source.clone()]);
+        let nonce=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
+        let path=std::env::temp_dir().join(format!("ogs-full-snapshot-{}-{nonce}.ifcgeo",std::process::id()));
+        save_cpt_as_core("FULL","ifcgeo",path.to_str().unwrap(),&state).unwrap();
+        let read:serde_json::Value=serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
+        std::fs::remove_file(path).unwrap();
+        assert_eq!(read,source);
+        close_cpt_core("FULL",&state).unwrap();
+        assert!(cpt_snapshot_core("FULL",&state).is_err());
+        assert!(state.cpt_snapshots.lock().unwrap().is_empty());
+    }
+
 }

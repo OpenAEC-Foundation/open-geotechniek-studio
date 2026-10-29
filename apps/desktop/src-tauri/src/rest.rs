@@ -164,7 +164,7 @@ async fn health(State(s): State<ApiState>) -> Json<Value> {
 }
 
 async fn list_cpts(State(s): State<ApiState>) -> Result<Json<Value>, ApiError> {
-    let cpts: Vec<Cpt> = cpt_cmd::list_cpts_core(&s.app);
+    let cpts = cpt_cmd::list_snapshots_core(&s.app);
     Ok(Json(serde_json::to_value(cpts).map_err(|e| e.to_string())?))
 }
 
@@ -181,18 +181,14 @@ async fn open_cpt(
     Json(b): Json<OpenCptBody>,
 ) -> Result<Json<Value>, ApiError> {
     let cpt = cpt_cmd::open_cpt_core(&b.content, &b.filename, &s.app)?;
-    Ok(Json(serde_json::to_value(cpt).map_err(|e| e.to_string())?))
+    Ok(Json(cpt_cmd::cpt_snapshot_core(&cpt.id,&s.app)?))
 }
 
 async fn get_cpt(
     State(s): State<ApiState>,
     Path(id): Path<String>,
 ) -> Result<Json<Value>, ApiError> {
-    let cache = s.app.cpts.lock().map_err(|e| e.to_string())?;
-    let cpt = cache
-        .get(&id)
-        .ok_or_else(|| format!("onbekende CPT id: {id}"))?;
-    Ok(Json(serde_json::to_value(cpt).map_err(|e| e.to_string())?))
+    Ok(Json(cpt_cmd::cpt_snapshot_core(&id,&s.app)?))
 }
 
 async fn close_cpt(

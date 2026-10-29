@@ -163,3 +163,13 @@ Dezelfde functionaliteit is beschikbaar via `open-geo-studio --mcp`
 (Model Context Protocol over stdio) met tools voor CPT-import, lagen,
 exports, BRO, IFC en rapporten. De `report_preview`-tool accepteert
 dezelfde optionele `sections`-selectie als `POST /api/report`.
+
+
+## Brongetrouwe snapshots (2026.44.4)
+
+Native CPT open/read/list en MCP bewaren en retourneren de volledige aangeleverde
+`.ifcgeo`-JSON, inclusief onbekende meetkanalen en metadata. Het oudere getypeerde
+rekenmodel is alleen een interne weergave. Snapshot-opslag en het bewerkbare
+IFCX-projectgedeelte gebruiken de volledige bron. De GUI schrijft de actuele
+CPT-status rechtstreeks, zodat latere markeringen en laaginterpretaties worden
+meegenomen. Ruwe GEF/BRO-import via deze legacy service blijft uitgeschakeld.
