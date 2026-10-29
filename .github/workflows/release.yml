@@ -1,126 +1,204 @@
-name: Release — Tauri cross-platform installers
-
-# Triggered on:
-#  - a manual run via the Actions tab (workflow_dispatch)
-#  - any tag matching `v*` (b.v. `v0.3.0`) → produceert een GitHub Release
-#    met de installers als assets gekoppeld aan die tag.
+name: Signed desktop release
 on:
+  push:
+    tags: ['v20*']
   workflow_dispatch:
     inputs:
-      release:
-        description: "Maak ook een GitHub-Release (true/false)"
-        required: false
-        default: "true"
-  push:
-    tags:
-      - "v*"
-
+      tag:
+        description: 'Existing release tag (vYYYY.W.N)'
+        required: true
 permissions:
-  contents: write
-
+  contents: read
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+      - name: Validate tag and synchronised versions
+        run: |
+          python3 scripts/version.py --check
+          node scripts/check-blueprint.mjs
+          python3 scripts/test-release.py
+          node --input-type=module -e 'import fs from "node:fs"; const v=JSON.parse(fs.readFileSync("apps/desktop/package.json")).version; if(process.env.RELEASE_TAG !== `v${v}`) throw new Error("Tag/version mismatch");'
+      - run: npm ci && npm test -- --maxWorkers=2 && npm run build
+        working-directory: apps/desktop
   build:
+    needs: check
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: windows-latest
-            label: windows-nsis
-            # NSIS .exe installer + MSI als secondary
+            label: windows-x64
+          - os: macos-latest
+            label: macos-universal
           - os: ubuntu-22.04
-            label: linux-deb-appimage
-            # produceert .deb (Debian/Ubuntu) + .AppImage (portable)
-          # macOS uitgeschakeld tot user expliciet vraagt — kost extra
-          # signing cert anders krijgt-ie "unidentified developer" pop-up.
-          # - os: macos-latest
-          #   label: macos-dmg
-
+            label: linux-x64
     runs-on: ${{ matrix.os }}
-
+    defaults:
+      run:
+        working-directory: app/apps/desktop
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          # We hebben cpt-core uit crates-warehouse nodig als path-dep.
-          # Clone die in een sibling-folder zodat de Cargo.toml-path
-          # `../../crates-warehouse/cpt-core` blijft kloppen.
-          # NB: hier zou submodule-config schoner zijn — TODO follow-up.
-          path: cpt-viewer
-          fetch-depth: 0
-
-      - name: Checkout crates-warehouse (path-dep)
-        uses: actions/checkout@v4
+          ref: ${{ env.RELEASE_TAG }}
+          path: app
+      - uses: actions/checkout@v4
         with:
           repository: OpenAEC-Foundation/crates-warehouse
+          ref: 6e8738c075719e2fc8fcf918d969406f98927b07
           path: crates-warehouse
-          fetch-depth: 0
-
-      - name: Install Linux build deps (alleen Ubuntu)
-        if: matrix.os == 'ubuntu-22.04'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/apps/desktop/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: app/apps/desktop/src-tauri -> target
+      - name: Linux dependencies
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            libwebkit2gtk-4.1-dev \
-            libappindicator3-dev \
-            librsvg2-dev \
-            patchelf \
-            libssl-dev \
-            build-essential \
-            curl \
-            wget \
-            file
-
-      - name: Install Rust stable toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Cargo registry + target
-        uses: Swatinem/rust-cache@v2
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libssl-dev build-essential
+      - run: npm ci
+      - name: Compile Windows application
+        if: runner.os == 'Windows'
+        run: npm run tauri -- build --no-bundle
+      - name: Sign Windows binary and install signing tools
+        if: runner.os == 'Windows'
+        uses: azure/trusted-signing-action@v1
         with:
-          workspaces: |
-            cpt-viewer/apps/desktop/src-tauri -> target
-            crates-warehouse -> target
-
-      - name: Setup Node 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-          cache-dependency-path: cpt-viewer/apps/desktop/package-lock.json
-
-      - name: Install npm dependencies
-        working-directory: cpt-viewer/apps/desktop
-        run: npm ci
-
-      - name: Build Tauri app + bundle installers
-        working-directory: cpt-viewer/apps/desktop
-        # `npm run tauri build` runt vite build → tsc → cargo build
-        # release → bundle installers (NSIS op Windows, deb+AppImage
-        # op Linux). De installers eindigen in src-tauri/target/release/bundle/.
-        run: npm run tauri build
-
-      - name: Verzamel installers
-        if: success()
-        shell: bash
-        working-directory: cpt-viewer/apps/desktop/src-tauri/target/release/bundle
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: ${{ secrets.AZURE_ENDPOINT }}
+          signing-account-name: ${{ secrets.AZURE_TRUSTED_SIGNING_ACCOUNT_NAME }}
+          certificate-profile-name: ${{ secrets.AZURE_CERTIFICATE_PROFILE_NAME }}
+          files-folder: ${{ github.workspace }}/app/apps/desktop/src-tauri/target/release
+          files-folder-filter: exe
+          files-folder-depth: 1
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+          cache-dependencies: false
+      - name: Configure signing of installer and uninstaller
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
+          AZURE_ACCOUNT: ${{ secrets.AZURE_TRUSTED_SIGNING_ACCOUNT_NAME }}
+          AZURE_PROFILE: ${{ secrets.AZURE_CERTIFICATE_PROFILE_NAME }}
+        run: ../../scripts/ci/configure-windows-signing.ps1
+      - name: Bundle signed Windows installer
+        if: runner.os == 'Windows'
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        run: npm run tauri -- bundle --config src-tauri/tauri.signing.conf.json --bundles nsis
+      - name: Verify Windows installer, payload and uninstaller
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ../../scripts/ci/verify-windows-signing.ps1
+      - name: Configure Apple signing and notarization
+        if: runner.os == 'macOS'
+        env:
+          APPLE_API_KEY_CONTENT: ${{ secrets.APPLE_API_KEY_CONTENT }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
         run: |
-          mkdir -p $GITHUB_WORKSPACE/_installers
-          # Kopieer .exe, .msi, .deb, .AppImage — laat .sig en intermediates met rust.
-          find . -type f \( -name "*.exe" -o -name "*.msi" -o -name "*.deb" -o -name "*.AppImage" \) -exec cp {} $GITHUB_WORKSPACE/_installers/ \;
-          ls -lh $GITHUB_WORKSPACE/_installers/
-
-      - name: Upload installers als CI-artifact
-        if: success()
-        uses: actions/upload-artifact@v4
+          set -euo pipefail
+          [[ "$APPLE_SIGNING_IDENTITY" == 'Developer ID Application:'* ]]
+          test -n "$APPLE_API_KEY_CONTENT"
+          umask 077
+          printf '%s' "$APPLE_API_KEY_CONTENT" > "$RUNNER_TEMP/apple-api-key.p8"
+          node --input-type=module -e 'import fs from "node:fs"; fs.writeFileSync("src-tauri/tauri.signing.conf.json",JSON.stringify({bundle:{macOS:{signingIdentity:process.env.APPLE_SIGNING_IDENTITY,hardenedRuntime:true}}}));'
+          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+      - name: Build signed and notarized macOS application
+        if: runner.os == 'macOS'
+        uses: tauri-apps/tauri-action@action-v0.6.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_PATH: ${{ runner.temp }}/apple-api-key.p8
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
-          name: installers-${{ matrix.label }}
-          path: _installers/*
+          projectPath: app/apps/desktop
+          args: --target universal-apple-darwin --config src-tauri/tauri.signing.conf.json --bundles dmg
+      - name: Verify delivered macOS application
+        if: runner.os == 'macOS'
+        run: bash ../../scripts/ci/verify-macos-signing.sh
+      - name: Collect macOS installers
+        if: runner.os == 'macOS'
+        run: node ../../scripts/ci/collect-artifacts.mjs src-tauri/target/universal-apple-darwin/release/bundle
+      - name: Remove Apple API key
+        if: always() && runner.os == 'macOS'
+        run: rm -f "$RUNNER_TEMP/apple-api-key.p8"
+      - name: Build Linux packages
+        if: runner.os == 'Linux'
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+        run: npm run tauri -- build --bundles deb,appimage
+      - name: Collect Windows and Linux installers
+        if: runner.os != 'macOS'
+        run: node ../../scripts/ci/collect-artifacts.mjs src-tauri/target/release/bundle
+      - name: Sign and verify Linux packages and checksums
+        if: runner.os == 'Linux'
+        env:
+          OPENAEC_GPG_PRIVATE_KEY: ${{ secrets.OPENAEC_GPG_PRIVATE_KEY }}
+          OPENAEC_GPG_PASSPHRASE: ${{ secrets.OPENAEC_GPG_PASSPHRASE }}
+          OPENAEC_GPG_FINGERPRINT: ${{ vars.OPENAEC_GPG_FINGERPRINT }}
+        working-directory: app
+        run: bash scripts/ci/sign-linux.sh
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: app/release-artifacts/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: signed-${{ matrix.label }}
+          path: app/release-artifacts/*
           if-no-files-found: error
-          retention-days: 30
-
-      - name: Attach installers aan GitHub Release (alleen bij tag-push)
-        if: success() && startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
         with:
-          files: _installers/*
+          pattern: signed-*
+          path: installers
+      - name: Merge checksums without overwriting platform files
+        run: |
+          mkdir release
+          find installers -type f ! -name SHA256SUMS.txt -exec cp {} release/ \;
+          cat installers/*/SHA256SUMS.txt | sort > release/SHA256SUMS.txt
+          cd release && sha256sum --check SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: release/*
           fail_on_unmatched_files: true
           generate_release_notes: true

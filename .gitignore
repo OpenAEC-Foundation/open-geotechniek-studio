@@ -39,3 +39,7 @@ docs/*
 # REST/MCP-API-documentatie hoort in de repo.
 !docs/API.md
 /export/
+
+# Additional web verification outputs
+dist-public/
+dist-platform/

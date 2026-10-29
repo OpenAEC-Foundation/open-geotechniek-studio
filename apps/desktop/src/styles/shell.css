@@ -1,0 +1,37 @@
+/* OpenAEC Blueprint 0.4 shell metrics and typography. */
+.titlebar { height: var(--oa-shell-titlebar); background: var(--oa-frame); border-color: var(--oa-border); }
+.titlebar-title { color: var(--oa-text); font-family: var(--oa-font-heading); font-weight: 500; }
+.titlebar-version { color: var(--oa-text-secondary); opacity: 1; }
+.ribbon-container { margin-top: var(--oa-shell-titlebar); }
+.ribbon-tabs { height: var(--oa-shell-ribbon-tabs); background: var(--oa-frame); border-color: var(--oa-border); }
+.ribbon-content-wrapper { height: var(--oa-shell-ribbon); }
+.ribbon-tab { font-size: var(--oa-size-body); }
+.ribbon-tab.active { color: var(--oa-accent-text); }
+.ribbon-group-label { color: var(--oa-text-secondary); }
+.document-bar { min-height: var(--oa-shell-document-tabs); }
+.status-bar { height: var(--oa-shell-statusbar); min-height: var(--oa-shell-statusbar); }
+.panel-header, .calc-pane-title { font-family: var(--oa-font-heading); color: var(--oa-text); }
+input, select, textarea, button { font-family: inherit; }
+input[type="number"], .mono { font-family: var(--oa-font-numbers); font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--oa-focus); outline-offset: 2px; }
+/* Shell treatment from Blueprint's native reference: white ribbon and panels,
+   frame-coloured title/document bars, underline for the active ribbon tab. */
+.ribbon-tabs, .ribbon-content-wrapper { background: var(--oa-panel); }
+.ribbon-content-wrapper { border-bottom: 1px solid var(--oa-border); }
+.ribbon-tab { border-radius: 0; padding: 5px 14px; border: 0; border-bottom: 2px solid transparent; margin-bottom: 0; }
+.ribbon-tab.active { background: var(--oa-panel); border-bottom-color: var(--oa-accent); color: var(--oa-text); }
+.ribbon-tab.file-tab { border-radius: 5px; padding: 3px 14px; margin: 3px 8px 3px 0; }
+.ribbon-tab-border, .ribbon-tab-gap { display: none; }
+.ribbon-btn-icon { color: var(--oa-text); }
+.ribbon-btn:hover .ribbon-btn-icon { color: var(--oa-accent-text); }
+.ribbon-group-label { font: 10px var(--oa-font-mono); letter-spacing: .03em; }
+.document-bar { border-top: 0; background: var(--oa-docbar); }
+.document-tab { height: 28px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; }
+.document-tab.active { background: var(--oa-panel); color: var(--oa-text); border-color: transparent; }
+.left-panel, .right-panel { background: var(--oa-panel); }
+.panel-header { height: var(--oa-shell-panel-header); background: var(--oa-panel); font: 10px var(--oa-font-mono); letter-spacing: .03em; }
+.titlebar-icon, .titlebar-quick-btn, .titlebar-btn { color: var(--oa-text); }
+.ribbon-calculation-context { display: flex; flex-direction: column; justify-content: center; padding: 0 18px 10px; gap: 4px; font-size: 11px; color: var(--oa-text-secondary); }
+.ribbon-calculation-context strong { font-size: 12px; font-weight: 500; color: var(--oa-text); }
+
+.ribbon-content-panel .ribbon-berekeningen { padding: 0; gap: 0; align-items: stretch; overflow: hidden; }

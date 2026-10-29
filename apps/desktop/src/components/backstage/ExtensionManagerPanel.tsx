@@ -1,3 +1,4 @@
+import { APP_VERSION } from "../../version";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -32,7 +33,7 @@ interface ExtensionMeta {
 const TEKENING_EXT: ExtensionMeta = {
   id: "tekening",
   name: "Situatietekening",
-  version: "0.2.9",
+  version: APP_VERSION,
   description:
     "CAD-papier (A2/A3/A4) met sonderingen, snap-systeem, overlays en PDF-export.",
   author: "OpenAEC Foundation",
@@ -41,7 +42,7 @@ const TEKENING_EXT: ExtensionMeta = {
 const OFFERTES_EXT: ExtensionMeta = {
   id: "offertes",
   name: "Offertes opvragen",
-  version: "0.2.9",
+  version: APP_VERSION,
   description:
     "Vraagt offertes op bij dichtsbijzijnde sondeerbedrijven.",
   author: "OpenAEC Foundation",
@@ -54,7 +55,7 @@ const INSTALLED_EXTENSIONS: ExtensionMeta[] = [
   ...CALC_REGISTRY.map<ExtensionMeta>((m) => ({
     id: `calc.${m.id}` as ExtensionId,
     name: m.name,
-    version: m.status === "available" ? "0.3.0" : "0.0.1-coming-soon",
+    version: APP_VERSION,
     description: `${m.subtitle} — ${m.norm}`,
     author: "OpenAEC Foundation",
     category: "Berekening",

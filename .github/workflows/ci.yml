@@ -37,6 +37,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Blueprint version consistency
+        run: |
+          python3 ../../scripts/version.py --check
+          node ../../scripts/check-blueprint.mjs
+          python3 ../../scripts/test-release.py
+
       - name: Typecheck
         run: npx tsc --noEmit
 
@@ -56,7 +62,7 @@ jobs:
       # geen rekencode, en ze zijn in de webbuild toch niet selecteerbaar.
       - name: Assert no calculation code in public bundle
         run: |
-          for term in "Rs;cal" "Koppejan" "paalpunt" "Funderingspaal" "Negatieve kleef"; do
+          for term in "Rs;cal" "Koppejan" "paalpunt" "Funderingspaal" "Negatieve kleef" "Modulus naar kPa"; do
             if grep -rq -- "$term" dist/assets/*.js; then
               echo "::error::'$term' staat in de publieke bundle — rekenmodule lekt naar de live site"
               exit 1

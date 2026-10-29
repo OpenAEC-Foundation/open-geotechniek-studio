@@ -120,7 +120,7 @@ crates-warehouse/                          ← sibling repo, path-dependency
 └── openaec-layout/                        ← document-template (cover, page, table primitives)
 ```
 
-Design-tokens komen uit het [OpenAEC Stijlbook](https://github.com/OpenAEC-Foundation/OpenAEC_stijlbook).
+De UI gebruikt de kleuren, maten en lokale lettertypen uit [OpenAEC Blueprint](https://github.com/OpenAEC-Foundation/OpenAEC-Blueprint). De vastgelegde broncommit en controlesommen staan in `apps/desktop/src/styles/blueprint/SOURCE.json`. De schil volgt de referentie met witte panelen, een onderstreepte linttab en vijf thema’s.
 
 ---
 
@@ -151,17 +151,31 @@ npm run tauri build  # output in src-tauri/target/release/bundle/
 Op Windows produceert dit een NSIS-installer (`.exe`). Op Linux krijg je `.deb` + `.AppImage`. Cross-platform builds doe je via de [GitHub Actions workflow](.github/workflows/release.yml).
 
 ### Release
-1. Bump versie in `apps/desktop/package.json` + `apps/desktop/src-tauri/tauri.conf.json`
-2. `git tag v0.3.0 && git push origin v0.3.0`
-3. GitHub Actions bouwt Windows + Linux installers + maakt automatisch een GitHub Release met de installers als download
+De productversie volgt Blueprint: `JJJJ.W.N` (ISO-jaar, week, volgnummer). Bijvoorbeeld `2026.44.0`. Het Windows-pakket gebruikt NSIS; er wordt geen MSI met een ongeldige hoofdversie `2026` gebouwd.
 
-Of: handmatige run via Actions → "Release — Tauri cross-platform installers" → Run workflow.
+```bash
+python3 scripts/version.py --next        # volgende versie voor deze ISO-week
+python3 scripts/version.py --check       # npm, lockfiles, Cargo, Tauri en Snap
+node scripts/check-blueprint.mjs         # oorspronkelijke design-assets
+python3 scripts/test-release.py          # versies en OpenPGP met tijdelijke testsleutel
+```
+
+Na controle en commit hoort bij de versie een tag `vJJJJ.W.N`. De workflow **Signed desktop release** bouwt Windows (NSIS), macOS (universele DMG) en Linux (deb/AppImage). De publicatiestap draait uitsluitend als alle builds en handtekeningcontroles slagen. Windows gebruikt Authenticode met timestamp, macOS Developer ID met Apple-notarisatie, Linux OpenPGP-signaturen plus build-attestaties. Updater-signing is een afzonderlijk contract en is hiermee niet toegevoegd.
+
+Signing vereist de Azure-, Apple- en OpenPGP-credentials uit [de release-aantekeningen](RELEASE_NOTES_2026.44.0.md). Die zijn momenteel niet voor deze repository beschikbaar. De lokale build is daarom een ontwikkelbuild zonder releasehandtekening. Het gereedzetten van de workflow is geen bewijs van een ondertekende release.
+
+### Zettingsberekening
+In de desktop- en ontwikkelversie staat alleen **Zetting van één laag** in de berekeningenlijst. Open een project en kies **Berekeningen → Nieuw**. Het werkblad toont invoer, grondmodel, eindzetting en tussenstappen. Controlevoorbeeld: `H = 2 m`, `Δσ′ = 50 kPa`, `M = 5 MPa` geeft `s = 20 mm`. De overige experimentele modules blijven als broncode bewaard, maar zijn niet selecteerbaar. De publieke webrelease bevat nog steeds geen rekenmodules.
+
+Dit is een conceptberekening met constante oedometer-modulus en uniforme effectieve spanningstoename na drainage. Geen tijdsverloop, kruip of normtoets. Bron: [USACE EM 1110-1-1905, §7–7 (2025)](https://publibrary.sec.usace.army.mil/api/download?filename=EM+1110-1-1905_Geotechincal+Design+of+Shallow+Foundations+on+Soils_2025+07+22+-+Final.pdf&id=54658636-77d2-48df-f26b-5295a01899a7&preview=true).
+
+![Zettingswerkblad met Blueprint-schil](docs/screenshots/06-settlement-blueprint.png)
 
 ---
 
 ## Bijdragen
 
-Issues + PR's welkom. Voor grotere features: open eerst een issue zodat we de scope kunnen afstemmen. Stijlboek-conventies volgen we strikt — design-changes moeten matchen met het [OpenAEC Stijlbook](https://github.com/OpenAEC-Foundation/OpenAEC_stijlbook).
+Issues + PR's welkom. Voor grotere features: open eerst een issue zodat we de scope kunnen afstemmen. UI-wijzigingen volgen [OpenAEC Blueprint](https://github.com/OpenAEC-Foundation/OpenAEC-Blueprint).
 
 De feedback-knop in de app (rechtsboven) opent direct een GitHub issue met auto-context.
 

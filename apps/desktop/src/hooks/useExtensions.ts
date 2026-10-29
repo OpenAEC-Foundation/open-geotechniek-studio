@@ -29,6 +29,7 @@ export type ExtensionId =
   | "tekening"
   | "offertes"
   | "calc.pile-bearing-capacity"
+  | "calc.settlement"
   | "calc.kalendering"
   | "calc.spread-foundation-drained"
   | "calc.spread-foundation-undrained"
@@ -41,6 +42,7 @@ const SETTING_KEYS: Record<ExtensionId, string> = {
   offertes: "ext.offertes.enabled",
   "calc.pile-bearing-capacity": "ext.calc.pile-bearing-capacity.enabled",
   "calc.kalendering": "ext.calc.kalendering.enabled",
+  "calc.settlement": "ext.calc.settlement.enabled",
   "calc.spread-foundation-drained": "ext.calc.spread-foundation-drained.enabled",
   "calc.spread-foundation-undrained": "ext.calc.spread-foundation-undrained.enabled",
   "calc.laterally-loaded-pile": "ext.calc.laterally-loaded-pile.enabled",
@@ -66,6 +68,7 @@ const DEFAULTS: Record<ExtensionId, boolean> = {
   // 'experimental' op de module zelf zorgt voor de prominente tussenstand-
   // banner.
   "calc.kalendering": true,
+  "calc.settlement": true,
   "calc.spread-foundation-drained": false,
   "calc.spread-foundation-undrained": false,
   "calc.laterally-loaded-pile": false,
@@ -166,6 +169,7 @@ export function useAllExtensions(): Record<ExtensionId, boolean> {
       "offertes",
       "calc.pile-bearing-capacity",
       "calc.kalendering",
+      "calc.settlement",
       "calc.spread-foundation-drained",
       "calc.spread-foundation-undrained",
       "calc.laterally-loaded-pile",

@@ -25,6 +25,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
     () => (activeDocId ? byDoc.get(activeDocId) ?? EMPTY_LIST : EMPTY_LIST),
     [activeDocId, byDoc],
   ) as CalculationInstance[];
+  const visibleList = list.filter((calculation) => getCalcModule(calculation.moduleId));
   const setActive = useCalculationsStore((s) => s.setActive);
   const remove = useCalculationsStore((s) => s.removeCalculation);
   const duplicate = useCalculationsStore((s) => s.duplicate);
@@ -42,7 +43,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
   }
 
   // Group per category
-  const grouped = list.reduce<Record<string, CalculationInstance[]>>((acc, c) => {
+  const grouped = visibleList.reduce<Record<string, CalculationInstance[]>>((acc, c) => {
     const mod = getCalcModule(c.moduleId);
     const cat = mod?.category ?? "other";
     (acc[cat] = acc[cat] ?? []).push(c);
@@ -63,7 +64,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
         + Nieuwe berekening
       </button>
 
-      {list.length === 0 && (
+      {visibleList.length === 0 && (
         <p className="calc-tree-empty-hint">
           Nog geen berekeningen. Klik op "+" om er een toe te voegen.
         </p>

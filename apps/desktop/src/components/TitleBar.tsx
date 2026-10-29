@@ -1,3 +1,4 @@
+import { APP_VERSION } from "../version";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import "./TitleBar.css";
@@ -10,7 +11,7 @@ interface TitleBarProps {
 function TitleBar({ onSettingsClick, onFeedbackClick }: TitleBarProps) {
   const { t } = useTranslation();
   const [isMaximized, setIsMaximized] = useState(false);
-  const [appVersion, setAppVersion] = useState("");
+  const [appVersion, setAppVersion] = useState(APP_VERSION);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const appWindowRef = useRef<any>(null);
 
@@ -26,7 +27,7 @@ function TitleBar({ onSettingsClick, onFeedbackClick }: TitleBarProps) {
     import("@tauri-apps/api/app")
       .then(({ getVersion }) => getVersion())
       .then(setAppVersion)
-      .catch(() => setAppVersion(""));
+      .catch(() => setAppVersion(APP_VERSION));
   }, []);
 
   const updateMaximizedState = useCallback(async () => {

@@ -26,8 +26,11 @@ import { getSetting, setSetting } from "./store";
 import { openPathByExtension, openContentByFilename, useCptStore } from "./store/useCptStore";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { IS_TAURI } from "./utils/platform";
+import "./styles/blueprint/openaec-fonts.css";
+import "./styles/blueprint/openaec-tokens.css";
 import "./themes.css";
 import "./App.css";
+import "./styles/shell.css";
 
 /**
  * Detached window — shows only one view, no ribbon/backstage/etc.
@@ -330,8 +333,7 @@ function App() {
 
   useEffect(() => {
     getSetting("theme", "light").then((saved) => {
-      setTheme(saved);
-      applyTheme(saved);
+      setTheme(applyTheme(saved));
     });
     // Welcome modal is no longer auto-shown — the persistent StartSidebar
     // replaces it. Users can still open it via the help menu.

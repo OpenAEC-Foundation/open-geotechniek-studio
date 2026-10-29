@@ -1,0 +1,14 @@
+OpenAEC Blueprint assets
+Source: https://github.com/OpenAEC-Foundation/OpenAEC-Blueprint
+Commit: 6c9c8967b4025befa808aa4998bfbae03cc27025
+
+The unmodified generated web design tokens and font package are vendored in
+apps/desktop/src/styles/blueprint/. SOURCE.json records their hashes.
+The theme adapter derives from the Blueprint Tauri+React template; local shell
+and worksheet styling adapt Blueprint 0.4 to this application's domain.
+The Blueprint repository LICENSE is CC BY-SA 4.0. The vendored LICENSE is
+included with these assets. Adapted design styles are distributed under the
+same terms. This does not change the stated license of unrelated app code.
+Fonts retain their individual SIL Open Font License notices in fonts/*-OFL.txt.
+The desktop bundle includes the design sources, provenance and license files
+under licenses/blueprint/ so attribution is available offline.
