@@ -1,12 +1,13 @@
+import ValidationPanel from "../../validation/ValidationPanel";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { invoke } from "@tauri-apps/api/core";
-import { open as openDialog } from "@tauri-apps/plugin-dialog";
-import { readTextFile } from "@tauri-apps/plugin-fs";
-import { useCptStore, addCptToActiveProject } from "../../store/useCptStore";
+import { cpt as cptPlatform, files } from "../../utils/platform";
+import { useCptStore, addCptToActiveProject, addBoreToActiveProject } from "../../store/useCptStore";
 import type { BoreDocument, GwpDocument } from "../../store/useCptStore";
 import type { Cpt, Layer } from "../../types/cpt";
 import type { Bore } from "../../types/bore";
+import { looksLikeBoringXml } from "../../types/bore";
+import { looksLikeGefBore } from "../../types/gefBoreParser";
 import type { Gwp } from "../../types/gwp";
 
 /**
@@ -264,7 +265,7 @@ function BoreMetadataList({ bore }: { bore: Bore }) {
  *  zichtbaar zijn. */
 function BoreExtraList({ bore }: { bore: Bore }) {
   const extra = bore.metadata.extra ?? {};
-  const entries = Object.entries(extra);
+  const entries = Object.entries(extra).filter(([key])=>!key.startsWith("ogs:"));
   if (entries.length === 0) {
     return <p className="panel-empty">Geen aanvullende metadata.</p>;
   }
@@ -345,6 +346,7 @@ function BoreRawXml({ xml }: { xml?: string }) {
 // ──────────────────────────────────────────────────────────────
 
 function ProjectBrowser() {
+  const [importError, setImportError] = useState<string | null>(null);
   const { t } = useTranslation("cpt");
   const documents = useCptStore((s) => s.documents);
   const activeDocId = useCptStore((s) => s.activeDocId);
@@ -366,25 +368,23 @@ function ProjectBrowser() {
   const active = activeCptId ? project.cpts.get(activeCptId) : undefined;
 
   async function addSonderingen() {
-    const selected = await openDialog({
-      multiple: true,
-      filters: [{ name: "CPT (GEF / BRO-XML)", extensions: ["gef", "GEF", "xml", "XML"] }],
-    });
-    if (!selected) return;
-    const paths = Array.isArray(selected) ? selected : [selected];
-    for (const p of paths) {
-      try {
-        const content = await readTextFile(p);
-        const filename = p.split(/[\\/]/).pop() ?? p;
-        await addCptToActiveProject(content, filename);
-      } catch (err) {
-        console.error("addSonderingen: failed for", p, err);
+    setImportError(null);
+    try {
+      const selected=await files.pickAndRead(true);
+      const errors:string[]=[];
+      for(const f of selected) {
+        try {
+          if(looksLikeBoringXml(f.text)||looksLikeGefBore(f.text))await addBoreToActiveProject(f.text,f.name);
+          else await addCptToActiveProject(f.text,f.name);
+        } catch(err){errors.push(f.name+': '+String(err));}
       }
-    }
+      if(errors.length)setImportError(errors.join('\n'));
+    } catch(err){setImportError(String(err));}
   }
 
   return (
     <div className="left-panel-body">
+      {importError && <p role="alert" className="panel-error">{importError}</p>}
       {/* Project header */}
       <div className="project-header">
         <div className="project-header-icon">
@@ -456,6 +456,7 @@ function ProjectBrowser() {
         <>
           <PanelSection title={t("sonderingsgegevens")} defaultOpen>
             <MetadataList cpt={active} />
+            <ValidationPanel cpt={active} />
           </PanelSection>
           <PanelSection title={t("fileMetadata", "Bestandsmetadata")}>
             <ExtraMetadataList cpt={active} />
@@ -490,6 +491,7 @@ function CptDetails({ cpt }: { cpt: Cpt }) {
 
       <PanelSection title={t("sonderingsgegevens")} defaultOpen>
         <MetadataList cpt={cpt} />
+        <ValidationPanel cpt={cpt} />
       </PanelSection>
       <PanelSection title={t("fileMetadata", "Bestandsmetadata")}>
         <ExtraMetadataList cpt={cpt} />
@@ -561,7 +563,7 @@ function MetadataList({ cpt }: { cpt: Cpt }) {
 function ExtraMetadataList({ cpt }: { cpt: Cpt }) {
   const { t } = useTranslation("cpt");
   const extra = cpt.metadata.extra ?? {};
-  const entries = Object.entries(extra);
+  const entries = Object.entries(extra).filter(([key])=>!key.startsWith("ogs:"));
   if (entries.length === 0) {
     return <p className="panel-empty">{t("noExtras", "Geen aanvullende metadata.")}</p>;
   }
@@ -585,9 +587,11 @@ function LayersTable({ cptId }: { cptId: string | null }) {
   useEffect(() => {
     if (!cptId) { setLayers([]); return; }
     setError(null);
-    invoke<Layer[]>("detect_layers", { id: cptId })
-      .then(setLayers)
-      .catch((e) => setError(String(e)));
+    const value = useCptStore.getState().cpts.get(cptId);
+    if(!value){setLayers([]);return;}
+    let cancelled=false;
+    cptPlatform.detectLayers(value).then(result=>{if(!cancelled)setLayers(result);}).catch(e=>{if(!cancelled)setError(String(e));});
+    return ()=>{cancelled=true;};
   }, [cptId]);
 
   if (!cptId) return <p className="panel-empty">—</p>;

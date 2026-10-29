@@ -162,7 +162,7 @@ python3 scripts/test-release.py          # versies en OpenPGP met tijdelijke tes
 
 Na controle en commit hoort bij de versie een tag `vJJJJ.W.N`. De workflow **Signed desktop release** bouwt Windows (NSIS), macOS (universele DMG) en Linux (deb/AppImage). De publicatiestap draait uitsluitend als alle builds en handtekeningcontroles slagen. Windows gebruikt Authenticode met timestamp, macOS Developer ID met Apple-notarisatie, Linux OpenPGP-signaturen plus build-attestaties. Updater-signing is een afzonderlijk contract en is hiermee niet toegevoegd.
 
-Signing vereist de Azure-, Apple- en OpenPGP-credentials uit [de release-aantekeningen](RELEASE_NOTES_2026.44.0.md). Die zijn momenteel niet voor deze repository beschikbaar. De lokale build is daarom een ontwikkelbuild zonder releasehandtekening. Het gereedzetten van de workflow is geen bewijs van een ondertekende release.
+Signing vereist de Azure-, Apple- en OpenPGP-credentials uit [de release-aantekeningen](RELEASE_NOTES_2026.44.1.md). Deze bestaan in de organisatie; repositorytoegang en echte releaseverificatie staan beschreven in de release-aantekeningen. De lokale build is daarom een ontwikkelbuild zonder releasehandtekening. Het gereedzetten van de workflow is geen bewijs van een ondertekende release.
 
 ### Zettingsberekening
 In de desktop- en ontwikkelversie staat alleen **Zetting van één laag** in de berekeningenlijst. Open een project en kies **Berekeningen → Nieuw**. Het werkblad toont invoer, grondmodel, eindzetting en tussenstappen. Controlevoorbeeld: `H = 2 m`, `Δσ′ = 50 kPa`, `M = 5 MPa` geeft `s = 20 mm`. De overige experimentele modules blijven als broncode bewaard, maar zijn niet selecteerbaar. De publieke webrelease bevat nog steeds geen rekenmodules.
@@ -192,3 +192,13 @@ De feedback-knop in de app (rechtsboven) opent direct een GitHub issue met auto-
 Onderdeel van het [OpenAEC Foundation](https://github.com/OpenAEC-Foundation)-ecosysteem.
 
 Sondering- en boringdata via [PDOK](https://www.pdok.nl/) ([BRT](https://www.pdok.nl/-/brt-achtergrondkaart), [Luchtfoto](https://www.pdok.nl/-/luchtfotos-pdok), [BAG](https://www.pdok.nl/-/bag), [Kadaster](https://www.pdok.nl/-/kadastrale-kaart-v5), [Ruimtelijkeplannen](https://www.pdok.nl/-/ruimtelijke-plannen)) en [BRO](https://basisregistratieondergrond.nl/) (Basisregistratie Ondergrond / TNO Geologische Dienst).
+
+
+## Integraties en opleverbewijs
+
+- [Headless Node core, HTTP API, MCP/Claude en eigen importers](packages/core/README.md)
+- [Native DLL/.so SDK, C ABI en externe consumententest](packages/native/README.md)
+- [Platform- en capabilitymatrix met beperkingen](docs/READINESS.md)
+- [AWS Fargate deploymentdefinitie en smoke-test](deploy/aws/README.md)
+
+De normale bestandsimport gebruikt dezelfde diagnostische GEF/BRO-parser op desktop en browser. Validatiemeldingen blijven in projectbestanden bewaard en zijn als CSV/JSON te exporteren. BRO-diepte-uitschieters worden standaard uitgesloten, met bronindices en een expliciete inschakeloptie. De grafische qc/Rf-indeling is indicatief; het is geen genormaliseerde Robertson-classificatie. De oude schema-ongeldige IFC4x3-export is uitgeschakeld.

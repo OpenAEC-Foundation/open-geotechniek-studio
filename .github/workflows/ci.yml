@@ -43,6 +43,11 @@ jobs:
           node ../../scripts/check-blueprint.mjs
           python3 ../../scripts/test-release.py
 
+      - name: Headless core and external HTTP/MCP clients
+        run: |
+          node ../../scripts/build-core.mjs
+          node --test ../../packages/core/test.mjs
+
       - name: Typecheck
         run: npx tsc --noEmit
 
@@ -69,3 +74,26 @@ jobs:
             fi
           done
           echo "Publieke bundle bevat geen rekencode."
+
+  native-sdk:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: cargo test --locked --manifest-path packages/native/Cargo.toml
+      - run: cargo build --locked --release --manifest-path packages/native/Cargo.toml
+      - name: External C ABI consumer
+        shell: bash
+        run: |
+          case "${{ runner.os }}" in
+            Windows) library=openaec_geotechniek.dll ;;
+            macOS) library=libopenaec_geotechniek.dylib ;;
+            *) library=libopenaec_geotechniek.so ;;
+          esac
+          python packages/native/test-consumer.py "packages/native/target/release/$library"

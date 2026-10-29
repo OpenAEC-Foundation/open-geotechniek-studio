@@ -14,7 +14,7 @@ class VersionTests(unittest.TestCase):
     def test_sync_and_check_in_temporary_checkout(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);app=root/'apps/desktop'
-            for name in ['apps/desktop/package.json','apps/desktop/package-lock.json','apps/desktop/src-tauri/tauri.conf.json','apps/desktop/src-tauri/Cargo.toml','apps/desktop/src-tauri/Cargo.lock','snap/snapcraft.yaml','apps/desktop/src/i18n/locales/en/common.json','apps/desktop/src/i18n/locales/nl/common.json']:
+            for name in ['packages/core/package.json','packages/native/Cargo.toml','packages/native/Cargo.lock','apps/desktop/package.json','apps/desktop/package-lock.json','apps/desktop/src-tauri/tauri.conf.json','apps/desktop/src-tauri/Cargo.toml','apps/desktop/src-tauri/Cargo.lock','snap/snapcraft.yaml','apps/desktop/src/i18n/locales/en/common.json','apps/desktop/src/i18n/locales/nl/common.json']:
                 dest=root/name;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy(ROOT/name,dest)
             old_root,old_app=version.ROOT,version.APP
             try:

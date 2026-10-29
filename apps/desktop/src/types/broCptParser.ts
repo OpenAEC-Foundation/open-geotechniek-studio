@@ -8,8 +8,8 @@
  *
  * Verwacht een `dispatchDataResponse` payload zoals geserveerd door
  * https://publiek.broservices.nl/sr/cpt/v1/objects/{broId}. De
- * Rust-parser is autoritair (uitgebreidere validatie); deze TS-versie
- * dekt het 99%-formaat dat de publieke endpoint teruggeeft.
+ * Dezelfde parser wordt gebruikt door browser en desktop. Diagnostiek blijft
+ * bij het CPT bewaard; afnemende diepterecords worden afzonderlijk bewaard.
  *
  * Sync met:
  *   - crates-warehouse/cpt-core/src/bro/mod.rs
@@ -17,6 +17,8 @@
  */
 
 import type { Cpt, MeasurementPoint } from "./cpt";
+import { attachValidation, type ValidationReport } from "../validation/report";
+import { excludeDepthOutliers } from "../validation/depthOutliers";
 
 /** BRO 25-koloms data-array — vaste volgorde per BRO IMBRO/A standaard. */
 const COLUMN_ORDER = [
@@ -71,6 +73,9 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
     throw new Error(`BRO CPT XML parse-fout: ${errs[0].textContent ?? ""}`);
   }
 
+  const objects = Array.from(doc.getElementsByTagName("*")).filter(el => el.localName === "CPT_O");
+  if(objects.length > 1) throw new Error("BRO XML bevat meerdere CPT-objecten. Splits het document per CPT om stil gegevensverlies te voorkomen.");
+  const report:ValidationReport={format:"BRO-CPT",diagnostics:[],records:0,points:0,voids:0,omittedRecords:0,depthMethod:"corrected-depth"};
   const broId = textByLocalName(doc.documentElement, "broId");
   if (!broId) throw new Error("BRO CPT: ontbrekende broId");
 
@@ -83,7 +88,11 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
   if (deliveredLoc) {
     const pos = textByLocalName(deliveredLoc, "pos");
     if (pos) {
-      const parts = pos.trim().split(/\s+/).map((s) => parseFloat(s));
+      const posEl=findByLocalName(deliveredLoc,"pos");
+      const srs=posEl?.getAttribute("srsName") || deliveredLoc.getAttribute("srsName") || "";
+      const rd=/(?:EPSG(?::|\/|::)|\/EPSG\/0\/)28992$/i.test(srs);
+      if(!rd)report.diagnostics.push({severity:"warning",code:"UNKNOWN_XY_CRS",message:`Locatiestelsel '${srs || "ontbreekt"}' is niet expliciet RD/EPSG:28992; locatie niet op kaart gezet.`});
+      const parts = rd ? pos.trim().split(/\s+/).map(Number) : [];
       if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
         xRd = parts[0];
         yRd = parts[1];
@@ -153,6 +162,17 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
     if (v) extra[name] = v;
   }
 
+  // Preserve leaf metadata, including vocabulary values unknown to this version.
+  for(const el of Array.from(doc.getElementsByTagName("*"))){
+    if(el.children.length===0 && !["values","pos"].includes(el.localName)){
+      const value=el.textContent?.trim();if(value && !(el.localName in extra))extra[el.localName]=value;
+    }
+  }
+  const regime=extra.qualityRegime;
+  for(const field of ["qualityClass","cptStandard","researchOperator"]){
+    if(!extra[field])report.diagnostics.push({severity:"info",code:"MISSING_REGIME_FIELD",message:`${field}: ${regime === "IMBRO/A" ? "ontbreekt volgens regime IMBRO/A" : "ontbreekt; controleer de bron"}.`});
+  }
+
   // ── Data-block uit cptResult/values ────────────────────────
   // Let op: we wíllen specifiek cptResult/values, NIET
   // dissipationTest/values. We zoeken dus eerst cptResult en
@@ -164,14 +184,19 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
   }
 
   // ── Parse data-block ───────────────────────────────────────
-  const points = parseDataBlock(dataBlock, zNap);
-  // BRO is niet altijd op diepte gesorteerd — sorteren zodat de
-  // chart-polyline niet zigzagt.
-  points.sort((a, b) => a.depth - b.depth);
+  const parsed = parseDataBlock(dataBlock, zNap, report);
+  const {points,excluded}=excludeDepthOutliers(parsed);
+  if(excluded.length){
+    extra["ogs:bro-outliers"]=JSON.stringify({all:parsed,excluded,included:false});
+    report.diagnostics.push({severity:"warning",code:"DEPTH_OUTLIERS",message:`${excluded.length} records buiten de langste niet-afnemende dieptereeks standaard uitgesloten. Bronrecords: ${excluded.join(", ")}. Schakel ze desgewenst in bij Validatie.`});
+  }
+  report.points=points.length;
 
-  return {
+  return attachValidation({
     id: broId,
     metadata: {
+      predrilled_depth_m: Number.isFinite(Number(extra.predrilledDepth)) ? Number(extra.predrilledDepth) : undefined,
+      quality_regime: regime,
       project_name: undefined,
       project_number: undefined,
       date,
@@ -185,29 +210,31 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
         ? { x_rd: xRd, y_rd: yRd, z_nap: zNap }
         : undefined,
     points,
-  };
+  },report);
 }
 
 // ── Data parsing ──────────────────────────────────────────────────
 
-function parseDataBlock(block: string, zNap: number | undefined): MeasurementPoint[] {
-  // Records gescheiden door ';', kolommen door ','. Elke "record" is
-  // 25 floats. VOID_VALUE = -999999 betekent "geen meting".
-  const out: MeasurementPoint[] = [];
-  const records = block.split(";");
-  for (const rec of records) {
-    const trimmed = rec.trim();
-    if (!trimmed) continue;
-    const tokens = trimmed.split(",");
-    if (tokens.length < COLUMN_ORDER.length) continue;
-    const nums: (number | undefined)[] = tokens.map((s) => {
-      const v = parseFloat(s.trim());
-      if (isNaN(v)) return undefined;
-      if (Math.abs(v - VOID_VALUE) < 0.5) return undefined;
-      return v;
+function parseDataBlock(block: string, zNap: number | undefined, report:ValidationReport): MeasurementPoint[] {
+  const out:MeasurementPoint[]=[];
+  for(const rec of block.split(";")){
+    if(!rec.trim())continue;
+    report.records++;const record=report.records;
+    const tokens=rec.trim().split(",");
+    if(tokens.length!==COLUMN_ORDER.length)report.diagnostics.push({severity:"error",code:"COLUMN_COUNT",message:`Verwacht 25 kolommen, ontvangen ${tokens.length}.`,record});
+    const nums=tokens.map((token,i)=>{
+      const raw=token.trim(),v=Number(raw);
+      if(raw === "" || !/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?$/.test(raw) || !Number.isFinite(v)){
+        report.diagnostics.push({severity:"warning",code:"INVALID_NUMBER",message:`Ongeldig getal '${raw}' wordt void; kolom blijft behouden.`,record,column:i+1});return undefined;
+      }
+      if(v===VOID_VALUE){report.voids++;return undefined;}return v;
     });
-    const pt = buildPoint(nums, zNap);
-    if (pt) out.push(pt);
+    const pt=buildPoint(nums,zNap);
+    if(!pt || pt.depth<0){report.omittedRecords++;report.diagnostics.push({severity:"error",code:"MISSING_DEPTH",message:"Record zonder geldige niet-negatieve diepte weggelaten.",record});continue;}
+    pt.parameters=Object.fromEntries(COLUMN_ORDER.map((key,i)=>[key,nums[i]??null]));
+    // Source record is kept for the outlier report and persists through snapshots.
+    pt.parameters["source_record"]=record;
+    out.push(pt);
   }
   return out;
 }

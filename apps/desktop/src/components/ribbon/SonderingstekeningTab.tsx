@@ -208,7 +208,7 @@ export default function SonderingstekeningTab() {
   }, []);
 
   return (
-    <div className="ribbon-content">
+    <div className="ribbon-content ribbon-drawing">
       <div className="ribbon-groups">
         <RibbonGroup label={t("tekening.selectGroup", "Selecteer")}>
           <RibbonButton

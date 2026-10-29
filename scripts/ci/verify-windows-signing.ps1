@@ -7,6 +7,7 @@ function Assert-Signed([string]$file) {
     }
     Write-Output "$file : $($signature.SignerCertificate.Subject)"
 }
+Assert-Signed 'src-tauri/target/release/openaec_geotechniek.dll'
 $bundle = 'src-tauri/target/release/bundle'
 $installers = @(Get-ChildItem "$bundle/nsis/*-setup.exe")
 if ($installers.Count -ne 1) { throw 'Expected one NSIS installer' }

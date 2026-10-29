@@ -64,10 +64,10 @@
     "copied": "Gekopieerd",
     "saveAs": "Opslaan als...",
     "autoGroup": "Automatisch gegenereerd",
-    "autoReady": "Live — IFC4x3 + IFCX",
+    "autoReady": "Live — IFCX snapshot",
     "autoGenerating": "Bezig met genereren...",
     "autoNoCpt": "Geen sonderingen — voeg eerst toe",
-    "autoHint": "IFC4x3 en IFCX worden live bijgewerkt zodra sonderingen veranderen.",
+    "autoHint": "Experimentele IFCX-snapshots worden bijgewerkt. IFC4x3-export is uitgeschakeld.",
     "autoLive": "Live — automatisch gegenereerd",
     "paneNoCpt": "Geen sonderingen in project — voeg eerst een sondering toe.",
     "paneGenerating": "Bezig met genereren..."

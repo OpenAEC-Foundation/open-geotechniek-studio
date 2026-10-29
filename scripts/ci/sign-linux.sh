@@ -13,7 +13,8 @@ actual=$(gpg --batch --with-colons --list-secret-keys "$fingerprint" | awk -F: '
 test "$actual" = "$fingerprint"
 cd release-artifacts
 cp SHA256SUMS.txt SHA256SUMS-linux.txt
-for package in *.AppImage *.deb SHA256SUMS-linux.txt; do
+for package in *.AppImage *.deb *.tar.gz *.tgz SHA256SUMS-linux.txt; do
+  [[ -e "$package" ]] || continue
   test -f "$package"
   printf '%s' "${OPENAEC_GPG_PASSPHRASE:-}" | gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --local-user "$fingerprint" --armor --detach-sign "$package"
   gpg --batch --verify "$package.asc" "$package"

@@ -8,6 +8,10 @@ export interface Cpt {
 }
 
 export interface Metadata {
+  predrilled_depth_m?: number;
+  pre_excavated_depth_m?: number;
+  removed_layers?: Array<{bottom_depth_m:number;description:string}>;
+  quality_regime?: string;
   project_name?: string;
   project_number?: string;
   date?: string; // ISO 8601 date
@@ -31,6 +35,8 @@ export interface Position {
 }
 
 export interface MeasurementPoint {
+  /** Original quantities by GEF quantity number, including voids; unknown values are retained. */
+  parameters?: Record<string, number | null>;
   depth: number;
   depth_nap?: number;
   qc?: number;

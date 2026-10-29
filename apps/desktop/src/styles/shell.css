@@ -35,3 +35,21 @@ input[type="number"], .mono { font-family: var(--oa-font-numbers); font-variant-
 .ribbon-calculation-context strong { font-size: 12px; font-weight: 500; color: var(--oa-text); }
 
 .ribbon-content-panel .ribbon-berekeningen { padding: 0; gap: 0; align-items: stretch; overflow: hidden; }
+
+/* Drawing tools retain their groups when the window is narrow. */
+.ribbon-drawing { min-width: 0; overflow-x: auto; overflow-y: hidden; }
+.ribbon-drawing .ribbon-groups { min-width: max-content; }
+.ribbon-drawing .ribbon-group { flex-shrink: 0; }
+.ribbon-drawing .ribbon-btn { flex-shrink: 0; min-width: 55px; }
+.ribbon-drawing .ribbon-btn.small { min-height: 17px; height: 17px; padding: 0 4px; font-size: 11px; }
+.ribbon-drawing .ribbon-btn.small .ribbon-btn-icon { width: 14px; height: 14px; }
+.ribbon-drawing .ribbon-btn.small .ribbon-btn-label { font-size: 11px; }
+.tekprops { background: var(--oa-panel); color: var(--oa-text); }
+.tekprops-section-header { background: var(--oa-panel); border-bottom: 1px solid var(--oa-border); font: 10px var(--oa-font-mono); }
+.tekprops-field input, .tekprops-field select { background: var(--oa-panel); color: var(--oa-text); border: 1px solid var(--oa-border-strong); border-radius: 3px; padding: 4px 6px; }
+
+.validation-panel { margin: 10px 0; padding: 8px; border-left: 2px solid var(--oa-info); background: var(--oa-info-tint); font-size: 11px; line-height: 1.6; }
+.validation-actions { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+.validation-actions button { padding: 3px 7px; border: 1px solid var(--oa-border-strong); background: var(--oa-panel); color: var(--oa-text); border-radius: 3px; }
+.validation-panel ol { padding-left: 15px; max-height: 300px; overflow: auto; }
+.validation-panel li { margin: 5px 0; overflow-wrap: anywhere; }

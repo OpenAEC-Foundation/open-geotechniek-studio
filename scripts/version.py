@@ -22,6 +22,9 @@ def check(version):
     assert re.search(r'\[package\][\s\S]*?\nversion = "([^"]+)"', (APP/'src-tauri/Cargo.toml').read_text())[1] == version
     assert f'name = "open-geo-studio"\nversion = "{version}"' in (APP/'src-tauri/Cargo.lock').read_text()
     assert f"version: '{version}'" in (ROOT/'snap/snapcraft.yaml').read_text()
+    assert json.loads((ROOT/'packages/core/package.json').read_text())['version'] == version
+    assert re.search(r'\[package\][\s\S]*?\nversion = "([^"]+)"', (ROOT/'packages/native/Cargo.toml').read_text())[1] == version
+    assert f'name = "openaec-geotechniek-sdk"\nversion = "{version}"' in (ROOT/'packages/native/Cargo.lock').read_text()
     print(f'All product versions: {version}')
 
 def set_version(version):
@@ -35,6 +38,9 @@ def set_version(version):
     p=ROOT/'snap/snapcraft.yaml';p.write_text(re.sub(r'^version:.*',f"version: '{version}'",p.read_text(),flags=re.M))
     for lang in ['nl','en']:
         p=APP/f'src/i18n/locales/{lang}/common.json';d=json.loads(p.read_text());d['version']=f'Open Geotechniek Studio v{version}';p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+    p=ROOT/'packages/core/package.json';d=json.loads(p.read_text());d['version']=version;p.write_text(json.dumps(d,indent=2)+'\n')
+    p=ROOT/'packages/native/Cargo.toml';p.write_text(re.sub(r'(\[package\][\s\S]*?\nversion = ")[^"]+',lambda m:m[1]+version,p.read_text(),count=1))
+    p=ROOT/'packages/native/Cargo.lock';p.write_text(re.sub(r'(name = "openaec-geotechniek-sdk"\nversion = ")[^"]+',lambda m:m[1]+version,p.read_text(),count=1))
     check(version)
 
 if __name__ == '__main__':

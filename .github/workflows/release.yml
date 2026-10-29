@@ -34,6 +34,13 @@ jobs:
           node --input-type=module -e 'import fs from "node:fs"; const v=JSON.parse(fs.readFileSync("apps/desktop/package.json")).version; if(process.env.RELEASE_TAG !== `v${v}`) throw new Error("Tag/version mismatch");'
       - run: npm ci && npm test -- --maxWorkers=2 && npm run build
         working-directory: apps/desktop
+      - name: Verify headless HTTP and MCP contract
+        run: |
+          node scripts/build-core.mjs
+          node --test packages/core/test.mjs
+      - name: Check frontend types
+        run: npx tsc --noEmit
+        working-directory: apps/desktop
   build:
     needs: check
     timeout-minutes: 90
@@ -80,9 +87,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libssl-dev build-essential
       - run: npm ci
+      - name: Build native SDK
+        if: runner.os != 'macOS'
+        run: |
+          cargo test --locked --manifest-path ../../packages/native/Cargo.toml
+          cargo build --locked --release --manifest-path ../../packages/native/Cargo.toml
       - name: Compile Windows application
         if: runner.os == 'Windows'
         run: npm run tauri -- build --no-bundle
+      - name: Stage Windows SDK for signing
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Copy-Item ../../packages/native/target/release/openaec_geotechniek.dll src-tauri/target/release/
       - name: Sign Windows binary and install signing tools
         if: runner.os == 'Windows'
         uses: azure/trusted-signing-action@v1
@@ -94,7 +110,7 @@ jobs:
           signing-account-name: ${{ secrets.AZURE_TRUSTED_SIGNING_ACCOUNT_NAME }}
           certificate-profile-name: ${{ secrets.AZURE_CERTIFICATE_PROFILE_NAME }}
           files-folder: ${{ github.workspace }}/app/apps/desktop/src-tauri/target/release
-          files-folder-filter: exe
+          files-folder-filter: exe,dll
           files-folder-depth: 1
           file-digest: SHA256
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
@@ -164,6 +180,29 @@ jobs:
       - name: Collect Windows and Linux installers
         if: runner.os != 'macOS'
         run: node ../../scripts/ci/collect-artifacts.mjs src-tauri/target/release/bundle
+      - name: Package external native SDK
+        if: runner.os != 'macOS'
+        shell: bash
+        run: |
+          version=$(node -p "require('./package.json').version")
+          mkdir -p ../../release-artifacts ../../sdk-stage
+          cp ../../packages/native/include/openaec_geotechniek.h ../../packages/native/README.md ../../packages/native/test-consumer.py ../../sdk-stage/
+          if [ "${{ runner.os }}" = Windows ]; then
+            cp src-tauri/target/release/openaec_geotechniek.dll ../../sdk-stage/
+            python ../../packages/native/test-consumer.py src-tauri/target/release/openaec_geotechniek.dll
+          else
+            cp ../../packages/native/target/release/libopenaec_geotechniek.so ../../sdk-stage/
+            python3 ../../packages/native/test-consumer.py ../../packages/native/target/release/libopenaec_geotechniek.so
+          fi
+          tar -czf "../../release-artifacts/geotechniek-sdk-${version}-${{ matrix.label }}.tar.gz" -C ../../sdk-stage .
+      - name: Package headless Node core
+        if: runner.os == 'Linux'
+        run: |
+          node ../../scripts/build-core.mjs
+          cd ../../packages/core
+          npm pack --pack-destination ../../release-artifacts
+      - name: Refresh artifact checksums
+        run: node ../../scripts/ci/checksums.mjs ../../release-artifacts
       - name: Sign and verify Linux packages and checksums
         if: runner.os == 'Linux'
         env:

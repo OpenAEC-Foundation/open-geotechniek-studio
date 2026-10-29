@@ -100,14 +100,7 @@ pub async fn generate_ifc_core(
     let format_norm = format.to_lowercase();
     let (extension, content) = match format_norm.as_str() {
         "ifc4x3" | "ifc" => {
-            let cpts_clone = cpts.clone();
-            let meta_clone = meta.clone();
-            let text = tokio::task::spawn_blocking(move || {
-                core_ifc::write_ifc4x3(&cpts_clone, &meta_clone)
-            })
-            .await
-            .map_err(|e| format!("ifc4x3 task: {e}"))?;
-            ("ifc", text)
+            return Err("IFC4x3 export disabled: legacy STEP writer is not schema-valid; use IFCX snapshot instead".into());
         }
         "ifcx" | "json" => {
             let cpts_clone = cpts.clone();

@@ -182,7 +182,7 @@ const tekState = {
   enabled: defaultState("tekening"),
   opacity: defaultOpacityState("tekening"),
 };
-function statesFor(view: ViewId) {
+export function statesFor(view: ViewId) {
   return view === "tekening" ? tekState : mapState;
 }
 

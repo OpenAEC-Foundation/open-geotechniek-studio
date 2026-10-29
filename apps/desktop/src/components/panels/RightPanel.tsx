@@ -36,7 +36,7 @@ export default function RightPanel() {
         </section>
       )}
       <section className="right-panel-section">
-        <h3 className="right-panel-title">{t("robertsonSbt", "Robertson SBT")}</h3>
+        <h3 className="right-panel-title">{t("robertsonSbt", "Indicatieve qc/Rf-indeling")}</h3>
         <ul className="sbt-legend">
           {ROBERTSON_ZONES.map((z) => (
             <li key={z.number}>
