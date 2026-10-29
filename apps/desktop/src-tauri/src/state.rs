@@ -7,6 +7,8 @@ use cpt_core::Cpt;
 #[derive(Default)]
 pub struct AppState {
     pub cpts: Mutex<HashMap<String, Cpt>>,
+    /// Full source snapshots; the older typed calculation model is a view only.
+    pub cpt_snapshots: Mutex<HashMap<String, serde_json::Value>>,
     /// Extension toggle-state, key = ExtensionId-string (zelfde IDs als
     /// in apps/desktop/src/hooks/useExtensions.ts). Default leeg; bij
     /// `extensions_list` worden onbekende ids als "false" gerapporteerd

@@ -239,6 +239,17 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
           ? "BRO XML (.xml)"
           : "Geotechniek-object (.ifcgeo)";
       const baseName = activeDoc.cpt.id || "sondering";
+      if(format === "ifcgeo") {
+        try {
+          if(IS_TAURI){
+            const path=await save({defaultPath:`${baseName}.ifcgeo`,filters:[{name:'Sondering met brongegevens',extensions:['ifcgeo']}]});
+            if(!path)return;
+            const {writeTextFile}=await import('@tauri-apps/plugin-fs');await writeTextFile(path,JSON.stringify(activeDoc.cpt,null,2));
+          }else downloadBlobAsFile(new Blob([JSON.stringify(activeDoc.cpt,null,2)],{type:'application/json'}),`${baseName}.ifcgeo`);
+          setShowCptSaveAsMenu(false);onClose();
+        }catch(error){alert(`Snapshot opslaan mislukt: ${String(error)}`);}
+        return;
+      }
       if(format === "gef") {
         try {
           const result=exportGef(activeDoc.cpt);
@@ -253,22 +264,8 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
         return;
       }
 
-      // Browser-modus: alleen .ifcgeo (JSON-snapshot) wordt
-      // ondersteund — GEF + BRO-XML serializers zitten in Rust en
-      // hebben geen TS-port. Geef de gebruiker een duidelijke melding
-      // in plaats van een lege download.
       if (!IS_TAURI) {
-        if (format !== "ifcgeo") {
-          alert(
-            "Exporteren naar GEF of BRO-XML vereist de desktop-versie " +
-              "(serializer zit in Rust). In de webversie kun je wel " +
-              "naar .ifcgeo (JSON-snapshot) exporteren.",
-          );
-          return;
-        }
-        await saveJsonAsFile(activeDoc.cpt, `${baseName}.ifcgeo`);
-        setShowCptSaveAsMenu(false);
-        onClose();
+        alert("Een nieuwe BRO-levering genereren is alleen beschikbaar via de legacy desktop-export. Gebruik GEF of een JSON-snapshot voor een bronvaste export.");
         return;
       }
       const dst = await save({

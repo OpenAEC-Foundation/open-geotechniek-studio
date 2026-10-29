@@ -256,7 +256,7 @@ impl McpServer {
                 let content = arg_str("content")?;
                 let filename = arg_str("filename")?;
                 let cpt = cpt_cmd::open_cpt_core(&content, &filename, &self.app_state)?;
-                serde_json::to_string_pretty(&cpt).map_err(|e| e.to_string())
+                serde_json::to_string_pretty(&cpt_cmd::cpt_snapshot_core(&cpt.id,&self.app_state)?).map_err(|e| e.to_string())
             }
             "cpt_close" => {
                 let id = arg_str("id")?;
@@ -264,7 +264,7 @@ impl McpServer {
                 Ok(format!("CPT closed: {}", id))
             }
             "cpt_list" => {
-                let cpts = cpt_cmd::list_cpts_core(&self.app_state);
+                let cpts = cpt_cmd::list_snapshots_core(&self.app_state);
                 serde_json::to_string_pretty(&cpts).map_err(|e| e.to_string())
             }
             "cpt_detect_layers" => {

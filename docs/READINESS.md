@@ -1,4 +1,4 @@
-# Versioned delivery evidence — 2026.44.3
+# Versioned delivery evidence — 2026.44.4
 
 This is an evidence ledger, not a claim that every checkbox in issues #14/#15 is complete. Runtime evidence must refer to this version's actual artifacts.
 
@@ -56,7 +56,7 @@ Issue #15 was closed for the authorized release scope using actual evidence in
 [release run 40805343347](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/actions/runs/40805343347)
 and [published v2026.44.2 assets](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases/tag/v2026.44.2).
 AWS deployment was explicitly deferred by the user, and is not claimed verified.
-Release 2026.44.3 must pass its own artifact signing checks before publication.
+Release 2026.44.3 also passed its complete signing run 40811070824. Release 2026.44.4 must pass its own artifact checks before publication.
 
 ## Reader and visual evidence for 2026.44.2
 
@@ -104,3 +104,15 @@ is a concept calculation and does not replace an independent engineering review.
   RDNAPTRANS. Position method/available uncertainty are retained in metadata.
 - Minimum-thickness/hysteresis controls, manual layer edits and source-attributed
   JSON export preserve the measurement arrays. Void gaps remain uninterpreted.
+
+
+## Snapshot fidelity in 2026.44.4
+
+The typed native calculation model is a view. The complete input JSON is stored
+separately and returned by CPT read/list routes and native REST/MCP. GUI saves use
+the current editable CPT; native `.ifcgeo` writes use the complete cached source.
+IFCX conversion embeds the complete original project payload in the editable
+header instead of serializing only the older typed model. Seven native regression
+tests include unknown quantities, metadata/future fields, source file round trips
+and full project IFCX save/reopen. Legacy project rendering remains a projection;
+the editable source is preserved independently of it.

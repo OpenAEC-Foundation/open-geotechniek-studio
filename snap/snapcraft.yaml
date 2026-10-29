@@ -1,7 +1,7 @@
 name: open-geotechniek-studio
 base: core22
 # Versie wordt in CI overschreven met het release-versienummer (zie .github/workflows/snap.yml).
-version: '2026.44.3'
+version: '2026.44.4'
 title: Open Geotechniek Studio
 summary: CPT soundings and borehole viewer for Dutch geotechnical work
 description: |
