@@ -176,7 +176,12 @@ async fn post_xml(url: &str, body: &serde_json::Value) -> Result<String, String>
     let status = resp.status();
     let text = resp.text().await.map_err(|e| e.to_string())?;
     if !status.is_success() {
-        // BRO error responses are usually small XML; surface a snippet.
+        // Extract the rejection before truncating namespace-heavy XML; otherwise
+        // the actual 2000-result reason can disappear beyond the diagnostic snippet.
+        if let Err(reason) = parse_characteristics(&text, "cpt") {
+            return Err(format!("BRO HTTP {status}: {reason}"));
+        }
+        // Unknown response format: retain a bounded diagnostic snippet.
         let snippet: String = text.chars().take(400).collect();
         return Err(format!("BRO HTTP {status}: {snippet}"));
     }
