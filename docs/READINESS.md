@@ -57,6 +57,9 @@ Issue #15 remains open until real signed Windows/macOS/Linux artifacts, release 
 - Browser QA: report downloaded at 1:50 as six A4 pages, including a two-page CPT
   and custom cover; CPT page rendered and inspected. Drawing downloaded as A3
   landscape with rendered map, north arrow, scale bar and 1:1000 title block.
+- Browser tab-switch QA: requested 1:1000 remained 1:1000 in title block and both
+  property fields; selected Rotterdam address remained present in both views.
+  Saved settings restore before the first default-state write, scoped per document.
 - Exact map-projection coordinates now remove the subpixel measurement drift
   between requested scale, properties and title block.
 - Windows-1252 decoding reports every converted high byte with source line/byte

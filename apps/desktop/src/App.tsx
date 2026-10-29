@@ -82,6 +82,7 @@ function DetachedApp({ view, title }: { view: string; title: string }) {
 }
 
 function App() {
+  const activeDocId = useCptStore((state) => state.activeDocId);
   // Check if this is a detached window
   const detachedParams = getDetachedParams();
   if (detachedParams.detached && detachedParams.view) {
@@ -422,7 +423,7 @@ function App() {
       case "ifc":
         return <IfcView />;
       case "tekening":
-        return <SonderingstekeningView />;
+        return <SonderingstekeningView key={activeDocId ?? "empty"} />;
       case "calculations":
         return <CalculationsView />;
       default:

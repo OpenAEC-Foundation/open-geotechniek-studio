@@ -13,7 +13,8 @@
   quantities, diagnose unknown units, and decode Windows-1252 with conversion
   locations. Differential tests compare Bedrock 0.4.2 and pygef 0.14.1.
 - Correct drawing scale measurements to use unrounded projected coordinates.
-  Browser verification exported the drawing as A3 PDF and a 1:50 paginated report.
+  Preserve drawing settings per document before writing mount defaults, including
+  scale across tab switches. Browser verification exported the drawing as A3 PDF and a 1:50 paginated report.
 - Expose poer calculation in the Node library, HTTP API and MCP. Verify actual
   Claude Code host connectivity in an isolated configuration.
 
