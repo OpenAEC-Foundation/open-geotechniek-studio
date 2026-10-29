@@ -1,3 +1,4 @@
+import {rdToWgs84} from "../../utils/coordinates";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as L from "leaflet";
 import { toPng } from "html-to-image";
@@ -786,6 +787,7 @@ export default function MapView() {
       setStatus("Bezig met laden...");
       // Fire both calls in parallel — independent endpoints.
       const tasks: Promise<void>[] = [];
+      const searchErrors:string[]=[];
       let cptCount = 0;
       let boreCount = 0;
       // platform.bro kiest tussen Rust-command (Tauri) en directe
@@ -806,6 +808,7 @@ export default function MapView() {
             })
             .catch((e) => {
               console.warn("fetch_bro_area failed", e);
+              searchErrors.push(`Sonderingen: ${String(e)}`);
               broLayerRef.current?.clearLayers();
             }),
         );
@@ -828,6 +831,7 @@ export default function MapView() {
             })
             .catch((e) => {
               console.warn("fetch_bro_bores failed", e);
+              searchErrors.push(`Boringen: ${String(e)}`);
               broBoresLayerRef.current?.clearLayers();
             }),
         );
@@ -890,7 +894,7 @@ export default function MapView() {
         await Promise.all(tasks);
         if (myAbort.signal.aborted) return;
         emitBroCounts(cptCount, boreCount);
-        setStatus(broCountSummary(cptCount, boreCount, sondOn, boresOn));
+        setStatus(searchErrors.length?`BRO onvolledig: ${searchErrors.join(" · ")}`:broCountSummary(cptCount, boreCount, sondOn, boresOn));
       } catch (e) {
         if (!myAbort.signal.aborted) setStatus(`Fout: ${String(e)}`);
       }
@@ -898,6 +902,7 @@ export default function MapView() {
 
     // Public handlers (window events) ─────────────────────────
     const onLoad = () => {
+      broPlatform.clearSearchCache();
       // Explicit "Laad gebied" button always forces, even at low zoom.
       void loadVisibleArea({ force: true });
     };
@@ -1990,23 +1995,3 @@ function escapeHtml(s: string): string {
 }
 
 // Inline RD → WGS84 (Schreutelkamp 2001), mirrors cpt-core::coords::rd_to_wgs84.
-function rdToWgs84(x: number, y: number): { lat: number; lon: number } {
-  const X0 = 155_000.0, Y0 = 463_000.0;
-  const PHI0 = 52.15517440, LAM0 = 5.38720621;
-  const dx = (x - X0) * 1e-5;
-  const dy = (y - Y0) * 1e-5;
-  const kp: [number, number, number][] = [
-    [0, 1, 3235.65389], [2, 0, -32.58297], [0, 2, -0.24750], [2, 1, -0.84978],
-    [0, 3, -0.06550], [2, 2, -0.01709], [1, 0, -0.00738], [4, 0, 0.00530],
-    [2, 3, -0.00039], [4, 1, 0.00033], [1, 1, -0.00012],
-  ];
-  const lp: [number, number, number][] = [
-    [1, 0, 5260.52916], [1, 1, 105.94684], [1, 2, 2.45656], [3, 0, -0.81885],
-    [1, 3, 0.05594], [3, 1, -0.05607], [0, 1, 0.01199], [3, 2, -0.00256],
-    [1, 4, 0.00128], [0, 2, 0.00022], [2, 0, -0.00022], [5, 0, 0.00026],
-  ];
-  let dphi = 0, dlam = 0;
-  for (const [p, q, k] of kp) dphi += k * Math.pow(dx, p) * Math.pow(dy, q);
-  for (const [p, q, l] of lp) dlam += l * Math.pow(dx, p) * Math.pow(dy, q);
-  return { lat: PHI0 + dphi / 3600, lon: LAM0 + dlam / 3600 };
-}

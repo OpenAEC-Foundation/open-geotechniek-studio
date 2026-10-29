@@ -12,6 +12,11 @@ function unquote(value: string): string {
   return value.trim().replace(/^['"‘’]|['"‘’]$/g, "").trim();
 }
 
+const strictGefNumber=(raw:string|undefined):number=>{
+ const value=raw?.trim().replace(',', '.')??'';
+ return /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?$/.test(value)?Number(value):NaN;
+};
+
 
 export function parseGefBore(content: string, filename: string): Bore {
   if (!looksLikeGefBore(content)) throw new Error("Geen GEF-BORE-bestand.");
@@ -47,8 +52,8 @@ export function parseGefBore(content: string, filename: string): Bore {
   for (const record of records) {
     if (!record.trim()) continue;
     const values = colSep ? record.trim().split(colSep) : record.trim().split(/\s+/);
-    const topRaw = Number(values[top.index]?.trim().replace(",", "."));
-    const baseRaw = Number(values[base.index]?.trim().replace(",", "."));
+    const topRaw = strictGefNumber(values[top.index]);
+    const baseRaw = strictGefNumber(values[base.index]);
     const topDepth = topRaw * factor(top.unit), baseDepth = baseRaw * factor(base.unit);
     const description = unquote(values.slice(count).join(colSep).replace(/;\s*$/, ""));
     if (!values[top.index]?.trim() || !values[base.index]?.trim() || !Number.isFinite(topDepth) || !Number.isFinite(baseDepth) ||
@@ -62,15 +67,18 @@ export function parseGefBore(content: string, filename: string): Bore {
   }
   if (!layers.length) throw new Error("GEF-boring bevat geen lagen.");
   const xy = parts(first("XYID")), z = parts(first("ZID")), project = parts(first("PROJECTID"));
-  const position = Number(xy[0]) === 31000 && xy.length >= 3 && Number.isFinite(Number(xy[1])) && Number.isFinite(Number(xy[2]))
-    ? { x_rd: Number(xy[1]), y_rd: Number(xy[2]), z_nap: Number(z[0]) === 31000 && z[1] && Number.isFinite(Number(z[1])) ? Number(z[1]) : undefined }
+  const position = xy[0] === "31000" && xy.length >= 3 && Number.isFinite(strictGefNumber(xy[1])) && Number.isFinite(strictGefNumber(xy[2]))
+    ? { x_rd: strictGefNumber(xy[1]), y_rd: strictGefNumber(xy[2]), z_nap: z[0] === "31000" && z[1] && Number.isFinite(strictGefNumber(z[1])) ? strictGefNumber(z[1]) : undefined }
     : undefined;
+  const checks:string[]=[];
+  if(xy.length && (!position || xy[0]!=='31000'))checks.push(`XYID ${xy[0]} niet als geldige RD-locatie gebruikt; bron bewaard.`);
+  if(z.length && (z[0]!=='31000'||!Number.isFinite(strictGefNumber(z[1]))))checks.push(`ZID ${z[0]} niet als geldige NAP-hoogte gebruikt; bron bewaard.`);
   return {
     id: first("TESTID") || filename.replace(/\.gef$/i, ""), position,
     final_depth: layers[layers.length - 1].base_depth, layers,
     metadata: { source_file: filename, project_name: project[0], project_number: project[1],
       start_date: text.get(16) ?? text.get(2), description_date: text.get(5), end_date: text.get(19),
       bore_method: text.get(31), description_procedure: parts(first("MEASUREMENTCODE"))[0],
-      extra: Object.fromEntries([...header].map(([key, values]) => [key, values.join(" | ")])) },
+      extra: {...Object.fromEntries([...header].map(([key, values]) => [key, values.join(" | ")])),"ogs:source-gef":content,...(checks.length?{"Gegevenscontrole":checks.join(" ")}:{})} },
   };
 }

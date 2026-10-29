@@ -2,7 +2,7 @@
 
 For new integrations use the stateless [headless Node core/API/MCP](../packages/core/README.md). It runs without a desktop UI, has explicit version/validation endpoints, an external-client smoke test and a trusted custom-importer boundary. The [native C ABI](../packages/native/README.md) covers settlement and snapshot validation. The [AWS deployment candidate](../deploy/aws/README.md) is separate and awaits runtime verification.
 
-The legacy desktop-binary API below remains loopback-only and stateful. Its raw GEF/BRO parsers and native reports are older implementations; they do not provide the new frontend parser diagnostics, report scale controls or importer registration. Do not expose this legacy service through a network proxy. For validated parsing use the Node core and pass CPT JSON snapshots into the desktop. IFC4x3 generation has been disabled because the legacy writer is not schema-valid; explicitly request experimental `ifcx` where needed. The default legacy IFC request will now return an error.
+The legacy desktop-binary API below remains loopback-only and stateful. Raw GEF/BRO import and the old GEF writer are disabled because those paths could shift invalid columns or omit source channels. Its native reports and layer engine remain older implementations; use the shared Node core for the current interpretation/report contract. Do not expose this legacy service through a network proxy. For validated parsing use the Node core and pass CPT JSON snapshots into the desktop. IFC4x3 generation has been disabled because the legacy writer is not schema-valid; explicitly request experimental `ifcx` where needed. The default legacy IFC request will now return an error.
 
 # Open Geotechniek Studio — REST API
 
@@ -27,7 +27,7 @@ beide roepen dezelfde interne `*_core`-functies aan als de desktop-GUI.
 | GET     | `/api`                       | Zelfbeschrijvende endpoint-index |
 | GET     | `/api/health`                | Status + aantal geladen CPT's |
 | GET     | `/api/cpts`                  | Alle geparste CPT's (incl. meetdata) |
-| POST    | `/api/cpts`                  | GEF- of BRO-XML parsen en cachen |
+| POST    | `/api/cpts`                  | Gevalideerde `.ifcgeo` JSON-snapshot cachen |
 | GET     | `/api/cpts/:id`              | Eén CPT (incl. meetdata) |
 | DELETE  | `/api/cpts/:id`              | CPT uit de cache verwijderen |
 | GET     | `/api/cpts/:id/layers`       | Indicatieve qc/Rf-laagdetectie |
@@ -49,13 +49,22 @@ De request-body-limiet is 64 MB.
 ## Werkstroom: CPT importeren → analyseren → rapporteren
 
 ```bash
-# 1. GEF importeren (of BRO-XML — de bestandsnaam stuurt de detectie)
+# 1. Parseer GEF met de gedeelde Node-core (zie packages/core/README.md).
+# Schrijf het geretourneerde CPT-object naar gevalideerd.ifcgeo.
+# Maak de JSON-request zonder shell-interpolatie van bestandsinhoud:
+python3 - <<'PYTHON'
+import json
+from pathlib import Path
+Path('cpt-request.json').write_text(json.dumps({
+    'filename': 'gevalideerd.ifcgeo',
+    'content': Path('gevalideerd.ifcgeo').read_text(),
+}))
+PYTHON
 curl -s -X POST http://127.0.0.1:8787/api/cpts \
-  -H "Content-Type: application/json" \
-  -d "{\"content\": $(python -c "import json,sys;print(json.dumps(open('sondering.gef').read()))"), \"filename\": \"sondering.gef\"}"
+  -H "Content-Type: application/json" --data-binary @cpt-request.json
 # → volledige CPT-JSON, het veld "id" gebruik je in de vervolg-calls
 
-# 2. Robertson-lagen
+# 2. Legacy indicatieve lagen (gebruik analyzeLayers uit de Node-core voor de actuele laaginterpretatie)
 curl -s http://127.0.0.1:8787/api/cpts/CPT000000036564/layers
 
 # 3. Meetdata als CSV
@@ -85,7 +94,7 @@ curl -s -X POST http://127.0.0.1:8787/api/bro/area \
 
 # Eén object ophalen en direct importeren
 curl -s http://127.0.0.1:8787/api/bro/cpt/CPT000000036564 -o bro.xml
-# → daarna POST /api/cpts met de XML-inhoud en filename "bro.xml"
+# → open de XML via de desktop-importer en lever de gevalideerde .ifcgeo-snapshot aan /api/cpts
 
 # Metadata zonder de volledige XML
 curl -s http://127.0.0.1:8787/api/bro/meta/cpt/CPT000000036564
@@ -138,10 +147,10 @@ alleen het CAD-bestand terug — de afbeeldingsbytes had de client al).
 ## IFC
 
 ```bash
-# IFC4x3 (of "ifcx") uit geladen CPT's; response bevat o.a. "content"
+# Experimenteel IFCX uit geladen CPT's; IFC4x3 is niet beschikbaar
 curl -s -X POST http://127.0.0.1:8787/api/ifc \
   -H "Content-Type: application/json" \
-  -d '{"cpt_ids": ["CPT000000036564"], "project": {"title": "Voorbeeld"}, "format": "ifc4x3"}'
+  -d '{"cpt_ids": ["CPT000000036564"], "project": {"title": "Voorbeeld"}, "format": "ifcx"}'
 ```
 
 `POST /api/project/ifcx` accepteert een volledige `.ifcgis`-payload (zoals

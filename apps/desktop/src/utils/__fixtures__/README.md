@@ -6,6 +6,6 @@
 cargo run --example browser_core_reference -- ../src/utils/__fixtures__/native-core.json
 ```
 
-Parser unit tests use equally synthetic inline GEF/BRO text under MIT. They test malformed tokens, explicit separators, void handling, corrected depth, metadata, CRS and depth outliers. No third-party GEF datasets have been relicensed. Differential tests against two independent external parsers are still tracked in issue #14.
+Parser unit tests use equally synthetic inline GEF/BRO text under MIT. They test malformed tokens, explicit separators, void handling, corrected depth, metadata, CRS and depth outliers. No third-party GEF datasets have been relicensed. Differential interpretation tests now compare the synthetic/public GEF examples and their exports with Bedrock 0.4.2 and pygef 0.14.1; see scripts/differential-parsers.mjs and tests/fixtures/gef. Both external projects share a tokenizer dependency, which is explicitly recorded.
 
 GEF quantity mapping/reference: [CUR GEF-CPT-Report 1.1.2, September 2006](https://confluence.omgeving.vlaanderen.be/confluence/download/attachments/290007364/GEF-CPT.pdf?api=v2), sections 3.2 and 3.4. The reference document itself is not copied into this repository.

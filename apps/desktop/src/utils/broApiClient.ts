@@ -1,3 +1,4 @@
+import {isBroLimit} from "./broSearch";
 /**
  * Browser-zijdige client voor de BRO publieke REST-API
  * (https://publiek.broservices.nl). Wordt gebruikt als fallback in de
@@ -103,8 +104,11 @@ async function postCharacteristics(url: string, bbox: BroBBox): Promise<string> 
     body: JSON.stringify(body),
   });
   if (!r.ok) {
-    const snippet = (await r.text()).slice(0, 400);
-    throw new Error(`BRO HTTP ${r.status}: ${snippet}`);
+    const raw=await r.text();
+    const document=new DOMParser().parseFromString(raw,'text/xml');
+    const message=document.getElementsByTagName('parsererror').length?raw:document.documentElement.textContent??raw;
+    if(isBroLimit(message))throw new Error('OGS_BRO_RESULT_LIMIT: '+message.slice(0,400));
+    throw new Error(`BRO HTTP ${r.status}: ${message.slice(0,400)}`);
   }
   return r.text();
 }
@@ -131,6 +135,8 @@ function parseCharacteristics(xml: string, kind: BroKind): BroFeature[] {
     throw new Error(`BRO rejection: ${rejections[0].textContent ?? "unknown"}`);
   }
 
+  const count=Number(textByLocalName(doc.documentElement,'numberOfDocuments'));
+  if(count>=2000||docs.length>=2000)throw new Error('OGS_BRO_RESULT_LIMIT: BRO beperkt de zoekactie tot 2000 objecten.');
   const out: BroFeature[] = [];
   for (const d of docs) {
     const f = buildFeatureFromDoc(d, kind);
@@ -194,6 +200,8 @@ function buildFeatureFromDoc(el: Element, kind: BroKind): BroFeature | null {
   noteFloat("offset", "Maaiveld t.o.v. NAP", "m");
 
   noteText("qualityRegime", "Kwaliteitsregime");
+  noteText("horizontalPositioningAccuracy", "Locatie-onzekerheid (m)");
+  noteText("horizontalPositioningMethod", "Locatiebepaling");
   noteText("qualityClass", "Kwaliteitsklasse");
   noteText("cptStandard", "CPT-norm");
   noteText("surveyPurpose", "Onderzoeksdoel");

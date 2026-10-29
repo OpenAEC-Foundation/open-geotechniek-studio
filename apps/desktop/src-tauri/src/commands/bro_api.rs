@@ -176,7 +176,12 @@ async fn post_xml(url: &str, body: &serde_json::Value) -> Result<String, String>
     let status = resp.status();
     let text = resp.text().await.map_err(|e| e.to_string())?;
     if !status.is_success() {
-        // BRO error responses are usually small XML; surface a snippet.
+        // Extract the rejection before truncating namespace-heavy XML; otherwise
+        // the actual 2000-result reason can disappear beyond the diagnostic snippet.
+        if let Err(reason) = parse_characteristics(&text, "cpt") {
+            return Err(format!("BRO HTTP {status}: {reason}"));
+        }
+        // Unknown response format: retain a bounded diagnostic snippet.
         let snippet: String = text.chars().take(400).collect();
         return Err(format!("BRO HTTP {status}: {snippet}"));
     }
@@ -261,6 +266,10 @@ fn parse_characteristics(xml: &str, kind: &str) -> Result<Vec<BroFeature>, Strin
                         depth_stack.pop();
                     }
                 }
+                if name == "numberOfDocuments" && text_buf.trim().parse::<usize>().unwrap_or(0) >= 2000 {
+                    return Err("OGS_BRO_RESULT_LIMIT: BRO search is limited to 2000 objects".to_string());
+                }
+                if name == "rejectionReason" { rejection_reason = Some(text_buf.clone()); }
                 text_buf.clear();
                 if name == "dispatchDocument" {
                     if let Some(b) = current.take() {
@@ -270,9 +279,7 @@ fn parse_characteristics(xml: &str, kind: &str) -> Result<Vec<BroFeature>, Strin
                     }
                     in_doc = false;
                 }
-                if name == "rejectionReason" {
-                    rejection_reason = Some(text_buf.clone());
-                }
+
             }
             Event::Empty(_) => {
                 // Self-closing tags (rare in BRO content) carry no leaf text.
@@ -288,6 +295,7 @@ fn parse_characteristics(xml: &str, kind: &str) -> Result<Vec<BroFeature>, Strin
             return Err(format!("BRO rejection: {reason}"));
         }
     }
+    if features.len() >= 2000 { return Err("OGS_BRO_RESULT_LIMIT: BRO search is limited to 2000 objects".to_string()); }
     Ok(features)
 }
 
@@ -396,6 +404,12 @@ impl DocBuilder {
                     self.extra
                         .insert("Maaiveld t.o.v. NAP (m)".into(), format_num(v));
                 }
+            }
+            "horizontalPositioningMethod" => {
+                self.extra.insert("Locatiebepaling".into(), text.to_string());
+            }
+            "horizontalPositioningAccuracy" => {
+                self.extra.insert("Locatie-onzekerheid (m)".into(), text.to_string());
             }
             "qualityRegime" => {
                 self.extra.insert("Kwaliteitsregime".into(), text.to_string());
@@ -598,6 +612,12 @@ mod tests {
  <brocom:rejectionReason>Some reason</brocom:rejectionReason>
 </dispatchCharacteristicsResponse>"#;
         let r = parse_characteristics(xml, "cpt");
-        assert!(r.is_err(), "expected rejection to surface as Err");
+        assert!(r.unwrap_err().contains("Some reason"));
     }
+    #[test]
+    fn detects_the_service_cap_before_silently_showing_partial_results() {
+        let xml = "<dispatchCharacteristicsResponse><numberOfDocuments>2000</numberOfDocuments></dispatchCharacteristicsResponse>";
+        assert!(parse_characteristics(xml, "cpt").unwrap_err().contains("OGS_BRO_RESULT_LIMIT"));
+    }
+
 }

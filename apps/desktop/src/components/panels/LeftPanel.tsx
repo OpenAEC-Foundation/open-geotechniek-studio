@@ -1,10 +1,11 @@
+import LayerPanel from "./LayerPanel";
 import ValidationPanel from "../../validation/ValidationPanel";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { cpt as cptPlatform, files } from "../../utils/platform";
+import { files } from "../../utils/platform";
 import { useCptStore, addCptToActiveProject, addBoreToActiveProject } from "../../store/useCptStore";
 import type { BoreDocument, GwpDocument } from "../../store/useCptStore";
-import type { Cpt, Layer } from "../../types/cpt";
+import type { Cpt } from "../../types/cpt";
 import type { Bore } from "../../types/bore";
 import { looksLikeBoringXml } from "../../types/bore";
 import { looksLikeGefBore } from "../../types/gefBoreParser";
@@ -225,6 +226,8 @@ function BroPhotos({ broId, kind }: { broId?: string; kind: "cpt" | "bore" | "gw
 function BoreMetadataList({ bore }: { bore: Bore }) {
   const m = bore.metadata;
   return (
+    <>
+    {m.extra?.Gegevenscontrole && <p role="alert" className="panel-error">{m.extra.Gegevenscontrole}</p>}
     <dl className="metadata-list">
       <dt>Boring-ID</dt><dd>{bore.id || "—"}</dd>
       <dt>Project</dt><dd>{m.project_name ?? "—"}</dd>
@@ -257,6 +260,7 @@ function BoreMetadataList({ bore }: { bore: Bore }) {
       </dd>
       <dt>Aantal lagen</dt><dd>{bore.layers.length}</dd>
     </dl>
+    </>
   );
 }
 
@@ -462,7 +466,7 @@ function ProjectBrowser() {
             <ExtraMetadataList cpt={active} />
           </PanelSection>
           <PanelSection title={t("layers")} defaultOpen>
-            <LayersTable cptId={active.id} />
+            <LayerPanel cptId={active.id} />
           </PanelSection>
           <PanelSection title={t("measurements")}>
             <MeasurementsTable cpt={active} />
@@ -497,7 +501,7 @@ function CptDetails({ cpt }: { cpt: Cpt }) {
         <ExtraMetadataList cpt={cpt} />
       </PanelSection>
       <PanelSection title={t("layers")} defaultOpen>
-        <LayersTable cptId={cpt.id} />
+        <LayerPanel cptId={cpt.id} />
       </PanelSection>
       <PanelSection title={t("measurements")}>
         <MeasurementsTable cpt={cpt} />
@@ -576,45 +580,6 @@ function ExtraMetadataList({ cpt }: { cpt: Cpt }) {
         </Fragment>
       ))}
     </dl>
-  );
-}
-
-function LayersTable({ cptId }: { cptId: string | null }) {
-  const { t } = useTranslation("cpt");
-  const [layers, setLayers] = useState<Layer[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!cptId) { setLayers([]); return; }
-    setError(null);
-    const value = useCptStore.getState().cpts.get(cptId);
-    if(!value){setLayers([]);return;}
-    let cancelled=false;
-    cptPlatform.detectLayers(value).then(result=>{if(!cancelled)setLayers(result);}).catch(e=>{if(!cancelled)setError(String(e));});
-    return ()=>{cancelled=true;};
-  }, [cptId]);
-
-  if (!cptId) return <p className="panel-empty">—</p>;
-  if (error) return <p className="panel-error">{error}</p>;
-  if (layers.length === 0) return <p className="panel-empty">{t("noLayers")}</p>;
-  return (
-    <table className="layers-table">
-      <thead>
-        <tr><th>{t("top")}</th><th>{t("bottom")}</th><th>{t("zone")}</th></tr>
-      </thead>
-      <tbody>
-        {layers.map((l, i) => (
-          <tr key={i}>
-            <td>{l.depth_top.toFixed(2)}</td>
-            <td>{l.depth_bottom.toFixed(2)}</td>
-            <td>
-              <span className="layer-swatch" style={{ background: l.zone_color }} />
-              {l.zone_number}. {l.zone_name}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
   );
 }
 

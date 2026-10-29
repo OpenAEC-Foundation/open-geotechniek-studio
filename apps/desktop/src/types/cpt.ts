@@ -11,7 +11,7 @@ export interface Metadata {
   measurements?: Array<{name:string;value:number|null;unit:string}>;
   predrilled_depth_m?: number;
   pre_excavated_depth_m?: number;
-  removed_layers?: Array<{bottom_depth_m:number;description:string}>;
+  removed_layers?: Array<{top_depth_m?:number;bottom_depth_m:number;description:string;source_sequence?:number}>;
   quality_regime?: string;
   project_name?: string;
   project_number?: string;

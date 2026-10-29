@@ -68,6 +68,11 @@ export async function saveBlobAsFile(
       console.warn("showSaveFilePicker failed, fallback to <a download>:", err);
     }
   }
+  downloadBlobAsFile(blob, suggestedName);
+}
+
+/** Deterministic browser download, also supported by embedded browser hosts. */
+export function downloadBlobAsFile(blob: Blob, suggestedName: string): void {
   // Fallback: anchor-download. Werkt overal maar geen save-dialog —
   // bestand belandt direct in de Downloads-map.
   const url = URL.createObjectURL(blob);

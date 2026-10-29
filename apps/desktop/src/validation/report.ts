@@ -16,6 +16,7 @@ export interface ValidationReport {
   voids: number;
   omittedRecords: number;
   depthMethod?: string;
+  depthMethods?: Array<{record:number;method:string}>;
   measurementVariables?: Record<
     string,
     { value: number | null; unit: string; description: string }

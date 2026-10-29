@@ -1,8 +1,8 @@
+import {bro as broPlatform} from "../../utils/platform";
 import { drawingViewport, parseDrawingScale } from "../../utils/drawingViewport";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { invoke } from "@tauri-apps/api/core";
 import proj4 from "proj4";
 import { useCptStore } from "../../store/useCptStore";
 import type { Cpt } from "../../types/cpt";
@@ -760,6 +760,7 @@ export default function SonderingstekeningView() {
   const [paperSize, setPaperSize] = useState<PaperSize>("A3");
   const [scale, setScale] = useState<Scale>(500);
   const [showBro, setShowBro] = useState(true);
+  const [showBroBores,setShowBroBores]=useState(false);
   const [placeMode, setPlaceMode] = useState<null | "sondering" | "bore">(null);
   // gridSpacing remains as a constant default — the in-view dropdown is
   // gone, future ribbon control could re-introduce a setter if needed.
@@ -2884,10 +2885,8 @@ export default function SonderingstekeningView() {
       }
       // BRO sondering / boring toggles use the existing showBro flag
       // for this view (no separate boring layer here yet).
-      if (id === "bro-sonderingen" || id === "bro-boringen") {
-        setShowBro(enabled);
-        return;
-      }
+      if (id === "bro-sonderingen") {setShowBro(enabled);return;}
+      if (id === "bro-boringen") {setShowBroBores(enabled);return;}
     };
     const onLayerOpacity = (e: Event) => {
       const ce = e as CustomEvent<{ view?: string; id: string; opacity: number }>;
@@ -3689,27 +3688,31 @@ export default function SonderingstekeningView() {
   }, [selection, rasters, handleRedraw]);
 
   // ── BRO fetch + render whenever toggle / bounds change ─────────
+  const broRequestEpoch=useRef(0);
   const refetchBro = useCallback(async () => {
+    const epoch=++broRequestEpoch.current;
     const map = mapRef.current;
     const layer = broLayerRef.current;
     if (!map || !layer) return;
-    if (!showBro) {
+    if (!showBro && !showBroBores) {
       layer.clearLayers();
+      window.dispatchEvent(new CustomEvent("ogs:bro-counts",{detail:{cpt:0,bore:0}}));
       return;
     }
     const b = map.getBounds();
-    const bbox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] as
-      [number, number, number, number];
+    const bbox = {min_lon:b.getWest(),min_lat:b.getSouth(),max_lon:b.getEast(),max_lat:b.getNorth()};
     try {
-      const features = await invoke<BroFeature[]>("fetch_bro_area", { bbox });
+      const [cpts,bores]=await Promise.all([showBro?broPlatform.fetchCpts(bbox):Promise.resolve([]),showBroBores?broPlatform.fetchBores(bbox):Promise.resolve([])]);
+      const features:BroFeature[]=[...cpts,...bores];
+      if(epoch!==broRequestEpoch.current||mapRef.current!==map||broLayerRef.current!==layer)return;
+      window.dispatchEvent(new CustomEvent("ogs:bro-counts",{detail:{cpt:cpts.length,bore:bores.length}}));
       layer.clearLayers();
       for (const f of features) {
         const m = L.marker([f.lat, f.lon], {
           icon: L.divIcon({
             className: "tek-bro-marker",
-            html: `<div class="tek-marker tek-marker-bro" title="${f.id}">
-                     <svg viewBox="0 0 12 12"><polygon points="1,1 11,1 6,11"
-                       fill="#a1a1aa" stroke="#52525b" stroke-width="1" /></svg>
+            html: `<div class="tek-marker tek-marker-bro" title="${f.id.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}">
+                     <svg viewBox="0 0 12 12">${f.kind==="bore"?'<circle cx="6" cy="6" r="4" fill="#a1a1aa" stroke="#52525b"/>':'<polygon points="1,1 11,1 6,11" fill="#a1a1aa" stroke="#52525b" stroke-width="1"/>'}</svg>
                    </div>`,
             iconSize: [24, 24], /* 2× */
             iconAnchor: [12, 22],
@@ -3719,16 +3722,21 @@ export default function SonderingstekeningView() {
       }
     } catch (err) {
       console.warn("fetch_bro_area (tekening) failed", err);
+      if(epoch===broRequestEpoch.current){layer.clearLayers();setToast(`BRO onvolledig: ${String(err).slice(0,160)}`);window.dispatchEvent(new CustomEvent("ogs:bro-counts",{detail:{cpt:0,bore:0}}));}
     }
-  }, [showBro]);
+  }, [showBro,showBroBores]);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     void refetchBro();
     const handler = () => void refetchBro();
+    const refresh=()=>{broPlatform.clearSearchCache();void refetchBro();};
+    window.addEventListener("ogs:bro-load-area",refresh);
     map.on("moveend", handler);
     return () => {
+      broRequestEpoch.current++;
+      window.removeEventListener("ogs:bro-load-area",refresh);
       map.off("moveend", handler);
     };
   }, [refetchBro]);
