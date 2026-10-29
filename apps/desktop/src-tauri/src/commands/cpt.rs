@@ -10,19 +10,23 @@
 //! implementatie, twee aanroep-vormen.
 
 use tauri::State;
-use cpt_core::{detect_layers as core_detect_layers, parse_auto, write, Cpt, Layer};
+use cpt_core::{detect_layers as core_detect_layers, write, Cpt, Layer};
 use crate::state::AppState;
 
 // ─── Core implementations (state als &AppState) ────────────────────
 
 pub fn open_cpt_core(content: &str, filename: &str, state: &AppState) -> Result<Cpt, String> {
     let lower = filename.to_lowercase();
-    let mut cpt = if lower.ends_with(".ifcgeo") {
-        // Per-CPT JSON snapshot — internal format, not a parser-discovery candidate.
-        write::read_ifcgeo(content).map_err(|e| e.to_string())?
-    } else {
-        parse_auto(content).map_err(|e| e.to_string())?
-    };
+    // Raw legacy parsing shifted invalid numeric columns and could silently lose
+    // measurements. GUI imports already pass a snapshot from the shared diagnostic
+    // parser. External consumers must use the supported Node core first as well.
+    if !lower.ends_with(".ifcgeo") {
+        return Err("Legacy raw GEF/BRO import is disabled: parse with the diagnostic Node core or desktop importer, then submit the CPT JSON snapshot with filename ending in .ifcgeo. See docs/API.md.".to_string());
+    }
+    let mut cpt = write::read_ifcgeo(content).map_err(|e| e.to_string())?;
+    if cpt.id.trim().is_empty() || cpt.points.is_empty() || cpt.points.iter().any(|point| !point.depth.is_finite() || point.depth < 0.0) {
+        return Err("Invalid CPT snapshot: require an id and non-empty points with finite non-negative depths".to_string());
+    }
     if !lower.ends_with(".ifcgeo") || cpt.metadata.source_file.is_empty() {
         cpt.metadata.source_file = filename.to_string();
     }
@@ -58,7 +62,7 @@ pub fn save_cpt_as_core(
         .get(cpt_id)
         .ok_or_else(|| format!("unknown CPT id: {cpt_id}"))?;
     let text = match format {
-        "gef" => write::write_gef(cpt),
+        "gef" => return Err("Legacy GEF export is disabled. Use the shared desktop exporter or exportGef in @openaec/geotechniek-core to retain source columns and validated depth/CRS metadata.".to_string()),
         "bro" | "xml" => write::write_bro_xml(cpt),
         "ifcgeo" => write::write_ifcgeo(cpt).map_err(|e| e.to_string())?,
         other => return Err(format!("unsupported format: {other}")),
@@ -98,4 +102,25 @@ pub fn save_cpt_as(
     state: State<'_, AppState>,
 ) -> Result<(), String> {
     save_cpt_as_core(&cpt_id, &format, &path, state.inner())
+}
+
+
+#[cfg(test)]
+mod diagnostic_import_tests {
+    use super::*;
+    #[test]
+    fn rejects_legacy_raw_import_without_caching_partial_data() {
+        let state = AppState::default();
+        let result = open_cpt_core("#GEFID=1,0,0\n#EOH=\n1 bad .02", "unsafe.gef", &state);
+        assert!(result.unwrap_err().contains("diagnostic Node core"));
+        assert!(state.cpts.lock().unwrap().is_empty());
+    }
+    #[test]
+    fn accepts_a_snapshot_from_the_shared_importer() {
+        let state = AppState::default();
+        let source = r#"{"id":"SYNTHETIC","metadata":{"source_file":"original.gef"},"points":[{"depth":1,"qc":2,"fs":0.02}]}"#;
+        let value = open_cpt_core(source, "validated.ifcgeo", &state).unwrap();
+        assert_eq!(value.metadata.source_file, "original.gef");
+        assert_eq!(value.points[0].qc, Some(2.0));
+    }
 }

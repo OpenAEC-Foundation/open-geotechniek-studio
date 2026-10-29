@@ -1,6 +1,6 @@
 [package]
 name = "open-geo-studio"
-version = "2026.44.2"
+version = "2026.44.3"
 description = "Open Geotechniek Studio — desktop CPT viewer and report generator"
 authors = ["Open AEC Foundation"]
 edition = "2021"

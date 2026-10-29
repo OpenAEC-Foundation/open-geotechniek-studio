@@ -46,6 +46,23 @@ it('imports the upstream public BRO dispatch with real namespaces and channel fl
  expect(value.id).toBe('CPT000000099543');
  expect(value.points.length).toBeGreaterThan(100);
  expect(value.metadata.quality_regime).toBe('IMBRO');
+ expect(value.position).toMatchObject({x_rd:170112.2,y_rd:486406.5});
  expect(value.metadata.ground_level_nap).toBeCloseTo(4.410,3);
  expect(validationOf(value)?.diagnostics.filter(d=>d.severity==='error')).toEqual([]);
+});
+
+it('retains typed removed layers and locates data diagnostics in XML source lines',()=>{
+ const source=xml(row(1,'bad')).replace('<cptResult>','<additionalInvestigation><removedLayer><sequenceNumber>1</sequenceNumber><upperBoundary uom="cm">0</upperBoundary><lowerBoundary uom="cm">50</lowerBoundary><description>zand</description></removedLayer></additionalInvestigation>\n<cptResult>\n');
+ const value=parseBroCptXml(source,'layers.xml');
+ expect(value.metadata.removed_layers).toEqual([{top_depth_m:0,bottom_depth_m:.5,description:'zand',source_sequence:1}]);
+ expect(value.metadata.extra?.['ogs:source-bro-xml']).toBe(source);
+ expect(validationOf(value)?.diagnostics.find(d=>d.code==='INVALID_NUMBER')).toMatchObject({line:3,record:1,column:4});
+});
+
+it('does not truncate mixed public/provider object variants in one dispatch',async()=>{
+ const {parseBroCptXmlMany}=await import('./broCptParser');
+ const one=xml(row(1)),two=one.replace(/CPT_O/g,'CPT_O_DP').replace('CPT-SYNTHETIC','CPT-PROVIDER');
+ const multi='<dispatch>'+one.replace(/^<dispatch>|<\/dispatch>$/g,'')+two.replace(/^<dispatch>|<\/dispatch>$/g,'')+'</dispatch>';
+ expect(parseBroCptXmlMany(multi,'multi.xml').map(c=>c.id)).toEqual(['CPT-SYNTHETIC','CPT-PROVIDER']);
+ expect(()=>parseBroCptXml(multi,'single.xml')).toThrow('meerdere');
 });

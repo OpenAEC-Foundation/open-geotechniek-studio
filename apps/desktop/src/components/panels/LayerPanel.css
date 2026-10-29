@@ -1,0 +1,67 @@
+.layer-panel {
+  font-size: 11px;
+}
+.layer-provenance {
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 8px 0;
+}
+.layer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+.layer-actions button,
+.layer-draft-list button {
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 6px 8px;
+  cursor: pointer;
+  text-align: left;
+}
+.layer-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 10px 0;
+}
+.layer-panel label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.layer-panel input,
+.layer-panel select {
+  min-width: 0;
+  width: 100%;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font: inherit;
+}
+.layer-draft-list {
+  max-height: 420px;
+  overflow: auto;
+}
+.layer-draft-list fieldset {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.layer-draft-list fieldset label:last-of-type {
+  grid-column: 1/-1;
+}
+.layer-draft-list legend {
+  color: var(--text-secondary);
+  padding: 0 5px;
+}

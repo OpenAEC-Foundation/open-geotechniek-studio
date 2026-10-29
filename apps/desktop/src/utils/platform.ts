@@ -1,3 +1,4 @@
+import {createBroSearch} from "./broSearch";
 import type { Diagnostic } from "../validation/report";
 import { attachValidation, validationOf } from "../validation/report";
 import { readSourceFile } from "./sourceEncoding";
@@ -72,24 +73,18 @@ interface BroFeature {
   extra: Record<string, string>;
 }
 
+const cptSearch = createBroSearch<BroFeature>(async bbox => {
+ if(IS_TAURI)return invoke<BroFeature[]>("fetch_bro_area",{bbox});
+ return (await import('./broApiClient')).fetchBroCpts(bbox);
+});
+const boreSearch = createBroSearch<BroFeature>(async bbox => {
+ if(IS_TAURI)return invoke<BroFeature[]>("fetch_bro_bores",{bbox});
+ return (await import('./broApiClient')).fetchBroBores(bbox);
+});
 export const bro = {
-  /** Zoek alle CPT-objecten in de bbox (gebruikt door MapView). */
-  async fetchCpts(bbox: BBox): Promise<BroFeature[]> {
-    if (IS_TAURI) {
-      return invoke<BroFeature[]>("fetch_bro_area", { bbox });
-    }
-    const { fetchBroCpts } = await import("./broApiClient");
-    return fetchBroCpts(bbox);
-  },
-
-  /** Zoek alle BHR-GT (boring) objecten in de bbox. */
-  async fetchBores(bbox: BBox): Promise<BroFeature[]> {
-    if (IS_TAURI) {
-      return invoke<BroFeature[]>("fetch_bro_bores", { bbox });
-    }
-    const { fetchBroBores } = await import("./broApiClient");
-    return fetchBroBores(bbox);
-  },
+  clearSearchCache(){cptSearch.clear();boreSearch.clear();},
+  async fetchCpts(bbox:BBox):Promise<BroFeature[]>{return cptSearch.search(bbox);},
+  async fetchBores(bbox:BBox):Promise<BroFeature[]>{return boreSearch.search(bbox);},
 
   /** Get full CPT dispatch XML voor één broId. */
   async fetchCptXml(broId: string): Promise<string> {

@@ -1,3 +1,5 @@
+export {exportGef} from "../../../apps/desktop/src/types/gefWriter";
+export {analyzeLayers,withLayerInterpretation} from "../../../apps/desktop/src/utils/layerAnalysis";
 export { decodeSource } from "../../../apps/desktop/src/utils/sourceEncoding";
 export { normalizeCpt } from "../../../apps/desktop/src/classification/normalized";
 export { computePad } from "../../../apps/desktop/src/calc/modules/pad-foundation/compute";

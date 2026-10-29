@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Cpt } from "../types/cpt";
 import { validationOf } from "./report";
-import { saveBlobAsFile } from "../utils/browserSave";
+import { downloadBlobAsFile } from "../utils/browserSave";
 import { outliersOf, withBroOutliers } from "./depthOutliers";
 import { useCptStore } from "../store/useCptStore";
 import { IS_TAURI } from "../utils/platform";
@@ -50,7 +50,7 @@ export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
           await writeTextFile(path, text);
         }
       } else
-        await saveBlobAsFile(
+        await downloadBlobAsFile(
           new Blob([text], {
             type: format === "json" ? "application/json" : "text/csv",
           }),
@@ -69,6 +69,7 @@ export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
         {cpt.points.length} meetpunten · {report.voids} voids ·{" "}
         {report.omittedRecords} weggelaten records
       </p>
+      {report.depthMethod && <p>Diepte: {({'corrected-depth':'gemeten gecorrigeerde diepte','inclination-corrected':'hellingcorrectie uit sondeerlengte','penetration-length':'sondeerlengte als verticale benadering','mixed':'gemengde methoden; per record in JSON'} as Record<string,string>)[report.depthMethod]??report.depthMethod}</p>}
       {cpt.metadata.predrilled_depth_m != null && (
         <p>Voorgeboord: {cpt.metadata.predrilled_depth_m} m</p>
       )}

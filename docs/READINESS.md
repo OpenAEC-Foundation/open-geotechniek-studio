@@ -1,12 +1,12 @@
-# Versioned delivery evidence — 2026.44.2 candidate
+# Versioned delivery evidence — 2026.44.3
 
 This is an evidence ledger, not a claim that every checkbox in issues #14/#15 is complete. Runtime evidence must refer to this version's actual artifacts.
 
 | Capability | Boundary / supported runtime | Evidence / limitation |
 | --- | --- | --- |
-| Desktop Windows | x64 NSIS | CI builds and verifies Authenticode/timestamp on installer, installed application, uninstaller and SDK DLL; actual signed run pending completion of the signed release run |
-| Desktop Linux | x64 deb/AppImage | Local deb build; release CI verifies detached OpenPGP signatures; actual production signing pending completion of the signed release run |
-| Desktop macOS | universal Intel/Apple Silicon DMG | CI build with Developer ID, notarization and checks on the mounted delivered app; runner evidence pending |
+| Desktop Windows | x64 NSIS | CI builds and verifies Authenticode/timestamp on installer, installed application, uninstaller and SDK DLL; v2026.44.2 signed installer/payload/uninstaller/DLL verified in release run 40805343347; signer Impertio Studio B.V. |
+| Desktop Linux | x64 deb/AppImage | Local deb build; release CI verifies detached OpenPGP signatures; v2026.44.2 OpenPGP signatures verified in CI and locally on downloaded artifacts |
+| Desktop macOS | universal Intel/Apple Silicon DMG | CI build with Developer ID, notarization and checks on the mounted delivered app; v2026.44.2 notarization Accepted, codesign/spctl/stapler and both architectures verified from mounted delivered DMG |
 | Public web | browser, no calculations | CI asserts calculation code is absent from public bundle |
 | Development/desktop calculation | one-layer settlement and EC7 Annex D poer, concept | 20 mm settlement and 1979.100751 kN poer examples; manual design values/factors; old experimental pile modules withheld |
 | Node product core | Node >=22 ESM | Shared GEF parser, snapshot validation, indicative qc/Rf layers, fixed-n=1 normalized point analysis, settlement and poer; external consumer test without GUI |
@@ -18,7 +18,12 @@ This is an evidence ledger, not a claim that every checkbox in issues #14/#15 is
 | AWS | private Node container on ECS/Fargate | Dockerfile, CloudFormation, scoped execution role, token from Secrets Manager, internal HTTPS ALB, health/logging and remote smoke script; deployment to an actual account explicitly deferred by the user on 2026-10-29; not claimed verified |
 | Updater signing | no updater delivered | Installer signing does not establish updater signatures; explicitly outside this release |
 
-The native desktop-binary API/MCP remains a legacy integration. Its raw parser/report implementations are not equivalent to the new Node API or shared GUI parser. Prefer the documented Node core for new integrations. This limitation remains part of issue #14.
+The desktop-binary API/MCP is a legacy integration. Unvalidated raw GEF/BRO
+imports and the old GEF writer are disabled; GUI imports use the shared parser
+and pass validated JSON snapshots to native storage. Its native reports and old
+layer method do not expose the shared GUI/Node controls. New integrations should
+use the documented Node core. Native regression tests cover fail-closed import
+and BRO result-limit/rejection handling.
 
 ## Reproducible checks
 
@@ -40,10 +45,18 @@ Release workflow is fail-closed: publication requires every platform build and v
 
 ## Remaining research / verification
 
-Issue #14 remains open for legacy native parser parity, complete diagnostic coverage/GEF-export validation, BRO paging/cache/location uncertainty, editable/hysteretic layers, independent pile reference/export. No pile design capability is released by hiding the old modules.
+Issue #14 remains open for independent engineering review of factors and the
+withheld pile module's second reference / pile-plan result-export requirements.
+The user requested that unreleased calculations be removed from this release;
+only settlement and the concept poer worksheet are exposed. A request for an
+approved independent factor/reference source is pending. No normative approval
+or pile capability is inferred from concept status or successful software tests.
 
-Issue #15 remains open until real signed Windows/macOS/Linux artifacts, release verification. AWS is separately deferred by the user have versioned evidence. A container definition alone does not satisfy AWS acceptance.
-
+Issue #15 was closed for the authorized release scope using actual evidence in
+[release run 40805343347](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/actions/runs/40805343347)
+and [published v2026.44.2 assets](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases/tag/v2026.44.2).
+AWS deployment was explicitly deferred by the user, and is not claimed verified.
+Release 2026.44.3 must pass its own artifact signing checks before publication.
 
 ## Reader and visual evidence for 2026.44.2
 
@@ -70,3 +83,24 @@ Open #14 items remain open rather than being marked complete by a release tag.
 The old pile module remains withheld, including its unresolved independent
 reference, factor review and pile-plan export requirements. The new poer module
 is a concept calculation and does not replace an independent engineering review.
+
+
+## Additional source / interpretation controls in 2026.44.3
+
+- Complete raw GEF headers and BRO object XML/envelope metadata remain in snapshots;
+  repeated unknown BRO metadata values are visible. Removed BRO layers are typed.
+  Data diagnostics include XML source lines; split-object positions explicitly
+  refer to the preserved CPT fragment. Mixed depth methods and fallback records
+  are listed individually in validation JSON and summarized in the viewer.
+- Shared GEF export retains original numeric columns, preserves qc/fs/Rf/u2 and
+  corrected depth, writes 31000 for known RD positions and never invents predrill
+  depth. Invalid/ambiguous recovered inputs stop export. Both source and exported
+  public examples are compared with two external parsers in CI.
+- BRO cap detection triggers spatial subdivision and deduplication. A bounded,
+  expiring cache reuses requests; explicit refresh clears it. Exhaustion and
+  service failures are shown as incomplete searches instead of empty success.
+- Existing map transformation is shared and regression-tested within 0.5 m against
+  four public BRO RD/ETRS89 pairs. It is a map approximation, not survey-grade
+  RDNAPTRANS. Position method/available uncertainty are retained in metadata.
+- Minimum-thickness/hysteresis controls, manual layer edits and source-attributed
+  JSON export preserve the measurement arrays. Void gaps remain uninterpreted.

@@ -93,3 +93,29 @@ set. The 1.4 example value is a numerical example, not a Dutch preset. Inputs ar
 eccentricity, inclination or global stability. See the worksheet's explicit
 norm/NA and factor notes before using results. `normalizeCpt` provides the
 separate fixed-n=1 Qt/Fr/Bq/Ic reference analysis, not variable-exponent Qtn.
+
+
+## Source-preserving export and layer interpretation (2026.44.3)
+
+`exportGef(cpt)` returns `{text,warnings}` using CUR GEF-CPT-Report 1.1.2 headers,
+explicit separators, per-column voids, measured/corrected depth and GEF RD/NAP code
+31000. Original numeric GEF columns are retained with normalized known units.
+Invalid/ambiguous source layouts, invalid numeric tokens and omitted records stop
+export rather than silently emitting a partial dataset. For a normalized BRO/JSON
+snapshot the GEF export contains the core curve channels and explicitly warns
+that the JSON snapshot retains the full original source metadata. No predrill
+depth is inferred from the first sample. Differential CI reads both source and
+exported synthetic/public examples with Bedrock 0.4.2 and pygef 0.14.1.
+
+`analyzeLayers(cpt)` returns `{layers,provenance,warnings}`. Default minimum layer
+thickness and depth hysteresis are 0.1 m; with hysteresis enabled a new class also
+requires two consecutive points. Layer boundaries use adjacent depth midpoints;
+void intervals remain gaps. `withLayerInterpretation(cpt,settings,manualLayers?)`
+stores a separate interpretation in metadata; it never edits measurement points.
+Manual ranges are validated for depth bounds, ordering, overlap and known zones.
+The JSON export records source CPT/file, method, software version, settings and
+edit time. These are indicative qc/Rf zones, not a verified soil description.
+
+Legacy desktop-binary raw GEF/BRO import and GEF writing have been disabled.
+Submit a validated `.ifcgeo` snapshot to that service; use this library or the
+shared desktop exporter for GEF. No Node executable is spawned by the desktop.

@@ -113,3 +113,10 @@ it('refuses to interpret unknown pressure units as MPa',()=>{
  expect(value.points[0].qc).toBeUndefined();expect(value.points[0].parameters?.['2']).toBe(2000);
  expect(validationOf(value)?.diagnostics.some(d=>d.code==='UNKNOWN_UNIT')).toBe(true);
 });
+
+it('reports mixed record depth methods and explicit fallback from a void corrected depth',()=>{
+ const source=header('#COLUMNVOID=4,-999999\n').replace('#COLUMN=3','#COLUMN=4').replace('#EOH=','#COLUMNINFO=4,m,depth,11\n#EOH=')+'1 2 .02 .98\n2 3 .03 -999999';
+ const value=parseGef(source,'mixed.gef'),report=validationOf(value)!;
+ expect(report.depthMethod).toBe('mixed');expect(report.depthMethods).toEqual([{record:1,method:'corrected-depth'},{record:2,method:'penetration-length'}]);
+ expect(report.diagnostics.find(d=>d.code==='DEPTH_FALLBACK')).toMatchObject({record:2,column:4});
+});

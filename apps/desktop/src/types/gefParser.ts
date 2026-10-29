@@ -52,6 +52,7 @@ export function parseGef(text: string, filename: string): Cpt {
     points: 0,
     voids: 0,
     omittedRecords: 0,
+    depthMethods: [],
     measurementVariables: {},
     coordinateSystem: {},
   };
@@ -110,7 +111,8 @@ export function parseGef(text: string, filename: string): Cpt {
     extra["ogs:unparsed-header"] = unparsedHeader.join("\n");
   for (const [key, values] of header)
     extra[key] = values.map((v) => v.value).join(" | ");
-  for (const required of ["GEFID", "TESTID", "COLUMN", "COLUMNINFO"])
+  extra["ogs:gef-headers"] = JSON.stringify(Object.fromEntries([...header].map(([key,values])=>[key,values.map(value=>value.value)])));
+  for (const required of ["GEFID", "TESTID", "COLUMN", "COLUMNINFO", "FILEOWNER", "FILEDATE", "PROJECTID", "REPORTCODE"])
     if (!header.has(required))
       diag(
         "error",
@@ -243,12 +245,15 @@ export function parseGef(text: string, filename: string): Cpt {
   for (const item of header.get("COLUMNVOID") ?? []) {
     const [col, value] = item.value.split(",");
     const v = number(value ?? "", item.line);
-    if (v !== undefined) voids.set(Number(col), v);
+    const index=Number(col);
+    if(!Number.isInteger(index)||!indices.has(index))diag('error','COLUMNVOID','Voiddefinitie verwijst naar een ongeldige of onbekende kolom.',item.line,undefined,index);
+    else if(v!==undefined){if(voids.has(index))diag('warning','DUPLICATE_VOID','Herhaalde voiddefinitie; laatste waarde gebruikt, bronheaders bewaard.',item.line,undefined,index);voids.set(index,v);}
   }
   for (const item of header.get("MEASUREMENTVAR") ?? []) {
     const [key, value, unit, ...description] = item.value
       .split(",")
       .map((v) => v.trim());
+    if(key in report.measurementVariables!)diag("warning","DUPLICATE_MEASUREMENT_VAR",`Meetvariabele ${key} herhaald; laatste getypeerde waarde gebruikt, alle bronheaders bewaard.`,item.line);
     report.measurementVariables![key] = {
       value: number(value, item.line) ?? null,
       unit,
@@ -290,6 +295,7 @@ export function parseGef(text: string, filename: string): Cpt {
       Number.isInteger(declared) && declared > 0
         ? declared
         : Math.max(0, ...columns.map((c) => c.index));
+  if(!Number.isInteger(declared)||declared<1)diag("error","COLUMN_DECLARATION","#COLUMN moet een positief geheel aantal kolommen zijn.",header.get("COLUMN")?.[0]?.line);
   for (let i = 1; i <= expected; i++)
     if (!indices.has(i))
       diag(
@@ -388,6 +394,7 @@ export function parseGef(text: string, filename: string): Cpt {
     };
     const measured = get(11),
       length = get(1);
+    if(columns.some(col=>col.quantity===11)&&measured===undefined)diag("warning","DEPTH_FALLBACK","Gecorrigeerde diepte ontbreekt in dit record; sondeerlengte/helling als terugval gebruikt.",lineAt,record,columns.find(col=>col.quantity===11)?.index);
     if(length!==undefined)p.parameters!.penetration_length_m=length;
     let depth = measured ?? length;
     if (depth === undefined) {
@@ -449,6 +456,7 @@ export function parseGef(text: string, filename: string): Cpt {
         report.depthMethod = "penetration-length";
       }
     }
+    report.depthMethods!.push({record,method:report.depthMethod??"unknown"});
     p.depth = depth;
     if (ground !== undefined) p.depth_nap = ground - depth;
     if (
@@ -500,9 +508,12 @@ export function parseGef(text: string, filename: string): Cpt {
   const preVariable=report.measurementVariables?.["13"];
   const preFactor=preVariable ? ({m:1,cm:0.01,mm:0.001} as Record<string,number>)[preVariable.unit.trim().toLowerCase().replace(/\s*\(.*\)\s*$/, "")] : undefined;
   const preDepth=preVariable?.value!=null && preFactor!=null ? preVariable.value*preFactor:undefined;
+  if(preVariable && preFactor!=null && preFactor!==1)diag("warning","UNIT_CONVERSION",`Voorontgravingsdiepte van ${preVariable.unit} naar m omgerekend; bronwaarde in meetvariabelen bewaard.`);
   if(preVariable && preFactor==null)diag('error','UNKNOWN_PRE_EXCAVATION_UNIT',`Voorontgravingsdiepte met onbekende eenheid ${preVariable.unit} alleen als bronwaarde bewaard.`);
   const masked=maskPreExcavation(points,preDepth,"penetration");
   for(const record of masked.masked)diag("info","PRE_EXCAVATED","Meetkanalen in voorontgraven grond gemaskeerd; oorspronkelijke waarden blijven in parameters.",undefined,record);
+  const methods=[...new Set(report.depthMethods!.map(item=>item.method))];
+  report.depthMethod=methods.length===1?methods[0]:methods.length?"mixed":undefined;
   report.points = points.length;
   const date = (first("STARTDATE") ?? first("FILEDATE"))
     ?.split(",")

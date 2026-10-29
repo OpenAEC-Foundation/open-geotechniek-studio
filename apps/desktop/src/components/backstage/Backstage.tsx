@@ -1,3 +1,4 @@
+import {exportGef} from "../../types/gefWriter";
 import { APP_VERSION } from "../../version";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -11,7 +12,7 @@ import {
   openContentByFilename,
 } from "../../store/useCptStore";
 import { IS_TAURI, files as filesPlatform } from "../../utils/platform";
-import { saveJsonAsFile } from "../../utils/browserSave";
+import { downloadBlobAsFile, saveJsonAsFile } from "../../utils/browserSave";
 import {
   getLatestTekening,
   tekeningStateToIfcgis,
@@ -238,6 +239,20 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
           ? "BRO XML (.xml)"
           : "Geotechniek-object (.ifcgeo)";
       const baseName = activeDoc.cpt.id || "sondering";
+      if(format === "gef") {
+        try {
+          const result=exportGef(activeDoc.cpt);
+          if(result.warnings.length)alert(result.warnings.join("\n"));
+          if(IS_TAURI){
+            const path=await save({defaultPath:`${baseName}.gef`,filters:[{name:'GEF-CPT 1.1.2',extensions:['gef']}]});
+            if(!path)return;
+            const {writeTextFile}=await import('@tauri-apps/plugin-fs');await writeTextFile(path,result.text);
+          }else downloadBlobAsFile(new Blob([result.text],{type:'text/plain;charset=utf-8'}),`${baseName}.gef`);
+          setShowCptSaveAsMenu(false);onClose();
+        }catch(error){alert(`GEF-export gestopt: ${String(error)}`);}
+        return;
+      }
+
       // Browser-modus: alleen .ifcgeo (JSON-snapshot) wordt
       // ondersteund — GEF + BRO-XML serializers zitten in Rust en
       // hebben geen TS-port. Geef de gebruiker een duidelijke melding
