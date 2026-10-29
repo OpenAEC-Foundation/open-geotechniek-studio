@@ -83,6 +83,8 @@ export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
       {cpt.metadata.quality_regime && (
         <p>Regime: {cpt.metadata.quality_regime}</p>
       )}
+      {cpt.metadata.measurements && cpt.metadata.measurements.length>0 && <details><summary>Meetgrootheden & eenheden ({cpt.metadata.measurements.length})</summary><dl>{cpt.metadata.measurements.map((m,i)=><div key={i}><dt>{m.name}</dt><dd>{m.value??'—'} {m.unit}</dd></div>)}</dl></details>}
+      {report.measurementVariables && <details><summary>Meetvariabelen & nulmetingen</summary><dl>{Object.entries(report.measurementVariables).map(([id,m])=><div key={id}><dt>{id}: {m.description}</dt><dd>{m.value??'—'} {m.unit}</dd></div>)}</dl></details>}
       {outliers && (
         <label>
           <input

@@ -1,0 +1,1 @@
+Includes modified behavior from Bedrock Engineer gef-parser-ts (e895db2) and bro-xml-parser-ts (ed84e54). Copyright Bedrock Engineer / Jules Blom and contributors. Apache License 2.0; see LICENSE-Bedrock-Apache-2.0.txt. OGS modifications add strict diagnostics and preserve source quantities.

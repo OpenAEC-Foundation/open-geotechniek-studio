@@ -1,3 +1,4 @@
+import NormalizedPanel from "../../classification/NormalizedPanel";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useCptStore } from "../../store/useCptStore";
@@ -47,6 +48,7 @@ export default function RightPanel() {
           ))}
         </ul>
       </section>
+      <section className="right-panel-section"><NormalizedPanel /></section>
     </div>
   );
 }

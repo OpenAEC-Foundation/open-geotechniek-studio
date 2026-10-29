@@ -5,10 +5,12 @@ import net from "node:net";
 import {
   parseDocument,
   computeSettlement,
+  computePad,
   registerImporter,
   validateCpt,
   validationOf,
 } from "./dist/index.mjs";
+const padInput={widthM:2,lengthM:2,verticalDesignLoadKn:500,frictionDesignDeg:30,cohesionDesignKpa:0,surchargeDesignKpa:20,effectiveUnitWeightKnM3:10,resistanceFactor:1.4};
 const content =
   "#GEFID=1,0,0\n#TESTID=SYNTHETIC\n#COLUMN=3\n#COLUMNINFO=1,m,length,1\n#COLUMNINFO=2,MPa,qc,2\n#COLUMNINFO=3,MPa,fs,3\n#EOH=\n1 2 0.02";
 test("external consumer parses GEF, validates and calculates without GUI", () => {
@@ -24,6 +26,7 @@ test("external consumer parses GEF, validates and calculates without GUI", () =>
     }).settlementMm,
     20,
   );
+  assert.ok(Math.abs(computePad(padInput).resistanceKn-1979.1007512048)<1e-6);
   registerImporter({
     id: "synthetic-mapping-example",
     matches: (_, name) => name === "synthetic.mapping",
@@ -75,6 +78,8 @@ test("HTTP auth, error handling, parse, version, and health smoke test", async (
       (await (await fetch(base + "/version", { headers })).json()).api,
       1,
     );
+    const padReply=await fetch(base+'/pad-foundation',{method:'POST',headers,body:JSON.stringify(padInput)});
+    assert.equal(padReply.status,200);assert.ok(Math.abs((await padReply.json()).resistanceKn-1979.1007512048)<1e-6);
     const response = await fetch(base + "/parse", {
       method: "POST",
       headers,
@@ -150,7 +155,7 @@ test("MCP external stdio client initializes, lists tools and calls settlement", 
       ).result.serverInfo.name,
       "openaec-geotechniek-core",
     );
-    assert.equal((await call(2, "tools/list", {})).result.tools.length, 3);
+    assert.equal((await call(2, "tools/list", {})).result.tools.length, 4);
     const reply = await call(3, "tools/call", {
       name: "settlement",
       arguments: {
@@ -160,6 +165,8 @@ test("MCP external stdio client initializes, lists tools and calls settlement", 
       },
     });
     assert.equal(JSON.parse(reply.result.content[0].text).settlementMm, 20);
+    const padReply=await call(4,'tools/call',{name:'pad_foundation',arguments:padInput});
+    assert.ok(Math.abs(JSON.parse(padReply.result.content[0].text).resistanceKn-1979.1007512048)<1e-6);
   } finally {
     child.kill();
   }

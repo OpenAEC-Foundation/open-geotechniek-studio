@@ -1,3 +1,5 @@
+import type { Diagnostic } from "../validation/report";
+import { readSourceFile } from "../utils/sourceEncoding";
 import { withMarkers } from "../components/chart/markers";
 import type { ChartMarker } from "../components/chart/chart-renderer";
 import { generateIfcContent } from "../utils/browserIfc";
@@ -736,11 +738,16 @@ export async function loadCptFromContent(
   content: string,
   filename: string,
   path?: string,
+  diagnostics: Diagnostic[] = [],
 ): Promise<Cpt> {
   // Eén platform-call — desktop gaat naar Rust (autoritair), web
   // naar de TS-parsers (gefParser + broCptParser). Zie utils/platform.ts.
   const { cpt: cptPlatform } = await import("../utils/platform");
-  const cpt = await cptPlatform.parse(content, filename);
+  const cpt = await cptPlatform.parse(content, filename, diagnostics);
+  return loadCptSnapshot(cpt,filename,path);
+}
+
+export function loadCptSnapshot(cpt:Cpt,filename:string,path?:string):Cpt {
   let createdDoc: CptDocument | null = null;
   useCptStore.setState((s) => {
     const doc: CptDocument = {
@@ -773,8 +780,10 @@ export async function loadBoreFromContent(
   xml: string,
   filename: string,
   path?: string,
+  diagnostics: Diagnostic[] = [],
 ): Promise<Bore> {
   const bore = looksLikeGefBore(xml) ? parseGefBore(xml, filename) : parseBhrgtXml(xml, filename);
+  if(diagnostics.length)bore.metadata.extra={...bore.metadata.extra,"Brondecodering":JSON.stringify(diagnostics)};
   useCptStore.setState((s) => {
     const doc: BoreDocument = {
       kind: "bore",
@@ -863,10 +872,11 @@ export async function addCptToActiveProject(
   content: string,
   filename: string,
   targetDocId: string | null = useCptStore.getState().activeDocId,
+  diagnostics: Diagnostic[] = [],
 ): Promise<Cpt> {
   // Eén platform-call — zie utils/platform.ts voor de Tauri/web split.
   const { cpt: cptPlatform } = await import("../utils/platform");
-  const cpt = await cptPlatform.parse(content, filename);
+  const cpt = await cptPlatform.parse(content, filename, diagnostics);
   const state = useCptStore.getState();
   const active = state.documents.find((d) => d.id === targetDocId);
   if (targetDocId && !active) throw new Error("Het doelproject is gesloten tijdens het toevoegen.");
@@ -931,6 +941,7 @@ export async function addCptToActiveProject(
 export async function addBoreToActiveProject(
   xml: string,
   filename: string,
+  diagnostics: Diagnostic[] = [],
 ): Promise<Bore> {
   if (!looksLikeBoringXml(xml) && !looksLikeGefBore(xml)) {
     throw new Error(
@@ -938,6 +949,7 @@ export async function addBoreToActiveProject(
     );
   }
   const bore = looksLikeGefBore(xml) ? parseGefBore(xml, filename) : parseBhrgtXml(xml, filename);
+  if(diagnostics.length)bore.metadata.extra={...bore.metadata.extra,"Brondecodering":JSON.stringify(diagnostics)};
   const state = useCptStore.getState();
   const active = state.documents.find((d) => d.id === state.activeDocId);
   if (!active || active.kind !== "project") {
@@ -1162,10 +1174,9 @@ export async function openPathByExtension(path: string): Promise<boolean> {
     return true;
   }
   if (lower.endsWith(".gef") || lower.endsWith(".xml") || lower.endsWith(".ifcgeo")) {
-    const { readTextFile } = await import("@tauri-apps/plugin-fs");
-    const content = await readTextFile(path);
+    const {text:content,diagnostics} = await readSourceFile(path);
     const filename = path.split(/[\\/]/).pop() ?? path;
-    return openContentByFilename(content, filename, path);
+    return openContentByFilename(content, filename, path, diagnostics);
   }
   return false;
 }
@@ -1182,9 +1193,10 @@ export async function openContentByFilename(
   content: string,
   filename: string,
   path?: string,
+  diagnostics: Diagnostic[] = [],
 ): Promise<boolean> {
   if (looksLikeGefBore(content)) {
-    await loadBoreFromContent(content, filename, path);
+    await loadBoreFromContent(content, filename, path, diagnostics);
     return true;
   }
   const lower = filename.toLowerCase();
@@ -1200,7 +1212,7 @@ export async function openContentByFilename(
       return true;
     }
     if (looksLikeBoringXml(head)) {
-      await loadBoreFromContent(content, filename, path);
+      await loadBoreFromContent(content, filename, path, diagnostics);
       return true;
     }
   }
@@ -1211,7 +1223,9 @@ export async function openContentByFilename(
       return true;
     }
   }
-  await loadCptFromContent(content, filename, path);
+  const {cpt:platformCpt}=await import('../utils/platform');
+  const values=await platformCpt.parseMany(content,filename,diagnostics);
+  for(const cpt of values)loadCptSnapshot(cpt,values.length>1?`${filename} · ${cpt.id}`:filename,path);
   return true;
 }
 

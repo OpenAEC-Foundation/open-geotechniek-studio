@@ -3152,9 +3152,8 @@ export default function SonderingstekeningView() {
     // gelijk en wordt de scale exact.
     const measureMPerPx = (): number | null => {
       try {
-        const p1 = map.latLngToContainerPoint(centre);
-        const p2 = L.point(p1.x + 100, p1.y);
-        const ll2 = map.containerPointToLatLng(p2);
+        const p1 = map.project(centre, map.getZoom());
+        const ll2 = map.unproject(L.point(p1.x + 100, p1.y), map.getZoom());
         const dist = map.distance(centre, ll2);
         return Number.isFinite(dist) && dist > 0 ? dist / 100 : null;
       } catch {
@@ -4583,7 +4582,7 @@ export default function SonderingstekeningView() {
         ? Math.round((snapPxW / snapMmW) * mPerPx * 1000)
         : scale;
     const snapshot = {
-      titleBlock,
+      titleBlock: { ...titleBlock, scale: `1:${Math.abs(liveScale - scale) <= 2 ? scale : liveScale}` },
       paperSize,
       scale,
       liveScale,
@@ -4641,12 +4640,17 @@ export default function SonderingstekeningView() {
     publishSnapshotRef.current();
   }, [titleBlock, selection, rasters, placed, paperSize, scale, frozen, overlay, mPerPx, drawnLines, vlakken, notes, overlayInForeground]);
 
+  const [drawingRestored, setDrawingRestored] = useState(false);
+  const initialDrawingRestore = useRef<{ explicit: boolean; state: TekeningFullState | null } | null>(null);
+
   // ── Mirror complete tekening-state naar de module-level singleton ─
   // Aparte effect (los van het snapshot event boven) zodat we ALLE
   // arrays en de mapView meegeven — die zitten niet in het snapshot
   // event omdat TekeningProperties die niet hoeft te zien. Backstage's
   // saveProject leest uit deze singleton om het .ifcgis te bouwen.
   useEffect(() => {
+    // Do not overwrite the saved document with mount defaults before restore.
+    if (!drawingRestored) return;
     const full: TekeningFullState = {
       paperSize,
       scale,
@@ -4709,6 +4713,8 @@ export default function SonderingstekeningView() {
     };
     setLatestTekening(full, activeDocId);
   }, [
+    drawingRestored,
+    activeDocId,
     paperSize,
     scale,
     mapView,
@@ -4740,8 +4746,12 @@ export default function SonderingstekeningView() {
     // latest zodat tab-switch geen state wist. Onthoud OF het een
     // expliciete open was — dat bepaalt straks of we óók de opgeslagen
     // viewport terugzetten (zie de panTo-conditie verderop).
-    const explicit = consumePendingTekeningRestore();
-    const pending = explicit ?? getLatestTekening();
+    if (!initialDrawingRestore.current) {
+      const explicit = consumePendingTekeningRestore();
+      initialDrawingRestore.current = { explicit: explicit != null, state: explicit ?? getLatestTekening(activeDocId ?? undefined) };
+    }
+    const { explicit, state: pending } = initialDrawingRestore.current;
+    setDrawingRestored(true);
     if (!pending) return;
     setPaperSize(pending.paperSize);
     setScale(pending.scale);
@@ -4834,11 +4844,11 @@ export default function SonderingstekeningView() {
         : activeD?.kind === "project"
           ? Array.from(activeD.cpts.values()).some((c) => c.position != null)
           : false;
-    const restoredViewport = drawingViewport(pending.center, ds.lastMapView, !!explicit, soundingOpen);
+    const restoredViewport = drawingViewport(pending.center, ds.lastMapView, explicit, soundingOpen);
     setMapView(restoredViewport);
     const alreadyFitted =
       fittedTekeningKey === `cpts:${ds.activeDocId}:${pending.paperSize}`;
-    if (explicit != null || !soundingOpen || alreadyFitted) {
+    if (explicit || !soundingOpen || alreadyFitted) {
       // Zet de Leaflet-map naar het opgeslagen CENTRE, maar laat de
       // ZOOM aan het scale-setter effect over — dat berekent de exacte
       // zoom voor 1:N en wint anders een race-condition (saved-zoom
@@ -5060,9 +5070,8 @@ export default function SonderingstekeningView() {
       if (!internal._panes?.mapPane) return;
       try {
         const center = map.getCenter();
-        const p1 = map.latLngToContainerPoint(center);
-        const p2 = L.point(p1.x + 100, p1.y);
-        const ll2 = map.containerPointToLatLng(p2);
+        const p1 = map.project(center, map.getZoom());
+        const ll2 = map.unproject(L.point(p1.x + 100, p1.y), map.getZoom());
         const dist = map.distance(center, ll2);
         if (Number.isFinite(dist) && dist > 0) setMPerPx(dist / 100);
         setMapView({ lat: center.lat, lon: center.lng, zoom: map.getZoom() });

@@ -1,3 +1,4 @@
+import { decodeSource } from "./utils/sourceEncoding";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import TitleBar from "./components/TitleBar";
@@ -81,6 +82,7 @@ function DetachedApp({ view, title }: { view: string; title: string }) {
 }
 
 function App() {
+  const activeDocId = useCptStore((state) => state.activeDocId);
   // Check if this is a detached window
   const detachedParams = getDetachedParams();
   if (detachedParams.detached && detachedParams.view) {
@@ -234,8 +236,8 @@ function App() {
           continue;
         }
         try {
-          const text = await f.text();
-          await openContentByFilename(text, f.name);
+          const {text,diagnostics} = decodeSource(new Uint8Array(await f.arrayBuffer()));
+          await openContentByFilename(text, f.name, undefined, diagnostics);
           openedAny = true;
         } catch (err) {
           console.error("Browser drop open failed for", f.name, err);
@@ -421,7 +423,7 @@ function App() {
       case "ifc":
         return <IfcView />;
       case "tekening":
-        return <SonderingstekeningView />;
+        return <SonderingstekeningView key={activeDocId ?? "empty"} />;
       case "calculations":
         return <CalculationsView />;
       default:

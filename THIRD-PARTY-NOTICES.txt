@@ -12,3 +12,15 @@ same terms. This does not change the stated license of unrelated app code.
 Fonts retain their individual SIL Open Font License notices in fonts/*-OFL.txt.
 The desktop bundle includes the design sources, provenance and license files
 under licenses/blueprint/ so attribution is available offline.
+
+Bedrock Engineer parser adaptations
+- Sources: https://github.com/bedrock-engineer/gef-parser-ts (e895db2),
+  https://github.com/bedrock-engineer/bro-xml-parser-ts (ed84e54).
+- Copyright Bedrock Engineer / Jules Blom and contributors.
+- Apache License 2.0: licenses/bedrock-Apache-2.0.txt.
+- OGS adaptations retain original quantities and add stricter numeric diagnostics.
+  Included behavior: initial penetration offset, pre-excavation masking,
+  SWE TextEncoding and positional channel flags; units remain traceable.
+The public BRO interoperability fixture tests/fixtures/bro/bedrock-example.xml
+is copied unchanged from bro-xml-parser-ts ed84e54 test/fixtures/cpt/example.xml,
+under the same Apache-2.0 license. Copyright Bedrock Engineer contributors.

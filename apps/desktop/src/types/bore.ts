@@ -15,6 +15,8 @@ export interface BorePosition {
 }
 
 export interface BoreLayer {
+  soil_code?:string;
+  classification?:{system:"NEN5104";lithology:string;main:string;admixtures:Array<{letter:string;grade?:number}>;qualifiers:string[]};
   /** Top depth below ground level (m, positive downward). */
   top_depth: number;
   /** Bottom depth below ground level (m, positive downward). */

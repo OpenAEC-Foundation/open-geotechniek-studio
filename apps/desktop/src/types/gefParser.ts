@@ -1,3 +1,4 @@
+import { maskPreExcavation } from "./bedrockCompatibility";
 import type { Cpt, MeasurementPoint } from "./cpt";
 import {
   attachValidation,
@@ -220,6 +221,24 @@ export function parseGef(text: string, filename: string): Cpt {
         index,
       );
   }
+  const unitFactors = new Map<number, number>();
+  for (const col of columns) {
+    const unit = col.unit?.trim().toLowerCase().replace(/\s*\(.*\)\s*$/, "");
+    const choices: Record<string,number> | undefined = [1,11].includes(col.quantity) ? {m:1,cm:0.01,mm:0.001}
+      : [2,3,5,6,7,13,14].includes(col.quantity) ? {mpa:1,kpa:0.001,pa:0.000001}
+      : [8,9,10,21,22].includes(col.quantity) ? {deg:1,'°':1,graden:1,degree:1,rad:180/Math.PI}
+      : col.quantity===4 ? {'%':1,percent:1,'-':100} : undefined;
+    if (!choices) continue;
+    const factor=choices[unit];
+    unitFactors.set(col.index,factor ?? NaN);
+    if(factor===undefined)diag('error','UNKNOWN_UNIT',`Eenheid ${col.unit} voor kwantiteit ${col.quantity} onbekend; alleen oorspronkelijke parameters bewaard.`,col.line,undefined,col.index);
+    else if(factor!==1)diag('warning','UNIT_CONVERSION',`Kolom ${col.index}: ${col.unit} omgezet naar interne eenheid met factor ${factor}; oorspronkelijke waarden blijven in parameters.`,col.line,undefined,col.index);
+  }
+  const interpreted=(col:Column,value:number|undefined):number|undefined=> {
+    if(value===undefined)return undefined;
+    const factor=unitFactors.get(col.index)??1;
+    return Number.isFinite(factor)?value*factor:undefined;
+  };
   const voids = new Map<number, number>();
   for (const item of header.get("COLUMNVOID") ?? []) {
     const [col, value] = item.value.split(",");
@@ -297,7 +316,7 @@ export function parseGef(text: string, filename: string): Cpt {
     previousLength = 0,
     corrected = 0;
   for (const raw of records) {
-    const lineAt = line;
+    const lineAt = line + ((raw.match(/^\s*/)?.[0].match(/\n/g)?.length) ?? 0);
     line +=
       (raw.match(/\n/g)?.length ?? 0) + (recSep === "\n" || !recSep ? 1 : 0);
     let value = raw.trim();
@@ -316,6 +335,10 @@ export function parseGef(text: string, filename: string): Cpt {
     }
     const tokens =
       colSep && !/\s/.test(colSep) ? value.split(colSep) : value.split(/\s+/);
+    if (colSep && !/\s/.test(colSep) && tokens.length === expected + 1 && tokens[tokens.length - 1].trim() === "") {
+      tokens.pop();
+      diag("info", "TRAILING_COLUMN_SEPARATOR", "Afsluitend kolomscheidingsteken gelezen als recordopmaak; geen extra meetkolom.", lineAt, record, expected + 1);
+    }
     if (tokens.length !== expected)
       diag(
         "error",
@@ -346,12 +369,13 @@ export function parseGef(text: string, filename: string): Cpt {
         nums.map((v, i) => [`column_${i + 1}`, v ?? null]),
       ),
     };
+    p.parameters!.source_record=record;
     const seen = new Set<string>();
     for (const col of columns) {
-      const v = nums[col.index - 1],
+      const v = interpreted(col,nums[col.index - 1]),
         field = fields[col.quantity] ?? `quantity_${col.quantity}`;
       if (!(`${col.quantity}` in p.parameters!))
-        p.parameters![`${col.quantity}`] = v ?? null;
+        p.parameters![`${col.quantity}`] = nums[col.index - 1] ?? null;
       if (v !== undefined && !seen.has(field)) {
         seen.add(field);
         if (["qc", "fs", "rf", "u2", "inclination"].includes(field))
@@ -360,10 +384,11 @@ export function parseGef(text: string, filename: string): Cpt {
     }
     const get = (q: number) => {
       const col = columns.find((c) => c.quantity === q);
-      return col ? nums[col.index - 1] : undefined;
+      return col ? interpreted(col, nums[col.index - 1]) : undefined;
     };
     const measured = get(11),
       length = get(1);
+    if(length!==undefined)p.parameters!.penetration_length_m=length;
     let depth = measured ?? length;
     if (depth === undefined) {
       report.omittedRecords++;
@@ -386,7 +411,8 @@ export function parseGef(text: string, filename: string): Cpt {
       );
       depth = Math.abs(depth);
     }
-    if (measured !== undefined) report.depthMethod = "corrected-depth";
+    if (length !== undefined && length < 0 && measured !== undefined)diag("warning","NEGATIVE_PENETRATION","Negatieve sondeerlengte; gecorrigeerde diepte blijft leidend.",lineAt,record,columns.find(c=>c.quantity===1)?.index);
+    if (measured !== undefined) {report.depthMethod = "corrected-depth";corrected=depth;previousLength=Math.abs(length??depth);}
     else {
       let angle = get(8);
       const ns = get(9) ?? get(21),
@@ -402,13 +428,14 @@ export function parseGef(text: string, filename: string): Cpt {
             180) /
           Math.PI;
       if (angle !== undefined && Math.abs(angle) < 90) {
-        corrected +=
-          (depth - previousLength) * Math.cos((angle * Math.PI) / 180);
+        // The first penetration is a reference-level offset, including any pre-excavation.
+        // Only measured intervals after it are corrected (Bedrock/pygef convention).
+        corrected = points.length===0 ? depth : corrected + (depth - previousLength) * Math.cos((angle * Math.PI) / 180);
         previousLength = depth;
         depth = corrected;
         report.depthMethod = "inclination-corrected";
       } else {
-        if (previousLength !== 0)
+        if (columns.some(c=>[8,9,10,21,22].includes(c.quantity)))
           diag(
             "warning",
             "MISSING_INCLINATION",
@@ -470,6 +497,12 @@ export function parseGef(text: string, filename: string): Cpt {
         col,
       );
   }
+  const preVariable=report.measurementVariables?.["13"];
+  const preFactor=preVariable ? ({m:1,cm:0.01,mm:0.001} as Record<string,number>)[preVariable.unit.trim().toLowerCase().replace(/\s*\(.*\)\s*$/, "")] : undefined;
+  const preDepth=preVariable?.value!=null && preFactor!=null ? preVariable.value*preFactor:undefined;
+  if(preVariable && preFactor==null)diag('error','UNKNOWN_PRE_EXCAVATION_UNIT',`Voorontgravingsdiepte met onbekende eenheid ${preVariable.unit} alleen als bronwaarde bewaard.`);
+  const masked=maskPreExcavation(points,preDepth,"penetration");
+  for(const record of masked.masked)diag("info","PRE_EXCAVATED","Meetkanalen in voorontgraven grond gemaskeerd; oorspronkelijke waarden blijven in parameters.",undefined,record);
   report.points = points.length;
   const date = (first("STARTDATE") ?? first("FILEDATE"))
     ?.split(",")
@@ -480,7 +513,7 @@ export function parseGef(text: string, filename: string): Cpt {
       id: first("TESTID") ?? "Unknown",
       metadata: {
         pre_excavated_depth_m:
-          report.measurementVariables?.["13"]?.value ?? undefined,
+          preDepth,
         removed_layers: (header.get("SPECIMENVAR") ?? []).flatMap((item) => {
           const parts = item.value.split(","),
             bottom = number(parts[1] ?? "", item.line);
@@ -493,6 +526,7 @@ export function parseGef(text: string, filename: string): Cpt {
                 },
               ];
         }),
+        quality_regime:(header.get("MEASUREMENTTEXT")??[]).find(item=>item.value.split(",")[0].trim()==="115")?.value.split(",")[1]?.trim(),
         source_file: filename,
         project_name: first("PROJECTNAME"),
         project_number: first("PROJECTID"),
@@ -505,7 +539,7 @@ export function parseGef(text: string, filename: string): Cpt {
         x !== undefined && y !== undefined
           ? { x_rd: x, y_rd: y, z_nap: ground }
           : undefined,
-      points,
+      points:masked.points,
     },
     report,
   );

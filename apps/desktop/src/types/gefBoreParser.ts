@@ -1,3 +1,4 @@
+import {decodeBoreCode,parseSoilCode} from "@bedrock-engineer/gef-parser/bore-codes";
 import type { Bore, BoreLayer } from "./bore";
 
 // CUR GEF-BORE-Report 1.0.0, sections 2.2 / 2.3 and examples in section 3.
@@ -11,12 +12,6 @@ function unquote(value: string): string {
   return value.trim().replace(/^['"‘’]|['"‘’]$/g, "").trim();
 }
 
-function soilName(code: string): string {
-  if (code === "GM") return "geen monster";
-  if (code === "NBE") return "niet benoemd";
-  const main: Record<string, string> = { Z: "zand", K: "klei", L: "leem", V: "veen", G: "grind" };
-  return main[code[0]] ? `${main[code[0]]} (${code})` : code;
-}
 
 export function parseGefBore(content: string, filename: string): Bore {
   if (!looksLikeGefBore(content)) throw new Error("Geen GEF-BORE-bestand.");
@@ -61,8 +56,9 @@ export function parseGefBore(content: string, filename: string): Bore {
         voids.get(top.index) === topRaw || voids.get(base.index) === baseRaw || !description) {
       throw new Error(`Ongeldige laag ${layers.length + 1} in GEF-boring: controleer diepten en grondbeschrijving.`);
     }
-    const code = description.split(/[;\s]/)[0];
-    layers.push({ top_depth: topDepth, base_depth: baseDepth, soil_name: soilName(code), description });
+    const code = description.split(";")[0].trim(),classification=parseSoilCode(code);
+    layers.push({ top_depth: topDepth, base_depth: baseDepth, soil_name: decodeBoreCode(code), description, soil_code:code,
+      classification:{system:"NEN5104",...classification} });
   }
   if (!layers.length) throw new Error("GEF-boring bevat geen lagen.");
   const xy = parts(first("XYID")), z = parts(first("ZID")), project = parts(first("PROJECTID"));

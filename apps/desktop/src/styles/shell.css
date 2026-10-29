@@ -53,3 +53,10 @@ input[type="number"], .mono { font-family: var(--oa-font-numbers); font-variant-
 .validation-actions button { padding: 3px 7px; border: 1px solid var(--oa-border-strong); background: var(--oa-panel); color: var(--oa-text); border-radius: 3px; }
 .validation-panel ol { padding-left: 15px; max-height: 300px; overflow: auto; }
 .validation-panel li { margin: 5px 0; overflow-wrap: anywhere; }
+
+.normalized-panel { font-size: 11px; line-height: 1.5; }
+.normalized-panel summary { cursor: pointer; font-weight: 600; }
+.normalized-panel label { display: grid; gap: 3px; margin: 10px 0; }
+.normalized-panel input { width: 100%; padding: 5px 7px; background: var(--bg-main); border: 1px solid var(--border); color: var(--text); border-radius: 2px; }
+.normalized-panel dl { display: grid; grid-template-columns: auto 1fr; gap: 6px; }
+.normalized-panel dd { margin: 0; text-align: right; }

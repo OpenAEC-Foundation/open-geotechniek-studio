@@ -48,6 +48,14 @@ jobs:
           node ../../scripts/build-core.mjs
           node --test ../../packages/core/test.mjs
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Differential GEF interpretation tests
+        run: |
+          python -m pip install pygef==0.14.1
+          OGS_TEST_PYTHON=python node ../../scripts/differential-parsers.mjs
+
       - name: Typecheck
         run: npx tsc --noEmit
 
@@ -67,7 +75,7 @@ jobs:
       # geen rekencode, en ze zijn in de webbuild toch niet selecteerbaar.
       - name: Assert no calculation code in public bundle
         run: |
-          for term in "Rs;cal" "Koppejan" "paalpunt" "Funderingspaal" "Negatieve kleef" "Modulus naar kPa"; do
+          for term in "Rs;cal" "Koppejan" "paalpunt" "Funderingspaal" "Negatieve kleef" "Modulus naar kPa" "Verticale ontwerpweerstand"; do
             if grep -rq -- "$term" dist/assets/*.js; then
               echo "::error::'$term' staat in de publieke bundle — rekenmodule lekt naar de live site"
               exit 1
