@@ -4,6 +4,20 @@ import { validationOf } from "../validation/report";
 const header = (extra = "") =>
   `#GEFID=1,0,0\n#TESTID=SYNTHETIC\n#COLUMN=3\n#COLUMNINFO=1,m,length,1\n#COLUMNINFO=2,MPa,qc,2\n#COLUMNINFO=3,MPa,fs,3\n#XYID=31000,155000,463000\n#ZID=31000,2\n${extra}#EOH=\n`;
 describe("diagnostic GEF importer (#14)", () => {
+  it("accepts one terminal column separator and reports the actual record line", () => {
+    const source=header("#COLUMNSEPARATOR=;\n#RECORDSEPARATOR=!\n")+"1;2;0.02;!\n2;bad;0.03;!";
+    const c=parseGef(source,"synthetic.gef"),report=validationOf(c)!;
+    expect(c.points).toHaveLength(2);
+    expect(c.points[1].fs).toBe(0.03);
+    expect(report.diagnostics.filter(d=>d.code==='TRAILING_COLUMN_SEPARATOR')).toHaveLength(2);
+    expect(report.diagnostics.some(d=>d.code==='COLUMN_COUNT')).toBe(false);
+    expect(report.diagnostics.find(d=>d.code==='INVALID_NUMBER')).toMatchObject({record:2,column:2,line:source.split('\n').findIndex(line=>line.startsWith('2;bad'))+1});
+  });
+  it("retains an empty last measurement rather than treating it as formatting",()=>{
+    const c=parseGef(header("#COLUMNSEPARATOR=;\n#RECORDSEPARATOR=!\n")+"1;2;!","synthetic.gef");
+    expect(c.points[0].fs).toBeUndefined();
+    expect(validationOf(c)?.diagnostics.some(d=>d.code==='EMPTY_NUMBER'&&d.column===3)).toBe(true);
+  });
   it("never shifts columns on an invalid numeric token", () => {
     const c = parseGef(header() + "1 bad 0.02", "test.gef");
     expect(c.points[0].qc).toBeUndefined();
@@ -78,4 +92,24 @@ describe("diagnostic GEF importer (#14)", () => {
       "NEGATIVE_DEPTH",
     );
   });
+});
+
+it('preserves the first penetration offset and masks pre-excavation channels (Bedrock)',()=>{
+ const source=header('#MEASUREMENTVAR=13,1,m,pre-excavation\n').replace('#COLUMN=3','#COLUMN=4').replace('#EOH=','#COLUMNINFO=4,deg,inclination,8\n#EOH=')+'0.5 100 .02 60\n1 2 .02 60\n2 3 .03 60';
+ const c=parseGef(source,'synthetic.gef');
+ expect(c.points[0].depth).toBe(0.5);expect(c.points[1].depth).toBeCloseTo(0.75);expect(c.points[2].depth).toBeCloseTo(1.25);
+ expect(c.points[0].qc).toBeUndefined();expect(c.points[0].pre_excavated).toBe(true);expect(c.points[0].parameters?.source_qc).toBe(100);
+ expect(c.points[1].qc).toBe(2);expect(c.points[2].qc).toBe(3);expect(validationOf(c)?.diagnostics.some(d=>d.code==='PRE_EXCAVATED')).toBe(true);
+});
+
+
+it('converts declared units without changing preserved source quantities',()=>{
+ const value=parseGef(header().replace('1,m,length','1,cm,length').replace('2,MPa,qc','2,kPa,qc').replace('3,MPa,fs','3,kPa,fs')+'100 2000 20','units.gef');
+ expect(value.points[0]).toMatchObject({depth:1,qc:2,fs:.02,rf:1,parameters:{'1':100,'2':2000}});
+ expect(validationOf(value)?.diagnostics.filter(d=>d.code==='UNIT_CONVERSION')).toHaveLength(3);
+});
+it('refuses to interpret unknown pressure units as MPa',()=>{
+ const value=parseGef(header().replace('2,MPa,qc','2,bananas,qc')+'1 2000 .02','units.gef');
+ expect(value.points[0].qc).toBeUndefined();expect(value.points[0].parameters?.['2']).toBe(2000);
+ expect(validationOf(value)?.diagnostics.some(d=>d.code==='UNKNOWN_UNIT')).toBe(true);
 });

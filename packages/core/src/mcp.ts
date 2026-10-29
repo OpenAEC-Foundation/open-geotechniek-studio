@@ -3,9 +3,11 @@ import {
   parseDocument,
   validateCpt,
   computeSettlement,
+  computePad,
   version,
 } from "./index";
 const tools = [
+ {name:"pad_foundation",description:"Concept EC7 Annex D drained bearing resistance. Centric vertical load; caller supplies design values and project resistance factor. Not a complete foundation design.",inputSchema:{type:"object",properties:Object.fromEntries(["widthM","lengthM","verticalDesignLoadKn","frictionDesignDeg","cohesionDesignKpa","surchargeDesignKpa","effectiveUnitWeightKnM3","resistanceFactor"].map(key=>[key,{type:"number"}])),required:["widthM","lengthM","verticalDesignLoadKn","frictionDesignDeg","cohesionDesignKpa","surchargeDesignKpa","effectiveUnitWeightKnM3","resistanceFactor"],additionalProperties:false}},
   {
     name: "parse_gef",
     description:
@@ -72,7 +74,8 @@ lines.on("line", (line) => {
     else if (request.method === "tools/call") {
       const { name, arguments: args } = request.params ?? {};
       let value: unknown;
-      if (name === "parse_gef")
+      if(name === "pad_foundation")value=computePad(args);
+      else if (name === "parse_gef")
         value = parseDocument(args.content, args.filename);
       else if (name === "validate_cpt") value = validateCpt(args.cpt);
       else if (name === "settlement") value = computeSettlement(args);

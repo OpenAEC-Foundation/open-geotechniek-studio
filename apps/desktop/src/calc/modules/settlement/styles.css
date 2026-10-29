@@ -42,3 +42,7 @@
 .settlement-reference summary { cursor: pointer; color: var(--oa-text); }
 .settlement-reference p { margin-top: 10px; }
 .settlement-warning, .settlement-error { margin-top: 16px; padding: 12px; background: var(--oa-warning-tint); border-left: 3px solid var(--oa-warning); font-size: 12px; line-height: 1.6; }
+
+.pad-input > section + section { margin-top: 24px; }
+.pad-input > section:first-child .settlement-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pad-input > section:first-child .settlement-field:last-child { grid-column: 1 / -1; }

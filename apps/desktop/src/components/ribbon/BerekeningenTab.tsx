@@ -10,12 +10,13 @@ export function BerekeningenTab() {
   const activeCalcId = useCalculationsStore((s) => s.activeCalcId);
   const byDoc = useCalculationsStore((s) => s.byDoc);
   const active = (activeDocId ? byDoc.get(activeDocId) : [])?.find((c) => c.id === activeCalcId && getCalcModule(c.moduleId));
+  const module = active ? getCalcModule(active.moduleId) : undefined;
   return <div className="ribbon-content ribbon-berekeningen">
-    <RibbonGroup label="Berekening"><RibbonButton icon={newIcon} label="Nieuw" title="Nieuwe zettingsberekening" disabled={!activeDocId} onClick={() => window.dispatchEvent(new Event('ogs:open-new-calc'))} /></RibbonGroup>
+    <RibbonGroup label="Berekening"><RibbonButton icon={newIcon} label="Nieuw" title="Nieuwe geotechnische berekening" disabled={!activeDocId} onClick={() => window.dispatchEvent(new Event('ogs:open-new-calc'))} /></RibbonGroup>
     <RibbonGroup label="Methode"><RibbonButton icon={infoIcon} label="Toelichting" disabled={!active} onClick={() => {
       const reference = document.querySelector<HTMLDetailsElement>('.settlement-reference');
       if (reference) { reference.open = true; reference.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
     }} /></RibbonGroup>
-    <div className="ribbon-calculation-context"><strong>{active?.name ?? 'Zetting van één laag'}</strong><span>1D-compressie · constante modulus</span><span>Conceptberekening</span></div>
+    <div className="ribbon-calculation-context"><strong>{active?.name ?? 'Geotechnische berekeningen'}</strong><span>{module?.norm ?? 'Zetting · Poer op staal'}</span><span>Conceptberekening</span></div>
   </div>;
 }

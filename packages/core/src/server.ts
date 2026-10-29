@@ -4,6 +4,7 @@ import {
   parseDocument,
   validateCpt,
   computeSettlement,
+  computePad,
   validationOf,
   version,
 } from "./index";
@@ -42,7 +43,7 @@ const server = http.createServer(async (req, res) => {
   }
   if (
     req.method !== "POST" ||
-    !["/parse", "/validate", "/settlement"].includes(req.url ?? "")
+    !["/parse", "/validate", "/settlement", "/pad-foundation"].includes(req.url ?? "")
   ) {
     send(404, { error: "Unknown endpoint" });
     return;
@@ -65,6 +66,7 @@ const server = http.createServer(async (req, res) => {
       send(200, validateCpt(body));
       return;
     }
+    if(req.url === "/pad-foundation"){const result=computePad(body);send(result.ok?200:422,result);return;}
     if (req.url === "/settlement") {
       const result = computeSettlement(body);
       send(result.ok ? 200 : 422, result);

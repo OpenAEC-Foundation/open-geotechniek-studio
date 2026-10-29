@@ -1,8 +1,8 @@
 {
   "name": "open-geo-studio",
-  "description": "Open Geotechniek Studio \u2014 desktop CPT viewer and report generator",
+  "description": "Open Geotechniek Studio — desktop CPT viewer and report generator",
   "private": true,
-  "version": "2026.44.1",
+  "version": "2026.44.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@bedrock-engineer/gef-parser": "0.4.2",
     "@tauri-apps/api": "~2.11.0",
     "@tauri-apps/plugin-dialog": "~2.7.0",
     "@tauri-apps/plugin-fs": "~2.5.1",

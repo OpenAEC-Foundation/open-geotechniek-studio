@@ -3152,9 +3152,8 @@ export default function SonderingstekeningView() {
     // gelijk en wordt de scale exact.
     const measureMPerPx = (): number | null => {
       try {
-        const p1 = map.latLngToContainerPoint(centre);
-        const p2 = L.point(p1.x + 100, p1.y);
-        const ll2 = map.containerPointToLatLng(p2);
+        const p1 = map.project(centre, map.getZoom());
+        const ll2 = map.unproject(L.point(p1.x + 100, p1.y), map.getZoom());
         const dist = map.distance(centre, ll2);
         return Number.isFinite(dist) && dist > 0 ? dist / 100 : null;
       } catch {
@@ -4583,7 +4582,7 @@ export default function SonderingstekeningView() {
         ? Math.round((snapPxW / snapMmW) * mPerPx * 1000)
         : scale;
     const snapshot = {
-      titleBlock,
+      titleBlock: { ...titleBlock, scale: `1:${Math.abs(liveScale - scale) <= 2 ? scale : liveScale}` },
       paperSize,
       scale,
       liveScale,
@@ -5060,9 +5059,8 @@ export default function SonderingstekeningView() {
       if (!internal._panes?.mapPane) return;
       try {
         const center = map.getCenter();
-        const p1 = map.latLngToContainerPoint(center);
-        const p2 = L.point(p1.x + 100, p1.y);
-        const ll2 = map.containerPointToLatLng(p2);
+        const p1 = map.project(center, map.getZoom());
+        const ll2 = map.unproject(L.point(p1.x + 100, p1.y), map.getZoom());
         const dist = map.distance(center, ll2);
         if (Number.isFinite(dist) && dist > 0) setMPerPx(dist / 100);
         setMapView({ lat: center.lat, lon: center.lng, zoom: map.getZoom() });

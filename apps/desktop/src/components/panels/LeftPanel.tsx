@@ -302,7 +302,7 @@ function BoreLayersList({ bore }: { bore: Bore }) {
           <tr key={i}>
             <td>{l.top_depth.toFixed(2)}</td>
             <td>{l.base_depth.toFixed(2)}</td>
-            <td title={l.description}>{l.soil_name}</td>
+            <td title={l.description}>{l.soil_name}{l.soil_code&&<small style={{display:"block",color:"var(--text-muted)"}}>NEN 5104 · {l.soil_code}</small>}</td>
           </tr>
         ))}
       </tbody>
@@ -374,8 +374,8 @@ function ProjectBrowser() {
       const errors:string[]=[];
       for(const f of selected) {
         try {
-          if(looksLikeBoringXml(f.text)||looksLikeGefBore(f.text))await addBoreToActiveProject(f.text,f.name);
-          else await addCptToActiveProject(f.text,f.name);
+          if(looksLikeBoringXml(f.text)||looksLikeGefBore(f.text))await addBoreToActiveProject(f.text,f.name,f.diagnostics);
+          else await addCptToActiveProject(f.text,f.name,undefined,f.diagnostics);
         } catch(err){errors.push(f.name+': '+String(err));}
       }
       if(errors.length)setImportError(errors.join('\n'));

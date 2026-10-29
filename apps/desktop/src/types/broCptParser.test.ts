@@ -18,3 +18,34 @@ it('does not silently import only the first object or assume unknown CRS is RD',
  expect(()=>parseBroCptXml(xml(row(1)).replace('</dispatch>','<CPT_O/></dispatch>'),'multi.xml')).toThrow('meerdere');
  const c=parseBroCptXml(xml(row(1)).replace('28992','4326'),'unknown.xml');expect(c.position).toBeUndefined();expect(validationOf(c)?.diagnostics.some(d=>d.code==='UNKNOWN_XY_CRS')).toBe(true);
 });
+
+it('uses SWE encoding and positional ja/nee masks while preserving source channels (Bedrock)',()=>{
+ const source='<dispatch><CPT_O><broId>SYNTHETIC</broId><parameters><penetrationLength>ja</penetrationLength><coneResistance>nee</coneResistance><localFriction>ja</localFriction><depth>ja</depth></parameters><cptResult><TextEncoding tokenSeparator="|" blockSeparator="!" decimalSeparator=","/><values>1|100|0,02|0,95!2|200|0,03|1,9!</values></cptResult></CPT_O></dispatch>';
+ const c=parseBroCptXml(source,'synthetic.xml');expect(c.points.map(p=>p.depth)).toEqual([0.95,1.9]);expect(c.points[0].qc).toBeUndefined();expect(c.points[0].fs).toBe(0.02);expect(c.points[0].parameters?.qc).toBe(100);
+ expect(validationOf(c)?.diagnostics.some(d=>d.code==='DECIMAL_SEPARATOR')).toBe(true);
+});
+it('preserves units and converts known metre units without assuming unknown vertical datums',()=>{
+ const source=xml(row(1)).replace('<predrilledDepth>0.5</predrilledDepth>','<predrilledDepth uom="cm">50</predrilledDepth><deliveredVerticalPosition><offset uom="cm">200</offset><verticalDatum>NAP</verticalDatum></deliveredVerticalPosition>');
+ const c=parseBroCptXml(source,'units.xml');expect(c.metadata.ground_level_nap).toBe(2);expect(c.metadata.predrilled_depth_m).toBe(0.5);expect(c.metadata.measurements).toContainEqual({name:'offset',value:200,unit:'cm'});
+ expect(parseBroCptXml(source.replace('>NAP<','>TAW<'),'unknown.xml').metadata.ground_level_nap).toBeUndefined();
+});
+
+it('opens all objects of a multi-CPT dispatch without losing namespace context',async()=>{
+ const {parseBroCptXmlMany}=await import('./broCptParser');
+ const one=xml(row(1)),two=one.replace('CPT-SYNTHETIC','CPT-SECOND');
+ const multi='<dispatch xmlns="https://www.broservices.nl/xsd/dscpt/1.1">'+one.replace(/^<dispatch>|<\/dispatch>$/g,'')+two.replace(/^<dispatch>|<\/dispatch>$/g,'')+'</dispatch>';
+ const values=parseBroCptXmlMany(multi,'multi.xml');expect(values.map(c=>c.id)).toEqual(['CPT-SYNTHETIC','CPT-SECOND']);
+ expect(values[1].points[0].depth).toBe(1);
+ expect(()=>parseBroCptXmlMany(multi.replace('CPT-SECOND','CPT-SYNTHETIC'),'duplicate.xml')).toThrow('dubbele');
+});
+
+it('imports the upstream public BRO dispatch with real namespaces and channel flags',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const source=readFileSync('../../tests/fixtures/bro/bedrock-example.xml','utf8');
+ const value=parseBroCptXml(source,'bedrock-example.xml');
+ expect(value.id).toBe('CPT000000099543');
+ expect(value.points.length).toBeGreaterThan(100);
+ expect(value.metadata.quality_regime).toBe('IMBRO');
+ expect(value.metadata.ground_level_nap).toBeCloseTo(4.410,3);
+ expect(validationOf(value)?.diagnostics.filter(d=>d.severity==='error')).toEqual([]);
+});

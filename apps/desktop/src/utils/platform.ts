@@ -1,3 +1,6 @@
+import type { Diagnostic } from "../validation/report";
+import { attachValidation, validationOf } from "../validation/report";
+import { readSourceFile } from "./sourceEncoding";
 /**
  * Eén centrale plek voor alle desktop-vs-web platform-checks.
  *
@@ -114,22 +117,34 @@ export const bro = {
 // In Tauri: invoke('open_cpt') — autoritair, kent meer edge cases.
 // In web:   pure-TS parsers (gefParser + broCptParser).
 
+function withSourceDiagnostics(value:Cpt,diagnostics:Diagnostic[]):Cpt {
+ const report=validationOf(value);
+ return report && diagnostics.length ? attachValidation(value,{...report,diagnostics:[...diagnostics,...report.diagnostics]}):value;
+}
+
 export const cpt = {
+  async parseMany(content:string,filename:string,diagnostics:Diagnostic[]=[]):Promise<Cpt[]> {
+    const {looksLikeBroCptXml,parseBroCptXmlMany}=await import('../types/broCptParser');
+    if(!looksLikeBroCptXml(content))return [await cpt.parse(content,filename,diagnostics)];
+    const values=parseBroCptXmlMany(content,filename).map(value=>withSourceDiagnostics(value,diagnostics));
+    if(IS_TAURI)for(const parsed of values)await invoke('open_cpt',{content:JSON.stringify(parsed),filename:filename+'.ifcgeo'});
+    return values;
+  },
  async detectLayers(value:Cpt):Promise<Layer[]> {
  const {detectLayers}=await import('./browserCore');return detectLayers(value);
  },
-  async parse(content: string, filename: string): Promise<Cpt> {
+  async parse(content: string, filename: string, diagnostics:Diagnostic[]=[]): Promise<Cpt> {
     // GEF uses the same diagnostic parser in desktop, browser and the headless package.
     const { looksLikeGef, parseGef } = await import('../types/gefParser');
     if (looksLikeGef(content)) {
-      const parsed = parseGef(content, filename);
+      const parsed = withSourceDiagnostics(parseGef(content, filename),diagnostics);
       if (IS_TAURI) await invoke('open_cpt', { content: JSON.stringify(parsed), filename: filename + '.ifcgeo' });
       return parsed;
     }
     if (/\.(ifcgeo|ifcx)$/i.test(filename)) {const {parseCptSnapshot}=await import('../types/projectFile');return parseCptSnapshot(content);}
     const { looksLikeBroCptXml, parseBroCptXml } = await import("../types/broCptParser");
     if (looksLikeBroCptXml(content)) {
-      const parsed=parseBroCptXml(content,filename);
+      const parsed=withSourceDiagnostics(parseBroCptXml(content,filename),diagnostics);
       if(IS_TAURI)await invoke('open_cpt',{content:JSON.stringify(parsed),filename:filename+'.ifcgeo'});
       return parsed;
     }
@@ -151,6 +166,7 @@ export const cpt = {
 // Tauri.
 
 export interface PickedFile {
+  diagnostics?: Diagnostic[];
   name: string;
   /** Volledige inhoud als UTF-8 string. */
   text: string;
@@ -167,7 +183,6 @@ export const files = {
   async pickAndRead(multiple: boolean = true): Promise<PickedFile[]> {
     if (IS_TAURI) {
       const { open: openDialog } = await import("@tauri-apps/plugin-dialog");
-      const { readTextFile } = await import("@tauri-apps/plugin-fs");
       const selected = await openDialog({
         multiple,
         filters: [
@@ -182,7 +197,7 @@ export const files = {
       return Promise.all(
         paths.map(async (p) => ({
           name: p.split(/[\\/]/).pop() ?? p,
-          text: await readTextFile(p),
+          ...await readSourceFile(p),
           path: p,
         })),
       );
@@ -192,7 +207,7 @@ export const files = {
       multiple,
       accept: ".gef,.xml,.ifcgeo,.ifcgis,.ifcx",
     });
-    return picked.map((f) => ({ name: f.name, text: f.text }));
+    return picked;
   },
 };
 

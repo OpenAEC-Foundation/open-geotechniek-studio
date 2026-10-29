@@ -8,6 +8,7 @@ export interface Cpt {
 }
 
 export interface Metadata {
+  measurements?: Array<{name:string;value:number|null;unit:string}>;
   predrilled_depth_m?: number;
   pre_excavated_depth_m?: number;
   removed_layers?: Array<{bottom_depth_m:number;description:string}>;
@@ -35,6 +36,7 @@ export interface Position {
 }
 
 export interface MeasurementPoint {
+  pre_excavated?: boolean;
   /** Original quantities by GEF quantity number, including voids; unknown values are retained. */
   parameters?: Record<string, number | null>;
   depth: number;

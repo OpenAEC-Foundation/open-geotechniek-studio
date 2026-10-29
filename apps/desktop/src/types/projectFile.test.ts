@@ -3,8 +3,10 @@ import { parseGef } from "./gefParser";
 import { parseProjectFile, isProjectFile, parseCptSnapshot, readJson } from "./projectFile";
 import { openContentByFilename, newProjectDocument, useCptStore, serializeActiveProject, addCptToActiveProject } from "../store/useCptStore";
 
-vi.mock("../utils/platform", () => ({ IS_TAURI: false, cpt: { parse: async (text: string, name: string) =>
-  name.endsWith(".gef") ? parseGef(text, name) : parseCptSnapshot(text) } }));
+vi.mock("../utils/platform", () => ({ IS_TAURI: false, cpt: {
+  parse: async (text: string, name: string) => name.endsWith(".gef") ? parseGef(text, name) : parseCptSnapshot(text),
+  parseMany: async (text: string, name: string) => [name.endsWith(".gef") ? parseGef(text, name) : parseCptSnapshot(text)]
+} }));
 
 const gef = `#GEFID=1,1,0
 #TESTID=S-regressie

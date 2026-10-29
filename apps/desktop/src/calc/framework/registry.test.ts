@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { CALC_REGISTRY, getCalcModule } from "./registry";
 
 describe("calc registry", () => {
-  it("exposes only the requested settlement worksheet in desktop/dev builds", () => {
-    expect(CALC_REGISTRY.map((module) => module.id)).toEqual(["settlement"]);
+  it("exposes only the requested settlement and pad worksheets in desktop/dev builds", () => {
+    expect(CALC_REGISTRY.map((module) => module.id)).toEqual(["settlement", "pad-foundation"]);
     expect(getCalcModule("pile-bearing-capacity")).toBeUndefined();
   });
 

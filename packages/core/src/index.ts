@@ -1,3 +1,7 @@
+export { decodeSource } from "../../../apps/desktop/src/utils/sourceEncoding";
+export { normalizeCpt } from "../../../apps/desktop/src/classification/normalized";
+export { computePad } from "../../../apps/desktop/src/calc/modules/pad-foundation/compute";
+export { parseGefBore } from "../../../apps/desktop/src/types/gefBoreParser";
 export { parseGef } from "../../../apps/desktop/src/types/gefParser";
 export { computeSettlement } from "../../../apps/desktop/src/calc/modules/settlement/compute";
 export { validationOf } from "../../../apps/desktop/src/validation/report";

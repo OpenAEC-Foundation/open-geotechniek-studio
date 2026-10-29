@@ -1,6 +1,6 @@
 {
   "name": "@openaec/geotechniek-core",
-  "version": "2026.44.1",
+  "version": "2026.44.2",
   "type": "module",
   "description": "Headless geotechnical parsing, validation and settlement calculations",
   "license": "MIT",
@@ -9,7 +9,9 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "LICENSE-Bedrock-Apache-2.0.txt",
+    "NOTICE"
   ],
   "engines": {
     "node": ">=22"

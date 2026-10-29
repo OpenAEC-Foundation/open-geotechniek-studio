@@ -1,3 +1,4 @@
+import { decodeSource } from "./utils/sourceEncoding";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import TitleBar from "./components/TitleBar";
@@ -234,8 +235,8 @@ function App() {
           continue;
         }
         try {
-          const text = await f.text();
-          await openContentByFilename(text, f.name);
+          const {text,diagnostics} = decodeSource(new Uint8Array(await f.arrayBuffer()));
+          await openContentByFilename(text, f.name, undefined, diagnostics);
           openedAny = true;
         } catch (err) {
           console.error("Browser drop open failed for", f.name, err);

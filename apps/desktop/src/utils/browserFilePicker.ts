@@ -1,3 +1,5 @@
+import { decodeSource } from "./sourceEncoding";
+import type { Diagnostic } from "../validation/report";
 /**
  * Browser-fallback voor `@tauri-apps/plugin-dialog` open() — gebruikt
  * een verborgen `<input type="file">` zodat de webversie van de app
@@ -17,6 +19,7 @@
 export interface BrowserPickedFile {
   /** Originele bestandsnaam zoals de gebruiker 'm geselecteerd heeft. */
   name: string;
+  diagnostics?: Diagnostic[];
   /** Volledige inhoud als UTF-8 string. */
   text: string;
 }
@@ -68,7 +71,7 @@ export function pickFiles(opts: BrowserPickOptions = {}): Promise<BrowserPickedF
       }
       try {
         const picked = await Promise.all(
-          files.map(async (f) => ({ name: f.name, text: await f.text() })),
+          files.map(async (f) => ({ name: f.name, ...decodeSource(new Uint8Array(await f.arrayBuffer())) })),
         );
         cleanup();
         resolve(picked);

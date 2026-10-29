@@ -22,8 +22,8 @@ describe("GEF-boringen", () => {
     expect(result.id).toBe("B-test");
     expect(result.position).toEqual({ x_rd: 120000, y_rd: 450000, z_nap: -1.5 });
     expect(result.layers).toEqual([
-      { top_depth: 0, base_depth: 1.2, soil_name: "klei (Ks2h1)", description: "Ks2h1;grijs" },
-      { top_depth: 1.2, base_depth: 3.4, soil_name: "zand (Zs1)", description: "Zs1" },
+      { top_depth: 0, base_depth: 1.2, soil_name: "Klei, matig siltig, zwak humeus", description: "Ks2h1;grijs",soil_code:"Ks2h1",classification:{system:"NEN5104",lithology:"Ks2h1",main:"K",admixtures:[{letter:"s",grade:2},{letter:"h",grade:1}],qualifiers:[]} },
+      { top_depth: 1.2, base_depth: 3.4, soil_name: "Zand, zwak siltig", description: "Zs1",soil_code:"Zs1",classification:{system:"NEN5104",lithology:"Zs1",main:"Z",admixtures:[{letter:"s",grade:1}],qualifiers:[]} },
     ]);
     expect(result.final_depth).toBe(3.4);
   });

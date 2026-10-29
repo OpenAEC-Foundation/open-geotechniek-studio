@@ -310,7 +310,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
           if (handled) openedAny = true;
         } else {
           // Web: alleen content beschikbaar, geen pad.
-          const handled = await openContentByFilename(f.text, f.name);
+          const handled = await openContentByFilename(f.text, f.name, undefined, f.diagnostics);
           if (handled) openedAny = true;
         }
       } catch (err) {
