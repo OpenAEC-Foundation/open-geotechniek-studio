@@ -103,6 +103,11 @@ jobs:
       - name: Compile Windows application
         if: runner.os == 'Windows'
         run: npm run tauri -- build --no-bundle
+      - name: Verify live Studio MCP transport and stdio client
+        if: runner.os == 'Windows'
+        run: |
+          cargo test --locked --release --lib studio_mcp:: --manifest-path src-tauri/Cargo.toml
+          python scripts/test-studio-mcp.py --executable src-tauri/target/release/open-geo-studio.exe
       - name: Stage Windows SDK for signing
         if: runner.os == 'Windows'
         shell: pwsh
