@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { loadChartZoomPreference, useChartZoomStore } from "../../store/useChartZoomStore";
 import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
 
@@ -16,6 +18,9 @@ interface StartTabProps {
 
 export default function StartTab(props: StartTabProps = {}) {
   const { t } = useTranslation("ribbon");
+  const scaleColumns = useChartZoomStore((s) => s.scaleColumns);
+  const setScaleColumns = useChartZoomStore((s) => s.setScaleColumns);
+  useEffect(() => { void loadChartZoomPreference(); }, []);
   const openProjectSettings =
     props.onOpenProjectSettings ??
     (() => window.dispatchEvent(new CustomEvent("ogs:open-project-settings")));
@@ -43,6 +48,14 @@ export default function StartTab(props: StartTabProps = {}) {
             size="large"
             onClick={() => window.dispatchEvent(new CustomEvent("ogs:zoom-fit"))}
           />
+          <label className="ribbon-zoom-checkbox" title={t("scaleCptColumnsHint", "Vergroot na Passend ook de kolombreedte; schuif horizontaal voor de overige sonderingen.")}>
+            <input
+              type="checkbox"
+              checked={scaleColumns}
+              onChange={(event) => setScaleColumns(event.target.checked)}
+            />
+            {t("scaleCptColumns", "Sonderingen meeschalen")}
+          </label>
         </RibbonGroup>
       </div>
     </div>

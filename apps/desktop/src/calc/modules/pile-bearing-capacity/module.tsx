@@ -2,14 +2,13 @@
 //
 // ⚠ ALPHA — nog in ontwikkeling. De berekening werkt, maar getallen zijn
 //   nog NIET productie-geverifieerd. Niet gebruiken voor toetsing bij
-//   vergunning of uitvoering. Module is hard-disabled via
-//   NOT_PRODUCTION_READY in useExtensions.ts; CalculationsView toont een
+//   vergunning of uitvoering. CalculationsView toont een
 //   prominente amber tussenstand-banner zodra deze module actief is.
 //
 import type { CalcModule, ProjectContext } from "../../framework/types";
 import type { PileInput, PileResult } from "./types";
 import { computePile } from "./compute";
-import { PILE_TYPE_CATALOG, buildDefaultSoilLayers } from "./catalog";
+import { buildDefaultSoilLayers } from "./catalog";
 import { InputPanel } from "./ui/InputPanel";
 import { VisualPanel } from "./ui/VisualPanel";
 import { ResultPanel } from "./ui/ResultPanel";
@@ -22,7 +21,8 @@ function defaultInput(ctx: ProjectContext): PileInput {
   const water = groundNap - 0.5;
   return {
     cptId: ctx.activeCptId,
-    pileTypeId: PILE_TYPE_CATALOG[0].id,
+    standard: "nen-9997-2017",
+    pileTypeId: "steel-pipe-driven-closed-2017",
     diameterMm: 219,
     wallThicknessMm: 8.0,
     pileTopNap: pileTop,
@@ -47,11 +47,11 @@ function defaultInput(ctx: ProjectContext): PileInput {
 
 const pileModuleTyped: CalcModule<PileInput, PileResult> = {
   id: "pile-bearing-capacity",
-  name: "Funderingspaal",
-  subtitle: "Paaldraagvermogen (NEN-EN 1997-1 §7.6)",
+  name: "Paaldraagvermogen",
+  subtitle: "Paaldraagvermogen — NEN 6743 / NEN 9997",
   category: "pile",
   icon: "▼",
-  norm: "NEN-EN 1997-1:2005+A1:2013+NB:2019",
+  norm: "Normversie volgens berekeningsinvoer",
   status: "experimental",
   defaultInput,
   compute: (input, ctx) => {

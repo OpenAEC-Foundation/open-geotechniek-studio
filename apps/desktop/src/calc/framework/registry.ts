@@ -1,13 +1,9 @@
 import type { CalcModule } from './types';
-import { padFoundationModule } from '../modules/pad-foundation/module';
-import { settlementModule } from '../modules/settlement/module';
+import { pileBearingCapacityModule } from '../modules/pile-bearing-capacity/module';
 
-// Only the requested settlement and pad-foundation worksheets are exposed.
-// Unreleased modules remain on disk so saved projects and their source survive.
-// The public web release continues to exclude calculation modules.
-export const CALC_REGISTRY: CalcModule[] = import.meta.env.VITE_PUBLIC_WEB === '1'
-  ? []
-  : [settlementModule, padFoundationModule];
+// The public website and desktop expose the same calculation module.
+// Other module sources remain available for existing project data.
+export const CALC_REGISTRY: CalcModule[] = [pileBearingCapacityModule];
 
 export function getCalcModule(id: string): CalcModule | undefined {
   return CALC_REGISTRY.find((module) => module.id === id);

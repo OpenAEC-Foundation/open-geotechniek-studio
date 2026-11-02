@@ -1,16 +1,20 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/parts/shaft-friction.ts
 import type { Cpt } from "../../../../types/cpt";
-import type { PileTypeSpec, SoilLayer, ShaftFrictionResult } from "../types";
+import type { PileInput, PileTypeSpec, SoilLayer, ShaftFrictionResult } from "../types";
 import { QS_MAX_PER_SOIL } from "../catalog";
+import { pileGeometry, meanShaftPerimeter } from "./geometry";
+import { QcProfile } from "./qc-profile";
 
 interface Args {
+  shaftGeometry?: Pick<PileInput, "diameterMm" | "pileTopNap" | "timberTaper">;
+  qcCapMpa?: number;
+  /** Historische zandprocedure: alleen alphaS × de begrensde qc. */
+  useSoilStressCap?: boolean;
   pileType: PileTypeSpec;
   diameterMm: number;
   negKleefBottomNap: number;
   pileToeNap: number;
 }
-
-const PI = Math.PI;
 
 /** NEN 9997-1 §7.6.2.3: voor de schachtwrijving wordt de in rekening te
  *  brengen conusweerstand begrensd op 15 MPa. Conform de externe
@@ -25,7 +29,7 @@ export function computeShaftFriction(
   args: Args,
   soilProfile: SoilLayer[],
 ): ShaftFrictionResult {
-  const Os = PI * (args.diameterMm / 1000); // m
+  const Os = pileGeometry(args.diameterMm, args.pileType.isCircular).perimeterM;
 
   // Schachtwrijvings-zone: tussen negKleefBottomNap en pileToeNap
   // (alleen POSITIEVE schachtwrijving)
@@ -37,36 +41,22 @@ export function computeShaftFriction(
 
   const groundNap = cpt.metadata.ground_level_nap ?? 0;
 
-  // Helper: gemiddelde qc tussen twee NAP-niveaus (intern depths conversion)
-  const avgQc = (napTop: number, napBot: number): number => {
-    const dTop = groundNap - napTop; // depth onder maaiveld
-    const dBot = groundNap - napBot;
-    let sumQ = 0, sumW = 0;
-    for (let i = 0; i < cpt.points.length - 1; i++) {
-      const a = cpt.points[i], b = cpt.points[i + 1];
-      const lo = Math.max(a.depth, Math.min(dTop, dBot));
-      const hi = Math.min(b.depth, Math.max(dTop, dBot));
-      const w = hi - lo;
-      if (w <= 0) continue;
-      const qa = a.qc ?? 0, qb = b.qc ?? 0;
-      const frac = (lo - a.depth) / (b.depth - a.depth || 1);
-      const qLo = qa + (qb - qa) * frac;
-      sumQ += qLo * w;
-      sumW += w;
-    }
-    return sumW > 0 ? sumQ / sumW : 0;
-  };
+  const profile = new QcProfile(cpt);
 
   const perLayer = layersInZone.map((l) => {
     const layerTop = Math.min(l.startNap, zoneTop);
     const layerBot = Math.max(l.endNap, zoneBot);
     const thickness = layerTop - layerBot;
+    const layerOs = args.shaftGeometry ? meanShaftPerimeter(args.shaftGeometry, args.pileType.isCircular, layerTop, layerBot) : Os;
     // Laag-gemiddelde qc, begrensd op 15 MPa (zie const-comment boven).
-    const qcGemMpa = Math.min(avgQc(layerTop, layerBot), QC_CAP_SHAFT_MPA);
+    const topDepth = groundNap - layerTop, bottomDepth = groundNap - layerBot;
+    const qcGemMpa = args.qcCapMpa === undefined
+      ? Math.min(profile.average(topDepth, bottomDepth), QC_CAP_SHAFT_MPA)
+      : profile.averageCapped(topDepth, bottomDepth, args.qcCapMpa);
     const qsRaw = args.pileType.alphaS * qcGemMpa;
-    const qsCap = QS_MAX_PER_SOIL[l.kind];
+    const qsCap = args.useSoilStressCap === false ? Infinity : QS_MAX_PER_SOIL[l.kind];
     const qsMpa = Math.min(qsRaw, qsCap);
-    const rsLayer = Os * qsMpa * thickness * 1000; // kN: m × MPa × m × 1000 = kN
+    const rsLayer = layerOs * qsMpa * thickness * 1000; // kN: m × MPa × m × 1000 = kN
     return { layer: l, qcGemMpa, qsMpa, rsLayer };
   });
 

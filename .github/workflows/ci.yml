@@ -62,26 +62,20 @@ jobs:
       - name: Unit tests
         run: npm test
 
-      # De publieke webbuild mag geen rekenmodules bevatten: `PUBLIC_MODULES`
-      # in src/calc/framework/registry.ts is leeg en Rollup hoort de dev-only
-      # tak eruit te schudden. Faalt deze stap, dan is er per ongeluk een
-      # berekening vrijgegeven op de live site.
+      # Alleen paaldraagvermogen is publiek beschikbaar.
       - name: Build public web bundle
         run: VITE_PUBLIC_WEB=1 npm run build
 
-      # Hoofdlettergevoelig en op termen die alleen in de rekenmodules zelf
-      # voorkomen. De extensie-IDs ('calc.kalendering' en broertjes) staan
-      # wél in de bundle — dat zijn instellingssleutels in useExtensions,
-      # geen rekencode, en ze zijn in de webbuild toch niet selecteerbaar.
-      - name: Assert no calculation code in public bundle
+      - name: Verify public calculation scope
         run: |
-          for term in "Rs;cal" "Koppejan" "paalpunt" "Funderingspaal" "Negatieve kleef" "Modulus naar kPa" "Verticale ontwerpweerstand"; do
+          grep -rq -- "NEN 6743" dist/assets/*.js
+          for term in "Modulus naar kPa" "Verticale ontwerpweerstand"; do
             if grep -rq -- "$term" dist/assets/*.js; then
-              echo "::error::'$term' staat in de publieke bundle — rekenmodule lekt naar de live site"
+              echo "::error::Niet-vrijgegeven rekenmodule in publieke bundle: $term"
               exit 1
             fi
           done
-          echo "Publieke bundle bevat geen rekencode."
+          echo "Publieke bundle bevat paaldraagvermogen; poer en zetting zijn uitgesloten."
 
   native-sdk:
     strategy:

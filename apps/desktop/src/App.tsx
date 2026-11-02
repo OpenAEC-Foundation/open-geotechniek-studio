@@ -5,6 +5,7 @@ import TitleBar from "./components/TitleBar";
 import Ribbon from "./components/ribbon/Ribbon";
 import DocumentBar from "./components/DocumentBar";
 import StatusBar from "./components/StatusBar";
+import { useStudioMcp } from "./mcp/useStudioMcp";
 import Backstage from "./components/backstage/Backstage";
 import SettingsDialog, { applyTheme } from "./components/settings/SettingsDialog";
 import FeedbackDialog from "./components/feedback/FeedbackDialog";
@@ -96,6 +97,7 @@ function App() {
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [theme, setTheme] = useState("light");
   const [activeView, setActiveView] = useState("default");
+  useStudioMcp(setActiveView);
 
   // Start sidebar — shown only on first launch.
   // Once the user dismisses it, the flag flips and it never auto-opens again.

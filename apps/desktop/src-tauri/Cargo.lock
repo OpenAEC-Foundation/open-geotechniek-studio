@@ -3411,13 +3411,14 @@ dependencies = [
 
 [[package]]
 name = "open-geo-studio"
-version = "2026.44.4"
+version = "2026.45.1"
 dependencies = [
  "acadrust",
  "axum",
  "base64 0.22.1",
  "chrono",
  "cpt-core",
+ "dirs",
  "lopdf 0.34.0",
  "openaec-core",
  "openaec-engine",
@@ -3437,6 +3438,7 @@ dependencies = [
  "tauri-plugin-store",
  "tokio",
  "ttf-parser 0.25.1",
+ "uuid",
 ]
 
 [[package]]

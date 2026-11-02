@@ -1,4 +1,5 @@
 import { classify } from "../../utils/browserCore";
+import { chartAxisZoom } from "./chart-zoom";
 /**
  * CPT Chart Renderer — pure Canvas drawing.
  *
@@ -71,6 +72,8 @@ export interface ChartRenderOptions {
   height: number;
   /** 1.0 = depth range fits. >1 zooms in (smaller visible range). */
   zoom: number;
+  /** Kolommen worden door de viewer verbreed; behoud de volledige asbereiken. */
+  scaleColumns?: boolean;
   /** Vertical pan offset in meters (positive shifts the visible range deeper). */
   panY: number;
   /** Horizontal pan as a fraction of each axis maximum (0 = default). */
@@ -426,6 +429,7 @@ function computeAll(cpts: Cpt[], opts: ChartRenderOptions, shared: SharedLayout)
   if (cpts.length === 0) return [];
   const slotWidths = computeSlotWidths(opts, cpts.length);
   const zoom = Math.max(0.05, opts.zoom);
+  const axisZoom = chartAxisZoom(zoom, opts.scaleColumns ?? false);
   const panX = Number.isFinite(opts.panX) ? opts.panX : 0;
 
   // Pass 1 — per-CPT base scales.
@@ -481,10 +485,10 @@ function computeAll(cpts: Cpt[], opts: ChartRenderOptions, shared: SharedLayout)
     }
 
     const depths = cpt.points.map((p) => (p.depth != null ? Math.abs(p.depth) : null));
-    const qcWindow = Math.max(0.1,  scales.qcMax / zoom);
-    const fsWindow = Math.max(0.01, scales.fsMax / zoom);
-    const rfWindow = Math.max(0.1,  scales.rfMax / zoom);
-    const u2Window = Math.max(0.01, scales.u2Max / zoom);
+    const qcWindow = Math.max(0.1,  scales.qcMax / axisZoom);
+    const fsWindow = Math.max(0.01, scales.fsMax / axisZoom);
+    const rfWindow = Math.max(0.1,  scales.rfMax / axisZoom);
+    const u2Window = Math.max(0.01, scales.u2Max / axisZoom);
     const qcViewMin = panX * scales.qcMax;
     const fsViewMin = panX * scales.fsMax;
     const rfViewMin = panX * scales.rfMax;

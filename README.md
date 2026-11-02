@@ -144,7 +144,7 @@ npm install
 npm run tauri dev    # HMR, opent app-venster, ~45s eerste start
 ```
 
-### Production installer (lokaal)
+### Lokale ontwikkelinstaller
 ```bash
 npm run tauri build  # output in src-tauri/target/release/bundle/
 ```
@@ -164,12 +164,27 @@ Na controle en commit hoort bij de versie een tag `vJJJJ.W.N`. De workflow **Sig
 
 Signing vereist de Azure-, Apple- en OpenPGP-credentials uit [de release-aantekeningen](RELEASE_NOTES_2026.44.1.md). Deze bestaan in de organisatie; repositorytoegang en echte releaseverificatie staan beschreven in de release-aantekeningen. De lokale build is daarom een ontwikkelbuild zonder releasehandtekening. Het gereedzetten van de workflow is geen bewijs van een ondertekende release.
 
-### Zettingsberekening
-In de desktop- en ontwikkelversie staat alleen **Zetting van één laag** in de berekeningenlijst. Open een project en kies **Berekeningen → Nieuw**. Het werkblad toont invoer, grondmodel, eindzetting en tussenstappen. Controlevoorbeeld: `H = 2 m`, `Δσ′ = 50 kPa`, `M = 5 MPa` geeft `s = 20 mm`. De overige experimentele modules blijven als broncode bewaard, maar zijn niet selecteerbaar. De publieke webrelease bevat nog steeds geen rekenmodules.
+Ondertekende installers worden via de organisatie-workflow gebouwd. Voor een testbuild vóór publicatie kan **Signed desktop release** handmatig draaien op een branch, met `candidate=true` en het versienummer uit `apps/desktop/package.json`:
 
-Dit is een conceptberekening met constante oedometer-modulus en uniforme effectieve spanningstoename na drainage. Geen tijdsverloop, kruip of normtoets. Bron: [USACE EM 1110-1-1905, §7–7 (2025)](https://publibrary.sec.usace.army.mil/api/download?filename=EM+1110-1-1905_Geotechincal+Design+of+Shallow+Foundations+on+Soils_2025+07+22+-+Final.pdf&id=54658636-77d2-48df-f26b-5295a01899a7&preview=true).
+```bash
+gh workflow run release.yml --ref BRANCH -f tag=vJJJJ.W.N -f candidate=true
+gh run download RUN_ID -n signed-windows-x64 --dir signed-installers
+```
 
-![Zettingswerkblad met Blueprint-schil](docs/screenshots/06-settlement-blueprint.png)
+Vervang `BRANCH`, `vJJJJ.W.N` en `RUN_ID` door de gewenste branch, versie en workflowrun. De build gebruikt de vaste commit van die run en de signinggegevens van de organisatie. De artifacts doorlopen dezelfde handtekeningcontroles als een release. Een testbuild maakt geen releasetag en publiceert geen GitHub-release. Installeer voor distributie uitsluitend de gecontroleerde, ondertekende artifacts.
+
+### Paaldraagvermogen
+Op de website en in de desktop-app staat alleen **Paaldraagvermogen** in de berekeningenlijst. Open een project en kies **Berekeningen → Nieuw**. Het werkblad toont invoer, sondering en uitkomsten met tussenstappen. De overige rekenmodules blijven als broncode bewaard, maar zijn niet selecteerbaar.
+
+De paalmodule en zijn PDF behouden hun conceptmarkering. Zie de [paalsystemen](apps/desktop/src/calc/modules/pile-bearing-capacity/PAALSOORTEN.md) en [historische normprofielen](apps/desktop/src/calc/modules/pile-bearing-capacity/HISTORISCHE-NORMEN.md) voor de ondersteunde invoer en beperkingen.
+
+### Live MCP-bediening
+
+De desktop-app kan via MCP rechtstreeks worden bediend met `open-geo-studio --mcp-studio`. Start eerst Studio. De indicator rechtsonder toont beschikbaarheid, verbonden clients en de opdracht die wordt uitgevoerd. Projecten, sonderingen en paalberekeningen zijn via gestructureerde tools bereikbaar. Zie de [MCP-configuratie](docs/API.md#mcp-bediening-van-het-geopende-studio-venster). De zelfstandige `--mcp`-modus blijft beschikbaar met een eigen headless toestand.
+
+### Sonderingen inzoomen
+
+Met **Sonderingen meeschalen** op het hoofdblad worden de kolommen boven de verticale fitstand ook breder. De volledige asbereiken blijven daarbij leesbaar en de overige sonderingen blijven horizontaal bereikbaar. De instelling wordt bewaard. **Passend** herstelt de oorspronkelijke fitstand en scrollpositie.
 
 ---
 
