@@ -66,6 +66,16 @@ describe("projectopslag met echte documentstore",()=>{
     await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Nieuwe versie opslaan"})));
     expect(host.save).toHaveBeenLastCalledWith(expect.objectContaining({expectedVersion:"v3"}));
   });
+  it("neemt de opgeslagen projectnaam over en behoudt die bij opnieuw openen",async()=>{
+    await chooseProject();
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Openen"})));
+    vi.mocked(host.save).mockResolvedValueOnce({id:"a",name:"Opgeslagen naam",version:"v3"});
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Nieuwe versie opslaan"})));
+    expect(useCptStore.getState().documents.find(d=>d.id===useCptStore.getState().activeDocId)?.title).toBe("Opgeslagen naam");
+    vi.mocked(host.open).mockResolvedValueOnce({id:"a",name:"Opgeslagen naam",version:"v3",content:canonical});
+    await act(async()=>fireEvent.click(screen.getByRole("button",{name:"Openen"})));
+    expect(useCptStore.getState().projectMeta.title).toBe("Opgeslagen naam");
+  });
   it("negeert een oud openantwoord na vervanging van de opslagadapter",async()=>{
     let complete!: (value: Awaited<ReturnType<PlatformStorage["open"]>>) => void;
     vi.mocked(host.open).mockImplementationOnce(()=>new Promise(resolve=>{complete=resolve;}));

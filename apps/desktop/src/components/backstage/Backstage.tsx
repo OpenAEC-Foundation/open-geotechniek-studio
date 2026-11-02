@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { invoke } from "@tauri-apps/api/core";
 import { save } from "@tauri-apps/plugin-dialog";
@@ -8,11 +8,12 @@ import {
   newProjectDocument,
   openPathByExtension,
   openContentByFilename,
+  markProjectSaved,
 } from "../../store/useCptStore";
 import { IS_TAURI, files as filesPlatform } from "../../utils/platform";
 import { saveBlobAsFile, saveJsonAsFile } from "../../utils/browserSave";
 import { cptToCsv, cptsToGeoJson, cptToGef, cptToBroXml } from "../../utils/dataExports";
-import { activeProjectPayload } from "../../store/projectSerialization";
+import { activeProjectPayload, projectNameFromFilename } from "../../store/projectSerialization";
 import ExtensionManagerPanel from "./ExtensionManagerPanel";
 import "./Backstage.css";
 
@@ -81,6 +82,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
     () => documents.find((d) => d.id === activeDocId),
     [documents, activeDocId],
   );
+  const saving = useRef(false);
 
   const actionAndClose = useCallback(
     (fn?: () => void) => {
@@ -98,12 +100,20 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
   // schema gevalideerd vóór schrijven, zodat een corrupt project niet
   // op schijf belandt.
   const saveProject = useCallback(async () => {
+    if (saving.current) return;
     if (!activeDoc || activeDoc.kind !== "project") {
       alert("Geen project actief — open of maak een .ifcgeo project.");
       return;
     }
-    const defaultName = `${activeDoc.meta.title || "project"}.ifcgeo`;
-    const tauriDst = IS_TAURI
+    saving.current = true;
+    try {
+      const payload = activeProjectPayload(activeDoc.id);
+      const defaultName = `${activeDoc.meta.title || "project"}.ifcgeo`;
+      const contentForName = (filename: string) => ({
+        ...payload,
+        project: { ...payload.project, title: projectNameFromFilename(filename) },
+      });
+      const tauriDst = IS_TAURI
       ? await save({
           defaultPath: defaultName,
           // `.ifcgeo` is sinds 2026 de officiële extensie voor zowel
@@ -116,26 +126,46 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
           ],
         })
       : null;
-    if (IS_TAURI && !tauriDst) return;
-    try {
-      const payload = activeProjectPayload();
+      if (IS_TAURI && !tauriDst) return;
+      let savedName: string | null;
       if (IS_TAURI && tauriDst) {
         await invoke("save_project_ifcgis_full", {
-          payload,
+          payload: contentForName(tauriDst),
           path: tauriDst,
         });
+        savedName = tauriDst;
       } else {
         // Browser-fallback: download het project als JSON via showSaveFilePicker
         // (Chrome/Edge) of <a download> (overige browsers). Geen Rust-zijde
         // validatie — de gebruiker krijgt de raw payload.
-        await saveJsonAsFile(payload, defaultName);
+        savedName = await saveJsonAsFile(contentForName, defaultName);
       }
+      if (!savedName) return;
+      markProjectSaved(activeDoc.id, projectNameFromFilename(savedName), tauriDst ?? undefined, activeDoc.meta.title);
       onClose();
     } catch (err) {
       console.error("save_project_ifcgis_full failed", err);
       alert(`Opslaan mislukt: ${err}`);
+    } finally {
+      saving.current = false;
     }
   }, [activeDoc, onClose]);
+
+  useEffect(() => {
+    const onSave = () => { void saveProject(); };
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && activeDoc?.kind === "project") {
+        event.preventDefault();
+        onSave();
+      }
+    };
+    window.addEventListener("ogs:save-project", onSave);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("ogs:save-project", onSave);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [saveProject, activeDoc?.kind]);
 
   /// Save-as for a CPT document — offers GEF / BRO-XML / IfcGeo format
   /// conversion. Project documents fall through to `saveProject`.

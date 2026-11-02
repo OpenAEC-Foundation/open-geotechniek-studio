@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Modal from "../Modal";
 import { getPlatformStorage, STORAGE_CHANGED, type PlatformProject } from "../../utils/platformStorage";
-import { useCptStore, serializeActiveProject, openProjectFromContent } from "../../store/useCptStore";
+import { useCptStore, serializeActiveProject, openProjectFromContent, markProjectSaved } from "../../store/useCptStore";
 
 /** Opslag in de ingesloten site naast de bestaande lokale bestanden. */
 export function PlatformProjects() {
@@ -42,7 +42,7 @@ export function PlatformProjects() {
   const save = async (newCopy: boolean, assertCurrent: () => void) => {
     const docId = activeDocId;
     if (!docId || active?.kind !== "project") throw new Error("Open of maak eerst een project");
-    const content = await serializeActiveProject();
+    const content = await serializeActiveProject(docId);
     assertCurrent();
     const saved = await storage.save({
       ...(newCopy || !binding ? {} : {id:binding.id,expectedVersion:binding.version}),
@@ -50,6 +50,7 @@ export function PlatformProjects() {
     });
     assertCurrent();
     bindings.current.set(docId, saved);
+    markProjectSaved(docId, saved.name, undefined, active.meta.title);
     setMessage(`Opgeslagen: ${saved.name} (${saved.version})`);
     const nextItems = await storage.list();
     assertCurrent();
@@ -70,6 +71,7 @@ export function PlatformProjects() {
           await openProjectFromContent(file.content,`${file.name}.ifcgeo`);
           check();
           const docId=useCptStore.getState().activeDocId;
+          if(docId) markProjectSaved(docId,file.name);
           if(docId && !version) bindings.current.set(docId,file);
           setMessage(version ? "Historische versie geopend; opslaan maakt een nieuw project." : "Project geopend.");
         })}>Openen</button>

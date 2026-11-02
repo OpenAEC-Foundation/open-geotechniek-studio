@@ -1116,6 +1116,23 @@ export function newProjectDocument(): void {
   });
 }
 
+/** Apply a successful save to its original document, including an inactive tab. */
+export function markProjectSaved(docId: string, name: string, path?: string, expectedTitle?: string): void {
+  let updated: ProjectDocument | undefined;
+  useCptStore.setState(s => {
+    const doc = s.documents.find(d => d.id === docId);
+    if (!doc || doc.kind !== "project") return s;
+    const canRename = expectedTitle === undefined || doc.meta.title === expectedTitle;
+    const title = canRename ? name : doc.title;
+    updated = { ...doc, title, meta: canRename ? { ...doc.meta, title: name } : doc.meta, ...(path ? { path } : {}) };
+    const documents = s.documents.map(d => d.id === docId ? updated! : d);
+    const pdfCache = new Map(s.pdfCache); pdfCache.delete(docId);
+    const ifcCache = new Map(s.ifcCache); ifcCache.delete(docId);
+    return { documents, pdfCache, ifcCache, ...deriveFromActive(documents, s.activeDocId) };
+  });
+  if (updated) { schedulePdfPreview(updated); scheduleIfcGenerate(updated); }
+}
+
 /**
  * Routes a file path to the right loader based on extension + content:
  *   .ifcgis            → openProjectIfcgis (Project tab)

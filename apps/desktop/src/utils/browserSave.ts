@@ -5,7 +5,7 @@
  * `<a download>` zodat álle moderne browsers iets kunnen opslaan.
  *
  * API:
- *   saveBlobAsFile(blob, suggestedName, mimeAccept?) → Promise<void>
+ *   saveBlobAsFile(blob, suggestedName, mimeAccept?) → Promise<string | null>
  *
  * `mimeAccept` is een object zoals dat aan showSaveFilePicker wordt
  * gegeven: `{ "application/json": [".ifcgeo", ".json"] }`. Wordt
@@ -31,6 +31,7 @@ interface ShowSaveOptions {
   types?: Array<{ description?: string; accept: MimeAcceptMap }>;
 }
 interface FileSystemFileHandle {
+  name: string;
   createWritable(): Promise<FileSystemWritableFileStream>;
 }
 interface FileSystemWritableFileStream {
@@ -39,10 +40,11 @@ interface FileSystemWritableFileStream {
 }
 
 export async function saveBlobAsFile(
-  blob: Blob,
+  blob: Blob | ((filename: string) => Blob),
   suggestedName: string,
   mimeAccept?: MimeAcceptMap,
-): Promise<void> {
+): Promise<string | null> {
+  const contents = (filename: string) => typeof blob === "function" ? blob(filename) : blob;
   if (hasFileSystemAccess()) {
     const picker = (
       window as unknown as {
@@ -57,20 +59,21 @@ export async function saveBlobAsFile(
           : undefined,
       });
       const writable = await handle.createWritable();
-      await writable.write(blob);
+      const filename = handle.name || suggestedName;
+      await writable.write(contents(filename));
       await writable.close();
-      return;
+      return filename;
     } catch (err) {
       // AbortError = user cancel, stop silently. Anders: log + fall
       // back op anchor-download zodat we tóch íets opslaan.
       const name = (err as { name?: string } | null)?.name;
-      if (name === "AbortError") return;
+      if (name === "AbortError") return null;
       console.warn("showSaveFilePicker failed, fallback to <a download>:", err);
     }
   }
   // Fallback: anchor-download. Werkt overal maar geen save-dialog —
   // bestand belandt direct in de Downloads-map.
-  const url = URL.createObjectURL(blob);
+  const url = URL.createObjectURL(contents(suggestedName));
   const a = document.createElement("a");
   a.href = url;
   a.download = suggestedName;
@@ -84,16 +87,18 @@ export async function saveBlobAsFile(
     URL.revokeObjectURL(url);
     if (a.parentNode) a.parentNode.removeChild(a);
   }, 1000);
+  return suggestedName;
 }
 
 /** Convenience: serialiseer een object naar JSON-blob en sla op. */
 export async function saveJsonAsFile<T>(
-  data: T,
+  data: T | ((filename: string) => T),
   suggestedName: string,
-): Promise<void> {
-  const text = JSON.stringify(data, null, 2);
-  const blob = new Blob([text], { type: "application/json" });
-  await saveBlobAsFile(blob, suggestedName, {
+): Promise<string | null> {
+  return saveBlobAsFile(filename => {
+    const value = typeof data === "function" ? (data as (filename: string) => T)(filename) : data;
+    return new Blob([JSON.stringify(value, null, 2)], { type: "application/json" });
+  }, suggestedName, {
     "application/json": [".ifcgeo", ".json"],
   });
 }
