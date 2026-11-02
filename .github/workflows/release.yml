@@ -7,6 +7,10 @@ on:
       tag:
         description: 'Existing release tag (vYYYY.W.N)'
         required: true
+      candidate:
+        description: 'Build signed artifacts from the selected branch without publishing a release'
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -14,13 +18,14 @@ concurrency:
   cancel-in-progress: false
 env:
   RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+  RELEASE_REF: ${{ inputs.candidate && github.sha || inputs.tag || github.ref_name }}
 jobs:
   check:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ env.RELEASE_REF }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -65,7 +70,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.RELEASE_TAG }}
+          ref: ${{ env.RELEASE_REF }}
           path: app
       - uses: actions/checkout@v4
         with:
@@ -223,6 +228,7 @@ jobs:
           path: app/release-artifacts/*
           if-no-files-found: error
   publish:
+    if: ${{ !inputs.candidate }}
     needs: build
     runs-on: ubuntu-24.04
     permissions:
