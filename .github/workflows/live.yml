@@ -29,9 +29,7 @@ jobs:
       deploy_source: apps/desktop/dist
       node_version: "22"
       install_command: cd apps/desktop && npm ci
-      # VITE_PUBLIC_WEB=1 → registry.ts toont alleen status="available"
-      # modules; experimentele berekeningen (Funderingspaal, Kalendering)
-      # blijven uit de publieke bundle/UI.
+      # Het publieke register bevat uitsluitend paaldraagvermogen.
       build_command: cd apps/desktop && VITE_PUBLIC_WEB=1 npm run build
     secrets:
       deploy_ssh_key: ${{ secrets.DEPLOY_SSH_KEY }}

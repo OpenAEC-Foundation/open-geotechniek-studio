@@ -13,9 +13,9 @@ import { useCptStore } from "./useCptStore";
 import { IS_TAURI } from "../utils/platform";
 import { invoke } from "@tauri-apps/api/core";
 
-export function activeProjectPayload() {
+export function activeProjectPayload(docId?: string) {
   const state = useCptStore.getState();
-  const doc = state.documents.find(d => d.id === state.activeDocId);
+  const doc = state.documents.find(d => d.id === (docId ?? state.activeDocId));
   if (!doc || doc.kind !== "project") throw new Error("Geen project actief.");
   const tek = getLatestTekening(doc.id);
   const calcs = useCalculationsStore.getState().byDoc.get(doc.id) ?? [];
@@ -47,7 +47,11 @@ export function activeProjectPayload() {
   };
 }
 
-export async function serializeActiveProject(): Promise<string> {
-  const payload = activeProjectPayload();
+export async function serializeActiveProject(docId?: string): Promise<string> {
+  const payload = activeProjectPayload(docId);
   return IS_TAURI ? invoke<string>("preview_project_ifcx", { payload }) : JSON.stringify(payload, null, 2);
+}
+
+export function projectNameFromFilename(filename: string): string {
+  return (filename.split(/[\\/]/).pop() ?? filename).replace(/\.(ifcgeo|ifcgis|ifcx|json)$/i, "").trim() || "project";
 }

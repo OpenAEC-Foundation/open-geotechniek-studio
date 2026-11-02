@@ -4,7 +4,9 @@ import type { PanelProps } from "../../../framework/types";
 import type { PileInput, PileResult, SettlementResult } from "../types";
 import { generatePileReport } from "../parts/pile-report-pdf";
 import { computeMultiCptSummary } from "../parts/multi-cpt-summary";
-import { getPileType } from "../catalog";
+import { resolvePileType } from "../catalog";
+import { getStandard } from "../standards";
+import { pileGeometry } from "../parts/geometry";
 import { downloadPdf } from "../../../../utils/downloadPdf";
 import { useCptStore } from "../../../../store/useCptStore";
 import "./styles.css";
@@ -280,7 +282,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
     if (!result.ok || downloading) return;
     setDownloading(true);
     try {
-      const pileType = getPileType(input.pileTypeId);
+      const pileType = resolvePileType(input);
       // CPT meegeven zodat het rapport ook het visual-blad (qc-grafiek +
       // paal + zones) per sondering bevat.
       const cpt = input.cptId
@@ -294,6 +296,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       };
       const rcCalSingle = result.base.rbCalMax + result.shaft.rsCalMax;
       const summary = computeMultiCptSummary({
+        standard: input.standard,
         cases: [{
           cptId: sondering.name,
           rbCalMax: result.base.rbCalMax,
@@ -307,11 +310,12 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       });
       const bytes = generatePileReport({
         project: {
-          number: "—",
-          description: "Paaldraagvermogen-berekening",
-          norm: "NEN-EN 1997-1+NB:2019 §7.6.2.3",
-          date: new Date().toISOString().slice(0, 10),
-          author: "Open Geotechniek Studio",
+          number: useCptStore.getState().projectMeta.project_number || "-",
+          description: useCptStore.getState().projectMeta.title || "Paaldraagvermogen-berekening",
+          norm: `${getStandard(input.standard)?.label}; factorenset ${pileType?.edition ?? "bestaand model"}`,
+          date: (useCptStore.getState().projectMeta.date || new Date().toISOString().slice(0, 10)).slice(0, 10).split("-").reverse().join("-"),
+          author: useCptStore.getState().projectMeta.author || "Open Geotechniek Studio",
+          onderdeel: "Paaldraagvermogen",
         },
         sonderingen: [sondering],
         summary,
@@ -338,7 +342,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
   const { negKleef, base, shaft, settlement, spring, summary } = result;
   const rcCalMine = base.rbCalMax + shaft.rsCalMax;
   const D = input.diameterMm / 1000; // m
-  const Os = Math.PI * D;            // omtrek in m
+  const isCircular = resolvePileType(input)?.isCircular ?? true;
+  const Os = negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, isCircular).perimeterM;
   return (
     <div className="pile-result">
       {result.warnings.length > 0 && (
@@ -367,8 +372,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         </p>
         <Formula
           lhs={<>O<sub>s</sub></>}
-          symbolic={<>π · D</>}
-          filled={<>π · {D.toFixed(3)}</>}
+          symbolic={input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : <>4 · a</>}
+          filled={<>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
           result={<>{Os.toFixed(3)} m</>}
         />
         <table className="pile-formula-table pile-formula-table--wide">
@@ -455,7 +460,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           symbolic={<>½ · α<sub>p</sub> · β · s · ((q<sub>c;I</sub>+q<sub>c;II</sub>)/2 + q<sub>c;III</sub>)</>}
           filled={
             <>
-              ½ · 0,7 · 1 · 1 · ((
+              ½ · {resolvePileType(input)?.alphaP} · {resolvePileType(input)?.beta} · {resolvePileType(input)?.s} · ((
               {base.qcIGemMpa.toFixed(2)}+{base.qcIIGemMpa.toFixed(2)})/2 + {base.qcIIIGemMpa.toFixed(2)})
             </>
           }
@@ -478,7 +483,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         <h3>Maximumschachtwrijving</h3>
         <Formula
           lhs={<>R<sub>s;cal;max</sub></>}
-          symbolic={<>O<sub>s</sub> · Σ α<sub>s</sub> · q<sub>c;gem;j</sub> · Δh<sub>j</sub></>}
+          symbolic={<>Σ O<sub>s;gem;j</sub> · q<sub>s;j</sub> · Δh<sub>j</sub></>}
           filled={
             <>
               {shaft.perLayer.length} laag/lagen — Σ van per-laag bijdragen
@@ -498,6 +503,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         />
       </section>
 
+      {settlement.available !== false && <>
       <section>
         <h3>Zakking (art. 7.6.4.2, lastzakkingslijn 1)</h3>
         {(() => {
@@ -518,7 +524,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
               />
               <Formula
                 lhs={<>s<sub>b</sub>/D<sub>eq</sub> · 100</>}
-                symbolic={<>{wp.sbMm.toFixed(1)} / {input.diameterMm} · 100 = {((wp.sbMm / input.diameterMm) * 100).toFixed(1)} %</>}
+                symbolic={<>{wp.sbMm.toFixed(1)} / {base.deqMm.toFixed(1)} · 100 = {((wp.sbMm / base.deqMm) * 100).toFixed(1)} %</>}
                 filled={<>→ R<sub>b;1</sub> = {rbPct.toFixed(0)}% · R<sub>b;cal;max</sub> (Fig. 7.n)</>}
                 result={<>{wp.rbMobil.toFixed(0)} kN</>}
               />
@@ -581,13 +587,19 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           result={<>{spring.kMaxKnPerM.toFixed(0)} kN/m</>}
         />
       </section>
+      </>}
 
       <section>
         <h3>Samenvatting</h3>
+        <p>{getStandard(input.standard)?.label}</p>
+        <Formula lhs={<>R<sub>c;rep/k</sub></>}
+          symbolic={summary.historicalXi === undefined ? <>R<sub>c;cal</sub> / ξ₃</> : <>ξ · R<sub>c;cal</sub></>}
+          filled={summary.historicalXi === undefined ? <>{summary.rcCal.toFixed(1)} / {summary.xi3}</> : <>{summary.historicalXi} · {summary.rcCal.toFixed(1)}</>}
+          result={<>{summary.rcK.toFixed(1)} kN</>} />
         <Formula
           lhs={<>R<sub>c;d</sub></>}
           symbolic={<>R<sub>c;k</sub> / γ<sub>m</sub></>}
-          filled={<>{(summary.rcK ?? summary.rcCal).toFixed(0)} / 1,20</>}
+          filled={<>{(summary.rcK ?? summary.rcCal).toFixed(0)} / {input.gammaM.toFixed(2)}</>}
           result={<>{summary.rcD.toFixed(0)} kN</>}
         />
         <Formula

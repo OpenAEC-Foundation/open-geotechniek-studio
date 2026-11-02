@@ -1,10 +1,18 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { CALC_REGISTRY, getCalcModule } from "./registry";
 
 describe("calc registry", () => {
-  it("exposes only the requested settlement and pad worksheets in desktop/dev builds", () => {
-    expect(CALC_REGISTRY.map((module) => module.id)).toEqual(["settlement", "pad-foundation"]);
-    expect(getCalcModule("pile-bearing-capacity")).toBeUndefined();
+  afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+  it("exposes only pile bearing capacity in desktop builds", () => {
+    expect(CALC_REGISTRY.map((module) => module.id)).toEqual(["pile-bearing-capacity"]);
+    expect(getCalcModule("pile-bearing-capacity")?.status).toBe("experimental");
+  });
+
+  it("exposes only pile bearing capacity on the public website", async () => {
+    vi.stubEnv("VITE_PUBLIC_WEB", "1");
+    vi.resetModules();
+    const { CALC_REGISTRY: publicModules } = await import("./registry");
+    expect(publicModules.map(module => module.id)).toEqual(["pile-bearing-capacity"]);
   });
 
   it("is a defined array", () => {

@@ -16,8 +16,7 @@ import { getSetting, setSetting } from "../store";
 import { CALC_REGISTRY } from "../calc/framework/registry";
 
 /** Calc-extensie-ids waarvan de module daadwerkelijk in het register zit.
- *  In de publieke webbuild filtert registry.ts de niet-productie-gerede
- *  modules eruit (status !== "available"), waardoor hun extensie hier
+ *  Het register bevat uitsluitend publiek beschikbare modules, waardoor hun extensie hier
  *  automatisch niet-selecteerbaar wordt — óók als een browser nog een
  *  opgeslagen `…enabled=true`-voorkeur heeft. Zo verschijnt de
  *  Berekeningen-tab niet op de live site voor niet-vrijgegeven modules. */

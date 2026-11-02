@@ -27,6 +27,10 @@
   border-radius: 3px;
   font: 500 0.82rem var(--font-code, "JetBrains Mono"), monospace;
 }
+.pile-input input[type="checkbox"] { flex: 0 0 auto; }
+.pile-input .pile-standard-field { display: block; }
+.pile-input .pile-standard-field select { display: block; width: 100%; max-width: none; margin-top: 4px; }
+.pile-input p { font-size: 0.78rem; line-height: 1.4; overflow-wrap: anywhere; }
 
 /* ============================================================
    VisualPanel — CPT-chart met paaloverlays
@@ -51,6 +55,19 @@
   color: var(--theme-text-secondary, #71717a);
   font: 500 0.85rem "Inter", sans-serif;
   font-style: italic;
+}
+.pile-visual-empty-guide {
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  font-style: normal;
+  line-height: 1.5;
+}
+.pile-visual-empty-guide h3,
+.pile-visual-empty-guide p {
+  max-width: 400px;
+  margin: 0;
 }
 .pile-visual-footnote {
   margin: 0;

@@ -1,6 +1,6 @@
-import {exportGef} from "../../types/gefWriter";
+import { exportGef } from "../../types/gefWriter";
 import { APP_VERSION } from "../../version";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { invoke } from "@tauri-apps/api/core";
 import { save } from "@tauri-apps/plugin-dialog";
@@ -10,20 +10,11 @@ import {
   newProjectDocument,
   openPathByExtension,
   openContentByFilename,
+  markProjectSaved,
 } from "../../store/useCptStore";
 import { IS_TAURI, files as filesPlatform } from "../../utils/platform";
 import { downloadBlobAsFile, saveJsonAsFile } from "../../utils/browserSave";
-import {
-  getLatestTekening,
-  tekeningStateToIfcgis,
-  titleBlockToIfcgis,
-  buildDeliverable,
-  getAllLayerLive,
-  getEnabledLayerIds,
-} from "../../store/tekeningState";
-import { catalogToIfcgisLayers } from "../../utils/gisLayerCatalog";
-import { useCalculationsStore } from "../../calc/framework/store";
-import { toIfcxArray } from "../../calc/framework/persistence";
+import { activeProjectPayload, projectNameFromFilename } from "../../store/projectSerialization";
 import ExtensionManagerPanel from "./ExtensionManagerPanel";
 import "./Backstage.css";
 
@@ -92,6 +83,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
     () => documents.find((d) => d.id === activeDocId),
     [documents, activeDocId],
   );
+  const saving = useRef(false);
 
   const actionAndClose = useCallback(
     (fn?: () => void) => {
@@ -109,12 +101,20 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
   // schema gevalideerd vóór schrijven, zodat een corrupt project niet
   // op schijf belandt.
   const saveProject = useCallback(async () => {
+    if (saving.current) return;
     if (!activeDoc || activeDoc.kind !== "project") {
       alert("Geen project actief — open of maak een .ifcgeo project.");
       return;
     }
-    const defaultName = `${activeDoc.meta.title || "project"}.ifcgeo`;
-    const tauriDst = IS_TAURI
+    saving.current = true;
+    try {
+      const payload = activeProjectPayload(activeDoc.id);
+      const defaultName = `${activeDoc.meta.title || "project"}.ifcgeo`;
+      const contentForName = (filename: string) => ({
+        ...payload,
+        project: { ...payload.project, title: projectNameFromFilename(filename) },
+      });
+      const tauriDst = IS_TAURI
       ? await save({
           defaultPath: defaultName,
           // `.ifcgeo` is sinds 2026 de officiële extensie voor zowel
@@ -127,103 +127,46 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
           ],
         })
       : null;
-    if (IS_TAURI && !tauriDst) return;
-    try {
-      // Project-meta → ifcgis ProjectInfo (snake_case + 'type' veld).
-      const meta = activeDoc.meta;
-      const projectInfo = {
-        type: "OpenGeoProject",
-        title: meta.title,
-        client: meta.client,
-        location: meta.location,
-        project_number: meta.project_number,
-        author: meta.author,
-        // ifcgis verwacht NaiveDate (YYYY-MM-DD); meta.date is al ISO.
-        date: meta.date.slice(0, 10),
-      };
-      // CPTs uit de project-document map; .values() geeft een Iterable
-      // dus we converteren via Array.from. Rust verwacht een array.
-      const cpts = Array.from(activeDoc.cpts.values());
-      // Bores idem — Rust accepteert ze als opaque serde_json::Value
-      // (BoreJson), dus we sturen de hele Bore-struct mee zonder
-      // verdere transformatie. Lege array als het project geen
-      // boringen heeft.
-      const bores = Array.from(activeDoc.bores.values());
-      // Tekening + title-block uit de singleton (gevuld door
-      // SonderingstekeningView). Beide kunnen null zijn als de
-      // tekening-tab nooit geopend is — dan schrijft Rust gewoon geen
-      // `tekening` / `title_block` sectie.
-      const tekState = getLatestTekening();
-      const tekening = tekState ? tekeningStateToIfcgis(tekState) : null;
-      const titleBlock = tekState
-        ? titleBlockToIfcgis(tekState.titleBlock)
-        : null;
-      // GIS-sectie (ifcgis-0.3): alle bekende lagen + hun live
-      // enabled/opacity-state (overschrijft defaults waar MapView een
-      // toggle/opacity heeft gepubliceerd). Center wordt overgenomen
-      // van de tekening-view-center als die er is, anders default NL.
-      const liveLayerOverrides = getAllLayerLive();
-      const gis = {
-        epsg: 28992,
-        name: "Amersfoort / RD New",
-        center: tekState
-          ? {
-              lat: tekState.center.lat,
-              lon: tekState.center.lon,
-              zoom: tekState.center.zoom,
-            }
-          : null,
-        layers: catalogToIfcgisLayers(liveLayerOverrides),
-      };
-      // Deliverable (ifcgis-0.3): IFC4x3-stijl flat-annotations-snapshot
-      // van de tekening. Alleen aanmaken als er een tekening-state is.
-      const deliverable = tekState
-        ? buildDeliverable({
-            projectName: meta.title,
-            projectNumber: meta.project_number,
-            tek: tekState,
-            activeLayerIds: getEnabledLayerIds(),
-          })
-        : null;
-      // Berekeningen (ifcgis-0.4): alle CalculationInstance-records voor
-      // dit document, geserialiseerd naar snake_case IFCX-vorm. Rust
-      // (`#[serde(default, skip_serializing_if = "Vec::is_empty")]`)
-      // accepteert een lege array zonder klagen — bij nieuwe projecten
-      // landt er dus simpelweg geen `calculations`-veld op disk.
-      const calcs = useCalculationsStore.getState().byDoc.get(activeDoc.id) ?? [];
-      const payload = {
-        header: {
-          schema: "ifcgis-0.4",
-          originating_system: "Open Geotechniek Studio",
-          timestamp: new Date().toISOString(),
-        },
-        project: projectInfo,
-        cpts,
-        bores,
-        crs: { epsg: 28992, name: "Amersfoort / RD New" },
-        gis,
-        ...(tekening ? { tekening } : {}),
-        ...(titleBlock ? { title_block: titleBlock } : {}),
-        ...(deliverable ? { deliverable } : {}),
-        calculations: toIfcxArray(calcs),
-      };
+      if (IS_TAURI && !tauriDst) return;
+      let savedName: string | null;
       if (IS_TAURI && tauriDst) {
         await invoke("save_project_ifcgis_full", {
-          payload,
+          payload: contentForName(tauriDst),
           path: tauriDst,
         });
+        savedName = tauriDst;
       } else {
         // Browser-fallback: download het project als JSON via showSaveFilePicker
         // (Chrome/Edge) of <a download> (overige browsers). Geen Rust-zijde
         // validatie — de gebruiker krijgt de raw payload.
-        await saveJsonAsFile(payload, defaultName);
+        savedName = await saveJsonAsFile(contentForName, defaultName);
       }
+      if (!savedName) return;
+      markProjectSaved(activeDoc.id, projectNameFromFilename(savedName), tauriDst ?? undefined, activeDoc.meta.title);
       onClose();
     } catch (err) {
       console.error("save_project_ifcgis_full failed", err);
       alert(`Opslaan mislukt: ${err}`);
+    } finally {
+      saving.current = false;
     }
   }, [activeDoc, onClose]);
+
+  useEffect(() => {
+    const onSave = () => { void saveProject(); };
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && activeDoc?.kind === "project") {
+        event.preventDefault();
+        onSave();
+      }
+    };
+    window.addEventListener("ogs:save-project", onSave);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("ogs:save-project", onSave);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [saveProject, activeDoc?.kind]);
 
   /// Save-as for a CPT document — offers GEF / BRO-XML / IfcGeo format
   /// conversion. Project documents fall through to `saveProject`.
