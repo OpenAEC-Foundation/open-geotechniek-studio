@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useCptStore } from "../store/useCptStore";
 import "./StatusBar.css";
+import { StudioMcpIndicator } from "../mcp/StudioMcpIndicator";
 
 /**
  * Status bar — shows hovered CPT values on the right, opened-CPT count on the left.
@@ -25,6 +26,7 @@ export default function StatusBar() {
       <div className="status-bar-center" />
 
       <div className="status-bar-right">
+        <div className="status-hover-values">
         {hovered ? (
           <>
             <Field label="Diepte" value={hovered.depth.toFixed(2)} unit="m" />
@@ -60,6 +62,8 @@ export default function StatusBar() {
             {t("hoverHint", "Houd muis op chart voor waarden")}
           </span>
         )}
+        </div>
+        <StudioMcpIndicator />
       </div>
     </div>
   );

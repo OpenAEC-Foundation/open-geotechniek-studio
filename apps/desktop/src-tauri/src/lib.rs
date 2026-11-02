@@ -3,6 +3,8 @@ mod mcp;
 mod pdf;
 mod rest;
 mod state;
+mod studio_mcp;
+mod studio_mcp_tauri;
 
 use pdf::brand::BrandConfig;
 use pdf::engine::ReportEngine;
@@ -153,6 +155,10 @@ fn parse_port_arg() -> u16 {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    if std::env::args().any(|a| a == "--mcp-studio") {
+        studio_mcp::run_stdio();
+        return;
+    }
     // Check for --mcp flag to start as MCP server instead of GUI
     if std::env::args().any(|a| a == "--mcp") {
         run_mcp();
@@ -221,7 +227,15 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .manage(app_state)
         .manage(CptAppState::default())
+        .manage(studio_mcp::StudioMcpBridge::default())
         .setup(move |app| {
+            {
+                use tauri::Manager;
+                studio_mcp_tauri::start(
+                    app.handle().clone(),
+                    app.state::<studio_mcp::StudioMcpBridge>().inner().clone(),
+                );
+            }
             if !cli_files.is_empty() {
                 use tauri::Emitter;
                 let handle = app.handle().clone();
@@ -240,6 +254,9 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            studio_mcp_tauri::get_studio_mcp_status,
+            studio_mcp_tauri::studio_mcp_ready,
+            studio_mcp_tauri::complete_studio_mcp_request,
             greet,
             list_tenants,
             list_templates,

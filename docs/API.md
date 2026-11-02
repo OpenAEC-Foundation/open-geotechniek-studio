@@ -164,6 +164,27 @@ Dezelfde functionaliteit is beschikbaar via `open-geo-studio --mcp`
 exports, BRO, IFC en rapporten. De `report_preview`-tool accepteert
 dezelfde optionele `sections`-selectie als `POST /api/report`.
 
+### MCP-bediening van het geopende Studio-venster
+
+Start de desktop-app en verbind een MCP-client met dezelfde executable en argument `--mcp-studio`. Deze modus werkt rechtstreeks op de projecten, sonderingen en berekeningen van het geopende hoofdvenster. De bestaande `--mcp`-modus blijft een afzonderlijke headless server met eigen toestand.
+
+```json
+{
+  "mcpServers": {
+    "open-geotechniek-studio": {
+      "command": "C:\\Program Files\\Open Geotechniek Studio\\open-geo-studio.exe",
+      "args": ["--mcp-studio"]
+    }
+  }
+}
+```
+
+De statusbalk rechtsonder toont of de koppeling beschikbaar is, een client verbonden is of een opdracht wordt uitgevoerd. Tijdens een opdracht staat de actienaam in de balk; de tooltip vermeldt de clientnaam. Verbindingen krijgen een heartbeat en verlopen na 20 seconden zonder teken van leven. Een afgesloten stdio-client meldt zich direct af.
+
+Beschikbare tools: `studio_get_state`, `studio_get_cpt`, `studio_new_project`, `studio_select_document`, `studio_open_file`, `studio_set_project_meta`, `studio_add_calculation`, `studio_update_calculation`, `studio_get_calculation`, `studio_select_calculation` en `studio_save_project`. Bestandsopdrachten gebruiken absolute paden en openen geen bestandsdialoog. Paalinvoer volgt dezelfde standaardwaarden bij een norm- of paaltypewissel als de invoerinterface. Een expliciete patch kan die standaardwaarden overschrijven.
+
+Het lokale transport luistert uitsluitend op `127.0.0.1` met een tijdelijke poort en een willekeurig authenticatietoken in de gebruikersconfiguratie. Het token hoort niet in een MCP-clientconfiguratie of logbestand. `OGS_MCP_ENDPOINT_FILE` kan voor geïsoleerde tests een ander endpointbestand aanwijzen. De webversie biedt deze desktopkoppeling niet aan.
+
 
 ## Brongetrouwe snapshots (2026.44.4)
 

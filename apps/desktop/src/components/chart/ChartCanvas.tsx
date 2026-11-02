@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCptStore } from "../../store/useCptStore";
+import { loadChartZoomPreference, useChartZoomStore } from "../../store/useChartZoomStore";
+import { chartWidthScale } from "./chart-zoom";
 import {
   renderChart,
   hitTest,
@@ -29,6 +31,9 @@ type Marker = { nap?: number; depth?: number; cptId?: string };
  */
 export default function ChartCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scaleColumns = useChartZoomStore((s) => s.scaleColumns);
+  useEffect(() => { void loadChartZoomPreference(); }, []);
   const cptsMap = useCptStore((s) => s.cpts);
   const activeCptId = useCptStore((s) => s.activeCptId);
   const hiddenCptIds = useCptStore((s) => s.hiddenCptIds);
@@ -94,6 +99,7 @@ export default function ChartCanvas() {
       width,
       height,
       zoom,
+      scaleColumns,
       panX,
       panY,
       columnRatios:
@@ -102,7 +108,7 @@ export default function ChartCanvas() {
       hover: hoverIndicator ?? undefined,
       activeCptId: activeCptId ?? undefined,
     }),
-    [zoom, panX, panY, columnRatios, cpts.length, markers, hoverIndicator, activeCptId],
+    [zoom, scaleColumns, panX, panY, columnRatios, cpts.length, markers, hoverIndicator, activeCptId],
   );
 
   // ─── Render whenever inputs change or the canvas resizes ───
@@ -152,7 +158,10 @@ export default function ChartCanvas() {
   useEffect(() => {
     const onIn  = () => setZoom((z) => Math.min(8, z * 1.25));
     const onOut = () => setZoom((z) => Math.max(0.2, z * 0.8));
-    const onFit = () => { setZoom(1); setPanY(0); setPanX(0); };
+    const onFit = () => {
+      setZoom(1); setPanY(0); setPanX(0);
+      if (scrollRef.current) scrollRef.current.scrollLeft = 0;
+    };
     window.addEventListener("ogs:zoom-in",  onIn);
     window.addEventListener("ogs:zoom-out", onOut);
     window.addEventListener("ogs:zoom-fit", onFit);
@@ -408,33 +417,35 @@ export default function ChartCanvas() {
   }, [markers]);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      <canvas
-        ref={canvasRef}
-        onMouseMove={onMove}
-        onMouseLeave={onLeave}
-        onMouseDown={onMouseDown}
-        onDoubleClick={onDoubleClick}
-        onContextMenu={onContextMenu}
-        style={{ width: "100%", height: "100%", display: "block", cursor }}
-      />
-      {soilTooltip && (
-        <div
-          className="chart-soil-tooltip"
-          style={{
-            position: "absolute",
-            // Sit to the LEFT of the cursor (translateX(-100%)) so the
-            // label doesn't get clipped by the right-side LocationMiniMap
-            // when the cursor approaches the right edge of the chart.
-            left: soilTooltip.x - 14,
-            top: soilTooltip.y + 14,
-            transform: "translateX(-100%)",
-            pointerEvents: "none",
-          }}
-        >
-          {soilTooltip.soil}
-        </div>
-      )}
+    <div ref={scrollRef} style={{ position: "relative", width: "100%", height: "100%", overflowX: "auto", overflowY: "hidden" }}>
+      <div style={{ position: "relative", width: `${chartWidthScale(zoom, scaleColumns) * 100}%`, height: "100%" }}>
+        <canvas
+          ref={canvasRef}
+          onMouseMove={onMove}
+          onMouseLeave={onLeave}
+          onMouseDown={onMouseDown}
+          onDoubleClick={onDoubleClick}
+          onContextMenu={onContextMenu}
+          style={{ width: "100%", height: "100%", display: "block", cursor }}
+        />
+        {soilTooltip && (
+          <div
+            className="chart-soil-tooltip"
+            style={{
+              position: "absolute",
+              // Sit to the LEFT of the cursor (translateX(-100%)) so the
+              // label doesn't get clipped by the right-side LocationMiniMap
+              // when the cursor approaches the right edge of the chart.
+              left: soilTooltip.x - 14,
+              top: soilTooltip.y + 14,
+              transform: "translateX(-100%)",
+              pointerEvents: "none",
+            }}
+          >
+            {soilTooltip.soil}
+          </div>
+        )}
+      </div>
       {contextMenu && (
         <div
           className="chart-context-menu"

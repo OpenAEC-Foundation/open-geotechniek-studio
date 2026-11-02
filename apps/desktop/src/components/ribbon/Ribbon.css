@@ -157,6 +157,21 @@
 }
 
 /* Ribbon Group */
+.ribbon-zoom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  align-self: center;
+  padding: 0 8px;
+  color: var(--theme-text);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.ribbon-zoom-checkbox input {
+  accent-color: var(--theme-accent);
+}
+
 .ribbon-group {
   display: flex;
   flex-direction: column;

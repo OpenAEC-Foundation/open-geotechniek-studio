@@ -29,6 +29,7 @@
 }
 
 .status-bar-right {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -81,3 +82,10 @@
   font-size: 12px;
   font-style: italic;
 }
+
+.status-hover-values { display: flex; align-items: center; gap: 12px; min-width: 0; overflow: hidden; }
+.studio-mcp-status { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; max-width: 340px; overflow: hidden; padding-left: 10px; border-left: 1px solid var(--oa-border); font: 10px var(--oa-font-mono); color: var(--oa-text-secondary); }
+.studio-mcp-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.studio-mcp-connected { color: var(--oa-success); }
+.studio-mcp-busy { color: var(--oa-warning); }
+.studio-mcp-error { color: var(--oa-error); }

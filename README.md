@@ -178,6 +178,14 @@ Op de website en in de desktop-app staat alleen **Paaldraagvermogen** in de bere
 
 De paalmodule en zijn PDF behouden hun conceptmarkering. Zie de [paalsystemen](apps/desktop/src/calc/modules/pile-bearing-capacity/PAALSOORTEN.md) en [historische normprofielen](apps/desktop/src/calc/modules/pile-bearing-capacity/HISTORISCHE-NORMEN.md) voor de ondersteunde invoer en beperkingen.
 
+### Live MCP-bediening
+
+De desktop-app kan via MCP rechtstreeks worden bediend met `open-geo-studio --mcp-studio`. Start eerst Studio. De indicator rechtsonder toont beschikbaarheid, verbonden clients en de opdracht die wordt uitgevoerd. Projecten, sonderingen en paalberekeningen zijn via gestructureerde tools bereikbaar. Zie de [MCP-configuratie](docs/API.md#mcp-bediening-van-het-geopende-studio-venster). De zelfstandige `--mcp`-modus blijft beschikbaar met een eigen headless toestand.
+
+### Sonderingen inzoomen
+
+Met **Sonderingen meeschalen** op het hoofdblad worden de kolommen boven de verticale fitstand ook breder. De volledige asbereiken blijven daarbij leesbaar en de overige sonderingen blijven horizontaal bereikbaar. De instelling wordt bewaard. **Passend** herstelt de oorspronkelijke fitstand en scrollpositie.
+
 ---
 
 ## Bijdragen
