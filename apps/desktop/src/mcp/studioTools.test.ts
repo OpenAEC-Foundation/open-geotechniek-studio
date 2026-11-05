@@ -49,6 +49,16 @@ it("bedient horizontale paalbelasting als afzonderlijk rekenblad", async()=>{
   for(const patch of [{section:{arbitraryCode:'x'}},{layers:[{topM:0}]},{headForceKn:'veel'},{surchargeKpa:10}])
     await expect(executeStudioTool('studio_update_calculation',{id:added.id,patch},view)).rejects.toThrow();
 });
+it('bewaart tabelkeuzen via MCP en weigert ongeldige configuratie zonder mutatie',async()=>{
+ newProjectDocument();
+ const added=await executeStudioTool('studio_add_calculation',{},view) as {id:string};
+ await executeStudioTool('studio_update_calculation',{id:added.id,patch:{capacityTable:{cptIds:[],toeNaps:[-14,-15.5]}}},view);
+ const before=structuredClone(useCalculationsStore.getState().getActive()?.instance.input);
+ expect(before).toMatchObject({capacityTable:{cptIds:[],toeNaps:[-14,-15.5]}});
+ for(const capacityTable of [{cptIds:[],toeNaps:[]},{cptIds:['A','A'],toeNaps:[-14]},{cptIds:[],toeNaps:['-14']},{cptIds:[],toeNaps:[-14],code:'x'}])
+  await expect(executeStudioTool('studio_update_calculation',{id:added.id,patch:{capacityTable}},view)).rejects.toThrow();
+ expect(useCalculationsStore.getState().getActive()?.instance.input).toEqual(before);
+});
 it("weigert onveilige of ongeldige patches zonder de projectinvoer te beschadigen", async () => {
   newProjectDocument();
   const added = await executeStudioTool("studio_add_calculation", {}, view) as { id: string };

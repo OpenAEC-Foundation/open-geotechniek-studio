@@ -193,6 +193,12 @@ Resultaten bevatten per integratiepunt het werkpunt, de curve en stijfheden,
 naast de gebruikte equivalente diepten en convergentiediagnostiek. Bij
 niet-convergentie is er geen geldige respons en geen lineaire terugval.
 
+Paaldraagvermogen accepteert optioneel
+`capacityTable: { cptIds: string[], toeNaps: number[] }`. De tabel gebruikt
+dezelfde paalinvoer per geselecteerde sondering en absoluut puntniveau in
+m NAP. `null` verwijdert de tabelconfiguratie. Dubbele of niet-eindige
+niveaus en onbekende configuratievelden worden geweigerd.
+
 Het lokale transport luistert uitsluitend op `127.0.0.1` met een tijdelijke poort en een willekeurig authenticatietoken in de gebruikersconfiguratie. Het token hoort niet in een MCP-clientconfiguratie of logbestand. `OGS_MCP_ENDPOINT_FILE` kan voor geïsoleerde tests een ander endpointbestand aanwijzen. De webversie biedt deze desktopkoppeling niet aan.
 
 

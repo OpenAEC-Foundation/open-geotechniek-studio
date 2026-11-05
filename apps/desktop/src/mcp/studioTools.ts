@@ -6,6 +6,7 @@ import { CALC_REGISTRY, getCalcModule } from "../calc/framework/registry";
 import { getPileType } from "../calc/modules/pile-bearing-capacity/catalog";
 import { changeStandard, getStandard } from "../calc/modules/pile-bearing-capacity/standards";
 import type { PileInput } from "../calc/modules/pile-bearing-capacity/types";
+import {validateCapacityTable,type CapacityTableConfig} from '../calc/modules/pile-bearing-capacity/capacity-table';
 import type { ProjectMeta } from "../types/cpt";
 import { computeLateral, lateralExample, type LateralInput } from '../calc/modules/laterally-loaded-pile/compute';
 
@@ -52,10 +53,10 @@ function calculation(id: unknown) {
 }
 
 const numericInputs = ["diameterMm", "wallThicknessMm", "baseDiameterMm", "axialStiffnessKn", "pileTopNap", "pileToeNap", "waterNap", "excavationNap", "nEd", "nEk", "gammaM", "gammaFnk", "negKleefBottomNap", "posKleefTopNap", "ksMinFactor"];
-const optionalInputs = ["baseDiameterMm", "axialStiffnessKn", "posKleefTopNap", "standard", "timberTaper", "projectFactors"];
+const optionalInputs = ["baseDiameterMm", "axialStiffnessKn", "posKleefTopNap", "standard", "timberTaper", "projectFactors", "capacityTable"];
 function pilePatch(input: unknown, patch: unknown): PileInput {
   const fields = object(patch, "Invoerpatch");
-  keys(fields, [...numericInputs, "cptId", "standard", "pileTypeId", "soilProfile", "timberTaper", "projectFactors"]);
+  keys(fields, [...numericInputs, "cptId", "standard", "pileTypeId", "soilProfile", "timberTaper", "projectFactors", "capacityTable"]);
   let next = structuredClone(object(input, "Berekeningsinvoer"));
   if (fields.standard != null && fields.standard !== next.standard) {
     const standard = text(fields.standard, "Normversie") as NonNullable<PileInput["standard"]>;
@@ -88,6 +89,10 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
         for (const field of numeric) number(layer[field], field);
         return { ...layer };
       });
+    } else if (key === 'capacityTable') {
+      const config=object(value,'Draagvermogentabel');keys(config,['cptIds','toeNaps']);
+      validateCapacityTable(config as CapacityTableConfig);
+      next[key]=structuredClone(config);
     } else if (key === "timberTaper") {
       const taper = object(value, "Houttapsheid"); keys(taper, ["toeDiameterMm", "lengthM"]);
       next[key] = { toeDiameterMm: number(taper.toeDiameterMm, "Puntdiameter"), lengthM: number(taper.lengthM, "Tapse lengte") };

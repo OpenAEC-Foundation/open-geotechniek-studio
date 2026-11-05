@@ -1,0 +1,29 @@
+.capacity-view-switch {display:flex;gap:8px;margin-bottom:20px;}
+.capacity-view-switch button,.capacity-grid-settings button {padding:7px 12px;border:1px solid var(--oa-border);border-radius:3px;background:var(--oa-panel);color:var(--oa-text);cursor:pointer;}
+.capacity-view-switch button[aria-pressed="true"] {border-color:var(--oa-accent);background:var(--oa-selected);}
+.capacity-view-switch button:focus-visible,.capacity-grid button:focus-visible {outline:2px solid var(--oa-accent);outline-offset:2px;}
+.worksheet-capacity-table .worksheet-columns {grid-template-columns:minmax(260px,300px) minmax(0,1fr);}
+.capacity-grid {min-width:0;color:var(--oa-text);font:12px/1.5 var(--oa-font-body);}
+.capacity-grid h2 {font:500 20px var(--oa-font-heading);margin:0 0 10px;}
+.capacity-grid p {margin:8px 0 16px;}
+.capacity-grid-settings {display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;}
+.capacity-grid-settings fieldset {border:1px solid var(--oa-border);padding:12px;min-width:0;}
+.capacity-grid-settings legend {padding:0 5px;color:var(--oa-text-secondary);}
+.capacity-grid-settings label {display:flex;gap:7px;align-items:center;}
+.capacity-grid-settings textarea {display:block;width:100%;box-sizing:border-box;resize:vertical;background:var(--oa-panel);color:var(--oa-text);border:1px solid var(--oa-border);padding:8px;font:inherit;}
+.capacity-grid-settings fieldset:last-child label {display:block;}
+.capacity-cpt-options {display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px;max-height:180px;overflow:auto;}
+.capacity-grid-note {padding:10px 12px;border-left:3px solid var(--oa-warning);background:var(--oa-warning-tint);}
+.capacity-grid-error {color:var(--oa-error);}
+.capacity-grid-scroll {max-width:100%;overflow:auto;}
+.capacity-grid table {border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;}
+.capacity-grid caption {text-align:left;color:var(--oa-text-secondary);padding-bottom:10px;}
+.capacity-grid th,.capacity-grid td {border:1px solid var(--oa-border);padding:0;min-width:115px;vertical-align:top;}
+.capacity-grid th {padding:10px 12px;text-align:left;background:var(--oa-hover);}
+.capacity-grid td button {display:flex;flex-direction:column;align-items:flex-end;gap:3px;width:100%;height:100%;min-height:72px;padding:12px;border:0;background:transparent;color:var(--oa-text);cursor:pointer;text-align:right;font:inherit;}
+.capacity-grid td button:hover {background:var(--oa-selected);}
+.capacity-grid td strong {font-size:16px;font-weight:500;}
+.capacity-grid td span {font-size:11px;color:var(--oa-text-secondary);}
+.capacity-grid td .capacity-cell-note {color:var(--oa-warning);text-align:left;}
+.capacity-grid .capacity-cell-invalid strong {font-size:12px;}
+@media(max-width:850px) {.worksheet-capacity-table .worksheet-columns,.capacity-grid-settings {grid-template-columns:minmax(0,1fr);}}

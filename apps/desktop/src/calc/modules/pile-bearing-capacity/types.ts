@@ -46,6 +46,8 @@ export interface ProjectPileFactors {
 }
 
 export interface PileInput {
+  /** Gedeelde invoer met afzonderlijke resultaten per sondering en puntniveau. */
+  capacityTable?: {cptIds:string[];toeNaps:number[]};
   /** Ontbrekend: behoud het bestaande projectmodel. */
   standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017";
   cptId: string | null;        // referentie naar CPT in project

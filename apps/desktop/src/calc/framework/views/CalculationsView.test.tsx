@@ -42,3 +42,20 @@ it('geeft de horizontale module een eigen werkblad en brede modelruimte',()=>{
  expect(screen.getByRole('region',{name:'Paal- en veermodel'})).toBeInTheDocument();
  expect(screen.getByRole('heading',{name:'Horizontale paal'}).closest('article')).toHaveClass('worksheet-lateral');
 });
+it('opent een tabelcel als detailberekening en bewaart de tabel bij terugkeren',()=>{
+ const cpts=new Map(['A','B','C','D','E','F'].map(id=>[id,{id,metadata:{source_file:'synthetisch',ground_level_nap:0},points:Array.from({length:251},(_,j)=>({depth:j*.1,depth_nap:-j*.1,qc:12}))}]));
+ useCptStore.setState({cpts,activeCptId:'A'});
+ const state=useCptStore.getState(),input={...getCalcModule('pile-bearing-capacity')!.defaultInput(state) as PileInput,capacityTable:{cptIds:[...cpts.keys()],toeNaps:[-14,-15]}};
+ const id=useCalculationsStore.getState().addCalculation(state.activeDocId!,'pile-bearing-capacity','Palenoverzicht',input);
+ render(<CalculationsView/>);
+ fireEvent.click(screen.getByRole('button',{name:'Draagvermogentabel'}));
+ expect(screen.getByRole('table',{name:'Netto ontwerpweerstand per sondering en paalpuntniveau'})).toBeInTheDocument();
+ expect(screen.getAllByRole('button',{name:/^Open .+ op /})).toHaveLength(12);
+ fireEvent.click(screen.getByRole('button',{name:'Open B op -15 m NAP'}));
+ expect(useCalculationsStore.getState().getList(state.activeDocId!).find(c=>c.id===id)?.input).toMatchObject({cptId:'B',pileToeNap:-15,capacityTable:input.capacityTable});
+ expect(screen.getByRole('region',{name:'Sondering'})).toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Draagvermogentabel'}));
+ fireEvent.change(screen.getByLabelText('Puntniveaus [m NAP]'),{target:{value:'-14\n-16,5'}});
+ fireEvent.click(screen.getByRole('button',{name:'Niveaus toepassen'}));
+ expect(useCalculationsStore.getState().getList(state.activeDocId!)[0].input).toMatchObject({capacityTable:{toeNaps:[-14,-16.5]}});
+});
