@@ -87,3 +87,47 @@
 .pile-springfield-legend .mob-linear::before { border-color: var(--oa-accent-text); }
 .pile-springfield-summary { margin: 6px 0 0; font-size: 12px; color: var(--oa-text); }
 
+
+/* Diagrammen: diepte in m NAP, gearceerde vlakken, max/min. */
+.pile-diagrams svg { display: block; width: 100%; height: auto; }
+.pile-diagrams text { fill: var(--oa-text); font: 10px var(--oa-font-numbers, inherit); }
+.pile-diagram-title { font: 600 11.5px var(--oa-font-heading) !important; }
+.pile-diagram-unit { fill: var(--oa-text-secondary) !important; font-size: 10px; }
+.pile-diagram-head { fill: var(--oa-text-secondary) !important; font-size: 9px !important; }
+.pile-diagram-frame { fill: none; stroke: var(--oa-border); stroke-width: .8; }
+.pile-diagrams { --tone: var(--oa-accent-text); }
+.pile-diagram.tone-moment { --tone: #dc2626; }
+.pile-diagram.tone-shear { --tone: #2563eb; }
+.pile-diagram.tone-disp { --tone: #15803d; }
+.pile-diagram.tone-soil { --tone: #b45309; }
+.pile-hatch line { stroke: var(--tone); stroke-width: .9; opacity: .55; }
+.pile-curve { fill: none; stroke: var(--tone); stroke-width: 2; }
+.pile-zero { stroke: var(--oa-text); stroke-width: 1.3; }
+.pile-bend-sign path { fill: none; stroke: var(--oa-text); stroke-width: 1.4; }
+.pile-bend-sign .pile-bend-tension { stroke-dasharray: 2.5 2; stroke-width: 1.1; }
+.pile-shear-sign rect { fill: var(--oa-panel); stroke: var(--oa-text); stroke-width: 1.1; }
+.pile-shear-sign line { stroke: var(--oa-text); stroke-width: 1.2; }
+.pile-shear-sign path { fill: var(--oa-text); }
+.pile-sign { font: 700 16px var(--oa-font-body) !important; fill: var(--oa-text) !important; paint-order: stroke; stroke: var(--oa-panel); stroke-width: 3px; }
+.pile-extreme circle { fill: var(--oa-panel); stroke: var(--oa-text); stroke-width: 1.4; }
+.pile-extreme text { font-size: 9.5px; paint-order: stroke; stroke: var(--oa-panel); stroke-width: 3px; }
+.pile-extreme-kind { font-weight: 700; }
+.pile-extreme-nap { fill: var(--oa-text-secondary) !important; font-size: 8.5px; }
+.pile-diagram-note { font-size: 11px; color: var(--oa-text-secondary); }
+
+/* Uitgebreide uitdraai */
+.lateral-sheet-section { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; align-items: start; }
+.lateral-sheet-soil { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px; align-items: start; margin-bottom: 10px; }
+.lateral-soil-column text { font: 8.5px var(--oa-font-numbers, inherit); fill: #333; }
+.lateral-soil-column .lateral-soil-name { font-weight: 700; font-size: 10px; }
+.lateral-soil-pile { fill: #a9abaf; stroke: #444; stroke-width: .7; }
+.lateral-swatch { display: inline-block; width: 12px; height: 12px; border: 1px solid #555; vertical-align: middle; }
+.lateral-soil-table small { color: #6b6e73; font-size: 9.5px; }
+.lateral-sum td { font-weight: 600; border-top: 1.5px solid currentColor; }
+.lateral-depth-table td, .lateral-depth-table th { padding: 2px 8px 2px 0; font-size: 11px; }
+.lateral-nm { margin: 12px 0 0; }
+.lateral-nm svg { width: 100%; max-width: 420px; height: auto; }
+.lateral-nm text { font: 9px var(--oa-font-numbers, inherit); fill: #333; }
+.lateral-nm-area { fill: rgba(37, 99, 235, .12); stroke: #2563eb; stroke-width: 1.4; }
+.lateral-nm-ok { fill: #15803d; } .lateral-nm-fail { fill: #dc2626; }
+.lateral-nm figcaption { font-size: 11px; color: #6b6e73; }

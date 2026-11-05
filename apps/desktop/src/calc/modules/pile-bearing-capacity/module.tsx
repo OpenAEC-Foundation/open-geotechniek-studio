@@ -18,7 +18,10 @@ function defaultInput(ctx: ProjectContext): PileInput {
   const cpt = ctx.activeCptId ? ctx.cpts.get(ctx.activeCptId) : null;
   const groundNap = cpt?.metadata.ground_level_nap ?? 0;
   const pileTop = groundNap + 0.34;
-  const pileToe = groundNap - 14;
+  // Standaard 14 m onder maaiveld, maar nooit dieper dan de sondering
+  // toelaat: onder de punt is nog ruimte nodig voor het puntdraagvermogen.
+  const lastDepth = cpt?.points.length ? Math.max(...cpt.points.map((p) => p.depth).filter(Number.isFinite)) : Infinity;
+  const pileToe = groundNap - Math.max(1, Math.min(14, Math.floor((lastDepth - 1.5) * 2) / 2));
   const water = groundNap - 0.5;
   return {
     cptId: ctx.activeCptId,

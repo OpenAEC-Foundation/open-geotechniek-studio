@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { MATERIAL_COLORS } from '../pile-bearing-capacity/parts/material-colors';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { LateralInput } from './compute';
@@ -51,6 +52,11 @@ export function pileGeometry(sourceSamples:BeamResult['samples'],scale:number,ra
   geometry.computeVertexNormals();return geometry;
 }
 
+/** Elke hoeveelste veer zichtbaar is: ~12 bij de startafstand, meer bij inzoomen. */
+export function springStride(count:number,startDistance:number,distance:number):number {
+  const target=12*Math.max(1,startDistance/Math.max(distance,1e-9));
+  return Math.max(1,Math.ceil(count/target));
+}
 export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallback}:Props) {
   const host=useRef<HTMLDivElement>(null),select=useRef(onSelect),selected=useRef(selectedId);
   const refreshSelection=useRef<(()=>void)|undefined>(undefined);
@@ -74,8 +80,8 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     scene.add(new THREE.AmbientLight(0xffffff,2));
     const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(5,5,10);scene.add(light);
     const token=(name:string)=>new THREE.Color(getComputedStyle(container).getPropertyValue(name).trim());
-    const concrete=new THREE.MeshStandardMaterial({color:token('--oa-text-secondary'),roughness:.85,side:THREE.DoubleSide});
-    const steel=new THREE.MeshStandardMaterial({color:token('--oa-text'),metalness:.5,roughness:.35,side:THREE.DoubleSide});
+    const concrete=new THREE.MeshStandardMaterial({color:new THREE.Color(MATERIAL_COLORS.concrete.fill),roughness:.85,side:THREE.DoubleSide});
+    const steel=new THREE.MeshStandardMaterial({color:new THREE.Color(MATERIAL_COLORS.steel.fill),metalness:.5,roughness:.35,side:THREE.DoubleSide});
     const kind=input.section.kind,tube=kind==='steel-tube'||kind==='filled-tube';
     const inner=Math.max(0,diameter/2-input.section.wallMm/1000);
     scene.add(new THREE.Mesh(pileGeometry(beam.samples,scale,diameter/2,kind==='concrete-square',tube?inner:0),tube?steel:concrete));
@@ -89,15 +95,33 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
       const outline=new THREE.LineSegments(new THREE.EdgesGeometry(soil.geometry),edgeMaterial);outline.position.copy(soil.position);scene.add(outline);
     });
     const original=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(0,-L,0)]),new THREE.LineDashedMaterial({color:token('--oa-text-secondary'),dashSize:L/70,gapSize:L/100}));original.computeLineDistances();scene.add(original);
-    const markers:THREE.Mesh<THREE.SphereGeometry,THREE.MeshBasicMaterial>[]=[],springMaterials:THREE.LineBasicMaterial[]=[],markerRadius=Math.max(diameter*.14,L*.004);
-    springs.forEach(s=>{
+    // Gronddruk: de reactie van de grond op de paal als vlak achter de paalas.
+    const ordered=[...springs].sort((a,b)=>a.zM-b.zM),pMax=Math.max(1e-9,...ordered.map(s=>Math.abs(s.resistanceKnM)));
+    const pScale=reach*.55/pMax,pressureMaterials:THREE.Material[]=[];
+    if(ordered.length>1){
+      const shape=new THREE.Shape();shape.moveTo(0,-ordered[0].zM);ordered.forEach(s=>shape.lineTo(-s.resistanceKnM*pScale,-s.zM));shape.lineTo(0,-ordered[ordered.length-1].zM);shape.closePath();
+      const fill=new THREE.MeshBasicMaterial({color:token('--oa-accent'),transparent:true,opacity:.22,depthWrite:false,side:THREE.DoubleSide});
+      const edge=new THREE.LineBasicMaterial({color:token('--oa-accent-text')});pressureMaterials.push(fill,edge);
+      const area=new THREE.Mesh(new THREE.ShapeGeometry(shape),fill);area.position.z=-diameter;area.renderOrder=1;scene.add(area);
+      const outline=new THREE.Line(new THREE.BufferGeometry().setFromPoints(ordered.map(s=>new THREE.Vector3(-s.resistanceKnM*pScale,-s.zM,-diameter))),edge);scene.add(outline);
+      // Een paar pijlen op vaste afstand geven de richting van de gronddruk.
+      const step=Math.max(1,Math.round(ordered.length/9));
+      ordered.filter((_,k)=>k%step===0).forEach(s=>{const len=Math.abs(s.resistanceKnM)*pScale;if(len<pMax*pScale*.08)return;
+        const dir=new THREE.Vector3(-Math.sign(s.resistanceKnM),0,0),arrow=new THREE.ArrowHelper(dir,new THREE.Vector3(-s.resistanceKnM*pScale,-s.zM,-diameter),len,token('--oa-accent-text').getHex(),Math.min(len*.35,L*.02),Math.min(len*.25,L*.012));scene.add(arrow);});
+    }
+    const markers:THREE.Mesh<THREE.SphereGeometry,THREE.MeshBasicMaterial>[]=[],springLines:THREE.Line[]=[],springMaterials:THREE.LineBasicMaterial[]=[],markerRadius=Math.max(diameter*.14,L*.004);
+    ordered.forEach(s=>{
       const marker=new THREE.Mesh(new THREE.SphereGeometry(markerRadius,10,8),new THREE.MeshBasicMaterial({color:token('--oa-accent-text'),depthTest:false}));
       marker.position.set(s.displacementM*scale,-s.zM,diameter/2+markerRadius);marker.userData.springId=s.id;marker.renderOrder=3;markers.push(marker);scene.add(marker);
       const start=new THREE.Vector3(s.displacementM*scale,-s.zM,diameter/2+markerRadius),end=start.clone().add(new THREE.Vector3(Math.max(diameter*.8,L*.025),0,0));
-      const springMaterial=new THREE.LineBasicMaterial({color:token('--oa-accent-text'),transparent:true,opacity:.5});springMaterials.push(springMaterial);
-      scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([start,end]),springMaterial));
+      const springMaterial=new THREE.LineBasicMaterial({color:token('--oa-accent-text'),transparent:true,opacity:.35});springMaterials.push(springMaterial);
+      const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([start,end]),springMaterial);springLines.push(line);scene.add(line);
     });
-    const updateSelection=()=>{markers.forEach(marker=>{const active=marker.userData.springId===selected.current;marker.scale.setScalar(active?1.8:1);marker.material.color.copy(token(active?'--oa-text':'--oa-accent-text'));});render();};
+    // Detailniveau: uitgezoomd een veer of twaalf, inzoomen toont er steeds meer.
+    const startDistance=camera.position.distanceTo(controls.target);
+    const applyDensity=()=>{const stride=springStride(ordered.length,startDistance,camera.position.distanceTo(controls.target));
+      markers.forEach((m,k)=>{const show=k%stride===0||m.userData.springId===selected.current;m.visible=show;springLines[k].visible=show;});};
+    const updateSelection=()=>{applyDensity();markers.forEach(marker=>{const active=marker.userData.springId===selected.current;marker.scale.setScalar(active?1.8:1);marker.material.color.copy(token(active?'--oa-text':'--oa-accent-text'));});render();};
     refreshSelection.current=updateSelection;
     const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let downX=0,downY=0;
     const down=(event:PointerEvent)=>{downX=event.clientX;downY=event.clientY;};
@@ -110,13 +134,13 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     const resize=()=>{const width=Math.max(1,container.clientWidth),height=Math.max(1,container.clientHeight);camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);render();};
     const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(container);
     const themeObserver=new MutationObserver(()=>{
-      concrete.color.copy(token('--oa-text-secondary'));steel.color.copy(token('--oa-text'));
-      original.material.color.copy(token('--oa-text-secondary'));edgeMaterials.forEach(material=>material.color.copy(token('--oa-border-strong')));springMaterials.forEach(material=>material.color.copy(token('--oa-accent-text')));
+      
+      original.material.color.copy(token('--oa-text-secondary'));edgeMaterials.forEach(material=>material.color.copy(token('--oa-border-strong')));(pressureMaterials as Array<THREE.MeshBasicMaterial|THREE.LineBasicMaterial>).forEach((m,k)=>m.color.copy(token(k?'--oa-accent-text':'--oa-accent')));springMaterials.forEach(material=>material.color.copy(token('--oa-accent-text')));
       soilMaterials.forEach((material,index)=>material.color.copy(token(index%2?'--oa-hover':'--oa-selected')));updateSelection();
     });themeObserver.observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['class','data-theme']});
-    controls.addEventListener('change',render);renderer.domElement.addEventListener('pointerdown',down);renderer.domElement.addEventListener('pointerup',up);renderer.domElement.addEventListener('webglcontextlost',lost);resize();updateSelection();
+    const onCamera=()=>{applyDensity();render();};controls.addEventListener('change',onCamera);renderer.domElement.addEventListener('pointerdown',down);renderer.domElement.addEventListener('pointerup',up);renderer.domElement.addEventListener('webglcontextlost',lost);resize();updateSelection();
     return ()=>{
-      refreshSelection.current=undefined;resizeObserver.disconnect();themeObserver.disconnect();controls.removeEventListener('change',render);controls.dispose();
+      refreshSelection.current=undefined;resizeObserver.disconnect();themeObserver.disconnect();controls.removeEventListener('change',onCamera);controls.dispose();
       renderer.domElement.removeEventListener('pointerdown',down);renderer.domElement.removeEventListener('pointerup',up);renderer.domElement.removeEventListener('webglcontextlost',lost);
       const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>([concrete,steel]);
       scene.traverse(object=>{const mesh=object as THREE.Mesh;if(mesh.geometry)geometries.add(mesh.geometry);if(mesh.material)(Array.isArray(mesh.material)?mesh.material:[mesh.material]).forEach(m=>materials.add(m));});

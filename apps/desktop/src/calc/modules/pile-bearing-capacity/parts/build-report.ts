@@ -9,6 +9,9 @@ import { generatePileReport } from "./pile-report-pdf";
 import { computeMultiCptSummary } from "./multi-cpt-summary";
 import { resolvePileType } from "../catalog";
 import { getStandard } from "../standards";
+import { computePile } from "../compute";
+import { chooseLevels, computeCapacityMatrix, defaultCapacityConfig, matrixCellInput } from "../capacity-table";
+import { renderCapacityAppendix } from "./capacity-report";
 
 /** Datum als dd-mm-jjjj; projectdatum wint, anders vandaag. */
 function reportDate(iso: string | undefined): string {
@@ -18,23 +21,34 @@ function reportDate(iso: string | undefined): string {
 export function buildPileReport(input: PileInput, result: PileResult, ctx: ProjectContext): Uint8Array {
   if (!result.ok) throw new Error(result.error ?? "Berekening niet geslaagd");
   const pileType = resolvePileType(input);
-  // De sondering gaat mee zodat het rapport ook het visuele blad (qc-
-  // grafiek met paal en invloedszones) per sondering bevat.
-  const cpt = input.cptId ? ctx.cpts.get(input.cptId) : undefined;
-  const sondering = { name: input.cptId ?? "Sondering", input, result, cpt };
+  const table = input.capacityTable;
+  // Voorbeeldberekeningen: de gekozen cellen uit de tabel, anders het huidige rekenblad.
+  const picks = table?.examples?.length ? table.examples : [{ cptId: input.cptId ?? "", sizeMm: input.diameterMm, toeNap: input.pileToeNap }];
+  const sonderingen = picks.map((e) => {
+    const isCurrent = e.cptId === (input.cptId ?? "") && e.sizeMm === input.diameterMm && e.toeNap === input.pileToeNap;
+    const exampleInput = isCurrent ? input : matrixCellInput(input, e.cptId, e.sizeMm, e.toeNap);
+    // De sondering gaat mee zodat het rapport ook het visuele blad bevat.
+    const cpt = e.cptId ? ctx.cpts.get(e.cptId) : undefined;
+    const exampleResult = isCurrent ? result : computePile(exampleInput, cpt ?? null);
+    if (!exampleResult.ok) throw new Error(`Voorbeeld ${e.cptId}, ${e.sizeMm} mm op ${e.toeNap} m NAP is niet berekenbaar: ${exampleResult.error}`);
+    return { name: picks.length > 1 ? `${e.cptId ?? "Sondering"} · ${e.sizeMm} mm · NAP ${e.toeNap}` : (e.cptId || "Sondering"), input: exampleInput, result: exampleResult, cpt };
+  });
   const summary = computeMultiCptSummary({
     standard: input.standard,
-    cases: [{
-      cptId: sondering.name,
-      rbCalMax: result.base.rbCalMax,
-      rsCalMax: result.shaft.rsCalMax,
-      rcCal: result.base.rbCalMax + result.shaft.rsCalMax,
-      fnkD: result.negKleef.fnkD,
-    }],
+    cases: sonderingen.map((s) => ({
+      cptId: s.name,
+      rbCalMax: s.result.base.rbCalMax,
+      rsCalMax: s.result.shaft.rsCalMax,
+      rcCal: s.result.base.rbCalMax + s.result.shaft.rsCalMax,
+      fnkD: s.result.negKleef.fnkD,
+    })),
     gammaM: input.gammaM,
     nEd: input.nEd,
     stiffness: "non-stiff",
   });
+  // Een statistische eindanalyse heeft alleen zin voor één paal (maat en niveau) op meerdere sonderingen.
+  const samePile = picks.every((e) => e.sizeMm === picks[0].sizeMm && e.toeNap === picks[0].toeNap);
+  const circular = pileType?.isCircular ?? true;
   const meta = ctx.projectMeta;
   return generatePileReport({
     project: {
@@ -45,14 +59,19 @@ export function buildPileReport(input: PileInput, result: PileResult, ctx: Proje
       author: meta.author || "Open Geotechniek Studio",
       onderdeel: "Paaldraagvermogen",
     },
-    sonderingen: [sondering],
+    sonderingen,
     summary,
+    endAnalysis: samePile,
     pileTypeName: pileType?.name ?? input.pileTypeId,
     factors: {
       alphaP: pileType?.alphaP ?? 0.7,
       alphaS: pileType?.alphaS ?? 0.008,
       alphaT: pileType?.alphaT ?? 0.006,
     },
+    appendix: table ? (c) => {
+      const m = computeCapacityMatrix(input, ctx.cpts, defaultCapacityConfig(input, [...ctx.cpts.keys()]));
+      renderCapacityAppendix(c, m, chooseLevels(m), (s) => `${circular ? "Ø" : "□"}${s}`);
+    } : undefined,
   });
 }
 

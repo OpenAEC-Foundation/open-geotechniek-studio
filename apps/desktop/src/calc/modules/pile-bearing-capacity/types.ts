@@ -56,7 +56,15 @@ export interface ProjectPileFactors {
 
 export interface PileInput {
   /** Gedeelde invoer met afzonderlijke resultaten per sondering en puntniveau. */
-  capacityTable?: {cptIds:string[];toeNaps:number[]};
+  capacityTable?: {
+    cptIds:string[];toeNaps:number[];
+    /** Paalmaten [mm] voor de tabel; ontbrekend = alleen diameterMm. */
+    sizesMm?:number[];
+    /** Gezocht netto draagvermogen Rc;net;d [kN]. */
+    targetKn?:{minKn:number;maxKn:number};
+    /** Voorbeeldberekeningen die volledig in de uitdraai komen; daarna alleen de tabellen. */
+    examples?:Array<{cptId:string;sizeMm:number;toeNap:number}>;
+  };
   /** Ontbrekend: behoud het bestaande projectmodel. */
   standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017";
   cptId: string | null;        // referentie naar CPT in project

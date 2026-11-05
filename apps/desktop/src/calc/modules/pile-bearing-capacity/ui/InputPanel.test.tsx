@@ -53,13 +53,23 @@ describe("paaltype-invoer",()=>{
   fireEvent.click(screen.getByRole("radio",{name:"Hout"}));
   const next=onChange.mock.calls[0][0];
   expect(next).toEqual(expect.objectContaining({pileTypeId:"timber-uniform",axialStiffnessKn:undefined}));
-  // Las 0,5 m onder de grondwaterstand, vierkante opzetter 250 mm.
-  expect(next.concreteExtension).toEqual({jointNap:+(input.waterNap-.5).toFixed(2),sizeMm:250,isCircular:false});
+  // Ronde opzetter Ø280, kortste gangbare lengte met de las minstens 0,5 m onder de grondwaterstand; punt Ø150.
+  const len=[1.5,2,2.5,4].find(l=>input.pileTopNap-l<=input.waterNap-.5)??4;
+  expect(next.concreteExtension).toEqual({jointNap:+(input.pileTopNap-len).toFixed(2),sizeMm:280,isCircular:true});
+  expect(next.timberTaper).toEqual({toeDiameterMm:150,lengthM:+(next.concreteExtension.jointNap-input.pileToeNap).toFixed(2)});
+  expect(next.diameterMm).toBe(220);
   rerender(<InputPanel input={next} result={result} onChange={onChange}/>);
   expect(screen.getByRole("checkbox",{name:"Betonopzetter"})).toBeChecked();
   expect(screen.getByLabelText("Las [m NAP]")).toHaveValue(next.concreteExtension.jointNap);
   expect(screen.getByLabelText("Houtdiameter bij de las [mm]")).toBeInTheDocument();
   expect(screen.queryByLabelText(/Axiale stijfheid EA/)).toBeNull();
+  expect(screen.getByLabelText("Opzetter")).toHaveValue("rond-280");
+  // Een kortere opzetter verplaatst de las; boven het grondwater volgt een waarschuwing.
+  fireEvent.change(screen.getByLabelText("Lengte opzetter [m]"),{target:{value:"1.5"}});
+  const shorter=onChange.mock.lastCall![0];
+  expect(shorter.concreteExtension.jointNap).toBeCloseTo(input.pileTopNap-1.5,2);
+  rerender(<InputPanel input={shorter} result={result} onChange={onChange}/>);
+  if(shorter.concreteExtension.jointNap>input.waterNap-.5)expect(screen.getByText(/niet permanent nat/)).toBeInTheDocument();
  });
  it("vraagt EA weer als de opzetter uit gaat, en houdt een tapsheid binnen het hout",()=>{
   const onChange=vi.fn();
@@ -88,6 +98,18 @@ describe("paaltype-invoer",()=>{
   expect(ea).toHaveFocus();
   expect(ea).toHaveAttribute("aria-invalid","true");
   expect(screen.getByText(/zonder EA wordt er niet gerekend/)).toBeInTheDocument();
+ });
+});
+
+describe("standaardmaten",()=>{
+ it("biedt bij een stalen buispaal de buisreeks aan",()=>{
+  const onChange=vi.fn();
+  render(<InputPanel input={{...input,pileTypeId:"steel-pipe-driven-closed-2017",diameterMm:219.1}} result={result} onChange={onChange}/>);
+  const select=screen.getByLabelText("Buismaat");
+  expect(select).toHaveValue("219.1");
+  expect([...select.querySelectorAll("option")].map(o=>o.textContent)).toContain("Ø323,9 mm");
+  fireEvent.change(select,{target:{value:"323.9"}});
+  expect(onChange.mock.lastCall![0].diameterMm).toBe(323.9);
  });
 });
 

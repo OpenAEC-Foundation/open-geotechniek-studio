@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useCalculationsStore } from '../store';
+import { useCalculationsStore, type SheetView } from '../store';
 import { getCalcModule } from '../registry';
 import { useCptStore } from '../../../store/useCptStore';
 import { downloadPdf } from '../../../utils/downloadPdf';
@@ -11,8 +11,6 @@ import type { PileInput } from '../../modules/pile-bearing-capacity/types';
 import './CalculationsView.css';
 import './Worksheet.css';
 import './CalcSheet.css';
-
-type SheetView = 'sheet' | 'model' | 'table' | 'print';
 
 /**
  * Werkbalk voor één berekening, opgezet als rekenblad: links het
@@ -27,9 +25,10 @@ export function CalculationsView() {
   const activeCptId = useCptStore((s) => s.activeCptId);
   const projectMeta = useCptStore((s) => s.projectMeta);
   const [showNewDialog, setShowNewDialog] = useState(false);
-  // De weergave hoort bij één berekening: wissel je van berekening, dan
-  // begin je weer bij invoer + uitdraai.
-  const [viewState, setViewState] = useState<{ calcId: string | null; view: SheetView }>({ calcId: null, view: 'sheet' });
+  // De weergave hoort bij één berekening en wordt gedeeld met de projectboom:
+  // wissel je van berekening, dan begin je weer bij invoer + uitdraai.
+  const nav = useCalculationsStore((s) => s.sheetNav);
+  const navigate = useCalculationsStore((s) => s.navigate);
   const active = useMemo(() => (activeDocId ? byDoc.get(activeDocId) : [])?.find((c) => c.id === activeCalcId), [activeDocId, activeCalcId, byDoc]);
   useEffect(() => {
     const open = () => setShowNewDialog(true);
@@ -46,9 +45,10 @@ export function CalculationsView() {
   // De draagvermogentabel bestaat alleen voor de axiale paal; een module
   // zonder rapport heeft geen afdrukvoorbeeld.
   const hasTable = mod?.id === 'pile-bearing-capacity';
-  const requested = viewState.calcId === active?.id ? viewState.view : 'sheet';
+  const requested = nav.calcId === active?.id ? nav.view : 'sheet';
+  const focusCpt = nav.calcId === active?.id ? nav.cptId : null;
   const shownView: SheetView = requested === 'table' && !hasTable ? 'sheet' : requested === 'print' && !mod?.buildReport ? 'sheet' : requested;
-  const setView = (view: SheetView) => setViewState({ calcId: active?.id ?? null, view });
+  const setView = (view: SheetView) => { if (active) navigate(active.id, view); };
 
   return <div className="calc-workspace">
     <aside className="worksheet-explorer">
@@ -70,7 +70,8 @@ export function CalculationsView() {
         {shownView === 'table' && <div className="cs-table-view">
           <section className="cs-param-form" aria-label="Invoer"><mod.InputPanel input={input} result={result} onChange={onChange} /></section>
           <div className="cs-table-view-main">
-            <CapacityTable key={active.id} input={input as PileInput} cpts={cpts} onChange={onChange} onOpen={() => setView('sheet')} />
+            <CapacityTable key={active.id} input={input as PileInput} cpts={cpts} onChange={onChange} onOpen={() => setView('sheet')}
+              cptId={focusCpt} onFocusCpt={(id) => navigate(active.id, 'table', id)} />
           </div>
         </div>}
         {shownView === 'print' && <PrintPreview mod={mod} input={input} result={result} ctx={ctx} />}

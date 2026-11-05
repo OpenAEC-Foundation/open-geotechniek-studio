@@ -15,6 +15,8 @@ export interface LateralInput {
   surchargeKpa:number; surchargeMode:'unresolved'|'retaining'; surchargeWidthM:number; surchargeSign:number;
   section:PileSection; layers:LateralLayer[];
   analysisMode?:AnalysisMode;layerCorrection?:LayerCorrection;
+  /** Paalkop in m NAP; alleen voor invoer en weergave, de berekening rekent vanaf de kop. */
+  headNap?:number;
 }
 export const lateralExample:LateralInput = {
   lengthM:12,maxElementM:.5,headForceKn:30,headMomentKnM:20,nEdKn:0,

@@ -17,13 +17,14 @@
 import type { jsPDF } from "jspdf";
 import type { Cpt } from "../../../../types/cpt";
 import type { PileInput, PileResult, SoilKind } from "../types";
+import { getPileType } from "../catalog";
+import { MATERIAL_COLORS, materialColor } from "./material-colors";
 
 // ─── Kleuren ─────────────────────────────────────────────────────
 const COL_QC: [number, number, number] = [40, 60, 160];      // meetcurve blauw
 const COL_GRID: [number, number, number] = [200, 200, 210];
 const COL_NEG: [number, number, number] = [220, 40, 40];     // neg. kleef rood
 const COL_POS: [number, number, number] = [40, 70, 200];     // pos. wrijving blauw
-const COL_PILE: [number, number, number] = [150, 150, 155];
 const COL_CLIP: [number, number, number] = [120, 20, 60];    // afgeknotte qc
 
 const SOIL_FILL: Record<SoilKind, [number, number, number]> = {
@@ -250,7 +251,8 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   // ─── Paal-balk links + belasting-pijlen ────────────────────────
   const pTopY = yOf(input.pileTopNap);
   const pToeY = yOf(input.pileToeNap);
-  doc.setFillColor(...COL_PILE);
+  const pileRgb = materialColor(getPileType(input.pileTypeId)?.material).rgb;
+  doc.setFillColor(...pileRgb);
   doc.setDrawColor(60);
   doc.setLineWidth(0.3);
   const ext = input.concreteExtension;
@@ -259,9 +261,9 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   if (ext) {
     // Opzetter in betonkleur, op dezelfde schaal als het hout eronder.
     const wExt = Math.min(2.6, 1.6 * ext.sizeMm / input.diameterMm);
-    doc.setFillColor(212, 165, 116);
+    doc.setFillColor(...MATERIAL_COLORS.concrete.rgb);
     doc.rect(pileX - wExt, pTopY, 2 * wExt, woodTopY - pTopY, "FD");
-    doc.setFillColor(...COL_PILE);
+    doc.setFillColor(...pileRgb);
   }
   if (input.timberTaper) {
     const wToe = 1.6 * input.timberTaper.toeDiameterMm / input.diameterMm;

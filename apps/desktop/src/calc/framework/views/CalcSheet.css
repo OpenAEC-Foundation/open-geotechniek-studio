@@ -139,3 +139,10 @@
   .cs-param-body { grid-template-columns: minmax(0, 1fr); }
   .cs-param-form { border-right: 0; }
 }
+
+/* Inklapbare sectie voor zelden gewijzigde instellingen. */
+.cs-more { margin-top: 14px; border-top: 1px solid var(--oa-border); }
+.cs-more > summary { padding: 8px 0 4px; color: var(--oa-text-secondary); font: 600 10px var(--oa-font-mono); text-transform: uppercase; letter-spacing: .06em; cursor: pointer; }
+.cs-more > summary:hover { color: var(--oa-text); }
+.cs-more[open] > summary { color: var(--oa-accent-text); }
+.cs-more-body { padding: 2px 0 6px; }

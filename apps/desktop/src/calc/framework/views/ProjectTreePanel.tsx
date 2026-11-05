@@ -3,6 +3,10 @@ import { useCalculationsStore } from "../store";
 import { useCptStore } from "../../../store/useCptStore";
 import { getCalcModule } from "../registry";
 import type { CalculationInstance } from "../types";
+import type { PileInput } from "../../modules/pile-bearing-capacity/types";
+
+/** Modules met een draagvermogentabel krijgen onderliggende niveaus in de boom. */
+const TABLE_MODULES = new Set(["pile-bearing-capacity"]);
 
 interface Props {
   onAddClick: () => void;
@@ -26,7 +30,9 @@ export function ProjectTreePanel({ onAddClick }: Props) {
     [activeDocId, byDoc],
   ) as CalculationInstance[];
   const visibleList = list.filter((calculation) => getCalcModule(calculation.moduleId));
-  const setActive = useCalculationsStore((s) => s.setActive);
+  const navigate = useCalculationsStore((s) => s.navigate);
+  const nav = useCalculationsStore((s) => s.sheetNav);
+  const cpts = useCptStore((s) => s.cpts);
   const remove = useCalculationsStore((s) => s.removeCalculation);
   const duplicate = useCalculationsStore((s) => s.duplicate);
   const update = useCalculationsStore((s) => s.updateCalculation);
@@ -99,7 +105,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                   ) : (
                     <button
                       className="calc-tree-item"
-                      onClick={() => setActive(c.id)}
+                      onClick={() => navigate(c.id, TABLE_MODULES.has(c.moduleId) ? "table" : "sheet")}
                       onDoubleClick={() => {
                         setRenaming(c.id);
                         setDraftName(c.name);
@@ -130,6 +136,22 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                       ×
                     </button>
                   </div>
+                  {isActive && TABLE_MODULES.has(c.moduleId) && (() => {
+                    const ids = (c.input as PileInput).capacityTable?.cptIds ?? [...cpts.keys()];
+                    const here = nav.calcId === c.id ? nav : { view: "sheet", cptId: null };
+                    const node = (label: string, current: boolean, go: () => void, depth = 0) => (
+                      <li key={label} className={`calc-tree-child depth-${depth}${current ? " current" : ""}`}>
+                        <button type="button" onClick={go} aria-current={current ? "page" : undefined}>{label}</button>
+                      </li>
+                    );
+                    return (
+                      <ul className="calc-tree-children" aria-label={`Onderdelen van ${c.name}`}>
+                        {node("Draagvermogentabel", here.view === "table" && !here.cptId, () => navigate(c.id, "table"))}
+                        {ids.map((id) => node(`Sondering ${id}`, here.view === "table" && here.cptId === id, () => navigate(c.id, "table", id), 1))}
+                        {node("Rekenblad", here.view !== "table", () => navigate(c.id, "sheet"))}
+                      </ul>
+                    );
+                  })()}
                 </li>
               );
             })}

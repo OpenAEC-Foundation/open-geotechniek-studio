@@ -6,12 +6,18 @@ import type { BeamResult } from './beam';
 import { SpringInspector } from './SpringInspector';
 import { PileScene3D } from './PileScene3D';
 import { SpringField } from './SpringField';
+import { ForceDiagrams } from './ForceDiagrams';
 import './explorer.css';
 
 const f=(value:number,digits=3)=>value.toLocaleString('nl-NL',{maximumFractionDigits:digits});
 type InspectableResult=Extract<LateralResult,{ok:true}>&{springs:SpringState[];analysisMode:AnalysisMode;convergence:ConvergenceInfo;layering:EquivalentLayer[]};
 type ModelProps={input:LateralInput;beam:BeamResult;springs:SpringState[];selectedId:string|undefined;onSelect:(id:string)=>void;scale:number};
 
+/** Veren die getekend worden: minstens 14 px uit elkaar; de geselecteerde altijd. */
+export function visibleSprings(springs:SpringState[],y:(z:number)=>number,selectedId:string|undefined,minPx=14):SpringState[] {
+  let last=-Infinity;
+  return [...springs].sort((a,b)=>a.zM-b.zM).filter(s=>{const show=y(s.zM)-last>=minPx||s.id===selectedId;if(y(s.zM)-last>=minPx)last=y(s.zM);return show;});
+}
 export function PileCalculationModel({input:i,beam,springs,selectedId,onSelect,scale}:ModelProps) {
   const arrowId=useId();
   const depth=(z:number)=>65+490*z/i.lengthM;
@@ -24,7 +30,7 @@ export function PileCalculationModel({input:i,beam,springs,selectedId,onSelect,s
     {beam.elements.map((element,index)=><line key={index} x1="210" x2="210" y1={depth(element.topM)} y2={depth(element.bottomM)} className="pile-element"/>)}
     <polyline className="pile-response" points={beam.samples.map(p=>`${horizontal(p.yM)},${depth(p.zM)}`).join(' ')}/>
     {beam.nodes.map((node,index)=><circle key={index} cx="210" cy={depth(node.zM)} r="2" className="pile-node"/>)}
-    {springs.map(s=><g key={s.id} role="button" tabIndex={0} aria-label={`Selecteer veer ${s.id}`} aria-pressed={s.id===selectedId} className={`pile-spring ${s.id===selectedId?'is-selected':''}`}
+    {visibleSprings(springs,depth,selectedId).map(s=><g key={s.id} role="button" tabIndex={0} aria-label={`Selecteer veer ${s.id}`} aria-pressed={s.id===selectedId} className={`pile-spring ${s.id===selectedId?'is-selected':''}`}
       onClick={()=>onSelect(s.id)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onSelect(s.id);}}}>
       <title>{s.id} · z {f(s.zM)} m · y {f(s.displacementM*1000)} mm</title>
       <path d={`M216 ${depth(s.zM)}h8l4 -4l6 8l6 -8l6 8l4 -4h16`} className="pile-spring-line"/>
@@ -36,17 +42,6 @@ export function PileCalculationModel({input:i,beam,springs,selectedId,onSelect,s
     {i.toeFixed&&<g><path className="pile-support" d="M185 557h50m-50 0l-6 10m16 -10l-6 10m16 -10l-6 10m16 -10l-6 10m16 -10l-6 10m16 -10l-6 10"/><text x="280" y="575">Punt ingeklemd</text></g>}
     <text x="85" y="600">Elementlijn · verplaatsing ×{f(scale,0)} · klik een veerpunt</text>
   </svg></div>;
-}
-function Diagrams({input,beam}:{input:LateralInput;beam:BeamResult}) {
-  const curves=[{label:'Verplaatsing [mm]',value:(p:BeamResult['samples'][number])=>p.yM*1000},
-    {label:'Moment [kNm]',value:(p:BeamResult['samples'][number])=>p.momentKnM},{label:'Dwarskracht [kN]',value:(p:BeamResult['samples'][number])=>p.shearKn},
-    {label:'Grondreactie [kN/m]',value:(p:BeamResult['samples'][number])=>p.reactionKnM}];
-  return <><svg viewBox="0 0 820 580" role="img" aria-label="Diagrammen over de paaldiepte">{curves.map((curve,index)=>{
-    const max=Math.max(1e-12,...beam.samples.map(p=>Math.abs(curve.value(p)))),cx=110+index*195;
-    return <g key={curve.label}><text x={cx} y="30" textAnchor="middle">{curve.label}</text><line className="pile-axis" x1={cx} x2={cx} y1="55" y2="515"/>
-      {[0,.25,.5,.75,1].map(t=><g key={t}><line className="pile-grid" x1={cx-75} x2={cx+75} y1={55+460*t} y2={55+460*t}/>{index===0&&<text x="5" y={59+460*t}>{f(t*input.lengthM)} m</text>}</g>)}
-      <polyline className="pile-response" points={beam.samples.map(p=>`${cx+70*curve.value(p)/max},${55+460*p.zM/input.lengthM}`).join(' ')}/><text x={cx} y="550" textAnchor="middle">±{f(max)}</text></g>;
-  })}</svg><p>Elke grootheid heeft een eigen horizontale schaal. Positieve y naar rechts; z vanaf kop naar beneden. p is de mobilisatie; de grondreactie op de paal werkt tegengesteld.</p></>;
 }
 export function LateralExplorer({input,result}:PanelProps<LateralInput,LateralResult>) {
   const [view,setView]=useState<'3D'|'Rekenmodel'|'Veren'|'Diagrammen'>('3D');
@@ -66,7 +61,7 @@ export function LateralExplorer({input,result}:PanelProps<LateralInput,LateralRe
       <button type="button" onClick={()=>setScale(1)}>Ware schaal</button></div>
     <div className="pile-explorer-layout"><section className="pile-view" id="pile-active-view" role="tabpanel" aria-labelledby={`pile-tab-${view}`}>
       <p className="pile-scale">Geometrie in meters · verplaatsing ×{scale} · werkelijk y bij geselecteerde veer: {selected?`${f(selected.displacementM*1000)} mm`:'—'}</p>
-      {view==='3D'?<PileScene3D {...props} fallback={<PileCalculationModel {...props}/>}/>:view==='Rekenmodel'?<PileCalculationModel {...props}/>:view==='Veren'?<SpringField input={input} springs={springs} mode={r.analysisMode} selectedId={selected?.id} onSelect={setSelectedId}/>:<Diagrams input={input} beam={r.beam}/>}
+      {view==='3D'?<PileScene3D {...props} fallback={<PileCalculationModel {...props}/>}/>:view==='Rekenmodel'?<PileCalculationModel {...props}/>:view==='Veren'?<SpringField input={input} springs={springs} mode={r.analysisMode} selectedId={selected?.id} onSelect={setSelectedId}/>:<ForceDiagrams input={input} beam={r.beam}/>}
       <p className="pile-model-note">3D toont dezelfde Euler–Bernoulli-ligger en grondveren. De weergave is geen continuümgrondberekening. Grondlagen zijn schematisch transparant.</p>
     </section><aside><label className="pile-depth-select">Grondveer op diepte<select aria-label="Grondveer op diepte" value={selected?.id??''} onChange={event=>setSelectedId(event.target.value)}>{springs.map(s=><option key={s.id} value={s.id}>z {f(s.zM)} m · laag {s.layerIndex+1} · {s.id}</option>)}</select></label><SpringInspector spring={selected} ultimate={selectedLayer?.ultimate}/></aside></div>
   </div>;

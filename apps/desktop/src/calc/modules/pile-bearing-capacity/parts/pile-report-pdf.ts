@@ -67,22 +67,26 @@ export interface PileReportInputs {
   pileTypeName: string;
   /** Factoren αp, αs, αt uit de pile-catalog. */
   factors: { alphaP: number; alphaS: number; alphaT: number };
+  /** Statistische eindanalyse; uit bij voorbeelden met verschillende maat of puntniveau. */
+  endAnalysis?: boolean;
+  /** Extra bladen na de berekeningen, bijvoorbeeld de draagvermogentabellen. */
+  appendix?: (c: Cursor) => void;
 }
 
 // ─── PDF layout constants ────────────────────────────────────────
-const PAGE_W = 210;
-const PAGE_H = 297;
-const M = { top: 14, right: 14, bottom: 18, left: 14 };
-const CONTENT_W = PAGE_W - M.left - M.right;
-const FOOTER_Y = PAGE_H - 8;
-const HEADER_BOTTOM = 43;
-const TOTAL_PAGES_TOKEN = "{tp}";
+export const PAGE_W = 210;
+export const PAGE_H = 297;
+export const M = { top: 14, right: 14, bottom: 18, left: 14 };
+export const CONTENT_W = PAGE_W - M.left - M.right;
+export const FOOTER_Y = PAGE_H - 8;
+export const HEADER_BOTTOM = 43;
+export const TOTAL_PAGES_TOKEN = "{tp}";
 
 // ─── Getal-notatie (NL: decimaal-komma) ──────────────────────────
-function nl(v: number, dec = 2): string {
+export function nl(v: number, dec = 2): string {
   return v.toFixed(dec).replace(".", ",");
 }
-function nlNap(v: number): string {
+export function nlNap(v: number): string {
   return `NAP ${v >= 0 ? "+" : ""}${nl(v, 2)} m`;
 }
 
@@ -110,15 +114,17 @@ const WINANSI_MAP: Array<[RegExp, string]> = [
   [/≤/g, "<="],
   [/√/g, "sqrt"],
   [/⁻/g, "-"],
+  [/□\s?/g, ""],
+  [/₀/g, "0"],
 ];
-function winAnsi(s: string): string {
+export function winAnsi(s: string): string {
   let out = s;
   for (const [re, repl] of WINANSI_MAP) out = out.replace(re, repl);
   return out;
 }
 
 // ─── Cursor + chrome ─────────────────────────────────────────────
-interface Cursor {
+export interface Cursor {
   doc: jsPDF;
   y: number;
   pageNo: number;
@@ -127,7 +133,7 @@ interface Cursor {
   continuationTitle?: string;
 }
 
-function makeCursor(doc: jsPDF, project: PileReportProject): Cursor {
+export function makeCursor(doc: jsPDF, project: PileReportProject): Cursor {
   let pageNo = 1;
   const printChrome = () => {
     doc.setFont("helvetica", "bolditalic");
@@ -199,7 +205,7 @@ function makeCursor(doc: jsPDF, project: PileReportProject): Cursor {
 // ─── Render helpers ──────────────────────────────────────────────
 
 /** Sectiekop met optionele norm-artikel-referentie rechts uitgelijnd. */
-function sectionTitle(c: Cursor, title: string, artRef?: string): void {
+export function sectionTitle(c: Cursor, title: string, artRef?: string): void {
   c.reserve(10);
   c.doc.setFont("helvetica", "bold");
   c.doc.setFontSize(10);
@@ -216,7 +222,7 @@ function sectionTitle(c: Cursor, title: string, artRef?: string): void {
   c.y += 5.5;
 }
 
-function paragraph(c: Cursor, text: string, opts: { italic?: boolean; size?: number; indent?: number } = {}): void {
+export function paragraph(c: Cursor, text: string, opts: { italic?: boolean; size?: number; indent?: number } = {}): void {
   const size = opts.size ?? 8.5;
   const lineH = size * 0.45;
   c.doc.setFont("helvetica", opts.italic ? "italic" : "normal");
@@ -234,7 +240,7 @@ function paragraph(c: Cursor, text: string, opts: { italic?: boolean; size?: num
 
 /** 3-regelige formule (symbolisch → ingevuld → resultaat) met optionele
  *  verwijzing rechts (bv. "...(7.6)" of "...(Figuur 7.n)"). */
-function formula(
+export function formula(
   c: Cursor,
   lhs: string,
   symbolic: string,
@@ -274,13 +280,13 @@ function formula(
   c.doc.setFont("helvetica", "normal");
 }
 
-interface TableCol {
+export interface TableCol {
   label: string;
   width: number;
   align?: "left" | "right";
 }
 
-function table(
+export function table(
   c: Cursor,
   cols: TableCol[],
   rows: string[][],
@@ -321,7 +327,7 @@ function table(
   c.doc.setFont("helvetica", "normal");
 }
 
-function kv(c: Cursor, label: string, value: string): void {
+export function kv(c: Cursor, label: string, value: string): void {
   c.doc.setFont("helvetica", "normal");
   c.doc.setFontSize(8.5);
   const lines = c.doc.splitTextToSize(winAnsi(value), CONTENT_W - 52) as string[];
@@ -826,7 +832,8 @@ export function generatePileReport(inputs: PileReportInputs): Uint8Array {
     formula(c, "R_c;net;d", "R_c;d - F_nk;d", `${nl(r.rcD, 1)} - ${nl(first.result.negKleef.fnkD, 1)}`, `${nl(r.rcNetD, 1)} kN`);
     formula(c, "U.C.", "NEd / R_c;net;d", `${nl(first.input.nEd, 1)} / ${nl(r.rcNetD, 1)}`, `${nl(r.unityCheck, 2)}`);
     paragraph(c, "Alleenstaande drukpaal bij een sondering. Historische zakking en paalgroepwerking niet geverifieerd.");
-  } else renderEndAnalysis(c, inputs.sonderingen, inputs.summary, totalNEd);
+  } else if (inputs.endAnalysis !== false) renderEndAnalysis(c, inputs.sonderingen, inputs.summary, totalNEd);
+  inputs.appendix?.(c);
 
   // Vervang het {tp}-token door het werkelijke paginatotaal.
   if (typeof doc.putTotalPages === "function") {
