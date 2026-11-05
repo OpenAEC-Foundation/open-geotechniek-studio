@@ -577,8 +577,8 @@ fn tool_definitions() -> Value {
         ),
         (
             "studio_add_calculation",
-            "Add and select a pile bearing capacity calculation",
-            json!({"moduleId":{"type":"string","enum":["pile-bearing-capacity"]},"name":{"type":"string"},"input":{"type":"object"}}),
+            "Add and select a vertical or lateral pile calculation",
+            json!({"moduleId":{"type":"string","enum":["pile-bearing-capacity","laterally-loaded-pile"]},"name":{"type":"string"},"input":{"type":"object"}}),
             vec![],
         ),
         (

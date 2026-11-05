@@ -7,6 +7,7 @@ import { getPileType } from "../calc/modules/pile-bearing-capacity/catalog";
 import { changeStandard, getStandard } from "../calc/modules/pile-bearing-capacity/standards";
 import type { PileInput } from "../calc/modules/pile-bearing-capacity/types";
 import type { ProjectMeta } from "../types/cpt";
+import { computeLateral, lateralExample, type LateralInput } from '../calc/modules/laterally-loaded-pile/compute';
 
 type ObjectValue = Record<string, unknown>;
 function object(value: unknown, label: string): ObjectValue {
@@ -102,6 +103,39 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
   return next as unknown as PileInput;
 }
 
+function lateralPatch(input:unknown,patch:unknown):LateralInput {
+  const fields=object(patch,'Horizontale invoerpatch'); keys(fields,Object.keys(lateralExample));
+  const next=structuredClone(object(input,'Horizontale invoer'));
+  const validate=(values:ObjectValue,example:ObjectValue)=>{
+    keys(values,Object.keys(example));
+    for(const [key,value] of Object.entries(values)) {
+      if(typeof example[key]==='number')number(value,key);
+      else if(typeof value!==typeof example[key])throw new Error(`Ongeldig veld: ${key}`);
+    }
+  };
+  for(const [key,value] of Object.entries(fields)) {
+    if(key==='section') {
+      const section=object(value,'Doorsnede');validate(section,lateralExample.section as unknown as ObjectValue);
+      next.section={...object(next.section,'Doorsnede'),...section};
+    } else if(key==='layers') {
+      if(!Array.isArray(value)||value.length>40)throw new Error('Ongeldige grondlagen');
+      next.layers=value.map(v=>{
+        const layer=object(v,'Grondlaag');validate(layer,lateralExample.layers[0] as unknown as ObjectValue);
+        for(const key of Object.keys(lateralExample.layers[0]))if(!(key in layer))throw new Error(`Grondlaag mist ${key}`);
+        return {...layer};
+      });
+    } else {validate({[key]:value},lateralExample as unknown as ObjectValue);next[key]=value;}
+  }
+  const result=computeLateral(next as unknown as LateralInput);
+  if(!result.ok)throw new Error(result.error);
+  return next as unknown as LateralInput;
+}
+function calculationPatch(moduleId:string,input:unknown,patch:unknown) {
+  if(moduleId==='pile-bearing-capacity')return pilePatch(input,patch);
+  if(moduleId==='laterally-loaded-pile')return lateralPatch(input,patch);
+  throw new Error('Rekenmodule niet beschikbaar voor Studio MCP');
+}
+
 function snapshot() {
   const state = useCptStore.getState();
   return structuredClone({
@@ -156,8 +190,8 @@ export async function executeStudioTool(tool: string, rawArgs: unknown, changeVi
       const doc = project();
       const moduleId = args.moduleId === undefined ? "pile-bearing-capacity" : text(args.moduleId, "Module");
       const module = getCalcModule(moduleId);
-      if (!module || moduleId !== "pile-bearing-capacity") throw new Error("Rekenmodule niet beschikbaar voor Studio MCP");
-      const input = pilePatch(module.defaultInput(context()), args.input ?? {});
+      if (!module) throw new Error("Rekenmodule niet beschikbaar voor Studio MCP");
+      const input = calculationPatch(moduleId,module.defaultInput(context()), args.input ?? {});
       const name = args.name === undefined ? module.name : text(args.name, "Berekeningsnaam");
       const id = useCalculationsStore.getState().addCalculation(doc.id, moduleId, name, input);
       changeView("calculations"); return { id, ...snapshot() };
@@ -165,8 +199,7 @@ export async function executeStudioTool(tool: string, rawArgs: unknown, changeVi
     case "studio_update_calculation": {
       keys(args, ["id", "patch"]);
       const { doc, instance } = calculation(args.id);
-      if (instance.moduleId !== "pile-bearing-capacity") throw new Error("Alleen paalinvoer wordt ondersteund");
-      const input = pilePatch(instance.input, args.patch);
+      const input = calculationPatch(instance.moduleId,instance.input, args.patch);
       useCalculationsStore.getState().updateCalculation(doc.id, instance.id, { input });
       return { id: instance.id, input: structuredClone(input) };
     }

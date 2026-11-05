@@ -35,6 +35,15 @@ it("voegt een paalberekening toe, wijzigt invoer en selecteert het werkblad", as
   expect(view).toHaveBeenCalledWith("calculations");
   expect(await executeStudioTool("studio_get_calculation", { id: added.id }, view)).toHaveProperty("result");
 });
+it("bedient horizontale paalbelasting als afzonderlijk rekenblad", async()=>{
+  newProjectDocument();
+  const added=await executeStudioTool('studio_add_calculation',{moduleId:'laterally-loaded-pile',name:'Horizontaal'},view) as {id:string};
+  await executeStudioTool('studio_update_calculation',{id:added.id,patch:{headMomentKnM:50,section:{kind:'filled-tube',tubeParticipates:true}}},view);
+  const data=await executeStudioTool('studio_get_calculation',{id:added.id},view);
+  expect(data).toMatchObject({instance:{moduleId:'laterally-loaded-pile',input:{headMomentKnM:50,section:{kind:'filled-tube',tubeParticipates:true}}},result:{ok:true}});
+  for(const patch of [{section:{arbitraryCode:'x'}},{layers:[{topM:0}]},{headForceKn:'veel'},{surchargeKpa:10}])
+    await expect(executeStudioTool('studio_update_calculation',{id:added.id,patch},view)).rejects.toThrow();
+});
 it("weigert onveilige of ongeldige patches zonder de projectinvoer te beschadigen", async () => {
   newProjectDocument();
   const added = await executeStudioTool("studio_add_calculation", {}, view) as { id: string };
