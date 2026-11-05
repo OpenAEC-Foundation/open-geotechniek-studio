@@ -35,6 +35,15 @@ export interface PileTypeSpec {
   qcIIIStartCapMpa?: number;
 }
 
+/** Betonopzetter op een houten paal: boven de las beton, eronder hout. */
+export interface ConcreteExtension {
+  /** Onderkant van de opzetter, de las tussen beton en hout [m NAP]. */
+  jointNap: number;
+  /** Zijde (vierkant) of diameter (rond) van de opzetter [mm]. */
+  sizeMm: number;
+  isCircular: boolean;
+}
+
 export interface ProjectPileFactors {
   alphaP: number;
   alphaS: number;
@@ -56,8 +65,12 @@ export interface PileInput {
   wallThicknessMm: number;     // 8.0 — voor EA
   /** Ontbrekend betekent dezelfde maat als de schacht (bestaande projecten). */
   baseDiameterMm?: number;
-  /** Hout: lineair verloop vanaf kopdiameter over lengthM, daarna constante puntdiameter. */
+  /** Hout: lineair verloop vanaf de bovenkant van het hout (paalkop, of de
+   *  las bij een betonopzetter) over lengthM, daarna constante puntdiameter. */
   timberTaper?: { toeDiameterMm: number; lengthM: number };
+  /** Hout: betonopzetter van paalkop tot de las. Daaronder het hout, met
+   *  diameterMm als houtdiameter bij de las. */
+  concreteExtension?: ConcreteExtension;
   /** Projectspecifieke axiale stijfheid EA, in kN. */
   axialStiffnessKn?: number;
   projectFactors?: ProjectPileFactors;

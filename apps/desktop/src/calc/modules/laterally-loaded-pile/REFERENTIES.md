@@ -13,6 +13,8 @@ gevallen vereisen grondmodelmapping, digitalisering of aanvullende gegevens.
 Geen van deze 50 gevallen is al als geslaagde externe solververificatie
 geregistreerd. De onafhankelijke analytische tests van de rekenkern zijn eigen
 mechanische controles en tellen niet mee als externe voorbeelden.
+Zie [verificatie](VERIFICATIE.md) voor de vergelijking met gesloten
+oplossingen en een onafhankelijke differentieoplossing.
 
 De gedownloade bron-PDF's en uitgebreidere datasets worden buiten de repository
 bewaard. Het bronregister geeft publieke URLs en exacte vindplaatsen.

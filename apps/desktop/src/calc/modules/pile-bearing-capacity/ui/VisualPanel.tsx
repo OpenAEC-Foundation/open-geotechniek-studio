@@ -251,7 +251,10 @@ function PileGraphic({
   const yTopClamped = Math.max(plotTop, Math.min(plotBottom, yPileTop));
   const yToeClamped = Math.max(plotTop, Math.min(plotBottom, yPileToe));
   const bodyH = yToeClamped - yTopClamped;
-  const taperNaps = input.timberTaper ? [input.pileTopNap, input.pileTopNap - input.timberTaper.lengthM, input.pileToeNap] : [];
+  // Bij een betonopzetter begint het hout (en de tapsheid) pas bij de las.
+  const ext = input.concreteExtension;
+  const woodTop = ext?.jointNap ?? input.pileTopNap;
+  const taperNaps = input.timberTaper ? [woodTop, woodTop - input.timberTaper.lengthM, input.pileToeNap] : [];
   const taperY = (nap: number) => yPileTop + (input.pileTopNap - nap) / (input.pileTopNap - input.pileToeNap) * (yPileToe - yPileTop);
   const taperPoints = [...taperNaps.map(nap => `${cx - diaPx * shaftDiameterAtNap(input, nap) / input.diameterMm / 2},${taperY(nap)}`),
     ...[...taperNaps].reverse().map(nap => `${cx + diaPx * shaftDiameterAtNap(input, nap) / input.diameterMm / 2},${taperY(nap)}`)].join(" ");
@@ -263,6 +266,10 @@ function PileGraphic({
   // rechthoek met platte uiteinden. tipH = 0 → de paalpunt-pijl wordt
   // direct onder yPileToe gerendered.
   const tipH = 0;
+
+  // Opzetter: van paalkop tot de las, breedte op schaal van de houtdiameter.
+  const yJointClamped = ext ? Math.max(plotTop, Math.min(plotBottom, taperY(ext.jointNap))) : yTopClamped;
+  const extPx = ext ? Math.min(PILE_GFX_MAX_W * 1.3, diaPx * ext.sizeMm / input.diameterMm) : 0;
 
   // ─── Force-arrows: schaal alle pijlen relatief t.o.v. de max van de
   // drie. Maximum visuele lengte = 28 px zodat het binnen PILE_COL_W past. ──
@@ -321,7 +328,17 @@ function PileGraphic({
       {/* Pile-body: voor stalen buispaal (hasRebarCage=true) tekenen we
           het composiet: buitenste ring (staal) + binnenkern (beton). Voor
           pure stalen of pure betonpalen: één rect met material-kleur. */}
-      {bodyH > 0 && (
+      {bodyH > 0 && ext && (
+        <g className="pile-gfx-extension">
+          {input.timberTaper
+            ? <polygon points={taperPoints} fill={fill} stroke={stroke} strokeWidth={1.5} />
+            : <rect x={xPileLeft} y={yJointClamped} width={diaPx} height={Math.max(0, yToeClamped - yJointClamped)} fill={fill} stroke={stroke} strokeWidth={1.5} />}
+          <rect x={cx - extPx / 2} y={yTopClamped} width={extPx} height={Math.max(0, yJointClamped - yTopClamped)} fill="#d4a574" stroke={stroke} strokeWidth={1.5}>
+            <title>{`Betonopzetter ${ext.isCircular ? "Ø" : `${ext.sizeMm}×`}${ext.sizeMm} mm tot de las op NAP ${ext.jointNap.toFixed(2)} m`}</title>
+          </rect>
+        </g>
+      )}
+      {bodyH > 0 && !ext && (
         hasRebarCage ? (
           <>
             {/* Buitenste staal-buis: grijs. Het ZIJAANZICHT van een ronde

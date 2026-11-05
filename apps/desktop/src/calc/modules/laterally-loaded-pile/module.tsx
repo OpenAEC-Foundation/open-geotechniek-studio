@@ -78,9 +78,9 @@ function ResultPanel({input,result:r}:Props) {
   </div>;
 }
 const lateralModuleTyped:CalcModule<LateralInput,LateralResult>={
-  id:'laterally-loaded-pile',name:'Horizontale paalbelasting',subtitle:'Grondveren, kopkracht, kopmoment en N–M-doorsnedetoets',category:'pile',icon:'↔',
+  id:'laterally-loaded-pile',name:'Horizontale paalbelasting',subtitle:'Grondveren, kopkracht, kopmoment en N–M-doorsnedetoets',category:'pile',icon:'↔',visualLabel:'Paal- en veermodel',wideVisual:true,
   norm:'CUR166 initiële bedding · Georgiadis-laagcorrectie · projectveerwet',status:'experimental',
   defaultInput:()=>structuredClone(lateralExample),compute:(input)=>computeLateral(input),InputPanel,VisualPanel:LateralExplorer,ResultPanel,
-  statusLine:r=>({text:r.ok?`Concept · y ${f(r.maxDisplacementMm)} mm · M ${f(r.maxMomentKnM)} kNm`:r.error,ok:false}),
+  statusLine:r=>({text:r.ok?`Concept · y ${f(r.maxDisplacementMm)} mm · M ${f(r.maxMomentKnM)} kNm`:r.error,ok:false,pending:true}),
 };
 export const laterallyLoadedPileModule=lateralModuleTyped as unknown as CalcModule;

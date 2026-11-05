@@ -5,6 +5,7 @@ import type { AnalysisMode, ConvergenceInfo, EquivalentLayer, SpringState, Ultim
 import type { BeamResult } from './beam';
 import { SpringInspector } from './SpringInspector';
 import { PileScene3D } from './PileScene3D';
+import { SpringField } from './SpringField';
 import './explorer.css';
 
 const f=(value:number,digits=3)=>value.toLocaleString('nl-NL',{maximumFractionDigits:digits});
@@ -48,7 +49,7 @@ function Diagrams({input,beam}:{input:LateralInput;beam:BeamResult}) {
   })}</svg><p>Elke grootheid heeft een eigen horizontale schaal. Positieve y naar rechts; z vanaf kop naar beneden. p is de mobilisatie; de grondreactie op de paal werkt tegengesteld.</p></>;
 }
 export function LateralExplorer({input,result}:PanelProps<LateralInput,LateralResult>) {
-  const [view,setView]=useState<'3D'|'Rekenmodel'|'Diagrammen'>('3D');
+  const [view,setView]=useState<'3D'|'Rekenmodel'|'Veren'|'Diagrammen'>('3D');
   const [selectedId,setSelectedId]=useState<string>();
   const [scale,setScale]=useState(10);
   if(!result.ok)return <p className="settlement-error" role="alert">{result.error}</p>;
@@ -60,12 +61,12 @@ export function LateralExplorer({input,result}:PanelProps<LateralInput,LateralRe
   return <div className="pile-explorer"><header><h2>Horizontale paalbelasting <span>Concept</span></h2>
     <p>{r.analysisMode==='nonlinear'?'Niet-lineair projectmodel':'Lineair grondmodel'} · EI {f(r.section.eiKnM2)} kNm² · {r.beam.elements.length} elementen · {springs.length} integratiepunten</p>
     {r.convergence&&<p className="pile-convergence">Geconvergeerd · {r.convergence.loadSteps} belastingstappen · {r.convergence.iterations} iteraties · residu {r.convergence.residualKn.toExponential(2)} kN · relatief {r.convergence.relativeResidual.toExponential(2)}</p>}</header>
-    <div className="pile-explorer-toolbar"><div className="pile-tabs" role="tablist" aria-label="Paalweergave">{(['3D','Rekenmodel','Diagrammen'] as const).map(tab=><button key={tab} id={`pile-tab-${tab}`} role="tab" aria-selected={view===tab} aria-controls="pile-active-view" onClick={()=>setView(tab)}>{tab}</button>)}</div>
+    <div className="pile-explorer-toolbar"><div className="pile-tabs" role="tablist" aria-label="Paalweergave">{(['3D','Rekenmodel','Veren','Diagrammen'] as const).map(tab=><button key={tab} id={`pile-tab-${tab}`} role="tab" aria-selected={view===tab} aria-controls="pile-active-view" onClick={()=>setView(tab)}>{tab}</button>)}</div>
       <label>Verplaatsing ×<input type="number" min="1" max="1000" step="1" aria-label="Vergroting verplaatsing" value={scale} onChange={event=>{const v=event.target.valueAsNumber;if(Number.isFinite(v))setScale(Math.max(1,Math.min(1000,v)));}}/></label>
       <button type="button" onClick={()=>setScale(1)}>Ware schaal</button></div>
     <div className="pile-explorer-layout"><section className="pile-view" id="pile-active-view" role="tabpanel" aria-labelledby={`pile-tab-${view}`}>
       <p className="pile-scale">Geometrie in meters · verplaatsing ×{scale} · werkelijk y bij geselecteerde veer: {selected?`${f(selected.displacementM*1000)} mm`:'—'}</p>
-      {view==='3D'?<PileScene3D {...props} fallback={<PileCalculationModel {...props}/>}/>:view==='Rekenmodel'?<PileCalculationModel {...props}/>:<Diagrams input={input} beam={r.beam}/>}
+      {view==='3D'?<PileScene3D {...props} fallback={<PileCalculationModel {...props}/>}/>:view==='Rekenmodel'?<PileCalculationModel {...props}/>:view==='Veren'?<SpringField input={input} springs={springs} mode={r.analysisMode} selectedId={selected?.id} onSelect={setSelectedId}/>:<Diagrams input={input} beam={r.beam}/>}
       <p className="pile-model-note">3D toont dezelfde Euler–Bernoulli-ligger en grondveren. De weergave is geen continuümgrondberekening. Grondlagen zijn schematisch transparant.</p>
     </section><aside><label className="pile-depth-select">Grondveer op diepte<select aria-label="Grondveer op diepte" value={selected?.id??''} onChange={event=>setSelectedId(event.target.value)}>{springs.map(s=><option key={s.id} value={s.id}>z {f(s.zM)} m · laag {s.layerIndex+1} · {s.id}</option>)}</select></label><SpringInspector spring={selected} ultimate={selectedLayer?.ultimate}/></aside></div>
   </div>;

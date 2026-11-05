@@ -1,36 +1,5 @@
 /* apps/desktop/src/calc/modules/pile-bearing-capacity/ui/styles.css */
-.pile-input fieldset {
-  border: 1px solid var(--theme-border, #e7e5e4);
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-bottom: 12px;
-}
-.pile-input legend {
-  font: 600 0.78rem "Inter", sans-serif;
-  padding: 0 6px;
-  color: var(--theme-text, #36363e);
-}
-.pile-input label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font: 500 0.82rem "Inter", sans-serif;
-  margin-bottom: 4px;
-}
-.pile-input input,
-.pile-input select {
-  flex: 1;
-  max-width: 140px;
-  padding: 3px 6px;
-  border: 1px solid var(--theme-border, #cbd5e1);
-  border-radius: 3px;
-  font: 500 0.82rem var(--font-code, "JetBrains Mono"), monospace;
-}
-.pile-input input[type="checkbox"] { flex: 0 0 auto; }
-.pile-input .pile-standard-field { display: block; }
-.pile-input .pile-standard-field select { display: block; width: 100%; max-width: none; margin-top: 4px; }
-.pile-input p { font-size: 0.78rem; line-height: 1.4; overflow-wrap: anywhere; }
+/* Invoerscherm: zie framework/views/CalcSheet.css (cs-form, cs-row, cs-tiles). */
 
 /* ============================================================
    VisualPanel — CPT-chart met paaloverlays
@@ -608,45 +577,48 @@
   flex-direction: column;
   gap: 16px;
 }
-/* Toolbar bovenaan ResultPanel — bevat PDF-download knop. Komt uit
-   sticky-top zodat hij ook bij scrollen zichtbaar blijft. */
-.pile-result-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--theme-border, #e7e5e4);
-  margin-bottom: 4px;
-}
-.pile-result-download-btn {
-  padding: 6px 12px;
-  background: var(--theme-bg, #fff);
-  color: var(--theme-text, #36363e);
-  border: 1px solid var(--theme-border, #cbd5e1);
-  border-radius: 4px;
-  font: 600 0.8rem "Inter", sans-serif;
-  cursor: pointer;
-  transition: background 80ms ease-out, border-color 80ms ease-out;
-}
-.pile-result-download-btn:hover:not(:disabled) {
-  background: var(--theme-bg-hover, #f4f4f5);
-  border-color: var(--theme-border-strong, #94a3b8);
-}
-.pile-result-download-btn:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
+.pile-result { counter-reset: sheet-section; }
 .pile-result section h3 {
-  margin: 0 0 6px;
-  font: 700 0.82rem "Inter", sans-serif;
-  color: var(--theme-text, #36363e);
+  counter-increment: sheet-section;
+  margin: 8px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--oa-border);
+  font: 600 15px/1.3 var(--oa-font-heading);
+  letter-spacing: -.01em;
+  color: var(--oa-text);
 }
+.pile-result section h3::before { content: counter(sheet-section) ". "; }
+
+/* Kop van het rekenblad */
+.pile-sheet-title { padding-bottom: 10px; border-bottom: 2px solid var(--oa-text); }
+.pile-sheet-title h2 { font: 600 19px/1.3 var(--oa-font-heading); letter-spacing: -.02em; margin: 0 0 4px; }
+.pile-sheet-title p { margin: 0; color: var(--oa-text-secondary); font: 12px var(--oa-font-body); }
+
+/* Uitgangspunten: compacte twee-koloms feitentabel */
+.pile-sheet-facts { width: 100%; border-collapse: collapse; font: 12px var(--oa-font-body); }
+.pile-sheet-facts th, .pile-sheet-facts td { padding: 4px 8px 4px 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--oa-border); }
+.pile-sheet-facts th { width: 22%; font-weight: 500; color: var(--oa-text-secondary); white-space: nowrap; }
+.pile-sheet-facts td { font-family: var(--oa-font-numbers); }
+/* Een niveau als "NAP +1.18 m" hoort op één regel. */
+.pile-sheet-facts td:not([colspan]) { white-space: nowrap; }
+
+/* Toetsingstabel + conclusie onder de samenvatting */
+.pile-sheet-checks { width: 100%; margin-top: 12px; border-collapse: collapse; font: 12px var(--oa-font-body); }
+.pile-sheet-checks th { text-align: left; font-weight: 600; padding: 4px 8px 4px 0; border-bottom: 1.5px solid var(--oa-text); }
+.pile-sheet-checks td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--oa-border); }
+.pile-sheet-checks .num { font-family: var(--oa-font-numbers); font-weight: 600; }
+.pile-sheet-conclusion { margin-top: 10px !important; font-family: var(--oa-font-body) !important; }
 .pile-result section p {
   margin: 4px 0;
   font: 500 0.82rem var(--font-code, "JetBrains Mono"), monospace;
   color: var(--theme-text, #36363e);
   line-height: 1.5;
 }
+/* Invoer nog niet compleet: een openstaande vraag, geen foutmelding. */
+.pile-result-pending { margin: 24px 0; padding: 18px 20px; border: 1px dashed var(--oa-border-strong); border-radius: var(--oa-radius-small); background: var(--oa-hover); }
+.pile-result-pending h2 { margin: 0 0 8px; font: 600 15px var(--oa-font-heading); }
+.pile-result-pending p { margin: 4px 0; font: 13px/1.5 var(--oa-font-body) !important; }
+.pile-result-pending-note { color: var(--oa-text-secondary); font-size: 12px !important; }
 .pile-result-error {
   padding: 12px;
   background: rgba(220, 38, 38, 0.08);

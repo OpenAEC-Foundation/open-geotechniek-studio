@@ -12,6 +12,7 @@ import { buildDefaultSoilLayers } from "./catalog";
 import { InputPanel } from "./ui/InputPanel";
 import { VisualPanel } from "./ui/VisualPanel";
 import { ResultPanel } from "./ui/ResultPanel";
+import { buildPileReport, pileReportFileName } from "./parts/build-report";
 
 function defaultInput(ctx: ProjectContext): PileInput {
   const cpt = ctx.activeCptId ? ctx.cpts.get(ctx.activeCptId) : null;
@@ -62,9 +63,24 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
   VisualPanel,
   ResultPanel,
   statusLine: (r) => ({
-    text: r.ok ? `u.c. ${r.summary.unityCheck.toFixed(2)} ${r.summary.passes ? "✓" : "✗"}` : `Fout: ${r.error}`,
+    text: r.ok ? `u.c. ${r.summary.unityCheck.toFixed(2)} ${r.summary.passes ? "✓" : "✗"}` : "Niet berekend",
     ok: r.ok && r.summary.passes,
+    pending: !r.ok,
   }),
+  checks: (input, r) => {
+    if (!r.ok) return [];
+    const kn = (v: number) => `${v.toFixed(0)} kN`;
+    return [
+      { label: "Rb;cal;max", value: kn(r.base.rbCalMax) },
+      { label: "Rs;cal;max", value: kn(r.shaft.rsCalMax) },
+      { label: "Fnk;d", value: kn(r.negKleef.fnkD) },
+      { label: "Rc;net;d", value: kn(r.summary.rcNetD) },
+      // Zonder ontwerpbelasting is u.c. 0 en "voldoet" niets zeggend.
+      ...(input.nEd > 0 ? [{ label: "draagvermogen", value: `NEd ${kn(input.nEd)}`, uc: r.summary.unityCheck }] : []),
+    ];
+  },
+  buildReport: buildPileReport,
+  reportFileName: pileReportFileName,
 };
 
 /** Geëxporteerd als unknown-getypeerde CalcModule zodat hij in
