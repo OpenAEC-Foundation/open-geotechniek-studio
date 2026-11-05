@@ -13,6 +13,7 @@ import { InputPanel } from "./ui/InputPanel";
 import { VisualPanel } from "./ui/VisualPanel";
 import { ResultPanel } from "./ui/ResultPanel";
 import { buildPileReport, pileReportFileName } from "./parts/build-report";
+import { SettingsPanel } from "./ui/SettingsPanel";
 
 function defaultInput(ctx: ProjectContext): PileInput {
   const cpt = ctx.activeCptId ? ctx.cpts.get(ctx.activeCptId) : null;
@@ -65,6 +66,7 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
   InputPanel,
   VisualPanel,
   ResultPanel,
+  SettingsPanel,
   statusLine: (r) => ({
     text: r.ok ? `u.c. ${r.summary.unityCheck.toFixed(2)} ${r.summary.passes ? "✓" : "✗"}` : "Niet berekend",
     ok: r.ok && r.summary.passes,

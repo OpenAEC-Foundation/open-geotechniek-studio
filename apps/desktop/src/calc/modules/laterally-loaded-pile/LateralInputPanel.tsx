@@ -98,13 +98,13 @@ export function LateralInputPanel({ input: i, onChange }: Props) {
           <tr>
             <td><NumberInput label={`Bovenkant laag ${k + 1} [m NAP]`} value={nap(l.topM)} onChange={(v) => setLayer(k, { topM: depth(v) })} /></td>
             <td><NumberInput label={`Onderkant laag ${k + 1} [m NAP]`} value={nap(l.bottomM)} onChange={(v) => setLayer(k, { bottomM: depth(v) })} /></td>
-            <td colSpan={2}><select aria-label={`Bedding laag ${k + 1}`} value={l.springId} onChange={(e) => setLayer(k, { springId: e.target.value })}>{SOIL_SPRINGS.map((v) => <option key={v.id} value={v.id}>{v.label.split(' (')[0]}</option>)}<option value="manual">Eigen waarde</option></select></td>
+            <td colSpan={2}><select aria-label={`Bedding laag ${k + 1}`} value={l.springId} onChange={(e) => { const id = e.target.value, profile = i.puDefaults?.[id]; setLayer(k, { springId: id, ...(profile && Object.values(profile).every(Number.isFinite) ? { ultimate: { ...profile } } : {}) }); }}>{SOIL_SPRINGS.map((v) => <option key={v.id} value={v.id}>{v.label.split(' (')[0]}</option>)}<option value="manual">Eigen waarde</option></select></td>
             <td><button type="button" className="lat-mini" aria-label={`Laag ${k + 1} verwijderen`} disabled={i.layers.length < 2} onClick={() => change({ layers: i.layers.filter((_, j) => j !== k) })}>×</button></td>
           </tr>
           <tr className="lat-layers-sub">
             <td>{l.springId === 'manual'
               ? <NumberInput label={`kh laag ${k + 1} [kN/m³]`} value={l.manualKhKnM3} onChange={(v) => setLayer(k, { manualKhKnM3: v })} />
-              : <span className="lat-readonly" title="CUR166 tabel 3.3, eerste secanttraject">{springValue(l.springId, i.scenario).toLocaleString('nl-NL')}</span>}</td>
+              : <span className="lat-readonly" title={i.springOverrides?.[l.springId]?.[i.scenario] !== undefined ? 'Eigen waarde uit de instellingen' : 'CUR166 tabel 3.3, eerste secanttraject'}>{(i.springOverrides?.[l.springId]?.[i.scenario] ?? springValue(l.springId, i.scenario)).toLocaleString('nl-NL')}{i.springOverrides?.[l.springId]?.[i.scenario] !== undefined ? ' *' : ''}</span>}</td>
             {nonlinear ? (['atSurfaceKnM', 'gradientKnM2', 'capKnM'] as const).map((key) => <td key={key}><NumberInput label={`${key === 'atSurfaceKnM' ? 'pu,0' : key === 'gradientKnM2' ? 'g' : 'pu,max'} laag ${k + 1}`} value={l.ultimate?.[key]}
               onChange={(v) => setLayer(k, { ultimate: { atSurfaceKnM: NaN, gradientKnM2: NaN, capKnM: NaN, ...l.ultimate, [key]: v } })} /></td>) : <td colSpan={3} />}
             <td />

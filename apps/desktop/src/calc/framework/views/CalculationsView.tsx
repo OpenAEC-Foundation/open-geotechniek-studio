@@ -47,7 +47,7 @@ export function CalculationsView() {
   const hasTable = mod?.id === 'pile-bearing-capacity';
   const requested = nav.calcId === active?.id ? nav.view : 'sheet';
   const focusCpt = nav.calcId === active?.id ? nav.cptId : null;
-  const shownView: SheetView = requested === 'table' && !hasTable ? 'sheet' : requested === 'print' && !mod?.buildReport ? 'sheet' : requested;
+  const shownView: SheetView = requested === 'table' && !hasTable ? 'sheet' : requested === 'print' && !mod?.buildReport ? 'sheet' : requested === 'settings' && !mod?.SettingsPanel ? 'sheet' : requested;
   const setView = (view: SheetView) => { if (active) navigate(active.id, view); };
 
   return <div className="calc-workspace">
@@ -63,6 +63,7 @@ export function CalculationsView() {
             <button role="tab" aria-selected={shownView === 'model'} className={shownView === 'model' ? 'active' : ''} onClick={() => setView('model')} title="Verberg de uitdraai zodat de tekening de volle breedte krijgt">Invoer + {(mod.visualLabel ?? 'Sondering').toLowerCase()}</button>
             {hasTable && <button role="tab" aria-selected={shownView === 'table'} className={shownView === 'table' ? 'active' : ''} onClick={() => setView('table')}>Draagvermogentabel</button>}
             {mod.buildReport && <button role="tab" aria-selected={shownView === 'print'} className={shownView === 'print' ? 'active' : ''} onClick={() => setView('print')}>Afdrukvoorbeeld</button>}
+            {mod.SettingsPanel && <button role="tab" aria-selected={shownView === 'settings'} className={shownView === 'settings' ? 'active' : ''} onClick={() => setView('settings')}>Instellingen</button>}
           </div>
           <span className="cs-viewbar-status"><span className="cs-dot" aria-hidden="true" />Concept</span>
         </div>
@@ -75,6 +76,7 @@ export function CalculationsView() {
           </div>
         </div>}
         {shownView === 'print' && <PrintPreview mod={mod} input={input} result={result} ctx={ctx} />}
+        {shownView === 'settings' && mod.SettingsPanel && <section className="cs-settings-view" aria-label="Instellingen"><header><h1>Instellingen · {active.name}</h1><p>Parameters en standaardreeksen van deze berekening. Wijzigingen rekenen direct door.</p></header><mod.SettingsPanel input={input} result={result} onChange={onChange} /></section>}
       </> : <div className="worksheet-empty">
         <svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M12 6h17l8 8v28H12zM29 6v9h8M18 24h13M18 30h13M18 36h8"/></svg>
         <h1>Een nieuwe paalberekening</h1><p>Kies paaldraagvermogen of horizontale paalbelasting.<br/>De invoer staat naast de uitgewerkte uitdraai.</p>

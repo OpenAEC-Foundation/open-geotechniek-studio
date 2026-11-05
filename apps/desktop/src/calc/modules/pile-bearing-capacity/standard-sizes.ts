@@ -24,3 +24,34 @@ export const nearest = (list: readonly number[], v: number) => list.reduce((a, b
 
 /** Opmaak van een maat met decimale komma (168,3). */
 export const sizeText = (v: number) => String(v).replace(".", ",");
+
+/** Standaard maatreeks per paaltype; andere typen hebben geen standaardreeks. */
+export const DEFAULT_SIZES: Record<string, number[]> = {
+  "concrete-prefab-prestressed-driven": PREFAB_SQUARE,
+  "timber-uniform": TIMBER_HEAD,
+  "steel-pipe-driven-closed": STEEL_TUBE_OD,
+  "steel-pipe-driven-closed-2017": STEEL_TUBE_OD,
+};
+
+export interface Presets {
+  sizesMm?: Record<string, number[]>;
+  extensions?: Array<{ sizeMm: number; isCircular: boolean }>;
+  extensionLengthsM?: number[];
+  timberToeMm?: number;
+}
+export interface ExtensionPreset { id: string; label: string; sizeMm: number; isCircular: boolean }
+const extensionPreset = (e: { sizeMm: number; isCircular: boolean }): ExtensionPreset => ({
+  id: `${e.isCircular ? "rond" : "vierkant"}-${e.sizeMm}`,
+  label: e.isCircular ? `Rond Ø${sizeText(e.sizeMm)}` : `Vierkant ${sizeText(e.sizeMm)}×${sizeText(e.sizeMm)}`,
+  sizeMm: e.sizeMm, isCircular: e.isCircular,
+});
+
+/** Reeksen zoals ze voor deze berekening gelden: eigen instellingen, anders de standaard. */
+export function seriesFor(pileTypeId: string, presets?: Presets) {
+  return {
+    sizes: presets?.sizesMm?.[pileTypeId] ?? DEFAULT_SIZES[pileTypeId],
+    extensions: (presets?.extensions?.length ? presets.extensions : EXTENSION_PRESETS).map(extensionPreset),
+    extensionLengths: presets?.extensionLengthsM?.length ? presets.extensionLengthsM : EXTENSION_LENGTHS_M,
+    timberToeMm: presets?.timberToeMm ?? TIMBER_TOE_MM,
+  };
+}

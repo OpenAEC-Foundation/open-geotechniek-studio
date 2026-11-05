@@ -2,7 +2,7 @@ import { create } from "zustand";
 import type { CalculationInstance } from "./types";
 
 /** Weergave binnen een berekening; 'table' met cptId = één sondering. */
-export type SheetView = "sheet" | "model" | "table" | "print";
+export type SheetView = "sheet" | "model" | "table" | "print" | "settings";
 export interface SheetNav { calcId: string | null; view: SheetView; cptId: string | null }
 
 interface CalculationsStore {

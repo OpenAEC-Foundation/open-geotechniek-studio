@@ -38,7 +38,7 @@ export function lateralReportData(input: LateralInput, r: Ok) {
     return {
       index: k + 1, topNap: head - l.topM, bottomNap: head - l.bottomM, thicknessM: l.bottomM - l.topM, springId: l.springId, label: soilLabel(l.springId),
       color: color.fill, rgb: color.rgb,
-      khKnM3: res.khKnM3, source: l.springId === 'manual' ? 'projectwaarde' : `CUR166 tabel 3.3, ${input.scenario === 'low' ? 'laag' : 'hoog'} gemiddelde`,
+      khKnM3: res.khKnM3, source: l.springId === 'manual' ? 'projectwaarde' : input.springOverrides?.[l.springId]?.[input.scenario] !== undefined ? 'eigen waarde (instellingen berekening)' : `CUR166 tabel 3.3, ${input.scenario === 'low' ? 'laag' : 'hoog'} gemiddelde`,
       k0KnM2: res.lineSpringKnM2,
       ultimate: nonlinear && l.ultimate ? `min(${l.ultimate.capKnM}; ${l.ultimate.atSurfaceKnM} + ${l.ultimate.gradientKnM2}·zeq)` : null,
       puTop: nonlinear ? pu(eq.topEquivalentM) : null, puBottom: nonlinear ? pu(eq.bottomEquivalentM) : null,

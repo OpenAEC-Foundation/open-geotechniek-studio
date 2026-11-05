@@ -146,3 +146,19 @@
 .cs-more > summary:hover { color: var(--oa-text); }
 .cs-more[open] > summary { color: var(--oa-accent-text); }
 .cs-more-body { padding: 2px 0 6px; }
+
+/* Instellingen van een berekening */
+.cs-settings-view { overflow: auto; padding: 18px 24px 32px; }
+.cs-settings-view > header h1 { margin: 0 0 4px; font: 600 18px var(--oa-font-heading); }
+.cs-settings-view > header p { margin: 0 0 8px; color: var(--oa-text-secondary); font-size: 12px; }
+.cs-settings { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 8px 28px; align-items: start; max-width: 1200px; }
+.cs-settings-table td, .cs-settings-table th { vertical-align: middle; }
+.cs-settings-table td { white-space: nowrap; }
+.cs-settings-table td input { width: 76px; min-width: 0; }
+.cs-settings-default { color: var(--oa-text-secondary); font: 11px var(--oa-font-numbers, inherit); margin-right: 6px; }
+.cs-settings-active { background: var(--oa-selected); }
+.cs-settings-sub { margin: 14px 0 4px; font: 600 11px var(--oa-font-body); color: var(--oa-text-secondary); }
+.cs-settings-reset { margin: 6px 0; padding: 3px 9px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); background: var(--oa-panel); color: var(--oa-text-secondary); font: 11px var(--oa-font-body); cursor: pointer; }
+.cs-settings-reset:hover { color: var(--oa-text); border-color: var(--oa-border-strong); }
+.cs-settings-actions { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.cs-settings-table td select { width: 110px; min-width: 0; }

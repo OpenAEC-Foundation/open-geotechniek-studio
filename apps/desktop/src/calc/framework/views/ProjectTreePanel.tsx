@@ -148,7 +148,8 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                       <ul className="calc-tree-children" aria-label={`Onderdelen van ${c.name}`}>
                         {node("Draagvermogentabel", here.view === "table" && !here.cptId, () => navigate(c.id, "table"))}
                         {ids.map((id) => node(`Sondering ${id}`, here.view === "table" && here.cptId === id, () => navigate(c.id, "table", id), 1))}
-                        {node("Rekenblad", here.view !== "table", () => navigate(c.id, "sheet"))}
+                        {node("Rekenblad", here.view !== "table" && here.view !== "settings", () => navigate(c.id, "sheet"))}
+                        {node("Instellingen", here.view === "settings", () => navigate(c.id, "settings"))}
                       </ul>
                     );
                   })()}

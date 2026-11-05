@@ -17,6 +17,10 @@ export interface LateralInput {
   analysisMode?:AnalysisMode;layerCorrection?:LayerCorrection;
   /** Paalkop in m NAP; alleen voor invoer en weergave, de berekening rekent vanaf de kop. */
   headNap?:number;
+  /** Instellingen: eigen beddingswaarden per grondsoort [kN/m³], boven de tabelwaarde. */
+  springOverrides?:Record<string,{low?:number;high?:number}>;
+  /** Instellingen: pu-profiel per grondsoort dat een laag krijgt bij die grondsoort. */
+  puDefaults?:Record<string,UltimateProfile>;
 }
 export const lateralExample:LateralInput = {
   lengthM:12,maxElementM:.5,headForceKn:30,headMomentKnM:20,nEdKn:0,
@@ -52,7 +56,9 @@ export function computeLateral(input:LateralInput):LateralResult {
       if(![layer.manualKhKnM3,layer.frictionDeg,layer.netPressureKpa].every(Number.isFinite)||
         layer.manualKhKnM3<0||layer.frictionDeg<0||layer.frictionDeg>45)
         throw new Error('Ongeldige laagparameters.');
-      const khKnM3=layer.springId==='manual'?layer.manualKhKnM3:springValue(layer.springId,input.scenario);
+      const own=input.springOverrides?.[layer.springId]?.[input.scenario];
+      if(own!==undefined&&!(Number.isFinite(own)&&own>0))throw new Error('Eigen beddingswaarden in de instellingen moeten positief zijn.');
+      const khKnM3=layer.springId==='manual'?layer.manualKhKnM3:own??springValue(layer.springId,input.scenario);
       const ka=Math.tan((45-layer.frictionDeg/2)*Math.PI/180)**2;
       return {...layer,inputIndex,khKnM3,ka,lineSpringKnM2:khKnM3*input.springWidthM,
         lineLoadKnM:layer.netPressureKpa*input.springWidthM+input.surchargeSign*ka*input.surchargeKpa*input.surchargeWidthM};

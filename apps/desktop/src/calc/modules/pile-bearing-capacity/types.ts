@@ -54,8 +54,18 @@ export interface ProjectPileFactors {
   edition: string;
 }
 
+export interface PilePresets {
+  /** Maatreeks per paaltype [mm]. */
+  sizesMm?: Record<string, number[]>;
+  extensions?: Array<{ sizeMm: number; isCircular: boolean }>;
+  extensionLengthsM?: number[];
+  timberToeMm?: number;
+}
+
 export interface PileInput {
   /** Gedeelde invoer met afzonderlijke resultaten per sondering en puntniveau. */
+  /** Instellingen van deze berekening: eigen standaardreeksen. Ontbrekend = standaard. */
+  presets?: PilePresets;
   capacityTable?: {
     cptIds:string[];toeNaps:number[];
     /** Paalmaten [mm] voor de tabel; ontbrekend = alleen diameterMm. */

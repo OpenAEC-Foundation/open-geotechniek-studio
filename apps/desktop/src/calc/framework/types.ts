@@ -41,6 +41,8 @@ export interface CalcModule<TInput = unknown, TResult = unknown> {
   InputPanel: FC<PanelProps<TInput, TResult>>;
   VisualPanel: FC<PanelProps<TInput, TResult>>;
   ResultPanel: FC<PanelProps<TInput, TResult>>;
+  /** Optioneel: parameters en standaardreeksen van deze berekening (tab Instellingen). */
+  SettingsPanel?: FC<PanelProps<TInput, TResult>>;
   /** `pending`: er is (nog) niet gerekend omdat invoer ontbreekt — geen
    *  afkeuring, dus niet als fout tonen. */
   statusLine?: (result: TResult) => { text: string; ok: boolean; pending?: boolean };

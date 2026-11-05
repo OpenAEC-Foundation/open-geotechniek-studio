@@ -183,3 +183,10 @@ it('kiest voorbeeldberekeningen voor de uitdraai in de tabelweergave',()=>{
  fireEvent.click(screen.getByRole('button',{name:'Verwijder voorbeeld B, 290 mm op -14 m NAP'}));
  expect(stored().capacityTable!.examples).toEqual([]);
 });
+
+it('opent de instellingen van een berekening als eigen tabblad',()=>{
+ openTable(synthetic(['A']),{cptIds:['A'],toeNaps:[-13]});
+ fireEvent.click(screen.getByRole('tab',{name:'Instellingen'}));
+ expect(screen.getByRole('region',{name:'Instellingen'})).toBeInTheDocument();
+ expect(screen.getByRole('table',{name:'Paalfactoren'})).toBeInTheDocument();
+});

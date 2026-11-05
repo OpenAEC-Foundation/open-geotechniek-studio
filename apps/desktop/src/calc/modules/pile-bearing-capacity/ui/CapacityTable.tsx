@@ -61,7 +61,7 @@ export function CapacityTable({input,cpts,onChange,onOpen,cptId=null,onFocusCpt}
 
 function Settings({input,cpts,config,update}:{input:PileInput;cpts:Map<string,Cpt>;config:Required<CapacityTableConfig>;update:(p:Partial<CapacityTableConfig>)=>void}) {
  const names=[...new Set([...cpts.keys(),...config.cptIds])];
- const std=standardSizes(input.pileTypeId);
+ const std=standardSizes(input.pileTypeId,input.presets);
  const sizesKey=config.sizesMm.join(' '),levelsKey=config.toeNaps.join(';');
  const [sizes,setSizes]=useState(sizesKey);
  const sorted=[...config.toeNaps].sort((a,b)=>b-a);

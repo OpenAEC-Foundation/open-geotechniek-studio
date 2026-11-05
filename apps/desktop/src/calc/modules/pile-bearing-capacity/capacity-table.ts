@@ -1,7 +1,7 @@
 import type {Cpt} from '../../../types/cpt';
 import type {PileInput,PileResult} from './types';
 import {computePile} from './compute';
-import {PREFAB_SQUARE,STEEL_TUBE_OD,TIMBER_HEAD} from './standard-sizes';
+import {seriesFor,type Presets} from './standard-sizes';
 
 export type CapacityTableConfig=NonNullable<PileInput['capacityTable']>;
 export function parseToeLevels(text:string):number[] {
@@ -29,14 +29,8 @@ export function computeCapacityTable(base:PileInput,cpts:Map<string,Cpt>,config:
 /* Draagvermogen per sondering × paalmaat × puntniveau, met keuze.     */
 /* ------------------------------------------------------------------ */
 
-/** Gangbare maatreeksen [mm]; voor andere paaltypen vult de gebruiker zelf in. */
-const STANDARD_SIZES:Record<string,number[]>={
- 'concrete-prefab-prestressed-driven':PREFAB_SQUARE,
- 'timber-uniform':TIMBER_HEAD,
- 'steel-pipe-driven-closed':STEEL_TUBE_OD,
- 'steel-pipe-driven-closed-2017':STEEL_TUBE_OD,
-};
-export function standardSizes(pileTypeId:string):number[]|undefined {return STANDARD_SIZES[pileTypeId];}
+/** Maatreeks voor een paaltype, met eigen reeksen uit de instellingen van de berekening. */
+export function standardSizes(pileTypeId:string,presets?:Presets):number[]|undefined {return seriesFor(pileTypeId,presets).sizes;}
 
 export function parseSizes(text:string):number[] {
  const tokens=text.split(/[;\n,\s]+/).map(v=>v.trim()).filter(Boolean);

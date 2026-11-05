@@ -8,7 +8,7 @@ import { useCptStore } from "../../../../store/useCptStore";
 import { PILE_TYPE_CATALOG, SOIL_DEFAULTS, resolvePileType } from "../catalog";
 import type { ConcreteExtension, PileInput, PileResult, PileTypeSpec, SoilKind, SoilLayer } from "../types";
 import { woodTopNap } from "../parts/geometry";
-import { EXTENSION_LENGTHS_M, EXTENSION_PRESETS, STEEL_TUBE_OD, TIMBER_HEAD, TIMBER_TOE_MM, nearest, sizeText } from "../standard-sizes";
+import { STEEL_TUBE_OD, TIMBER_HEAD, nearest, seriesFor, sizeText } from "../standard-sizes";
 import { PILE_STANDARDS, applyStandard, changeStandard, getStandard, usesHistoricalProcedure, type PileStandard } from "../standards";
 import { Hint, Row, Section } from "../../../framework/views/SheetForm";
 import "./styles.css";
@@ -42,9 +42,10 @@ const materialOf = (p: PileTypeSpec | undefined): Material => p?.material ?? "st
  *  gangbare lengte (1,5 / 2 / 2,5 / 4 m) waarbij de las minstens 0,5 m onder
  *  de grondwaterstand komt, zodat het hout permanent nat blijft. */
 function defaultExtension(input: PileInput): ConcreteExtension {
-  const length = EXTENSION_LENGTHS_M.find((l) => input.pileTopNap - l <= input.waterNap - 0.5) ?? EXTENSION_LENGTHS_M[EXTENSION_LENGTHS_M.length - 1];
+  const { extensions, extensionLengths } = seriesFor("timber-uniform", input.presets);
+  const length = extensionLengths.find((l) => input.pileTopNap - l <= input.waterNap - 0.5) ?? extensionLengths[extensionLengths.length - 1];
   const joint = Math.max(input.pileToeNap + 1, input.pileTopNap - length);
-  return { jointNap: +joint.toFixed(2), sizeMm: 280, isCircular: true };
+  return { jointNap: +joint.toFixed(2), sizeMm: extensions[0].sizeMm, isCircular: extensions[0].isCircular };
 }
 
 /** Niveau in m NAP op mm afgerond voor weergave: rekenen met
@@ -67,14 +68,16 @@ export function InputPanel({ input, onChange }: Props) {
     // Een houten paal krijgt standaard een betonopzetter; andere palen nooit.
     const nextMaterial = materialOf(PILE_TYPE_CATALOG.find((p) => p.id === pileTypeId)), wood = nextMaterial === "wood";
     // Houten paal: gangbare kopmaat, punt Ø150 over het hele houten deel. Staal: maat uit de buisreeks.
-    const diameterMm = wood ? (TIMBER_HEAD.includes(input.diameterMm) ? input.diameterMm : 220)
-      : nextMaterial === "steel" ? nearest(STEEL_TUBE_OD, input.diameterMm) : input.diameterMm;
+    const nextSizes = seriesFor(pileTypeId, input.presets).sizes;
+    const diameterMm = wood ? ((nextSizes ?? TIMBER_HEAD).includes(input.diameterMm) ? input.diameterMm : nearest(nextSizes ?? TIMBER_HEAD, 220))
+      : nextMaterial === "steel" ? nearest(nextSizes ?? STEEL_TUBE_OD, input.diameterMm) : input.diameterMm;
     const extension = wood ? defaultExtension(input) : undefined;
     const woodTop = extension?.jointNap ?? input.pileTopNap;
-    const timberTaper = wood ? { toeDiameterMm: TIMBER_TOE_MM, lengthM: +(woodTop - input.pileToeNap).toFixed(2) } : undefined;
+    const timberTaper = wood ? { toeDiameterMm: seriesFor(pileTypeId, input.presets).timberToeMm, lengthM: +(woodTop - input.pileToeNap).toFixed(2) } : undefined;
     onChange?.({ ...input, pileTypeId, diameterMm, projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper, concreteExtension: extension });
   };
   const ext = input.concreteExtension;
+  const series = seriesFor(input.pileTypeId, input.presets);
   const woodLength = woodTopNap(input) - input.pileToeNap;
   const toggleExtension = (on: boolean) => {
     const next = on ? defaultExtension(input) : undefined;
@@ -151,9 +154,9 @@ export function InputPanel({ input, onChange }: Props) {
         </Row>
         {material === "steel" && (
           <Row label="Buismaat">
-            <select aria-label="Buismaat" value={STEEL_TUBE_OD.includes(input.diameterMm) ? String(input.diameterMm) : ""} onChange={(e) => e.target.value && set("diameterMm", Number(e.target.value))}>
-              {!STEEL_TUBE_OD.includes(input.diameterMm) && <option value="">Eigen maat</option>}
-              {STEEL_TUBE_OD.map((d) => <option key={d} value={d}>Ø{sizeText(d)} mm</option>)}
+            <select aria-label="Buismaat" value={series.sizes?.includes(input.diameterMm) ? String(input.diameterMm) : ""} onChange={(e) => e.target.value && set("diameterMm", Number(e.target.value))}>
+              {!series.sizes?.includes(input.diameterMm) && <option value="">Eigen maat</option>}
+              {(series.sizes ?? STEEL_TUBE_OD).map((d) => <option key={d} value={d}>Ø{sizeText(d)} mm</option>)}
             </select>
           </Row>
         )}
@@ -170,21 +173,21 @@ export function InputPanel({ input, onChange }: Props) {
               <input aria-label="Las [m NAP]" type="number" step="0.05" value={mm(ext.jointNap)} onChange={e => setExt({ jointNap: +e.target.value })} />
             </Row>
             <Row label="Opzetter">
-              <select aria-label="Opzetter" value={EXTENSION_PRESETS.find((p) => p.sizeMm === ext.sizeMm && p.isCircular === ext.isCircular)?.id ?? "eigen"}
-                onChange={e => { const p = EXTENSION_PRESETS.find((x) => x.id === e.target.value); if (p) setExt({ sizeMm: p.sizeMm, isCircular: p.isCircular }); }}>
-                {EXTENSION_PRESETS.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+              <select aria-label="Opzetter" value={series.extensions.find((p) => p.sizeMm === ext.sizeMm && p.isCircular === ext.isCircular)?.id ?? "eigen"}
+                onChange={e => { const p = series.extensions.find((x) => x.id === e.target.value); if (p) setExt({ sizeMm: p.sizeMm, isCircular: p.isCircular }); }}>
+                {series.extensions.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
                 <option value="eigen">Eigen maat</option>
               </select>
             </Row>
             <Row label="Lengte opzetter" unit="m">
-              <select aria-label="Lengte opzetter [m]" value={EXTENSION_LENGTHS_M.find((l) => Math.abs(input.pileTopNap - l - ext.jointNap) < 0.005)?.toString() ?? "eigen"}
+              <select aria-label="Lengte opzetter [m]" value={series.extensionLengths.find((l) => Math.abs(input.pileTopNap - l - ext.jointNap) < 0.005)?.toString() ?? "eigen"}
                 onChange={e => { const l = Number(e.target.value); if (Number.isFinite(l)) { const jointNap = +(input.pileTopNap - l).toFixed(2); const woodLen = +(jointNap - input.pileToeNap).toFixed(2);
                   onChange?.({ ...input, concreteExtension: { ...ext, jointNap }, timberTaper: input.timberTaper && { ...input.timberTaper, lengthM: Math.min(input.timberTaper.lengthM, woodLen) } }); } }}>
-                {EXTENSION_LENGTHS_M.map((l) => <option key={l} value={l}>{sizeText(l)} m</option>)}
+                {series.extensionLengths.map((l) => <option key={l} value={l}>{sizeText(l)} m</option>)}
                 <option value="eigen">Eigen las</option>
               </select>
             </Row>
-            {!EXTENSION_PRESETS.some((p) => p.sizeMm === ext.sizeMm && p.isCircular === ext.isCircular) && <>
+            {!series.extensions.some((p) => p.sizeMm === ext.sizeMm && p.isCircular === ext.isCircular) && <>
               <Row label="Vorm">
                 <select aria-label="Vorm opzetter" value={ext.isCircular ? "rond" : "vierkant"} onChange={e => setExt({ isCircular: e.target.value === "rond" })}>
                   <option value="vierkant">Vierkant</option>
