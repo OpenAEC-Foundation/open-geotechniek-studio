@@ -24,3 +24,10 @@ Bedrock Engineer parser adaptations
 The public BRO interoperability fixture tests/fixtures/bro/bedrock-example.xml
 is copied unchanged from bro-xml-parser-ts ed84e54 test/fixtures/cpt/example.xml,
 under the same Apache-2.0 license. Copyright Bedrock Engineer contributors.
+
+Three.js
+- Source: https://github.com/mrdoob/three.js
+- Copyright 2010-2026 three.js authors.
+- MIT License; the complete notice is included in the frontend at
+  licenses/three-MIT.txt, available offline in the desktop frontend as well.
+- Used for the interactive pile geometry and spring selection.

@@ -185,6 +185,14 @@ Beschikbare tools: `studio_get_state`, `studio_get_cpt`, `studio_new_project`, `
 
 `studio_add_calculation` ondersteunt `pile-bearing-capacity` en `laterally-loaded-pile` als afzonderlijke modules. Voor horizontale paalbelasting kunnen scalaire invoervelden, een gedeeltelijke `section` en volledige `layers` worden aangepast. Onbekende velden en ongeldige modellen worden afgewezen voordat projectgegevens veranderen. De conceptstatus en beperkingen van de rekenmodule blijven van toepassing.
 
+Horizontale paalbelasting accepteert `analysisMode: "linear" | "nonlinear"` en
+`layerCorrection: "none" | "georgiadis"`. Niet-lineaire lagen bevatten
+`ultimate: { atSurfaceKnM, gradientKnM2, capKnM }`, het expliciete projectprofiel
+voor de grensweerstand. Oude invoer zonder de nieuwe keuzen blijft lineair.
+Resultaten bevatten per integratiepunt het werkpunt, de curve en stijfheden,
+naast de gebruikte equivalente diepten en convergentiediagnostiek. Bij
+niet-convergentie is er geen geldige respons en geen lineaire terugval.
+
 Het lokale transport luistert uitsluitend op `127.0.0.1` met een tijdelijke poort en een willekeurig authenticatietoken in de gebruikersconfiguratie. Het token hoort niet in een MCP-clientconfiguratie of logbestand. `OGS_MCP_ENDPOINT_FILE` kan voor geïsoleerde tests een ander endpointbestand aanwijzen. De webversie biedt deze desktopkoppeling niet aan.
 
 

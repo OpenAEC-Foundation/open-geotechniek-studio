@@ -19,16 +19,16 @@ export interface BeamResult {
   toeReactionKn: number; toeMomentKnM: number; headReactionMomentKnM: number;
   forceResidualKn: number; momentResidualKnM: number;
 }
-const gauss = [
+export const gauss = [
   [-.8611363115940526, .3478548451374538], [-.3399810435848563, .6521451548625461],
   [.3399810435848563, .6521451548625461], [.8611363115940526, .3478548451374538],
 ];
-function shape(t: number, l: number) {
+export function shape(t: number, l: number) {
   return [1 - 3*t*t + 2*t*t*t, l*(t - 2*t*t + t*t*t), 3*t*t - 2*t*t*t, l*(-t*t + t*t*t)];
 }
-const polynomial=(c:number[],t:number)=>c.reduceRight((s,v)=>s*t+v,0);
+export const polynomial=(c:number[],t:number)=>c.reduceRight((s,v)=>s*t+v,0);
 /** Alle reële nulpunten op [0,1], via monotone intervallen tussen afgeleide nulpunten. */
-function roots(coefficients:number[]):number[] {
+export function roots(coefficients:number[]):number[] {
   const norm=Math.max(...coefficients.map(Math.abs));
   if(norm===0)return [];
   const c=coefficients.map(v=>v/norm);

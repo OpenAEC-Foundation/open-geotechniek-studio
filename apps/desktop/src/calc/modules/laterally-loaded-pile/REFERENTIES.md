@@ -48,9 +48,14 @@ geïntegreerd; lokale plooi of doorsnedeklasse is daarbij geen uitgevoerde toets
 
 ## Beperkingen
 
-Dit is een concept voor lineaire eerste-orde respons en een beperkte
-N–M-doorsnedetoets. Geen volledige geotechnische of constructieve normtoets.
-Passieve grensdruk, niet-lineaire grondmobilisatie, scheurafhankelijke EI,
+Dit is een concept voor eerste-orde respons met lineaire of niet-lineaire
+projectveren en een beperkte N–M-doorsnedetoets. Geen volledige geotechnische
+of constructieve normtoets. De niet-lineaire wet p = pu tanh(k0 y / pu) gebruikt
+expliciete projectprofielen pu(z) = min(cap, pu,0 + g z). Georgiadis corrigeert
+de equivalente diepte op basis van geïntegreerde grensweerstand; de constante
+initiële stijfheid wordt daardoor niet aangepast. Zie [grondmodel](NONLINEAR-SOIL.md).
+
+Een volledige CUR166-passievegrensdruktoets, scheurafhankelijke EI,
 P–Δ, dwarskrachtweerstand, scheurwijdte, minimumwapening, verankering,
 lokale buisinstabiliteit en bewijs van samengestelde werking worden niet
 automatisch vastgesteld. Een projectfactor op de betonstijfheid is een

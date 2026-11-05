@@ -41,6 +41,11 @@ it("bedient horizontale paalbelasting als afzonderlijk rekenblad", async()=>{
   await executeStudioTool('studio_update_calculation',{id:added.id,patch:{headMomentKnM:50,section:{kind:'filled-tube',tubeParticipates:true}}},view);
   const data=await executeStudioTool('studio_get_calculation',{id:added.id},view);
   expect(data).toMatchObject({instance:{moduleId:'laterally-loaded-pile',input:{headMomentKnM:50,section:{kind:'filled-tube',tubeParticipates:true}}},result:{ok:true}});
+  await executeStudioTool('studio_update_calculation',{id:added.id,patch:{analysisMode:'linear',layerCorrection:'none'}},view);
+  expect(await executeStudioTool('studio_get_calculation',{id:added.id},view)).toMatchObject({result:{analysisMode:'linear'}});
+  const nonlinearData=(await executeStudioTool('studio_get_calculation',{id:added.id},view)) as {instance:{input:Record<string,unknown>}};
+  await executeStudioTool('studio_update_calculation',{id:added.id,patch:{layers:nonlinearData.instance.input.layers,analysisMode:'nonlinear',layerCorrection:'georgiadis'}},view);
+  await expect(executeStudioTool('studio_update_calculation',{id:added.id,patch:{layers:[{topM:0,bottomM:12,springId:'manual',manualKhKnM3:2000,frictionDeg:30,netPressureKpa:0,ultimate:{atSurfaceKnM:20,gradientKnM2:0,capKnM:50,unexpected:1}}]}},view)).rejects.toThrow();
   for(const patch of [{section:{arbitraryCode:'x'}},{layers:[{topM:0}]},{headForceKn:'veel'},{surchargeKpa:10}])
     await expect(executeStudioTool('studio_update_calculation',{id:added.id,patch},view)).rejects.toThrow();
 });

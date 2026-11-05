@@ -12,6 +12,7 @@ vi.mock("../../modules/pile-bearing-capacity/ui/VisualPanel", () => ({
   VisualPanel: ({ input, onChange }: PanelProps<PileInput, PileResult>) =>
     <button onClick={() => onChange?.({ ...input, pileToeNap: -20 })}>Paalpunt verschuiven</button>,
 }));
+vi.mock('../../modules/laterally-loaded-pile/PileScene3D',()=>({PileScene3D:()=> <div>3D-paalweergave</div>}));
 beforeEach(() => {
   vi.useFakeTimers();
   useCptStore.setState({ documents: [], activeDocId: null, cpts: new Map(), activeCptId: null });
@@ -32,4 +33,12 @@ it("toont paalinvoer, sondering en uitkomsten met een werkende grafiekkoppeling"
   expect(screen.getByText("Concept")).toBeInTheDocument();
   act(() => fireEvent.click(screen.getByRole("button", { name: "Paalpunt verschuiven" })));
   expect(useCalculationsStore.getState().getList(state.activeDocId!)[0].input).toMatchObject({ pileToeNap: -20 });
+});
+it('geeft de horizontale module een eigen werkblad en brede modelruimte',()=>{
+ const state=useCptStore.getState(),input=getCalcModule('laterally-loaded-pile')!.defaultInput(state);
+ useCalculationsStore.getState().addCalculation(state.activeDocId!,'laterally-loaded-pile','Horizontale paal',input);
+ render(<CalculationsView/>);
+ expect(screen.getByText('Geotechniek / Horizontale paalbelasting')).toBeInTheDocument();
+ expect(screen.getByRole('region',{name:'Paal- en veermodel'})).toBeInTheDocument();
+ expect(screen.getByRole('heading',{name:'Horizontale paal'}).closest('article')).toHaveClass('worksheet-lateral');
 });

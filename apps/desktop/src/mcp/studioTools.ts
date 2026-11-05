@@ -121,7 +121,8 @@ function lateralPatch(input:unknown,patch:unknown):LateralInput {
       if(!Array.isArray(value)||value.length>40)throw new Error('Ongeldige grondlagen');
       next.layers=value.map(v=>{
         const layer=object(v,'Grondlaag');validate(layer,lateralExample.layers[0] as unknown as ObjectValue);
-        for(const key of Object.keys(lateralExample.layers[0]))if(!(key in layer))throw new Error(`Grondlaag mist ${key}`);
+        for(const key of Object.keys(lateralExample.layers[0]).filter(k=>k!=='ultimate'))if(!(key in layer))throw new Error(`Grondlaag mist ${key}`);
+        if(layer.ultimate!==undefined){const ultimate=object(layer.ultimate,'Grensweerstandprofiel');keys(ultimate,['atSurfaceKnM','gradientKnM2','capKnM']);for(const key of ['atSurfaceKnM','gradientKnM2','capKnM'])number(ultimate[key],key);layer.ultimate={...ultimate};}
         return {...layer};
       });
     } else {validate({[key]:value},lateralExample as unknown as ObjectValue);next[key]=value;}

@@ -9,6 +9,9 @@ it('heeft eigen materiaal- en maaiveldinvoer en bewaart wijzigingen',()=>{
   expect(onChange.mock.lastCall?.[0].section.kind).toBe('filled-tube');
   expect(screen.getByLabelText('Moment op de kop [kNm]')).toBeInTheDocument();
   expect(screen.getByLabelText('Bovenbelasting [kPa]')).toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('Analyse grondveren'),{target:{value:'linear'}});
+  expect(onChange.mock.lastCall?.[0].analysisMode).toBe('linear');
+  expect(screen.getByLabelText('Laagcorrectie')).toBeInTheDocument();
 });
 it('toont de begrensde doorsnedetoets en de status van referenties',()=>{
   render(<module.ResultPanel input={lateralExample} result={computeLateral(lateralExample)}/>);
