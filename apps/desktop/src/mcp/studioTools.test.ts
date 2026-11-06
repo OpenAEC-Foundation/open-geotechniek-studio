@@ -6,7 +6,7 @@ import { executeStudioTool } from "./studioTools";
 
 vi.mock("../utils/platform", () => ({ IS_TAURI: false }));
 vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn(async () => null) }));
-vi.mock("@tauri-apps/plugin-fs", () => ({ readTextFile: vi.fn(async () => JSON.stringify({ project: { title: "Geopend project" }, cpts: [] })), readFile: vi.fn(async () => new TextEncoder().encode(JSON.stringify({ project: { title: "Geopend project" }, cpts: [] }))) }));
+vi.mock("@tauri-apps/plugin-fs", () => ({ writeFile: vi.fn(async () => undefined), readTextFile: vi.fn(async () => JSON.stringify({ project: { title: "Geopend project" }, cpts: [] })), readFile: vi.fn(async () => new TextEncoder().encode(JSON.stringify({ project: { title: "Geopend project" }, cpts: [] }))) }));
 const view = vi.fn();
 beforeEach(() => {
   vi.useFakeTimers(); vi.clearAllMocks();
@@ -102,3 +102,35 @@ it("past bij norm- en paaltypewissels dezelfde standaardwaarden toe als de invoe
   await executeStudioTool("studio_update_calculation", { id: added.id, patch: { pileTypeId: "concrete-auger" } }, view);
   expect(useCalculationsStore.getState().getActive()?.instance.input).not.toHaveProperty("baseDiameterMm", expect.anything());
 });
+
+it("bedient de nieuwe paalinvoer, instellingen, tabel, weergaven en rapport via MCP", async () => {
+  newProjectDocument();
+  const fs = await import("@tauri-apps/plugin-fs");
+  const pile = await executeStudioTool("studio_add_calculation", {}, view) as { id: string };
+  await executeStudioTool("studio_update_calculation", { id: pile.id, patch: {
+    pileTypeId: "timber-uniform", concreteExtension: { jointNap: -3, sizeMm: 280, isCircular: true },
+    presets: { sizesMm: { "timber-uniform": [180, 220] }, extensionLengthsM: [2, 4], timberToeMm: 150 },
+    capacityTable: { cptIds: [], toeNaps: [-12, -13], sizesMm: [180, 220], targetKn: { minKn: 300, maxKn: 600 }, examples: [] },
+  } }, view);
+  expect(useCalculationsStore.getState().getActive()?.instance.input).toMatchObject({ concreteExtension: { sizeMm: 280 }, presets: { timberToeMm: 150 }, capacityTable: { sizesMm: [180, 220] } });
+  for (const patch of [{ concreteExtension: { jointNap: -3, sizeMm: 280 } }, { presets: { sizesMm: { "onbekend": [1] } } }, { capacityTable: { cptIds: [], toeNaps: [-12], targetKn: { minKn: 600, maxKn: 300 } } }])
+    await expect(executeStudioTool("studio_update_calculation", { id: pile.id, patch }, view)).rejects.toThrow();
+  const table = await executeStudioTool("studio_get_capacity_table", { id: pile.id }, view) as { sizesMm: number[]; toeNaps: number[]; choices: unknown[] };
+  expect(table).toMatchObject({ sizesMm: [180, 220], toeNaps: [-12, -13], target: { minKn: 300, maxKn: 600 } });
+  expect(table.choices).toHaveLength(2);
+  await executeStudioTool("studio_select_calculation", { id: pile.id, view: "settings" }, view);
+  expect(useCalculationsStore.getState().sheetNav).toMatchObject({ calcId: pile.id, view: "settings" });
+  await expect(executeStudioTool("studio_select_calculation", { id: pile.id, view: "elders" }, view)).rejects.toThrow("Onbekende weergave");
+
+  const lateral = await executeStudioTool("studio_add_calculation", { moduleId: "laterally-loaded-pile" }, view) as { id: string };
+  await executeStudioTool("studio_update_calculation", { id: lateral.id, patch: { headNap: -1.2, springOverrides: { "sand-medium": { low: 30000 } }, puDefaults: { "clay-soft": { atSurfaceKnM: 30, gradientKnM2: 16.5, capKnM: 90 } } } }, view);
+  const data = await executeStudioTool("studio_get_calculation", { id: lateral.id }, view) as { result: { resolvedLayers: Array<{ khKnM3: number }> } };
+  expect(data.result.resolvedLayers[1].khKnM3).toBe(30000);
+  await expect(executeStudioTool("studio_select_calculation", { id: lateral.id, view: "table" }, view)).rejects.toThrow();
+  await expect(executeStudioTool("studio_get_capacity_table", { id: lateral.id }, view)).rejects.toThrow();
+  await expect(executeStudioTool("studio_export_report", { id: lateral.id, path: "relatief.pdf" }, view)).rejects.toThrow(".pdf");
+  const out = await executeStudioTool("studio_export_report", { id: lateral.id, path: "C:/rapporten/horizontaal.pdf" }, view) as { bytes: number };
+  expect(out.bytes).toBeGreaterThan(1000);
+  expect(fs.writeFile).toHaveBeenCalledWith("C:/rapporten/horizontaal.pdf", expect.any(Uint8Array));
+});
+

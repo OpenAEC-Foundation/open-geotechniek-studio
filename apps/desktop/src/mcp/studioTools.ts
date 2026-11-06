@@ -6,7 +6,8 @@ import { CALC_REGISTRY, getCalcModule } from "../calc/framework/registry";
 import { getPileType } from "../calc/modules/pile-bearing-capacity/catalog";
 import { changeStandard, getStandard } from "../calc/modules/pile-bearing-capacity/standards";
 import type { PileInput } from "../calc/modules/pile-bearing-capacity/types";
-import {validateCapacityTable,type CapacityTableConfig} from '../calc/modules/pile-bearing-capacity/capacity-table';
+import {validateCapacityTable,computeCapacityMatrix,chooseLevels,defaultCapacityConfig,invalidReason,type CapacityTableConfig} from '../calc/modules/pile-bearing-capacity/capacity-table';
+import type { SheetView } from '../calc/framework/store';
 import type { ProjectMeta } from "../types/cpt";
 import { computeLateral, lateralExample, type LateralInput } from '../calc/modules/laterally-loaded-pile/compute';
 
@@ -33,6 +34,14 @@ function filePath(value: unknown, projectOnly: boolean): string {
   }
   return path;
 }
+/** Absoluut pad naar een PDF-bestand. */
+function pdfPath(value: unknown): string {
+  const path = text(value, "Bestandspad");
+  if (!/^(?:[a-z]:[\\/]|\\\\|\/)/i.test(path) || path.includes("\0") || !/\.pdf$/i.test(path)) {
+    throw new Error("Gebruik een absoluut pad naar een .pdf-bestand");
+  }
+  return path;
+}
 function project() {
   const state = useCptStore.getState();
   const doc = state.documents.find(d => d.id === state.activeDocId);
@@ -53,10 +62,11 @@ function calculation(id: unknown) {
 }
 
 const numericInputs = ["diameterMm", "wallThicknessMm", "baseDiameterMm", "axialStiffnessKn", "pileTopNap", "pileToeNap", "waterNap", "excavationNap", "nEd", "nEk", "gammaM", "gammaFnk", "negKleefBottomNap", "posKleefTopNap", "ksMinFactor"];
-const optionalInputs = ["baseDiameterMm", "axialStiffnessKn", "posKleefTopNap", "standard", "timberTaper", "projectFactors", "capacityTable"];
+const optionalInputs = ["baseDiameterMm", "axialStiffnessKn", "posKleefTopNap", "standard", "timberTaper", "projectFactors", "capacityTable", "concreteExtension", "presets"];
+const numberList = (value: unknown, label: string) => { if (!Array.isArray(value) || !value.length) throw new Error(`${label} moet een niet-lege lijst zijn`); return value.map((v) => number(v, label)); };
 function pilePatch(input: unknown, patch: unknown): PileInput {
   const fields = object(patch, "Invoerpatch");
-  keys(fields, [...numericInputs, "cptId", "standard", "pileTypeId", "soilProfile", "timberTaper", "projectFactors", "capacityTable"]);
+  keys(fields, [...numericInputs, "cptId", "standard", "pileTypeId", "soilProfile", "timberTaper", "projectFactors", "capacityTable", "concreteExtension", "presets"]);
   let next = structuredClone(object(input, "Berekeningsinvoer"));
   if (fields.standard != null && fields.standard !== next.standard) {
     const standard = text(fields.standard, "Normversie") as NonNullable<PileInput["standard"]>;
@@ -64,7 +74,7 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
     next = changeStandard(next as unknown as PileInput, standard) as unknown as ObjectValue;
   }
   if (typeof fields.pileTypeId === "string" && fields.pileTypeId !== next.pileTypeId) {
-    for (const key of ["projectFactors", "axialStiffnessKn", "baseDiameterMm", "timberTaper"]) delete next[key];
+    for (const key of ["projectFactors", "axialStiffnessKn", "baseDiameterMm", "timberTaper", "concreteExtension"]) delete next[key];
   }
   for (const [key, value] of Object.entries(fields)) {
     if (value === null && optionalInputs.includes(key)) { delete next[key]; continue; }
@@ -90,9 +100,26 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
         return { ...layer };
       });
     } else if (key === 'capacityTable') {
-      const config=object(value,'Draagvermogentabel');keys(config,['cptIds','toeNaps']);
+      const config=object(value,'Draagvermogentabel');keys(config,['cptIds','toeNaps','sizesMm','targetKn','examples']);
       validateCapacityTable(config as CapacityTableConfig);
+      if(config.sizesMm!==undefined)config.sizesMm=numberList(config.sizesMm,'Paalmaten').map(v=>{if(v<=0)throw new Error('Paalmaten moeten positief zijn');return v;});
+      if(config.targetKn!==undefined){const t=object(config.targetKn,'Zoekband');keys(t,['minKn','maxKn']);if(!(number(t.minKn,'minKn')>=0)||!(number(t.maxKn,'maxKn')>Number(t.minKn)))throw new Error('De bovengrens moet boven de ondergrens liggen');}
+      if(config.examples!==undefined){if(!Array.isArray(config.examples))throw new Error('Voorbeelden moeten een lijst zijn');
+        config.examples=config.examples.map(e=>{const x=object(e,'Voorbeeld');keys(x,['cptId','sizeMm','toeNap']);return {cptId:text(x.cptId,'Sondering'),sizeMm:number(x.sizeMm,'Maat'),toeNap:number(x.toeNap,'Puntniveau')};});}
       next[key]=structuredClone(config);
+    } else if (key === 'concreteExtension') {
+      const ext=object(value,'Betonopzetter');keys(ext,['jointNap','sizeMm','isCircular']);
+      if(typeof ext.isCircular!=='boolean')throw new Error('isCircular moet waar of onwaar zijn');
+      next[key]={jointNap:number(ext.jointNap,'Las'),sizeMm:number(ext.sizeMm,'Maat opzetter'),isCircular:ext.isCircular};
+    } else if (key === 'presets') {
+      const pr=object(value,'Instellingen');keys(pr,['sizesMm','extensions','extensionLengthsM','timberToeMm']);
+      const out:ObjectValue={};
+      if(pr.sizesMm!==undefined){const m=object(pr.sizesMm,'Maatreeksen');out.sizesMm=Object.fromEntries(Object.entries(m).map(([t,l])=>{if(!getPileType(t))throw new Error(`Onbekend paaltype: ${t}`);return [t,numberList(l,'Maatreeks')];}));}
+      if(pr.extensions!==undefined){if(!Array.isArray(pr.extensions)||!pr.extensions.length)throw new Error('Opzetters moeten een niet-lege lijst zijn');
+        out.extensions=pr.extensions.map(e=>{const x=object(e,'Opzetter');keys(x,['sizeMm','isCircular']);if(typeof x.isCircular!=='boolean')throw new Error('isCircular moet waar of onwaar zijn');return {sizeMm:number(x.sizeMm,'Maat'),isCircular:x.isCircular};});}
+      if(pr.extensionLengthsM!==undefined)out.extensionLengthsM=numberList(pr.extensionLengthsM,'Opzetterlengtes');
+      if(pr.timberToeMm!==undefined)out.timberToeMm=number(pr.timberToeMm,'Puntdiameter hout');
+      next[key]=out;
     } else if (key === "timberTaper") {
       const taper = object(value, "Houttapsheid"); keys(taper, ["toeDiameterMm", "lengthM"]);
       next[key] = { toeDiameterMm: number(taper.toeDiameterMm, "Puntdiameter"), lengthM: number(taper.lengthM, "Tapse lengte") };
@@ -109,7 +136,7 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
 }
 
 function lateralPatch(input:unknown,patch:unknown):LateralInput {
-  const fields=object(patch,'Horizontale invoerpatch'); keys(fields,Object.keys(lateralExample));
+  const fields=object(patch,'Horizontale invoerpatch'); keys(fields,[...Object.keys(lateralExample),'headNap','springOverrides','puDefaults']);
   const next=structuredClone(object(input,'Horizontale invoer'));
   const validate=(values:ObjectValue,example:ObjectValue)=>{
     keys(values,Object.keys(example));
@@ -130,6 +157,18 @@ function lateralPatch(input:unknown,patch:unknown):LateralInput {
         if(layer.ultimate!==undefined){const ultimate=object(layer.ultimate,'Grensweerstandprofiel');keys(ultimate,['atSurfaceKnM','gradientKnM2','capKnM']);for(const key of ['atSurfaceKnM','gradientKnM2','capKnM'])number(ultimate[key],key);layer.ultimate={...ultimate};}
         return {...layer};
       });
+    } else if(key==='headNap') {
+      if(value===null)delete next.headNap; else next.headNap=number(value,'Paalkop');
+    } else if(key==='springOverrides') {
+      if(value===null){delete next.springOverrides;continue;}
+      const o=object(value,'Eigen beddingswaarden');
+      next.springOverrides=Object.fromEntries(Object.entries(o).map(([id,row])=>{const r=object(row,'Beddingswaarde');keys(r,['low','high']);
+        return [id,Object.fromEntries(Object.entries(r).map(([sc,v])=>[sc,number(v,`kh ${id} ${sc}`)]))];}));
+    } else if(key==='puDefaults') {
+      if(value===null){delete next.puDefaults;continue;}
+      const o=object(value,'pu-profielen');
+      next.puDefaults=Object.fromEntries(Object.entries(o).map(([id,row])=>{const r=object(row,'pu-profiel');keys(r,['atSurfaceKnM','gradientKnM2','capKnM']);
+        return [id,{atSurfaceKnM:number(r.atSurfaceKnM,'pu,0'),gradientKnM2:number(r.gradientKnM2,'g'),capKnM:number(r.capKnM,'pu,max')}];}));
     } else {validate({[key]:value},lateralExample as unknown as ObjectValue);next[key]=value;}
   }
   const result=computeLateral(next as unknown as LateralInput);
@@ -210,8 +249,36 @@ export async function executeStudioTool(tool: string, rawArgs: unknown, changeVi
       return { id: instance.id, input: structuredClone(input) };
     }
     case "studio_select_calculation": {
+      keys(args, ["id", "view", "cptId"]); const { instance, module } = calculation(args.id);
+      const view = (args.view === undefined ? "sheet" : text(args.view, "Weergave")) as SheetView;
+      if (!["sheet", "model", "table", "print", "settings"].includes(view)) throw new Error("Onbekende weergave");
+      if (view === "table" && instance.moduleId !== "pile-bearing-capacity") throw new Error("Alleen het paaldraagvermogen heeft een draagvermogentabel");
+      if (view === "print" && !module.buildReport) throw new Error("Deze berekening heeft geen afdrukvoorbeeld");
+      const cptId = args.cptId === undefined || args.cptId === null ? null : text(args.cptId, "Sondering");
+      useCalculationsStore.getState().navigate(instance.id, view, cptId); changeView("calculations"); return snapshot();
+    }
+    case "studio_get_capacity_table": {
       keys(args, ["id"]); const { instance } = calculation(args.id);
-      useCalculationsStore.getState().setActive(instance.id); changeView("calculations"); return snapshot();
+      if (instance.moduleId !== "pile-bearing-capacity") throw new Error("Alleen het paaldraagvermogen heeft een draagvermogentabel");
+      const input = instance.input as PileInput, cpts = useCptStore.getState().cpts;
+      const m = computeCapacityMatrix(input, cpts, defaultCapacityConfig(input, [...cpts.keys()]));
+      return {
+        sizesMm: m.sizesMm, toeNaps: m.toeNaps, target: m.target,
+        choices: chooseLevels(m),
+        soundings: m.cpts.map(c => ({ cptId: c.cptId, missing: c.missing, note: c.profileNote,
+          rcNetD: c.cells.map(row => row.map(cell => cell.result.ok ? cell.result.summary.rcNetD : null)),
+          reasons: c.cells.map(row => row.map(cell => cell.result.ok ? null : invalidReason(cell.result.error))) })),
+      };
+    }
+    case "studio_export_report": {
+      keys(args, ["id", "path"]); const { instance, module } = calculation(args.id);
+      const path = pdfPath(args.path);
+      if (!module.buildReport) throw new Error("Deze berekening heeft geen rapport");
+      const result = module.compute(instance.input, context());
+      const bytes = module.buildReport(instance.input, result, context());
+      const fs = await import("@tauri-apps/plugin-fs");
+      await fs.writeFile(path, bytes);
+      return { id: instance.id, path, bytes: bytes.length };
     }
     case "studio_get_calculation": {
       keys(args, ["id"]); const { instance, module } = calculation(args.id);
