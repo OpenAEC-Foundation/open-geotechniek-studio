@@ -6,6 +6,8 @@ import type { LateralInput, LateralResult } from './compute';
 import { CURVES, extremes, niceTicks, valueAt } from './ForceDiagrams';
 import { lateralSummary, sectionText } from './LateralSheet';
 import { lateralReportData, type LayerRow } from './report-data';
+import { computeLateral } from './compute';
+import { computePileTable } from './pile-table';
 import {
   CONTENT_W, M, TOTAL_PAGES_TOKEN, formula, kv, makeCursor, nl, paragraph, sectionTitle, table, winAnsi, type Cursor,
 } from '../pile-bearing-capacity/parts/pile-report-pdf';
@@ -18,15 +20,52 @@ const reportDate = (iso: string | undefined) => (iso || new Date().toISOString()
 
 export function buildLateralReport(input: LateralInput, result: LateralResult, ctx: ProjectContext): Uint8Array {
   if (!result.ok) throw new Error(result.error);
-  const r = result, s = lateralSummary(input, r), d = lateralReportData(input, r), meta = ctx.projectMeta;
-  const nap = (z: number) => `NAP ${nl(s.head - z, 2)}`;
+  const meta = ctx.projectMeta;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const c = makeCursor(doc, {
     number: meta.project_number || '-', description: meta.title || 'Horizontaal belaste paal',
     norm: 'CUR166 initiele bedding; projectveerwet', date: reportDate(meta.date),
     author: meta.author || 'Open Geotechniek Studio', onderdeel: 'Horizontale paalbelasting',
   });
+  const table = input.pileTable;
+  if (!table) renderCalc(c, input, result);
+  else {
+    // Paaltabel: de aangevinkte palen volledig uitgewerkt, daarna het overzicht.
+    const rows = computePileTable(input), picks = rows.filter((x) => table.examples?.includes(x.row.id));
+    if (!picks.length) renderCalc(c, input, result);
+    picks.forEach((x, i) => {
+      const rr = computeLateral(x.input);
+      if (!rr.ok) throw new Error(`${x.row.name} is niet berekenbaar: ${rr.error}`);
+      if (i > 0) c.newPage();
+      renderCalc(c, x.input, rr, `Paal ${x.row.name}`);
+    });
+    renderTableAppendix(c, input, rows);
+  }
+  if (typeof doc.putTotalPages === 'function') doc.putTotalPages(TOTAL_PAGES_TOKEN);
+  return new Uint8Array(doc.output('arraybuffer'));
+}
+
+/** Overzicht van alle palen uit de paaltabel. */
+function renderTableAppendix(c: Cursor, input: LateralInput, rows: ReturnType<typeof computePileTable>) {
+  c.newPage();
+  sectionTitle(c, 'Overzicht palen', `${rows.length} palen; grens kopverplaatsing ${input.pileTable?.maxDisplacementMm ? `${nl(input.pileTable.maxDisplacementMm, 0)} mm` : 'niet opgegeven'}`);
+  table(c, [
+    { label: 'Paal', width: 20 }, { label: 'Aantal', width: 9, align: 'right' }, { label: 'H [kN]', width: 11, align: 'right' }, { label: 'M [kNm]', width: 11, align: 'right' },
+    { label: 'N [kN]', width: 11, align: 'right' }, { label: 'L [m]', width: 10, align: 'right' }, { label: 'Maat [mm]', width: 12, align: 'right' },
+    { label: 'y kop [mm]', width: 13, align: 'right' }, { label: 'M max [kNm]', width: 14, align: 'right' }, { label: 'op NAP', width: 12, align: 'right' },
+    { label: 'V max [kN]', width: 13, align: 'right' }, { label: 'u.c.', width: 9, align: 'right' }, { label: 'Oordeel', width: 14 },
+  ], rows.map(({ row, input: ri, summary: x }) => [row.name, String(row.count ?? 1), nl(row.headForceKn, 1), nl(row.headMomentKnM, 1), nl(row.nEdKn, 1),
+    nl(ri.lengthM, 2), String(ri.section.diameterMm),
+    ...(x.ok ? [nl(x.yHeadMm, 1), nl(x.mMaxKnM, 1), nl(x.mNap, 2), nl(x.vMaxKn, 1), x.uc === null ? '-' : nl(x.uc, 2), x.passes ? 'voldoet' : 'voldoet niet'] : ['-', '-', '-', '-', '-', 'niet berekend'])]), { size: 7 });
+  paragraph(c, 'Alle palen met dezelfde grondopbouw, doorsnedetype en wapening als de basisinvoer; per paal een eigen kopbelasting en zo nodig een eigen lengte of maat. Voldoet: u.c. <= 1,00 en, als opgegeven, de kopverplaatsing binnen de grens.', { italic: true, size: 7.5 });
+}
+
+/** De volledige uitwerking van één paal. */
+export function renderCalc(c: Cursor, input: LateralInput, result: Extract<LateralResult, { ok: true }>, heading?: string) {
+  const r = result, s = lateralSummary(input, r), d = lateralReportData(input, r);
+  const nap = (z: number) => `NAP ${nl(s.head - z, 2)}`;
   const nonlinear = r.analysisMode === 'nonlinear';
+  if (heading) { c.continuationTitle = heading; sectionTitle(c, heading); }
 
   sectionTitle(c, '1. Uitgangspunten');
   kv(c, 'Paal', sectionText(input.section));
@@ -82,8 +121,7 @@ export function buildLateralReport(input: LateralInput, result: LateralResult, c
     : `De doorsnede voldoet niet: u.c. ${nl(s.uc, 2)} > 1,00.`);
   paragraph(c, 'Niet getoetst: dwarskracht, scheurwijdte, minimumwapening, verankering, lokale buisplooi, P-delta en een gescheurde EI. Statische, monotone belasting. Concept: indicatieve berekening.', { italic: true, size: 7.5 });
 
-  if (typeof doc.putTotalPages === 'function') doc.putTotalPages(TOTAL_PAGES_TOKEN);
-  return new Uint8Array(doc.output('arraybuffer'));
+  c.continuationTitle = undefined;
 }
 
 /** Gekleurde grondkolom links, met de laagtabel ernaast. */

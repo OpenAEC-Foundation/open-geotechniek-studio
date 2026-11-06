@@ -92,5 +92,33 @@
     "sectionContent": "Contenuto",
     "sectionAppendices": "Allegati",
     "sectionBackcover": "Retro di copertina"
+  },
+  "model3dTab": "Modello 3D",
+  "model3d": {
+    "showGroup": "Visualizzazione",
+    "cpts": "Prove CPT",
+    "qc": "Resistenza di punta",
+    "model": "Modello del terreno",
+    "ground": "Piano campagna",
+    "bearing": "Strato portante",
+    "toes": "Punte dei pali",
+    "modelGroup": "Modello",
+    "exaggeration": "Esagerazione",
+    "opacity": "Opacità",
+    "cutGroup": "Sezione",
+    "cutAxis": "Direzione",
+    "cutEast": "Ovest → est",
+    "cutNorth": "Sud → nord",
+    "cut": "Taglio",
+    "viewGroup": "Vista",
+    "fit": "Adatta",
+    "legend": "Tipi di terreno",
+    "over": "su",
+    "from": "da",
+    "to": "a",
+    "defaultCriterion": "predefinito; impostalo in un parere di fondazione",
+    "cells": "celle",
+    "empty": "Aggiungi prove CPT per costruire il modello del terreno.",
+    "noWebgl": "La vista 3D non è disponibile su questo sistema (nessun WebGL)."
   }
 }

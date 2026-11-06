@@ -162,3 +162,6 @@
 .cs-settings-reset:hover { color: var(--oa-text); border-color: var(--oa-border-strong); }
 .cs-settings-actions { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
 .cs-settings-table td select { width: 110px; min-width: 0; }
+
+/* Getalveld met een ongeldige waarde tijdens het typen (wordt niet overgenomen). */
+.calc-workspace input[aria-invalid="true"] { border-color: var(--oa-error) !important; background: var(--oa-error-tint) !important; }

@@ -11,7 +11,7 @@ describe("paaltype-invoer",()=>{
   const onChange=vi.fn();
   const tapered={...input,pileTypeId:"timber-uniform",timberTaper:{toeDiameterMm:150,lengthM:10}};
   render(<InputPanel input={tapered} result={result} onChange={onChange}/>);
-  fireEvent.change(screen.getByLabelText("Tapse lengte vanaf kop [m]"),{target:{value:"8"}});
+  fireEvent.change(screen.getByLabelText("Tapse lengte vanaf kop [m]"),{target:{value:"8"}}); fireEvent.blur(screen.getByLabelText("Tapse lengte vanaf kop [m]"));
   expect(onChange.mock.calls[0][0].timberTaper).toEqual({toeDiameterMm:150,lengthM:8});
   fireEvent.change(screen.getByLabelText("Paaltype"),{target:{value:"concrete-auger"}});
   expect(onChange.mock.calls[1][0].timberTaper).toBeUndefined();
@@ -19,13 +19,13 @@ describe("paaltype-invoer",()=>{
  it("laat de grondsoort per laag expliciet aanpassen",()=>{
   const onChange=vi.fn();
   render(<InputPanel input={input} result={result} onChange={onChange}/>);
-  fireEvent.change(screen.getByLabelText("Grondsoort laag 1"),{target:{value:"sand-wet"}});
+  fireEvent.change(screen.getByLabelText("Grondsoort laag 1"),{target:{value:"sand-wet"}}); fireEvent.blur(screen.getByLabelText("Grondsoort laag 1"));
   expect(onChange.mock.calls[0][0].soilProfile[0]).toEqual(expect.objectContaining({kind:"sand-wet",gammaK:20,gammaW:10,phi:32.5}));
  });
  it("slaat normkeuze en historische veiligheidsfactor op en verwijdert moderne overrides",()=>{
   const onChange=vi.fn();
   render(<InputPanel input={input} result={result} onChange={onChange}/>);
-  fireEvent.change(screen.getByLabelText("Normversie"),{target:{value:"nen-6743-1991"}});
+  fireEvent.change(screen.getByLabelText("Normversie"),{target:{value:"nen-6743-1991"}}); fireEvent.blur(screen.getByLabelText("Normversie"));
   expect(onChange).toHaveBeenCalledWith(expect.objectContaining({standard:"nen-6743-1991",gammaM:1.25,pileTypeId:"concrete-prefab-prestressed-driven",projectFactors:undefined}));
  });
  it("toont de catalogus en vraagt EA bij een boorpaal",()=>{
@@ -60,7 +60,7 @@ describe("paaltype-invoer",()=>{
   expect(next.diameterMm).toBe(220);
   rerender(<InputPanel input={next} result={result} onChange={onChange}/>);
   expect(screen.getByRole("checkbox",{name:"Betonopzetter"})).toBeChecked();
-  expect(screen.getByLabelText("Las [m NAP]")).toHaveValue(next.concreteExtension.jointNap);
+  expect(screen.getByLabelText("Las [m NAP]")).toHaveValue(String(next.concreteExtension.jointNap));
   expect(screen.getByLabelText("Houtdiameter bij de las [mm]")).toBeInTheDocument();
   expect(screen.queryByLabelText(/Axiale stijfheid EA/)).toBeNull();
   expect(screen.getByLabelText("Opzetter")).toHaveValue("rond-280");

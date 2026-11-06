@@ -92,5 +92,33 @@
     "sectionContent": "Conteúdo",
     "sectionAppendices": "Anexos",
     "sectionBackcover": "Contracapa"
+  },
+  "model3dTab": "Modelo 3D",
+  "model3d": {
+    "showGroup": "Visualização",
+    "cpts": "Ensaios CPT",
+    "qc": "Resistência de ponta",
+    "model": "Modelo do terreno",
+    "ground": "Nível do terreno",
+    "bearing": "Camada resistente",
+    "toes": "Pontas das estacas",
+    "modelGroup": "Modelo",
+    "exaggeration": "Exagero",
+    "opacity": "Opacidade",
+    "cutGroup": "Secção",
+    "cutAxis": "Direção",
+    "cutEast": "Oeste → este",
+    "cutNorth": "Sul → norte",
+    "cut": "Corte",
+    "viewGroup": "Vista",
+    "fit": "Ajustar",
+    "legend": "Tipos de solo",
+    "over": "em",
+    "from": "de",
+    "to": "a",
+    "defaultCriterion": "predefinição; defina num parecer de fundações",
+    "cells": "células",
+    "empty": "Adicione ensaios CPT para construir o modelo do terreno.",
+    "noWebgl": "A vista 3D não está disponível neste sistema (sem WebGL)."
   }
 }

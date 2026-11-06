@@ -183,7 +183,7 @@ De statusbalk rechtsonder toont of de koppeling beschikbaar is, een client verbo
 
 Beschikbare tools: `studio_get_state`, `studio_get_cpt`, `studio_new_project`, `studio_select_document`, `studio_open_file`, `studio_set_project_meta`, `studio_add_calculation`, `studio_update_calculation`, `studio_get_calculation`, `studio_select_calculation`, `studio_get_capacity_table`, `studio_export_report` en `studio_save_project`. Bestandsopdrachten gebruiken absolute paden en openen geen bestandsdialoog. Paalinvoer volgt dezelfde standaardwaarden bij een norm- of paaltypewissel als de invoerinterface. Een expliciete patch kan die standaardwaarden overschrijven.
 
-`studio_add_calculation` ondersteunt `pile-bearing-capacity` en `laterally-loaded-pile` als afzonderlijke modules. Voor horizontale paalbelasting kunnen scalaire invoervelden, een gedeeltelijke `section` en volledige `layers` worden aangepast. Onbekende velden en ongeldige modellen worden afgewezen voordat projectgegevens veranderen. De conceptstatus en beperkingen van de rekenmodule blijven van toepassing.
+`studio_add_calculation` ondersteunt `pile-bearing-capacity` en `laterally-loaded-pile` als afzonderlijke modules, en `foundation-advice` voor een funderingsadvies dat de sonderingen en paalberekeningen van het project bundelt (`studio_export_report` schrijft het advies als PDF). Voor horizontale paalbelasting kunnen scalaire invoervelden, een gedeeltelijke `section` en volledige `layers` worden aangepast. Onbekende velden en ongeldige modellen worden afgewezen voordat projectgegevens veranderen. De conceptstatus en beperkingen van de rekenmodule blijven van toepassing.
 
 Horizontale paalbelasting accepteert `analysisMode: "linear" | "nonlinear"` en
 `layerCorrection: "none" | "georgiadis"`. Niet-lineaire lagen bevatten
@@ -212,6 +212,10 @@ Horizontale paalbelasting accepteert daarnaast `headNap` (paalkop in m NAP, alle
 voor invoer en weergave), `springOverrides: { [grondsoort]: { low?, high? } }`
 (eigen beddingswaarden in kN/m³ boven de tabelwaarde) en
 `puDefaults: { [grondsoort]: { atSurfaceKnM, gradientKnM2, capKnM } }`.
+`pileTable: { rows: [{ id, name, count?, headForceKn, headMomentKnM, nEdKn, lengthM?, diameterMm? }], maxDisplacementMm?, examples?: id[] }`
+is de paaltabel: veel palen met dezelfde grond en doorsnede, elk met een eigen
+kopbelasting en zo nodig een eigen lengte of maat. Het rapport werkt de palen uit
+`examples` volledig uit en sluit af met een overzicht van alle palen.
 
 `studio_select_calculation` opent optioneel een weergave met
 `view: "sheet" | "model" | "table" | "print" | "settings"` en bij `table`

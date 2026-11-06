@@ -6,8 +6,6 @@ import { downloadPdf } from '../../../utils/downloadPdf';
 import type { CalcCheck, CalcModule, ProjectContext } from '../types';
 import { ProjectTreePanel } from './ProjectTreePanel';
 import { NewCalculationDialog } from './NewCalculationDialog';
-import { CapacityTable } from '../../modules/pile-bearing-capacity/ui/CapacityTable';
-import type { PileInput } from '../../modules/pile-bearing-capacity/types';
 import './CalculationsView.css';
 import './Worksheet.css';
 import './CalcSheet.css';
@@ -36,7 +34,8 @@ export function CalculationsView() {
     return () => window.removeEventListener('ogs:open-new-calc', open);
   }, []);
   const mod = active ? getCalcModule(active.moduleId) : undefined;
-  const ctx: ProjectContext = { cpts, activeCptId, projectMeta };
+  const calculations = useMemo(() => (activeDocId ? byDoc.get(activeDocId) : undefined) ?? [], [activeDocId, byDoc]);
+  const ctx: ProjectContext = { cpts, activeCptId, projectMeta, calculations };
   const input = active?.input as never;
   const result = mod?.compute(input, ctx) as never;
   const onChange = (next: unknown) => {
@@ -44,7 +43,7 @@ export function CalculationsView() {
   };
   // De draagvermogentabel bestaat alleen voor de axiale paal; een module
   // zonder rapport heeft geen afdrukvoorbeeld.
-  const hasTable = mod?.id === 'pile-bearing-capacity';
+  const hasTable = !!mod?.table;
   const requested = nav.calcId === active?.id ? nav.view : 'sheet';
   const focusCpt = nav.calcId === active?.id ? nav.cptId : null;
   const shownView: SheetView = requested === 'table' && !hasTable ? 'sheet' : requested === 'print' && !mod?.buildReport ? 'sheet' : requested === 'settings' && !mod?.SettingsPanel ? 'sheet' : requested;
@@ -61,7 +60,7 @@ export function CalculationsView() {
           <div role="tablist" aria-label="Weergave" className="cs-viewtabs">
             <button role="tab" aria-selected={shownView === 'sheet'} className={shownView === 'sheet' ? 'active' : ''} onClick={() => setView('sheet')}>Invoer + uitdraai</button>
             <button role="tab" aria-selected={shownView === 'model'} className={shownView === 'model' ? 'active' : ''} onClick={() => setView('model')} title="Verberg de uitdraai zodat de tekening de volle breedte krijgt">Invoer + {(mod.visualLabel ?? 'Sondering').toLowerCase()}</button>
-            {hasTable && <button role="tab" aria-selected={shownView === 'table'} className={shownView === 'table' ? 'active' : ''} onClick={() => setView('table')}>Draagvermogentabel</button>}
+            {hasTable && <button role="tab" aria-selected={shownView === 'table'} className={shownView === 'table' ? 'active' : ''} onClick={() => setView('table')}>{mod.table?.label}</button>}
             {mod.buildReport && <button role="tab" aria-selected={shownView === 'print'} className={shownView === 'print' ? 'active' : ''} onClick={() => setView('print')}>Afdrukvoorbeeld</button>}
             {mod.SettingsPanel && <button role="tab" aria-selected={shownView === 'settings'} className={shownView === 'settings' ? 'active' : ''} onClick={() => setView('settings')}>Instellingen</button>}
           </div>
@@ -71,8 +70,8 @@ export function CalculationsView() {
         {shownView === 'table' && <div className="cs-table-view">
           <section className="cs-param-form" aria-label="Invoer"><mod.InputPanel input={input} result={result} onChange={onChange} /></section>
           <div className="cs-table-view-main">
-            <CapacityTable key={active.id} input={input as PileInput} cpts={cpts} onChange={onChange} onOpen={() => setView('sheet')}
-              cptId={focusCpt} onFocusCpt={(id) => navigate(active.id, 'table', id)} />
+            {mod.table && <mod.table.Panel key={active.id} input={input} ctx={ctx} onChange={onChange} onOpen={() => setView('sheet')}
+              focus={focusCpt} onFocus={(id) => navigate(active.id, 'table', id)} />}
           </div>
         </div>}
         {shownView === 'print' && <PrintPreview mod={mod} input={input} result={result} ctx={ctx} />}

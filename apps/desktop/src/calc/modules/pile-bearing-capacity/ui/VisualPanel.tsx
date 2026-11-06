@@ -1748,16 +1748,6 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
       </div>
     );
   }
-  if (!result.ok) {
-    return (
-      <div className="pile-visual">
-        <h3>Sondering: {cpt.id}</h3>
-        <div className="pile-visual-empty">
-          Geen geldig rekenresultaat — controleer invoer.
-        </div>
-      </div>
-    );
-  }
 
   // Pile-type bepaalt material + vorm voor de cross-section onderaan.
   const pileType = getPileType(input.pileTypeId);
@@ -1774,6 +1764,8 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
   return (
     <div className="pile-visual">
       <h3>Sondering: {cpt.id}</h3>
+      {/* Bij een fout blijft de tekening staan, zodat je de niveaus kunt terugslepen. */}
+      {!result.ok && <div className="pile-visual-error" role="alert">Niet berekend: {result.error}. Versleep de niveaus of pas de invoer aan.</div>}
       <div className="pile-cpt-chart">
         <CptOverlayChart cpt={cpt} input={input} result={result} onChange={onChange} />
       </div>

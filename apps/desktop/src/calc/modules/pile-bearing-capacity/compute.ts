@@ -58,7 +58,32 @@ function anyZero() {
   return { fcTot: 0, sbMm: 0, rbMobil: 0, rsMobil: 0, fgem: 0, selMm: 0, s1Mm: 0 };
 }
 
+const napText = (v: number) => `NAP ${v.toFixed(2).replace(".", ",")} m`;
+
+/**
+ * Rekent ook als de kleefniveaus buiten de paal liggen, bijvoorbeeld bij een
+ * ondiepe paalpunt: die niveaus worden op de paal afgekapt, met een
+ * waarschuwing. Zo kun je een paalpunt snel omhoog schuiven en direct het
+ * resultaat zien, zonder eerst de kleefgrenzen te verleggen.
+ */
 export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
+  const top = input.pileTopNap, toe = input.pileToeNap;
+  if ([top, toe, input.negKleefBottomNap].every(Number.isFinite) && top > toe) {
+    const neg = Math.min(top, Math.max(toe, input.negKleefBottomNap));
+    const posRaw = input.posKleefTopNap ?? input.negKleefBottomNap;
+    const pos = Math.min(neg, Math.max(toe, posRaw));
+    const notes: string[] = [];
+    if (neg !== input.negKleefBottomNap) notes.push(`Onderkant negatieve kleef (${napText(input.negKleefBottomNap)}) ligt buiten de paal; gerekend met ${napText(neg)}.`);
+    if (input.posKleefTopNap !== undefined && Number.isFinite(input.posKleefTopNap) && pos !== input.posKleefTopNap) notes.push(`Bovenkant positieve kleef (${napText(input.posKleefTopNap)}) ligt buiten het schachttraject; gerekend met ${napText(pos)}.`);
+    if (notes.length) {
+      const r = computePileChecked({ ...input, negKleefBottomNap: neg, posKleefTopNap: input.posKleefTopNap === undefined ? undefined : pos }, cpt);
+      return { ...r, warnings: [...notes, ...r.warnings] };
+    }
+  }
+  return computePileChecked(input, cpt);
+}
+
+function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   if (!cpt) return emptyResult("Geen actieve sondering");
   if (!getStandard(input.standard)) return emptyResult("Onbekende normversie");
   const historical = usesHistoricalProcedure(input.standard);

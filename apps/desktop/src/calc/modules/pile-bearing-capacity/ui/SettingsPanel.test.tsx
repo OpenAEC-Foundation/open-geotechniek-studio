@@ -15,7 +15,7 @@ describe("instellingen paaldraagvermogen", () => {
   it("zet een projectwaarde voor een paalfactor en vult de rest met tabelwaarden", () => {
     const onChange = vi.fn();
     const { rerender } = render(<SettingsPanel input={input} result={result} onChange={onChange} />);
-    fireEvent.change(screen.getByLabelText("αs project"), { target: { value: "0.012" } });
+    fireEvent.change(screen.getByLabelText("αs project"), { target: { value: "0.012" } }); fireEvent.blur(screen.getByLabelText("αs project"));
     const next = onChange.mock.lastCall![0] as PileInput;
     expect(next.projectFactors).toMatchObject({ alphaS: 0.012, alphaP: 0.7, beta: 1, source: "Instellingen van de berekening" });
     rerender(<SettingsPanel input={next} result={result} onChange={onChange} />);

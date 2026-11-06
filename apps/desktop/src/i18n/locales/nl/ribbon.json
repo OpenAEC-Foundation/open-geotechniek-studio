@@ -92,5 +92,33 @@
     "sectionContent": "Inhoud",
     "sectionAppendices": "Bijlagen",
     "sectionBackcover": "Achterblad"
+  },
+  "model3dTab": "3D-model",
+  "model3d": {
+    "showGroup": "Weergave",
+    "cpts": "Sonderingen",
+    "qc": "Conusweerstand",
+    "model": "Grondmodel",
+    "ground": "Maaiveld",
+    "bearing": "Draagkrachtige laag",
+    "toes": "Paalpunten",
+    "modelGroup": "Model",
+    "exaggeration": "Overhoogte",
+    "opacity": "Dekking",
+    "cutGroup": "Doorsnede",
+    "cutAxis": "Richting",
+    "cutEast": "West → oost",
+    "cutNorth": "Zuid → noord",
+    "cut": "Snede",
+    "viewGroup": "Beeld",
+    "fit": "Passend",
+    "legend": "Grondsoorten",
+    "over": "over",
+    "from": "uit",
+    "to": "tot",
+    "defaultCriterion": "standaard; stel in via een funderingsadvies",
+    "cells": "cellen",
+    "empty": "Voeg sonderingen toe om het grondmodel op te bouwen.",
+    "noWebgl": "3D-weergave is op dit systeem niet beschikbaar (geen WebGL)."
   }
 }

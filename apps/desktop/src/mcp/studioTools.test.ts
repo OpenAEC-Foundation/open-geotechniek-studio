@@ -134,3 +134,26 @@ it("bedient de nieuwe paalinvoer, instellingen, tabel, weergaven en rapport via 
   expect(fs.writeFile).toHaveBeenCalledWith("C:/rapporten/horizontaal.pdf", expect.any(Uint8Array));
 });
 
+
+it("bewaart een paaltabel voor de horizontale paal en weigert ongeldige rijen", async () => {
+  newProjectDocument();
+  const lateral = await executeStudioTool("studio_add_calculation", { moduleId: "laterally-loaded-pile" }, view) as { id: string };
+  const pileTable = { rows: [{ id: "a", name: "Kade A", headForceKn: 30, headMomentKnM: 0, nEdKn: 0 }, { id: "b", name: "Kade B", count: 4, headForceKn: 60, headMomentKnM: 10, nEdKn: 200, diameterMm: 350 }], maxDisplacementMm: 40, examples: ["b"] };
+  await executeStudioTool("studio_update_calculation", { id: lateral.id, patch: { pileTable } }, view);
+  expect(useCalculationsStore.getState().getActive()?.instance.input).toMatchObject({ pileTable });
+  for (const bad of [{ rows: [] }, { rows: [{ id: "a", name: "A", headForceKn: 1, headMomentKnM: 0, nEdKn: 0 }, { id: "a", name: "B", headForceKn: 1, headMomentKnM: 0, nEdKn: 0 }] }, { rows: pileTable.rows, examples: ["z"] }, { rows: [{ id: "a", name: "A", headForceKn: 1, headMomentKnM: 0, nEdKn: 0, lengthM: -2 }] }])
+    await expect(executeStudioTool("studio_update_calculation", { id: lateral.id, patch: { pileTable: bad } }, view)).rejects.toThrow();
+  const out = await executeStudioTool("studio_export_report", { id: lateral.id, path: "C:/rapporten/paaltabel.pdf" }, view) as { bytes: number };
+  expect(out.bytes).toBeGreaterThan(1000);
+});
+
+it("maakt een funderingsadvies via MCP en exporteert het als PDF", async () => {
+  newProjectDocument();
+  await executeStudioTool("studio_add_calculation", { name: "Kolommen" }, view);
+  const advice = await executeStudioTool("studio_add_calculation", { moduleId: "foundation-advice", name: "Advies", input: { reference: "FA-01", consequenceClass: "CC2", appendixCpts: false } }, view) as { id: string };
+  expect(useCalculationsStore.getState().getActive()?.instance.input).toMatchObject({ reference: "FA-01", appendixCpts: false });
+  await expect(executeStudioTool("studio_update_calculation", { id: advice.id, patch: { consequenceClass: "CC9" } }, view)).rejects.toThrow();
+  await expect(executeStudioTool("studio_update_calculation", { id: advice.id, patch: { onbekend: 1 } }, view)).rejects.toThrow();
+  const out = await executeStudioTool("studio_export_report", { id: advice.id, path: "C:/rapporten/advies.pdf" }, view) as { bytes: number };
+  expect(out.bytes).toBeGreaterThan(1000);
+});

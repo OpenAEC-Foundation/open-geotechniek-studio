@@ -10,6 +10,7 @@ import {validateCapacityTable,computeCapacityMatrix,chooseLevels,defaultCapacity
 import type { SheetView } from '../calc/framework/store';
 import type { ProjectMeta } from "../types/cpt";
 import { computeLateral, lateralExample, type LateralInput } from '../calc/modules/laterally-loaded-pile/compute';
+import { DEFAULT_ADVICE } from '../calc/modules/foundation-advice/types';
 
 type ObjectValue = Record<string, unknown>;
 function object(value: unknown, label: string): ObjectValue {
@@ -136,7 +137,7 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
 }
 
 function lateralPatch(input:unknown,patch:unknown):LateralInput {
-  const fields=object(patch,'Horizontale invoerpatch'); keys(fields,[...Object.keys(lateralExample),'headNap','springOverrides','puDefaults']);
+  const fields=object(patch,'Horizontale invoerpatch'); keys(fields,[...Object.keys(lateralExample),'headNap','springOverrides','puDefaults','pileTable']);
   const next=structuredClone(object(input,'Horizontale invoer'));
   const validate=(values:ObjectValue,example:ObjectValue)=>{
     keys(values,Object.keys(example));
@@ -164,6 +165,20 @@ function lateralPatch(input:unknown,patch:unknown):LateralInput {
       const o=object(value,'Eigen beddingswaarden');
       next.springOverrides=Object.fromEntries(Object.entries(o).map(([id,row])=>{const r=object(row,'Beddingswaarde');keys(r,['low','high']);
         return [id,Object.fromEntries(Object.entries(r).map(([sc,v])=>[sc,number(v,`kh ${id} ${sc}`)]))];}));
+    } else if(key==='pileTable') {
+      if(value===null){delete next.pileTable;continue;}
+      const t=object(value,'Paaltabel');keys(t,['rows','maxDisplacementMm','examples']);
+      if(!Array.isArray(t.rows)||!t.rows.length||t.rows.length>200)throw new Error('De paaltabel vraagt 1 tot 200 palen');
+      const rows=t.rows.map(v=>{const r=object(v,'Paal');keys(r,['id','name','count','headForceKn','headMomentKnM','nEdKn','lengthM','diameterMm']);
+        const row:ObjectValue={id:text(r.id,'Paal-ID'),name:text(r.name,'Paalnaam'),headForceKn:number(r.headForceKn,'H'),headMomentKnM:number(r.headMomentKnM,'M'),nEdKn:number(r.nEdKn,'N')};
+        for(const k of ['count','lengthM','diameterMm'])if(r[k]!==undefined){const x=number(r[k],k);if(!(x>0))throw new Error(`${k} moet positief zijn`);row[k]=x;}
+        return row;});
+      if(new Set(rows.map(r=>r.id)).size!==rows.length)throw new Error('Paal-ID moet uniek zijn');
+      const table:ObjectValue={rows};
+      if(t.maxDisplacementMm!==undefined){const m=number(t.maxDisplacementMm,'Grens kopverplaatsing');if(!(m>0))throw new Error('De grens voor de kopverplaatsing moet positief zijn');table.maxDisplacementMm=m;}
+      if(t.examples!==undefined){if(!Array.isArray(t.examples))throw new Error('Voorbeelden moeten een lijst zijn');const ids=new Set(rows.map(r=>r.id));
+        table.examples=t.examples.map(e=>{const id=text(e,'Voorbeeld');if(!ids.has(id))throw new Error(`Onbekende paal in voorbeelden: ${id}`);return id;});}
+      next.pileTable=table;
     } else if(key==='puDefaults') {
       if(value===null){delete next.puDefaults;continue;}
       const o=object(value,'pu-profielen');
@@ -175,9 +190,25 @@ function lateralPatch(input:unknown,patch:unknown):LateralInput {
   if(!result.ok)throw new Error(result.error);
   return next as unknown as LateralInput;
 }
+/** Funderingsadvies: tekstvelden, keuzes en lijsten met sonderingen en berekeningen. */
+function advicePatch(input:unknown,patch:unknown) {
+  const fields=object(patch,'Adviespatch');keys(fields,Object.keys(DEFAULT_ADVICE).concat(['floorLevelNap','groundwaterNap','cptIds','calcIds']));
+  const next=structuredClone(object(input,'Adviesinvoer'));
+  for(const [key,value] of Object.entries(fields)){
+    if(value===null&&['floorLevelNap','groundwaterNap','cptIds','calcIds'].includes(key)){delete next[key];continue;}
+    if(['designLifeYears','bearingQcMpa','bearingMinThicknessM','floorLevelNap','groundwaterNap'].includes(key))next[key]=number(value,key);
+    else if(['appendixCpts','appendixCalcs'].includes(key)){if(typeof value!=='boolean')throw new Error(`${key} moet waar of onwaar zijn`);next[key]=value;}
+    else if(key==='status'){if(!['concept','definitief'].includes(String(value)))throw new Error('Status is concept of definitief');next[key]=value;}
+    else if(key==='consequenceClass'){if(!['CC1','CC2','CC3'].includes(String(value)))throw new Error('Gevolgklasse is CC1, CC2 of CC3');next[key]=value;}
+    else if(key==='cptIds'||key==='calcIds'){if(!Array.isArray(value))throw new Error(`${key} moet een lijst zijn`);next[key]=value.map(v=>text(v,key));}
+    else next[key]=typeof value==='string'?value:text(value,key);
+  }
+  return next;
+}
 function calculationPatch(moduleId:string,input:unknown,patch:unknown) {
   if(moduleId==='pile-bearing-capacity')return pilePatch(input,patch);
   if(moduleId==='laterally-loaded-pile')return lateralPatch(input,patch);
+  if(moduleId==='foundation-advice')return advicePatch(input,patch);
   throw new Error('Rekenmodule niet beschikbaar voor Studio MCP');
 }
 

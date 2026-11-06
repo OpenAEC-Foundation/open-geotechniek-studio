@@ -45,13 +45,13 @@ describe('invoer in rekenbladstijl',()=>{
   const setup=(input=lateralExample)=>{const onChange=vi.fn();render(<module.InputPanel input={input} result={computeLateral(input)} onChange={onChange}/>);return onChange;};
   it('rekent niveaus in m NAP om naar diepte vanaf de kop en schuift de onderste laag mee',()=>{
     const onChange=setup({...lateralExample,headNap:-1});
-    expect(screen.getByLabelText('Paalpunt [m NAP]')).toHaveValue(-13);
-    expect(screen.getByLabelText('Onderkant laag 1 [m NAP]')).toHaveValue(-5);
-    fireEvent.change(screen.getByLabelText('Paalpunt [m NAP]'),{target:{value:'-15'}});
+    expect(screen.getByLabelText('Paalpunt [m NAP]')).toHaveValue('-13');
+    expect(screen.getByLabelText('Onderkant laag 1 [m NAP]')).toHaveValue('-5');
+    fireEvent.change(screen.getByLabelText('Paalpunt [m NAP]'),{target:{value:'-15'}}); fireEvent.blur(screen.getByLabelText('Paalpunt [m NAP]'));
     const next=onChange.mock.lastCall![0];
     expect(next.lengthM).toBe(14);
     expect(next.layers.map((l:{topM:number;bottomM:number})=>[l.topM,l.bottomM])).toEqual([[0,4],[4,14]]);
-    fireEvent.change(screen.getByLabelText('Bovenkant laag 2 [m NAP]'),{target:{value:'-6'}});
+    fireEvent.change(screen.getByLabelText('Bovenkant laag 2 [m NAP]'),{target:{value:'-6'}}); fireEvent.blur(screen.getByLabelText('Bovenkant laag 2 [m NAP]'));
     expect(onChange.mock.lastCall![0].layers[1].topM).toBe(5);
   });
   it('meldt dat de paalkop is aangenomen als die nog ontbreekt',()=>{
@@ -60,7 +60,7 @@ describe('invoer in rekenbladstijl',()=>{
   });
   it('kort lagen in bij een kortere paal en houdt de berekening geldig',()=>{
     const onChange=setup();
-    fireEvent.change(screen.getByLabelText('Paalpunt [m NAP]'),{target:{value:'-3'}});
+    fireEvent.change(screen.getByLabelText('Paalpunt [m NAP]'),{target:{value:'-3'}}); fireEvent.blur(screen.getByLabelText('Paalpunt [m NAP]'));
     const next=onChange.mock.lastCall![0];
     expect(next.layers).toHaveLength(1);
     expect(next.layers[0]).toMatchObject({topM:0,bottomM:3});
@@ -70,7 +70,7 @@ describe('invoer in rekenbladstijl',()=>{
     const onChange=setup();
     expect(screen.getByRole('img',{name:'Doorsnede □400 mm met 8 staven Ø20'})).toBeInTheDocument();
     expect(document.querySelectorAll('.lat-sketch-bar')).toHaveLength(8);
-    fireEvent.change(screen.getByLabelText('Aantal langsstaven'),{target:{value:'10'}});
+    fireEvent.change(screen.getByLabelText('Aantal langsstaven'),{target:{value:'10'}}); fireEvent.blur(screen.getByLabelText('Aantal langsstaven'));
     expect(onChange.mock.lastCall![0].section.barCount).toBe(12);
   });
   it('splitst de onderste laag bij + Laag, en toont pu-kolommen alleen bij niet-lineair',()=>{

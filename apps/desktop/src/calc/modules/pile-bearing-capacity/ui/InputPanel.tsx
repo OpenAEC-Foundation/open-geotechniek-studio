@@ -3,14 +3,14 @@
 // Invoerscherm in rekenblad-stijl: per onderwerp een sectie met een
 // kopje, daaronder rijen met het label links en de invoer plus eenheid
 // rechts. Keuzes die je visueel herkent (materiaal) staan als tegels.
-import { useEffect, useRef, type ChangeEvent, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useCptStore } from "../../../../store/useCptStore";
 import { PILE_TYPE_CATALOG, SOIL_DEFAULTS, resolvePileType } from "../catalog";
 import type { ConcreteExtension, PileInput, PileResult, PileTypeSpec, SoilKind, SoilLayer } from "../types";
 import { woodTopNap } from "../parts/geometry";
 import { STEEL_TUBE_OD, TIMBER_HEAD, nearest, seriesFor, sizeText } from "../standard-sizes";
 import { PILE_STANDARDS, applyStandard, changeStandard, getStandard, usesHistoricalProcedure, type PileStandard } from "../standards";
-import { Hint, Row, Section } from "../../../framework/views/SheetForm";
+import { Hint, NumField, Row, Section } from "../../../framework/views/SheetForm";
 import "./styles.css";
 
 interface Props {
@@ -60,7 +60,7 @@ export function InputPanel({ input, onChange }: Props) {
     if (!onChange) return;
     onChange({ ...input, [key]: value });
   };
-  const num = (key: keyof PileInput) => (e: ChangeEvent<HTMLInputElement>) => set(key, +e.target.value as never);
+  const num = (key: keyof PileInput) => (e: { target: { value: string } }) => set(key, +e.target.value as never);
   const updateLayer = (index: number, patch: Partial<SoilLayer>) => set("soilProfile", input.soilProfile.map((layer, i) => i === index ? { ...layer, ...patch } : layer));
   // Een ander paaltype erft geen projectfactoren, voetmaat, EA of
   // tapsheid van het vorige: die horen bij één paalsysteem.
@@ -161,7 +161,7 @@ export function InputPanel({ input, onChange }: Props) {
           </Row>
         )}
         <Row label={sizeLabel} unit="mm">
-          <input aria-label={`${sizeLabel} [mm]`} type="number" min="1" step="any" value={input.diameterMm} onChange={num("diameterMm")} />
+          <NumField aria-label={`${sizeLabel} [mm]`} min="1" step="any" value={input.diameterMm} onChange={num("diameterMm")} />
         </Row>
         {pileType?.material === "wood" && <>
           <label className="cs-check">
@@ -170,7 +170,7 @@ export function InputPanel({ input, onChange }: Props) {
           </label>
           {ext && <div className="cs-subgroup">
             <Row label="Las (onderkant opzetter)" unit="m NAP">
-              <input aria-label="Las [m NAP]" type="number" step="0.05" value={mm(ext.jointNap)} onChange={e => setExt({ jointNap: +e.target.value })} />
+              <NumField aria-label="Las [m NAP]" step="0.05" value={mm(ext.jointNap)} onChange={e => setExt({ jointNap: +e.target.value })} />
             </Row>
             <Row label="Opzetter">
               <select aria-label="Opzetter" value={series.extensions.find((p) => p.sizeMm === ext.sizeMm && p.isCircular === ext.isCircular)?.id ?? "eigen"}
@@ -195,7 +195,7 @@ export function InputPanel({ input, onChange }: Props) {
                 </select>
               </Row>
               <Row label={ext.isCircular ? "Diameter opzetter" : "Zijde opzetter"} unit="mm">
-                <input aria-label="Maat opzetter [mm]" type="number" min="1" value={ext.sizeMm} onChange={e => setExt({ sizeMm: +e.target.value })} />
+                <NumField aria-label="Maat opzetter [mm]" min="1" value={ext.sizeMm} onChange={e => setExt({ sizeMm: +e.target.value })} />
               </Row>
             </>}
             {ext.jointNap > input.waterNap - 0.5 + 1e-9 && <Hint warn>De las ligt minder dan 0,5 m onder de grondwaterstand (NAP {mm(input.waterNap)}): het hout blijft daar niet permanent nat. Kies een langere opzetter.</Hint>}
@@ -208,52 +208,52 @@ export function InputPanel({ input, onChange }: Props) {
         </>}
         {input.timberTaper ? <>
           <Row label="Puntdiameter" unit="mm">
-            <input aria-label="Puntdiameter hout [mm]" type="number" min="1" max={input.diameterMm} value={input.timberTaper.toeDiameterMm} onChange={e => set("timberTaper", { ...input.timberTaper!, toeDiameterMm: +e.target.value })} />
+            <NumField aria-label="Puntdiameter hout [mm]" min="1" max={input.diameterMm} value={input.timberTaper.toeDiameterMm} onChange={e => set("timberTaper", { ...input.timberTaper!, toeDiameterMm: +e.target.value })} />
           </Row>
           <Row label={ext ? "Tapse lengte vanaf de las" : "Tapse lengte vanaf kop"} unit="m">
-            <input aria-label={ext ? "Tapse lengte vanaf de las [m]" : "Tapse lengte vanaf kop [m]"} type="number" min="0.01" step="0.1" max={woodLength} value={input.timberTaper.lengthM} onChange={e => set("timberTaper", { ...input.timberTaper!, lengthM: +e.target.value })} />
+            <NumField aria-label={ext ? "Tapse lengte vanaf de las [m]" : "Tapse lengte vanaf kop [m]"} min="0.01" step="0.1" max={woodLength} value={input.timberTaper.lengthM} onChange={e => set("timberTaper", { ...input.timberTaper!, lengthM: +e.target.value })} />
           </Row>
           <Hint>De houtdiameter neemt lineair af vanaf {ext ? "de las" : "de kop"}; onder het tapse deel blijft de puntdiameter constant. De kleefomtrek volgt het gekozen traject; zakking en veerwaarden worden niet bepaald.</Hint>
         </> : !ext && (
           <Row label="Puntafmeting" unit="mm">
-            <input aria-label="Puntafmeting [mm] (leeg = schacht)" type="number" min="1" placeholder="schacht" value={input.baseDiameterMm ?? ""} onChange={(e) => set("baseDiameterMm", e.target.value === "" ? undefined : +e.target.value)} />
+            <NumField aria-label="Puntafmeting [mm] (leeg = schacht)" min="1" placeholder="schacht" value={input.baseDiameterMm ?? ""} onChange={(e) => set("baseDiameterMm", e.target.value === "" ? undefined : +e.target.value)} />
           </Row>
         )}
         {pileType?.material === "steel" && !pileType.requiresEA && (
           <Row label="Wanddikte" unit="mm">
-            <input aria-label="Wanddikte [mm]" type="number" min="0.1" step="0.1" value={input.wallThicknessMm} onChange={num("wallThicknessMm")} />
+            <NumField aria-label="Wanddikte [mm]" min="0.1" step="0.1" value={input.wallThicknessMm} onChange={num("wallThicknessMm")} />
           </Row>
         )}
         {!input.timberTaper && !ext && (
           <Row label={<>Axiale stijfheid EA{pileType?.requiresEA && <span className="cs-required"> · verplicht</span>}</>} unit="kN"
             missing={needsEA ? "Vereist voor dit paaltype — zonder EA wordt er niet gerekend." : undefined}>
-            <input ref={eaRef} aria-invalid={needsEA || undefined} aria-label={`Axiale stijfheid EA [kN]${pileType?.requiresEA ? " (verplicht)" : " (optioneel)"}`} type="number" min="1" placeholder={pileType?.requiresEA ? "" : "optioneel"} value={input.axialStiffnessKn ?? ""} onChange={(e) => set("axialStiffnessKn", e.target.value === "" ? undefined : +e.target.value)} />
+            <NumField ref={eaRef} aria-invalid={needsEA || undefined} aria-label={`Axiale stijfheid EA [kN]${pileType?.requiresEA ? " (verplicht)" : " (optioneel)"}`} min="1" placeholder={pileType?.requiresEA ? "" : "optioneel"} value={input.axialStiffnessKn ?? ""} onChange={(e) => set("axialStiffnessKn", e.target.value === "" ? undefined : +e.target.value)} />
           </Row>
         )}
         {pileType?.conditions && <Hint>{pileType.conditions}</Hint>}
       </Section>
 
       <Section title="Paalniveaus">
-        <Row label="Paalkop" unit="m NAP"><input aria-label="Paalkop [m NAP]" type="number" step="0.01" value={mm(input.pileTopNap)} onChange={num("pileTopNap")} /></Row>
-        <Row label="Paalpunt" unit="m NAP"><input aria-label="Paalpunt [m NAP]" type="number" step="0.01" value={mm(input.pileToeNap)} onChange={num("pileToeNap")} /></Row>
-        <Row label="Grondwater" unit="m NAP"><input aria-label="Grondwater [m NAP]" type="number" step="0.01" value={mm(input.waterNap)} onChange={num("waterNap")} /></Row>
-        <Row label="Ontgraving" unit="m NAP"><input aria-label="Ontgraving [m NAP]" type="number" step="0.01" value={mm(input.excavationNap)} onChange={num("excavationNap")} /></Row>
+        <Row label="Paalkop" unit="m NAP"><NumField aria-label="Paalkop [m NAP]" step="0.01" value={mm(input.pileTopNap)} onChange={num("pileTopNap")} /></Row>
+        <Row label="Paalpunt" unit="m NAP"><NumField aria-label="Paalpunt [m NAP]" step="0.01" value={mm(input.pileToeNap)} onChange={num("pileToeNap")} /></Row>
+        <Row label="Grondwater" unit="m NAP"><NumField aria-label="Grondwater [m NAP]" step="0.01" value={mm(input.waterNap)} onChange={num("waterNap")} /></Row>
+        <Row label="Ontgraving" unit="m NAP"><NumField aria-label="Ontgraving [m NAP]" step="0.01" value={mm(input.excavationNap)} onChange={num("excavationNap")} /></Row>
       </Section>
 
       <Section title="Belasting">
-        <Row label={<>N<sub>Ed</sub> ontwerpbelasting</>} unit="kN"><input aria-label="NEd [kN]" type="number" value={input.nEd} onChange={num("nEd")} /></Row>
-        <Row label={<>N<sub>Ek</sub> karakteristiek</>} unit="kN"><input aria-label="NEk [kN]" type="number" value={input.nEk} onChange={num("nEk")} /></Row>
-        <Row label={<>γ<sub>m</sub> materiaalfactor</>}><input aria-label="γm" type="number" step="0.01" value={input.gammaM} onChange={num("gammaM")} /></Row>
-        <Row label={<>γ<sub>f,nk</sub> negatieve kleef</>}><input aria-label="γf,nk" type="number" step="0.01" value={input.gammaFnk} onChange={num("gammaFnk")} /></Row>
+        <Row label={<>N<sub>Ed</sub> ontwerpbelasting</>} unit="kN"><NumField aria-label="NEd [kN]" value={input.nEd} onChange={num("nEd")} /></Row>
+        <Row label={<>N<sub>Ek</sub> karakteristiek</>} unit="kN"><NumField aria-label="NEk [kN]" value={input.nEk} onChange={num("nEk")} /></Row>
+        <Row label={<>γ<sub>m</sub> materiaalfactor</>}><NumField aria-label="γm" step="0.01" value={input.gammaM} onChange={num("gammaM")} /></Row>
+        <Row label={<>γ<sub>f,nk</sub> negatieve kleef</>}><NumField aria-label="γf,nk" step="0.01" value={input.gammaFnk} onChange={num("gammaFnk")} /></Row>
       </Section>
 
       <Section title="Kleefzones">
-        <Row label="Onderkant negatieve kleef" unit="m NAP"><input aria-label="Onderkant negatieve kleef [m NAP]" type="number" step="0.01" value={mm(input.negKleefBottomNap)} onChange={num("negKleefBottomNap")} /></Row>
+        <Row label="Onderkant negatieve kleef" unit="m NAP"><NumField aria-label="Onderkant negatieve kleef [m NAP]" step="0.01" value={mm(input.negKleefBottomNap)} onChange={num("negKleefBottomNap")} /></Row>
         {/* Standaard begint positieve kleef waar negatieve kleef ophoudt;
             los te verlagen als er een zwakke tussenlaag zit. De onderkant
             is altijd de paalpunt. */}
-        <Row label="Bovenkant positieve kleef" unit="m NAP"><input aria-label="Bovenkant positieve kleef [m NAP]" type="number" step="0.01" value={mm(input.posKleefTopNap ?? input.negKleefBottomNap)} onChange={num("posKleefTopNap")} /></Row>
-        <Row label={<>K<sub>0</sub>·tan δ minimum</>}><input aria-label="K0·tan(δ) minimum" type="number" step="0.01" value={input.ksMinFactor} onChange={num("ksMinFactor")} /></Row>
+        <Row label="Bovenkant positieve kleef" unit="m NAP"><NumField aria-label="Bovenkant positieve kleef [m NAP]" step="0.01" value={mm(input.posKleefTopNap ?? input.negKleefBottomNap)} onChange={num("posKleefTopNap")} /></Row>
+        <Row label={<>K<sub>0</sub>·tan δ minimum</>}><NumField aria-label="K0·tan(δ) minimum" step="0.01" value={input.ksMinFactor} onChange={num("ksMinFactor")} /></Row>
         <Hint>Paalniveaus en kleefzones zijn ook te verslepen in de sondering.</Hint>
       </Section>
 
@@ -280,7 +280,7 @@ export function InputPanel({ input, onChange }: Props) {
                     }}>{Object.entries(SOIL_DEFAULTS).map(([kind, values]) => <option key={kind} value={kind}>{values.label}</option>)}</select>
                   </td>
                   {(["startNap", "endNap", "gammaK", "gammaW", "phi"] as const).map(key => (
-                    <td key={key}><input aria-label={`${key} laag ${index + 1}`} type="number" step="0.1" value={layer[key]} onChange={e => updateLayer(index, { [key]: +e.target.value })} /></td>
+                    <td key={key}><NumField aria-label={`${key} laag ${index + 1}`} step="0.1" value={layer[key]} onChange={e => updateLayer(index, { [key]: +e.target.value })} /></td>
                   ))}
                 </tr>
               ))}
@@ -314,7 +314,7 @@ export function InputPanel({ input, onChange }: Props) {
           <Row label="Bron / verklaring"><input aria-label="Bron / verklaring" value={input.projectFactors.source} onChange={(e) => set("projectFactors", { ...input.projectFactors!, source: e.target.value })} /></Row>
           {(["alphaP", "alphaS", "alphaT", "beta", "s"] as const).map((key) => {
             const label = ({ alphaP: "αp", alphaS: "αs", alphaT: "αt (geen trekcontrole)", beta: "β", s: "s" })[key];
-            return <Row key={key} label={label}><input aria-label={label} type="number" min="0" step="0.001" value={input.projectFactors![key]} onChange={(e) => set("projectFactors", { ...input.projectFactors!, [key]: +e.target.value })} /></Row>;
+            return <Row key={key} label={label}><NumField aria-label={label} min="0" step="0.001" value={input.projectFactors![key]} onChange={(e) => set("projectFactors", { ...input.projectFactors!, [key]: +e.target.value })} /></Row>;
           })}
           <Hint>De bron moet passen bij paalsysteem, uitvoering en afmetingen. Factoren uit 2025 maken de volledige rekenmethode niet automatisch conform 2025.</Hint>
         </>}
