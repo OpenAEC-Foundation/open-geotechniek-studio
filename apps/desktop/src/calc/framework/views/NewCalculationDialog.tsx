@@ -14,6 +14,7 @@ const CATEGORY_LABELS: Record<CalcCategory, string> = {
   spread: "Funderingen",
   wall: "Wanden",
   anchor: "Ankers",
+  report: "Rapporten",
 };
 
 export function NewCalculationDialog({ open, onClose }: Props) {

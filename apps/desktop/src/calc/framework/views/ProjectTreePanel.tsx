@@ -60,6 +60,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
     spread: "Funderingen",
     wall: "Wanden",
     anchor: "Ankers",
+    report: "Rapporten",
     other: "Overig",
   };
 

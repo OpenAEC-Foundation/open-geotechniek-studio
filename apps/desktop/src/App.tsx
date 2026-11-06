@@ -16,6 +16,7 @@ import ReportPreview from "./components/panels/ReportPreview";
 import ChartView from "./components/panels/ChartView";
 import MapView from "./components/panels/MapView";
 import IfcView from "./components/panels/IfcView";
+import Soil3DView from "./components/soil3d/Soil3DView";
 import "./components/panels/IfcView.css";
 import SonderingstekeningView from "./components/panels/SonderingstekeningView";
 import { CalculationsView } from "./calc/framework/views/CalculationsView";
@@ -414,7 +415,7 @@ function App() {
   // Only Rapport + IFC + Calculations stay full-width because they
   // don't deal with maps.
   const isFullWidthView =
-    activeView === "report" || activeView === "ifc" || activeView === "calculations";
+    activeView === "report" || activeView === "ifc" || activeView === "calculations" || activeView === "soil3d";
 
   const renderMainContent = () => {
     switch (activeView) {
@@ -428,6 +429,8 @@ function App() {
         return <SonderingstekeningView key={activeDocId ?? "empty"} />;
       case "calculations":
         return <CalculationsView />;
+      case "soil3d":
+        return <Soil3DView />;
       default:
         return <ChartView />;
     }

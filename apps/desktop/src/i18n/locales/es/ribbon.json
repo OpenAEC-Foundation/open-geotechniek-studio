@@ -92,5 +92,33 @@
     "sectionContent": "Contenido",
     "sectionAppendices": "Anexos",
     "sectionBackcover": "Contraportada"
+  },
+  "model3dTab": "Modelo 3D",
+  "model3d": {
+    "showGroup": "Visualización",
+    "cpts": "Ensayos CPT",
+    "qc": "Resistencia de punta",
+    "model": "Modelo del terreno",
+    "ground": "Nivel del terreno",
+    "bearing": "Capa portante",
+    "toes": "Puntas de pilote",
+    "modelGroup": "Modelo",
+    "exaggeration": "Exageración",
+    "opacity": "Opacidad",
+    "cutGroup": "Sección",
+    "cutAxis": "Dirección",
+    "cutEast": "Oeste → este",
+    "cutNorth": "Sur → norte",
+    "cut": "Corte",
+    "viewGroup": "Vista",
+    "fit": "Ajustar",
+    "legend": "Tipos de suelo",
+    "over": "en",
+    "from": "de",
+    "to": "a",
+    "defaultCriterion": "por defecto; ajústelo en un informe de cimentación",
+    "cells": "celdas",
+    "empty": "Añada ensayos CPT para construir el modelo del terreno.",
+    "noWebgl": "La vista 3D no está disponible en este sistema (sin WebGL)."
   }
 }

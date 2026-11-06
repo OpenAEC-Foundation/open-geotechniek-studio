@@ -133,8 +133,8 @@ export interface Cursor {
   continuationTitle?: string;
 }
 
-export function makeCursor(doc: jsPDF, project: PileReportProject): Cursor {
-  let pageNo = 1;
+export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1): Cursor {
+  let pageNo = startPage;
   const printChrome = () => {
     doc.setFont("helvetica", "bolditalic");
     doc.setFontSize(9.5);
@@ -448,7 +448,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
 
 // ─── Berekening-blad per sondering ───────────────────────────────
 
-function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileReportInputs["factors"]): void {
+export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileReportInputs["factors"]): void {
   const { input, result } = s;
   const Os = result.negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, resolvePileType(input)?.isCircular ?? true).perimeterM;
   const wp = result.settlement.sls;

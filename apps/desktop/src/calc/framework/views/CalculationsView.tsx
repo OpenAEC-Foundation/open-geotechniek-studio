@@ -34,7 +34,8 @@ export function CalculationsView() {
     return () => window.removeEventListener('ogs:open-new-calc', open);
   }, []);
   const mod = active ? getCalcModule(active.moduleId) : undefined;
-  const ctx: ProjectContext = { cpts, activeCptId, projectMeta };
+  const calculations = useMemo(() => (activeDocId ? byDoc.get(activeDocId) : undefined) ?? [], [activeDocId, byDoc]);
+  const ctx: ProjectContext = { cpts, activeCptId, projectMeta, calculations };
   const input = active?.input as never;
   const result = mod?.compute(input, ctx) as never;
   const onChange = (next: unknown) => {

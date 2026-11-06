@@ -92,5 +92,33 @@
     "sectionContent": "Contenu",
     "sectionAppendices": "Annexes",
     "sectionBackcover": "Quatrième de couverture"
+  },
+  "model3dTab": "Modèle 3D",
+  "model3d": {
+    "showGroup": "Affichage",
+    "cpts": "Essais CPT",
+    "qc": "Résistance de pointe",
+    "model": "Modèle de sol",
+    "ground": "Terrain naturel",
+    "bearing": "Couche porteuse",
+    "toes": "Pointes de pieux",
+    "modelGroup": "Modèle",
+    "exaggeration": "Exagération",
+    "opacity": "Opacité",
+    "cutGroup": "Coupe",
+    "cutAxis": "Direction",
+    "cutEast": "Ouest → est",
+    "cutNorth": "Sud → nord",
+    "cut": "Coupe",
+    "viewGroup": "Vue",
+    "fit": "Ajuster",
+    "legend": "Types de sol",
+    "over": "sur",
+    "from": "de",
+    "to": "à",
+    "defaultCriterion": "par défaut ; à régler dans un avis de fondation",
+    "cells": "cellules",
+    "empty": "Ajoutez des essais CPT pour construire le modèle de sol.",
+    "noWebgl": "La vue 3D n'est pas disponible sur ce système (pas de WebGL)."
   }
 }

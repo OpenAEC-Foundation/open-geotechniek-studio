@@ -36,7 +36,7 @@ function gradient(doc: jsPDF, y: number, h: number) {
 }
 
 /** Branded single-CPT cover, with the native palette and page geometry. */
-export function drawCover(doc: jsPDF, cpt: Cpt, project: ProjectMeta, brand: ReportBrand = currentBrand()) {
+export function drawCover(doc: jsPDF, cpt: Cpt | null, project: ProjectMeta, brand: ReportBrand = currentBrand(), kind = "Sonderingsrapport") {
   doc.saveGraphicsState();
   const accent = brand.accent as Color;
   const boundary = HEIGHT * .3;
@@ -77,13 +77,13 @@ export function drawCover(doc: jsPDF, cpt: Cpt, project: ProjectMeta, brand: Rep
   // Wrap long titles and reserve a separate line for metadata to avoid overlap.
   doc.setFont("helvetica", "bold");
   doc.setFontSize(30);
-  const title = project.title.trim() || `Sondering ${cpt.id}`;
+  const title = project.title.trim() || (cpt ? `Sondering ${cpt.id}` : kind);
   const lines = doc.splitTextToSize(title, 172) as string[];
   const titleLines = lines.slice(0, 3);
   if (lines.length > 3) titleLines[2] = `${titleLines[2].slice(0, -3)}...`;
   text(doc, titleLines.join("\n"), 20, 69, 30, FORGE, true);
   const subtitleY = 69 - titleLines.length * 12;
-  text(doc, `Sonderingsrapport · ${project.location || `sondering ${cpt.id}`}`, 20, subtitleY, 12, GRAY);
+  text(doc, `${kind} · ${project.location || (cpt ? `sondering ${cpt.id}` : project.project_number || "")}`, 20, subtitleY, 12, GRAY);
   const date = project.date.slice(0, 10).split("-").reverse().join("-");
   const metadata = [project.client && `Opdrachtgever: ${project.client}`, project.project_number && `Projectnr: ${project.project_number}`, `Datum: ${date}`].filter(Boolean).join(" · ");
   doc.setFontSize(8.5);
@@ -91,7 +91,7 @@ export function drawCover(doc: jsPDF, cpt: Cpt, project: ProjectMeta, brand: Rep
   text(doc, metaLines.slice(0, 2).join("\n"), 20, Math.min(subtitleY - 9, 23), 8.5, GRAY);
   gradient(doc, 0, 2.5);
   text(doc, "Open Geotechniek Studio", 20, 7.5, 9, FORGE, true);
-  text(doc, "Sonderingsrapport · pagina 1", 192, 8, 7.5, GRAY, false, "right");
+  text(doc, `${kind} · pagina 1`, 192, 8, 7.5, GRAY, false, "right");
   doc.restoreGraphicsState();
 }
 

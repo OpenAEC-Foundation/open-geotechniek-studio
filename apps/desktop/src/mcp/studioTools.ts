@@ -10,6 +10,7 @@ import {validateCapacityTable,computeCapacityMatrix,chooseLevels,defaultCapacity
 import type { SheetView } from '../calc/framework/store';
 import type { ProjectMeta } from "../types/cpt";
 import { computeLateral, lateralExample, type LateralInput } from '../calc/modules/laterally-loaded-pile/compute';
+import { DEFAULT_ADVICE } from '../calc/modules/foundation-advice/types';
 
 type ObjectValue = Record<string, unknown>;
 function object(value: unknown, label: string): ObjectValue {
@@ -189,9 +190,25 @@ function lateralPatch(input:unknown,patch:unknown):LateralInput {
   if(!result.ok)throw new Error(result.error);
   return next as unknown as LateralInput;
 }
+/** Funderingsadvies: tekstvelden, keuzes en lijsten met sonderingen en berekeningen. */
+function advicePatch(input:unknown,patch:unknown) {
+  const fields=object(patch,'Adviespatch');keys(fields,Object.keys(DEFAULT_ADVICE).concat(['floorLevelNap','groundwaterNap','cptIds','calcIds']));
+  const next=structuredClone(object(input,'Adviesinvoer'));
+  for(const [key,value] of Object.entries(fields)){
+    if(value===null&&['floorLevelNap','groundwaterNap','cptIds','calcIds'].includes(key)){delete next[key];continue;}
+    if(['designLifeYears','bearingQcMpa','bearingMinThicknessM','floorLevelNap','groundwaterNap'].includes(key))next[key]=number(value,key);
+    else if(['appendixCpts','appendixCalcs'].includes(key)){if(typeof value!=='boolean')throw new Error(`${key} moet waar of onwaar zijn`);next[key]=value;}
+    else if(key==='status'){if(!['concept','definitief'].includes(String(value)))throw new Error('Status is concept of definitief');next[key]=value;}
+    else if(key==='consequenceClass'){if(!['CC1','CC2','CC3'].includes(String(value)))throw new Error('Gevolgklasse is CC1, CC2 of CC3');next[key]=value;}
+    else if(key==='cptIds'||key==='calcIds'){if(!Array.isArray(value))throw new Error(`${key} moet een lijst zijn`);next[key]=value.map(v=>text(v,key));}
+    else next[key]=typeof value==='string'?value:text(value,key);
+  }
+  return next;
+}
 function calculationPatch(moduleId:string,input:unknown,patch:unknown) {
   if(moduleId==='pile-bearing-capacity')return pilePatch(input,patch);
   if(moduleId==='laterally-loaded-pile')return lateralPatch(input,patch);
+  if(moduleId==='foundation-advice')return advicePatch(input,patch);
   throw new Error('Rekenmodule niet beschikbaar voor Studio MCP');
 }
 

@@ -92,5 +92,33 @@
     "sectionContent": "Indhold",
     "sectionAppendices": "Bilag",
     "sectionBackcover": "Bagside"
+  },
+  "model3dTab": "3D-model",
+  "model3d": {
+    "showGroup": "Visning",
+    "cpts": "CPT-sonderinger",
+    "qc": "Spidsmodstand",
+    "model": "Jordmodel",
+    "ground": "Terræn",
+    "bearing": "Bærende lag",
+    "toes": "Pælespidser",
+    "modelGroup": "Model",
+    "exaggeration": "Overhøjde",
+    "opacity": "Dækkevne",
+    "cutGroup": "Snit",
+    "cutAxis": "Retning",
+    "cutEast": "Vest → øst",
+    "cutNorth": "Syd → nord",
+    "cut": "Snit",
+    "viewGroup": "Visning",
+    "fit": "Tilpas",
+    "legend": "Jordarter",
+    "over": "over",
+    "from": "fra",
+    "to": "til",
+    "defaultCriterion": "standard; indstil i en funderingsrådgivning",
+    "cells": "celler",
+    "empty": "Tilføj sonderinger for at opbygge jordmodellen.",
+    "noWebgl": "3D-visning er ikke tilgængelig på dette system (ingen WebGL)."
   }
 }

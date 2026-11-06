@@ -1,0 +1,15 @@
+/* Funderingsadvies */
+.advice-input input:not([type="checkbox"]), .advice-input select { width: 100%; }
+.advice-area { display: flex; flex-direction: column; gap: 3px; margin: 6px 0; font-size: 12px; color: var(--oa-text); }
+.advice-area textarea { width: 100%; box-sizing: border-box; resize: vertical; padding: 5px 7px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); background: var(--oa-panel); color: var(--oa-text); font: 12px var(--oa-font-body); }
+.advice-pick { display: flex; flex-direction: column; margin: 4px 0 8px; max-height: 160px; overflow: auto; }
+.advice-visual { padding: 6px; }
+.advice-visual svg { display: block; width: 100%; max-width: 560px; height: auto; margin: 0 auto; }
+.advice-frame { fill: var(--oa-panel); stroke: var(--oa-text); stroke-width: 1.2; }
+.advice-grid { stroke: var(--oa-border); stroke-width: .6; }
+.advice-gridlabel { fill: var(--oa-text-secondary); font: 9px var(--oa-font-numbers, inherit); }
+.advice-cpt polygon { fill: #d97706; stroke: var(--oa-text); stroke-width: .8; }
+.advice-cptlabel { fill: var(--oa-text); font: 600 11px var(--oa-font-body); }
+.advice-north { fill: var(--oa-text); }
+.advice-bar { fill: var(--oa-panel); stroke: var(--oa-text); stroke-width: .8; }
+.advice-toc { margin: 4px 0 0 18px; padding: 0; font-size: 12px; line-height: 1.7; }
