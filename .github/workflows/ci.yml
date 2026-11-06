@@ -42,6 +42,7 @@ jobs:
           python3 ../../scripts/version.py --check
           node ../../scripts/check-blueprint.mjs
           python3 ../../scripts/test-release.py
+          python3 ../../scripts/build_readme_images.py --check
 
       - name: Headless core and external HTTP/MCP clients
         run: |
