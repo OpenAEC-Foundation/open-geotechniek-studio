@@ -40,21 +40,7 @@ export function StartSidebar({
       <div className="start-sidebar-body">
         <div className="start-brand">
           <div className="start-brand-icon">
-            <svg viewBox="0 0 1024 1024" width="40" height="40" fill="none">
-              <rect x="40" y="40" width="944" height="944" rx="180" fill="var(--theme-accent)" />
-              <text
-                x="512"
-                y="600"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fill="var(--theme-accent-text, #fff)"
-                fontSize="340"
-                fontFamily="Space Grotesk, Inter, sans-serif"
-                fontWeight="700"
-              >
-                OA
-              </text>
-            </svg>
+            <img src={`${import.meta.env.BASE_URL}open-geo-studio-icon.svg`} width="40" height="40" alt="" />
           </div>
           <div className="start-brand-text">
             <h2>{t("appName", "OpenAEC")}</h2>

@@ -66,24 +66,7 @@ function TitleBar({ onSettingsClick, onFeedbackClick }: TitleBarProps) {
       <div className="titlebar-left">
         <div className="titlebar-icon">
           {/* Open Geotechniek Studio mark: square CPT chart in OpenAEC house style */}
-          <svg width="18" height="18" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="2" width="60" height="60" fill="#36363E" />
-            <line x1="16" y1="14" x2="16" y2="50" stroke="#A1A1AA" strokeWidth="0.6" strokeLinecap="round" />
-            <line x1="16" y1="14" x2="48" y2="14" stroke="#FAFAF9" strokeWidth="0.8" strokeLinecap="round" />
-            <rect x="46" y="14" width="3" height="9"  fill="#4CAF50" />
-            <rect x="46" y="23" width="3" height="8"  fill="#8BC34A" />
-            <rect x="46" y="31" width="3" height="11" fill="#F59E0B" />
-            <rect x="46" y="42" width="3" height="8"  fill="#EA580C" />
-            <polyline
-              points="20,15 22,18 26,22 23,26 28,30 25,34 30,38 24,42 31,46 27,50"
-              fill="none"
-              stroke="#D97706"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <circle cx="27" cy="50" r="1.4" fill="#D97706" />
-          </svg>
+          <img src={`${import.meta.env.BASE_URL}open-geo-studio-icon.svg`} width="18" height="18" alt="" />
         </div>
 
         <div className="titlebar-quick-access">
