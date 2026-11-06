@@ -1084,7 +1084,10 @@ mod transport_tests {
             assert!(proxy.request(&json!({"jsonrpc":"2.0","method":"tools/call","params":{"name":"studio_new_project"}})).await.is_none());
             let response = proxy.request(&json!({"jsonrpc":"2.0","id":7,"method":"tools/list"})).await.unwrap();
             let tools = response["result"]["tools"].as_array().unwrap();
-            assert_eq!(tools.len(), 11);
+            assert_eq!(tools.len(), 13);
+            for name in ["studio_get_capacity_table", "studio_export_report"] {
+                assert!(tools.iter().any(|tool| tool["name"] == name), "{name} ontbreekt in de toolcatalogus");
+            }
             assert!(tools.iter().all(|tool| tool["name"].as_str().unwrap().starts_with("studio_")));
             let response = proxy.request(&json!({"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"eval"}})).await.unwrap();
             assert!(response.get("error").is_some());
