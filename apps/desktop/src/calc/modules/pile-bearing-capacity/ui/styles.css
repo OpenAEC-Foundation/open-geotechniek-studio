@@ -723,3 +723,5 @@
 }
 .pile-pass { color: #16A34A; }
 .pile-fail { color: #DC2626; }
+
+.pile-visual-error { margin: 0 0 8px; padding: 6px 10px; border-left: 3px solid var(--oa-error); background: var(--oa-error-tint); color: var(--oa-text); font-size: 12px; }
