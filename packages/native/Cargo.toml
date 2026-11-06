@@ -1,6 +1,6 @@
 [package]
 name = "openaec-geotechniek-sdk"
-version = "2026.45.4"
+version = "2026.45.5"
 edition = "2021"
 license = "MIT"
 
