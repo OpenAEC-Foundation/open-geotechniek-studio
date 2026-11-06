@@ -82,7 +82,8 @@ def main():
             responses = [json.loads(line) for line in process.stdout.splitlines()]
             assert [response["id"] for response in responses] == [1, 2, 3, 4], "Unexpected notification response or stdout diagnostics"
             tools = responses[1]["result"]["tools"]
-            assert len(tools) == 11 and all(tool["name"].startswith("studio_") for tool in tools)
+            assert len(tools) == 13 and all(tool["name"].startswith("studio_") for tool in tools)
+            assert {"studio_get_capacity_table", "studio_export_report"} <= {tool["name"] for tool in tools}
             assert len(calls) == 2, "A notification executed a tool or an ambiguous failed tool was replayed"
             result = responses[2]["result"]
             assert result["isError"] is False
