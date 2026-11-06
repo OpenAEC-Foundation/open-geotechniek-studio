@@ -2,7 +2,7 @@
   "name": "open-geo-studio",
   "description": "Open Geotechniek Studio — desktop CPT viewer and report generator",
   "private": true,
-  "version": "2026.45.6",
+  "version": "2026.45.7",
   "type": "module",
   "scripts": {
     "dev": "vite",
