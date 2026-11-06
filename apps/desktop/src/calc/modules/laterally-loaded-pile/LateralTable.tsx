@@ -2,7 +2,7 @@
 // kernuitkomsten, de lichtste maat die voldoet en de keuze voor de uitdraai.
 import { useMemo, useState } from 'react';
 import type { TablePanelProps } from '../../framework/types';
-import { NumberInput } from '../../framework/views/SheetForm';
+import { NumField, NumberInput } from '../../framework/views/SheetForm';
 import type { LateralInput } from './compute';
 import { computePileTable, defaultRows, lightestSize, rowInput, type LateralRow, type LateralTableConfig, type RowSummary } from './pile-table';
 import './pile-table.css';
@@ -56,8 +56,8 @@ export function LateralTable({ input, onChange, onOpen, focus, onFocus }: TableP
         </> : <td colSpan={6} className="lat-table-error" title={s.error}>{s.error}</td>}
         {lightest && <td className="num">{lightest[row.id] ? <button type="button" className="lat-mini" onClick={(e) => { e.stopPropagation(); setRow(row.id, { diameterMm: lightest[row.id]!.sizeMm }); }} title={`u.c. ${n(lightest[row.id]!.summary.uc ?? NaN, 2)} · y ${n(lightest[row.id]!.summary.yHeadMm)} mm`}>{lightest[row.id]!.sizeMm} overnemen</button> : 'geen'}</td>}
         <td><NumberInput label={`Aantal ${row.name}`} value={row.count ?? 1} onChange={(v) => setRow(row.id, { count: Math.max(1, Math.round(v)) })} /></td>
-        <td><input aria-label={`Lengte ${row.name} [m]`} type="number" step="any" placeholder={n(input.lengthM, 2)} value={row.lengthM ?? ''} onChange={(e) => setRow(row.id, { lengthM: e.target.value === '' ? undefined : e.target.valueAsNumber })} /></td>
-        <td><input aria-label={`${sizeWord} ${row.name} [mm]`} type="number" step="any" placeholder={String(input.section.diameterMm)} value={row.diameterMm ?? ''} onChange={(e) => setRow(row.id, { diameterMm: e.target.value === '' ? undefined : e.target.valueAsNumber })} /></td>
+        <td><NumField aria-label={`Lengte ${row.name} [m]`} placeholder={n(input.lengthM, 2)} value={row.lengthM ?? ''} onChange={(e) => setRow(row.id, { lengthM: e.target.value === '' ? undefined : Number(e.target.value) })} /></td>
+        <td><NumField aria-label={`${sizeWord} ${row.name} [mm]`} placeholder={String(input.section.diameterMm)} value={row.diameterMm ?? ''} onChange={(e) => setRow(row.id, { diameterMm: e.target.value === '' ? undefined : Number(e.target.value) })} /></td>
         <td><input type="checkbox" aria-label={`${row.name} in de uitdraai`} checked={examples.has(row.id)} onChange={(e) => update({ examples: e.target.checked ? [...examples, row.id] : [...examples].filter((x) => x !== row.id) })} /></td>
         <td className="lat-table-actions">
           <button type="button" className="lat-mini" onClick={(e) => { e.stopPropagation(); open(row); }} aria-label={`Rekenblad ${row.name}`}>Rekenblad</button>

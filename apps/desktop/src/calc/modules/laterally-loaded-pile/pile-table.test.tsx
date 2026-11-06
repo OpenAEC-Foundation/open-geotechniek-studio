@@ -55,7 +55,7 @@ describe('paaltabel: scherm', () => {
     expect(onChange.mock.lastCall![0].pileTable.rows).toHaveLength(2);
     fireEvent.click(screen.getByRole('checkbox', { name: 'Kade A in de uitdraai' }));
     expect(onChange.mock.lastCall![0].pileTable.examples).toEqual(['a']);
-    fireEvent.change(screen.getByLabelText('H Kade A [kN]'), { target: { value: '55' } });
+    fireEvent.change(screen.getByLabelText('H Kade A [kN]'), { target: { value: '55' } }); fireEvent.blur(screen.getByLabelText('H Kade A [kN]'));
     expect(onChange.mock.lastCall![0].pileTable.rows[0].headForceKn).toBe(55);
     fireEvent.click(screen.getByRole('button', { name: 'Rekenblad Kade A' }));
     expect(onChange.mock.lastCall![0]).toMatchObject({ headForceKn: 30, headMomentKnM: 20, pileTable: { rows: [{ id: 'a' }] } });
