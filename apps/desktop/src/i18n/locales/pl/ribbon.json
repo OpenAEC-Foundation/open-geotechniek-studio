@@ -92,5 +92,33 @@
     "sectionContent": "Treść",
     "sectionAppendices": "Załączniki",
     "sectionBackcover": "Tylna okładka"
+  },
+  "model3dTab": "Model 3D",
+  "model3d": {
+    "showGroup": "Widok",
+    "cpts": "Sondowania CPT",
+    "qc": "Opór stożka",
+    "model": "Model gruntu",
+    "ground": "Poziom terenu",
+    "bearing": "Warstwa nośna",
+    "toes": "Podstawy pali",
+    "modelGroup": "Model",
+    "exaggeration": "Przewyższenie",
+    "opacity": "Krycie",
+    "cutGroup": "Przekrój",
+    "cutAxis": "Kierunek",
+    "cutEast": "Zachód → wschód",
+    "cutNorth": "Południe → północ",
+    "cut": "Cięcie",
+    "viewGroup": "Widok",
+    "fit": "Dopasuj",
+    "legend": "Rodzaje gruntu",
+    "over": "na",
+    "from": "z",
+    "to": "do",
+    "defaultCriterion": "domyślnie; ustaw w opinii fundamentowej",
+    "cells": "komórek",
+    "empty": "Dodaj sondowania, aby zbudować model gruntu.",
+    "noWebgl": "Widok 3D nie jest dostępny w tym systemie (brak WebGL)."
   }
 }

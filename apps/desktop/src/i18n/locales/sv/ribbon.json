@@ -92,5 +92,33 @@
     "sectionContent": "Innehåll",
     "sectionAppendices": "Bilagor",
     "sectionBackcover": "Baksida"
+  },
+  "model3dTab": "3D-modell",
+  "model3d": {
+    "showGroup": "Visning",
+    "cpts": "CPT-sonderingar",
+    "qc": "Spetstryck",
+    "model": "Jordmodell",
+    "ground": "Markyta",
+    "bearing": "Bärande lager",
+    "toes": "Pålspetsar",
+    "modelGroup": "Modell",
+    "exaggeration": "Överhöjning",
+    "opacity": "Opacitet",
+    "cutGroup": "Sektion",
+    "cutAxis": "Riktning",
+    "cutEast": "Väst → öst",
+    "cutNorth": "Syd → nord",
+    "cut": "Snitt",
+    "viewGroup": "Vy",
+    "fit": "Anpassa",
+    "legend": "Jordarter",
+    "over": "över",
+    "from": "från",
+    "to": "till",
+    "defaultCriterion": "standard; ställ in i ett grundläggningsutlåtande",
+    "cells": "celler",
+    "empty": "Lägg till sonderingar för att bygga jordmodellen.",
+    "noWebgl": "3D-vyn är inte tillgänglig på detta system (ingen WebGL)."
   }
 }

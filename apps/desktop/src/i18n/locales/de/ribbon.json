@@ -92,5 +92,33 @@
     "sectionContent": "Inhalt",
     "sectionAppendices": "Anhänge",
     "sectionBackcover": "Rückseite"
+  },
+  "model3dTab": "3D-Modell",
+  "model3d": {
+    "showGroup": "Anzeige",
+    "cpts": "Drucksondierungen",
+    "qc": "Spitzendruck",
+    "model": "Bodenmodell",
+    "ground": "Geländeoberfläche",
+    "bearing": "Tragfähige Schicht",
+    "toes": "Pfahlfüße",
+    "modelGroup": "Modell",
+    "exaggeration": "Überhöhung",
+    "opacity": "Deckkraft",
+    "cutGroup": "Schnitt",
+    "cutAxis": "Richtung",
+    "cutEast": "West → Ost",
+    "cutNorth": "Süd → Nord",
+    "cut": "Schnitt",
+    "viewGroup": "Ansicht",
+    "fit": "Einpassen",
+    "legend": "Bodenarten",
+    "over": "über",
+    "from": "aus",
+    "to": "bis",
+    "defaultCriterion": "Standard; in einer Gründungsempfehlung einstellen",
+    "cells": "Zellen",
+    "empty": "Fügen Sie Sondierungen hinzu, um das Bodenmodell aufzubauen.",
+    "noWebgl": "3D-Ansicht ist auf diesem System nicht verfügbar (kein WebGL)."
   }
 }

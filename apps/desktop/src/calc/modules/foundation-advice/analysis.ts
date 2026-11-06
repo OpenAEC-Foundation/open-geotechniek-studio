@@ -13,6 +13,7 @@ import type { LateralInput } from '../laterally-loaded-pile/compute';
 import { computePileTable } from '../laterally-loaded-pile/pile-table';
 import { sectionText } from '../laterally-loaded-pile/LateralSheet';
 import type { AdviceInput } from './types';
+import { bearingLayerTop } from '../../../utils/bearingLayer';
 
 export interface CptSummary {
   id: string; x?: number; y?: number; groundNap: number | null; endNap: number | null; endDepthM: number;
@@ -22,18 +23,7 @@ export interface CptSummary {
   maxQc: number;
 }
 
-/** Eerste diepte waarop qc over minstens `minThicknessM` boven `qcMpa` blijft. */
-export function bearingLayerTop(cpt: Cpt, qcMpa: number, minThicknessM: number): number | null {
-  const pts = cpt.points.filter((p) => Number.isFinite(p.depth) && Number.isFinite(p.qc)).sort((a, b) => a.depth - b.depth);
-  let start: number | null = null;
-  for (const p of pts) {
-    if ((p.qc as number) >= qcMpa) {
-      if (start === null) start = p.depth;
-      if (p.depth - start >= minThicknessM) return start;
-    } else start = null;
-  }
-  return null;
-}
+export { bearingLayerTop };
 
 export function summarizeCpt(cpt: Cpt, input: AdviceInput): CptSummary {
   const ground = cpt.metadata.ground_level_nap ?? cpt.position?.z_nap ?? null;
