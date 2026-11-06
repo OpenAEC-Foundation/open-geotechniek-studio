@@ -1,0 +1,23 @@
+{
+  "title": "Wyślij opinię",
+  "email": "E-mail",
+  "emailPlaceholder": "twoj@email.pl",
+  "fullName": "Imię i nazwisko",
+  "fullNamePlaceholder": "Twoje imię (opcjonalnie)",
+  "categoryGeneral": "Ogólne",
+  "categoryBug": "Błąd",
+  "categoryFeature": "Funkcja",
+  "messagePlaceholder": "Napisz, co myślisz... (co najmniej 10 znaków)",
+  "attachImages": "Załącz obrazy",
+  "imageLimit": "Maks. 3 obrazy, łącznie 1 MB",
+  "sentiment": "Jak się czujesz?",
+  "sentimentFrustrated": "Sfrustrowany",
+  "sentimentNeutral": "Neutralnie",
+  "sentimentHappy": "Zadowolony",
+  "submit": "Wyślij opinię",
+  "submitting": "Wysyłanie...",
+  "successTitle": "Dziękujemy!",
+  "successMessage": "Twoja opinia została wysłana.",
+  "sendAnother": "Wyślij kolejną",
+  "errorGeneric": "Nie udało się wysłać opinii. Spróbuj ponownie."
+}

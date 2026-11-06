@@ -1,0 +1,33 @@
+{
+  "title": "Einstellungen",
+  "resetToDefaults": "Auf Standard zurücksetzen",
+  "resetConfirm": "Möchten Sie wirklich alle Einstellungen auf die Standardwerte zurücksetzen?",
+  "tabs": {
+    "general": "Allgemein",
+    "appearance": "Darstellung",
+    "extensions": "Erweiterungen",
+    "about": "Über"
+  },
+  "general": {
+    "application": "Anwendung",
+    "language": "Sprache"
+  },
+  "appearance": {
+    "theme": "Design",
+    "light": "Hell",
+    "forge": "Forge (dunkel)",
+    "dark": "OpenAEC (dunkel)",
+    "blueprint": "Blueprint",
+    "contrast": "Hoher Kontrast",
+    "contrastLight": "Hoher Kontrast hell"
+  },
+  "about": {
+    "appName": "Open Geotechniek Studio",
+    "version": "Version",
+    "license": "Lizenz",
+    "description": "Desktop-Viewer und Berichtsgenerator für niederländische Drucksondierungsdaten (CPT). Basierend auf der visuellen Identität der OpenAEC Foundation.",
+    "openaecLink": "OpenAEC Foundation",
+    "builtOn": "visuelle Identität und Kernbibliotheken",
+    "sourceLink": "Quellcode"
+  }
+}

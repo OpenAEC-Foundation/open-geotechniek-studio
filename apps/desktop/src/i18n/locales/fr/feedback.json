@@ -1,0 +1,23 @@
+{
+  "title": "Envoyer un avis",
+  "email": "E-mail",
+  "emailPlaceholder": "votre@email.fr",
+  "fullName": "Nom complet",
+  "fullNamePlaceholder": "Votre nom (facultatif)",
+  "categoryGeneral": "Général",
+  "categoryBug": "Bogue",
+  "categoryFeature": "Fonctionnalité",
+  "messagePlaceholder": "Dites-nous ce que vous en pensez... (10 caractères minimum)",
+  "attachImages": "Joindre des images",
+  "imageLimit": "3 images max., 1 Mo au total",
+  "sentiment": "Comment vous sentez-vous ?",
+  "sentimentFrustrated": "Frustré",
+  "sentimentNeutral": "Neutre",
+  "sentimentHappy": "Satisfait",
+  "submit": "Envoyer l'avis",
+  "submitting": "Envoi en cours...",
+  "successTitle": "Merci !",
+  "successMessage": "Votre avis a bien été envoyé.",
+  "sendAnother": "En envoyer un autre",
+  "errorGeneric": "Échec de l'envoi de l'avis. Veuillez réessayer."
+}

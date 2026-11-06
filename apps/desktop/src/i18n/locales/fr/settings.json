@@ -1,0 +1,33 @@
+{
+  "title": "Paramètres",
+  "resetToDefaults": "Rétablir les valeurs par défaut",
+  "resetConfirm": "Voulez-vous vraiment rétablir tous les paramètres par défaut ?",
+  "tabs": {
+    "general": "Général",
+    "appearance": "Apparence",
+    "extensions": "Extensions",
+    "about": "À propos"
+  },
+  "general": {
+    "application": "Application",
+    "language": "Langue"
+  },
+  "appearance": {
+    "theme": "Thème",
+    "light": "Clair",
+    "forge": "Forge (sombre)",
+    "dark": "OpenAEC (sombre)",
+    "blueprint": "Blueprint",
+    "contrast": "Contraste élevé",
+    "contrastLight": "Contraste élevé clair"
+  },
+  "about": {
+    "appName": "Open Geotechniek Studio",
+    "version": "Version",
+    "license": "Licence",
+    "description": "Visionneuse de bureau et générateur de rapports pour les essais de pénétration au cône (CPT) néerlandais. Basé sur l'identité visuelle de l'OpenAEC Foundation.",
+    "openaecLink": "OpenAEC Foundation",
+    "builtOn": "identité visuelle et bibliothèques de base",
+    "sourceLink": "Code source"
+  }
+}
