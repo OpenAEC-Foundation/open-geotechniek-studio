@@ -41,7 +41,33 @@ export interface CalcModule<TInput = unknown, TResult = unknown> {
   InputPanel: FC<PanelProps<TInput, TResult>>;
   VisualPanel: FC<PanelProps<TInput, TResult>>;
   ResultPanel: FC<PanelProps<TInput, TResult>>;
-  statusLine?: (result: TResult) => { text: string; ok: boolean };
+  /** Optioneel: parameters en standaardreeksen van deze berekening (tab Instellingen). */
+  SettingsPanel?: FC<PanelProps<TInput, TResult>>;
+  /** `pending`: er is (nog) niet gerekend omdat invoer ontbreekt — geen
+   *  afkeuring, dus niet als fout tonen. */
+  statusLine?: (result: TResult) => { text: string; ok: boolean; pending?: boolean };
+  /** Kernuitkomsten onder het invoerscherm, als chips. Een toets met `uc`
+   *  kleurt groen of rood; zonder `uc` is het een informatieve waarde. */
+  checks?: (input: TInput, result: TResult) => CalcCheck[];
+  /** Het rapport zoals het op papier komt. Voedt zowel het
+   *  afdrukvoorbeeld als de PDF-export; zonder deze haak tonen beide niet. */
+  buildReport?: (input: TInput, result: TResult, ctx: ProjectContext) => Uint8Array;
+  /** Naam van het tekeningpaneel naast de invoer; standaard "Sondering". */
+  visualLabel?: string;
+  /** Het model heeft veel ruimte nodig (3D, diagrammen): de uitdraai
+   *  wordt in de gewone weergave smaller. */
+  wideVisual?: boolean;
+  /** Bestandsnaam (zonder extensie) voor de PDF-export. */
+  reportFileName?: (input: TInput) => string;
+}
+
+/** Eén uitkomst onder het invoerscherm. */
+export interface CalcCheck {
+  label: string;
+  /** Opgemaakte waarde inclusief eenheid, b.v. "812 kN". */
+  value: string;
+  /** Unity check; aanwezig = dit is een toets met voldoet/voldoet niet. */
+  uc?: number;
 }
 
 /** Eén berekening-instance binnen een project. */

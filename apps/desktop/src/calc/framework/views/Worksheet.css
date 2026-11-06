@@ -25,6 +25,8 @@
 .worksheet-pile { max-width: 1800px; }
 .worksheet-pile-columns { grid-template-columns: minmax(260px, .8fr) minmax(340px, 1.2fr) minmax(300px, 1fr); gap: 20px; }
 .worksheet-visual { min-width: 0; }
+.worksheet-lateral .worksheet-columns { grid-template-columns: minmax(260px,300px) minmax(0,1fr); }
+.worksheet-lateral .worksheet-results { grid-column: 1 / -1; }
 .worksheet-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100%; padding: 40px; text-align: center; gap: 16px; }
 .worksheet-empty svg { color: var(--oa-text-secondary); }
 .worksheet-empty h1 { font: 500 22px var(--oa-font-heading); }
@@ -33,4 +35,5 @@
 .worksheet-primary:disabled { opacity: .5; cursor: default; }
 @media (max-width: 1100px) { .calc-workspace { grid-template-columns: 200px minmax(0,1fr); } .worksheet { padding: 24px; } .worksheet-columns { gap: 24px; } }
 @media (max-width: 850px) { .worksheet-columns { grid-template-columns: minmax(0,1fr); } .worksheet { padding: 20px; } }
+@media (max-width: 850px) { .worksheet-lateral .worksheet-columns { grid-template-columns: minmax(0,1fr); } }
 @media (min-width: 851px) and (max-width: 1400px) { .worksheet-pile-columns { grid-template-columns: minmax(260px, .8fr) minmax(340px, 1.2fr); } .worksheet-pile-columns .worksheet-results { grid-column: 1 / -1; } }

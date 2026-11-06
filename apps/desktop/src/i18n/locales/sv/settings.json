@@ -1,0 +1,33 @@
+{
+  "title": "Inställningar",
+  "resetToDefaults": "Återställ standardvärden",
+  "resetConfirm": "Vill du verkligen återställa alla inställningar till standardvärden?",
+  "tabs": {
+    "general": "Allmänt",
+    "appearance": "Utseende",
+    "extensions": "Tillägg",
+    "about": "Om"
+  },
+  "general": {
+    "application": "Program",
+    "language": "Språk"
+  },
+  "appearance": {
+    "theme": "Tema",
+    "light": "Ljust",
+    "forge": "Forge (mörkt)",
+    "dark": "OpenAEC (mörkt)",
+    "blueprint": "Blueprint",
+    "contrast": "Hög kontrast",
+    "contrastLight": "Hög kontrast ljust"
+  },
+  "about": {
+    "appName": "Open Geotechniek Studio",
+    "version": "Version",
+    "license": "Licens",
+    "description": "Skrivbordsvisare och rapportgenerator för nederländska CPT-data (spetstrycksondering). Bygger på OpenAEC Foundations visuella identitet.",
+    "openaecLink": "OpenAEC Foundation",
+    "builtOn": "visuell identitet och kärnbibliotek",
+    "sourceLink": "Källkod"
+  }
+}

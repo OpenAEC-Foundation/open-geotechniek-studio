@@ -1,0 +1,33 @@
+{
+  "title": "Definições",
+  "resetToDefaults": "Repor predefinições",
+  "resetConfirm": "Tem a certeza de que pretende repor todas as definições predefinidas?",
+  "tabs": {
+    "general": "Geral",
+    "appearance": "Aparência",
+    "extensions": "Extensões",
+    "about": "Sobre"
+  },
+  "general": {
+    "application": "Aplicação",
+    "language": "Idioma"
+  },
+  "appearance": {
+    "theme": "Tema",
+    "light": "Claro",
+    "forge": "Forge (escuro)",
+    "dark": "OpenAEC (escuro)",
+    "blueprint": "Blueprint",
+    "contrast": "Alto contraste",
+    "contrastLight": "Alto contraste claro"
+  },
+  "about": {
+    "appName": "Open Geotechniek Studio",
+    "version": "Versão",
+    "license": "Licença",
+    "description": "Visualizador de ambiente de trabalho e gerador de relatórios para dados de ensaios de penetração de cone (CPT) neerlandeses. Baseado na identidade visual da OpenAEC Foundation.",
+    "openaecLink": "OpenAEC Foundation",
+    "builtOn": "identidade visual e bibliotecas principais",
+    "sourceLink": "Código-fonte"
+  }
+}

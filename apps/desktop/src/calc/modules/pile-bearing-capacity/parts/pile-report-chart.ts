@@ -17,13 +17,14 @@
 import type { jsPDF } from "jspdf";
 import type { Cpt } from "../../../../types/cpt";
 import type { PileInput, PileResult, SoilKind } from "../types";
+import { getPileType } from "../catalog";
+import { MATERIAL_COLORS, materialColor } from "./material-colors";
 
 // ─── Kleuren ─────────────────────────────────────────────────────
 const COL_QC: [number, number, number] = [40, 60, 160];      // meetcurve blauw
 const COL_GRID: [number, number, number] = [200, 200, 210];
 const COL_NEG: [number, number, number] = [220, 40, 40];     // neg. kleef rood
 const COL_POS: [number, number, number] = [40, 70, 200];     // pos. wrijving blauw
-const COL_PILE: [number, number, number] = [150, 150, 155];
 const COL_CLIP: [number, number, number] = [120, 20, 60];    // afgeknotte qc
 
 const SOIL_FILL: Record<SoilKind, [number, number, number]> = {
@@ -250,16 +251,29 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   // ─── Paal-balk links + belasting-pijlen ────────────────────────
   const pTopY = yOf(input.pileTopNap);
   const pToeY = yOf(input.pileToeNap);
-  doc.setFillColor(...COL_PILE);
+  const pileRgb = materialColor(getPileType(input.pileTypeId)?.material).rgb;
+  doc.setFillColor(...pileRgb);
   doc.setDrawColor(60);
   doc.setLineWidth(0.3);
+  const ext = input.concreteExtension;
+  // Bij een betonopzetter begint het hout pas bij de las.
+  const woodTopY = ext ? yOf(ext.jointNap) : pTopY;
+  if (ext) {
+    // Opzetter in betonkleur, op dezelfde schaal als het hout eronder.
+    const wExt = Math.min(2.6, 1.6 * ext.sizeMm / input.diameterMm);
+    doc.setFillColor(...MATERIAL_COLORS.concrete.rgb);
+    doc.rect(pileX - wExt, pTopY, 2 * wExt, woodTopY - pTopY, "FD");
+    doc.setFillColor(...pileRgb);
+  }
   if (input.timberTaper) {
     const wToe = 1.6 * input.timberTaper.toeDiameterMm / input.diameterMm;
-    const transitionY = yOf(input.pileTopNap - input.timberTaper.lengthM);
+    const transitionY = yOf((ext?.jointNap ?? input.pileTopNap) - input.timberTaper.lengthM);
     doc.lines([
-      [1.6 - wToe, transitionY - pTopY], [0, pToeY - transitionY],
-      [2 * wToe, 0], [0, transitionY - pToeY], [1.6 - wToe, pTopY - transitionY], [-3.2, 0],
-    ], pileX - 1.6, pTopY, [1, 1], "FD", true);
+      [1.6 - wToe, transitionY - woodTopY], [0, pToeY - transitionY],
+      [2 * wToe, 0], [0, transitionY - pToeY], [1.6 - wToe, woodTopY - transitionY], [-3.2, 0],
+    ], pileX - 1.6, woodTopY, [1, 1], "FD", true);
+  } else if (ext) {
+    doc.rect(pileX - 1.6, woodTopY, 3.2, pToeY - woodTopY, "FD");
   } else {
     doc.rect(pileX - 1.6, pTopY, 3.2, pToeY - pTopY, "FD");
   }

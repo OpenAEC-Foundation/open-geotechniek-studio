@@ -181,7 +181,45 @@ Start de desktop-app en verbind een MCP-client met dezelfde executable en argume
 
 De statusbalk rechtsonder toont of de koppeling beschikbaar is, een client verbonden is of een opdracht wordt uitgevoerd. Tijdens een opdracht staat de actienaam in de balk; de tooltip vermeldt de clientnaam. Verbindingen krijgen een heartbeat en verlopen na 20 seconden zonder teken van leven. Een afgesloten stdio-client meldt zich direct af.
 
-Beschikbare tools: `studio_get_state`, `studio_get_cpt`, `studio_new_project`, `studio_select_document`, `studio_open_file`, `studio_set_project_meta`, `studio_add_calculation`, `studio_update_calculation`, `studio_get_calculation`, `studio_select_calculation` en `studio_save_project`. Bestandsopdrachten gebruiken absolute paden en openen geen bestandsdialoog. Paalinvoer volgt dezelfde standaardwaarden bij een norm- of paaltypewissel als de invoerinterface. Een expliciete patch kan die standaardwaarden overschrijven.
+Beschikbare tools: `studio_get_state`, `studio_get_cpt`, `studio_new_project`, `studio_select_document`, `studio_open_file`, `studio_set_project_meta`, `studio_add_calculation`, `studio_update_calculation`, `studio_get_calculation`, `studio_select_calculation`, `studio_get_capacity_table`, `studio_export_report` en `studio_save_project`. Bestandsopdrachten gebruiken absolute paden en openen geen bestandsdialoog. Paalinvoer volgt dezelfde standaardwaarden bij een norm- of paaltypewissel als de invoerinterface. Een expliciete patch kan die standaardwaarden overschrijven.
+
+`studio_add_calculation` ondersteunt `pile-bearing-capacity` en `laterally-loaded-pile` als afzonderlijke modules. Voor horizontale paalbelasting kunnen scalaire invoervelden, een gedeeltelijke `section` en volledige `layers` worden aangepast. Onbekende velden en ongeldige modellen worden afgewezen voordat projectgegevens veranderen. De conceptstatus en beperkingen van de rekenmodule blijven van toepassing.
+
+Horizontale paalbelasting accepteert `analysisMode: "linear" | "nonlinear"` en
+`layerCorrection: "none" | "georgiadis"`. Niet-lineaire lagen bevatten
+`ultimate: { atSurfaceKnM, gradientKnM2, capKnM }`, het expliciete projectprofiel
+voor de grensweerstand. Oude invoer zonder de nieuwe keuzen blijft lineair.
+Resultaten bevatten per integratiepunt het werkpunt, de curve en stijfheden,
+naast de gebruikte equivalente diepten en convergentiediagnostiek. Bij
+niet-convergentie is er geen geldige respons en geen lineaire terugval.
+
+Paaldraagvermogen accepteert optioneel
+`capacityTable: { cptIds, toeNaps, sizesMm?, targetKn?: { minKn, maxKn }, examples?: [{ cptId, sizeMm, toeNap }] }`.
+De tabel gebruikt dezelfde paalinvoer per geselecteerde sondering, paalmaat en
+absoluut puntniveau in m NAP. `examples` zijn de voorbeeldberekeningen die
+volledig in het rapport komen; daarna volgen de tabellen. `null` verwijdert de
+tabelconfiguratie. Dubbele of niet-eindige niveaus, een bovengrens onder de
+ondergrens en onbekende configuratievelden worden geweigerd.
+
+Verder accepteert paaldraagvermogen:
+
+- `concreteExtension: { jointNap, sizeMm, isCircular }` voor een houten paal met
+  betonopzetter (las in m NAP);
+- `presets: { sizesMm?: { [paaltype]: number[] }, extensions?: [{ sizeMm, isCircular }], extensionLengthsM?, timberToeMm? }`,
+  de standaardreeksen uit de instellingen van de berekening.
+
+Horizontale paalbelasting accepteert daarnaast `headNap` (paalkop in m NAP, alleen
+voor invoer en weergave), `springOverrides: { [grondsoort]: { low?, high? } }`
+(eigen beddingswaarden in kN/m³ boven de tabelwaarde) en
+`puDefaults: { [grondsoort]: { atSurfaceKnM, gradientKnM2, capKnM } }`.
+
+`studio_select_calculation` opent optioneel een weergave met
+`view: "sheet" | "model" | "table" | "print" | "settings"` en bij `table`
+eventueel één sondering met `cptId`. `studio_get_capacity_table` geeft per
+sondering Rc;net;d voor elke maat en elk puntniveau (of de reden waarom een cel
+niet te berekenen is), met per maat het hoogste puntniveau dat de zoekband
+haalt en de spreiding. `studio_export_report` schrijft het PDF-rapport van een
+berekening naar een absoluut `.pdf`-pad.
 
 Het lokale transport luistert uitsluitend op `127.0.0.1` met een tijdelijke poort en een willekeurig authenticatietoken in de gebruikersconfiguratie. Het token hoort niet in een MCP-clientconfiguratie of logbestand. `OGS_MCP_ENDPOINT_FILE` kan voor geïsoleerde tests een ander endpointbestand aanwijzen. De webversie biedt deze desktopkoppeling niet aan.
 

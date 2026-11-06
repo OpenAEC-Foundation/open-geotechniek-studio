@@ -1,14 +1,10 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/ui/ResultPanel.tsx
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import type { PanelProps } from "../../../framework/types";
 import type { PileInput, PileResult, SettlementResult } from "../types";
-import { generatePileReport } from "../parts/pile-report-pdf";
-import { computeMultiCptSummary } from "../parts/multi-cpt-summary";
 import { resolvePileType } from "../catalog";
 import { getStandard } from "../standards";
 import { pileGeometry } from "../parts/geometry";
-import { downloadPdf } from "../../../../utils/downloadPdf";
-import { useCptStore } from "../../../../store/useCptStore";
 import "./styles.css";
 
 // ─── Formula-helper component (Open Calculation Studio stijl) ────
@@ -273,96 +269,58 @@ function ZakkingsChart({ settlement, rbCalMax, rsCalMax }: ZakkingsChartProps) {
 // ─── ResultPanel ─────────────────────────────────────────────────
 
 export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>) {
-  const [downloading, setDownloading] = useState(false);
-
-  // Download-handler — werkt in zowel Tauri (native save-dialog) als in
-  // een normale browser (blob + anchor-download). De PDF wordt puur in
-  // JS gegenereerd via jsPDF — geen WebAssembly nodig.
-  const handleDownloadPdf = async () => {
-    if (!result.ok || downloading) return;
-    setDownloading(true);
-    try {
-      const pileType = resolvePileType(input);
-      // CPT meegeven zodat het rapport ook het visual-blad (qc-grafiek +
-      // paal + zones) per sondering bevat.
-      const cpt = input.cptId
-        ? useCptStore.getState().cpts.get(input.cptId)
-        : undefined;
-      const sondering = {
-        name: input.cptId ?? "Sondering",
-        input,
-        result,
-        cpt,
-      };
-      const rcCalSingle = result.base.rbCalMax + result.shaft.rsCalMax;
-      const summary = computeMultiCptSummary({
-        standard: input.standard,
-        cases: [{
-          cptId: sondering.name,
-          rbCalMax: result.base.rbCalMax,
-          rsCalMax: result.shaft.rsCalMax,
-          rcCal: rcCalSingle,
-          fnkD: result.negKleef.fnkD,
-        }],
-        gammaM: input.gammaM,
-        nEd: input.nEd,
-        stiffness: "non-stiff",
-      });
-      const bytes = generatePileReport({
-        project: {
-          number: useCptStore.getState().projectMeta.project_number || "-",
-          description: useCptStore.getState().projectMeta.title || "Paaldraagvermogen-berekening",
-          norm: `${getStandard(input.standard)?.label}; factorenset ${pileType?.edition ?? "bestaand model"}`,
-          date: (useCptStore.getState().projectMeta.date || new Date().toISOString().slice(0, 10)).slice(0, 10).split("-").reverse().join("-"),
-          author: useCptStore.getState().projectMeta.author || "Open Geotechniek Studio",
-          onderdeel: "Paaldraagvermogen",
-        },
-        sonderingen: [sondering],
-        summary,
-        pileTypeName: pileType?.name ?? input.pileTypeId,
-        factors: {
-          alphaP: pileType?.alphaP ?? 0.7,
-          alphaS: pileType?.alphaS ?? 0.008,
-          alphaT: pileType?.alphaT ?? 0.006,
-        },
-      });
-      const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-      await downloadPdf(`paaldraagvermogen-${sondering.name}-${ts}.pdf`, bytes);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error("[ResultPanel] PDF-download mislukt:", err);
-    } finally {
-      setDownloading(false);
-    }
-  };
-
   if (!result.ok) {
-    return <div className="pile-result-error">⚠️ {result.error}</div>;
+    const missingEA = !!resolvePileType(input)?.requiresEA && !input.timberTaper && !input.concreteExtension && input.axialStiffnessKn === undefined;
+    return (
+      <div className="pile-result-pending" role="status">
+        <h2>{missingEA ? "Nog één gegeven nodig" : "Nog niet te berekenen"}</h2>
+        {missingEA
+          ? <p>Vul bij <strong>Paal</strong> de axiale stijfheid <strong>EA</strong> in. Voor dit paaltype wordt EA niet uit de doorsnede afgeleid; de waarde volgt uit het gekozen paalsysteem.</p>
+          : <p>{result.error}</p>}
+        <p className="pile-result-pending-note">Zodra de invoer compleet is, verschijnt hier de uitgewerkte berekening.</p>
+      </div>
+    );
   }
   const { negKleef, base, shaft, settlement, spring, summary } = result;
   const rcCalMine = base.rbCalMax + shaft.rsCalMax;
   const D = input.diameterMm / 1000; // m
-  const isCircular = resolvePileType(input)?.isCircular ?? true;
+  const pileType = resolvePileType(input);
+  const isCircular = pileType?.isCircular ?? true;
+  const factors = input.projectFactors ?? {
+    alphaP: pileType?.alphaP ?? 0, alphaS: pileType?.alphaS ?? 0, beta: pileType?.beta ?? 1, s: pileType?.s ?? 1,
+  };
   const Os = negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, isCircular).perimeterM;
   return (
     <div className="pile-result">
+      <header className="pile-sheet-title">
+        <h2>Paaldraagvermogen{input.cptId ? <> — {input.cptId}</> : null}</h2>
+        <p>{getStandard(input.standard)?.label ?? "Bestaand projectmodel"} · {pileType?.name ?? input.pileTypeId}</p>
+      </header>
+
       {result.warnings.length > 0 && (
         <div className="pile-warnings">
           {result.warnings.map((w, i) => <div key={i}>⚠️ {w}</div>)}
         </div>
       )}
 
-      <div className="pile-result-toolbar">
-        <button
-          type="button"
-          className="pile-result-download-btn"
-          onClick={handleDownloadPdf}
-          disabled={downloading}
-          title="Genereert een PDF-rapport van de huidige berekening (werkt zowel in de desktop-app als in een browser)"
-        >
-          {downloading ? "⏳ Bezig…" : "📥 Download PDF-rapport"}
-        </button>
-      </div>
+
+      <section>
+        <h3>Uitgangspunten</h3>
+        <table className="pile-sheet-facts">
+          <tbody>
+            <tr><th>Normversie</th><td colSpan={3}>{getStandard(input.standard)?.label ?? "Bestaand projectmodel"}</td></tr>
+            <tr><th>Sondering</th><td colSpan={3}>{input.cptId ?? "—"}</td></tr>
+            <tr><th>Paaltype</th><td colSpan={3}>{pileType?.name ?? input.pileTypeId}</td></tr>
+            {input.concreteExtension && <tr><th>Betonopzetter</th><td colSpan={3}>{input.concreteExtension.isCircular ? "Ø" : `${input.concreteExtension.sizeMm} × `}{input.concreteExtension.sizeMm} mm, van paalkop tot de las op NAP {fmtNap(input.concreteExtension.jointNap)} m</td></tr>}
+            <tr><th>{input.concreteExtension ? "Hout bij de las" : isCircular ? "Diameter D" : "Zijde a"}</th><td>{input.diameterMm} mm</td><th>Puntafmeting</th><td>{input.timberTaper ? `${input.timberTaper.toeDiameterMm} mm (taps)` : input.baseDiameterMm ? `${input.baseDiameterMm} mm` : "gelijk aan schacht"}</td></tr>
+            <tr><th>Paalkop</th><td>NAP {fmtNap(input.pileTopNap)} m</td><th>Paalpunt</th><td>NAP {fmtNap(input.pileToeNap)} m</td></tr>
+            <tr><th>Grondwater</th><td>NAP {fmtNap(input.waterNap)} m</td><th>Ontgraving</th><td>NAP {fmtNap(input.excavationNap)} m</td></tr>
+            <tr><th>N<sub>Ed</sub></th><td>{input.nEd.toFixed(0)} kN</td><th>N<sub>Ek</sub></th><td>{input.nEk.toFixed(0)} kN</td></tr>
+            <tr><th>γ<sub>m</sub></th><td>{input.gammaM.toFixed(2)}</td><th>γ<sub>f,nk</sub></th><td>{input.gammaFnk.toFixed(2)}</td></tr>
+            <tr><th>Paalfactoren</th><td colSpan={3}>α<sub>p</sub> = {factors.alphaP} · α<sub>s</sub> = {factors.alphaS} · β = {factors.beta} · s = {factors.s}{input.projectFactors ? " (projectfactoren)" : ""}</td></tr>
+          </tbody>
+        </table>
+      </section>
 
       <section>
         <h3>Negatieve kleef</h3>
@@ -372,8 +330,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         </p>
         <Formula
           lhs={<>O<sub>s</sub></>}
-          symbolic={input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : <>4 · a</>}
-          filled={<>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
+          symbolic={input.concreteExtension ? <>Σ (O<sub>s;i</sub> · h<sub>i</sub>) / ΔL<sub>nk</sub> <small>(opzetter en hout)</small></> : input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : <>4 · a</>}
+          filled={input.concreteExtension ? undefined : <>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
           result={<>{Os.toFixed(3)} m</>}
         />
         <table className="pile-formula-table pile-formula-table--wide">
@@ -611,14 +569,38 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         <Formula
           lhs={<>U.C.</>}
           symbolic={<>N<sub>Ed</sub> / R<sub>c;net;d</sub></>}
-          filled={<>(NEd) / {summary.rcNetD.toFixed(0)}</>}
+          filled={<>{input.nEd.toFixed(0)} / {summary.rcNetD.toFixed(0)}</>}
           result={
             <span className={summary.passes ? "pile-pass" : "pile-fail"}>
               {summary.unityCheck.toFixed(2)} {summary.passes ? " ✓ voldoet" : " ✗ voldoet NIET"}
             </span>
           }
         />
+        <table className="pile-sheet-checks">
+          <thead><tr><th>Toets</th><th>Grootheid</th><th>u.c.</th><th>Resultaat</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Draagvermogen op druk</td>
+              <td>N<sub>Ed</sub> ≤ R<sub>c;net;d</sub></td>
+              <td className="num">{summary.unityCheck.toFixed(2)}</td>
+              <td className={summary.passes ? "pile-pass" : "pile-fail"}>{summary.passes ? "Voldoet" : "Voldoet niet"}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p className="pile-sheet-conclusion">
+          <strong>Conclusie:</strong>{" "}
+          {input.nEd > 0
+            ? summary.passes
+              ? <>de paal voldoet; N<sub>Ed</sub> = {input.nEd.toFixed(0)} kN is {Math.round(summary.unityCheck * 100)}% van R<sub>c;net;d</sub> = {summary.rcNetD.toFixed(0)} kN.</>
+              : <>de paal voldoet niet; N<sub>Ed</sub> = {input.nEd.toFixed(0)} kN overschrijdt R<sub>c;net;d</sub> = {summary.rcNetD.toFixed(0)} kN.</>
+            : <>geen ontwerpbelasting ingevoerd; het netto draagvermogen is R<sub>c;net;d</sub> = {summary.rcNetD.toFixed(0)} kN.</>}
+        </p>
       </section>
     </div>
   );
+}
+
+/** NAP-niveau met teken en twee decimalen, b.v. "−14.00". */
+function fmtNap(v: number): string {
+  return (v < 0 ? "−" : "+") + Math.abs(v).toFixed(2);
 }

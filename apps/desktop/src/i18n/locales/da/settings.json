@@ -1,0 +1,33 @@
+{
+  "title": "Indstillinger",
+  "resetToDefaults": "Gendan standardindstillinger",
+  "resetConfirm": "Er du sikker på, at du vil nulstille alle indstillinger til standard?",
+  "tabs": {
+    "general": "Generelt",
+    "appearance": "Udseende",
+    "extensions": "Udvidelser",
+    "about": "Om"
+  },
+  "general": {
+    "application": "Program",
+    "language": "Sprog"
+  },
+  "appearance": {
+    "theme": "Tema",
+    "light": "Lyst",
+    "forge": "Forge (mørkt)",
+    "dark": "OpenAEC (mørkt)",
+    "blueprint": "Blueprint",
+    "contrast": "Høj kontrast",
+    "contrastLight": "Høj kontrast lyst"
+  },
+  "about": {
+    "appName": "Open Geotechniek Studio",
+    "version": "Version",
+    "license": "Licens",
+    "description": "Skrivebordsviser og rapportgenerator til hollandske CPT-data (spidstrykssondering). Bygger på OpenAEC Foundations visuelle identitet.",
+    "openaecLink": "OpenAEC Foundation",
+    "builtOn": "visuel identitet og kernebiblioteker",
+    "sourceLink": "Kildekode"
+  }
+}

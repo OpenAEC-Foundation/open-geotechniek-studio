@@ -1,0 +1,33 @@
+{
+  "title": "Ustawienia",
+  "resetToDefaults": "Przywróć domyślne",
+  "resetConfirm": "Czy na pewno przywrócić wszystkie ustawienia domyślne?",
+  "tabs": {
+    "general": "Ogólne",
+    "appearance": "Wygląd",
+    "extensions": "Rozszerzenia",
+    "about": "O programie"
+  },
+  "general": {
+    "application": "Aplikacja",
+    "language": "Język"
+  },
+  "appearance": {
+    "theme": "Motyw",
+    "light": "Jasny",
+    "forge": "Forge (ciemny)",
+    "dark": "OpenAEC (ciemny)",
+    "blueprint": "Blueprint",
+    "contrast": "Wysoki kontrast",
+    "contrastLight": "Wysoki kontrast jasny"
+  },
+  "about": {
+    "appName": "Open Geotechniek Studio",
+    "version": "Wersja",
+    "license": "Licencja",
+    "description": "Przeglądarka i generator raportów dla holenderskich danych z sondowań statycznych (CPT). Oparta na identyfikacji wizualnej OpenAEC Foundation.",
+    "openaecLink": "OpenAEC Foundation",
+    "builtOn": "identyfikacja wizualna i biblioteki podstawowe",
+    "sourceLink": "Kod źródłowy"
+  }
+}

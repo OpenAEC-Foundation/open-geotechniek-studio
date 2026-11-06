@@ -1,0 +1,407 @@
+{
+  "date": "2026-11-05",
+  "sourceReady": 10,
+  "solverValidated": 0,
+  "cases": [
+    {
+      "id": "SA91-E1",
+      "kind": "worked_calculation",
+      "source": "https://rosap.ntl.bts.gov/view/dot/40955/dot_40955_DS1.pdf",
+      "locator": "Example 1, report pp101-132; PDF123-154; inputs PDF141-142; outputs PDF145-148",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "SA91-E2",
+      "kind": "worked_calculation",
+      "source": "https://rosap.ntl.bts.gov/view/dot/40955/dot_40955_DS1.pdf",
+      "locator": "Example 2 report pp133-160; PDF155-182; full input PDF175-177; output PDF179-181",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "SA91-E3",
+      "kind": "worked_calculation",
+      "source": "https://rosap.ntl.bts.gov/view/dot/40955/dot_40955_DS1.pdf",
+      "locator": "Example 3 report pp161-188; PDF183-210; input PDF205-206; output PDF208-209",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "SA91-E4",
+      "kind": "worked_calculation",
+      "source": "https://rosap.ntl.bts.gov/view/dot/40955/dot_40955_DS1.pdf",
+      "locator": "Example 4 report pp189-216; PDF211-238; full input PDF233-235; output PDF236-237",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "SA91-E6",
+      "kind": "worked_calculation",
+      "source": "https://rosap.ntl.bts.gov/view/dot/40955/dot_40955_DS1.pdf",
+      "locator": "Example 6 report pp241-278; PDF263-300; full input PDF287-290; output PDF292-298",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "GEC9-B1",
+      "kind": "worked_calculation",
+      "source": "https://www.fhwa.dot.gov/engineering/geotech/pubs/hif18031.pdf",
+      "locator": "Appendix B.1 pp235-242; PDF239-246; Tables B1-B2; numeric results p239/PDF243",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "GEC9-B2",
+      "kind": "worked_calculation",
+      "source": "https://www.fhwa.dot.gov/engineering/geotech/pubs/hif18031.pdf",
+      "locator": "Appendix B.2 pp242-247; PDF246-251; Tables B3-B5; output PDF250",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-HIG-01",
+      "kind": "worked_design_example",
+      "source": "https://dvgriffiths.mines.edu/pubs/All_J_Pubs/95.pdf",
+      "locator": "Numerical Examples: homogeneous clay drilled shaft",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-HIG-02",
+      "kind": "worked_design_example",
+      "source": "https://dvgriffiths.mines.edu/pubs/All_J_Pubs/95.pdf",
+      "locator": "Numerical Examples: driven concrete pile in sand",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-HIG-03",
+      "kind": "published_field_case_reanalysis",
+      "source": "https://dvgriffiths.mines.edu/pubs/All_J_Pubs/95.pdf",
+      "locator": "Numerical Examples: McClelland and Focht field test reinterpretation",
+      "source_ready": true,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E50-CS89",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=50MPa CS=89kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E50-CS100",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=50MPa CS=100kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E50-CS110",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=50MPa CS=110kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E50-CS120",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=50MPa CS=120kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E50-CS130",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=50MPa CS=130kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E50-CS140",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=50MPa CS=140kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E50-CS150",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=50MPa CS=150kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E100-CS89",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=100MPa CS=89kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E100-CS100",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=100MPa CS=100kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E100-CS110",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=100MPa CS=110kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E100-CS120",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=100MPa CS=120kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E100-CS130",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=100MPa CS=130kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E100-CS140",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=100MPa CS=140kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E100-CS150",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=100MPa CS=150kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E150-CS89",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=150MPa CS=89kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E150-CS100",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=150MPa CS=100kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E150-CS110",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=150MPa CS=110kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E150-CS120",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=150MPa CS=120kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E150-CS130",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=150MPa CS=130kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E150-CS140",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=150MPa CS=140kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-NOGAP-E150-CS150",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 No Gap; soil E=150MPa CS=150kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E50-CS89",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=50MPa CS=89kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E50-CS100",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=50MPa CS=100kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E50-CS110",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=50MPa CS=110kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E50-CS120",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=50MPa CS=120kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E50-CS130",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=50MPa CS=130kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E50-CS140",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=50MPa CS=140kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E50-CS150",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=50MPa CS=150kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E100-CS89",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=100MPa CS=89kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E100-CS100",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=100MPa CS=100kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E100-CS110",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=100MPa CS=110kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E100-CS120",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=100MPa CS=120kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E100-CS130",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=100MPa CS=130kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E100-CS140",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=100MPa CS=140kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E100-CS150",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=100MPa CS=150kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E150-CS89",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=150MPa CS=89kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E150-CS100",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=150MPa CS=100kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E150-CS110",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=150MPa CS=110kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E150-CS120",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=150MPa CS=120kPa",
+      "source_ready": false,
+      "solver_validated": false
+    },
+    {
+      "id": "ACA-RC-GAP-E150-CS130",
+      "kind": "explicit_published_parametric_case",
+      "source": "https://repository.up.ac.za/bitstreams/c9c73d1b-4e32-4cd4-8bcc-6fb12f9bb8af/download",
+      "locator": "Figure7 Gap; soil E=150MPa CS=130kPa",
+      "source_ready": false,
+      "solver_validated": false
+    }
+  ]
+}

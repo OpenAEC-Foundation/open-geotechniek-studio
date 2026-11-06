@@ -1,0 +1,23 @@
+{
+  "title": "Skicka feedback",
+  "email": "E-post",
+  "emailPlaceholder": "din@epost.se",
+  "fullName": "Fullständigt namn",
+  "fullNamePlaceholder": "Ditt namn (valfritt)",
+  "categoryGeneral": "Allmänt",
+  "categoryBug": "Fel",
+  "categoryFeature": "Funktion",
+  "messagePlaceholder": "Berätta vad du tycker... (minst 10 tecken)",
+  "attachImages": "Bifoga bilder",
+  "imageLimit": "Högst 3 bilder, totalt 1 MB",
+  "sentiment": "Hur känns det?",
+  "sentimentFrustrated": "Frustrerad",
+  "sentimentNeutral": "Neutral",
+  "sentimentHappy": "Nöjd",
+  "submit": "Skicka feedback",
+  "submitting": "Skickar...",
+  "successTitle": "Tack!",
+  "successMessage": "Din feedback har skickats.",
+  "sendAnother": "Skicka en till",
+  "errorGeneric": "Det gick inte att skicka feedback. Försök igen."
+}

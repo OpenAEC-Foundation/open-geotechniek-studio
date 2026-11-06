@@ -1,5 +1,6 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/ui/VisualPanel.tsx
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import { MATERIAL_COLORS, materialColor } from "../parts/material-colors";
 import { useCptStore } from "../../../../store/useCptStore";
 import type { PanelProps } from "../../../framework/types";
 import type { Cpt, MeasurementPoint } from "../../../../types/cpt";
@@ -231,8 +232,8 @@ function PileGraphic({
   hasRebarCage,
   pileColCenter,
 }: PileGraphicProps) {
-  // Kleurpalet per materiaal — beige voor beton (#d4a574), grijs voor staal.
-  const fill = material === "wood" ? "#a57442" : material === "concrete" ? "#d4a574" : "#9ca3af";
+  // Materiaalkleur: beton grijs, staal roestrood, hout met nerf.
+  const fill = material === "wood" ? "url(#pile-wood-grain)" : materialColor(material).fill;
   const stroke = "#374151";
 
   // Visuele paal-breedte — gemapped uit werkelijke diameter via min/max
@@ -251,7 +252,10 @@ function PileGraphic({
   const yTopClamped = Math.max(plotTop, Math.min(plotBottom, yPileTop));
   const yToeClamped = Math.max(plotTop, Math.min(plotBottom, yPileToe));
   const bodyH = yToeClamped - yTopClamped;
-  const taperNaps = input.timberTaper ? [input.pileTopNap, input.pileTopNap - input.timberTaper.lengthM, input.pileToeNap] : [];
+  // Bij een betonopzetter begint het hout (en de tapsheid) pas bij de las.
+  const ext = input.concreteExtension;
+  const woodTop = ext?.jointNap ?? input.pileTopNap;
+  const taperNaps = input.timberTaper ? [woodTop, woodTop - input.timberTaper.lengthM, input.pileToeNap] : [];
   const taperY = (nap: number) => yPileTop + (input.pileTopNap - nap) / (input.pileTopNap - input.pileToeNap) * (yPileToe - yPileTop);
   const taperPoints = [...taperNaps.map(nap => `${cx - diaPx * shaftDiameterAtNap(input, nap) / input.diameterMm / 2},${taperY(nap)}`),
     ...[...taperNaps].reverse().map(nap => `${cx + diaPx * shaftDiameterAtNap(input, nap) / input.diameterMm / 2},${taperY(nap)}`)].join(" ");
@@ -263,6 +267,10 @@ function PileGraphic({
   // rechthoek met platte uiteinden. tipH = 0 → de paalpunt-pijl wordt
   // direct onder yPileToe gerendered.
   const tipH = 0;
+
+  // Opzetter: van paalkop tot de las, breedte op schaal van de houtdiameter.
+  const yJointClamped = ext ? Math.max(plotTop, Math.min(plotBottom, taperY(ext.jointNap))) : yTopClamped;
+  const extPx = ext ? Math.min(PILE_GFX_MAX_W * 1.3, diaPx * ext.sizeMm / input.diameterMm) : 0;
 
   // ─── Force-arrows: schaal alle pijlen relatief t.o.v. de max van de
   // drie. Maximum visuele lengte = 28 px zodat het binnen PILE_COL_W past. ──
@@ -318,10 +326,26 @@ function PileGraphic({
 
   return (
     <g clipPath="url(#pile-plot-clip)" className="pile-gfx">
+      <defs>
+        <pattern id="pile-wood-grain" patternUnits="userSpaceOnUse" width="7" height="22">
+          <rect width="7" height="22" fill={MATERIAL_COLORS.wood.fill} />
+          <path d="M1.5 0 C2.6 6 0.6 12 1.8 22 M4.6 0 C5.6 8 3.6 14 4.8 22" fill="none" stroke={MATERIAL_COLORS.wood.dark} strokeWidth="0.6" opacity="0.7" />
+        </pattern>
+      </defs>
       {/* Pile-body: voor stalen buispaal (hasRebarCage=true) tekenen we
           het composiet: buitenste ring (staal) + binnenkern (beton). Voor
           pure stalen of pure betonpalen: één rect met material-kleur. */}
-      {bodyH > 0 && (
+      {bodyH > 0 && ext && (
+        <g className="pile-gfx-extension">
+          {input.timberTaper
+            ? <polygon points={taperPoints} fill={fill} stroke={stroke} strokeWidth={1.5} />
+            : <rect x={xPileLeft} y={yJointClamped} width={diaPx} height={Math.max(0, yToeClamped - yJointClamped)} fill={fill} stroke={stroke} strokeWidth={1.5} />}
+          <rect x={cx - extPx / 2} y={yTopClamped} width={extPx} height={Math.max(0, yJointClamped - yTopClamped)} fill={MATERIAL_COLORS.concrete.fill} stroke={stroke} strokeWidth={1.5}>
+            <title>{`Betonopzetter ${ext.isCircular ? "Ø" : `${ext.sizeMm}×`}${ext.sizeMm} mm tot de las op NAP ${ext.jointNap.toFixed(2)} m`}</title>
+          </rect>
+        </g>
+      )}
+      {bodyH > 0 && !ext && (
         hasRebarCage ? (
           <>
             {/* Buitenste staal-buis: grijs. Het ZIJAANZICHT van een ronde
@@ -332,7 +356,7 @@ function PileGraphic({
               y={yTopClamped}
               width={diaPx}
               height={bodyH}
-              fill="#9ca3af"
+              fill={MATERIAL_COLORS.steel.fill}
               stroke={stroke}
               strokeWidth={1.5}
             />
@@ -349,7 +373,7 @@ function PileGraphic({
                   y={yTopClamped + wallPx}
                   width={innerW}
                   height={Math.max(0, bodyH - 2 * wallPx)}
-                  fill="#d4a574"
+                  fill={MATERIAL_COLORS.concrete.fill}
                   stroke="none"
                 />
               );
@@ -522,7 +546,7 @@ function PileCrossSection({
           height="6"
           patternTransform="rotate(45)"
         >
-          <rect width="6" height="6" fill="#e5e7eb" />
+          <rect width="6" height="6" fill="#d4d6d9" />
           <line x1="0" y1="0" x2="0" y2="6" stroke="#6b7280" strokeWidth="0.7" />
           <line x1="3" y1="0" x2="3" y2="6" stroke="#9ca3af" strokeWidth="0.4" />
         </pattern>
@@ -531,7 +555,7 @@ function PileCrossSection({
         material === "steel" && hasRebarCage ? (
           <>
             {/* Stalen buis (ring) — grijs gevuld */}
-            <circle cx={CX} cy={CY} r={R} fill="#9ca3af" stroke="#374151" strokeWidth={1.5} />
+            <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.steel.fill} stroke="#374151" strokeWidth={1.5} />
             {/* Beton-vulling — grijze betonarcering (technisch correcte hatch) */}
             <circle cx={CX} cy={CY} r={innerR} fill="url(#pile-cs-concrete-hatch)" stroke="none" />
             {hasRebarCage && (
@@ -555,7 +579,11 @@ function PileCrossSection({
           </>
         ) : (
           /* Pure beton ronde paal (boorpaal etc.) — beton-arcering */
-          <circle cx={CX} cy={CY} r={R} fill={material === "wood" ? "#a57442" : "url(#pile-cs-concrete-hatch)"} stroke="#374151" strokeWidth={1.5} />
+          material === "wood" ? <>
+            <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.wood.fill} stroke="#374151" strokeWidth={1.5} />
+            {[0.72, 0.48, 0.26].map((f) => <circle key={f} cx={CX} cy={CY} r={R * f} fill="none" stroke={MATERIAL_COLORS.wood.dark} strokeWidth={0.6} opacity={0.7} />)}
+          </> : material === "steel" ? <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.steel.fill} stroke="#374151" strokeWidth={1.5} />
+          : <circle cx={CX} cy={CY} r={R} fill="url(#pile-cs-concrete-hatch)" stroke="#374151" strokeWidth={1.5} />
         )
       ) : (
         <>

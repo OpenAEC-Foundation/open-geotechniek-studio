@@ -1,12 +1,12 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/parts/shaft-friction.ts
 import type { Cpt } from "../../../../types/cpt";
-import type { PileInput, PileTypeSpec, SoilLayer, ShaftFrictionResult } from "../types";
+import type { PileTypeSpec, SoilLayer, ShaftFrictionResult } from "../types";
 import { QS_MAX_PER_SOIL } from "../catalog";
-import { pileGeometry, meanShaftPerimeter } from "./geometry";
+import { pileGeometry, meanShaftPerimeter, type ShaftGeometry } from "./geometry";
 import { QcProfile } from "./qc-profile";
 
 interface Args {
-  shaftGeometry?: Pick<PileInput, "diameterMm" | "pileTopNap" | "timberTaper">;
+  shaftGeometry?: ShaftGeometry;
   qcCapMpa?: number;
   /** Historische zandprocedure: alleen alphaS × de begrensde qc. */
   useSoilStressCap?: boolean;

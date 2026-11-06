@@ -3,16 +3,17 @@ import { CALC_REGISTRY, getCalcModule } from "./registry";
 
 describe("calc registry", () => {
   afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
-  it("exposes only pile bearing capacity in desktop builds", () => {
-    expect(CALC_REGISTRY.map((module) => module.id)).toEqual(["pile-bearing-capacity"]);
+  it("biedt verticale en horizontale paalberekeningen afzonderlijk aan", () => {
+    expect(CALC_REGISTRY.map((module) => module.id)).toEqual(["pile-bearing-capacity", "laterally-loaded-pile"]);
     expect(getCalcModule("pile-bearing-capacity")?.status).toBe("experimental");
+    expect(getCalcModule("laterally-loaded-pile")?.status).toBe("experimental");
   });
 
-  it("exposes only pile bearing capacity on the public website", async () => {
+  it("biedt dezelfde twee conceptmodules op de publieke website", async () => {
     vi.stubEnv("VITE_PUBLIC_WEB", "1");
     vi.resetModules();
     const { CALC_REGISTRY: publicModules } = await import("./registry");
-    expect(publicModules.map(module => module.id)).toEqual(["pile-bearing-capacity"]);
+    expect(publicModules.map(module => module.id)).toEqual(["pile-bearing-capacity", "laterally-loaded-pile"]);
   });
 
   it("is a defined array", () => {

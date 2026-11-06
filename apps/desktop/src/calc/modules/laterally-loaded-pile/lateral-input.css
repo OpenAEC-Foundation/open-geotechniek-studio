@@ -1,0 +1,26 @@
+/* Invoer horizontale paal: doorsnede naast de maatvoering, compacte lagentabel. */
+.lat-input select { width: 100%; }
+.lat-kinds { grid-template-columns: repeat(4, 1fr); }
+.lat-head { grid-template-columns: repeat(2, 1fr); }
+.lat-head .cs-tile { padding: 7px 4px; }
+.lat-section-grid { display: grid; grid-template-columns: minmax(0, 1fr) 112px; gap: 10px; align-items: start; margin: 4px 0 6px; }
+.lat-section-rows .cs-row { grid-template-columns: minmax(0, 1fr) 96px; }
+.lat-section-rows abbr { text-decoration: none; border-bottom: 1px dotted var(--oa-text-secondary); cursor: help; }
+.lat-sketch { margin: 0; color: var(--oa-text); }
+.lat-sketch svg { display: block; width: 100%; height: auto; }
+.lat-sketch text { fill: var(--oa-text-secondary); font: 9px var(--oa-font-numbers, inherit); }
+.lat-sketch-bar { fill: var(--oa-text); }
+.lat-layers { table-layout: fixed; }
+.lat-layers th:last-child, .lat-layers td:last-child { width: 26px; }
+.lat-layers td input { min-width: 0; width: 100%; box-sizing: border-box; }
+.lat-layers td select { min-width: 0; width: 100%; }
+.lat-layers .lat-layers-sub th { padding-top: 0; }
+.lat-layers tbody.lat-layer { border-top: 1px solid var(--oa-border); }
+.lat-layers tbody.lat-layer tr:first-child td { padding-top: 5px; }
+.lat-layers tbody.lat-layer tr.lat-layers-sub td { padding-bottom: 5px; }
+.lat-readonly { display: block; padding: 4px 6px; color: var(--oa-text-secondary); font: 11px var(--oa-font-numbers, inherit); text-align: right; }
+.lat-mini { padding: 2px 7px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); background: var(--oa-panel); color: var(--oa-text-secondary); font: 11px var(--oa-font-body); cursor: pointer; white-space: nowrap; }
+.lat-mini:hover:not(:disabled) { color: var(--oa-text); border-color: var(--oa-border-strong); }
+.lat-mini:disabled { opacity: .35; cursor: default; }
+.lat-add { margin-top: 6px; padding: 4px 10px; border: 1px dashed var(--oa-border-strong); border-radius: var(--oa-radius-small); background: transparent; color: var(--oa-text-secondary); font: 12px var(--oa-font-body); cursor: pointer; }
+.lat-add:hover { color: var(--oa-accent-text); border-color: var(--oa-accent); }

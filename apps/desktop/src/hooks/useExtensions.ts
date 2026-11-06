@@ -70,7 +70,7 @@ const DEFAULTS: Record<ExtensionId, boolean> = {
   "calc.settlement": true,
   "calc.spread-foundation-drained": false,
   "calc.spread-foundation-undrained": false,
-  "calc.laterally-loaded-pile": false,
+  "calc.laterally-loaded-pile": true,
   "calc.sheet-pile-wall": false,
   "calc.ground-anchor": false,
 };
@@ -94,7 +94,6 @@ const DEFAULTS: Record<ExtensionId, boolean> = {
 export const NOT_PRODUCTION_READY: ReadonlySet<ExtensionId> = new Set<ExtensionId>([
   "calc.spread-foundation-drained",
   "calc.spread-foundation-undrained",
-  "calc.laterally-loaded-pile",
   "calc.sheet-pile-wall",
   "calc.ground-anchor",
 ]);

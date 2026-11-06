@@ -12,12 +12,17 @@ import { buildDefaultSoilLayers } from "./catalog";
 import { InputPanel } from "./ui/InputPanel";
 import { VisualPanel } from "./ui/VisualPanel";
 import { ResultPanel } from "./ui/ResultPanel";
+import { buildPileReport, pileReportFileName } from "./parts/build-report";
+import { SettingsPanel } from "./ui/SettingsPanel";
 
 function defaultInput(ctx: ProjectContext): PileInput {
   const cpt = ctx.activeCptId ? ctx.cpts.get(ctx.activeCptId) : null;
   const groundNap = cpt?.metadata.ground_level_nap ?? 0;
   const pileTop = groundNap + 0.34;
-  const pileToe = groundNap - 14;
+  // Standaard 14 m onder maaiveld, maar nooit dieper dan de sondering
+  // toelaat: onder de punt is nog ruimte nodig voor het puntdraagvermogen.
+  const lastDepth = cpt?.points.length ? Math.max(...cpt.points.map((p) => p.depth).filter(Number.isFinite)) : Infinity;
+  const pileToe = groundNap - Math.max(1, Math.min(14, Math.floor((lastDepth - 1.5) * 2) / 2));
   const water = groundNap - 0.5;
   return {
     cptId: ctx.activeCptId,
@@ -61,10 +66,26 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
   InputPanel,
   VisualPanel,
   ResultPanel,
+  SettingsPanel,
   statusLine: (r) => ({
-    text: r.ok ? `u.c. ${r.summary.unityCheck.toFixed(2)} ${r.summary.passes ? "✓" : "✗"}` : `Fout: ${r.error}`,
+    text: r.ok ? `u.c. ${r.summary.unityCheck.toFixed(2)} ${r.summary.passes ? "✓" : "✗"}` : "Niet berekend",
     ok: r.ok && r.summary.passes,
+    pending: !r.ok,
   }),
+  checks: (input, r) => {
+    if (!r.ok) return [];
+    const kn = (v: number) => `${v.toFixed(0)} kN`;
+    return [
+      { label: "Rb;cal;max", value: kn(r.base.rbCalMax) },
+      { label: "Rs;cal;max", value: kn(r.shaft.rsCalMax) },
+      { label: "Fnk;d", value: kn(r.negKleef.fnkD) },
+      { label: "Rc;net;d", value: kn(r.summary.rcNetD) },
+      // Zonder ontwerpbelasting is u.c. 0 en "voldoet" niets zeggend.
+      ...(input.nEd > 0 ? [{ label: "draagvermogen", value: `NEd ${kn(input.nEd)}`, uc: r.summary.unityCheck }] : []),
+    ];
+  },
+  buildReport: buildPileReport,
+  reportFileName: pileReportFileName,
 };
 
 /** Geëxporteerd als unknown-getypeerde CalcModule zodat hij in

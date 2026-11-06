@@ -44,6 +44,8 @@ fn allowed_tool(tool: &str) -> bool {
             | "studio_save_project"
             | "studio_get_cpt"
             | "studio_select_document"
+            | "studio_get_capacity_table"
+            | "studio_export_report"
     )
 }
 fn valid_endpoint(url: &str) -> bool {
@@ -577,8 +579,8 @@ fn tool_definitions() -> Value {
         ),
         (
             "studio_add_calculation",
-            "Add and select a pile bearing capacity calculation",
-            json!({"moduleId":{"type":"string","enum":["pile-bearing-capacity"]},"name":{"type":"string"},"input":{"type":"object"}}),
+            "Add and select a vertical or lateral pile calculation",
+            json!({"moduleId":{"type":"string","enum":["pile-bearing-capacity","laterally-loaded-pile"]},"name":{"type":"string"},"input":{"type":"object"}}),
             vec![],
         ),
         (
@@ -595,9 +597,21 @@ fn tool_definitions() -> Value {
         ),
         (
             "studio_select_calculation",
-            "Select a calculation in Studio",
+            "Select a calculation in Studio and open a view: sheet, model, table (bearing capacity, optionally one sounding), print or settings",
+            json!({"id":{"type":"string"},"view":{"type":"string","enum":["sheet","model","table","print","settings"]},"cptId":{"type":["string","null"]}}),
+            vec!["id"],
+        ),
+        (
+            "studio_get_capacity_table",
+            "Read the bearing capacity table: Rc;net;d per sounding, pile size and toe level, with the shortest pile per size that reaches the search band and the level spread",
             json!({"id":{"type":"string"}}),
             vec!["id"],
+        ),
+        (
+            "studio_export_report",
+            "Write the PDF report of a calculation to an absolute .pdf path",
+            json!({"id":{"type":"string"},"path":{"type":"string"}}),
+            vec!["id", "path"],
         ),
         (
             "studio_save_project",
@@ -934,6 +948,8 @@ mod tests {
         assert!(!allowed_tool("open_cpt"));
         assert!(allowed_tool("studio_get_state"));
         assert!(allowed_tool("studio_save_project"));
+        assert!(allowed_tool("studio_get_capacity_table"));
+        assert!(allowed_tool("studio_export_report"));
     }
     #[test]
     fn endpoints_allow_only_explicit_loopback_http_origin() {

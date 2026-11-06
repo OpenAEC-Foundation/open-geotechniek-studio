@@ -8,7 +8,7 @@ import { computeShaftFriction } from "./parts/shaft-friction";
 import { computeSettlement } from "./parts/settlement";
 import { computeSpringStiffness } from "./parts/spring-stiffness";
 import { computeSummary } from "./parts/summary";
-import { pileGeometry } from "./parts/geometry";
+import { pileGeometry, woodTopNap } from "./parts/geometry";
 import { getStandard, usesHistoricalProcedure } from "./standards";
 
 // E-moduli [N/mm²] voor de axiale paalstijfheid EA.
@@ -65,10 +65,17 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   const pileType = resolvePileType(input);
   if (!pileType) return emptyResult(`Paaltype niet ondersteund voor deze normversie: ${input.pileTypeId}`);
   const taper = input.timberTaper;
+  const ext = input.concreteExtension;
+  if (ext && (pileType.material !== "wood" || ![ext.jointNap, ext.sizeMm].every(Number.isFinite) || ext.sizeMm <= 0 ||
+      ext.jointNap >= input.pileTopNap || ext.jointNap <= input.pileToeNap || input.baseDiameterMm !== undefined)) {
+    return emptyResult("Een betonopzetter vereist een houten paal, een positieve opzettermaat en een las tussen paalkop en paalpunt, zonder losse voetmaat");
+  }
   if (taper && (pileType.material !== "wood" || ![taper.toeDiameterMm, taper.lengthM].every(Number.isFinite) ||
       taper.toeDiameterMm <= 0 || taper.toeDiameterMm > input.diameterMm || taper.lengthM <= 0 ||
-      taper.lengthM > input.pileTopNap - input.pileToeNap || input.baseDiameterMm !== undefined)) {
-    return emptyResult("Houttapsheid vereist een positieve puntdiameter ≤ kopdiameter en een tapse lengte binnen de paallengte, zonder losse voetmaat");
+      taper.lengthM > woodTopNap(input) - input.pileToeNap || input.baseDiameterMm !== undefined)) {
+    return emptyResult(ext
+      ? "Houttapsheid vereist een positieve puntdiameter ≤ houtdiameter bij de las en een tapse lengte binnen het houten deel onder de las"
+      : "Houttapsheid vereist een positieve puntdiameter ≤ kopdiameter en een tapse lengte binnen de paallengte, zonder losse voetmaat");
   }
   const baseDiameterMm = taper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm;
   if (!Number.isFinite(baseDiameterMm) || baseDiameterMm <= 0) return emptyResult("Puntafmeting moet positief en eindig zijn");
@@ -76,7 +83,7 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   if (pileType.id === "steel-screw-grout" && input.diameterMm < 300) return emptyResult("Deze groutschroefpreset vereist een schachtdiameter van ten minste 300 mm");
   if (pileType.material === "wood" && !taper && baseDiameterMm !== input.diameterMm) return emptyResult("Dit houten paaltype vereist een constante doorsnede zonder oplanger");
   if (input.axialStiffnessKn !== undefined && (!Number.isFinite(input.axialStiffnessKn) || input.axialStiffnessKn <= 0)) return emptyResult("EA moet positief en eindig zijn");
-  if (pileType.requiresEA && !taper && input.axialStiffnessKn === undefined) return emptyResult("Geef de projectspecifieke axiale stijfheid EA voor dit paaltype op");
+  if (pileType.requiresEA && !taper && !ext && input.axialStiffnessKn === undefined) return emptyResult("Geef de projectspecifieke axiale stijfheid EA voor dit paaltype op");
   if (input.projectFactors) {
     const f = input.projectFactors;
     if (![f.alphaP, f.alphaS, f.alphaT, f.beta, f.s].every(Number.isFinite) ||
@@ -195,12 +202,14 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
     deltaL_m: deltaL,
   });
 
-  settlement.available = !taper && !historical && (pileType.settlementLine ?? 1) === 1;
+  // Taps hout en een betonopzetter geven elk een paal met wisselende EA; de
+  // zakkingsformules gaan uit van één EA en zijn daarvoor niet geverifieerd.
+  settlement.available = !taper && !ext && !historical && (pileType.settlementLine ?? 1) === 1;
   if (!settlement.available) {
     settlement.sls = anyZero();
     settlement.uls = anyZero();
     settlement.curve = [];
-    if (taper) settlement.eaKn = undefined;
+    if (taper || ext) settlement.eaKn = undefined;
   }
   const spring = settlement.available ? computeSpringStiffness(settlement) : { kSlsKnPerM: 0, kUlsKnPerM: 0, kMinKnPerM: 0, kMaxKnPerM: 0 };
 
@@ -217,8 +226,11 @@ export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
   warnings.push(`Factoren: ${pileType.edition ?? "bestaand model"}; ${pileType.source ?? "bestaande catalogus"}.`);
   if (pileType.conditions) warnings.push(pileType.conditions);
   if (input.projectFactors?.edition === "2025") warnings.push("Projectfactoren 2025 toegepast; dit is geen volledige omzetting van de rekenmethode naar NEN 9997:2025.");
-  if (!settlement.available) warnings.push(taper ? "Tapse houten paal: zakking en veerwaarden met variabele EA zijn niet geverifieerd en worden niet bepaald." : historical ? "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald." : `Lastzakkingslijn ${pileType.settlementLine} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.`);
-  if (taper) warnings.push("Houttapsheid: negatieve kleef met gemiddelde omtrek over de kleefzone; positieve kleef met gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit.");
+  if (!settlement.available) warnings.push(ext ? "Houten paal met betonopzetter: zakking en veerwaarden met verschillende EA voor beton en hout zijn niet geverifieerd en worden niet bepaald." : taper ? "Tapse houten paal: zakking en veerwaarden met variabele EA zijn niet geverifieerd en worden niet bepaald." : historical ? "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald." : `Lastzakkingslijn ${pileType.settlementLine} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.`);
+  if (ext) warnings.push(`Betonopzetter ${ext.isCircular ? "Ø" : `${ext.sizeMm}×`}${ext.sizeMm} mm tot de las op NAP ${ext.jointNap.toFixed(2)} m: boven de las rekent de omtrek van de opzetter, eronder die van het hout; negatieve kleef met de gemiddelde omtrek over de kleefzone, positieve kleef per laag.`);
+  if (taper) warnings.push(ext
+    ? "Houttapsheid vanaf de las: positieve kleef met gemiddelde omtrek per laag. Geen verhoging van paalfactoren door coniciteit."
+    : "Houttapsheid: negatieve kleef met gemiddelde omtrek over de kleefzone; positieve kleef met gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit.");
   if (!taper && baseDiameterMm !== input.diameterMm) warnings.push("Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering.");
   if (base.qbMaxMpaRaw > 15) {
     warnings.push(`qb;max gecapt op 15 MPa (ruwe waarde ${base.qbMaxMpaRaw.toFixed(2)} MPa)`);

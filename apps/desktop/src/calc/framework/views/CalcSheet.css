@@ -1,0 +1,164 @@
+/* Rekenblad-indeling: links het invoerscherm (formulier + tekening),
+   rechts de uitdraai op papier. Gedeeld door alle rekenmodules. */
+
+.cs-main { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; background: var(--oa-workspace); }
+
+/* ─── Weergavebalk ─────────────────────────────────────────── */
+.cs-viewbar { display: flex; align-items: stretch; justify-content: space-between; gap: 16px; padding: 0 12px; border-bottom: 1px solid var(--oa-border); background: var(--oa-panel); flex: 0 0 auto; }
+.cs-viewtabs { display: flex; gap: 4px; }
+.cs-viewtabs button { padding: 9px 12px 7px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--oa-text-secondary); font: 500 12px var(--oa-font-body); cursor: pointer; }
+.cs-viewtabs button:hover { color: var(--oa-text); }
+.cs-viewtabs button.active { color: var(--oa-text); border-bottom-color: var(--oa-accent); }
+.cs-viewbar-status { display: flex; align-items: center; gap: 6px; color: var(--oa-text-secondary); font: 11px var(--oa-font-body); }
+.cs-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--oa-accent); }
+
+/* ─── Twee panelen ─────────────────────────────────────────── */
+.cs-panes { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(440px, 46%); }
+.cs-panes.wide-visual { grid-template-columns: minmax(0, 1fr) minmax(400px, 36%); }
+.cs-panes.no-output { grid-template-columns: minmax(0, 1fr); }
+/* De tekeningkolom heeft al marge; een eigen verkenner-marge erbinnen is dubbel. */
+.cs-param-visual .pile-explorer { padding: 0; }
+.cs-panes.no-output .cs-pane-input { border-right: 0; }
+.cs-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.cs-pane-input { border-right: 1px solid var(--oa-border); }
+.cs-pane-label { display: flex; align-items: center; gap: 12px; height: 30px; flex: 0 0 auto; padding: 0 12px; border-bottom: 1px solid var(--oa-border); color: var(--oa-text-secondary); font: 10px var(--oa-font-mono); text-transform: uppercase; letter-spacing: .05em; }
+.cs-pane-label-meta { margin-left: auto; text-transform: none; letter-spacing: 0; font: 11px var(--oa-font-body); }
+
+/* Kop van het invoerscherm: naam links, live unity check rechts */
+.cs-param-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 16px 10px; background: var(--oa-hover); border-bottom: 1px solid var(--oa-border); flex: 0 0 auto; }
+.cs-param-header .worksheet-eyebrow { margin-bottom: 2px; }
+.cs-param-header h1 { font: 600 16px/1.3 var(--oa-font-heading); letter-spacing: -.01em; margin: 0; }
+.cs-param-subtitle { margin: 2px 0 0; color: var(--oa-text-secondary); font-size: 11px; }
+.cs-uc-badge { padding: 4px 10px; border-radius: var(--oa-radius-small); font: 600 13px var(--oa-font-numbers); white-space: nowrap; }
+.cs-uc-badge.ok { background: var(--oa-success-tint); color: var(--oa-success); }
+.cs-uc-badge.fail { background: var(--oa-error-tint); color: var(--oa-error); }
+.cs-param-notice { flex: 0 0 auto; padding: 6px 16px; background: var(--oa-warning-tint); border-bottom: 1px solid var(--oa-border); color: var(--oa-text); font-size: 11px; }
+
+/* Formulier en tekening naast elkaar, elk met een eigen scroll */
+.cs-param-body { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(300px, 340px) minmax(0, 1fr); }
+.cs-param-form { overflow: auto; padding: 4px 16px 24px; border-right: 1px solid var(--oa-border); }
+.cs-param-visual { overflow: auto; min-width: 0; padding: 12px; }
+
+/* De sondering is een staande tekening (viewBox 720×800). Op de
+   kolomhoogte afgestemd krimpt hij tot een strookje; daarom de hoogte
+   uit de breedte afleiden en de kolom laten scrollen. */
+.cs-param-visual .pile-visual { height: auto; min-height: 100%; }
+.cs-param-visual .pile-cpt-chart { flex: 0 0 auto; aspect-ratio: 720 / 800; min-height: 380px; }
+
+/* Kernuitkomsten onder het invoerscherm */
+.cs-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px; border-top: 1px solid var(--oa-border); background: var(--oa-panel); flex: 0 0 auto; }
+.cs-chip { padding: 3px 9px; border-radius: var(--oa-radius-full); background: var(--oa-hover); color: var(--oa-text); font: 500 11px var(--oa-font-numbers); white-space: nowrap; }
+.cs-chip-label { color: var(--oa-text-secondary); }
+.cs-chip-sub { color: var(--oa-text-secondary); font-weight: 400; }
+.cs-chip.ok { background: var(--oa-success-tint); color: var(--oa-success); }
+.cs-chip.fail { background: var(--oa-error-tint); color: var(--oa-error); }
+.cs-chip.ok .cs-chip-label, .cs-chip.fail .cs-chip-label { color: inherit; }
+
+/* ─── Uitdraai op papier ───────────────────────────────────── */
+.cs-export { margin-left: 8px; padding: 3px 10px; border: 1px solid var(--oa-accent); border-radius: var(--oa-radius-small); background: var(--oa-accent); color: var(--oa-text-on-accent); font: 500 11px var(--oa-font-body); text-transform: none; letter-spacing: 0; cursor: pointer; }
+.cs-export:hover:not(:disabled) { background: var(--oa-accent-hover); }
+.cs-export:disabled { opacity: .6; cursor: wait; }
+.cs-export-error { color: var(--oa-error); text-transform: none; letter-spacing: 0; font: 11px var(--oa-font-body); }
+.cs-paper-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 20px; background: var(--oa-frame); }
+/* Papier is altijd licht, ook in het donkere thema: dit komt op de printer. */
+.cs-paper {
+  --oa-text: #2A2A32; --oa-text-secondary: #5F5F65; --oa-border: #E2E2E2; --oa-border-strong: #7F7F84;
+  --oa-hover: #F2F2F3; --oa-success: #166534; --oa-error: #B91C1C; --oa-warning: #854D0E;
+  --oa-success-tint: #E8F0EB; --oa-error-tint: #F8E8E8; --oa-warning-tint: #F3EDE7;
+  --theme-text: #2A2A32; --theme-border: #E2E2E2;
+  max-width: 760px; margin: 0 auto; padding: 32px 36px 40px;
+  background: #fff; color: #2A2A32; box-shadow: var(--oa-shadow-panel); color-scheme: light;
+}
+
+/* ─── Draagvermogentabel: formulier links, tabel rechts ────── */
+.cs-table-view { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(300px, 340px) minmax(0, 1fr); }
+.cs-table-view-main { min-width: 0; overflow: auto; padding: 16px 20px; }
+
+/* ─── Afdrukvoorbeeld ──────────────────────────────────────── */
+.cs-print { flex: 1 1 auto; min-height: 0; display: flex; background: var(--oa-frame); }
+.cs-print iframe { flex: 1; border: 0; }
+.cs-print-error { margin: auto; color: var(--oa-text-secondary); }
+
+/* ─── Formulier-primitieven ────────────────────────────────── */
+.cs-section { padding-top: 14px; }
+.cs-section-title { margin: 0 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--oa-accent); color: var(--oa-accent-text); font: 600 10px var(--oa-font-mono); text-transform: uppercase; letter-spacing: .06em; }
+.cs-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); align-items: center; gap: 10px; min-height: 30px; padding: 2px 0; }
+.cs-row--missing input { border-color: var(--oa-warning) !important; background: var(--oa-warning-tint) !important; }
+.cs-row-missing { grid-column: 1 / -1; margin-top: -2px; color: var(--oa-warning); font-size: 11px; line-height: 1.35; }
+/* "Niet berekend" is een openstaande vraag, geen rood alarm. */
+.cs-uc-badge.pending { background: var(--oa-warning-tint); color: var(--oa-warning); }
+.cs-row-label { color: var(--oa-text); font-size: 12px; line-height: 1.3; }
+.cs-row-control { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.cs-row-control > input, .cs-row-control > select { flex: 1 1 auto; min-width: 0; }
+.cs-row-unit { flex: 0 0 auto; min-width: 38px; color: var(--oa-text-secondary); font: 11px var(--oa-font-body); }
+.cs-required { color: var(--oa-accent-text); font-size: 11px; }
+.cs-form input:not([type="checkbox"]), .cs-form select {
+  height: 26px; padding: 2px 6px; border: 1px solid var(--oa-border-strong); border-radius: var(--oa-radius-small);
+  background: var(--oa-raised); color: var(--oa-text); font: 12px var(--oa-font-numbers);
+}
+.cs-form input[type="number"] { text-align: right; }
+.cs-form input:focus, .cs-form select:focus { outline: 2px solid var(--oa-focus); outline-offset: -1px; border-color: var(--oa-accent); }
+.cs-hint { margin: 4px 0 2px; color: var(--oa-text-secondary); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
+.cs-hint--warn { padding: 6px 8px; background: var(--oa-warning-tint); border-left: 3px solid var(--oa-warning); color: var(--oa-text); }
+.cs-subgroup { margin: 0 0 6px 4px; padding: 2px 0 4px 10px; border-left: 2px solid var(--oa-border); }
+.cs-check { display: flex; align-items: center; gap: 8px; min-height: 28px; font-size: 12px; cursor: pointer; }
+
+.cs-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 4px 0 6px; }
+.cs-tile { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px 6px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); background: var(--oa-raised); color: var(--oa-text-secondary); font: 500 11px var(--oa-font-body); cursor: pointer; }
+.cs-tile svg { width: 28px; height: 28px; }
+.cs-tile:hover:not(:disabled) { border-color: var(--oa-border-strong); color: var(--oa-text); }
+.cs-tile.active { border-color: var(--oa-accent); background: var(--oa-selected); color: var(--oa-accent-text); }
+.cs-tile:disabled { opacity: .4; cursor: not-allowed; }
+
+.cs-table-wrap { overflow-x: auto; }
+.cs-layer-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.cs-layer-table th { padding: 2px 3px 4px; text-align: left; font-weight: 500; color: var(--oa-text-secondary); vertical-align: bottom; line-height: 1.2; }
+.cs-layer-table th small { display: block; font-size: 9px; font-weight: 400; }
+.cs-layer-table td { padding: 2px; }
+.cs-layer-table td input { width: 100%; min-width: 44px; }
+.cs-layer-table td select { width: 100%; min-width: 92px; }
+.cs-layer-index { color: var(--oa-text-secondary); text-align: center; }
+
+.cs-factors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 2px 0 4px; }
+.cs-factors > div { padding: 5px 6px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); text-align: center; }
+.cs-factors dt { color: var(--oa-text-secondary); font-size: 11px; }
+.cs-factors dd { margin: 0; font: 600 12px var(--oa-font-numbers); }
+
+/* ─── Smalle vensters: uitdraai onder de invoer ────────────── */
+/* Een grid met vaste hoogte verdeelt die hoogte over beide rijen en perst
+   zo invoer en uitdraai elk in de helft; daarom hier gewone blokstroom
+   met één scroll voor het geheel. */
+@media (max-width: 1280px) {
+  .cs-panes { display: block; overflow: auto; }
+  .cs-pane { min-height: auto; }
+  .cs-pane-input { border-right: 0; border-bottom: 1px solid var(--oa-border); }
+  .cs-param-body { height: 640px; }
+  .cs-paper-scroll { overflow: visible; }
+}
+@media (max-width: 760px) {
+  .cs-param-body { grid-template-columns: minmax(0, 1fr); }
+  .cs-param-form { border-right: 0; }
+}
+
+/* Inklapbare sectie voor zelden gewijzigde instellingen. */
+.cs-more { margin-top: 14px; border-top: 1px solid var(--oa-border); }
+.cs-more > summary { padding: 8px 0 4px; color: var(--oa-text-secondary); font: 600 10px var(--oa-font-mono); text-transform: uppercase; letter-spacing: .06em; cursor: pointer; }
+.cs-more > summary:hover { color: var(--oa-text); }
+.cs-more[open] > summary { color: var(--oa-accent-text); }
+.cs-more-body { padding: 2px 0 6px; }
+
+/* Instellingen van een berekening */
+.cs-settings-view { overflow: auto; padding: 18px 24px 32px; }
+.cs-settings-view > header h1 { margin: 0 0 4px; font: 600 18px var(--oa-font-heading); }
+.cs-settings-view > header p { margin: 0 0 8px; color: var(--oa-text-secondary); font-size: 12px; }
+.cs-settings { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 8px 28px; align-items: start; max-width: 1200px; }
+.cs-settings-table td, .cs-settings-table th { vertical-align: middle; }
+.cs-settings-table td { white-space: nowrap; }
+.cs-settings-table td input { width: 76px; min-width: 0; }
+.cs-settings-default { color: var(--oa-text-secondary); font: 11px var(--oa-font-numbers, inherit); margin-right: 6px; }
+.cs-settings-active { background: var(--oa-selected); }
+.cs-settings-sub { margin: 14px 0 4px; font: 600 11px var(--oa-font-body); color: var(--oa-text-secondary); }
+.cs-settings-reset { margin: 6px 0; padding: 3px 9px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); background: var(--oa-panel); color: var(--oa-text-secondary); font: 11px var(--oa-font-body); cursor: pointer; }
+.cs-settings-reset:hover { color: var(--oa-text); border-color: var(--oa-border-strong); }
+.cs-settings-actions { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.cs-settings-table td select { width: 110px; min-width: 0; }

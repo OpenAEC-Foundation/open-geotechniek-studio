@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { parseGef } from "./gefParser";
 import { parseProjectFile, isProjectFile, parseCptSnapshot, readJson } from "./projectFile";
 import { openContentByFilename, newProjectDocument, useCptStore, serializeActiveProject, addCptToActiveProject } from "../store/useCptStore";
+import {useCalculationsStore} from '../calc/framework/store';
 
 vi.mock("../utils/platform", () => ({ IS_TAURI: false, cpt: {
   parse: async (text: string, name: string) => name.endsWith(".gef") ? parseGef(text, name) : parseCptSnapshot(text),
@@ -41,6 +42,14 @@ describe("projectbestanden", () => {
     await openContentByFilename(serialized, "roundtrip.ifcgeo");
     expect(useCptStore.getState().documents).toHaveLength(2);
     expect([...useCptStore.getState().cpts.values()]).toEqual([cpt]);
+  });
+  it('bewaart de sonderingselectie en puntniveaus van een draagvermogentabel',async()=>{
+    newProjectDocument();
+    const capacityTable={cptIds:['S1','S2'],toeNaps:[-14,-15.5]};
+    useCalculationsStore.getState().addCalculation(useCptStore.getState().activeDocId!,'pile-bearing-capacity','Tabel',{capacityTable});
+    const serialized=await serializeActiveProject();
+    await openContentByFilename(serialized,'tabel.ifcgeo');
+    expect(useCalculationsStore.getState().getList(useCptStore.getState().activeDocId!)[0].input).toEqual({capacityTable});
   });
   it("opent een losse CPT-snapshot zonder projectwrapper", async () => {
     await openContentByFilename(JSON.stringify(cpt), "single.ifcgeo");
