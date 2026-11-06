@@ -3,10 +3,7 @@ import { useCalculationsStore } from "../store";
 import { useCptStore } from "../../../store/useCptStore";
 import { getCalcModule } from "../registry";
 import type { CalculationInstance } from "../types";
-import type { PileInput } from "../../modules/pile-bearing-capacity/types";
 
-/** Modules met een draagvermogentabel krijgen onderliggende niveaus in de boom. */
-const TABLE_MODULES = new Set(["pile-bearing-capacity"]);
 
 interface Props {
   onAddClick: () => void;
@@ -33,6 +30,8 @@ export function ProjectTreePanel({ onAddClick }: Props) {
   const navigate = useCalculationsStore((s) => s.navigate);
   const nav = useCalculationsStore((s) => s.sheetNav);
   const cpts = useCptStore((s) => s.cpts);
+  const activeCptId = useCptStore((s) => s.activeCptId);
+  const projectMeta = useCptStore((s) => s.projectMeta);
   const remove = useCalculationsStore((s) => s.removeCalculation);
   const duplicate = useCalculationsStore((s) => s.duplicate);
   const update = useCalculationsStore((s) => s.updateCalculation);
@@ -105,7 +104,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                   ) : (
                     <button
                       className="calc-tree-item"
-                      onClick={() => navigate(c.id, TABLE_MODULES.has(c.moduleId) ? "table" : "sheet")}
+                      onClick={() => navigate(c.id, mod?.table ? "table" : "sheet")}
                       onDoubleClick={() => {
                         setRenaming(c.id);
                         setDraftName(c.name);
@@ -136,8 +135,8 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                       ×
                     </button>
                   </div>
-                  {isActive && TABLE_MODULES.has(c.moduleId) && (() => {
-                    const ids = (c.input as PileInput).capacityTable?.cptIds ?? [...cpts.keys()];
+                  {isActive && mod?.table && (() => {
+                    const table = mod.table, items = table.items(c.input, { cpts, activeCptId, projectMeta });
                     const here = nav.calcId === c.id ? nav : { view: "sheet", cptId: null };
                     const node = (label: string, current: boolean, go: () => void, depth = 0) => (
                       <li key={label} className={`calc-tree-child depth-${depth}${current ? " current" : ""}`}>
@@ -146,8 +145,8 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                     );
                     return (
                       <ul className="calc-tree-children" aria-label={`Onderdelen van ${c.name}`}>
-                        {node("Draagvermogentabel", here.view === "table" && !here.cptId, () => navigate(c.id, "table"))}
-                        {ids.map((id) => node(`Sondering ${id}`, here.view === "table" && here.cptId === id, () => navigate(c.id, "table", id), 1))}
+                        {node(table.label, here.view === "table" && !here.cptId, () => navigate(c.id, "table"))}
+                        {items.map((it) => node(it.label, here.view === "table" && here.cptId === it.id, () => navigate(c.id, "table", it.id), 1))}
                         {node("Rekenblad", here.view !== "table" && here.view !== "settings", () => navigate(c.id, "sheet"))}
                         {node("Instellingen", here.view === "settings", () => navigate(c.id, "settings"))}
                       </ul>

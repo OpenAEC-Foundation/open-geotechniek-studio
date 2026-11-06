@@ -43,6 +43,8 @@ export interface CalcModule<TInput = unknown, TResult = unknown> {
   ResultPanel: FC<PanelProps<TInput, TResult>>;
   /** Optioneel: parameters en standaardreeksen van deze berekening (tab Instellingen). */
   SettingsPanel?: FC<PanelProps<TInput, TResult>>;
+  /** Optioneel: een tabel over veel varianten tegelijk (sonderingen, palen). */
+  table?: CalcTable<TInput>;
   /** `pending`: er is (nog) niet gerekend omdat invoer ontbreekt — geen
    *  afkeuring, dus niet als fout tonen. */
   statusLine?: (result: TResult) => { text: string; ok: boolean; pending?: boolean };
@@ -81,3 +83,23 @@ export interface CalculationInstance {
   cptRefs?: string[];
   boreRefs?: string[];
 }
+
+/** Eigenschappen van een tabelweergave; `focus` is één onderdeel (sondering, paal). */
+export interface TablePanelProps<TInput = unknown> {
+  input: TInput;
+  ctx: ProjectContext;
+  onChange: (next: TInput) => void;
+  /** Open het rekenblad (na het instellen van de invoer). */
+  onOpen: () => void;
+  focus: string | null;
+  onFocus: (id: string | null) => void;
+}
+
+export interface CalcTable<TInput = unknown> {
+  /** Naam van het tabblad en het knooppunt in de projectboom. */
+  label: string;
+  Panel: FC<TablePanelProps<TInput>>;
+  /** Onderdelen onder de tabel in de projectboom. */
+  items: (input: TInput, ctx: ProjectContext) => Array<{ id: string; label: string }>;
+}
+
