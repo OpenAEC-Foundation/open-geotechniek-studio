@@ -56,13 +56,31 @@ describe("invoercontrole paaldraagvermogen", () => {
     { pileToeNap: input.pileTopNap }, { pileToeNap: 1 },
     { gammaM: 0 }, { gammaM: Infinity }, { gammaFnk: -1 },
     { nEd: -1 }, { nEk: NaN }, { waterNap: Infinity },
-    { negKleefBottomNap: -20 }, { negKleefBottomNap: 1 },
-    { posKleefTopNap: -20 }, { posKleefTopNap: 1 },
-    { posKleefTopNap: -7 }, { ksMinFactor: -1 },
+    { ksMinFactor: -1 },
   ])("wijst ongeldige invoer af: %j", (patch) => {
     const result = computePile({ ...input, ...patch }, cpt);
     expect(result.ok).toBe(false);
     expect(result.error).toBeTruthy();
+  });
+
+  it.each([
+    [{ negKleefBottomNap: -20 }, /Onderkant negatieve kleef/],
+    [{ negKleefBottomNap: 1 }, /Onderkant negatieve kleef/],
+    [{ posKleefTopNap: -20 }, /Bovenkant positieve kleef/],
+    [{ posKleefTopNap: 1 }, /Bovenkant positieve kleef/],
+    [{ posKleefTopNap: -7 }, /Bovenkant positieve kleef/],
+  ])("kapt kleefniveaus buiten de paal af en meldt dat: %j", (patch, message) => {
+    const result = computePile({ ...input, ...patch }, cpt);
+    expect(result.ok).toBe(true);
+    expect(result.warnings.join(" ")).toMatch(message);
+  });
+
+  it("rekent een paalpunt boven de kleefgrens door alsof de kleefgrens op de punt ligt", () => {
+    const shallow = { ...input, pileToeNap: input.negKleefBottomNap + 1 };
+    const result = computePile(shallow, cpt);
+    const same = computePile({ ...shallow, negKleefBottomNap: shallow.pileToeNap, posKleefTopNap: shallow.pileToeNap }, cpt);
+    expect(result.ok).toBe(true);
+    expect(result.summary.rcNetD).toBeCloseTo(same.summary.rcNetD, 9);
   });
 
   it("accepteert een massieve betonpaal zonder wanddikte", () => {

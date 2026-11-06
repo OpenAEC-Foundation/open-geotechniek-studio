@@ -136,7 +136,7 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
 }
 
 function lateralPatch(input:unknown,patch:unknown):LateralInput {
-  const fields=object(patch,'Horizontale invoerpatch'); keys(fields,[...Object.keys(lateralExample),'headNap','springOverrides','puDefaults']);
+  const fields=object(patch,'Horizontale invoerpatch'); keys(fields,[...Object.keys(lateralExample),'headNap','springOverrides','puDefaults','pileTable']);
   const next=structuredClone(object(input,'Horizontale invoer'));
   const validate=(values:ObjectValue,example:ObjectValue)=>{
     keys(values,Object.keys(example));
@@ -164,6 +164,20 @@ function lateralPatch(input:unknown,patch:unknown):LateralInput {
       const o=object(value,'Eigen beddingswaarden');
       next.springOverrides=Object.fromEntries(Object.entries(o).map(([id,row])=>{const r=object(row,'Beddingswaarde');keys(r,['low','high']);
         return [id,Object.fromEntries(Object.entries(r).map(([sc,v])=>[sc,number(v,`kh ${id} ${sc}`)]))];}));
+    } else if(key==='pileTable') {
+      if(value===null){delete next.pileTable;continue;}
+      const t=object(value,'Paaltabel');keys(t,['rows','maxDisplacementMm','examples']);
+      if(!Array.isArray(t.rows)||!t.rows.length||t.rows.length>200)throw new Error('De paaltabel vraagt 1 tot 200 palen');
+      const rows=t.rows.map(v=>{const r=object(v,'Paal');keys(r,['id','name','count','headForceKn','headMomentKnM','nEdKn','lengthM','diameterMm']);
+        const row:ObjectValue={id:text(r.id,'Paal-ID'),name:text(r.name,'Paalnaam'),headForceKn:number(r.headForceKn,'H'),headMomentKnM:number(r.headMomentKnM,'M'),nEdKn:number(r.nEdKn,'N')};
+        for(const k of ['count','lengthM','diameterMm'])if(r[k]!==undefined){const x=number(r[k],k);if(!(x>0))throw new Error(`${k} moet positief zijn`);row[k]=x;}
+        return row;});
+      if(new Set(rows.map(r=>r.id)).size!==rows.length)throw new Error('Paal-ID moet uniek zijn');
+      const table:ObjectValue={rows};
+      if(t.maxDisplacementMm!==undefined){const m=number(t.maxDisplacementMm,'Grens kopverplaatsing');if(!(m>0))throw new Error('De grens voor de kopverplaatsing moet positief zijn');table.maxDisplacementMm=m;}
+      if(t.examples!==undefined){if(!Array.isArray(t.examples))throw new Error('Voorbeelden moeten een lijst zijn');const ids=new Set(rows.map(r=>r.id));
+        table.examples=t.examples.map(e=>{const id=text(e,'Voorbeeld');if(!ids.has(id))throw new Error(`Onbekende paal in voorbeelden: ${id}`);return id;});}
+      next.pileTable=table;
     } else if(key==='puDefaults') {
       if(value===null){delete next.puDefaults;continue;}
       const o=object(value,'pu-profielen');

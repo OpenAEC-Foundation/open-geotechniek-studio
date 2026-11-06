@@ -14,6 +14,7 @@ import { VisualPanel } from "./ui/VisualPanel";
 import { ResultPanel } from "./ui/ResultPanel";
 import { buildPileReport, pileReportFileName } from "./parts/build-report";
 import { SettingsPanel } from "./ui/SettingsPanel";
+import { CapacityTable } from "./ui/CapacityTable";
 
 function defaultInput(ctx: ProjectContext): PileInput {
   const cpt = ctx.activeCptId ? ctx.cpts.get(ctx.activeCptId) : null;
@@ -67,6 +68,12 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
   VisualPanel,
   ResultPanel,
   SettingsPanel,
+  table: {
+    label: "Draagvermogentabel",
+    Panel: ({ input, ctx, onChange, onOpen, focus, onFocus }) =>
+      <CapacityTable input={input} cpts={ctx.cpts} onChange={onChange} onOpen={onOpen} cptId={focus} onFocusCpt={onFocus} />,
+    items: (input, ctx) => (input.capacityTable?.cptIds ?? [...ctx.cpts.keys()]).map((id) => ({ id, label: `Sondering ${id}` })),
+  },
   statusLine: (r) => ({
     text: r.ok ? `u.c. ${r.summary.unityCheck.toFixed(2)} ${r.summary.passes ? "✓" : "✗"}` : "Niet berekend",
     ok: r.ok && r.summary.passes,

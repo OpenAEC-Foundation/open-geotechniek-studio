@@ -212,6 +212,10 @@ Horizontale paalbelasting accepteert daarnaast `headNap` (paalkop in m NAP, alle
 voor invoer en weergave), `springOverrides: { [grondsoort]: { low?, high? } }`
 (eigen beddingswaarden in kN/m³ boven de tabelwaarde) en
 `puDefaults: { [grondsoort]: { atSurfaceKnM, gradientKnM2, capKnM } }`.
+`pileTable: { rows: [{ id, name, count?, headForceKn, headMomentKnM, nEdKn, lengthM?, diameterMm? }], maxDisplacementMm?, examples?: id[] }`
+is de paaltabel: veel palen met dezelfde grond en doorsnede, elk met een eigen
+kopbelasting en zo nodig een eigen lengte of maat. Het rapport werkt de palen uit
+`examples` volledig uit en sluit af met een overzicht van alle palen.
 
 `studio_select_calculation` opent optioneel een weergave met
 `view: "sheet" | "model" | "table" | "print" | "settings"` en bij `table`

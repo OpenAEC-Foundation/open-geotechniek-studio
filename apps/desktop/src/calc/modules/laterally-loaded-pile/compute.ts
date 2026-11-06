@@ -21,6 +21,8 @@ export interface LateralInput {
   springOverrides?:Record<string,{low?:number;high?:number}>;
   /** Instellingen: pu-profiel per grondsoort dat een laag krijgt bij die grondsoort. */
   puDefaults?:Record<string,UltimateProfile>;
+  /** Paaltabel: veel palen met eigen kopbelasting, lengte of maat. */
+  pileTable?:import('./pile-table').LateralTableConfig;
 }
 export const lateralExample:LateralInput = {
   lengthM:12,maxElementM:.5,headForceKn:30,headMomentKnM:20,nEdKn:0,

@@ -9,7 +9,7 @@ describe('instellingen horizontale paal', () => {
   it('rekent met een eigen beddingswaarde voor de grondsoort', () => {
     const onChange = vi.fn();
     render(<LateralSettingsPanel input={lateralExample} result={result} onChange={onChange} />);
-    fireEvent.change(screen.getByLabelText('kh sand-medium laag [kN/m³]'), { target: { value: '30000' } });
+    fireEvent.change(screen.getByLabelText('kh sand-medium laag [kN/m³]'), { target: { value: '30000' } }); fireEvent.blur(screen.getByLabelText('kh sand-medium laag [kN/m³]'));
     const next = onChange.mock.lastCall![0];
     expect(next.springOverrides).toEqual({ 'sand-medium': { low: 30000 } });
     const r = computeLateral(next);
