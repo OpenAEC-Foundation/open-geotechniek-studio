@@ -1,219 +1,150 @@
+**English** · [Nederlands](README.nl.md)
+
+<div align="center">
+
 # Open Geotechniek Studio
 
-Open-source desktop-applicatie voor geotechnische werkzaamheden in Nederland — sonderingen, boringen, projecten, en situatietekeningen op één CAD-papier.
+**Read Dutch CPTs and boreholes, place them on the map and the site plan, and turn them into reports and pile calculations you can check line by line.**
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey)
-![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri%202-24C8DB)
+[![Release](https://img.shields.io/github/v/release/OpenAEC-Foundation/open-geotechniek-studio?label=release&color=D97706)](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases/latest)
+[![CI](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/OpenAEC-Foundation/open-geotechniek-studio)](#license)
+![Languages](https://img.shields.io/badge/languages-10-informational)
 
-![Open Geotechniek Studio — sondering geopend op de Home-tab met qc / fs / Rf charts, Robertson SBT-classificatie en locatie-kaart](docs/screenshots/01-cpt-sondering.jpg)
+### [Download](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases/latest)
 
----
+![A CPT opened on the Home tab: cone resistance, sleeve friction and friction ratio against depth in m NAP, with the indicative soil zones and the location map](docs/images/readme/hero.png)
+
+</div>
+
+Open Geotechniek Studio is a desktop app for geotechnical engineers and consultants in the Netherlands. It reads CPTs (GEF and BRO-XML) and boreholes (BRO BHR-GT), fetches them from the national subsurface register on a map, places them on a site plan, and produces PDF reports and concept pile calculations.
+
+It runs as a desktop app on Windows, macOS and Linux.
+
+## Try it
+
+[Download the installer](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases/latest) for your platform and start the app. Open a `.gef` or BRO `.xml` file, or go to **Map** and choose **Load area** to fetch every CPT and borehole around you from the BRO.
+
+## Download
+
+Every release is on the [releases page](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases/latest).
+
+| Platform | Installer |
+|----------|-----------|
+| **Windows** | `.exe` installer (x64, NSIS) |
+| **macOS** | `.dmg` (universal: Apple silicon and Intel) |
+| **Linux** | `.deb`, `.AppImage` (x64) |
+
+There is no built-in updater yet: install a new version over the old one. Your projects are ordinary files and stay where they are. Every file is signed: Windows with Authenticode and a timestamp, macOS with a Developer ID and notarized by Apple, Linux with the OpenAEC OpenPGP key and a build attestation. `SHA256SUMS.txt` lists the checksum of every file.
+
+## Why use it?
+
+- **Free and open.** MIT licence. No licence fees, no account, no lock-in.
+- **Open formats.** GEF and BRO-XML in, GEF, CSV and GeoJSON out; a whole project is one `.ifcgeo` file (IFCX JSON) that you can read yourself.
+- **BRO and PDOK on the map.** Load the CPTs and boreholes in an area with one click, on aerial photos, buildings, parcels and elevation.
+- **Reports you can hand over.** Cover, coordinate table, overview map and one page per CPT, in the OpenAEC house style.
+- **Calculations you can check.** Every pile calculation shows its formula, the filled-in values and the outcome, next to the input.
+- **Verified where it counts.** The lateral pile kernel matches closed-form solutions and an independent solver to within 0.005 %.
+- **Works with an AI assistant.** An MCP server controls the open window on your own computer.
 
 ## Screenshots
 
-### Home — CPT-sondering met Robertson SBT-classificatie
-Conusweerstand (qc), plaatselijke wrijving (fs), wrijvingsgetal (Rf) en de bijbehorende Robertson SBT-classificatie per laag. Locatie op de mini-kaart rechts, eigenschappen-paneel met grondopbouw per diepte.
-
-![CPT-sondering met Robertson SBT-classificatie](docs/screenshots/01-cpt-sondering.jpg)
-
-### Home — BHR-boring met grondsoort-lagen (BRO)
-Boringsgegevens uit BRO-XML met visualisatie van grondsoort-lagen (sterkSiltigZand, matigSiltigeKlei, veen, etc.) inclusief bijmengingen, structuur en humusgehalte conform NEN5104.
-
-![BHR-boring volgens NEN5104](docs/screenshots/02-bhr-boring.jpg)
-
-### Kaart — BRO-integratie + PDOK-lagen
-Interactieve kaart met directe BRO-integratie. Klik "Laad gebied" en alle sonderingen + boringen rondom het zichtbare viewport worden automatisch ingelezen. Kadaster luchtfoto, BAG-gebouwen, kadastrale grenzen, AHN hoogtekaart, BGT topografie en historische luchtfoto's (2016-2025) als toggelbare overlays.
-
-![Kaart met 66 BRO-sonderingen op PDOK luchtfoto](docs/screenshots/03-kaart-bro.jpg)
-
-### Rapport — professioneel PDF-sonderingsrapport
-Genereer rapporten met voorblad, coördinatentabel, overzichtskaart, per-sondering pagina's, Robertson SBT-legenda en metadata-overzicht. Klaar voor projectdossier, vergunningsaanvraag of opdrachtgever. fs gecapped op 0.05 MPa, Rf op 10%, waterspanning u2 als cyaan stippellijn door qc heen.
-
-![PDF-sonderingsrapport in OpenAEC huisstijl](docs/screenshots/04-rapport-pdf.png)
-
-### Situatietekening — CAD-papier met sonderingsraster + offertes
-Teken een sonderingsraster op A2/A3-papier met professionele titelbalk en automatische schaal-fit. Klik "Offertes opvragen" en de app selecteert automatisch de 3 dichtsbijzijnde sondeerbedrijven uit een catalogus van 43 NL bedrijven en opent Outlook met een vooraf ingevulde offerte-aanvraag.
-
-![Situatietekening met sonderingsraster + offertes-dialog](docs/screenshots/05-situatietekening.jpg)
-
----
-
-## Downloads
-
-Pre-built installers via de [Releases-pagina](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases):
-
-| Platform | Bestand |
+| | |
 |---|---|
-| **Windows 10/11** | `Open Geotechniek Studio_x.y.z_x64-setup.exe` (NSIS, per-machine) |
-| **Linux (Debian/Ubuntu)** | `open-geotechniek-studio_x.y.z_amd64.deb` |
-| **Linux (overige distro's)** | `open-geotechniek-studio_x.y.z_amd64.AppImage` (portable) |
+| ![A CPT with qc, fs and Rf against depth and the indicative soil zones](docs/images/readme/hero.png) **A CPT with indicative soil zones** | ![A BRO borehole with soil layers, admixtures and humus content](docs/images/readme/borehole.png) **A BRO borehole with its soil layers** |
+| ![The PDF report with cover, coordinate table and a page per CPT](docs/images/readme/report.png) **The PDF CPT report** | ![A site plan on A3 paper with a grid of CPTs and the title block](docs/images/readme/site-plan.png) **A site plan with a CPT grid** |
 
-Builds worden automatisch gepubliceerd via [GitHub Actions](.github/workflows/release.yml) bij elke `v*`-tag.
+The screenshots show the Dutch interface.
 
----
+## CPTs and boreholes
 
-## Wat kun je ermee
+- **GEF 1.x and BRO-XML.** CPT_O and CPT_O_DP, and boreholes from BHR-GT. Import messages stay with the project and can be exported as CSV or JSON.
+- **The CPT chart.** Cone resistance qc, sleeve friction fs, friction ratio Rf and pore pressure u2 against depth in m NAP, with indicative qc/Rf soil zones. The zones are indicative; they are not a normalised classification.
+- **Many CPTs side by side.** Scale the columns with the zoom, or fit them to the window.
 
-### Sonderingen inlezen & visualiseren
-- **GEF 1.x** (`.gef`) en **BRO XML** (`CPT_O`/`CPT_O_DP`, dispatchService v1.1) parsers
-- Live grafiek met **conusweerstand (qc)**, **plaatselijke wrijving (fs, cap 0.05 MPa)**, **wrijvingsgetal (Rf)** en **waterspanning (u2)** door qc heen
-- **Robertson 1990 SBT-classificatie** met automatische laagdetectie + kleurstrook
-- Y-as in NAP (m) met schone veelvouden (0 / -5 / -10 / -15 / …)
-- Sonderingen in tabs naast elkaar; klikken op een laag in de explorer scrolt mee
-- **Boringen (BHR-GT XML)** als aparte tabs
+## Map and site plan
 
-### Kaart-tab
-- PDOK-basislagen (BRT, luchtfoto actueel + jaarlagen 2016-2025), BAG-gebouwen, Kadastrale grenzen, Adressen + straten, Bestemmingsplan, BGT-topografie, BRO-sonderingen/-boringen
-- Standaard centreert op je projectlocatie, anders Lange Geldersekade 2 (Dordrecht)
-- **Live meet-tool**: na de eerste klik volgt een gestreepte preview met meters tot je de tweede klik plaatst
-- BRO-sondering klikken → meteen openen of toevoegen aan actief project
+- **Map.** PDOK background maps, aerial photos 2016–2025, BAG buildings, cadastral parcels, zoning plans, BGT and elevation, with a live measuring tool. Load the BRO CPTs and boreholes in the visible area.
+- **Site plan.** A fixed A2 or A3 sheet at a true scale, with CPT markers, a CPT grid, dimension lines, RD coordinate tags, overlays from PDF or images, snapping to buildings and parcels, and a title block.
 
-### Situatietekening (CAD-paper)
-- Vast A2- of A3-papier (default **A3, 1:500**) met 10mm zwarte CAD-rand
-- **Auto-fit**: bij navigeren naar een project met sonderingen springt schaal + center automatisch naar de kleinste preset (500 / 1000 / 2000 / 5000) waar alle sonderingen passen
-- Iteratieve schaal-convergence — 1:500 betekent **echt** 1:500 (binnen 0.001%)
-- **Sonderingen/boringen plaatsen** met optioneel kleefmeting-symbool (horizontale streep onder de driehoek)
-- **Sonderingsraster** met sleepbare hoek-handles voor variabele rij × kolom × spacing
-- **Lijnen + maatlijnen** met automatische afstand-label (m/cm), **lijn-kleur-picker** per geselecteerde lijn
-- **RD-coördinaat-tags** met leader-lijn naar het exacte punt
-- **Image/PDF-overlay** als achtergrond: selecteerbaar, schaalbaar (hoek-handles), draaibaar, naar voor/achtergrond
-- **Trim / Extend / Mirror / Offset** CAD-edit-tools op lijnen
-- **Snap-systeem**: vertex/edge-snap op BAG-gebouwen, kadastrale grenzen, geplaatste sonderingen, project-CPTs, lijn-endpoints, en coord-tags (12px threshold)
-- **Ortho-mode** (Shift bij 2e klik) — lijn-hoek snapt naar 45°-veelvouden
-- **Move-shortcuts** (Revit-style **M** / Blender-style **G**): selectie volgt cursor, klik commit, Esc cancelt
-- **Freeze-modus** + paper-zoom: bevries de map-zoom, scroll-wheel zoomt het hele papier (incl. kader)
-- Schaalbalk in stappen van 5 meter (0 / 5 / 10 / 15 / …) en grote noordpijl
-- Titleblock met projectinfo (klikbaar in-place edit), bewerkbare schaal-cel, logo-upload
+## Pile calculations
 
-### Rapport (PDF-export)
-- Voorblad + coördinatentabel + overzichtskaart + 1 pagina per sondering
-- Robertson SBT-legenda + metadata-overzicht (optioneel)
-- Schaalbare assen: qc 0-30, fs 0-0.05 MPa (gecapped), Rf 0-10% (gecapped + overflow-note bij pieken)
-- u2 (waterspanning) als cyaan stippellijn door qc heen
-- Verticale scheidslijn tussen Qc/Fs-band en Rf-band over volle hoogte
-- Maaiveld-pijl + hatching, NAP-grid op 5m intervallen
+The calculations are **concept**: they show every step but do not replace a checked design.
 
-### Export & integratie
-- **CSV** per sondering, **GeoJSON** voor alle locaties tegelijk
-- **Tauri file-associations** voor `.gef`, `.xml`, `.ifcgeo` — dubbelklik bestand opent direct in de app
-- **`.ifcgeo`** is dé extensie voor zowel losse sonderingen als hele projecten (IFC5-alpha JSON). Bevat — bij een project — de hele staat: sonderingen, tekening, title-block, layer-config; round-trips compleet. Loader sniffed de schema-header om project vs single-CPT te onderscheiden. `.ifcgis` en `.ifcx` blijven leesbaar voor legacy-bestanden.
-- **GEF-export** volledig BRO IMBRO-A conform (passt GEFPlotTool 5.1 validator)
-- **Offertes opvragen**: dialog die de 3 dichtstbijzijnde sondeerbedrijven toont + automatische mailto-offerte-aanvraag
-- **Feedback-knop** opent direct een GitHub issue
+- **Bearing capacity of a single pile.** Steel, concrete and timber piles, including timber with a concrete extension. The sheet shows the input and the CPT next to the worked-out output, with a print preview and PDF.
+- **Capacity table.** Rc;net;d per CPT for a range of pile sizes and toe levels. Enter the capacity you need, such as 500–1000 kN, and see per size the shortest pile that reaches it and how much the toe level varies between CPTs. The report takes a few worked examples followed by the tables.
+- **Laterally loaded pile.** A beam on linear or non-linear soil springs, with layer correction. The input is a drawing of the section with its reinforcement and levels in m NAP. The output has the diagrams of displacement, moment (on the tension side) and shear, the soil reaction per layer, the N–M interaction and a PDF report. See the [verification](apps/desktop/src/calc/modules/laterally-loaded-pile/VERIFICATIE.md).
+- **Settings per calculation.** Pile factors (table or project value), standard size series, subgrade values and pu profiles per soil type.
 
----
+The supported pile systems and their limits are in [PAALSOORTEN.md](apps/desktop/src/calc/modules/pile-bearing-capacity/PAALSOORTEN.md) and [HISTORISCHE-NORMEN.md](apps/desktop/src/calc/modules/pile-bearing-capacity/HISTORISCHE-NORMEN.md).
 
-## Architectuur
+## Interoperability
 
-```
-cpt-viewer/                                ← deze repo
-├── apps/desktop/                          ← Tauri 2 + React 19 + Vite 7 + TS 5.9
-│   ├── src/                               ← frontend (panels, ribbons, store, chart-renderer)
-│   └── src-tauri/                         ← Rust IPC commands + bundle config
-└── .github/workflows/release.yml          ← cross-platform CI (Win + Linux installers)
+| Format | Open | Save / export |
+|--------|------|---------------|
+| **GEF** (`.gef`) | Yes | Yes, GEF-CPT 1.1.2 |
+| **BRO-XML** CPT and BHR-GT | Yes | No |
+| **Project** (`.ifcgeo`, IFCX JSON) | Yes | Yes |
+| **IFCX** | Yes | Yes, experimental snapshot |
+| **IFC4x3** (STEP) | Yes, to inspect | No: the old export was not schema-valid and is switched off |
+| **CSV**, **GeoJSON** | No | Yes |
+| **PDF** | No | Yes: CPT report, site plan, pile reports |
 
-crates-warehouse/                          ← sibling repo, path-dependency
-├── cpt-core/                              ← GEF + BRO parsers, Robertson, layers,
-│                                            RD↔WGS84, SVG plot, PDF report
-├── openaec-core/  +  openaec-engine/      ← PDF/font rendering (gedeeld met andere OpenAEC apps)
-└── openaec-layout/                        ← document-template (cover, page, table primitives)
-```
+A project file keeps the CPTs, the import messages, the site plan and the calculations. Older `.ifcgis` and `.ifcx` projects still open.
 
-De UI gebruikt de kleuren, maten en lokale lettertypen uit [OpenAEC Blueprint](https://github.com/OpenAEC-Foundation/OpenAEC-Blueprint). De vastgelegde broncommit en controlesommen staan in `apps/desktop/src/styles/blueprint/SOURCE.json`. De schil volgt de referentie met witte panelen, een onderstreepte linttab en vijf thema’s.
+## MCP
 
----
+The desktop app has an MCP server for an AI assistant. `open-geo-studio --mcp-studio` controls the open Studio window: open files, edit project data, add and change pile calculations, read the capacity table, open a view and write a PDF report. A status indicator in the bottom right shows when a client is connected and what it is doing. The server runs only on your own computer, uses absolute file paths and never opens a file dialog. `open-geo-studio --mcp` runs a separate headless mode. See [docs/API.md](docs/API.md).
 
-## Bouw zelf
+## Testing and reliability
 
-### Vereisten
-- [Node.js 22 LTS](https://nodejs.org/) + npm
-- [Rust stable](https://www.rust-lang.org/tools/install)
-- [Tauri v2 prerequisites](https://v2.tauri.app/start/prerequisites/) voor je platform (op Linux: `libwebkit2gtk-4.1-dev`, `librsvg2-dev`, `patchelf`, etc.)
-- De `crates-warehouse` repo gecloned als **sibling-folder** naast deze repo (`../crates-warehouse`)
+- **707 unit and component tests in 86 files** in `apps/desktop/src`, run with Vitest on every pull request and push to `main`.
+- **35 comparisons for the lateral pile kernel** against closed-form solutions (Hetényi, Matlock & Reese) and an independent finite-difference solver, in `verification.test.ts`.
+- **Bearing capacity regression** against an external reference calculation (`984.pdf`) and 100 public reference cases, in the `verification-984*` and `public-reference` tests.
+- **Release checks**: synchronised versions, Blueprint assets, signatures of every installer and the native SDK on Windows, macOS and Linux.
+
+Count sources: `npx vitest run` in `apps/desktop` on `main`, and the files named above.
+
+## Current limitations
+
+- **The calculations are concept.** They are indicative and carry a concept mark on screen and in every PDF.
+- **The lateral pile has no standard p-y curves for clay and sand.** It uses linear springs or a hyperbolic project law; the published reference cases that need those curves are listed but not yet compared.
+- **The calculation modules and their reports are in Dutch only.** The rest of the interface is available in ten languages.
+- **No updater.** Install a new version over the old one.
+- **IFC4x3 export is switched off.** Use the IFCX snapshot until a schema-valid export is back.
+
+Found something? [Open an issue](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/issues).
+
+## Under the hood
+
+A Tauri 2 desktop app with a React and TypeScript interface; the CPT parsers, plots and native reports are Rust crates from [crates-warehouse](https://github.com/OpenAEC-Foundation/crates-warehouse). The same GEF/BRO parser also runs as a headless [Node core with HTTP API and MCP](packages/core/README.md) and a [native C ABI SDK](packages/native/README.md); see the [capability matrix](docs/READINESS.md). The shared look, fonts and icons come from [OpenAEC Blueprint](https://github.com/OpenAEC-Foundation/OpenAEC-Blueprint); the pinned source commit is in `apps/desktop/src/styles/blueprint/SOURCE.json`.
+
+## Contributing
+
+- **Try it on a real project** and report bugs or missing features as an [issue](https://github.com/OpenAEC-Foundation/open-geotechniek-studio/issues/new). Describe what you did, what you expected and what happened. The feedback button in the app opens an issue for you.
+- **Share test files.** GEF and BRO files that read wrongly are the most useful bug reports.
+- **Write code.** Open an issue first for a larger change, then a pull request. Interface changes follow [OpenAEC Blueprint](https://github.com/OpenAEC-Foundation/OpenAEC-Blueprint).
+
+## Quick start (developers)
 
 ```bash
 git clone https://github.com/OpenAEC-Foundation/crates-warehouse.git
 git clone https://github.com/OpenAEC-Foundation/open-geotechniek-studio.git
 cd open-geotechniek-studio/apps/desktop
-npm install
+npm ci
+npm run tauri dev
 ```
 
-### Development
-```bash
-npm run tauri dev    # HMR, opent app-venster, ~45s eerste start
-```
+Requires Node.js 22, Rust stable and the [Tauri 2 prerequisites](https://v2.tauri.app/start/prerequisites/) for your platform. `crates-warehouse` must sit next to this repository. `npm test` runs the tests; `python scripts/build_readme_images.py --check` checks the README images.
 
-### Lokale ontwikkelinstaller
-```bash
-npm run tauri build  # output in src-tauri/target/release/bundle/
-```
-Op Windows produceert dit een NSIS-installer (`.exe`). Op Linux krijg je `.deb` + `.AppImage`. Cross-platform builds doe je via de [GitHub Actions workflow](.github/workflows/release.yml).
+Versions follow the OpenAEC scheme `YYYY.W.N`: year, ISO week without a leading zero, and a number within the week that starts at 0, such as `2026.45.5`. `python scripts/version.py --next` sets the next version; a tag `vYYYY.W.N` starts the signed release. See [docs/RELEASE.md](docs/RELEASE.md) for signing and candidate builds.
 
-### Release
-De productversie volgt Blueprint: `JJJJ.W.N` (ISO-jaar, week, volgnummer). Bijvoorbeeld `2026.44.0`. Het Windows-pakket gebruikt NSIS; er wordt geen MSI met een ongeldige hoofdversie `2026` gebouwd.
-
-```bash
-python3 scripts/version.py --next        # volgende versie voor deze ISO-week
-python3 scripts/version.py --check       # npm, lockfiles, Cargo, Tauri en Snap
-node scripts/check-blueprint.mjs         # oorspronkelijke design-assets
-python3 scripts/test-release.py          # versies en OpenPGP met tijdelijke testsleutel
-```
-
-Na controle en commit hoort bij de versie een tag `vJJJJ.W.N`. De workflow **Signed desktop release** bouwt Windows (NSIS), macOS (universele DMG) en Linux (deb/AppImage). De publicatiestap draait uitsluitend als alle builds en handtekeningcontroles slagen. Windows gebruikt Authenticode met timestamp, macOS Developer ID met Apple-notarisatie, Linux OpenPGP-signaturen plus build-attestaties. Updater-signing is een afzonderlijk contract en is hiermee niet toegevoegd.
-
-Signing vereist de Azure-, Apple- en OpenPGP-credentials uit [de release-aantekeningen](RELEASE_NOTES_2026.44.1.md). Deze bestaan in de organisatie; repositorytoegang en echte releaseverificatie staan beschreven in de release-aantekeningen. De lokale build is daarom een ontwikkelbuild zonder releasehandtekening. Het gereedzetten van de workflow is geen bewijs van een ondertekende release.
-
-Ondertekende installers worden via de organisatie-workflow gebouwd. Voor een testbuild vóór publicatie kan **Signed desktop release** handmatig draaien op een branch, met `candidate=true` en het versienummer uit `apps/desktop/package.json`:
-
-```bash
-gh workflow run release.yml --ref BRANCH -f tag=vJJJJ.W.N -f candidate=true
-gh run download RUN_ID -n signed-windows-x64 --dir signed-installers
-```
-
-Vervang `BRANCH`, `vJJJJ.W.N` en `RUN_ID` door de gewenste branch, versie en workflowrun. De build gebruikt de vaste commit van die run en de signinggegevens van de organisatie. De artifacts doorlopen dezelfde handtekeningcontroles als een release. Een testbuild maakt geen releasetag en publiceert geen GitHub-release. Installeer voor distributie uitsluitend de gecontroleerde, ondertekende artifacts.
-
-### Paaldraagvermogen
-Op de website en in de desktop-app staat alleen **Paaldraagvermogen** in de berekeningenlijst. Open een project en kies **Berekeningen → Nieuw**. Het werkblad toont invoer, sondering en uitkomsten met tussenstappen. De overige rekenmodules blijven als broncode bewaard, maar zijn niet selecteerbaar.
-
-De paalmodule en zijn PDF behouden hun conceptmarkering. Zie de [paalsystemen](apps/desktop/src/calc/modules/pile-bearing-capacity/PAALSOORTEN.md) en [historische normprofielen](apps/desktop/src/calc/modules/pile-bearing-capacity/HISTORISCHE-NORMEN.md) voor de ondersteunde invoer en beperkingen.
-
-### Live MCP-bediening
-
-De desktop-app kan via MCP rechtstreeks worden bediend met `open-geo-studio --mcp-studio`. Start eerst Studio. De indicator rechtsonder toont beschikbaarheid, verbonden clients en de opdracht die wordt uitgevoerd. Projecten, sonderingen en paalberekeningen zijn via gestructureerde tools bereikbaar. Zie de [MCP-configuratie](docs/API.md#mcp-bediening-van-het-geopende-studio-venster). De zelfstandige `--mcp`-modus blijft beschikbaar met een eigen headless toestand.
-
-### Sonderingen inzoomen
-
-Met **Sonderingen meeschalen** op het hoofdblad worden de kolommen boven de verticale fitstand ook breder. De volledige asbereiken blijven daarbij leesbaar en de overige sonderingen blijven horizontaal bereikbaar. De instelling wordt bewaard. **Passend** herstelt de oorspronkelijke fitstand en scrollpositie.
-
----
-
-## Bijdragen
-
-Issues + PR's welkom. Voor grotere features: open eerst een issue zodat we de scope kunnen afstemmen. UI-wijzigingen volgen [OpenAEC Blueprint](https://github.com/OpenAEC-Foundation/OpenAEC-Blueprint).
-
-De feedback-knop in de app (rechtsboven) opent direct een GitHub issue met auto-context.
-
----
+Open Geotechniek Studio is part of the [OpenAEC Foundation](https://github.com/OpenAEC-Foundation) family of apps. CPT and borehole data come from [BRO](https://basisregistratieondergrond.nl/) and the map layers from [PDOK](https://www.pdok.nl/).
 
 ## License
 
-[MIT](LICENSE) — vrij te gebruiken voor commerciële en niet-commerciële projecten.
+MIT. See [LICENSE](LICENSE).
 
----
+## Trademarks
 
-## Credits
-
-Onderdeel van het [OpenAEC Foundation](https://github.com/OpenAEC-Foundation)-ecosysteem.
-
-Sondering- en boringdata via [PDOK](https://www.pdok.nl/) ([BRT](https://www.pdok.nl/-/brt-achtergrondkaart), [Luchtfoto](https://www.pdok.nl/-/luchtfotos-pdok), [BAG](https://www.pdok.nl/-/bag), [Kadaster](https://www.pdok.nl/-/kadastrale-kaart-v5), [Ruimtelijkeplannen](https://www.pdok.nl/-/ruimtelijke-plannen)) en [BRO](https://basisregistratieondergrond.nl/) (Basisregistratie Ondergrond / TNO Geologische Dienst).
-
-
-## Integraties en opleverbewijs
-
-- [Headless Node core, HTTP API, MCP/Claude en eigen importers](packages/core/README.md)
-- [Native DLL/.so SDK, C ABI en externe consumententest](packages/native/README.md)
-- [Platform- en capabilitymatrix met beperkingen](docs/READINESS.md)
-- [AWS Fargate deploymentdefinitie en smoke-test](deploy/aws/README.md)
-
-De normale bestandsimport gebruikt dezelfde diagnostische GEF/BRO-parser op desktop en browser. Validatiemeldingen blijven in projectbestanden bewaard en zijn als CSV/JSON te exporteren. BRO-diepte-uitschieters worden standaard uitgesloten, met bronindices en een expliciete inschakeloptie. De grafische qc/Rf-indeling is indicatief; het is geen genormaliseerde Robertson-classificatie. De oude schema-ongeldige IFC4x3-export is uitgeschakeld.
+Windows, macOS and other names of operating systems and services are trademarks of their owners. Open Geotechniek Studio is an independent project and is not affiliated with, endorsed by or sponsored by them.
