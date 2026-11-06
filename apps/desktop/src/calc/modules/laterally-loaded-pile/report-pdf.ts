@@ -61,7 +61,7 @@ function renderTableAppendix(c: Cursor, input: LateralInput, rows: ReturnType<ty
 }
 
 /** De volledige uitwerking van één paal. */
-function renderCalc(c: Cursor, input: LateralInput, result: Extract<LateralResult, { ok: true }>, heading?: string) {
+export function renderCalc(c: Cursor, input: LateralInput, result: Extract<LateralResult, { ok: true }>, heading?: string) {
   const r = result, s = lateralSummary(input, r), d = lateralReportData(input, r);
   const nap = (z: number) => `NAP ${nl(s.head - z, 2)}`;
   const nonlinear = r.analysisMode === 'nonlinear';

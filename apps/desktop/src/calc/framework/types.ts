@@ -3,7 +3,7 @@ import type { ReactNode, FC } from "react";
 import type { Cpt, ProjectMeta } from "../../types/cpt";
 
 /** Categorie waarmee modules in de UI gegroepeerd worden. */
-export type CalcCategory = "pile" | "spread" | "wall" | "anchor";
+export type CalcCategory = "pile" | "spread" | "wall" | "anchor" | "report";
 
 /** Implementatie-status — bepaalt of de module échte UI rendert of een
  *  "Coming soon"-placeholder.
@@ -18,6 +18,8 @@ export interface ProjectContext {
   cpts: Map<string, Cpt>;
   activeCptId: string | null;
   projectMeta: ProjectMeta;
+  /** Alle berekeningen van het project; voor rapporten die ze bundelen. */
+  calculations?: CalculationInstance[];
 }
 
 /** Eén element in een paneel van de Berekeningen-view. Module-specifiek. */
