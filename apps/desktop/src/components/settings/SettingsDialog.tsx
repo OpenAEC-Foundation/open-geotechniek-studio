@@ -7,8 +7,10 @@ import { useAllExtensions, setExtension, type ExtensionId } from "../../hooks/us
 import { CALC_REGISTRY } from "../../calc/framework/registry";
 import Modal from "../Modal";
 import ThemedSelect from "../ThemedSelect";
+import { BrandTabContent } from "./BrandTab";
 import "../ThemedSelect.css";
 import "./SettingsDialog.css";
+import { OaIcon } from "../icons/oaIcon";
 
 const THEME_OPTIONS = [
   { value: "light", labelKey: "appearance.light", swatches: ["#F1EEEA", "#FFFFFF", "#D97706", "#2A2A32"] },
@@ -25,7 +27,7 @@ const THEME_OPTIONS = [
    Voorbeeld met domein-tab:
      const TAB_IDS = ["general", "appearance", "calculation", "about"] as const;
    ─────────────────────────────────────────────────────────── */
-const TAB_IDS = ["general", "appearance", "extensions", "about"] as const;
+const TAB_IDS = ["general", "appearance", "brand", "extensions", "about"] as const;
 
 export function applyTheme(theme?: string) {
   const aliases: Record<string, string> = { forge: "dark", openaec: "dark", contrast: "high-contrast-dark" };
@@ -160,6 +162,7 @@ export default function SettingsDialog({
           {activeTab === "appearance" && (
             <AppearanceTabContent theme={draftTheme} onThemeSelect={handleThemePreview} />
           )}
+          {activeTab === "brand" && <BrandTabContent />}
           {activeTab === "extensions" && <ExtensionsTabContent />}
           {activeTab === "about" && <AboutTabContent />}
         </div>
@@ -271,9 +274,7 @@ function ThemeDropdown({
       <button className="theme-dropdown-trigger" onClick={() => setOpen(!open)}>
         {swatchRow(selected.swatches)}
         <span className="theme-dropdown-label">{t(selected.labelKey)}</span>
-        <svg className="theme-dropdown-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none">
-          <path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <OaIcon id="ui.dropdown" className="theme-dropdown-chevron" />
       </button>
       {open && (
         <div className="theme-dropdown-menu">

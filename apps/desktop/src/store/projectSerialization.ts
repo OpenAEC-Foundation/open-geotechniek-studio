@@ -9,6 +9,7 @@ import {
 import { catalogToIfcgisLayers } from "../utils/gisLayerCatalog";
 import { useCalculationsStore } from "../calc/framework/store";
 import { toIfcxArray } from "../calc/framework/persistence";
+import { subsurfaceForProject } from "../components/soil3d/subsurface/store";
 import { useCptStore } from "./useCptStore";
 import { IS_TAURI } from "../utils/platform";
 import { invoke } from "@tauri-apps/api/core";
@@ -44,6 +45,8 @@ export function activeProjectPayload(docId?: string) {
       }),
     } : {}),
     calculations: toIfcxArray(calcs),
+    // Ondergrondmodel: pakketten, voxelmodel, peilbuizen en grondwaterstanden (alleen als er iets is).
+    ...(() => { const sub = subsurfaceForProject(doc.id); return sub ? { subsurface: sub } : {}; })(),
   };
 }
 

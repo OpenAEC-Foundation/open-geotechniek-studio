@@ -10,6 +10,7 @@ import {
   type ReportSections,
 } from "../../store/reportSectionsState";
 import "./ReportPreview.css";
+import { OaIcon } from "../icons/oaIcon";
 
 /**
  * PDF report preview — sidebar (section toggles + project info) + iframe.
@@ -207,10 +208,7 @@ export default function ReportPreview() {
             onClick={openProjectInfo}
             title={t("report.openProjectInfo", "Projectgegevens bewerken")}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 20h9" />
-              <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
-            </svg>
+            <OaIcon id="project.properties" />
             <span>{t("report.openProjectInfo", "Projectgegevens bewerken")}</span>
           </button>
         </div>
@@ -231,12 +229,7 @@ export default function ReportPreview() {
           onClick={handleOpenPdf}
           title={t("report.openInNewWindow", "PDF openen in de systeem-viewer")}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="9" y1="15" x2="15" y2="15" />
-            <line x1="12" y1="12" x2="12" y2="18" />
-          </svg>
+          <OaIcon id="report.open-viewer" />
           <span>{t("report.openPdf", "PDF openen")}</span>
         </button>
       </div>

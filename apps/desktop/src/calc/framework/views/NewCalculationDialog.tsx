@@ -3,6 +3,7 @@ import { CALC_REGISTRY } from "../registry";
 import { useCalculationsStore } from "../store";
 import { useCptStore } from "../../../store/useCptStore";
 import type { CalcCategory } from "../types";
+import { OaIcon } from '../../../components/icons/oaIcon';
 
 interface Props {
   open: boolean;
@@ -58,7 +59,7 @@ export function NewCalculationDialog({ open, onClose }: Props) {
       <div className="calc-modal" onClick={(e) => e.stopPropagation()}>
         <div className="calc-modal-header">
           <h2>Nieuwe berekening</h2>
-          <button className="calc-modal-close" onClick={onClose}>×</button>
+          <button className="calc-modal-close" onClick={onClose} aria-label="Sluiten"><OaIcon id="ui.close" /></button>
         </div>
         <div className="calc-modal-body">
           <label className="calc-modal-field">

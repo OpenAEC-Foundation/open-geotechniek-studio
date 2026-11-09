@@ -49,14 +49,11 @@
   background: var(--theme-accent-soft);
 }
 
+/* B2-iconen blijven grijs met een oranje accent, ook op het actieve (oranje) tabblad. */
 .document-tab-icon {
+  display: flex;
   flex-shrink: 0;
-  opacity: 0.6;
-}
-
-.document-tab.active .document-tab-icon {
-  opacity: 1;
-  stroke: var(--theme-accent);
+  color: var(--theme-text-secondary);
 }
 
 .document-tab-title {
@@ -94,7 +91,7 @@
 
 .document-tab-close:hover {
   background: var(--theme-ribbon-btn-hover);
-  color: var(--theme-accent);
+  color: var(--theme-text);
 }
 
 .document-tab-add {
@@ -105,7 +102,7 @@
 }
 
 .document-tab-add:hover {
-  color: var(--theme-accent);
+  color: var(--theme-text);
 }
 
 /* Dock-back flash animation */

@@ -49,6 +49,7 @@ function InputPanel({ input: i, onChange }: Props) {
     <Section title="Opnemen">
       <div className="advice-pick" aria-label="Sonderingen in het advies">{cptIds.length ? cptIds.map((id) => <label key={id} className="cs-check"><input type="checkbox" checked={!i.cptIds || i.cptIds.includes(id)} onChange={(e) => set({ cptIds: toggle(i.cptIds, cptIds, id, e.target.checked) })} />Sondering {id}</label>) : <Hint>Nog geen sonderingen in het project.</Hint>}</div>
       <div className="advice-pick" aria-label="Berekeningen in het advies">{calcs.length ? calcs.map((c) => <label key={c.id} className="cs-check"><input type="checkbox" checked={!i.calcIds || i.calcIds.includes(c.id)} onChange={(e) => set({ calcIds: toggle(i.calcIds, calcIds, c.id, e.target.checked) })} />{c.name}</label>) : <Hint>Nog geen paalberekeningen in het project.</Hint>}</div>
+      <label className="cs-check"><input type="checkbox" checked={i.soilModel3d !== false} onChange={(e) => set({ soilModel3d: e.target.checked })} /> 3D-grondmodel in de bodemopbouw</label>
       <label className="cs-check"><input type="checkbox" checked={i.appendixCpts} onChange={(e) => set({ appendixCpts: e.target.checked })} /> Bijlage sonderingen</label>
       <label className="cs-check"><input type="checkbox" checked={i.appendixCalcs} onChange={(e) => set({ appendixCalcs: e.target.checked })} /> Bijlage rekenbladen</label>
     </Section>
@@ -90,7 +91,7 @@ function ResultPanel({ input: i, result: s }: Props) {
     <section><h3>Inhoud van het rapport</h3>
       <ol className="advice-toc">
         <li>Inleiding: aanleiding, doel en projectgegevens</li><li>Uitgangspunten</li>
-        <li>Grondonderzoek: {s.cpts.length} sonderingen met situatietekening</li><li>Bodemopbouw en draagkrachtige laag</li>
+        <li>Grondonderzoek: {s.cpts.length} sonderingen met situatietekening</li><li>Bodemopbouw en draagkrachtige laag{i.soilModel3d !== false ? ', met 3D-grondmodel' : ''}</li>
         {s.vertical.length > 0 && <li>Palen op druk: {s.vertical.map((v) => v.name).join(', ')}</li>}
         {s.lateral.length > 0 && <li>Horizontaal belaste palen: {s.lateral.map((l) => l.name).join(', ')}</li>}
         <li>Negatieve kleef en uitvoering</li><li>Conclusies en aanbevelingen</li>

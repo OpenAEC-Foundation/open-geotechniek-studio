@@ -75,7 +75,7 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
     items: (input, ctx) => (input.capacityTable?.cptIds ?? [...ctx.cpts.keys()]).map((id) => ({ id, label: `Sondering ${id}` })),
   },
   statusLine: (r) => ({
-    text: r.ok ? `u.c. ${r.summary.unityCheck.toFixed(2)} ${r.summary.passes ? "✓" : "✗"}` : "Niet berekend",
+    text: r.ok ? `u.c. ${r.summary.unityCheck.toFixed(2)}` : "Niet berekend",
     ok: r.ok && r.summary.passes,
     pending: !r.ok,
   }),

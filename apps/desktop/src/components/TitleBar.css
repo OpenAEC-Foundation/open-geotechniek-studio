@@ -84,7 +84,7 @@
   height: 100%;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--theme-accent);
+  color: var(--theme-text-secondary);
   cursor: default;
   padding: 0;
   margin: 0;
@@ -107,11 +107,13 @@
 .titlebar-close:hover {
   background-color: #e81123;
   color: #ffffff;
+  --icon-accent: currentColor;
 }
 
 .titlebar-close:active {
   background-color: #c50f1f;
   color: #ffffff;
+  --icon-accent: currentColor;
 }
 
 .titlebar-quick-access {
@@ -132,7 +134,7 @@
   height: 24px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--theme-accent);
+  color: var(--theme-text-secondary);
   cursor: default;
   padding: 0;
   margin: 0;

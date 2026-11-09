@@ -7,6 +7,7 @@ import type { LateralInput, LateralResult } from './compute';
 import type { UltimateProfile } from './spring-types';
 import { SOIL_SPRINGS } from './soil';
 import { soilColor } from './report-data';
+import { OaIcon } from '../../../components/icons/oaIcon';
 
 const PU_KEYS: Array<[keyof UltimateProfile, string]> = [['atSurfaceKnM', 'pu,0'], ['gradientKnM2', 'g'], ['capKnM', 'pu,max']];
 
@@ -43,7 +44,7 @@ export function LateralSettingsPanel({ input: i, onChange }: PanelProps<LateralI
           {(['low', 'high'] as const).map((sc) => <td key={sc} className={i.scenario === sc ? 'cs-settings-active' : ''}>
             <span className="cs-settings-default">{s[sc].toLocaleString('nl-NL')}</span>
             <NumberInput label={`kh ${s.id} ${sc === 'low' ? 'laag' : 'hoog'} [kN/m³]`} value={overrides[s.id]?.[sc]} onChange={(v) => setKh(s.id, sc, v)} />
-            {overrides[s.id]?.[sc] !== undefined && <button type="button" className="lat-mini" aria-label={`Tabelwaarde ${s.id} ${sc === 'low' ? 'laag' : 'hoog'}`} onClick={() => setKh(s.id, sc, undefined)}>×</button>}
+            {overrides[s.id]?.[sc] !== undefined && <button type="button" className="lat-mini" aria-label={`Tabelwaarde ${s.id} ${sc === 'low' ? 'laag' : 'hoog'}`} title="Terug naar tabelwaarde" onClick={() => setKh(s.id, sc, undefined)}><OaIcon id="input.reset-default" /></button>}
           </td>)}
           <td className="cs-settings-default">{used(s.id) || ''}</td>
         </tr>)}</tbody>

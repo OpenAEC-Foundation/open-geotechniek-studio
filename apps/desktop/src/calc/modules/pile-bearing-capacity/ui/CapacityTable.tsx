@@ -7,6 +7,7 @@ import {
  type CapacityMatrix,type CapacityTableConfig,type CptMatrix,type SizeChoice,
 } from '../capacity-table';
 import './capacity-table.css';
+import {OaIcon} from '../../../../components/icons/oaIcon';
 
 const kn=(n:number)=>n.toLocaleString('nl-NL',{maximumFractionDigits:0});
 const nap=(n:number)=>n.toLocaleString('nl-NL',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -116,7 +117,7 @@ function Settings({input,cpts,config,update}:{input:PileInput;cpts:Map<string,Cp
   <fieldset className="capacity-examples"><legend>Uitdraai</legend>
    <p>Volledig uitgewerkt in het rapport; daarna volgen de keuzetabel en de tabellen per sondering. Zonder keuze gaat het huidige rekenblad mee.</p>
    {config.examples.length>0&&<ul aria-label="Voorbeeldberekeningen">{config.examples.map((e,k)=><li key={k}><span>{e.cptId} · {e.sizeMm} mm · NAP {levelText(e.toeNap)}</span>
-    <button type="button" aria-label={`Verwijder voorbeeld ${e.cptId}, ${e.sizeMm} mm op ${levelText(e.toeNap)} m NAP`} onClick={()=>update({examples:config.examples.filter((_,j)=>j!==k)})}>×</button></li>)}</ul>}
+    <button type="button" aria-label={`Verwijder voorbeeld ${e.cptId}, ${e.sizeMm} mm op ${levelText(e.toeNap)} m NAP`} onClick={()=>update({examples:config.examples.filter((_,j)=>j!==k)})}><OaIcon id="list.item-remove" /></button></li>)}</ul>}
    <div className="capacity-example-add">
     <select aria-label="Voorbeeld: sondering" value={pick.cptId} onChange={e=>setPick({...pick,cptId:e.target.value})}>{config.cptIds.map(id=><option key={id} value={id}>{id}</option>)}</select>
     <select aria-label="Voorbeeld: maat" value={pick.sizeMm} onChange={e=>setPick({...pick,sizeMm:Number(e.target.value)})}>{config.sizesMm.map(v=><option key={v} value={v}>{v} mm</option>)}</select>

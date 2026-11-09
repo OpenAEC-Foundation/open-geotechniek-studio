@@ -1,5 +1,9 @@
 import { useTranslation } from "react-i18next";
 import RibbonGroup from "./RibbonGroup";
+import RibbonButton from "./RibbonButton";
+import { exportSubsurfaceIfcx } from "../soil3d/subsurface/exportIfcx";
+import { activeSoilModel } from "../soil3d/projectModel";
+import { useSoil3DStore } from "../soil3d/useSoil3DStore";
 import { useCptStore } from "../../store/useCptStore";
 
 /**
@@ -34,6 +38,12 @@ export default function IfcTab() {
         : 0; // bore docs: IFC export not yet wired
   const hasContent = cptCount > 0;
 
+  const exportMessage = useSoil3DStore((st) => st.message);
+  const exportSubsurface = () => {
+    const model = activeSoilModel();
+    if (model && activeDocId) void exportSubsurfaceIfcx(activeDocId, model);
+  };
+
   let statusLabel: string;
   if (!hasContent) {
     statusLabel = t("ifc.autoNoCpt", "Geen sonderingen — voeg eerst toe");
@@ -56,6 +66,12 @@ export default function IfcTab() {
               )}
             </div>
           </div>
+        </RibbonGroup>
+        <RibbonGroup label={t("ifc.subsurfaceGroup", "Ondergrond")}>
+          <RibbonButton icon="file.export" label={t("ifc.subsurfaceExport", "Ondergrondmodel (IFCX)")}
+            title={t("ifc.subsurfaceHint", "IfcGeomodel met strata, sonderingen als IfcBorehole en peilbuizen als IfcSensor (IFC 4.3-klassen, IFCX)")}
+            disabled={!hasContent || !activeDocId} onClick={exportSubsurface} />
+          {exportMessage && <div className={`ribbon-info-sub${exportMessage.error ? " ribbon-info-error" : ""}`} style={{ maxWidth: 220 }}>{exportMessage.text}</div>}
         </RibbonGroup>
       </div>
     </div>

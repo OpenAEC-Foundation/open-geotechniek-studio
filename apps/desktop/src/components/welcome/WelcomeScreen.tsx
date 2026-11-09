@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { setSetting } from "../../store";
 import { useRecentFiles } from "../../hooks/useRecentFiles";
 import "./WelcomeScreen.css";
+import { OaIcon } from "../icons/oaIcon";
 
 interface WelcomeScreenProps {
   onClose: () => void;
@@ -70,20 +71,14 @@ export default function WelcomeScreen({ onClose, onNewProject, onOpenProject, on
           <div className="welcome-actions">
             <h2>{t("welcome.getStarted")}</h2>
             <button className="welcome-action-btn primary" onClick={handleNewProject}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                <path d="M14 2v6h6" />
-                <path d="M12 18v-6m-3 3h6" />
-              </svg>
+              <OaIcon id="file.new" size={24} />
               <div>
                 <strong>{t("welcome.newProject")}</strong>
                 <span>{t("welcome.newProjectDesc")}</span>
               </div>
             </button>
             <button className="welcome-action-btn" onClick={handleOpenProject}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
-              </svg>
+              <OaIcon id="file.open" size={24} />
               <div>
                 <strong>{t("welcome.openProject")}</strong>
                 <span>{t("welcome.openProjectDesc")}</span>
@@ -99,10 +94,7 @@ export default function WelcomeScreen({ onClose, onNewProject, onOpenProject, on
               <div className="welcome-recent-list">
                 {recentFiles.map((f, i) => (
                   <button key={i} className="welcome-recent-item" onClick={() => { onOpenFile?.(f.path); onClose(); }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                      <path d="M14 2v6h6" />
-                    </svg>
+                    <OaIcon id="file.type-other" />
                     <div className="welcome-recent-info">
                       <span className="welcome-recent-name">{f.name}</span>
                       <span className="welcome-recent-path">{f.path}</span>

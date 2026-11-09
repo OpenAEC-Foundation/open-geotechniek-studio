@@ -57,6 +57,9 @@ jobs:
           python -m pip install pygef==0.14.1
           OGS_TEST_PYTHON=python node ../../scripts/differential-parsers.mjs
 
+      - name: OpenAEC icons match the pinned Blueprint copy
+        run: npm run check:openaec-icons
+
       - name: Typecheck
         run: npx tsc --noEmit
 

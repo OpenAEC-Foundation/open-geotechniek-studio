@@ -1,16 +1,102 @@
 /* 3D-grondmodel */
 .soil3d-view { position: relative; flex: 1; min-height: 0; min-width: 0; display: flex; background: var(--theme-bg); color: var(--theme-text); overflow: hidden; }
+.soil3d-stage { position: relative; flex: 1; min-width: 0; display: flex; }
+.soil3d-busy { position: absolute; left: 12px; bottom: 12px; z-index: 1; padding: 4px 10px; font-size: 12px; border-radius: 4px; background: color-mix(in srgb, var(--theme-bg-lighter, #fff) 92%, transparent); border: 1px solid var(--theme-border-subtle, #e7e5e4); }
+/* Lagenpaneel links */
+.soil3d-browser { flex: none; width: 272px; overflow: auto; padding: 6px 8px 10px; font-size: 12px; background: var(--theme-bg-lighter, #fff); border-right: 1px solid var(--theme-border-subtle, #e7e5e4); }
+.soil3d-browser-head { margin: 8px 0 4px; font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--theme-text-secondary, #6b7280); }
+.soil3d-browser-head:first-child { margin-top: 2px; }
+.soil3d-layer-row { display: flex; align-items: center; gap: 2px; min-height: 22px; }
+.soil3d-layer-row label { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; cursor: pointer; }
+.soil3d-layer-row label span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.soil3d-twisty { width: 16px; flex: none; border: 0; padding: 0; background: none; color: var(--theme-text-secondary, #6b7280); cursor: pointer; font-size: 11px; }
+.soil3d-twisty.empty { cursor: default; }
+.soil3d-layer-status { font-size: 10.5px; color: var(--theme-text-secondary, #6b7280); white-space: nowrap; }
+.soil3d-icon { border: 0; padding: 0 3px; background: none; color: var(--theme-text-secondary, #6b7280); cursor: pointer; font-size: 13px; }
+.soil3d-icon:hover:not(:disabled) { color: var(--theme-accent, #d97706); }
+.soil3d-layer-children { margin: 0 0 4px 18px; padding-left: 6px; border-left: 1px solid var(--theme-border-subtle, #e7e5e4); }
+.soil3d-details { margin: 2px 0 4px; }
+.soil3d-browser-foot { margin-top: 10px; }
 .soil3d-canvas { position: absolute; inset: 0; }
 .soil3d-canvas canvas { display: block; }
 .soil3d-empty { margin: auto; padding: 24px; color: var(--theme-text-secondary, #6b7280); font-size: 13px; z-index: 1; }
-.soil3d-legend { position: absolute; top: 10px; left: 10px; z-index: 1; width: 230px; max-height: calc(100% - 20px); overflow: auto; padding: 8px 10px; font-size: 12px; background: color-mix(in srgb, var(--theme-bg-lighter, #fff) 92%, transparent); border: 1px solid var(--theme-border-subtle, #e7e5e4); border-radius: 6px; box-shadow: 0 2px 8px rgb(0 0 0 / .08); }
-.soil3d-legend-title { margin: 6px 0 4px; font-weight: 600; }
-.soil3d-legend-title:first-child { margin-top: 0; }
 .soil3d-zone { display: flex; align-items: center; gap: 6px; padding: 1px 0; cursor: pointer; }
 .soil3d-swatch { width: 12px; height: 12px; border-radius: 2px; border: 1px solid rgb(0 0 0 / .25); flex: none; }
 .soil3d-note { margin-top: 4px; line-height: 1.45; }
 .soil3d-muted { color: var(--theme-text-secondary, #6b7280); }
 .soil3d-warn { color: #b45309; }
 /* Lint */
-.soil3d-ribbon-field { display: flex; flex-direction: column; gap: 3px; padding: 2px 6px; font-size: 11px; min-width: 96px; }
-.soil3d-ribbon-field select, .soil3d-ribbon-field input[type="range"] { font-size: 11px; width: 100%; }
+.soil3d-level { display: grid; grid-template-columns: 1fr 70px auto; align-items: center; gap: 6px; margin: 3px 0; }
+.soil3d-level input { width: 70px; padding: 2px 4px; font-size: 11.5px; text-align: right; border: 1px solid var(--theme-border-subtle, #d6d3d1); background: var(--theme-bg, #fff); color: inherit; }
+.soil3d-level small { color: var(--theme-text-secondary, #6b7280); }
+.soil3d-link { border: 0; padding: 0; background: none; color: var(--theme-accent, #d97706); cursor: pointer; font: inherit; text-decoration: underline; }
+/* Eigenschappen van de selectie */
+.soil3d-props { flex: none; width: 280px; overflow-x: hidden; overflow-y: auto; font-size: 12px; background: var(--theme-bg-lighter, #fff); border-left: 1px solid var(--theme-border-subtle, #e7e5e4); }
+.soil3d-props-view { display: grid; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--theme-border-subtle, #e7e5e4); }
+.soil3d-props-view label { display: grid; grid-template-columns: 76px 1fr auto; align-items: center; gap: 8px; }
+.soil3d-props-view span { color: var(--theme-text-secondary, #6b7280); }
+.soil3d-props-view select { grid-column: 2 / 4; font-size: 12px; }
+.soil3d-props-view input { min-width: 0; width: 100%; margin: 0; box-sizing: border-box; font-size: 12px; }
+.soil3d-props-view input[type="text"] { padding: 2px 4px; }
+.soil3d-props-view output { min-width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+.soil3d-props-empty { margin: 10px; color: var(--theme-text-secondary, #6b7280); line-height: 1.5; }
+.soil3d-props header { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px 6px 10px; border-bottom: 1px solid var(--theme-border-subtle, #e7e5e4); font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--theme-text-secondary, #6b7280); }
+.soil3d-props header .soil3d-icon { font-size: 16px; line-height: 1; }
+.soil3d-props section { padding: 8px 10px; border-bottom: 1px solid var(--theme-border-subtle, #e7e5e4); }
+.soil3d-props section:last-child { border-bottom: 0; }
+.soil3d-props h4 { margin: 0; font-size: 13px; }
+.soil3d-props-sub { margin: 1px 0 6px; font-size: 11px; color: var(--theme-text-secondary, #6b7280); }
+.soil3d-props table { width: 100%; border-collapse: collapse; }
+.soil3d-props th { padding: 2px 8px 2px 0; text-align: left; font-weight: 400; color: var(--theme-text-secondary, #6b7280); white-space: nowrap; vertical-align: top; }
+.soil3d-props td { padding: 2px 0; text-align: right; font-variant-numeric: tabular-nums; }
+/* Vensters met tabbladen */
+.soil3d-panes { flex: 1; min-width: 0; display: flex; padding: 4px; }
+.soil3d-pane-slot { position: relative; display: flex; min-width: 0; padding-right: 4px; }
+.soil3d-pane-slot:last-child { padding-right: 0; }
+.soil3d-pane { position: relative; flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; border: 1px solid var(--theme-border-subtle, #e7e5e4); border-radius: 4px; overflow: hidden; background: var(--theme-bg); }
+.soil3d-pane.focus { border-color: color-mix(in srgb, var(--theme-accent, #d97706) 55%, var(--theme-border-subtle, #e7e5e4)); }
+.soil3d-tabs { display: flex; align-items: flex-end; gap: 1px; min-height: 30px; padding: 3px 4px 0; background: var(--theme-bg-lighter, #f5f5f4); border-bottom: 1px solid var(--theme-border-subtle, #e7e5e4); }
+.soil3d-tablist { flex: 1 1 auto; min-width: 0; display: flex; align-items: flex-end; gap: 1px; overflow: hidden; }
+.soil3d-tab { display: flex; align-items: center; gap: 4px; flex: 0 1 auto; min-width: 46px; white-space: nowrap; padding: 4px 4px 4px 10px; font-size: 12px; color: var(--theme-text-secondary, #6b7280); border: 1px solid transparent; border-bottom: 0; border-radius: 4px 4px 0 0; cursor: pointer; user-select: none; }
+.soil3d-tab span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.soil3d-tab-close { flex: none; }
+.soil3d-tab:hover { color: var(--theme-text); }
+.soil3d-tab.on { color: var(--theme-text); background: var(--theme-bg); border-color: var(--theme-border-subtle, #e7e5e4); margin-bottom: -1px; font-weight: 600; box-shadow: inset 0 2px 0 var(--theme-accent, #d97706); }
+.soil3d-tab.dragging { opacity: .45; }
+.soil3d-tab-close { width: 18px; height: 18px; display: grid; place-items: center; border: 0; border-radius: 3px; background: none; color: inherit; font-size: 14px; line-height: 1; cursor: pointer; opacity: .55; }
+.soil3d-tab-close:hover { opacity: 1; background: color-mix(in srgb, var(--theme-text) 12%, transparent); }
+.soil3d-tab-tools { flex: none; margin-left: auto; display: flex; align-items: center; gap: 2px; align-self: center; }
+.soil3d-tab-action { width: 24px; height: 22px; border: 0; border-radius: 3px; background: none; color: var(--theme-text-secondary, #6b7280); cursor: pointer; font-size: 14px; }
+.soil3d-tab-action:hover { color: var(--theme-text); background: color-mix(in srgb, var(--theme-text) 10%, transparent); }
+.soil3d-menu-anchor { position: relative; }
+.soil3d-menu { position: absolute; right: 0; top: 100%; z-index: 5; min-width: 140px; padding: 4px; background: var(--theme-bg-lighter, #fff); border: 1px solid var(--theme-border-subtle, #e7e5e4); border-radius: 4px; box-shadow: 0 6px 16px rgb(0 0 0 / .14); }
+.soil3d-menu button { display: block; width: 100%; padding: 5px 10px; text-align: left; border: 0; border-radius: 3px; background: none; color: var(--theme-text); font: inherit; font-size: 12px; cursor: pointer; }
+.soil3d-menu button:hover { background: color-mix(in srgb, var(--theme-accent, #d97706) 14%, transparent); }
+.soil3d-pane-body { position: relative; flex: 1; min-height: 0; display: flex; }
+.soil3d-pane-view { flex: 1; min-width: 0; min-height: 0; }
+.soil3d-viewport { position: relative; flex: 1; min-height: 0; display: flex; }
+.soil3d-splitter { position: absolute; top: 0; bottom: 0; right: -1px; width: 6px; cursor: col-resize; z-index: 3; }
+.soil3d-splitter:hover { background: color-mix(in srgb, var(--theme-accent, #d97706) 35%, transparent); }
+.soil3d-dropzone { position: absolute; top: 0; bottom: 0; z-index: 4; display: grid; place-items: center; font-size: 11px; color: var(--theme-text); background: color-mix(in srgb, var(--theme-accent, #d97706) 10%, transparent); border: 2px dashed color-mix(in srgb, var(--theme-accent, #d97706) 60%, transparent); }
+.soil3d-dropzone span { padding: 3px 8px; border-radius: 3px; background: var(--theme-bg-lighter, #fff); }
+.soil3d-dropzone.left { left: 0; width: 25%; }
+.soil3d-dropzone.center { left: 25%; right: 25%; border-left: 0; border-right: 0; background: transparent; }
+.soil3d-dropzone.right { right: 0; width: 25%; }
+.soil3d-noviews { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--theme-text-secondary, #6b7280); }
+.soil3d-open { padding: 6px 16px; border: 1px solid var(--theme-border-subtle, #d6d3d1); border-radius: 4px; background: var(--theme-bg-lighter, #fff); color: var(--theme-text); cursor: pointer; }
+/* Werkbalk per venster: aanzichten en camera */
+.soil3d-viewbar { position: absolute; top: 8px; right: 8px; left: auto; max-width: calc(100% - 16px); z-index: 2; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 1px; padding: 2px; border-radius: 5px; background: color-mix(in srgb, var(--theme-bg-lighter, #fff) 90%, transparent); border: 1px solid var(--theme-border-subtle, #e7e5e4); box-shadow: 0 1px 4px rgb(0 0 0 / .08); }
+.soil3d-viewbar button { padding: 2px 7px; border: 0; border-radius: 3px; background: none; color: var(--theme-text-secondary, #6b7280); font: inherit; font-size: 11px; cursor: pointer; }
+.soil3d-viewbar button:hover { color: var(--theme-text); background: color-mix(in srgb, var(--theme-text) 8%, transparent); }
+.soil3d-viewbar button.on { color: var(--theme-text); background: color-mix(in srgb, var(--theme-accent, #d97706) 18%, transparent); font-weight: 600; }
+.soil3d-viewbar .sep { width: 1px; height: 14px; margin: 0 3px; background: var(--theme-border-subtle, #d6d3d1); }
+.soil3d-badge { position: absolute; z-index: 4; pointer-events: none; padding: 2px 7px; font-size: 11px; font-variant-numeric: tabular-nums; color: #fff; background: rgb(17 24 39 / .85); border-radius: 3px; white-space: nowrap; }
+
+/* B2-iconen in de 3D-vensters: grijs met een oranje accent. */
+.soil3d-twisty svg[data-icon] { color: var(--theme-text-secondary, #6b7280); transition: transform .12s; }
+.soil3d-twisty svg.soil3d-closed { transform: rotate(-90deg); }
+.soil3d-tab-close svg[data-icon], .soil3d-tab-action svg[data-icon] { display: block; margin: auto; }
+/* Het sluitkruisje kleiner dan de + ernaast, zodat de twee niet elkaars draaiing lijken. */
+.soil3d-tab-close svg[data-icon] { width: 12px; height: 12px; }
+.soil3d-tab-more { width: 22px; margin-left: -2px; }
+.soil3d-viewbar .soil3d-viewbar-icon { display: grid; place-items: center; padding: 2px 4px; }

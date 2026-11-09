@@ -254,6 +254,11 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            commands::cloud::cloud_status,
+            commands::cloud::cloud_login,
+            commands::cloud::cloud_logout,
+            commands::cloud::cloud_method,
+            commands::cloud::cloud_file,
             studio_mcp_tauri::get_studio_mcp_status,
             studio_mcp_tauri::studio_mcp_ready,
             studio_mcp_tauri::complete_studio_mcp_request,

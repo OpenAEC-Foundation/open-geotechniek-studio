@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useRecentFiles } from "../../hooks/useRecentFiles";
 import { ReleaseNotesPanel } from "./ReleaseNotesPanel";
 import "./StartSidebar.css";
+import { OaIcon } from "../icons/oaIcon";
 
 interface StartSidebarProps {
   onNewFile: () => void;
@@ -30,10 +31,7 @@ export function StartSidebar({
           onClick={onClose}
           title="Inklappen"
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M10.78 4.22a.75.75 0 010 1.06L8.06 8l2.72 2.72a.75.75 0 11-1.06 1.06L6.94 8.53a.75.75 0 010-1.06l2.78-2.78a.75.75 0 011.06 0z" />
-            <path d="M6.78 4.22a.75.75 0 010 1.06L4.06 8l2.72 2.72a.75.75 0 11-1.06 1.06L2.94 8.53a.75.75 0 010-1.06l2.78-2.78a.75.75 0 011.06 0z" />
-          </svg>
+          <OaIcon id="panel.left" />
         </button>
       </div>
 
@@ -64,24 +62,16 @@ export function StartSidebar({
 
         <div className="start-actions">
           <button className="start-action-btn" onClick={onNewFile}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-              <path d="M14 2v6h6" />
-              <path d="M12 18v-6m-3 3h6" />
-            </svg>
+            <OaIcon id="file.new" />
             <span>{t("welcome.newProject", "Nieuw bestand")}</span>
           </button>
           <button className="start-action-btn" onClick={onOpenFile}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
-            </svg>
+            <OaIcon id="file.open" />
             <span>{t("open", "Openen")}</span>
           </button>
           {onLoadExample && (
             <button className="start-action-btn" onClick={onLoadExample}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4M12 2v13M9 6l3-3 3 3" />
-              </svg>
+              <OaIcon id="file.examples" />
               <span>Voorbeeldproject</span>
             </button>
           )}
@@ -100,19 +90,7 @@ export function StartSidebar({
                     onClick={() => onOpenRecentFile?.(file.path)}
                     title={file.path}
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                      <path d="M14 2v6h6" />
-                    </svg>
+                    <OaIcon id="file.type-other" />
                     <span>{name}</span>
                   </button>
                 );

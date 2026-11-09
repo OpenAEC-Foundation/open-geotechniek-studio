@@ -10,6 +10,7 @@ import type { Bore } from "../../types/bore";
 import { looksLikeBoringXml } from "../../types/bore";
 import { looksLikeGefBore } from "../../types/gefBoreParser";
 import type { Gwp } from "../../types/gwp";
+import { OaIcon } from "../icons/oaIcon";
 
 /**
  * Document-aware left panel.
@@ -416,10 +417,7 @@ function ProjectBrowser() {
             title={t("addCpt", "Sondering toevoegen")}
             aria-label={t("addCpt", "Sondering toevoegen")}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
+            <OaIcon id="file.import" />
           </button>
         }
       >
@@ -446,9 +444,9 @@ function ProjectBrowser() {
                     aria-label={isHidden ? t("show", "Tonen") : t("hide", "Verbergen")}
                     title={isHidden ? t("show", "Tonen") : t("hide", "Verbergen")}
                   >
-                    {isHidden ? <EyeOffIcon /> : <EyeIcon />}
+                    <OaIcon id={isHidden ? "object.show" : "object.hide"} />
                   </button>
-                  <button className="cpt-list-close" onClick={() => void closeCpt(c.id)} aria-label={t("close")}>×</button>
+                  <button className="cpt-list-close" onClick={() => void closeCpt(c.id)} aria-label={t("close")}><OaIcon id="document.close" /></button>
                 </li>
               );
             })}
@@ -530,7 +528,7 @@ function PanelSection({
     <div className="panel-section">
       <div className="panel-section-header-row">
         <button className="panel-section-header" onClick={() => setOpen(!open)}>
-          <span className={`panel-section-chevron${open ? " open" : ""}`}>▾</span>
+          <span className={`panel-section-chevron${open ? " open" : ""}`}><OaIcon id="tree.collapse" /></span>
           <span className="panel-section-title">{title}</span>
         </button>
         {action}
@@ -624,35 +622,14 @@ function MeasurementsTable({ cpt }: { cpt: Cpt | null }) {
 
 function FileIcon() {
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-    </svg>
+    <OaIcon id="file.type-other" />
   );
 }
 
 function FolderIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
-    </svg>
+    <OaIcon id="file.type-project" />
   );
 }
 
-function EyeIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
 
-function EyeOffIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
-      <line x1="1" y1="1" x2="23" y2="23" />
-    </svg>
-  );
-}
