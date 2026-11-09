@@ -2,10 +2,10 @@ name: Build Snap Package
 
 on:
   # workflow_run werkt alleen als dit workflowbestand op de DEFAULT branch staat.
-  # De workflow wordt getriggerd zodra "Release — Tauri cross-platform installers"
+  # De workflow wordt getriggerd zodra "Signed desktop release"
   # afrondt, ongeacht hoe DIE startte (tag-push óf een eigen workflow_dispatch op main).
   workflow_run:
-    workflows: ["Release — Tauri cross-platform installers"]
+    workflows: ["Signed desktop release"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -148,7 +148,7 @@ jobs:
 
       # Echte release (via workflow_run): snap als asset aan de release hangen.
       - name: Upload snap to GitHub release
-        if: github.event_name == 'workflow_run'
+        if: github.event_name == 'workflow_run' || (github.event_name == 'workflow_dispatch' && inputs.publish)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.get-version.outputs.version }}
