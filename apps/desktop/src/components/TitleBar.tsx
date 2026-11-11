@@ -138,13 +138,16 @@ function TitleBar({ onSettingsClick, onFeedbackClick }: TitleBarProps) {
       </span>
 
       <div className="titlebar-controls">
-        <button
-          className="send-feedback-btn"
-          onClick={onFeedbackClick}
-          tabIndex={-1}
-        >
-          {t("sendFeedback")}
-        </button>
+        {/* De SuperCloud heeft een eigen feedbackknop; in de werkplekbouw geen eigen knop. */}
+        {import.meta.env.MODE !== "platform" && (
+          <button
+            className="send-feedback-btn"
+            onClick={onFeedbackClick}
+            tabIndex={-1}
+          >
+            {t("sendFeedback")}
+          </button>
+        )}
         <button
           className="titlebar-button titlebar-minimize"
           onClick={handleMinimize}

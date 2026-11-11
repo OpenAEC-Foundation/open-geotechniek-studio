@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:platform": "tsc && VITE_PUBLIC_WEB=1 vite build --mode platform --base ./ --outDir dist-platform",
     "preview": "vite preview",
     "tauri": "tauri",
     "test": "vitest run",
