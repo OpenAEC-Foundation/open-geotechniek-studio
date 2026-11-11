@@ -334,54 +334,56 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           filled={input.concreteExtension ? undefined : <>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
           result={<>{Os.toFixed(3)} m</>}
         />
-        <table className="pile-formula-table pile-formula-table--wide">
-          <thead>
-            <tr>
-              <th>Laag</th>
-              <th>h [m]</th>
-              <th>γ<sub>k</sub></th>
-              <th>γ<sub>w</sub></th>
-              <th>σ<sub>top</sub></th>
-              <th>σ<sub>bot</sub></th>
-              <th>σ<sub>gem</sub></th>
-              <th>K<sub>0</sub></th>
-              <th>tan(δ)</th>
-              <th>K<sub>0</sub>tanδ</th>
-              <th>F<sub>s;nk</sub> [kN]</th>
-            </tr>
-          </thead>
-          <tbody>
-            {negKleef.layers.map((l, i) => {
-              const tanDelta = Math.tan(l.delta);
-              return (
-                <tr key={i}>
-                  <td>{l.layer.kind}</td>
-                  <td>{l.thickness.toFixed(2)}</td>
-                  <td>{l.layer.gammaK}</td>
-                  <td>{l.layer.gammaW}</td>
-                  <td>{l.sigmaRepTop.toFixed(1)}</td>
-                  <td>{l.sigmaRepBottom.toFixed(1)}</td>
-                  <td>{(l.sigmaGemRep / l.thickness).toFixed(1)}</td>
-                  <td>{l.k0.toFixed(3)}</td>
-                  <td>{tanDelta.toFixed(3)}</td>
-                  <td>
-                    {l.k0TanDelta.toFixed(3)}
-                    {l.k0TanDelta === input.ksMinFactor && (
-                      <em title={`Gecapt op ksMin=${input.ksMinFactor}`}> *</em>
-                    )}
-                  </td>
-                  <td><strong>{l.fsNkRep.toFixed(1)}</strong></td>
-                </tr>
-              );
-            })}
-            {negKleef.layers.length > 1 && (
-              <tr className="pile-formula-table-sum">
-                <td colSpan={10}>Σ F<sub>s;nk</sub></td>
-                <td><strong>{negKleef.fnkRep.toFixed(1)} kN</strong></td>
+        <div className="pile-formula-scroll">
+          <table className="pile-formula-table pile-formula-table--wide">
+            <thead>
+              <tr>
+                <th>Laag</th>
+                <th>h [m]</th>
+                <th>γ<sub>k</sub></th>
+                <th>γ<sub>w</sub></th>
+                <th>σ<sub>top</sub></th>
+                <th>σ<sub>bot</sub></th>
+                <th>σ<sub>gem</sub></th>
+                <th>K<sub>0</sub></th>
+                <th>tan(δ)</th>
+                <th>K<sub>0</sub>tanδ</th>
+                <th>F<sub>s;nk</sub> [kN]</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {negKleef.layers.map((l, i) => {
+                const tanDelta = Math.tan(l.delta);
+                return (
+                  <tr key={i}>
+                    <td>{l.layer.kind}</td>
+                    <td>{l.thickness.toFixed(2)}</td>
+                    <td>{l.layer.gammaK}</td>
+                    <td>{l.layer.gammaW}</td>
+                    <td>{l.sigmaRepTop.toFixed(1)}</td>
+                    <td>{l.sigmaRepBottom.toFixed(1)}</td>
+                    <td>{(l.sigmaGemRep / l.thickness).toFixed(1)}</td>
+                    <td>{l.k0.toFixed(3)}</td>
+                    <td>{tanDelta.toFixed(3)}</td>
+                    <td>
+                      {l.k0TanDelta.toFixed(3)}
+                      {l.k0TanDelta === input.ksMinFactor && (
+                        <em title={`Gecapt op ksMin=${input.ksMinFactor}`}> *</em>
+                      )}
+                    </td>
+                    <td><strong>{l.fsNkRep.toFixed(1)}</strong></td>
+                  </tr>
+                );
+              })}
+              {negKleef.layers.length > 1 && (
+                <tr className="pile-formula-table-sum">
+                  <td colSpan={10}>Σ F<sub>s;nk</sub></td>
+                  <td><strong>{negKleef.fnkRep.toFixed(1)} kN</strong></td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
         <p className="pile-result-footnote">
           F<sub>s;nk;i</sub> = σ<sub>gem;i</sub> · O<sub>s</sub> · K<sub>0</sub>tan(δ)<sub>i</sub> · h<sub>i</sub>
           {negKleef.layers.some((l) => l.k0TanDelta === input.ksMinFactor) && (

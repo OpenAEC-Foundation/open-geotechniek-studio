@@ -61,6 +61,15 @@ interface ChartGeometry {
   pileColCenter: number;
 }
 
+/** Factor waarmee SVG-tekst groeit bij een verkleind getekende grafiek:
+ *  op het scherm blijft de tekst minstens 90 % van zijn ontwerpmaat, met
+ *  een plafond van 2,2× zodat labels in een smalle tekening leesbaar
+ *  blijven zonder de grafiek te overwoekeren. */
+export function chartTextScale(renderScale: number): number {
+  if (!Number.isFinite(renderScale) || renderScale <= 0) return 1;
+  return Math.min(2.2, Math.max(1, 0.9 / renderScale));
+}
+
 function computeGeometry(chartZoomX: number): ChartGeometry {
   const vbW = VB_W_BASE * chartZoomX;
   const plotW = vbW - MARGIN.left - MARGIN.right;
@@ -645,6 +654,27 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
   }, [fullExtent.fullNapTop, fullExtent.fullNapBot, zoomDomain]);
   const { vbW, plotW, pileColCenter } = geom;
 
+  // Tekst in de SVG schaalt mee met de tekening. In een smalle kolom
+  // (kleiner scherm) wordt een label van 10 viewBox-eenheden dan 3 à 4 px.
+  // Meet de werkelijke schaal en vergroot de tekst zo dat hij op het
+  // scherm minstens ~90 % van zijn ontwerpmaat houdt (begrensd, zodat
+  // labels in een heel smalle tekening elkaar niet volledig overlappen).
+  const [textScale, setTextScale] = useState(1);
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || typeof ResizeObserver === "undefined") return;
+    const update = () => {
+      const { width, height } = svg.getBoundingClientRect();
+      if (!width || !height) return;
+      const scale = Math.min(width / vbW, height / VB_H); // preserveAspectRatio "meet"
+      setTextScale(chartTextScale(scale));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(svg);
+    return () => ro.disconnect();
+  }, [vbW]);
+
   const bounds = useMemo(
     () => buildBounds(cpt.points, fullExtent, zoomDomain, plotW),
     [cpt.points, fullExtent, zoomDomain, plotW],
@@ -1050,6 +1080,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
           width: `${(vbW / VB_W_BASE) * 100}%`,
           minWidth: "100%",
           height: "100%",
+          ["--pile-chart-text-k" as string]: textScale,
         }}
         role="img"
         aria-label="CPT-grafiek met paaloverlays"
