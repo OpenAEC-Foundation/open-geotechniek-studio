@@ -108,7 +108,8 @@
       "studio_select_calculation": "Wybór obliczenia",
       "studio_get_calculation": "Odczyt obliczenia",
       "studio_get_capacity_table": "Odczyt tabeli nośności",
-      "studio_export_report": "Eksport raportu"
+      "studio_export_report": "Eksport raportu",
+      "studio_export_ifcx": "Eksport IFCX"
     }
   }
 }

@@ -101,7 +101,13 @@
     "autoHint": "Experimentelle IFCX-Momentaufnahmen werden live aktualisiert. Der IFC4x3-Export ist deaktiviert.",
     "autoLive": "Live — automatisch erzeugt",
     "paneNoCpt": "Keine Sondierungen in diesem Projekt — zuerst eine hinzufügen.",
-    "paneGenerating": "Wird erzeugt..."
+    "paneGenerating": "Wird erzeugt...",
+    "ifc5Ready": "Live — IFC5 (IFCX)",
+    "ifc5Hint": "Sondierungen, Schichteneinteilung, Baugrundmodell und Pfähle; wird automatisch aktualisiert.",
+    "exportGroup": "Exportieren",
+    "export": "IFCX\nexportieren",
+    "exportHint": "Projekt als IFC5-Datei (.ifcx) für eine openBIM-Plattform speichern",
+    "exportNothing": "Öffnen Sie zuerst ein Projekt oder eine Sondierung mit RD-Koordinaten."
   },
   "report": {
     "sections": "Abschnitte",
@@ -174,7 +180,8 @@
     "defaultCriterion": "Standard; in einer Gründungsempfehlung einstellen",
     "cells": "Zellen",
     "empty": "Fügen Sie Sondierungen hinzu, um das Bodenmodell aufzubauen.",
-    "noWebgl": "3D-Ansicht ist auf diesem System nicht verfügbar (kein WebGL)."
+    "noWebgl": "3D-Ansicht ist auf diesem System nicht verfügbar (kein WebGL).",
+    "ifcx": "Modell\n(IFCX)"
   },
   "measure": "Messen",
   "exportImage": "Als Bild\nexportieren",

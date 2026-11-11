@@ -108,7 +108,8 @@
       "studio_select_calculation": "Vælger beregning",
       "studio_get_calculation": "Læser beregning",
       "studio_get_capacity_table": "Læser bæreevnetabel",
-      "studio_export_report": "Eksporterer rapport"
+      "studio_export_report": "Eksporterer rapport",
+      "studio_export_ifcx": "Eksporterer IFCX"
     }
   }
 }

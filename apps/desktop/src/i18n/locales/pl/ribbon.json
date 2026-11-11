@@ -101,7 +101,13 @@
     "autoHint": "Eksperymentalne migawki IFCX aktualizują się na żywo. Eksport IFC4x3 jest wyłączony.",
     "autoLive": "Na żywo — generowane automatycznie",
     "paneNoCpt": "Brak sondowań w tym projekcie — najpierw dodaj sondowanie.",
-    "paneGenerating": "Generowanie..."
+    "paneGenerating": "Generowanie...",
+    "ifc5Ready": "Live — IFC5 (IFCX)",
+    "ifc5Hint": "Sondowania, podział na warstwy, model podłoża i pale; aktualizowane automatycznie.",
+    "exportGroup": "Eksport",
+    "export": "Eksportuj\nIFCX",
+    "exportHint": "Zapisz projekt jako plik IFC5 (.ifcx) dla platformy openBIM",
+    "exportNothing": "Najpierw otwórz projekt lub sondowanie ze współrzędnymi RD."
   },
   "report": {
     "sections": "Sekcje",
@@ -174,7 +180,8 @@
     "defaultCriterion": "domyślnie; ustaw w opinii fundamentowej",
     "cells": "komórek",
     "empty": "Dodaj sondowania, aby zbudować model gruntu.",
-    "noWebgl": "Widok 3D nie jest dostępny w tym systemie (brak WebGL)."
+    "noWebgl": "Widok 3D nie jest dostępny w tym systemie (brak WebGL).",
+    "ifcx": "Model\n(IFCX)"
   },
   "measure": "Pomiar",
   "exportImage": "Eksportuj\njako obraz",

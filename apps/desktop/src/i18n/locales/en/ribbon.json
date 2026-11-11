@@ -101,7 +101,13 @@
     "autoHint": "Experimental IFCX snapshots update live. IFC4x3 export is disabled.",
     "autoLive": "Live — auto-generated",
     "paneNoCpt": "No CPTs in this project — add a CPT first.",
-    "paneGenerating": "Generating..."
+    "paneGenerating": "Generating...",
+    "ifc5Ready": "Live — IFC5 (IFCX)",
+    "ifc5Hint": "CPTs, layer interpretation, ground model and piles; updated automatically.",
+    "exportGroup": "Export",
+    "export": "Export\nIFCX",
+    "exportHint": "Save the project as an IFC5 file (.ifcx) for an openBIM platform",
+    "exportNothing": "First open a project or CPT with RD coordinates."
   },
   "report": {
     "sections": "Sections",
@@ -174,7 +180,8 @@
     "defaultCriterion": "default; set it in a foundation advice",
     "cells": "cells",
     "empty": "Add CPTs to build the soil model.",
-    "noWebgl": "3D view is not available on this system (no WebGL)."
+    "noWebgl": "3D view is not available on this system (no WebGL).",
+    "ifcx": "Model\n(IFCX)"
   },
   "measure": "Measure",
   "exportImage": "Export\nas image",

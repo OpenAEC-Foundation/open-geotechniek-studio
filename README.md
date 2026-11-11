@@ -75,6 +75,15 @@ The screenshots show the Dutch interface.
 - **Look inside.** Vertical exaggeration, opacity, a section along either axis, cutting away from the top, and soil types on and off.
 - **Views and export.** 3D, top, front and side views, and the image as PNG.
 
+## IFC5 (IFCX) export
+
+- **The whole site investigation in one open file.** The IFC tab or the 3D model exports the project as IFC5 (IFCX alpha), the JSON format of the next IFC generation, following the geotechnical examples of buildingSMART.
+- **CPTs** as `IfcBorehole` with their metadata, the full qc, fs, Rf and u2 series and the layer interpretation, each layer in its soil colour.
+- **3D ground model** as `IfcGeomodel` with one `IfcGeotechnicalStratum` per soil type, linked to the CPT layers it is based on, plus the top of the bearing layer and the piles from the pile calculations.
+- **Georeferenced** in RD (EPSG:28992), NAP (EPSG:5709) and WGS84, so an openBIM platform places it on the map.
+
+![The exported IFCX in the buildingSMART IFC5 viewer: CPTs, soil strata and model tree](docs/images/readme/ifcx-viewer.png)
+
 ## Pile calculations
 
 The calculations are **concept**: they show every step but do not replace a checked design.

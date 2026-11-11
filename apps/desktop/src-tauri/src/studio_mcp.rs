@@ -45,6 +45,7 @@ fn allowed_tool(tool: &str) -> bool {
             | "studio_get_cpt"
             | "studio_select_document"
             | "studio_show_view"
+            | "studio_export_ifcx"
             | "studio_get_capacity_table"
             | "studio_export_report"
     )
@@ -613,6 +614,12 @@ fn tool_definitions() -> Value {
             "Write the PDF report of a calculation to an absolute .pdf path",
             json!({"id":{"type":"string"},"path":{"type":"string"}}),
             vec!["id", "path"],
+        ),
+        (
+            "studio_export_ifcx",
+            "Write the active project as an IFC5 (IFCX alpha) file to an absolute .ifcx path: CPTs as IfcBorehole with metadata, measurement series and layer interpretation, the 3D ground model as IfcGeotechnicalStratum meshes, the bearing layer surface and piles from the pile calculations, georeferenced in RD (EPSG:28992) and NAP",
+            json!({"path":{"type":"string"}}),
+            vec!["path"],
         ),
         (
             "studio_save_project",

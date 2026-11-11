@@ -108,7 +108,8 @@
       "studio_select_calculation": "Seleccionando cálculo",
       "studio_get_calculation": "Leyendo cálculo",
       "studio_get_capacity_table": "Leyendo tabla de capacidad portante",
-      "studio_export_report": "Exportando informe"
+      "studio_export_report": "Exportando informe",
+      "studio_export_ifcx": "Exportando IFCX"
     }
   }
 }

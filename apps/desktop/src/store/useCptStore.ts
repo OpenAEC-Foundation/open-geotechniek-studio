@@ -2,7 +2,6 @@ import type { Diagnostic } from "../validation/report";
 import { readSourceFile } from "../utils/sourceEncoding";
 import { withMarkers } from "../components/chart/markers";
 import type { ChartMarker } from "../components/chart/chart-renderer";
-import { generateIfcContent } from "../utils/browserIfc";
 import { looksLikeGefBore, parseGefBore } from "../types/gefBoreParser";
 import { parseProjectFile, isProjectFile, readJson } from "../types/projectFile";
 export { serializeActiveProject } from "./projectSerialization";
@@ -96,7 +95,8 @@ interface HoveredPoint {
 const today = () => new Date().toISOString().slice(0, 10);
 
 const DEFAULT_PROJECT_META: ProjectMeta = {
-  title: "Nieuw project",
+  // Getter: de standaardtitel volgt de actieve taal op het moment van kopiëren.
+  get title() { return i18next.t("common:newProjectTitle", { defaultValue: "Nieuw project" }); },
   client: "",
   location: "",
   project_number: "",
@@ -683,12 +683,13 @@ export function scheduleIfcGenerate(doc: AppDocument): void {
   void (async () => {
     for (const format of ["ifcx"] as const) {
       try {
-        const result: GeneratedIfcResult = (() => {
-              const cpts = doc.kind === "cpt" ? [doc.cpt] : Array.from(doc.cpts.values());
-              const content = generateIfcContent(cpts, meta, format);
-              return { content, format, filename: `${doc.title}.ifcx`,
-                generated_at: new Date().toISOString(), byte_count: new TextEncoder().encode(content).length, full_path: "" };
-            })();
+        // IFC5 (IFCX alpha): sonderingen, laagindeling, grondmodel en palen.
+        // Dynamisch geladen: de export trekt het rekenkader mee.
+        const { documentIfcxText } = await import("../ifcx/documentIfcx");
+        const cpts = doc.kind === "cpt" ? [doc.cpt] : Array.from(doc.cpts.values());
+        const content = documentIfcxText({ id: docId, meta, cpts });
+        const result: GeneratedIfcResult = { content, format, filename: `${doc.title}.ifcx`,
+          generated_at: new Date().toISOString(), byte_count: new TextEncoder().encode(content).length, full_path: "" };
         // Only commit if the doc is still around.
         const state = useCptStore.getState();
         if (!state.documents.some((d) => d.id === docId)) return;
@@ -822,7 +823,10 @@ export async function loadGwpFromContent(
   const gwp = parseGmwXml(xml);
   if (!gwp) {
     throw new Error(
-      `${filename}: kon geen GMW-dispatch parsen (geen <GMW_PO>/<GMW_O> root of geen broId gevonden)`,
+      i18next.t("app:store.gmwParseFailed", {
+        defaultValue: "{{filename}}: kon geen GMW-dispatch parsen (geen <GMW_PO>/<GMW_O> root of geen broId gevonden)",
+        filename,
+      }),
     );
   }
   useCptStore.setState((s) => {
@@ -880,7 +884,7 @@ export async function addCptToActiveProject(
   const cpt = await cptPlatform.parse(content, filename, diagnostics);
   const state = useCptStore.getState();
   const active = state.documents.find((d) => d.id === targetDocId);
-  if (targetDocId && !active) throw new Error("Het doelproject is gesloten tijdens het toevoegen.");
+  if (targetDocId && !active) throw new Error(i18next.t("app:store.targetProjectClosed", { defaultValue: "Het doelproject is gesloten tijdens het toevoegen." }));
   if (!active || active.kind !== "project") {
     // No active project — create a standalone tab instead.
     let createdDoc: CptDocument | null = null;
@@ -946,7 +950,7 @@ export async function addBoreToActiveProject(
 ): Promise<Bore> {
   if (!looksLikeBoringXml(xml) && !looksLikeGefBore(xml)) {
     throw new Error(
-      `${filename}: geen ondersteunde BHR-XML- of GEF-boring`,
+      i18next.t("app:store.unsupportedBore", { defaultValue: "{{filename}}: geen ondersteunde BHR-XML- of GEF-boring", filename }),
     );
   }
   const bore = looksLikeGefBore(xml) ? parseGefBore(xml, filename) : parseBhrgtXml(xml, filename);
@@ -1261,7 +1265,9 @@ export async function addBroToActiveProject(broId: string): Promise<Cpt> {
   const state = useCptStore.getState();
   const active = state.documents.find((d) => d.id === state.activeDocId);
   if (!active || active.kind !== "project") {
-    throw new Error("Geen project actief — kan BRO-sondering niet toevoegen.");
+    throw new Error(
+      i18next.t("app:store.noProjectForBro", { defaultValue: "Geen project actief — kan BRO-sondering niet toevoegen." }),
+    );
   }
   // Eén platform-call — zie utils/platform.ts (Tauri: Rust-proxy; web: direct fetch).
   const { bro } = await import("../utils/platform");

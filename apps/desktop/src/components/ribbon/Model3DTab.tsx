@@ -2,7 +2,8 @@ import { useTranslation } from "react-i18next";
 import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
 import RibbonButtonStack from "./RibbonButtonStack";
-import { viewerFitIcon, viewerLoadIcon, viewerSectionIcon, viewerMeasureIcon, ifcStatsIcon, ifcTreeIcon, viewerWireframeIcon, imageIcon } from "./icons";
+import { viewerFitIcon, viewerLoadIcon, viewerSectionIcon, viewerMeasureIcon, ifcStatsIcon, ifcTreeIcon, viewerWireframeIcon, imageIcon, ifcExportIcon } from "./icons";
+import { exportActiveIfcx } from "../../ifcx/exportActive";
 import { useSoil3DStore, type CutAxis } from "../soil3d/useSoil3DStore";
 
 const labelIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5a2 2 0 011.41.59l7 7a2 2 0 010 2.82l-7 7a2 2 0 01-2.82 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>`;
@@ -71,6 +72,7 @@ export default function Model3DTab() {
         </RibbonGroup>
         <RibbonGroup label={t("model3d.exportGroup", "Exporteren")}>
           <RibbonButton icon={imageIcon} label={t("model3d.png", "Afbeelding\n(PNG)")} onClick={s.requestExport} />
+          <RibbonButton icon={ifcExportIcon} label={t("model3d.ifcx", "Model\n(IFCX)")} title={t("ifc.exportHint", "Sla het project op als IFC5-bestand (.ifcx) voor een openBIM-platform")} onClick={() => void exportActiveIfcx()} />
         </RibbonGroup>
       </div>
     </div>
