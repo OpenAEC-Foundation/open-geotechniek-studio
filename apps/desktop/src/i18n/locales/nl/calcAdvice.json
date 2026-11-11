@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Document",
+    "reference": "Kenmerk",
+    "version": "Versie",
+    "status": "Status",
+    "advisor": "Adviseur",
+    "checker": "Controle",
+    "projectHint": "Projectnaam, -nummer, opdrachtgever en locatie komen uit de projectgegevens.",
+    "basis": "Uitgangspunten",
+    "consequenceClass": "Gevolgklasse",
+    "designLife": "Ontwerplevensduur",
+    "years": "jaar",
+    "designLifeAria": "Ontwerplevensduur [jaar]",
+    "floorLevel": "Peil (bovenkant vloer)",
+    "floorLevelAria": "Peil [m NAP]",
+    "groundwater": "Grondwater",
+    "groundwaterAria": "Grondwater ontwerp [m NAP]",
+    "structure": "Bouwwerk en belastingen",
+    "structurePlaceholder": "Bijvoorbeeld: bedrijfshal van staal, 40 × 60 m, kolombelasting tot 600 kN",
+    "bearingLayer": "Draagkrachtige laag (indicatief)",
+    "qcMin": "qc minimaal",
+    "qcMinAria": "qc draagkrachtige laag [MPa]",
+    "overAtLeast": "Over minstens",
+    "minThicknessAria": "Minimale dikte [m]",
+    "include": "Opnemen",
+    "cptsInAdvice": "Sonderingen in het advies",
+    "cptItem": "Sondering {{id}}",
+    "noCpts": "Nog geen sonderingen in het project.",
+    "calcsInAdvice": "Berekeningen in het advies",
+    "noCalcs": "Nog geen paalberekeningen in het project.",
+    "appendixCpts": "Bijlage sonderingen",
+    "appendixCalcs": "Bijlage rekenbladen",
+    "ownText": "Eigen tekst",
+    "introNote": "Aanvulling inleiding",
+    "remarks": "Opmerkingen bij de conclusie"
+  },
+  "status": {
+    "concept": "Concept",
+    "definitief": "Definitief",
+    "conceptLower": "concept",
+    "definitiefLower": "definitief"
+  },
+  "visual": {
+    "aria": "Situatietekening met sonderingen",
+    "bearingTop": "dkl NAP {{value}}",
+    "missing": "Zonder coördinaten (niet getekend): {{ids}}.",
+    "legend": "Driehoek: sondering; dkl = bovenkant draagkrachtige laag (indicatief). Op schaal, coördinaten in RD."
+  },
+  "result": {
+    "title": "Funderingsadvies",
+    "header": "{{reference}} · versie {{version}} · {{status}}",
+    "noReference": "zonder kenmerk",
+    "toc": {
+      "title": "Inhoud van het rapport",
+      "intro": "Inleiding: aanleiding, doel en projectgegevens",
+      "basis": "Uitgangspunten",
+      "investigation": "Grondonderzoek: {{count}} sonderingen met situatietekening",
+      "soil": "Bodemopbouw en draagkrachtige laag",
+      "vertical": "Palen op druk: {{names}}",
+      "lateral": "Horizontaal belaste palen: {{names}}",
+      "execution": "Negatieve kleef en uitvoering",
+      "conclusions": "Conclusies en aanbevelingen",
+      "appendixCpts": "Bijlage A: sonderingen",
+      "appendixCalcs": "Bijlage B: rekenbladen"
+    },
+    "bearing": {
+      "title": "Draagkrachtige laag",
+      "text": "Als draagkrachtige laag is indicatief aangehouden: het eerste traject waarin de conusweerstand over minstens {{thickness}} m boven {{qc}} MPa blijft. Dit is een hulpmiddel voor het overzicht; het puntniveau volgt uit de draagvermogenberekening.",
+      "tableAria": "Draagkrachtige laag per sondering",
+      "cpt": "Sondering",
+      "ground": "Maaiveld [m NAP]",
+      "end": "Einde [m NAP]",
+      "top": "Dkl [m NAP]",
+      "notFound": "niet gevonden",
+      "conclusion": "Bovenkant draagkrachtige laag tussen NAP {{highest}} m en NAP {{lowest}} m; spreiding {{spread}} m."
+    },
+    "calcs": {
+      "title": "Berekeningen in het advies",
+      "none": "Nog geen paalberekeningen opgenomen.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, punt NAP {{toe}} m",
+      "notComputed": "(niet berekend)",
+      "lateral": "{{name}}: {{count}} palen, {{passing}} voldoen"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} sondering",
+    "cptMany": "{{count}} sonderingen",
+    "calcOne": "{{count}} berekening",
+    "calcMany": "{{count}} berekeningen"
+  }
+}

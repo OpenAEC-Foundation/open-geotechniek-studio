@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Documento",
+    "reference": "Referencia",
+    "version": "Versión",
+    "status": "Estado",
+    "advisor": "Asesor",
+    "checker": "Revisado por",
+    "projectHint": "El nombre, número, cliente y ubicación del proyecto se toman de los datos del proyecto.",
+    "basis": "Bases de cálculo",
+    "consequenceClass": "Clase de consecuencias",
+    "designLife": "Vida útil de proyecto",
+    "years": "años",
+    "designLifeAria": "Vida útil de proyecto [años]",
+    "floorLevel": "Cota de referencia (cara superior del forjado)",
+    "floorLevelAria": "Cota de referencia [m NAP]",
+    "groundwater": "Nivel freático",
+    "groundwaterAria": "Nivel freático de cálculo [m NAP]",
+    "structure": "Estructura y cargas",
+    "structurePlaceholder": "Por ejemplo: nave industrial de acero, 40 × 60 m, cargas en pilares de hasta 600 kN",
+    "bearingLayer": "Estrato portante (indicativo)",
+    "qcMin": "qc mínimo",
+    "qcMinAria": "qc estrato portante [MPa]",
+    "overAtLeast": "En al menos",
+    "minThicknessAria": "Espesor mínimo [m]",
+    "include": "Incluir",
+    "cptsInAdvice": "CPT en la recomendación",
+    "cptItem": "CPT {{id}}",
+    "noCpts": "Aún no hay CPT en el proyecto.",
+    "calcsInAdvice": "Cálculos en la recomendación",
+    "noCalcs": "Aún no hay cálculos de pilotes en el proyecto.",
+    "appendixCpts": "Anejo de CPT",
+    "appendixCalcs": "Anejo de hojas de cálculo",
+    "ownText": "Texto propio",
+    "introNote": "Introducción adicional",
+    "remarks": "Observaciones a la conclusión"
+  },
+  "status": {
+    "concept": "Borrador",
+    "definitief": "Definitivo",
+    "conceptLower": "borrador",
+    "definitiefLower": "definitivo"
+  },
+  "visual": {
+    "aria": "Plano de situación con CPT",
+    "bearingTop": "ep NAP {{value}}",
+    "missing": "Sin coordenadas (no dibujados): {{ids}}.",
+    "legend": "Triángulo: CPT; ep = techo del estrato portante (indicativo). A escala, coordenadas en RD."
+  },
+  "result": {
+    "title": "Recomendación de cimentación",
+    "header": "{{reference}} · versión {{version}} · {{status}}",
+    "noReference": "sin referencia",
+    "toc": {
+      "title": "Contenido del informe",
+      "intro": "Introducción: antecedentes, objeto y datos del proyecto",
+      "basis": "Bases de cálculo",
+      "investigation": "Reconocimiento del terreno: {{count}} CPT con plano de situación",
+      "soil": "Perfil del terreno y estrato portante",
+      "vertical": "Pilotes a compresión: {{names}}",
+      "lateral": "Pilotes con carga horizontal: {{names}}",
+      "execution": "Rozamiento negativo y ejecución",
+      "conclusions": "Conclusiones y recomendaciones",
+      "appendixCpts": "Anejo A: CPT",
+      "appendixCalcs": "Anejo B: hojas de cálculo"
+    },
+    "bearing": {
+      "title": "Estrato portante",
+      "text": "Como estrato portante se ha adoptado, de forma indicativa, el primer tramo en el que la resistencia por punta del cono se mantiene por encima de {{qc}} MPa en al menos {{thickness}} m. Es una ayuda para la visión de conjunto; la cota de la punta del pilote se obtiene del cálculo de capacidad portante.",
+      "tableAria": "Estrato portante por CPT",
+      "cpt": "CPT",
+      "ground": "Cota del terreno [m NAP]",
+      "end": "Final [m NAP]",
+      "top": "Ep [m NAP]",
+      "notFound": "no encontrado",
+      "conclusion": "Techo del estrato portante entre NAP {{highest}} m y NAP {{lowest}} m; dispersión {{spread}} m."
+    },
+    "calcs": {
+      "title": "Cálculos en la recomendación",
+      "none": "Aún no se han incluido cálculos de pilotes.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, punta NAP {{toe}} m",
+      "notComputed": "(no calculado)",
+      "lateral": "{{name}}: {{passing}} de {{count}} pilotes cumplen"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} CPT",
+    "cptMany": "{{count}} CPT",
+    "calcOne": "{{count}} cálculo",
+    "calcMany": "{{count}} cálculos"
+  }
+}

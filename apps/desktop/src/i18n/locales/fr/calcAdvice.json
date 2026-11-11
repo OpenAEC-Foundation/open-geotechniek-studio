@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Document",
+    "reference": "Référence",
+    "version": "Version",
+    "status": "Statut",
+    "advisor": "Conseiller",
+    "checker": "Vérifié par",
+    "projectHint": "Le nom, le numéro, le maître d'ouvrage et la localisation du projet proviennent des données du projet.",
+    "basis": "Hypothèses de calcul",
+    "consequenceClass": "Classe de conséquences",
+    "designLife": "Durée d'utilisation de projet",
+    "years": "ans",
+    "designLifeAria": "Durée d'utilisation de projet [ans]",
+    "floorLevel": "Niveau de référence (dessus du plancher)",
+    "floorLevelAria": "Niveau de référence [m NAP]",
+    "groundwater": "Nappe phréatique",
+    "groundwaterAria": "Niveau de nappe de calcul [m NAP]",
+    "structure": "Ouvrage et charges",
+    "structurePlaceholder": "Par exemple : hall industriel en acier, 40 × 60 m, charges de poteaux jusqu'à 600 kN",
+    "bearingLayer": "Couche porteuse (indicatif)",
+    "qcMin": "qc minimal",
+    "qcMinAria": "qc couche porteuse [MPa]",
+    "overAtLeast": "Sur au moins",
+    "minThicknessAria": "Épaisseur minimale [m]",
+    "include": "Inclure",
+    "cptsInAdvice": "Essais CPT dans la recommandation",
+    "cptItem": "CPT {{id}}",
+    "noCpts": "Aucun essai CPT dans le projet pour l'instant.",
+    "calcsInAdvice": "Calculs dans la recommandation",
+    "noCalcs": "Aucun calcul de pieu dans le projet pour l'instant.",
+    "appendixCpts": "Annexe essais CPT",
+    "appendixCalcs": "Annexe feuilles de calcul",
+    "ownText": "Texte personnalisé",
+    "introNote": "Complément à l'introduction",
+    "remarks": "Remarques sur la conclusion"
+  },
+  "status": {
+    "concept": "Provisoire",
+    "definitief": "Définitif",
+    "conceptLower": "provisoire",
+    "definitiefLower": "définitif"
+  },
+  "visual": {
+    "aria": "Plan de situation avec essais CPT",
+    "bearingTop": "cp NAP {{value}}",
+    "missing": "Sans coordonnées (non dessinés) : {{ids}}.",
+    "legend": "Triangle : CPT ; cp = toit de la couche porteuse (indicatif). À l'échelle, coordonnées en RD."
+  },
+  "result": {
+    "title": "Recommandation de fondation",
+    "header": "{{reference}} · version {{version}} · {{status}}",
+    "noReference": "sans référence",
+    "toc": {
+      "title": "Sommaire du rapport",
+      "intro": "Introduction : contexte, objectif et données du projet",
+      "basis": "Hypothèses de calcul",
+      "investigation": "Reconnaissance de sol : {{count}} essais CPT avec plan de situation",
+      "soil": "Profil de sol et couche porteuse",
+      "vertical": "Pieux en compression : {{names}}",
+      "lateral": "Pieux sous charge latérale : {{names}}",
+      "execution": "Frottement négatif et exécution",
+      "conclusions": "Conclusions et recommandations",
+      "appendixCpts": "Annexe A : essais CPT",
+      "appendixCalcs": "Annexe B : feuilles de calcul"
+    },
+    "bearing": {
+      "title": "Couche porteuse",
+      "text": "La couche porteuse a été prise, à titre indicatif, comme le premier intervalle dans lequel la résistance de cône reste supérieure à {{qc}} MPa sur au moins {{thickness}} m. Il s'agit d'une aide pour la vue d'ensemble ; le niveau de pointe du pieu découle du calcul de capacité portante.",
+      "tableAria": "Couche porteuse par essai CPT",
+      "cpt": "CPT",
+      "ground": "Terrain naturel [m NAP]",
+      "end": "Fin [m NAP]",
+      "top": "Cp [m NAP]",
+      "notFound": "non trouvée",
+      "conclusion": "Toit de la couche porteuse entre NAP {{highest}} m et NAP {{lowest}} m ; dispersion {{spread}} m."
+    },
+    "calcs": {
+      "title": "Calculs dans la recommandation",
+      "none": "Aucun calcul de pieu inclus pour l'instant.",
+      "vertical": "{{name}} : {{pileType}}, {{shape}}{{size}} mm, pointe NAP {{toe}} m",
+      "notComputed": "(non calculé)",
+      "lateral": "{{name}} : {{passing}} pieu(x) vérifié(s) sur {{count}}"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} essai CPT",
+    "cptMany": "{{count}} essais CPT",
+    "calcOne": "{{count}} calcul",
+    "calcMany": "{{count}} calculs"
+  }
+}

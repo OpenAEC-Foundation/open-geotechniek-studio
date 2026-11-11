@@ -1,6 +1,7 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/catalog.ts
 import type { PileInput, PileTypeSpec, SoilKind, SoilLayer } from "./types";
-import { applyStandard } from "./standards";
+import { applyStandard, HISTORICAL_TEXT } from "./standards";
+import { ct } from "../../i18n";
 
 const SOURCE_2017 = "NEN 9997-1:2016+C2:2017, tabel 7.c (zand/zand-grind)";
 const normativeType = (spec: PileTypeSpec): PileTypeSpec => ({
@@ -51,6 +52,47 @@ export function getPileType(id: string): PileTypeSpec | undefined {
   return PILE_TYPE_CATALOG.find((p) => p.id === id);
 }
 
+/* ------------------------------------------------------------------ */
+/* Vertaling van catalogusteksten.                                     */
+/* De catalogus houdt de Nederlandse brontekst (rapport, opslag); de   */
+/* weergave vertaalt bij het tonen, zodat een taalwissel direct werkt. */
+/* ------------------------------------------------------------------ */
+
+let catalogKeys: Map<string, string> | undefined;
+function catalogTextKeys(): Map<string, string> {
+  if (catalogKeys) return catalogKeys;
+  const keys = new Map<string, string>([[SOURCE_2017, "sources.table2017"]]);
+  for (const t of PILE_TYPE_CATALOG) {
+    keys.set(t.name, `pileTypes.${t.id}.name`);
+    // Bij historische normversies valt de editie-aanduiding uit de naam weg (zie applyStandard).
+    const short = t.name.replace(" (tabel 2017)", "").replace(" (bestaand projectmodel)", "");
+    if (short !== t.name) keys.set(short, `pileTypes.${t.id}.shortName`);
+    if (t.conditions) keys.set(t.conditions, `pileTypes.${t.id}.conditions`);
+    if (t.source && !keys.has(t.source)) keys.set(t.source, `pileTypes.${t.id}.source`);
+    if (t.edition && !/^\d{4}$/.test(t.edition)) keys.set(t.edition, `pileTypes.${t.id}.edition`);
+  }
+  for (const h of Object.values(HISTORICAL_TEXT)) keys.set(h.nl, h.key);
+  return (catalogKeys = keys);
+}
+
+/**
+ * Catalogustekst (naam, bron, editie, voorwaarden) in de actieve taal.
+ * Onbekende tekst — b.v. een door de gebruiker ingevulde bron van
+ * projectfactoren — komt ongewijzigd terug.
+ */
+export function catalogText(nl: string): string;
+export function catalogText(nl: string | undefined): string | undefined;
+export function catalogText(nl: string | undefined): string | undefined {
+  if (nl === undefined) return undefined;
+  const key = catalogTextKeys().get(nl);
+  return key ? ct("calcPileCore", key, nl) : nl;
+}
+
+/** Naam van een paaltype in de actieve taal. */
+export function pileTypeName(type: Pick<PileTypeSpec, "name">): string {
+  return catalogText(type.name);
+}
+
 /** Projectfactoren zijn onderdeel van de opgeslagen invoer, nooit globale catalogusmutaties. */
 export function resolvePileType(input: PileInput): PileTypeSpec | undefined {
   const catalogType = getPileType(input.pileTypeId);
@@ -73,6 +115,11 @@ export const SOIL_DEFAULTS: Record<SoilKind, { gammaK: number; gammaW: number; p
   "clay":     { gammaK: 18, gammaW: 10, phi: 22.5, label: "Klei nat" },
   "peat":     { gammaK: 13, gammaW: 10, phi: 15.0, label: "Veen nat" },
 };
+
+/** Naam van een grondsoort in de actieve taal. */
+export function soilLabel(kind: SoilKind): string {
+  return ct("calcPileCore", `soil.${kind}`, SOIL_DEFAULTS[kind].label);
+}
 
 /** qs;max per grondsoort in MPa — Tabel 7.d caps. */
 export const QS_MAX_PER_SOIL: Record<SoilKind, number> = {

@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Cálculos",
+    "tabs": {
+      "label": "Vista",
+      "sheet": "Entrada + listado",
+      "modelTitle": "Ocultar el listado para que el dibujo ocupe todo el ancho",
+      "model": "Entrada + {{visual}}",
+      "modelCpt": "Entrada + CPT",
+      "print": "Vista previa de impresión",
+      "settings": "Configuración"
+    },
+    "defaultVisual": "CPT",
+    "draft": "Borrador",
+    "input": "Entrada",
+    "settings": {
+      "title": "Configuración · {{name}}",
+      "intro": "Parámetros y series predeterminadas de este cálculo. Los cambios se recalculan de inmediato."
+    }
+  },
+  "empty": {
+    "title": "Un nuevo cálculo de pilotes",
+    "choose": "Elija capacidad portante del pilote o pilote con carga horizontal.",
+    "layout": "La entrada se sitúa junto al listado de cálculo desarrollado.",
+    "new": "Nuevo cálculo",
+    "noProject": "Primero cree o abra un proyecto desde Archivo."
+  },
+  "sheet": {
+    "eyebrow": "Geotecnia / {{module}}",
+    "notice": "Cálculo indicativo. Compruebe los parámetros del terreno antes de aplicarlo en un proyecto.",
+    "keyResults": "Resultados principales",
+    "output": "Listado",
+    "governingPass": "u.c. determinante {{uc}} — cumple",
+    "governingFail": "u.c. determinante {{uc}} — no cumple",
+    "noDesignCheck": "Sin comprobación frente a una carga de cálculo"
+  },
+  "export": {
+    "failed": "Error en la exportación: {{error}}",
+    "busy": "Procesando…",
+    "pdf": "Exportar PDF"
+  },
+  "print": {
+    "failed": "No se pudo generar el informe: {{error}}",
+    "loading": "Generando informe…"
+  },
+  "dialog": {
+    "title": "Nuevo cálculo",
+    "name": "Nombre",
+    "namePlaceholder": "Por ejemplo: Asiento del relleno",
+    "alphaTitle": "Alfa — aún en desarrollo, no apto para producción",
+    "alpha": "BORRADOR — en desarrollo",
+    "cancel": "Cancelar",
+    "add": "Añadir"
+  },
+  "categories": {
+    "pile": "Pilotes",
+    "spread": "Cimentaciones",
+    "wall": "Muros",
+    "anchor": "Anclajes",
+    "report": "Informes",
+    "other": "Otros"
+  },
+  "tree": {
+    "noProject": "Abra un proyecto para añadir cálculos.",
+    "add": "+ Nuevo cálculo",
+    "emptyHint": "Aún no hay cálculos. Haga clic en «+» para añadir uno.",
+    "duplicate": "Duplicar",
+    "confirmDelete": "¿Eliminar «{{name}}»?",
+    "delete": "Eliminar",
+    "parts": "Partes de {{name}}",
+    "sheet": "Hoja de cálculo",
+    "settings": "Configuración"
+  },
+  "comingSoon": {
+    "hint": "Este módulo aún está en construcción. Siga la hoja de ruta en <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Cálculo",
+    "new": "Nuevo",
+    "newTitle": "Nuevo cálculo geotécnico",
+    "groupMethod": "Método",
+    "explanation": "Explicación",
+    "contextTitle": "Cálculos geotécnicos",
+    "contextModules": "Asiento · Zapata superficial",
+    "draftCalculation": "Cálculo en borrador"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Capacidad portante del pilote",
+      "subtitle": "Capacidad portante del pilote — NEN 6743 / NEN 9997",
+      "norm": "Versión de la norma según la entrada del cálculo",
+      "tableLabel": "Tabla de capacidad portante"
+    },
+    "laterally-loaded-pile": {
+      "name": "Pilote con carga horizontal",
+      "subtitle": "Muelles del terreno, fuerza en cabeza, momento en cabeza y comprobación de sección N–M",
+      "norm": "Módulo de balasto inicial CUR166 · corrección por capas de Georgiadis · ley de muelles del proyecto",
+      "visualLabel": "Modelo de pilote y muelles",
+      "tableLabel": "Tabla de pilotes"
+    },
+    "foundation-advice": {
+      "name": "Recomendación de cimentación",
+      "subtitle": "Informe con reconocimiento del terreno, plano de situación, recomendación de pilotes y anejos",
+      "visualLabel": "Plano de situación"
+    }
+  }
+}

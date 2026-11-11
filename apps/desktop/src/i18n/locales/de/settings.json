@@ -29,5 +29,18 @@
     "openaecLink": "OpenAEC Foundation",
     "builtOn": "visuelle Identität und Kernbibliotheken",
     "sourceLink": "Quellcode"
+  },
+  "extensions": {
+    "title": "Erweiterungen",
+    "intro": "Optionale Module — aktivieren Sie, was Sie nutzen. Änderungen wirken sofort (kein Neustart nötig).",
+    "comingSoon": "in Kürze",
+    "tekening": {
+      "title": "Lageplan",
+      "description": "Fügt den Tab „Lageplan“ hinzu — CAD-Blatt (A2/A3) mit Sondierungen auf der Karte, Rahmen, Maßstabsleiste, Fangfunktion, Überlagerungen und PDF-Export."
+    },
+    "offertes": {
+      "title": "Angebote anfordern",
+      "description": "Fügt die Schaltfläche „Angebote anfordern“ zum Lageplan-Menüband hinzu (erfordert die Lageplan-Erweiterung). Öffnet einen Dialog mit den nächstgelegenen Sondierfirmen und einer vorausgefüllten Angebotsanfrage per E-Mail."
+    }
   }
 }

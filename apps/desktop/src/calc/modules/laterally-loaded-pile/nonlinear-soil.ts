@@ -1,7 +1,13 @@
 import type { AnalysisMode, EquivalentLayer, LayerCorrection, SoilSpringProfile, SpringLaw, SpringResponse, UltimateProfile } from './spring-types';
+import { ct } from '../../i18n';
+
+const QUANTITY_KEYS: Record<string, string> = { 'Grensweerstand aan maaiveld': 'ultimateAtSurface', 'Toename grensweerstand': 'ultimateGradient', 'Bovengrens weerstand': 'ultimateCap', 'Initiële stijfheid': 'initialStiffness', 'Grensweerstand van de veer': 'springUltimate', 'Diepte grensweerstandsprofiel': 'profileDepth', 'Laagbovenkant': 'layerTop', 'Laagonderkant': 'layerBottom', 'Veerdiepte': 'springDepth', 'Equivalente laagbovenkant': 'equivalentTop' };
 
 function nonnegative(value: number, label: string): void {
-  if (!Number.isFinite(value) || value < 0) throw new Error(`${label} moet eindig en niet-negatief zijn.`);
+  if (!Number.isFinite(value) || value < 0) {
+    const name = QUANTITY_KEYS[label] ? ct('calcLateral', `quantities.${QUANTITY_KEYS[label]}`, label) : label;
+    throw new Error(ct('calcLateral', 'errors.nonNegative', '{{label}} moet eindig en niet-negatief zijn.', { label: name }));
+  }
 }
 
 function validateUltimate(profile: UltimateProfile): void {
@@ -9,16 +15,16 @@ function validateUltimate(profile: UltimateProfile): void {
   nonnegative(profile.gradientKnM2, 'Toename grensweerstand');
   nonnegative(profile.capKnM, 'Bovengrens weerstand');
   if (profile.capKnM === 0 || profile.atSurfaceKnM > profile.capKnM) {
-    throw new Error('De bovengrens moet positief zijn en minstens gelijk aan de grensweerstand aan maaiveld.');
+    throw new Error(ct('calcLateral', 'errors.capBelowSurface', 'De bovengrens moet positief zijn en minstens gelijk aan de grensweerstand aan maaiveld.'));
   }
 }
 
 export function evaluateSpring(law: SpringLaw, yM: number): SpringResponse {
   nonnegative(law.initialKnM2, 'Initiële stijfheid');
-  if (!Number.isFinite(yM)) throw new Error('De veerverplaatsing moet eindig zijn.');
+  if (!Number.isFinite(yM)) throw new Error(ct('calcLateral', 'errors.springDisplacement', 'De veerverplaatsing moet eindig zijn.'));
   const k = law.initialKnM2;
   if (law.kind === 'linear') return { resistanceKnM: k * yM, tangentKnM2: k, secantKnM2: k };
-  if (law.kind !== 'hyperbolic' || law.ultimateKnM === null) throw new Error('De niet-lineaire veer vereist een grensweerstand.');
+  if (law.kind !== 'hyperbolic' || law.ultimateKnM === null) throw new Error(ct('calcLateral', 'errors.nonlinearNeedsUltimate', 'De niet-lineaire veer vereist een grensweerstand.'));
   nonnegative(law.ultimateKnM, 'Grensweerstand van de veer');
   if (law.ultimateKnM === 0 || k === 0) return { resistanceKnM: 0, tangentKnM2: 0, secantKnM2: 0 };
   if (yM === 0) return { resistanceKnM: 0, tangentKnM2: k, secantKnM2: k };
@@ -48,7 +54,7 @@ function inverseIntegratedUltimate(profile: UltimateProfile, forceKn: number): n
   if (forceKn === 0) return 0;
   const { atSurfaceKnM: a, gradientKnM2: g, capKnM: cap } = profile;
   if (g === 0) {
-    if (a === 0) throw new Error('Een laag met nulsterkte kan de bovenliggende grensweerstand niet vertegenwoordigen.');
+    if (a === 0) throw new Error(ct('calcLateral', 'errors.zeroStrengthLayer', 'Een laag met nulsterkte kan de bovenliggende grensweerstand niet vertegenwoordigen.'));
     return forceKn / a;
   }
   const capDepth = (cap - a) / g;
@@ -63,21 +69,21 @@ function validateProfiles(profiles: SoilSpringProfile[]): void {
     nonnegative(profile.bottomM, 'Laagonderkant');
     nonnegative(profile.initialKnM2, 'Initiële stijfheid');
     validateUltimate(profile.ultimate);
-    if (profile.bottomM <= profile.topM) throw new Error('De laagonderkant moet dieper liggen dan de bovenkant.');
-    if (index > 0 && profile.topM < profiles[index - 1].bottomM) throw new Error('Grondlagen overlappen of staan niet op diepte gesorteerd.');
+    if (profile.bottomM <= profile.topM) throw new Error(ct('calcLateral', 'errors.bottomAboveTop', 'De laagonderkant moet dieper liggen dan de bovenkant.'));
+    if (index > 0 && profile.topM < profiles[index - 1].bottomM) throw new Error(ct('calcLateral', 'errors.layersUnsorted', 'Grondlagen overlappen of staan niet op diepte gesorteerd.'));
   });
 }
 
 export function equivalentLayers(profiles: SoilSpringProfile[], correction: LayerCorrection): EquivalentLayer[] {
   validateProfiles(profiles);
-  if (correction !== 'none' && correction !== 'georgiadis') throw new Error('Onbekende laagcorrectie.');
+  if (correction !== 'none' && correction !== 'georgiadis') throw new Error(ct('calcLateral', 'errors.unknownCorrection', 'Onbekende laagcorrectie.'));
   let cumulativeUltimateKn = 0;
   return profiles.map((profile, index) => {
     const topEquivalentM = correction === 'none' ? profile.topM - profiles[0].topM
       : index === 0 ? 0 : inverseIntegratedUltimate(profile.ultimate, cumulativeUltimateKn);
     const bottomEquivalentM = topEquivalentM + profile.bottomM - profile.topM;
     cumulativeUltimateKn += integratedUltimate(profile.ultimate, bottomEquivalentM) - integratedUltimate(profile.ultimate, topEquivalentM);
-    if (!Number.isFinite(bottomEquivalentM) || !Number.isFinite(cumulativeUltimateKn)) throw new Error('De equivalente-laagberekening overschrijdt het numerieke bereik.');
+    if (!Number.isFinite(bottomEquivalentM) || !Number.isFinite(cumulativeUltimateKn)) throw new Error(ct('calcLateral', 'errors.equivalentOverflow', 'De equivalente-laagberekening overschrijdt het numerieke bereik.'));
     return { topEquivalentM, bottomEquivalentM, cumulativeUltimateKn };
   });
 }
@@ -85,12 +91,12 @@ export function equivalentLayers(profiles: SoilSpringProfile[], correction: Laye
 export function springLawAtDepth(profiles: SoilSpringProfile[], equivalents: EquivalentLayer[], layerIndex: number, zM: number, mode: AnalysisMode): { law: SpringLaw; equivalentDepthM: number } {
   validateProfiles(profiles);
   nonnegative(zM, 'Veerdiepte');
-  if (!Number.isInteger(layerIndex) || layerIndex < 0 || layerIndex >= profiles.length || equivalents.length !== profiles.length) throw new Error('Ongeldige veerlaag of aantal equivalente lagen.');
+  if (!Number.isInteger(layerIndex) || layerIndex < 0 || layerIndex >= profiles.length || equivalents.length !== profiles.length) throw new Error(ct('calcLateral', 'errors.invalidSpringLayer', 'Ongeldige veerlaag of aantal equivalente lagen.'));
   const profile = profiles[layerIndex], equivalent = equivalents[layerIndex];
-  if (zM < profile.topM || zM > profile.bottomM) throw new Error('De veerdiepte ligt buiten de geselecteerde grondlaag.');
+  if (zM < profile.topM || zM > profile.bottomM) throw new Error(ct('calcLateral', 'errors.springOutsideLayer', 'De veerdiepte ligt buiten de geselecteerde grondlaag.'));
   nonnegative(equivalent.topEquivalentM, 'Equivalente laagbovenkant');
   const equivalentDepthM = equivalent.topEquivalentM + zM - profile.topM;
-  if (mode !== 'linear' && mode !== 'nonlinear') throw new Error('Onbekende analysekeuze.');
+  if (mode !== 'linear' && mode !== 'nonlinear') throw new Error(ct('calcLateral', 'errors.unknownAnalysisChoice', 'Onbekende analysekeuze.'));
   return {
     equivalentDepthM,
     law: { kind: mode === 'linear' ? 'linear' : 'hyperbolic', initialKnM2: profile.initialKnM2, ultimateKnM: mode === 'linear' ? null : ultimateAtDepth(profile.ultimate, equivalentDepthM) },

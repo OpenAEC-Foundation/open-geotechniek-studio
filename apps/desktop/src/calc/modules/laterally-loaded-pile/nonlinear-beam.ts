@@ -1,6 +1,7 @@
 import {gauss,shape,roots,polynomial,solveBeam,type BeamInput,type BeamResult} from './beam';
 import {evaluateSpring,springLawAtDepth,equivalentLayers} from './nonlinear-soil';
 import type {AnalysisMode,LayerCorrection,SoilSpringProfile,EquivalentLayer,SpringState,SpringLaw,ConvergenceInfo} from './spring-types';
+import { ct } from '../../i18n';
 
 type Options={maxIterations?:number;loadSteps?:number;tolerance?:number};
 type Point={z:number;weight:number;n:number[];law:SpringLaw|null;equivalentDepth:number;layer:number};
@@ -9,12 +10,12 @@ type Element={a:number;b:number;kb:number[][];q:number;points:Point[]};
 /** Symmetrisch geschaalde band-Cholesky; ligger-elementen koppelen maximaal vier opeenvolgende vrijheidsgraden. */
 function solveIncrement(band:Float64Array[],residual:Float64Array,free:number[]):number[] {
  const n=free.length,l=Array.from({length:n},()=>new Float64Array(4)),scale=free.map(i=>Math.sqrt(band[i][0]));
- if(scale.some(v=>!(v>0)||!Number.isFinite(v)))throw new Error('Instabiele tangentstijfheid.');
+ if(scale.some(v=>!(v>0)||!Number.isFinite(v)))throw new Error(ct('calcLateral', 'errors.unstableTangent', 'Instabiele tangentstijfheid.'));
  const at=(i:number,j:number)=>i>=j&&i-j<=3?l[i][i-j]:0;
  for(let i=0;i<n;i++)for(let j=Math.max(0,i-3);j<=i;j++){
   const delta=free[i]-free[j];let s=(delta<=3?band[free[i]][delta]:0)/(scale[i]*scale[j]);
   for(let k=Math.max(0,i-3,j-3);k<j;k++)s-=at(i,k)*at(j,k);
-  if(i===j){if(!(s>1e-13))throw new Error('Instabiel model: tangentweerstand uitgeput.');l[i][0]=Math.sqrt(s);}
+  if(i===j){if(!(s>1e-13))throw new Error(ct('calcLateral', 'errors.tangentExhausted', 'Instabiel model: tangentweerstand uitgeput.'));l[i][0]=Math.sqrt(s);}
   else l[i][i-j]=s/l[j][0];
  }
  const y=new Float64Array(n),x=new Float64Array(n);
@@ -32,14 +33,14 @@ const lagrange=gaussT.map((v,i)=>{
 export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[],equivalents:EquivalentLayer[],mode:AnalysisMode,correction:LayerCorrection,options:Options={}):BeamResult&{springs:SpringState[];convergence:ConvergenceInfo} {
  const maxIterations=options.maxIterations??40,initialSteps=options.loadSteps??8,tol=options.tolerance??1e-7;
  if(!Number.isInteger(maxIterations)||maxIterations<1||maxIterations>200||!Number.isInteger(initialSteps)||initialSteps<1||initialSteps>100||!Number.isFinite(tol)||tol<=0||tol>1e-3)
-  throw new Error('Ongeldige iteratie-instellingen.');
- if(!['linear','nonlinear'].includes(mode)||!['none','georgiadis'].includes(correction)||profiles.length!==equivalents.length)throw new Error('Ongeldig grondmodel.');
+  throw new Error(ct('calcLateral', 'errors.invalidIteration', 'Ongeldige iteratie-instellingen.'));
+ if(!['linear','nonlinear'].includes(mode)||!['none','georgiadis'].includes(correction)||profiles.length!==equivalents.length)throw new Error(ct('calcLateral', 'errors.invalidSoilModel', 'Ongeldig grondmodel.'));
  const orderedLayers=[...input.layers].sort((a,b)=>a.topM-b.topM),expectedEquivalent=equivalentLayers(profiles,correction);
  const close=(a:number,b:number)=>Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=1e-9*Math.max(1,Math.abs(a),Math.abs(b));
  if(orderedLayers.length!==profiles.length||profiles.some((p,i)=>!close(p.topM,orderedLayers[i].topM)||!close(p.bottomM,orderedLayers[i].bottomM)||!close(p.initialKnM2,orderedLayers[i].lineSpringKnM2)))
-  throw new Error('Grondprofiel en liggerlagen of initiële stijfheid komen niet overeen.');
+  throw new Error(ct('calcLateral', 'errors.profileMismatch', 'Grondprofiel en liggerlagen of initiële stijfheid komen niet overeen.'));
  if(equivalents.some((e,i)=>!close(e.topEquivalentM,expectedEquivalent[i].topEquivalentM)||!close(e.bottomEquivalentM,expectedEquivalent[i].bottomEquivalentM)||!close(e.cumulativeUltimateKn,expectedEquivalent[i].cumulativeUltimateKn)))
-  throw new Error('Equivalente diepten komen niet overeen met de gekozen laagcorrectie.');
+  throw new Error(ct('calcLateral', 'errors.equivalentMismatch', 'Equivalente diepten komen niet overeen met de gekozen laagcorrectie.'));
  // Bestaande invoer- en stabiliteitsvalidatie levert exact hetzelfde elementnet.
  const seed=solveBeam(input),zs=seed.nodes.map(n=>n.zM),nd=zs.length*2,L=input.lengthM;
  const F=new Float64Array(nd);F[0]=input.headForceKn;F[1]=input.headMomentKnM;
@@ -70,7 +71,7 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
      if(matrix)for(let j=0;j<=i;j++)band[2*e+i][i-j]+=p.n[i]*p.n[j]*r.tangentKnM2*p.weight;}
    }
   });
-  if(!residual.every(Number.isFinite))throw new Error('Numerieke overloop in het niet-lineaire model.');
+  if(!residual.every(Number.isFinite))throw new Error(ct('calcLateral', 'errors.nonlinearOverflow', 'Numerieke overloop in het niet-lineaire model.'));
   return {residual,band};
  }
  let u=Array(nd).fill(0),factor=0,increment=mode==='linear'?1:1/initialSteps,iterations=0,loadSteps=0,cutbacks=0;
@@ -91,11 +92,11 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
    if(converged||!improved)break;
   }
   if(converged){u=trial;factor=target;loadSteps++;cutbacks=0;increment=Math.min(1-factor,increment*1.5);}
-  else {increment/=2;cutbacks++;if(cutbacks>12||increment<1/65536)throw new Error('Geen convergentie: controleer belasting, beschikbare grondweerstand en veerparameters.');}
-  if(loadSteps>200)throw new Error('Geen convergentie binnen het maximale aantal belastingstappen.');
+  else {increment/=2;cutbacks++;if(cutbacks>12||increment<1/65536)throw new Error(ct('calcLateral', 'errors.noConvergence', 'Geen convergentie: controleer belasting, beschikbare grondweerstand en veerparameters.'));}
+  if(loadSteps>200)throw new Error(ct('calcLateral', 'errors.noConvergenceSteps', 'Geen convergentie binnen het maximale aantal belastingstappen.'));
  }
  const final=assemble(u,1,false),residualKn=norm(final.residual);
- if(residualKn>tol*loadScale)throw new Error('Geen convergentie van het volledige belastingsgeval.');
+ if(residualKn>tol*loadScale)throw new Error(ct('calcLateral', 'errors.noConvergenceFull', 'Geen convergentie van het volledige belastingsgeval.'));
  const springs:SpringState[]=[],samples:BeamResult['samples']=[];
  let soilForce=0,soilMoment=0,loadForce=input.headForceKn,loadMoment=input.headMomentKnM;
  const responseElements=elements.map((el,e)=>{

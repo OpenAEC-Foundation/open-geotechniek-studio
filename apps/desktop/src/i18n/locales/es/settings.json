@@ -29,5 +29,18 @@
     "openaecLink": "OpenAEC Foundation",
     "builtOn": "identidad visual y bibliotecas básicas",
     "sourceLink": "Código fuente"
+  },
+  "extensions": {
+    "title": "Extensiones",
+    "intro": "Módulos opcionales: active los que use. Los cambios se aplican al instante (sin reiniciar).",
+    "comingSoon": "próximamente",
+    "tekening": {
+      "title": "Plano de situación",
+      "description": "Añade la pestaña «Plano de situación»: hoja CAD (A2/A3) con los ensayos sobre el mapa, marco, escala gráfica, forzado de cursor, superposiciones y exportación a PDF."
+    },
+    "offertes": {
+      "title": "Solicitar presupuestos",
+      "description": "Añade el botón «Solicitar presupuestos» a la cinta del plano de situación (requiere la extensión Plano de situación). Abre un diálogo con las empresas de ensayos más cercanas y una solicitud de presupuesto por correo rellenada."
+    }
   }
 }

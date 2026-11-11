@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useCalculationsStore } from "../store";
 import { useCptStore } from "../../../store/useCptStore";
 import { getCalcModule } from "../registry";
 import type { CalculationInstance } from "../types";
+import { moduleName, moduleText } from "../moduleText";
 
 
 interface Props {
@@ -16,6 +18,7 @@ interface Props {
 const EMPTY_LIST: readonly never[] = [];
 
 export function ProjectTreePanel({ onAddClick }: Props) {
+  const { t } = useTranslation("calc");
   const activeDocId = useCptStore((s) => s.activeDocId);
   const activeCalcId = useCalculationsStore((s) => s.activeCalcId);
   // Subscribe naar byDoc als geheel (stabiele Map-referentie), derive
@@ -42,7 +45,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
   if (!activeDocId) {
     return (
       <div className="calc-tree-empty">
-        <p>Open een project om berekeningen toe te voegen.</p>
+        <p>{t("tree.noProject", "Open een project om berekeningen toe te voegen.")}</p>
       </div>
     );
   }
@@ -56,23 +59,23 @@ export function ProjectTreePanel({ onAddClick }: Props) {
   }, {});
 
   const categoryNames: Record<string, string> = {
-    pile: "Palen",
-    spread: "Funderingen",
-    wall: "Wanden",
-    anchor: "Ankers",
-    report: "Rapporten",
-    other: "Overig",
+    pile: t("categories.pile", "Palen"),
+    spread: t("categories.spread", "Funderingen"),
+    wall: t("categories.wall", "Wanden"),
+    anchor: t("categories.anchor", "Ankers"),
+    report: t("categories.report", "Rapporten"),
+    other: t("categories.other", "Overig"),
   };
 
   return (
     <div className="calc-tree">
       <button className="calc-tree-add" onClick={onAddClick}>
-        + Nieuwe berekening
+        {t("tree.add", "+ Nieuwe berekening")}
       </button>
 
       {visibleList.length === 0 && (
         <p className="calc-tree-empty-hint">
-          Nog geen berekeningen. Klik op "+" om er een toe te voegen.
+          {t("tree.emptyHint", "Nog geen berekeningen. Klik op \"+\" om er een toe te voegen.")}
         </p>
       )}
 
@@ -110,7 +113,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                         setRenaming(c.id);
                         setDraftName(c.name);
                       }}
-                      title={`${mod?.name ?? c.moduleId} — ${c.updatedAt}`}
+                      title={`${mod ? moduleName(mod) : c.moduleId} — ${c.updatedAt}`}
                     >
                       <span className="calc-tree-item-name">{c.name}</span>
                       {mod?.status === "coming-soon" && (
@@ -121,17 +124,17 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                   <div className="calc-tree-actions">
                     <button
                       onClick={() => duplicate(activeDocId, c.id)}
-                      title="Dupliceren"
+                      title={t("tree.duplicate", "Dupliceren")}
                     >
                       ⎘
                     </button>
                     <button
                       onClick={() => {
-                        if (confirm(`Verwijder "${c.name}"?`)) {
+                        if (confirm(t("tree.confirmDelete", "Verwijder \"{{name}}\"?", { name: c.name }))) {
                           remove(activeDocId, c.id);
                         }
                       }}
-                      title="Verwijderen"
+                      title={t("tree.delete", "Verwijderen")}
                     >
                       ×
                     </button>
@@ -145,11 +148,11 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                       </li>
                     );
                     return (
-                      <ul className="calc-tree-children" aria-label={`Onderdelen van ${c.name}`}>
-                        {node(table.label, here.view === "table" && !here.cptId, () => navigate(c.id, "table"))}
+                      <ul className="calc-tree-children" aria-label={t("tree.parts", "Onderdelen van {{name}}", { name: c.name })}>
+                        {node(moduleText(mod, "tableLabel") ?? table.label, here.view === "table" && !here.cptId, () => navigate(c.id, "table"))}
                         {items.map((it) => node(it.label, here.view === "table" && here.cptId === it.id, () => navigate(c.id, "table", it.id), 1))}
-                        {node("Rekenblad", here.view !== "table" && here.view !== "settings", () => navigate(c.id, "sheet"))}
-                        {node("Instellingen", here.view === "settings", () => navigate(c.id, "settings"))}
+                        {node(t("tree.sheet", "Rekenblad"), here.view !== "table" && here.view !== "settings", () => navigate(c.id, "sheet"))}
+                        {node(t("tree.settings", "Instellingen"), here.view === "settings", () => navigate(c.id, "settings"))}
                       </ul>
                     );
                   })()}

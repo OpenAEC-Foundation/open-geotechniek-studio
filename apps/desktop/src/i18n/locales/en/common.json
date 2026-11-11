@@ -77,5 +77,38 @@
   "baseLayers": "Base layers",
   "overlayLayers": "Overlays",
   "dataLayers": "Data",
-  "topotijdreis": "Historical maps"
+  "topotijdreis": "Historical maps",
+  "newProjectTitle": "New project",
+  "newProjectWithCpts": "New project ({{count}} CPTs)",
+  "mcp": {
+    "starting": "Starting MCP…",
+    "startingHint": "Starting the local MCP connection.",
+    "unavailable": "MCP unavailable",
+    "desktopOnly": "MCP control is available in the desktop app.",
+    "busy": "MCP busy · {{action}}",
+    "connectedFailed": "MCP connected · command failed",
+    "availableFailed": "MCP available · command failed",
+    "error": "MCP error",
+    "connected": "MCP connected",
+    "clients": "{{count}} MCP client(s): {{names}}",
+    "available": "MCP available",
+    "availableHint": "The local Studio MCP server is available. No MCP client is connected.",
+    "notReady": "The Studio MCP connection is not ready yet.",
+    "actions": {
+      "studio_get_state": "Reading project state",
+      "studio_get_cpt": "Reading CPT",
+      "studio_new_project": "Creating project",
+      "studio_open_file": "Opening file",
+      "studio_select_document": "Selecting document",
+      "studio_show_view": "Opening view",
+      "studio_set_project_meta": "Changing project details",
+      "studio_save_project": "Saving project",
+      "studio_add_calculation": "Adding calculation",
+      "studio_update_calculation": "Changing calculation",
+      "studio_select_calculation": "Selecting calculation",
+      "studio_get_calculation": "Reading calculation",
+      "studio_get_capacity_table": "Reading bearing capacity table",
+      "studio_export_report": "Exporting report"
+    }
+  }
 }

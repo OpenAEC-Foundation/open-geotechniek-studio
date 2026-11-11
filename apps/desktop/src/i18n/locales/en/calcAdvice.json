@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Document",
+    "reference": "Reference",
+    "version": "Version",
+    "status": "Status",
+    "advisor": "Advisor",
+    "checker": "Checked by",
+    "projectHint": "Project name, number, client and location are taken from the project details.",
+    "basis": "Basis of design",
+    "consequenceClass": "Consequence class",
+    "designLife": "Design working life",
+    "years": "years",
+    "designLifeAria": "Design working life [years]",
+    "floorLevel": "Datum (top of floor)",
+    "floorLevelAria": "Datum [m NAP]",
+    "groundwater": "Groundwater",
+    "groundwaterAria": "Design groundwater level [m NAP]",
+    "structure": "Structure and loads",
+    "structurePlaceholder": "For example: steel industrial building, 40 × 60 m, column loads up to 600 kN",
+    "bearingLayer": "Bearing layer (indicative)",
+    "qcMin": "Minimum qc",
+    "qcMinAria": "qc bearing layer [MPa]",
+    "overAtLeast": "Over at least",
+    "minThicknessAria": "Minimum thickness [m]",
+    "include": "Include",
+    "cptsInAdvice": "CPTs in the advice",
+    "cptItem": "CPT {{id}}",
+    "noCpts": "No CPTs in the project yet.",
+    "calcsInAdvice": "Calculations in the advice",
+    "noCalcs": "No pile calculations in the project yet.",
+    "appendixCpts": "Appendix CPTs",
+    "appendixCalcs": "Appendix calculation sheets",
+    "ownText": "Custom text",
+    "introNote": "Additional introduction",
+    "remarks": "Remarks on the conclusion"
+  },
+  "status": {
+    "concept": "Draft",
+    "definitief": "Final",
+    "conceptLower": "draft",
+    "definitiefLower": "final"
+  },
+  "visual": {
+    "aria": "Site plan with CPTs",
+    "bearingTop": "bl NAP {{value}}",
+    "missing": "Without coordinates (not drawn): {{ids}}.",
+    "legend": "Triangle: CPT; bl = top of bearing layer (indicative). To scale, coordinates in RD."
+  },
+  "result": {
+    "title": "Foundation advice",
+    "header": "{{reference}} · version {{version}} · {{status}}",
+    "noReference": "no reference",
+    "toc": {
+      "title": "Contents of the report",
+      "intro": "Introduction: background, purpose and project details",
+      "basis": "Basis of design",
+      "investigation": "Site investigation: {{count}} CPTs with site plan",
+      "soil": "Soil profile and bearing layer",
+      "vertical": "Piles in compression: {{names}}",
+      "lateral": "Laterally loaded piles: {{names}}",
+      "execution": "Negative skin friction and execution",
+      "conclusions": "Conclusions and recommendations",
+      "appendixCpts": "Appendix A: CPTs",
+      "appendixCalcs": "Appendix B: calculation sheets"
+    },
+    "bearing": {
+      "title": "Bearing layer",
+      "text": "The bearing layer has been taken, indicatively, as the first interval in which the cone resistance stays above {{qc}} MPa over at least {{thickness}} m. This is an aid for the overview; the pile toe level follows from the bearing capacity calculation.",
+      "tableAria": "Bearing layer per CPT",
+      "cpt": "CPT",
+      "ground": "Ground level [m NAP]",
+      "end": "End [m NAP]",
+      "top": "Bl [m NAP]",
+      "notFound": "not found",
+      "conclusion": "Top of bearing layer between NAP {{highest}} m and NAP {{lowest}} m; spread {{spread}} m."
+    },
+    "calcs": {
+      "title": "Calculations in the advice",
+      "none": "No pile calculations included yet.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, toe NAP {{toe}} m",
+      "notComputed": "(not calculated)",
+      "lateral": "{{name}}: {{passing}} of {{count}} piles pass"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} CPT",
+    "cptMany": "{{count}} CPTs",
+    "calcOne": "{{count}} calculation",
+    "calcMany": "{{count}} calculations"
+  }
+}

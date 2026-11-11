@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Documento",
+    "reference": "Riferimento",
+    "version": "Versione",
+    "status": "Stato",
+    "advisor": "Consulente",
+    "checker": "Verificato da",
+    "projectHint": "Nome del progetto, numero, committente e ubicazione sono ripresi dai dati del progetto.",
+    "basis": "Basi di progetto",
+    "consequenceClass": "Classe di conseguenza",
+    "designLife": "Vita nominale",
+    "years": "anni",
+    "designLifeAria": "Vita nominale [anni]",
+    "floorLevel": "Quota di riferimento (estradosso pavimento)",
+    "floorLevelAria": "Quota di riferimento [m NAP]",
+    "groundwater": "Falda",
+    "groundwaterAria": "Livello di falda di progetto [m NAP]",
+    "structure": "Struttura e carichi",
+    "structurePlaceholder": "Ad esempio: capannone industriale in acciaio, 40 × 60 m, carichi sui pilastri fino a 600 kN",
+    "bearingLayer": "Strato portante (indicativo)",
+    "qcMin": "qc minimo",
+    "qcMinAria": "qc strato portante [MPa]",
+    "overAtLeast": "Su almeno",
+    "minThicknessAria": "Spessore minimo [m]",
+    "include": "Includi",
+    "cptsInAdvice": "Prove CPT nella raccomandazione",
+    "cptItem": "CPT {{id}}",
+    "noCpts": "Nessuna prova CPT nel progetto.",
+    "calcsInAdvice": "Calcoli nella raccomandazione",
+    "noCalcs": "Nessun calcolo dei pali nel progetto.",
+    "appendixCpts": "Allegato prove CPT",
+    "appendixCalcs": "Allegato fogli di calcolo",
+    "ownText": "Testo personalizzato",
+    "introNote": "Introduzione aggiuntiva",
+    "remarks": "Note sulla conclusione"
+  },
+  "status": {
+    "concept": "Bozza",
+    "definitief": "Definitivo",
+    "conceptLower": "bozza",
+    "definitiefLower": "definitivo"
+  },
+  "visual": {
+    "aria": "Planimetria con prove CPT",
+    "bearingTop": "sp NAP {{value}}",
+    "missing": "Senza coordinate (non disegnate): {{ids}}.",
+    "legend": "Triangolo: CPT; sp = tetto dello strato portante (indicativo). In scala, coordinate in RD."
+  },
+  "result": {
+    "title": "Raccomandazione per le fondazioni",
+    "header": "{{reference}} · versione {{version}} · {{status}}",
+    "noReference": "nessun riferimento",
+    "toc": {
+      "title": "Indice della relazione",
+      "intro": "Introduzione: contesto, scopo e dati del progetto",
+      "basis": "Basi di progetto",
+      "investigation": "Indagine geotecnica: {{count}} prove CPT con planimetria",
+      "soil": "Profilo stratigrafico e strato portante",
+      "vertical": "Pali compressi: {{names}}",
+      "lateral": "Pali caricati lateralmente: {{names}}",
+      "execution": "Attrito negativo ed esecuzione",
+      "conclusions": "Conclusioni e raccomandazioni",
+      "appendixCpts": "Allegato A: prove CPT",
+      "appendixCalcs": "Allegato B: fogli di calcolo"
+    },
+    "bearing": {
+      "title": "Strato portante",
+      "text": "Lo strato portante è stato assunto, in via indicativa, come il primo intervallo in cui la resistenza alla punta del cono resta superiore a {{qc}} MPa su almeno {{thickness}} m. È un ausilio per la visione d'insieme; la quota della punta del palo deriva dal calcolo della capacità portante.",
+      "tableAria": "Strato portante per prova CPT",
+      "cpt": "CPT",
+      "ground": "Piano campagna [m NAP]",
+      "end": "Fine [m NAP]",
+      "top": "Sp [m NAP]",
+      "notFound": "non trovato",
+      "conclusion": "Tetto dello strato portante tra NAP {{highest}} m e NAP {{lowest}} m; dispersione {{spread}} m."
+    },
+    "calcs": {
+      "title": "Calcoli nella raccomandazione",
+      "none": "Nessun calcolo dei pali ancora incluso.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, punta NAP {{toe}} m",
+      "notComputed": "(non calcolato)",
+      "lateral": "{{name}}: {{passing}} pali su {{count}} verificati"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} CPT",
+    "cptMany": "{{count}} CPT",
+    "calcOne": "{{count}} calcolo",
+    "calcMany": "{{count}} calcoli"
+  }
+}

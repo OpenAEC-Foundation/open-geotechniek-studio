@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "CPT {{id}}",
+    "notCalculated": "Ikke beregnet",
+    "checks": {
+      "capacity": "bæreevne"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "Bund negativ overflademodstand ({{given}}) ligger uden for pælen; beregnet med {{used}}.",
+    "posKleefClamped": "Top positiv overflademodstand ({{given}}) ligger uden for skaftområdet; beregnet med {{used}}."
+  },
+  "errors": {
+    "noCpt": "Ingen aktiv sondering",
+    "unknownStandard": "Ukendt normversion",
+    "pileTypeNotSupported": "Pæletypen understøttes ikke for denne normversion: {{id}}",
+    "extensionInvalid": "En betonforlænger kræver en træpæl, en positiv forlængerstørrelse og en samling mellem pælehoved og pælespids, uden separat spidsstørrelse",
+    "taperInvalidWithExtension": "Trækonicitet kræver en positiv spidsdiameter ≤ trædiameter ved samlingen og en konisk længde inden for trædelen under samlingen",
+    "taperInvalid": "Trækonicitet kræver en positiv spidsdiameter ≤ hoveddiameter og en konisk længde inden for pælelængden, uden separat spidsstørrelse",
+    "toeSizeInvalid": "Spidsstørrelsen skal være positiv og endelig",
+    "footPlateTooWide": "For denne pæletype må fodpladen højst rage 10 mm ud på hver side",
+    "groutScrewMinDiameter": "Denne forudindstilling for injicerede skruepæle kræver en skaftdiameter på mindst 300 mm",
+    "timberConstantSection": "Denne træpæletype kræver et konstant tværsnit uden forlænger",
+    "eaInvalid": "EA skal være positiv og endelig",
+    "eaRequired": "Indtast den projektspecifikke aksiale stivhed EA for denne pæletype",
+    "projectFactorsInvalid": "Projektfaktorer kræver gyldige værdier, en kilde og en udgave, der svarer til den valgte norm",
+    "nonFiniteInput": "Alle inputværdier skal være endelige tal",
+    "diameterNotPositive": "Diameter eller sidelængde skal være større end nul",
+    "wallThicknessInvalid": "Godstykkelsen skal være større end nul og mindre end halvdelen af diameteren",
+    "toeAboveHead": "Pælespidsen skal ligge under pælehovedet",
+    "factorsInvalid": "γm skal være større end nul; γf,nk og K0·tan(δ)-minimum må ikke være negative",
+    "negativeLoads": "Trykbelastninger må ikke være negative",
+    "kleefLevels": "Koter for overflademodstand skal ligge mellem pælehoved og pælespids; positiv overflademodstand må ikke overlappe negativ overflademodstand",
+    "soilLayerInvalid": "Jordlag kræver gyldige koter, rumvægte og en friktionsvinkel mellem 0 og 90 grader",
+    "soilLayerOrder": "Jordlag skal forløbe fra top til bund uden overlap",
+    "historicalCptData": "En historisk beregning kræver stigende dybder med komplette, ikke-negative qc-værdier",
+    "historicalCptRange": "En historisk beregning kræver hele området fra 8 Deq over til 4 Deq under pælespidsen",
+    "historicalSandOnly": "Historisk positiv overflademodstand er kun verificeret for sand; justér skaftområdet og jordprofilen",
+    "historicalConstantSection": "Den historiske profil understøtter kun et konstant pæletværsnit eller en eksplicit trækonicitet",
+    "cptTooShallow": "Sondering for kort (når {{reach}} m, kræver ≥ {{required}} m)",
+    "pileSizeInvalid": "Pælestørrelsen skal være endelig og større end nul",
+    "historicalGroupAnalysis": "Historisk analyse med flere sonderinger er endnu ikke verificeret; brug en enkelt sondering"
+  },
+  "warnings": {
+    "factors": "Faktorer: {{edition}}; {{source}}.",
+    "existingModel": "eksisterende model",
+    "existingCatalog": "eksisterende katalog",
+    "projectFactors2025": "Projektfaktorer 2025 anvendt; dette er ikke en fuld omstilling af beregningsmetoden til NEN 9997:2025.",
+    "settlementExtension": "Træpæl med betonforlænger: sætnings- og fjederværdier med forskellig EA for beton og træ er ikke verificeret og bestemmes ikke.",
+    "settlementTaper": "Konisk træpæl: sætnings- og fjederværdier med variabel EA er ikke verificeret og bestemmes ikke.",
+    "settlementHistorical": "Historiske sætnings- og fjederværdier er ikke verificeret og bestemmes ikke.",
+    "settlementLineUnsupported": "Last-sætningskurve {{line}} understøttes endnu ikke: sætnings- og fjederværdier bestemmes ikke.",
+    "extension": "Betonforlænger {{size}} mm ned til samlingen ved NAP {{joint}} m: over samlingen bruges forlængerens omkreds, under den træets; negativ overflademodstand med middelomkreds over friktionszonen, positiv overflademodstand pr. lag.",
+    "taperWithExtension": "Trækonicitet fra samlingen: positiv overflademodstand med middelomkreds pr. lag. Ingen forøgelse af pælefaktorer for konicitet.",
+    "taper": "Trækonicitet: negativ overflademodstand med middelomkreds over friktionszonen; positiv overflademodstand med middelomkreds pr. lag. Uden betonforlænger eller forøgelse for konicitet.",
+    "deviatingToeSize": "Afvigende spidsstørrelse: kontrollér pælespidsens formfaktor β og det tilladte område for overflademodstand for denne installationsmetode.",
+    "qbMaxCapped": "qb;max begrænset til 15 MPa (råværdi {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Indtast endelige spidskoter, én pr. linje eller adskilt med semikolon.",
+      "toeLevelsDuplicate": "Hver spidskote må kun forekomme én gang.",
+      "cptIdsInvalid": "Vælg entydige sonderingsnavne til tabellen.",
+      "toeNapsInvalid": "Tabellen kræver entydige, endelige spidskoter.",
+      "sizesInvalid": "Indtast positive pælestørrelser i mm, adskilt med mellemrum, komma eller semikolon.",
+      "sizesDuplicate": "Hver pælestørrelse må kun forekomme én gang.",
+      "levelRangeInvalid": "Indtast en endelig top- og bundkote og et positivt trin.",
+      "tooManyLevels": "Højst {{max}} spidskoter; vælg et større trin.",
+      "sizesNotPositive": "Pælestørrelser skal være positive.",
+      "targetRangeInvalid": "Den øvre grænse for den ønskede bæreevne skal ligge over den nedre grænse."
+    },
+    "notes": {
+      "profileAboveToe": "Jordprofilen ender over pælespidsen. Kontrollér og forlæng jordlagene; manglende skaftlag bidrager ikke.",
+      "profileAboveDeepest": "Jordprofilen ender ved {{level}} m NAP, over den dybeste spidskote."
+    },
+    "reasons": {
+      "cptTooShort": "Sondering uden for område",
+      "kleefLevels": "over friktionszone",
+      "eaMissing": "EA mangler",
+      "notComputable": "kan ikke beregnes"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Beregningen mislykkedes",
+      "exampleFailed": "Eksempel {{cpt}}, {{size}} mm ved {{level}} m NAP kan ikke beregnes: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Rund Ø{{size}}",
+    "square": "Kvadratisk {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — historisk referenceprofil",
+    "nen-6743-2006": "NEN 6743-1:2006 — historisk",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — oprindelige faktorer",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — eksisterende beregningsmodel"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; offentlig reference 05290 s. 31–32 (enkelt præfabrikeret pæl)",
+    "source2006": "NEN 6743-1:2006 tabel 2; NEN 6740:2006 tabel 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 tabel 7.c; oprindelige faktorer før reduktion",
+    "conditions": "Historisk trykpælemodel: sand; ingen korrektion for pælegruppe, OCR, kornstørrelse eller udgravning. qc-toppe langs skaftet konservativt begrænset til 12 MPa. Sætning ikke verificeret."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, tabel 7.c (sand/sandet grus)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Stålrørspæl — rammet (eksisterende projektmodel)",
+      "shortName": "Stålrørspæl — rammet",
+      "conditions": "Eksisterende faktorsæt bibeholdt; afviger fra tabel 7.c:2017 for stålrørspæle med lukket ende.",
+      "source": "Eksisterende beregningsmodel og referencerapport 984.pdf",
+      "edition": "2017/2019 — eksisterende projektmodel"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Præfabrikeret forspændt betonpæl — rammet"
+    },
+    "concrete-prefab-round": {
+      "name": "Præfabrikeret betonpæl — rund, rammet"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Stålrørspæl — lukket ende (tabel 2017)",
+      "shortName": "Stålrørspæl — lukket ende",
+      "conditions": "Fodpladen rager højst 10 mm uden for røret; betonfyldt rør."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Pladsstøbt betonpæl — foringsrør trukket ved tilbageramning",
+      "conditions": "Betonen ligger direkte mod jorden; foringsrør trukket ved tilbageramning og statisk trækning."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Pladsstøbt betonpæl — foringsrør trukket ved vibrering",
+      "conditions": "Betonen ligger direkte mod jorden; foringsrør trukket ved vibrering og statisk trækning."
+    },
+    "concrete-screw-displacement": {
+      "name": "Betonskruepæl — tabt spids",
+      "conditions": "Glat foringsrør trukket op; betonen ligger direkte mod jorden."
+    },
+    "steel-screw-grout": {
+      "name": "Stålskruepæl — injektion med mørtel",
+      "conditions": "Mørtelskaft ≥ 300 mm; må ikke bevæges op og ned under installation. EA gælder stålet/kernen, ikke mørtelskaftets overflade."
+    },
+    "concrete-auger": {
+      "name": "Snegleboret pæl — beton",
+      "conditions": "Udgave 2017: begyndelsen af qc;III begrænset til 2 MPa; ingen undtagelse baseret på sonderinger efter installation anvendt."
+    },
+    "concrete-bored": {
+      "name": "Boret pæl — med støttevæske"
+    },
+    "timber-uniform": {
+      "name": "Rammet træpæl — rund, med eller uden betonforlænger",
+      "conditions": "Rundt trætværsnit, konstant eller lineært konisk fra toppen af træet; eventuelt med en betonforlænger ned til samlingen. Ingen forøgelse af pælefaktorer for konicitet."
+    }
+  },
+  "soil": {
+    "sand-dry": "Sand, tørt",
+    "sand-wet": "Sand, vandmættet",
+    "clay": "Ler, vandmættet",
+    "peat": "Tørv, vandmættet"
+  }
+}

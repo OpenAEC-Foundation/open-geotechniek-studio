@@ -12,6 +12,7 @@ import { getStandard } from "../standards";
 import { computePile } from "../compute";
 import { chooseLevels, computeCapacityMatrix, defaultCapacityConfig, matrixCellInput } from "../capacity-table";
 import { renderCapacityAppendix } from "./capacity-report";
+import { ct } from "../../../i18n";
 
 /** Datum als dd-mm-jjjj; projectdatum wint, anders vandaag. */
 function reportDate(iso: string | undefined): string {
@@ -19,7 +20,7 @@ function reportDate(iso: string | undefined): string {
 }
 
 export function buildPileReport(input: PileInput, result: PileResult, ctx: ProjectContext): Uint8Array {
-  if (!result.ok) throw new Error(result.error ?? "Berekening niet geslaagd");
+  if (!result.ok) throw new Error(result.error ?? ct("calcPileCore", "report.errors.failed", "Berekening niet geslaagd"));
   const pileType = resolvePileType(input);
   const table = input.capacityTable;
   // Voorbeeldberekeningen: de gekozen cellen uit de tabel, anders het huidige rekenblad.
@@ -30,7 +31,7 @@ export function buildPileReport(input: PileInput, result: PileResult, ctx: Proje
     // De sondering gaat mee zodat het rapport ook het visuele blad bevat.
     const cpt = e.cptId ? ctx.cpts.get(e.cptId) : undefined;
     const exampleResult = isCurrent ? result : computePile(exampleInput, cpt ?? null);
-    if (!exampleResult.ok) throw new Error(`Voorbeeld ${e.cptId}, ${e.sizeMm} mm op ${e.toeNap} m NAP is niet berekenbaar: ${exampleResult.error}`);
+    if (!exampleResult.ok) throw new Error(ct("calcPileCore", "report.errors.exampleFailed", "Voorbeeld {{cpt}}, {{size}} mm op {{level}} m NAP is niet berekenbaar: {{error}}", { cpt: e.cptId, size: e.sizeMm, level: e.toeNap, error: exampleResult.error }));
     return { name: picks.length > 1 ? `${e.cptId ?? "Sondering"} · ${e.sizeMm} mm · NAP ${e.toeNap}` : (e.cptId || "Sondering"), input: exampleInput, result: exampleResult, cpt };
   });
   const summary = computeMultiCptSummary({

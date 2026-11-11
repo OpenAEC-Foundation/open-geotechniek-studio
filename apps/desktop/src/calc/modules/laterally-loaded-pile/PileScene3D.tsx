@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { LateralInput } from './compute';
 import type { BeamResult } from './beam';
 import type { SpringState } from './spring-types';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   input:LateralInput;beam:BeamResult;springs:SpringState[];selectedId:string|undefined;
@@ -58,7 +59,9 @@ export function springStride(count:number,startDistance:number,distance:number):
   return Math.max(1,Math.ceil(count/target));
 }
 export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallback}:Props) {
+  const {t}=useTranslation('calcLateral');
   const host=useRef<HTMLDivElement>(null),select=useRef(onSelect),selected=useRef(selectedId);
+  const sceneLabel=t('scene.aria','3D-paalmodel; draaien met slepen, zoomen met scrollen');
   const refreshSelection=useRef<(()=>void)|undefined>(undefined);
   const [unavailable,setUnavailable]=useState(false);
   select.current=onSelect;selected.current=selectedId;
@@ -75,7 +78,7 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     camera.position.set(reach*1.8,L*.1,L*1.4+maxY*2);
     const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,-L/2,0);controls.minDistance=diameter;controls.maxDistance=maxDistance;controls.update();
     renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));container.appendChild(renderer.domElement);
-    renderer.domElement.setAttribute('aria-label','3D-paalmodel; draaien met slepen, zoomen met scrollen');
+    renderer.domElement.setAttribute('aria-label',sceneLabel);
     const render=()=>renderer.render(scene,camera);
     scene.add(new THREE.AmbientLight(0xffffff,2));
     const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(5,5,10);scene.add(light);
@@ -146,7 +149,7 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
       scene.traverse(object=>{const mesh=object as THREE.Mesh;if(mesh.geometry)geometries.add(mesh.geometry);if(mesh.material)(Array.isArray(mesh.material)?mesh.material:[mesh.material]).forEach(m=>materials.add(m));});
       geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.clear();renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();
     };
-  },[input,beam,springs,scale,unavailable]);
-  if(unavailable)return <div><p className="pile-webgl-fallback" role="status">3D is op dit apparaat niet beschikbaar. Gebruik het rekenmodel en de veerinspectie hieronder.</p>{fallback}</div>;
-  return <><div className="pile-scene" ref={host}/><p className="pile-orbit-help">Sleep om te draaien · scroll om te zoomen · rechtermuis om te verschuiven · klik een veerpunt. De dieptelijst biedt dezelfde selectie met het toetsenbord.</p></>;
+  },[input,beam,springs,scale,unavailable,sceneLabel]);
+  if(unavailable)return <div><p className="pile-webgl-fallback" role="status">{t('scene.unavailable', '3D is op dit apparaat niet beschikbaar. Gebruik het rekenmodel en de veerinspectie hieronder.')}</p>{fallback}</div>;
+  return <><div className="pile-scene" ref={host}/><p className="pile-orbit-help">{t('scene.help', 'Sleep om te draaien · scroll om te zoomen · rechtermuis om te verschuiven · klik een veerpunt. De dieptelijst biedt dezelfde selectie met het toetsenbord.')}</p></>;
 }

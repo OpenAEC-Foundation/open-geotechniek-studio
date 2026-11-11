@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Berechnungen",
+    "tabs": {
+      "label": "Ansicht",
+      "sheet": "Eingabe + Ausdruck",
+      "modelTitle": "Ausdruck ausblenden, damit die Zeichnung die volle Breite erhält",
+      "model": "Eingabe + {{visual}}",
+      "modelCpt": "Eingabe + Sondierung",
+      "print": "Druckvorschau",
+      "settings": "Einstellungen"
+    },
+    "defaultVisual": "Sondierung",
+    "draft": "Entwurf",
+    "input": "Eingabe",
+    "settings": {
+      "title": "Einstellungen · {{name}}",
+      "intro": "Parameter und Standardreihen dieser Berechnung. Änderungen werden sofort neu berechnet."
+    }
+  },
+  "empty": {
+    "title": "Eine neue Pfahlberechnung",
+    "choose": "Wählen Sie Pfahltragfähigkeit oder horizontal belasteter Pfahl.",
+    "layout": "Die Eingabe steht neben dem ausgearbeiteten Ausdruck.",
+    "new": "Neue Berechnung",
+    "noProject": "Erstellen oder öffnen Sie zuerst ein Projekt über Datei."
+  },
+  "sheet": {
+    "eyebrow": "Geotechnik / {{module}}",
+    "notice": "Orientierende Berechnung. Prüfen Sie die Bodenkennwerte, bevor Sie sie in einem Entwurf verwenden.",
+    "keyResults": "Kernergebnisse",
+    "output": "Ausdruck",
+    "governingPass": "Maßgebende u.c. {{uc}} — erfüllt",
+    "governingFail": "Maßgebende u.c. {{uc}} — nicht erfüllt",
+    "noDesignCheck": "Kein Nachweis mit Bemessungslast"
+  },
+  "export": {
+    "failed": "Export fehlgeschlagen: {{error}}",
+    "busy": "Wird bearbeitet…",
+    "pdf": "PDF exportieren"
+  },
+  "print": {
+    "failed": "Der Bericht konnte nicht erstellt werden: {{error}}",
+    "loading": "Bericht wird erstellt…"
+  },
+  "dialog": {
+    "title": "Neue Berechnung",
+    "name": "Name",
+    "namePlaceholder": "Zum Beispiel: Setzung Aufschüttung",
+    "alphaTitle": "Alpha — noch in Entwicklung, nicht produktionsreif",
+    "alpha": "ENTWURF — in Entwicklung",
+    "cancel": "Abbrechen",
+    "add": "Hinzufügen"
+  },
+  "categories": {
+    "pile": "Pfähle",
+    "spread": "Gründungen",
+    "wall": "Wände",
+    "anchor": "Anker",
+    "report": "Berichte",
+    "other": "Sonstiges"
+  },
+  "tree": {
+    "noProject": "Öffnen Sie ein Projekt, um Berechnungen hinzuzufügen.",
+    "add": "+ Neue Berechnung",
+    "emptyHint": "Noch keine Berechnungen. Klicken Sie auf „+“, um eine hinzuzufügen.",
+    "duplicate": "Duplizieren",
+    "confirmDelete": "„{{name}}“ löschen?",
+    "delete": "Löschen",
+    "parts": "Bestandteile von {{name}}",
+    "sheet": "Rechenblatt",
+    "settings": "Einstellungen"
+  },
+  "comingSoon": {
+    "hint": "Dieses Modul befindet sich noch im Aufbau. Verfolgen Sie die Roadmap auf <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Berechnung",
+    "new": "Neu",
+    "newTitle": "Neue geotechnische Berechnung",
+    "groupMethod": "Methode",
+    "explanation": "Erläuterung",
+    "contextTitle": "Geotechnische Berechnungen",
+    "contextModules": "Setzung · Flachgründung",
+    "draftCalculation": "Entwurfsberechnung"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Pfahltragfähigkeit",
+      "subtitle": "Pfahltragfähigkeit — NEN 6743 / NEN 9997",
+      "norm": "Normversion gemäß Berechnungseingabe",
+      "tableLabel": "Tragfähigkeitstabelle"
+    },
+    "laterally-loaded-pile": {
+      "name": "Horizontal belasteter Pfahl",
+      "subtitle": "Bodenfedern, Kopfkraft, Kopfmoment und N–M-Querschnittsnachweis",
+      "norm": "CUR166 Anfangsbettung · Georgiadis-Schichtkorrektur · Projekt-Federgesetz",
+      "visualLabel": "Pfahl- und Federmodell",
+      "tableLabel": "Pfahltabelle"
+    },
+    "foundation-advice": {
+      "name": "Gründungsempfehlung",
+      "subtitle": "Bericht mit Baugrunderkundung, Lageplan, Pfahlempfehlung und Anlagen",
+      "visualLabel": "Lageplan"
+    }
+  }
+}

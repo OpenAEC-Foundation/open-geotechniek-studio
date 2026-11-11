@@ -313,7 +313,7 @@ export async function executeStudioTool(tool: string, rawArgs: unknown, changeVi
         choices: chooseLevels(m),
         soundings: m.cpts.map(c => ({ cptId: c.cptId, missing: c.missing, note: c.profileNote,
           rcNetD: c.cells.map(row => row.map(cell => cell.result.ok ? cell.result.summary.rcNetD : null)),
-          reasons: c.cells.map(row => row.map(cell => cell.result.ok ? null : invalidReason(cell.result.error))) })),
+          reasons: c.cells.map(row => row.map(cell => cell.result.ok ? null : invalidReason(cell.result.error, cell.result.errorCode))) })),
       };
     }
     case "studio_export_report": {

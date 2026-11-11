@@ -7,6 +7,7 @@ import { looksLikeGefBore, parseGefBore } from "../types/gefBoreParser";
 import { parseProjectFile, isProjectFile, readJson } from "../types/projectFile";
 export { serializeActiveProject } from "./projectSerialization";
 import { create } from "zustand";
+import i18next from "i18next";
 import { invoke } from "@tauri-apps/api/core";
 import type { Cpt, ProjectMeta } from "../types/cpt";
 import type { Bore } from "../types/bore";
@@ -1137,6 +1138,7 @@ export function newProjectDocument(): void {
       : "";
     const meta: ProjectMeta = {
       ...DEFAULT_PROJECT_META,
+      title: i18next.t("common:newProjectTitle", { defaultValue: "Nieuw project" }),
       author: inheritedAuthor,
       date: today(),
     };
@@ -1299,7 +1301,7 @@ export async function mergeIntoNewProject(
     cpts.set(newCpt.id, newCpt);
     const meta: ProjectMeta = {
       ...DEFAULT_PROJECT_META,
-      title: `Nieuw project (${cpts.size} sonderingen)`,
+      title: i18next.t("common:newProjectWithCpts", { defaultValue: "Nieuw project ({{count}} sonderingen)", count: cpts.size }),
       date: today(),
     };
     const projectDoc: ProjectDocument = {

@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Obliczenia",
+    "tabs": {
+      "label": "Widok",
+      "sheet": "Dane + wydruk",
+      "modelTitle": "Ukryj wydruk, aby rysunek zajął pełną szerokość",
+      "model": "Dane + {{visual}}",
+      "modelCpt": "Dane + CPT",
+      "print": "Podgląd wydruku",
+      "settings": "Ustawienia"
+    },
+    "defaultVisual": "CPT",
+    "draft": "Wersja robocza",
+    "input": "Dane wejściowe",
+    "settings": {
+      "title": "Ustawienia · {{name}}",
+      "intro": "Parametry i domyślne serie tego obliczenia. Zmiany są natychmiast przeliczane."
+    }
+  },
+  "empty": {
+    "title": "Nowe obliczenie pala",
+    "choose": "Wybierz nośność pala lub pal obciążony poprzecznie.",
+    "layout": "Dane wejściowe znajdują się obok opracowanego wydruku.",
+    "new": "Nowe obliczenie",
+    "noProject": "Najpierw utwórz lub otwórz projekt w menu Plik."
+  },
+  "sheet": {
+    "eyebrow": "Geotechnika / {{module}}",
+    "notice": "Obliczenie orientacyjne. Sprawdź parametry gruntu przed zastosowaniem w projekcie.",
+    "keyResults": "Kluczowe wyniki",
+    "output": "Wydruk",
+    "governingPass": "Miarodajny u.c. {{uc}} — spełnia",
+    "governingFail": "Miarodajny u.c. {{uc}} — nie spełnia",
+    "noDesignCheck": "Brak sprawdzenia dla obciążenia obliczeniowego"
+  },
+  "export": {
+    "failed": "Eksport nie powiódł się: {{error}}",
+    "busy": "Trwa przetwarzanie…",
+    "pdf": "Eksportuj PDF"
+  },
+  "print": {
+    "failed": "Nie udało się wygenerować raportu: {{error}}",
+    "loading": "Generowanie raportu…"
+  },
+  "dialog": {
+    "title": "Nowe obliczenie",
+    "name": "Nazwa",
+    "namePlaceholder": "Na przykład: Osiadanie nasypu",
+    "alphaTitle": "Alfa — wciąż w rozwoju, niegotowe do użytku produkcyjnego",
+    "alpha": "WERSJA ROBOCZA — w rozwoju",
+    "cancel": "Anuluj",
+    "add": "Dodaj"
+  },
+  "categories": {
+    "pile": "Pale",
+    "spread": "Fundamenty",
+    "wall": "Ściany",
+    "anchor": "Kotwy",
+    "report": "Raporty",
+    "other": "Inne"
+  },
+  "tree": {
+    "noProject": "Otwórz projekt, aby dodać obliczenia.",
+    "add": "+ Nowe obliczenie",
+    "emptyHint": "Brak obliczeń. Kliknij „+”, aby dodać obliczenie.",
+    "duplicate": "Duplikuj",
+    "confirmDelete": "Usunąć „{{name}}”?",
+    "delete": "Usuń",
+    "parts": "Części {{name}}",
+    "sheet": "Arkusz obliczeniowy",
+    "settings": "Ustawienia"
+  },
+  "comingSoon": {
+    "hint": "Ten moduł jest wciąż w budowie. Śledź plan rozwoju na <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Obliczenie",
+    "new": "Nowe",
+    "newTitle": "Nowe obliczenie geotechniczne",
+    "groupMethod": "Metoda",
+    "explanation": "Objaśnienie",
+    "contextTitle": "Obliczenia geotechniczne",
+    "contextModules": "Osiadanie · Stopa fundamentowa",
+    "draftCalculation": "Obliczenie robocze"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Nośność pala",
+      "subtitle": "Nośność pala — NEN 6743 / NEN 9997",
+      "norm": "Wersja normy zgodnie z danymi obliczenia",
+      "tableLabel": "Tabela nośności"
+    },
+    "laterally-loaded-pile": {
+      "name": "Pal obciążony poprzecznie",
+      "subtitle": "Sprężyny gruntowe, siła w głowicy, moment w głowicy i sprawdzenie przekroju N–M",
+      "norm": "CUR166 początkowy współczynnik podatności podłoża · korekta warstw wg Georgiadis · prawo sprężyn projektu",
+      "visualLabel": "Model pala i sprężyn",
+      "tableLabel": "Tabela pali"
+    },
+    "foundation-advice": {
+      "name": "Zalecenie posadowienia",
+      "subtitle": "Raport z badaniami podłoża, planem sytuacyjnym, zaleceniem palowym i załącznikami",
+      "visualLabel": "Plan sytuacyjny"
+    }
+  }
+}

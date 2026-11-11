@@ -77,5 +77,38 @@
   "baseLayers": "Baslager",
   "overlayLayers": "Överlägg",
   "dataLayers": "Data",
-  "topotijdreis": "Historiska kartor"
+  "topotijdreis": "Historiska kartor",
+  "newProjectTitle": "Nytt projekt",
+  "newProjectWithCpts": "Nytt projekt ({{count}} sonderingar)",
+  "mcp": {
+    "starting": "Startar MCP…",
+    "startingHint": "Den lokala MCP-anslutningen startar.",
+    "unavailable": "MCP ej tillgänglig",
+    "desktopOnly": "MCP-styrning finns i skrivbordsappen.",
+    "busy": "MCP upptagen · {{action}}",
+    "connectedFailed": "MCP ansluten · kommandot misslyckades",
+    "availableFailed": "MCP tillgänglig · kommandot misslyckades",
+    "error": "MCP-fel",
+    "connected": "MCP ansluten",
+    "clients": "{{count}} MCP-klient(er): {{names}}",
+    "available": "MCP tillgänglig",
+    "availableHint": "Den lokala MCP-servern i Studio är tillgänglig. Ingen MCP-klient är ansluten.",
+    "notReady": "Studios MCP-anslutning är inte klar än.",
+    "actions": {
+      "studio_get_state": "Läser projektstatus",
+      "studio_get_cpt": "Läser sondering",
+      "studio_new_project": "Skapar projekt",
+      "studio_open_file": "Öppnar fil",
+      "studio_select_document": "Väljer dokument",
+      "studio_show_view": "Öppnar vy",
+      "studio_set_project_meta": "Ändrar projektuppgifter",
+      "studio_save_project": "Sparar projekt",
+      "studio_add_calculation": "Lägger till beräkning",
+      "studio_update_calculation": "Ändrar beräkning",
+      "studio_select_calculation": "Väljer beräkning",
+      "studio_get_calculation": "Läser beräkning",
+      "studio_get_capacity_table": "Läser bärförmågetabell",
+      "studio_export_report": "Exporterar rapport"
+    }
+  }
 }

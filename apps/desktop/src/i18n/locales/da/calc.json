@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Beregninger",
+    "tabs": {
+      "label": "Visning",
+      "sheet": "Input + udskrift",
+      "modelTitle": "Skjul udskriften, så tegningen får hele bredden",
+      "model": "Input + {{visual}}",
+      "modelCpt": "Input + sondering",
+      "print": "Udskriftsvisning",
+      "settings": "Indstillinger"
+    },
+    "defaultVisual": "Sondering",
+    "draft": "Udkast",
+    "input": "Input",
+    "settings": {
+      "title": "Indstillinger · {{name}}",
+      "intro": "Parametre og standardserier for denne beregning. Ændringer genberegnes med det samme."
+    }
+  },
+  "empty": {
+    "title": "En ny pæleberegning",
+    "choose": "Vælg pælebæreevne eller tværbelastet pæl.",
+    "layout": "Inputtet står ved siden af den udførlige udskrift.",
+    "new": "Ny beregning",
+    "noProject": "Opret eller åbn først et projekt via Filer."
+  },
+  "sheet": {
+    "eyebrow": "Geoteknik / {{module}}",
+    "notice": "Vejledende beregning. Kontrollér jordparametrene, før den bruges i et design.",
+    "keyResults": "Hovedresultater",
+    "output": "Udskrift",
+    "governingPass": "Dimensionerende u.c. {{uc}} — OK",
+    "governingFail": "Dimensionerende u.c. {{uc}} — ikke OK",
+    "noDesignCheck": "Ingen eftervisning mod en regningsmæssig last"
+  },
+  "export": {
+    "failed": "Eksport mislykkedes: {{error}}",
+    "busy": "Arbejder…",
+    "pdf": "Eksportér PDF"
+  },
+  "print": {
+    "failed": "Rapporten kunne ikke genereres: {{error}}",
+    "loading": "Genererer rapport…"
+  },
+  "dialog": {
+    "title": "Ny beregning",
+    "name": "Navn",
+    "namePlaceholder": "For eksempel: Sætning af opfyld",
+    "alphaTitle": "Alfa — stadig under udvikling, ikke klar til produktion",
+    "alpha": "UDKAST — under udvikling",
+    "cancel": "Annuller",
+    "add": "Tilføj"
+  },
+  "categories": {
+    "pile": "Pæle",
+    "spread": "Fundamenter",
+    "wall": "Vægge",
+    "anchor": "Ankre",
+    "report": "Rapporter",
+    "other": "Andet"
+  },
+  "tree": {
+    "noProject": "Åbn et projekt for at tilføje beregninger.",
+    "add": "+ Ny beregning",
+    "emptyHint": "Ingen beregninger endnu. Klik på »+« for at tilføje en.",
+    "duplicate": "Duplikér",
+    "confirmDelete": "Slet »{{name}}«?",
+    "delete": "Slet",
+    "parts": "Dele af {{name}}",
+    "sheet": "Beregningsark",
+    "settings": "Indstillinger"
+  },
+  "comingSoon": {
+    "hint": "Dette modul er stadig under opbygning. Følg køreplanen på <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Beregning",
+    "new": "Ny",
+    "newTitle": "Ny geoteknisk beregning",
+    "groupMethod": "Metode",
+    "explanation": "Forklaring",
+    "contextTitle": "Geotekniske beregninger",
+    "contextModules": "Sætning · Direkte fundering",
+    "draftCalculation": "Udkast til beregning"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Pælebæreevne",
+      "subtitle": "Pælebæreevne — NEN 6743 / NEN 9997",
+      "norm": "Normversion som angivet i beregningens input",
+      "tableLabel": "Bæreevnetabel"
+    },
+    "laterally-loaded-pile": {
+      "name": "Tværbelastet pæl",
+      "subtitle": "Jordfjedre, hovedkraft, hovedmoment og N–M-tværsnitseftervisning",
+      "norm": "CUR166 initial ballastkoefficient · Georgiadis lagkorrektion · projektets fjederlov",
+      "visualLabel": "Pæle- og fjedermodel",
+      "tableLabel": "Pæletabel"
+    },
+    "foundation-advice": {
+      "name": "Funderingsanbefaling",
+      "subtitle": "Rapport med jordbundsundersøgelse, situationsplan, pæleanbefaling og bilag",
+      "visualLabel": "Situationsplan"
+    }
+  }
+}

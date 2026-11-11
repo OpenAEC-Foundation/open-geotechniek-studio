@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "CPT-sondering {{id}}",
+    "notCalculated": "Ej beräknad",
+    "checks": {
+      "capacity": "bärförmåga"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "Underkant negativ mantelfriktion ({{given}}) ligger utanför pålen; beräknat med {{used}}.",
+    "posKleefClamped": "Överkant positiv mantelfriktion ({{given}}) ligger utanför mantelzonen; beräknat med {{used}}."
+  },
+  "errors": {
+    "noCpt": "Ingen aktiv CPT-sondering",
+    "unknownStandard": "Okänd normversion",
+    "pileTypeNotSupported": "Påltypen stöds inte för denna normversion: {{id}}",
+    "extensionInvalid": "En betongförlängning kräver en träpåle, en positiv förlängningsdimension och en skarv mellan pålhuvud och pålspets, utan separat fotdimension",
+    "taperInvalidWithExtension": "Konicitet hos träpåle kräver en positiv spetsdiameter ≤ trädiametern vid skarven och en konicitetslängd inom träpartiet under skarven",
+    "taperInvalid": "Konicitet hos träpåle kräver en positiv spetsdiameter ≤ huvuddiametern och en konicitetslängd inom pållängden, utan separat fotdimension",
+    "toeSizeInvalid": "Spetsdimensionen måste vara positiv och ändlig",
+    "footPlateTooWide": "För denna påltyp får fotplattan sticka ut högst 10 mm på varje sida",
+    "groutScrewMinDiameter": "Denna förinställning för injekterad skruvpåle kräver en manteldiameter på minst 300 mm",
+    "timberConstantSection": "Denna träpåletyp kräver ett konstant tvärsnitt utan förlängningsdel",
+    "eaInvalid": "EA måste vara positiv och ändlig",
+    "eaRequired": "Ange den projektspecifika axialstyvheten EA för denna påltyp",
+    "projectFactorsInvalid": "Projektfaktorer kräver giltiga värden, en källa och en utgåva som stämmer med vald norm",
+    "nonFiniteInput": "Alla indatavärden måste vara ändliga tal",
+    "diameterNotPositive": "Diameter eller sidlängd måste vara större än noll",
+    "wallThicknessInvalid": "Godstjockleken måste vara större än noll och mindre än halva diametern",
+    "toeAboveHead": "Pålspetsen måste ligga under pålhuvudet",
+    "factorsInvalid": "γm måste vara större än noll; γf,nk och minimum för K0·tan(δ) får inte vara negativa",
+    "negativeLoads": "Tryckkrafter får inte vara negativa",
+    "kleefLevels": "Mantelfriktionsnivåerna måste ligga mellan pålhuvud och pålspets; positiv mantelfriktion får inte överlappa negativ mantelfriktion",
+    "soilLayerInvalid": "Jordlager kräver giltiga nivåer, tungheter och en friktionsvinkel mellan 0 och 90 grader",
+    "soilLayerOrder": "Jordlagren måste gå uppifrån och ned utan överlapp",
+    "historicalCptData": "En historisk beräkning kräver ökande djup med fullständiga, icke-negativa qc-värden",
+    "historicalCptRange": "En historisk beräkning kräver hela intervallet från 8 Deq över till 4 Deq under pålspetsen",
+    "historicalSandOnly": "Historisk positiv mantelfriktion är endast verifierad för sand; justera mantelzonen och jordlagerföljden",
+    "historicalConstantSection": "Den historiska profilen stöder endast ett konstant påltvärsnitt eller en uttrycklig konicitet hos träpåle",
+    "cptTooShallow": "CPT-sonderingen för grund (når {{reach}} m, kräver ≥ {{required}} m)",
+    "pileSizeInvalid": "Påldimensionen måste vara ändlig och större än noll",
+    "historicalGroupAnalysis": "Historisk analys med flera CPT-sonderingar är ännu inte verifierad; använd en enda CPT-sondering"
+  },
+  "warnings": {
+    "factors": "Faktorer: {{edition}}; {{source}}.",
+    "existingModel": "befintlig modell",
+    "existingCatalog": "befintlig katalog",
+    "projectFactors2025": "Projektfaktorer 2025 tillämpade; detta är inte en fullständig omställning av beräkningsmetoden till NEN 9997:2025.",
+    "settlementExtension": "Träpåle med betongförlängning: sättning och fjädervärden med olika EA för betong och trä är inte verifierade och bestäms inte.",
+    "settlementTaper": "Konisk träpåle: sättning och fjädervärden med variabel EA är inte verifierade och bestäms inte.",
+    "settlementHistorical": "Historiska sättnings- och fjädervärden är inte verifierade och bestäms inte.",
+    "settlementLineUnsupported": "Last–sättningskurva {{line}} stöds ännu inte: sättning och fjädervärden bestäms inte.",
+    "extension": "Betongförlängning {{size}} mm ned till skarven vid NAP {{joint}} m: ovanför skarven används förlängningens omkrets, under den träets; negativ mantelfriktion med medelomkrets över friktionszonen, positiv mantelfriktion per lager.",
+    "taperWithExtension": "Konicitet hos trä från skarven: positiv mantelfriktion med medelomkrets per lager. Ingen höjning av pålfaktorer för konicitet.",
+    "taper": "Konicitet hos trä: negativ mantelfriktion med medelomkrets över friktionszonen; positiv mantelfriktion med medelomkrets per lager. Utan betongförlängning eller höjning för konicitet.",
+    "deviatingToeSize": "Avvikande spetsdimension: kontrollera formfaktorn för pålfoten β och tillåten mantelzon för denna installationsmetod.",
+    "qbMaxCapped": "qb;max begränsad till 15 MPa (ursprungligt värde {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Ange ändliga spetsnivåer, en per rad eller åtskilda med semikolon.",
+      "toeLevelsDuplicate": "Varje spetsnivå får förekomma endast en gång.",
+      "cptIdsInvalid": "Välj unika namn på CPT-sonderingar för tabellen.",
+      "toeNapsInvalid": "Tabellen kräver unika, ändliga spetsnivåer.",
+      "sizesInvalid": "Ange positiva påldimensioner i mm, åtskilda med mellanslag, komma eller semikolon.",
+      "sizesDuplicate": "Varje påldimension får förekomma endast en gång.",
+      "levelRangeInvalid": "Ange en ändlig över- och undernivå och ett positivt steg.",
+      "tooManyLevels": "Högst {{max}} spetsnivåer; välj ett större steg.",
+      "sizesNotPositive": "Påldimensionerna måste vara positiva.",
+      "targetRangeInvalid": "Övre gränsen för målbärförmågan måste ligga över den undre gränsen."
+    },
+    "notes": {
+      "profileAboveToe": "Jordlagerföljden slutar ovanför pålspetsen. Kontrollera och förläng jordlagren; saknade mantellager bidrar inte.",
+      "profileAboveDeepest": "Jordlagerföljden slutar vid {{level}} m NAP, ovanför den djupaste spetsnivån."
+    },
+    "reasons": {
+      "cptTooShort": "Utanför CPT-sonderingen",
+      "kleefLevels": "ovanför friktionszonen",
+      "eaMissing": "EA saknas",
+      "notComputable": "kan ej beräknas"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Beräkningen misslyckades",
+      "exampleFailed": "Exempel {{cpt}}, {{size}} mm vid {{level}} m NAP kan inte beräknas: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Rund Ø{{size}}",
+    "square": "Kvadratisk {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — historisk referensprofil",
+    "nen-6743-2006": "NEN 6743-1:2006 — historisk",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — ursprungliga faktorer",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — befintlig beräkningsmodell"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; offentlig referens 05290 s. 31–32 (enskild prefabricerad påle)",
+    "source2006": "NEN 6743-1:2006 tabell 2; NEN 6740:2006 tabell 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 tabell 7.c; ursprungliga faktorer före reduktion",
+    "conditions": "Historisk modell för tryckpålar: sand; ingen korrektion för pålgrupp, OCR, kornstorlek eller schakt. Mantelpikar konservativt begränsade till 12 MPa. Sättning ej verifierad."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, tabell 7.c (sand/sandigt grus)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Stålrörspåle — slagen (befintlig projektmodell)",
+      "shortName": "Stålrörspåle — slagen",
+      "conditions": "Befintlig faktoruppsättning bibehållen; avviker från tabell 7.c:2017 för stålrörspålar med sluten spets.",
+      "source": "Befintlig beräkningsmodell och referensrapport 984.pdf",
+      "edition": "2017/2019 — befintlig projektmodell"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Prefabricerad förspänd betongpåle — slagen"
+    },
+    "concrete-prefab-round": {
+      "name": "Prefabricerad betongpåle — rund, slagen"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Stålrörspåle — sluten spets (tabell 2017)",
+      "shortName": "Stålrörspåle — sluten spets",
+      "conditions": "Fotplattan sticker ut högst 10 mm utanför röret; betongfyllt rör."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Platsgjuten betongpåle — foderrör uttaget genom återslag",
+      "conditions": "Betongen ligger direkt mot jorden; foderröret uttaget genom återslag och statisk dragning."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Platsgjuten betongpåle — foderrör uttaget genom vibrering",
+      "conditions": "Betongen ligger direkt mot jorden; foderröret uttaget genom vibrering och statisk dragning."
+    },
+    "concrete-screw-displacement": {
+      "name": "Skruvad betongpåle — förlorad spets",
+      "conditions": "Slätt foderrör uttaget; betongen ligger direkt mot jorden."
+    },
+    "steel-screw-grout": {
+      "name": "Skruvad stålpåle — injektering",
+      "conditions": "Injekterad mantel ≥ 300 mm; rör inte upp och ned under installationen. EA avser stålet/kärnan, inte den injekterade mantelytan."
+    },
+    "concrete-auger": {
+      "name": "Skruvborrad påle — betong",
+      "conditions": "Utgåva 2017: start av qc;III begränsad till 2 MPa; inget undantag baserat på CPT-sonderingar efter installation tillämpat."
+    },
+    "concrete-bored": {
+      "name": "Borrad påle — med stödvätska"
+    },
+    "timber-uniform": {
+      "name": "Slagen träpåle — rund, med eller utan betongförlängning",
+      "conditions": "Runt trätvärsnitt, konstant eller linjärt avsmalnande från träets överkant; valfritt med betongförlängning ned till skarven. Ingen höjning av pålfaktorer för konicitet."
+    }
+  },
+  "soil": {
+    "sand-dry": "Sand, torr",
+    "sand-wet": "Sand, vattenmättad",
+    "clay": "Lera, vattenmättad",
+    "peat": "Torv, vattenmättad"
+  }
+}

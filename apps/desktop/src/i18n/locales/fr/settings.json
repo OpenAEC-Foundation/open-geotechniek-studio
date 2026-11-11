@@ -29,5 +29,18 @@
     "openaecLink": "OpenAEC Foundation",
     "builtOn": "identité visuelle et bibliothèques de base",
     "sourceLink": "Code source"
+  },
+  "extensions": {
+    "title": "Extensions",
+    "intro": "Modules facultatifs — activez ceux que vous utilisez. Les modifications s'appliquent immédiatement (sans redémarrage).",
+    "comingSoon": "bientôt disponible",
+    "tekening": {
+      "title": "Plan de situation",
+      "description": "Ajoute l'onglet « Plan de situation » — feuille CAO (A2/A3) avec les essais sur la carte, cadre, échelle graphique, accrochage, superpositions et export PDF."
+    },
+    "offertes": {
+      "title": "Demander des devis",
+      "description": "Ajoute le bouton « Demander des devis » au ruban du plan de situation (nécessite l'extension Plan de situation). Ouvre une boîte de dialogue avec les entreprises d'essais les plus proches et une demande de devis préremplie par e-mail."
+    }
   }
 }

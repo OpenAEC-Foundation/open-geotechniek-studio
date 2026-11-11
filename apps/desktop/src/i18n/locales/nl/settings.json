@@ -29,5 +29,18 @@
     "openaecLink": "OpenAEC Foundation",
     "builtOn": "huisstijl en kernbibliotheken",
     "sourceLink": "Broncode"
+  },
+  "extensions": {
+    "title": "Extensies",
+    "intro": "Optionele modules — schakel aan wat je gebruikt. Wijzigingen zijn direct actief (geen herstart nodig).",
+    "comingSoon": "komt binnenkort",
+    "tekening": {
+      "title": "Situatietekening",
+      "description": "Voegt de tab 'Situatietekening' toe — CAD-papier (A2/A3) met sonderingen op kaart, kader, schaalbalk, snap-systeem, overlays en export naar PDF."
+    },
+    "offertes": {
+      "title": "Offertes opvragen",
+      "description": "Voegt de knop 'Offertes opvragen' toe aan de Situatietekening-ribbon (vereist de Situatietekening-extensie). Opent een dialog met de dichtsbijzijnde sondeerbedrijven + automatische mailto-offerte."
+    }
   }
 }

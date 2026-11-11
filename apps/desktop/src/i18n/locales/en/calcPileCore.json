@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "CPT {{id}}",
+    "notCalculated": "Not calculated",
+    "checks": {
+      "capacity": "bearing capacity"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "Bottom of negative skin friction ({{given}}) lies outside the pile; calculated with {{used}}.",
+    "posKleefClamped": "Top of positive shaft friction ({{given}}) lies outside the shaft range; calculated with {{used}}."
+  },
+  "errors": {
+    "noCpt": "No active CPT",
+    "unknownStandard": "Unknown standard version",
+    "pileTypeNotSupported": "Pile type not supported for this standard version: {{id}}",
+    "extensionInvalid": "A concrete extension requires a timber pile, a positive extension size and a joint between pile head and pile toe, without a separate base size",
+    "taperInvalidWithExtension": "Timber taper requires a positive toe diameter ≤ timber diameter at the joint and a taper length within the timber part below the joint",
+    "taperInvalid": "Timber taper requires a positive toe diameter ≤ head diameter and a taper length within the pile length, without a separate base size",
+    "toeSizeInvalid": "Toe size must be positive and finite",
+    "footPlateTooWide": "For this pile type the base plate may protrude at most 10 mm on each side",
+    "groutScrewMinDiameter": "This grouted screw pile preset requires a shaft diameter of at least 300 mm",
+    "timberConstantSection": "This timber pile type requires a constant cross-section without an extension piece",
+    "eaInvalid": "EA must be positive and finite",
+    "eaRequired": "Enter the project-specific axial stiffness EA for this pile type",
+    "projectFactorsInvalid": "Project factors require valid values, a source and an edition that matches the selected standard",
+    "nonFiniteInput": "All input values must be finite numbers",
+    "diameterNotPositive": "Diameter or side length must be greater than zero",
+    "wallThicknessInvalid": "Wall thickness must be greater than zero and less than half the diameter",
+    "toeAboveHead": "Pile toe must be below the pile head",
+    "factorsInvalid": "γm must be greater than zero; γf,nk and the K0·tan(δ) minimum must not be negative",
+    "negativeLoads": "Compressive loads must not be negative",
+    "kleefLevels": "Skin friction levels must lie between pile head and pile toe; positive shaft friction must not overlap negative skin friction",
+    "soilLayerInvalid": "Soil layers require valid levels, unit weights and a friction angle between 0 and 90 degrees",
+    "soilLayerOrder": "Soil layers must run from top to bottom without overlap",
+    "historicalCptData": "A historical calculation requires increasing depths with complete, non-negative qc values",
+    "historicalCptRange": "A historical calculation requires the full range from 8 Deq above to 4 Deq below the pile toe",
+    "historicalSandOnly": "Historical positive shaft friction is only verified for sand; adjust the shaft range and soil profile",
+    "historicalConstantSection": "The historical profile only supports a constant pile cross-section or an explicit timber taper",
+    "cptTooShallow": "CPT too shallow (reaches {{reach}} m, requires ≥ {{required}} m)",
+    "pileSizeInvalid": "The pile size must be finite and greater than zero",
+    "historicalGroupAnalysis": "Historical multi-CPT analysis is not yet verified; use a single CPT"
+  },
+  "warnings": {
+    "factors": "Factors: {{edition}}; {{source}}.",
+    "existingModel": "existing model",
+    "existingCatalog": "existing catalogue",
+    "projectFactors2025": "2025 project factors applied; this is not a full conversion of the calculation method to NEN 9997:2025.",
+    "settlementExtension": "Timber pile with concrete extension: settlement and spring values with different EA for concrete and timber are not verified and are not determined.",
+    "settlementTaper": "Tapered timber pile: settlement and spring values with variable EA are not verified and are not determined.",
+    "settlementHistorical": "Historical settlement and spring values are not verified and are not determined.",
+    "settlementLineUnsupported": "Load-settlement curve {{line}} not yet supported: settlement and spring values are not determined.",
+    "extension": "Concrete extension {{size}} mm down to the joint at NAP {{joint}} m: above the joint the perimeter of the extension is used, below it that of the timber; negative skin friction with the mean perimeter over the friction zone, positive shaft friction per layer.",
+    "taperWithExtension": "Timber taper from the joint: positive shaft friction with mean perimeter per layer. No increase of pile factors for taper.",
+    "taper": "Timber taper: negative skin friction with mean perimeter over the friction zone; positive shaft friction with mean perimeter per layer. Without concrete extension or increase for taper.",
+    "deviatingToeSize": "Deviating toe size: check the pile base shape factor β and the permitted shaft friction range for this installation method.",
+    "qbMaxCapped": "qb;max capped at 15 MPa (raw value {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Enter finite toe levels, one per line or separated by semicolons.",
+      "toeLevelsDuplicate": "Each toe level may occur only once.",
+      "cptIdsInvalid": "Select unique CPT names for the table.",
+      "toeNapsInvalid": "The table requires unique, finite toe levels.",
+      "sizesInvalid": "Enter positive pile sizes in mm, separated by space, comma or semicolon.",
+      "sizesDuplicate": "Each pile size may occur only once.",
+      "levelRangeInvalid": "Enter a finite top and bottom level and a positive step.",
+      "tooManyLevels": "At most {{max}} toe levels; choose a larger step.",
+      "sizesNotPositive": "Pile sizes must be positive.",
+      "targetRangeInvalid": "The upper limit of the target bearing capacity must be above the lower limit."
+    },
+    "notes": {
+      "profileAboveToe": "Soil profile ends above the pile toe. Check and extend the soil layers; missing shaft layers do not contribute.",
+      "profileAboveDeepest": "Soil profile ends at {{level}} m NAP, above the deepest toe level."
+    },
+    "reasons": {
+      "cptTooShort": "CPT out of range",
+      "kleefLevels": "above friction zone",
+      "eaMissing": "EA missing",
+      "notComputable": "not calculable"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Calculation failed",
+      "exampleFailed": "Example {{cpt}}, {{size}} mm at {{level}} m NAP cannot be calculated: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Round Ø{{size}}",
+    "square": "Square {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — historical reference profile",
+    "nen-6743-2006": "NEN 6743-1:2006 — historical",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — original factors",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — existing calculation model"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; public reference 05290 pp. 31–32 (single precast pile)",
+    "source2006": "NEN 6743-1:2006 table 2; NEN 6740:2006 table 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 table 7.c; original factors before reduction",
+    "conditions": "Historical compression pile model: sand; no pile group, OCR, grain size or excavation correction. Shaft peaks conservatively capped at 12 MPa. Settlement not verified."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, table 7.c (sand/sandy gravel)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Steel tube pile — driven (existing project model)",
+      "shortName": "Steel tube pile — driven",
+      "conditions": "Existing factor set retained; deviates from table 7.c:2017 for closed-end steel tube piles.",
+      "source": "Existing calculation model and reference report 984.pdf",
+      "edition": "2017/2019 — existing project model"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Precast prestressed concrete pile — driven"
+    },
+    "concrete-prefab-round": {
+      "name": "Precast concrete pile — round, driven"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Steel tube pile — closed end (2017 table)",
+      "shortName": "Steel tube pile — closed end",
+      "conditions": "Base plate protrudes at most 10 mm beyond the tube; concrete-filled tube."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Cast-in-place concrete pile — casing extracted by back-driving",
+      "conditions": "Concrete bears directly against the soil; casing extracted by back-driving and static pulling."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Cast-in-place concrete pile — casing extracted by vibration",
+      "conditions": "Concrete bears directly against the soil; casing extracted by vibration and static pulling."
+    },
+    "concrete-screw-displacement": {
+      "name": "Concrete screw pile — lost tip",
+      "conditions": "Smooth casing withdrawn; concrete bears directly against the soil."
+    },
+    "steel-screw-grout": {
+      "name": "Steel screw pile — grout injection",
+      "conditions": "Grout shaft ≥ 300 mm; do not move up and down during installation. EA refers to the steel/core, not the grout shaft surface."
+    },
+    "concrete-auger": {
+      "name": "Auger pile — concrete",
+      "conditions": "2017 edition: start of qc;III capped at 2 MPa; no exemption based on post-installation CPTs applied."
+    },
+    "concrete-bored": {
+      "name": "Bored pile — with support fluid"
+    },
+    "timber-uniform": {
+      "name": "Timber driven pile — round, with or without concrete extension",
+      "conditions": "Round timber cross-section, constant or linearly tapered from the top of the timber; optionally with a concrete extension down to the joint. No increase of pile factors for taper."
+    }
+  },
+  "soil": {
+    "sand-dry": "Sand, dry",
+    "sand-wet": "Sand, saturated",
+    "clay": "Clay, saturated",
+    "peat": "Peat, saturated"
+  }
+}

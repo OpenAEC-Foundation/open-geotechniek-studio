@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Berekeningen",
+    "tabs": {
+      "label": "Weergave",
+      "sheet": "Invoer + uitdraai",
+      "modelTitle": "Verberg de uitdraai zodat de tekening de volle breedte krijgt",
+      "model": "Invoer + {{visual}}",
+      "modelCpt": "Invoer + sondering",
+      "print": "Afdrukvoorbeeld",
+      "settings": "Instellingen"
+    },
+    "defaultVisual": "Sondering",
+    "draft": "Concept",
+    "input": "Invoer",
+    "settings": {
+      "title": "Instellingen · {{name}}",
+      "intro": "Parameters en standaardreeksen van deze berekening. Wijzigingen rekenen direct door."
+    }
+  },
+  "empty": {
+    "title": "Een nieuwe paalberekening",
+    "choose": "Kies paaldraagvermogen of horizontale paalbelasting.",
+    "layout": "De invoer staat naast de uitgewerkte uitdraai.",
+    "new": "Nieuwe berekening",
+    "noProject": "Maak of open eerst een project via Bestand."
+  },
+  "sheet": {
+    "eyebrow": "Geotechniek / {{module}}",
+    "notice": "Indicatieve berekening. Controleer de grondparameters voor toepassing in een ontwerp.",
+    "keyResults": "Kernuitkomsten",
+    "output": "Uitdraai",
+    "governingPass": "Maatgevende u.c. {{uc}} — voldoet",
+    "governingFail": "Maatgevende u.c. {{uc}} — voldoet niet",
+    "noDesignCheck": "Geen toets met ontwerpbelasting"
+  },
+  "export": {
+    "failed": "Export mislukt: {{error}}",
+    "busy": "Bezig…",
+    "pdf": "PDF exporteren"
+  },
+  "print": {
+    "failed": "Het rapport kan niet worden opgemaakt: {{error}}",
+    "loading": "Rapport opmaken…"
+  },
+  "dialog": {
+    "title": "Nieuwe berekening",
+    "name": "Naam",
+    "namePlaceholder": "Bijvoorbeeld: Zetting ophoging",
+    "alphaTitle": "Alpha — nog in ontwikkeling, niet productie-gereed",
+    "alpha": "CONCEPT — in ontwikkeling",
+    "cancel": "Annuleren",
+    "add": "Toevoegen"
+  },
+  "categories": {
+    "pile": "Palen",
+    "spread": "Funderingen",
+    "wall": "Wanden",
+    "anchor": "Ankers",
+    "report": "Rapporten",
+    "other": "Overig"
+  },
+  "tree": {
+    "noProject": "Open een project om berekeningen toe te voegen.",
+    "add": "+ Nieuwe berekening",
+    "emptyHint": "Nog geen berekeningen. Klik op \"+\" om er een toe te voegen.",
+    "duplicate": "Dupliceren",
+    "confirmDelete": "Verwijder \"{{name}}\"?",
+    "delete": "Verwijderen",
+    "parts": "Onderdelen van {{name}}",
+    "sheet": "Rekenblad",
+    "settings": "Instellingen"
+  },
+  "comingSoon": {
+    "hint": "Deze module wordt nog gebouwd. Volg de roadmap op <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Berekening",
+    "new": "Nieuw",
+    "newTitle": "Nieuwe geotechnische berekening",
+    "groupMethod": "Methode",
+    "explanation": "Toelichting",
+    "contextTitle": "Geotechnische berekeningen",
+    "contextModules": "Zetting · Poer op staal",
+    "draftCalculation": "Conceptberekening"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Paaldraagvermogen",
+      "subtitle": "Paaldraagvermogen — NEN 6743 / NEN 9997",
+      "norm": "Normversie volgens berekeningsinvoer",
+      "tableLabel": "Draagvermogentabel"
+    },
+    "laterally-loaded-pile": {
+      "name": "Horizontale paalbelasting",
+      "subtitle": "Grondveren, kopkracht, kopmoment en N–M-doorsnedetoets",
+      "norm": "CUR166 initiële bedding · Georgiadis-laagcorrectie · projectveerwet",
+      "visualLabel": "Paal- en veermodel",
+      "tableLabel": "Paaltabel"
+    },
+    "foundation-advice": {
+      "name": "Funderingsadvies",
+      "subtitle": "Rapport met grondonderzoek, situatie, paaladvies en bijlagen",
+      "visualLabel": "Situatie"
+    }
+  }
+}

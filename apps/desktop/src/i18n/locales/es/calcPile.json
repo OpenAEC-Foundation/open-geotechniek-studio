@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Abrir {{cpt}}, {{size}} mm a {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b punta →",
+    "cptAria": "Gráfico del CPT con superposición del pilote",
+    "excavation": "Excavación {{nap}}",
+    "loadAxis": "Carga [kN]",
+    "loadSettlement": "Diagrama carga-asiento",
+    "negSkinBottom": "Límite roz. negativo {{nap}}",
+    "pileToe": "Punta del pilote {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Cabeza del pilote {{nap}}",
+    "posSkinTop": "Techo roz. positivo {{nap}}",
+    "qcPosSkinAvg": "qc;roz.pos;med = {{v}} MPa",
+    "shaftSide": "← R_s fuste",
+    "water": "Agua {{nap}}",
+    "zoomIn": "Acercar",
+    "zoomInTitle": "Acercar (o rueda del ratón hacia arriba)",
+    "zoomOut": "Alejar",
+    "zoomOutTitle": "Alejar (o rueda del ratón hacia abajo)",
+    "zoomReset": "Restablecer zoom",
+    "zoomResetTitle": "Restablecer zoom (o doble clic en el gráfico)",
+    "zoomToe": "Zoom a la punta del pilote",
+    "zoomToeTitle": "Zoom a la punta del pilote (margen de 1 m alrededor del pilote)",
+    "zoomToolbar": "Zoom del gráfico"
+  },
+  "choice": {
+    "aboveMaxTitle": "Incluso el pilote más corto que cumple queda por encima del límite superior.",
+    "caption": "Cota de punta más alta [m NAP] con Rc;net;d ≥ {{min}} kN, por dimensión de pilote y CPT. Haga clic en una cota para abrir la hoja de cálculo.",
+    "cptOutOfRange": "CPT fuera de alcance",
+    "dropsDeeper": "revisar más abajo",
+    "dropsDeeperTitle": "A mayor profundidad, la capacidad portante vuelve a caer por debajo del límite inferior.",
+    "highest": "Más alta",
+    "lowest": "Más baja",
+    "notReached": "no alcanzado",
+    "notReachedAria": "{{cpt}}, {{size}} mm: no alcanzado",
+    "reached": "Alcanzado",
+    "size": "Dimensión [mm]",
+    "smallestSpread": "menor dispersión",
+    "spread": "Dispersión",
+    "tableAria": "Cota de punta por dimensión de pilote y CPT",
+    "title": "Tabla de selección"
+  },
+  "cpt": {
+    "choose": "— seleccione un CPT —",
+    "title": "CPT"
+  },
+  "cpts": {
+    "all": "Todos los CPT",
+    "legend": "CPT",
+    "missingOption": "{{id}} (no disponible)"
+  },
+  "examples": {
+    "add": "Añadir ejemplo",
+    "cptAria": "Ejemplo: CPT",
+    "hint": "Desarrollado completamente en el informe; a continuación siguen la tabla de selección y las tablas por CPT. Sin selección se incluye la hoja de cálculo actual.",
+    "legend": "Listado",
+    "levelAria": "Ejemplo: cota de punta",
+    "listAria": "Cálculos de ejemplo",
+    "removeAria": "Quitar el ejemplo {{cpt}}, {{size}} mm a {{level}} m NAP",
+    "sizeAria": "Ejemplo: dimensión"
+  },
+  "extension": {
+    "customJoint": "Junta personalizada",
+    "diameter": "Diámetro del recrecido",
+    "joint": "Junta (base del recrecido)",
+    "jointAria": "Junta [m NAP]",
+    "jointTooHigh": "La junta está a menos de 0,5 m por debajo del nivel freático (NAP {{water}}): la madera no permanecerá siempre húmeda en ese punto. Elija un recrecido más largo.",
+    "length": "Longitud del recrecido",
+    "lengthAria": "Longitud del recrecido [m]",
+    "perimeterHint": "Por encima de la junta se usa el perímetro del recrecido; por debajo, el de la madera.",
+    "shape": "Forma",
+    "shapeAria": "Forma del recrecido",
+    "side": "Lado del recrecido",
+    "size": "Recrecido",
+    "sizeAria": "Dimensión del recrecido [mm]",
+    "title": "Recrecido de hormigón"
+  },
+  "factors": {
+    "alphaTLabel": "αt (sin comprobación a tracción)",
+    "basis": "Base normativa: {{edition}}. {{source}}",
+    "edition": "Edición",
+    "edition2025": "2025 — coeficientes del proyecto",
+    "source": "Fuente / declaración",
+    "sourceHint": "La fuente debe corresponder al sistema de pilote, al método de ejecución y a las dimensiones. Los coeficientes de 2025 no hacen que el método de cálculo completo cumpla automáticamente con 2025.",
+    "title": "Coeficientes del pilote",
+    "useProject": "Usar coeficientes del proyecto / declaración propia"
+  },
+  "legend": {
+    "chosen": "cota seleccionada",
+    "over": "> {{max}} kN, holgado",
+    "title": "Leyenda"
+  },
+  "levels": {
+    "applyList": "Aplicar cotas",
+    "applyRange": "Aplicar serie",
+    "count": "{{n}} cotas",
+    "custom": "Cotas personalizadas",
+    "excavation": "Excavación",
+    "excavationAria": "Excavación [m NAP]",
+    "from": "Desde [m NAP]",
+    "legend": "Cotas de punta",
+    "listLabel": "Cotas de punta [m NAP]",
+    "pileToe": "Punta del pilote",
+    "pileToeAria": "Punta del pilote [m NAP]",
+    "pileTop": "Cabeza del pilote",
+    "pileTopAria": "Cabeza del pilote [m NAP]",
+    "step": "Paso [m]",
+    "title": "Cotas del pilote",
+    "to": "Hasta [m NAP]",
+    "water": "Nivel freático",
+    "waterAria": "Nivel freático [m NAP]"
+  },
+  "load": {
+    "characteristic": "característica",
+    "design": "carga de cálculo",
+    "materialFactor": "coeficiente del material",
+    "negativeSkinFriction": "rozamiento negativo",
+    "title": "Carga"
+  },
+  "material": {
+    "concrete": "Hormigón",
+    "steel": "Acero",
+    "wood": "Madera"
+  },
+  "pile": {
+    "axialStiffness": "Rigidez axial EA",
+    "baseSize": "Dimensión de la punta",
+    "baseSizeAria": "Dimensión de la punta [mm] (vacío = fuste)",
+    "baseSizePlaceholder": "fuste",
+    "customSize": "Dimensión personalizada",
+    "diameter": "Diámetro",
+    "eaAriaOptional": "Rigidez axial EA [kN] (opcional)",
+    "eaAriaRequired": "Rigidez axial EA [kN] (obligatorio)",
+    "eaMissing": "Obligatorio para este tipo de pilote — sin EA no se realiza el cálculo.",
+    "headDiameter": "Diámetro de cabeza",
+    "material": "Material",
+    "optional": "opcional",
+    "required": "obligatorio",
+    "sideLength": "Lado",
+    "title": "Pilote",
+    "tubeSize": "Dimensión del tubo",
+    "type": "Tipo de pilote",
+    "wallThickness": "Espesor de pared",
+    "wallThicknessAria": "Espesor de pared [mm]",
+    "woodDiameterAtJoint": "Diámetro de la madera en la junta"
+  },
+  "profile": {
+    "bottom": "Inferior",
+    "fieldAria": "{{field}} capa {{n}}",
+    "soilType": "Tipo de suelo",
+    "soilTypeAria": "Tipo de suelo capa {{n}}",
+    "title": "Perfil del terreno",
+    "tooShallow": "El perfil del terreno termina a NAP {{bottom}} m, por encima de la punta del pilote a NAP {{toe}} m. En ese tramo no se contabiliza rozamiento por fuste; prolongue la capa inferior.",
+    "top": "Superior"
+  },
+  "result": {
+    "base": {
+      "capped": "(limitado a 15 MPa)",
+      "title": "Resistencia por punta"
+    },
+    "existingModel": "Modelo de proyecto existente",
+    "facts": {
+      "diameterD": "Diámetro D",
+      "equalToShaft": "igual al fuste",
+      "extensionValue": "{{size}} mm, desde la cabeza del pilote hasta la junta a NAP {{joint}} m",
+      "projectFactors": "coeficientes del proyecto",
+      "sideA": "Lado a",
+      "tapered": "{{size}} mm (cónico)",
+      "title": "Hipótesis de partida",
+      "woodAtJoint": "Madera en la junta"
+    },
+    "negSkin": {
+      "cappedNote": "limitado a ksMin = {{v}}",
+      "cappedTitle": "Limitado a ksMin={{v}}",
+      "extensionAndWood": "(recrecido y madera)",
+      "layer": "Capa",
+      "title": "Rozamiento negativo",
+      "zone": "Zona: cabeza del pilote NAP {{top}} a NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Introduzca la rigidez axial <strong>EA</strong> en <strong>Pilote</strong>. Para este tipo de pilote, EA no se deduce de la sección; el valor depende del sistema de pilote seleccionado.",
+      "missingOne": "Falta un dato más",
+      "notYet": "Aún no se puede calcular",
+      "note": "En cuanto la entrada esté completa, aquí aparecerá el cálculo desarrollado."
+    },
+    "settlement": {
+      "title": "Asiento (art. 7.6.4.2, curva carga-asiento 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} capa(s) — Σ de las contribuciones por capa",
+      "title": "Rozamiento por fuste máximo"
+    },
+    "spring": {
+      "title": "Rigidez del muelle"
+    },
+    "summary": {
+      "check": "Comprobación",
+      "compression": "Capacidad portante a compresión",
+      "conclusion": "Conclusión:",
+      "conclusionFail": "el pilote no cumple; N<sub>Ed</sub> = {{nEd}} kN supera R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "no se ha introducido carga de cálculo; la capacidad portante neta es R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "el pilote cumple; N<sub>Ed</sub> = {{nEd}} kN es el {{pct}}% de R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "No cumple",
+      "failsShort": "NO cumple",
+      "passes": "Cumple",
+      "passesShort": "cumple",
+      "quantity": "Magnitud",
+      "result": "Resultado",
+      "title": "Resumen"
+    },
+    "title": "Capacidad portante del pilote",
+    "total": {
+      "title": "Capacidad portante geotécnica máxima"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Recrecido",
+    "defaultSource": "Configuración del cálculo",
+    "existingModel": "modelo existente",
+    "extensionLengths": "Longitudes del recrecido",
+    "extensionLengthsAria": "Longitudes del recrecido [m]",
+    "extensionRemoveAria": "Quitar recrecido {{n}}",
+    "extensionShapeAria": "Forma del recrecido {{n}}",
+    "extensionSizeAria": "Dimensión del recrecido {{n}} [mm]",
+    "extensionsAria": "Recrecidos de hormigón",
+    "extensionsTitle": "Recrecidos de hormigón sobre madera",
+    "factor": "Coeficiente",
+    "factorsHint": "Vacío = valor de tabla de la norma seleccionada ({{edition}}). Un valor de proyecto requiere justificación, por ejemplo una prueba de carga.",
+    "factorsTitle": "Coeficientes del pilote · {{type}}",
+    "gammaFnk": "γf;nk rozamiento negativo",
+    "gammaM": "γm coeficiente del material",
+    "partialFactors": "Coeficientes parciales",
+    "project": "Proyecto",
+    "projectValueAria": "{{factor}} proyecto",
+    "resetAll": "Restablecer todas las series a los valores predeterminados",
+    "restoreSeries": "Restaurar serie estándar",
+    "restoreSeriesNone": "Restaurar serie estándar (ninguna)",
+    "series": "Series estándar",
+    "seriesHint": "La serie para la lista desplegable de la entrada (dimensiones de tubo) y el botón Serie estándar de la tabla de capacidad portante.",
+    "sizeMm": "Dimensión [mm]",
+    "sizesAria": "Serie de dimensiones del tipo de pilote [mm]",
+    "sizesFor": "Dimensiones {{type}}",
+    "sourceAria": "Fuente de los coeficientes del proyecto",
+    "table": "Tabla",
+    "timberToe": "Diámetro de punta de la madera",
+    "useTableValues": "Usar valores de tabla"
+  },
+  "shape": {
+    "round": "Circular",
+    "square": "Cuadrado"
+  },
+  "sizes": {
+    "apply": "Aplicar dimensiones",
+    "label": "Dimensiones del pilote [mm]",
+    "legend": "Dimensiones del pilote",
+    "standard": "Serie estándar"
+  },
+  "skin": {
+    "dragHint": "Las cotas del pilote y las zonas de rozamiento también pueden arrastrarse en el CPT.",
+    "ksMinAria": "K0·tan(δ) mínimo",
+    "minimum": "mínimo",
+    "negBottom": "Base del rozamiento negativo",
+    "negBottomAria": "Base del rozamiento negativo [m NAP]",
+    "posTop": "Techo del rozamiento positivo",
+    "posTopAria": "Techo del rozamiento positivo [m NAP]",
+    "title": "Zonas de rozamiento"
+  },
+  "standard": {
+    "existingModel": "Modelo de proyecto existente — sin cambios",
+    "historicalHint": "Cálculo histórico a compresión para un único pilote en un único CPT. Rozamiento positivo por fuste en arena, sección constante o conicidad explícita de la madera; el asiento y los grupos de pilotes no están verificados. Al cambiar de norma se borran los coeficientes del proyecto y se restablece γm.",
+    "title": "Norma de cálculo",
+    "version": "Versión de la norma"
+  },
+  "table": {
+    "breadcrumb": "Ruta de navegación",
+    "cpt": "CPT {{id}}",
+    "cptMissing": "El CPT {{id}} no está en el proyecto.",
+    "cptTableAria": "Rc;net;d CPT {{id}}",
+    "heading": "Capacidad portante por CPT",
+    "intro": "Un sistema de pilote en una serie de dimensiones y cotas de punta, calculado para cada CPT. Defina el tipo de pilote, la norma y el perfil del terreno a la izquierda.",
+    "selectCpt": "Seleccione al menos un CPT.",
+    "title": "Tabla de capacidad portante",
+    "toe": "Punta [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "El diámetro de la madera disminuye linealmente desde la cabeza; por debajo del tramo cónico, el diámetro de punta se mantiene constante. El perímetro de rozamiento sigue la longitud seleccionada; el asiento y las rigideces de muelle no se determinan.",
+    "hintFromJoint": "El diámetro de la madera disminuye linealmente desde la junta; por debajo del tramo cónico, el diámetro de punta se mantiene constante. El perímetro de rozamiento sigue la longitud seleccionada; el asiento y las rigideces de muelle no se determinan.",
+    "lengthFromHead": "Longitud cónica desde la cabeza",
+    "lengthFromHeadAria": "Longitud cónica desde la cabeza [m]",
+    "lengthFromJoint": "Longitud cónica desde la junta",
+    "lengthFromJointAria": "Longitud cónica desde la junta [m]",
+    "title": "Pilote de madera cónico",
+    "toeDiameter": "Diámetro de punta",
+    "toeDiameterAria": "Diámetro de punta de la madera [mm]"
+  },
+  "target": {
+    "hint": "Para cada dimensión, la tabla de selección busca el pilote más corto que alcanza el límite inferior. Por encima del límite superior, la dimensión es holgada.",
+    "inverted": "El límite superior debe estar por encima del límite inferior; la tabla sigue usando la banda anterior.",
+    "legend": "Capacidad portante requerida Rc;net;d",
+    "lower": "Límite inferior [kN]",
+    "notNumber": "Introduzca el límite inferior y superior como número en kN.",
+    "upper": "Límite superior [kN]"
+  },
+  "visual": {
+    "cptHeading": "CPT: {{id}}",
+    "crossSection": "Sección transversal",
+    "crossSectionAria": "Sección transversal del pilote",
+    "empty": {
+      "howTo": "Abra un archivo GEF, BRO-XML o de proyecto mediante <strong>Abrir</strong> en la parte superior. Después seleccione el CPT en <strong>CPT</strong> en el panel de entrada.",
+      "noCpt": "Aún no se ha vinculado ningún CPT a este cálculo.",
+      "then": "Aquí aparecerán entonces la resistencia por punta del cono, el pilote y las zonas de rozamiento.",
+      "title": "Gráfico del CPT"
+    },
+    "extensionTitle": "Recrecido de hormigón de {{size}} mm hasta la junta a NAP {{joint}} m",
+    "material": "material",
+    "materials": {
+      "castInSitu": "Hormigón in situ",
+      "prefab": "Hormigón prefabricado",
+      "steelEA": "Pilote de acero; EA específica del proyecto",
+      "steelTube": "Pilote tubular de acero, relleno de hormigón",
+      "wood": "Madera, sección constante"
+    },
+    "noPoints": "No hay mediciones en este CPT",
+    "notComputed": "No calculado: {{error}}. Arrastre las cotas o ajuste la entrada.",
+    "rebarCage": "jaula de armadura",
+    "taperLength": "longitud cónica desde la cabeza",
+    "toeSize": "dimensión de la punta",
+    "wall": "pared"
+  }
+}

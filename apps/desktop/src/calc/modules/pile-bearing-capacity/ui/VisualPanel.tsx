@@ -1,5 +1,7 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/ui/VisualPanel.tsx
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { fmtNumber } from "../../../i18n";
 import { MATERIAL_COLORS, materialColor } from "../parts/material-colors";
 import { useCptStore } from "../../../../store/useCptStore";
 import type { PanelProps } from "../../../framework/types";
@@ -91,9 +93,9 @@ const PILE_GFX_MAX_W = 36;
 const MIN_ZOOM_SPAN_M = 0.5;
 
 function formatNap(n: number): string {
-  // "NAP +3,88" / "NAP -10,46" — Dutch decimal-comma, signed.
+  // "NAP +3,88" / "NAP -10,46" — decimaalteken van de actieve taal, met teken.
   const sign = n >= 0 ? "+" : "-";
-  return `NAP ${sign}${Math.abs(n).toFixed(2).replace(".", ",")} m`;
+  return `NAP ${sign}${fmtNumber(Math.abs(n), 2)} m`;
 }
 
 function downsample<T>(arr: T[], target: number): T[] {
@@ -241,6 +243,7 @@ function PileGraphic({
   hasRebarCage,
   pileColCenter,
 }: PileGraphicProps) {
+  const { t } = useTranslation("calcPile");
   // Materiaalkleur: beton grijs, staal roestrood, hout met nerf.
   const fill = material === "wood" ? "url(#pile-wood-grain)" : materialColor(material).fill;
   const stroke = "#374151";
@@ -350,7 +353,7 @@ function PileGraphic({
             ? <polygon points={taperPoints} fill={fill} stroke={stroke} strokeWidth={1.5} />
             : <rect x={xPileLeft} y={yJointClamped} width={diaPx} height={Math.max(0, yToeClamped - yJointClamped)} fill={fill} stroke={stroke} strokeWidth={1.5} />}
           <rect x={cx - extPx / 2} y={yTopClamped} width={extPx} height={Math.max(0, yJointClamped - yTopClamped)} fill={MATERIAL_COLORS.concrete.fill} stroke={stroke} strokeWidth={1.5}>
-            <title>{`Betonopzetter ${ext.isCircular ? "Ø" : `${ext.sizeMm}×`}${ext.sizeMm} mm tot de las op NAP ${ext.jointNap.toFixed(2)} m`}</title>
+            <title>{t("visual.extensionTitle", "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m", { size: `${ext.isCircular ? "Ø" : `${ext.sizeMm}×`}${ext.sizeMm}`, joint: ext.jointNap.toFixed(2) })}</title>
           </rect>
         </g>
       )}
@@ -514,6 +517,7 @@ function PileCrossSection({
   isCircular,
   hasRebarCage,
 }: PileCrossSectionProps) {
+  const { t } = useTranslation("calcPile");
   const SIZE = 120;
   const PAD = 10;
   const CX = SIZE / 2;
@@ -542,7 +546,7 @@ function PileCrossSection({
       className="pile-cross-section-svg"
       viewBox={`0 0 ${SIZE} ${SIZE}`}
       role="img"
-      aria-label="Paal-doorsnede"
+      aria-label={t("visual.crossSectionAria", "Paal-doorsnede")}
     >
       <defs>
         {/* Beton-arcering — diagonale grijze strepen + lichte grond-fill
@@ -623,6 +627,7 @@ interface ChartProps {
 }
 
 function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
+  const { t } = useTranslation("calcPile");
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [pan, setPan] = useState<PanState | null>(null);
@@ -1026,12 +1031,12 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
 
   return (
     <>
-      <div className="pile-chart-controls" role="toolbar" aria-label="Chart zoom">
+      <div className="pile-chart-controls" role="toolbar" aria-label={t("chart.zoomToolbar", "Grafiekzoom")}>
         <button
           type="button"
           className="pile-chart-ctrl-btn"
-          title="Zoom in (of scrollwiel omhoog)"
-          aria-label="Zoom in"
+          title={t("chart.zoomInTitle", "Zoom in (of scrollwiel omhoog)")}
+          aria-label={t("chart.zoomIn", "Zoom in")}
           onClick={() => applyZoom(0.8)}
         >
           +
@@ -1039,8 +1044,8 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         <button
           type="button"
           className="pile-chart-ctrl-btn"
-          title="Zoom uit (of scrollwiel omlaag)"
-          aria-label="Zoom uit"
+          title={t("chart.zoomOutTitle", "Zoom uit (of scrollwiel omlaag)")}
+          aria-label={t("chart.zoomOut", "Zoom uit")}
           onClick={() => applyZoom(1.25)}
         >
           −
@@ -1048,8 +1053,8 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         <button
           type="button"
           className="pile-chart-ctrl-btn"
-          title="Zoom op paalpunt (1 m padding rondom de paal)"
-          aria-label="Zoom op paalpunt"
+          title={t("chart.zoomToeTitle", "Zoom op paalpunt (1 m padding rondom de paal)")}
+          aria-label={t("chart.zoomToe", "Zoom op paalpunt")}
           onClick={zoomToPile}
         >
           ⌂
@@ -1058,8 +1063,8 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
           <button
             type="button"
             className="pile-chart-ctrl-btn pile-chart-ctrl-btn--reset"
-            title="Reset zoom (of dubbelklik op de grafiek)"
-            aria-label="Reset zoom"
+            title={t("chart.zoomResetTitle", "Reset zoom (of dubbelklik op de grafiek)")}
+            aria-label={t("chart.zoomReset", "Reset zoom")}
             onClick={resetZoom}
           >
             ↺
@@ -1083,7 +1088,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
           ["--pile-chart-text-k" as string]: textScale,
         }}
         role="img"
-        aria-label="CPT-grafiek met paaloverlays"
+        aria-label={t("chart.cptAria", "CPT-grafiek met paaloverlays")}
         onDoubleClick={handleDoubleClick}
       >
         <defs>
@@ -1463,7 +1468,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         className="pile-cpt-overlay-label"
         pointerEvents="none"
       >
-        Paalkop {formatNap(input.pileTopNap)}
+        {t("chart.pileTop", "Paalkop {{nap}}", { nap: formatNap(input.pileTopNap) })}
       </text>
 
       {/* ─── Ontgraving ─── dashed */}
@@ -1491,7 +1496,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         className="pile-cpt-overlay-label"
         pointerEvents="none"
       >
-        Ontgraving {formatNap(input.excavationNap)}
+        {t("chart.excavation", "Ontgraving {{nap}}", { nap: formatNap(input.excavationNap) })}
       </text>
 
       {/* ─── Water ─── triangle marker + dotted line */}
@@ -1524,7 +1529,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         className="pile-cpt-overlay-label"
         pointerEvents="none"
       >
-        Water {formatNap(input.waterNap)}
+        {t("chart.water", "Water {{nap}}", { nap: formatNap(input.waterNap) })}
       </text>
 
       {/* ─── Neg.kleef-grens ─── solid */}
@@ -1552,7 +1557,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         className="pile-cpt-overlay-label"
         pointerEvents="none"
       >
-        Neg.kleef-grens {formatNap(input.negKleefBottomNap)}
+        {t("chart.negSkinBottom", "Neg.kleef-grens {{nap}}", { nap: formatNap(input.negKleefBottomNap) })}
       </text>
 
       {/* ─── Pos.kleef-bovenkant ─── dashed groen, altijd zichtbaar (ook
@@ -1573,7 +1578,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         className="pile-cpt-overlay-label pile-cpt-overlay-label--poskleef"
         pointerEvents="none"
       >
-        Pos.kleef-top {formatNap(posKleefTopNap)}
+        {t("chart.posSkinTop", "Pos.kleef-top {{nap}}", { nap: formatNap(posKleefTopNap) })}
       </text>
       {draggable && (
         <line
@@ -1611,7 +1616,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         className="pile-cpt-overlay-label pile-cpt-overlay-label--strong"
         pointerEvents="none"
       >
-        Paalpunt {formatNap(input.pileToeNap)} (D_eq = {result.base.deqMm.toFixed(0)} mm)
+        {t("chart.pileToe", "Paalpunt {{nap}} (D_eq = {{deq}} mm)", { nap: formatNap(input.pileToeNap), deq: result.base.deqMm.toFixed(0) })}
       </text>
 
       {/* ─── Pile graphic — paal-elevation in eigen kolom rechts van plot,
@@ -1691,7 +1696,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
               className="pile-qc-label pile-qc-label--poskleef"
               pointerEvents="none"
             >
-              qc;pos-kleef;gem = {avgQc.toFixed(2)} MPa
+              {t("chart.qcPosSkinAvg", "qc;pos-kleef;gem = {{v}} MPa", { v: avgQc.toFixed(2) })}
             </text>
           </>
         );
@@ -1757,16 +1762,16 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
 
 export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, PileResult>) {
   const cpt = useCptStore((s) => (input.cptId ? s.cpts.get(input.cptId) : null));
+  const { t } = useTranslation("calcPile");
 
   if (!cpt) {
     return (
       <div className="pile-visual">
         <div className="pile-visual-empty pile-visual-empty-guide">
-          <h3>Sonderingsgrafiek</h3>
-          <p>Er is nog geen sondering aan deze berekening gekoppeld.</p>
-          <p>Open een GEF-, BRO-XML- of projectbestand via <strong>Openen</strong> bovenin.
-            Kies daarna de sondering bij <strong>Sondering</strong> in het invoerpaneel.</p>
-          <p>Hier verschijnen dan de conusweerstand, de paal en de kleeftrajecten.</p>
+          <h3>{t("visual.empty.title", "Sonderingsgrafiek")}</h3>
+          <p>{t("visual.empty.noCpt", "Er is nog geen sondering aan deze berekening gekoppeld.")}</p>
+          <p><Trans t={t} i18nKey="visual.empty.howTo" defaults="Open een GEF-, BRO-XML- of projectbestand via <strong>Openen</strong> bovenin. Kies daarna de sondering bij <strong>Sondering</strong> in het invoerpaneel." components={{ strong: <strong /> }} /></p>
+          <p>{t("visual.empty.then", "Hier verschijnen dan de conusweerstand, de paal en de kleeftrajecten.")}</p>
         </div>
       </div>
     );
@@ -1774,8 +1779,8 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
   if (!cpt.points || cpt.points.length === 0) {
     return (
       <div className="pile-visual">
-        <h3>Sondering: {cpt.id}</h3>
-        <div className="pile-visual-empty">Geen meetwaarden in deze CPT</div>
+        <h3>{t("visual.cptHeading", "Sondering: {{id}}", { id: cpt.id })}</h3>
+        <div className="pile-visual-empty">{t("visual.noPoints", "Geen meetwaarden in deze CPT")}</div>
       </div>
     );
   }
@@ -1794,9 +1799,9 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
 
   return (
     <div className="pile-visual">
-      <h3>Sondering: {cpt.id}</h3>
+      <h3>{t("visual.cptHeading", "Sondering: {{id}}", { id: cpt.id })}</h3>
       {/* Bij een fout blijft de tekening staan, zodat je de niveaus kunt terugslepen. */}
-      {!result.ok && <div className="pile-visual-error" role="alert">Niet berekend: {result.error}. Versleep de niveaus of pas de invoer aan.</div>}
+      {!result.ok && <div className="pile-visual-error" role="alert">{t("visual.notComputed", "Niet berekend: {{error}}. Versleep de niveaus of pas de invoer aan.", { error: result.error })}</div>}
       <div className="pile-cpt-chart">
         <CptOverlayChart cpt={cpt} input={input} result={result} onChange={onChange} />
       </div>
@@ -1809,33 +1814,33 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
           hasRebarCage={csHasRebar}
         />
         <div className="pile-cross-section-info">
-          <div className="pile-cross-section-title">Doorsnede</div>
+          <div className="pile-cross-section-title">{t("visual.crossSection", "Doorsnede")}</div>
           <table className="pile-cross-section-table">
             <tbody>
               <tr>
                 <td>{csIsCircular ? "ø" : "□"}</td>
                 <td>{input.diameterMm.toFixed(0)} mm</td>
               </tr>
-              <tr><td>puntmaat</td><td>{(input.timberTaper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm).toFixed(0)} mm</td></tr>
-              {input.timberTaper && <tr><td>tapse lengte vanaf kop</td><td>{input.timberTaper.lengthM.toFixed(2)} m</td></tr>}
+              <tr><td>{t("visual.toeSize", "puntmaat")}</td><td>{(input.timberTaper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm).toFixed(0)} mm</td></tr>
+              {input.timberTaper && <tr><td>{t("visual.taperLength", "tapse lengte vanaf kop")}</td><td>{input.timberTaper.lengthM.toFixed(2)} m</td></tr>}
               {csMaterial === "steel" && !pileType?.requiresEA && (
                 <tr>
-                  <td>wand</td>
+                  <td>{t("visual.wall", "wand")}</td>
                   <td>{input.wallThicknessMm.toFixed(1)} mm</td>
                 </tr>
               )}
               {csHasRebar && (
                 <tr>
-                  <td>wapeningskorf</td>
+                  <td>{t("visual.rebarCage", "wapeningskorf")}</td>
                   <td>4·D = {rebarCageLenMm.toFixed(0)} mm</td>
                 </tr>
               )}
               <tr>
-                <td>materiaal</td>
+                <td>{t("visual.material", "materiaal")}</td>
                 <td>
-                  {csMaterial === "wood" ? "Hout, constante doorsnede" : csMaterial === "steel"
-                    ? (pileType?.requiresEA ? "Stalen paal; projectspecifieke EA" : "Stalen buispaal, betongevuld")
-                    : (pileType?.requiresEA ? "In de grond gevormd beton" : "Prefab beton")}
+                  {csMaterial === "wood" ? t("visual.materials.wood", "Hout, constante doorsnede") : csMaterial === "steel"
+                    ? (pileType?.requiresEA ? t("visual.materials.steelEA", "Stalen paal; projectspecifieke EA") : t("visual.materials.steelTube", "Stalen buispaal, betongevuld"))
+                    : (pileType?.requiresEA ? t("visual.materials.castInSitu", "In de grond gevormd beton") : t("visual.materials.prefab", "Prefab beton"))}
                 </td>
               </tr>
             </tbody>

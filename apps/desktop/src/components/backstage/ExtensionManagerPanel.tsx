@@ -8,6 +8,7 @@ import {
   type ExtensionId,
 } from "../../hooks/useExtensions";
 import { CALC_REGISTRY } from "../../calc/framework/registry";
+import { moduleName, moduleText } from "../../calc/framework/moduleText";
 import "./ExtensionManagerPanel.css";
 
 /**
@@ -54,9 +55,10 @@ const INSTALLED_EXTENSIONS: ExtensionMeta[] = [
   OFFERTES_EXT,
   ...CALC_REGISTRY.map<ExtensionMeta>((m) => ({
     id: `calc.${m.id}` as ExtensionId,
-    name: m.name,
+    // Getters: naam en beschrijving volgen de actieve taal.
+    get name() { return moduleName(m); },
     version: APP_VERSION,
-    description: `${m.subtitle} — ${m.norm}`,
+    get description() { return `${moduleText(m, "subtitle")} — ${moduleText(m, "norm")}`; },
     author: "OpenAEC Foundation",
     category: "Berekening",
   })),

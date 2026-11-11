@@ -6,6 +6,7 @@ import { computeLateral, type LateralInput, type LateralResult } from './compute
 import type { SectionKind } from './section';
 import { mobilisation } from './SpringField';
 import { PREFAB_SQUARE, STEEL_TUBE_OD } from '../pile-bearing-capacity/standard-sizes';
+import { ct } from '../../i18n';
 
 export interface LateralRow {
   id: string; name: string;
@@ -66,7 +67,7 @@ export function summarize(input: LateralInput, r: LateralResult, maxY?: number):
 }
 
 export function defaultRows(base: LateralInput): LateralRow[] {
-  return [{ id: 'p1', name: 'Paal 1', count: 1, headForceKn: base.headForceKn, headMomentKnM: base.headMomentKnM, nEdKn: base.nEdKn }];
+  return [{ id: 'p1', name: ct('calcLateral', 'table.pileName', 'Paal {{n}}', { n: 1 }), count: 1, headForceKn: base.headForceKn, headMomentKnM: base.headMomentKnM, nEdKn: base.nEdKn }];
 }
 
 export function computePileTable(base: LateralInput) {

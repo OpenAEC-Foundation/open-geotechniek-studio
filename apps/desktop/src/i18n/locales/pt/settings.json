@@ -29,5 +29,18 @@
     "openaecLink": "OpenAEC Foundation",
     "builtOn": "identidade visual e bibliotecas principais",
     "sourceLink": "Código-fonte"
+  },
+  "extensions": {
+    "title": "Extensões",
+    "intro": "Módulos opcionais — ative os que usa. As alterações têm efeito imediato (sem reiniciar).",
+    "comingSoon": "em breve",
+    "tekening": {
+      "title": "Planta de situação",
+      "description": "Adiciona o separador «Planta de situação» — folha CAD (A2/A3) com os ensaios no mapa, moldura, escala gráfica, ajuste, sobreposições e exportação para PDF."
+    },
+    "offertes": {
+      "title": "Pedir orçamentos",
+      "description": "Adiciona o botão «Pedir orçamentos» à faixa da planta de situação (requer a extensão Planta de situação). Abre uma caixa com as empresas de ensaios mais próximas e um pedido de orçamento por e-mail pré-preenchido."
+    }
   }
 }

@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "Sondierung {{id}}",
+    "notCalculated": "Nicht berechnet",
+    "checks": {
+      "capacity": "Tragfähigkeit"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "Unterkante negative Mantelreibung ({{given}}) liegt außerhalb des Pfahls; gerechnet mit {{used}}.",
+    "posKleefClamped": "Oberkante positive Mantelreibung ({{given}}) liegt außerhalb des Mantelbereichs; gerechnet mit {{used}}."
+  },
+  "errors": {
+    "noCpt": "Keine aktive Sondierung",
+    "unknownStandard": "Unbekannte Normversion",
+    "pileTypeNotSupported": "Pfahltyp für diese Normversion nicht unterstützt: {{id}}",
+    "extensionInvalid": "Ein Betonaufsatz erfordert einen Holzpfahl, eine positive Aufsatzabmessung und einen Stoß zwischen Pfahlkopf und Pfahlfuß, ohne separate Fußabmessung",
+    "taperInvalidWithExtension": "Holzkonizität erfordert einen positiven Fußdurchmesser ≤ Holzdurchmesser am Stoß und eine konische Länge innerhalb des Holzteils unterhalb des Stoßes",
+    "taperInvalid": "Holzkonizität erfordert einen positiven Fußdurchmesser ≤ Kopfdurchmesser und eine konische Länge innerhalb der Pfahllänge, ohne separate Fußabmessung",
+    "toeSizeInvalid": "Die Fußabmessung muss positiv und endlich sein",
+    "footPlateTooWide": "Die Fußplatte darf bei diesem Pfahltyp je Seite höchstens 10 mm überstehen",
+    "groutScrewMinDiameter": "Diese Voreinstellung für verpresste Schraubpfähle erfordert einen Schaftdurchmesser von mindestens 300 mm",
+    "timberConstantSection": "Dieser Holzpfahltyp erfordert einen konstanten Querschnitt ohne Aufsatzstück",
+    "eaInvalid": "EA muss positiv und endlich sein",
+    "eaRequired": "Geben Sie die projektspezifische Axialsteifigkeit EA für diesen Pfahltyp an",
+    "projectFactorsInvalid": "Projektfaktoren erfordern gültige Werte, eine Quelle und eine Ausgabe, die zur gewählten Norm passt",
+    "nonFiniteInput": "Alle Eingabewerte müssen endliche Zahlen sein",
+    "diameterNotPositive": "Durchmesser oder Seitenlänge muss größer als null sein",
+    "wallThicknessInvalid": "Die Wanddicke muss größer als null und kleiner als der halbe Durchmesser sein",
+    "toeAboveHead": "Der Pfahlfuß muss unterhalb des Pfahlkopfs liegen",
+    "factorsInvalid": "γm muss größer als null sein; γf,nk und das K0·tan(δ)-Minimum dürfen nicht negativ sein",
+    "negativeLoads": "Drucklasten dürfen nicht negativ sein",
+    "kleefLevels": "Mantelreibungshöhen müssen zwischen Pfahlkopf und Pfahlfuß liegen; positive Mantelreibung darf sich nicht mit negativer Mantelreibung überschneiden",
+    "soilLayerInvalid": "Bodenschichten erfordern gültige Höhen, Wichten und einen Reibungswinkel zwischen 0 und 90 Grad",
+    "soilLayerOrder": "Bodenschichten müssen ohne Überlappung von oben nach unten verlaufen",
+    "historicalCptData": "Eine historische Berechnung erfordert zunehmende Tiefen mit vollständigen, nicht negativen qc-Werten",
+    "historicalCptRange": "Eine historische Berechnung erfordert den vollständigen Bereich von 8 Deq oberhalb bis 4 Deq unterhalb des Pfahlfußes",
+    "historicalSandOnly": "Historische positive Mantelreibung ist nur für Sand verifiziert; passen Sie den Mantelbereich und das Bodenprofil an",
+    "historicalConstantSection": "Das historische Profil unterstützt nur einen konstanten Pfahlquerschnitt oder eine explizite Holzkonizität",
+    "cptTooShallow": "Sondierung zu flach (reicht bis {{reach}} m, erforderlich ≥ {{required}} m)",
+    "pileSizeInvalid": "Die Pfahlabmessung muss endlich und größer als null sein",
+    "historicalGroupAnalysis": "Die historische Analyse mit mehreren Sondierungen ist noch nicht verifiziert; verwenden Sie eine einzelne Sondierung"
+  },
+  "warnings": {
+    "factors": "Faktoren: {{edition}}; {{source}}.",
+    "existingModel": "bestehendes Modell",
+    "existingCatalog": "bestehender Katalog",
+    "projectFactors2025": "Projektfaktoren 2025 angewendet; dies ist keine vollständige Umstellung des Rechenverfahrens auf NEN 9997:2025.",
+    "settlementExtension": "Holzpfahl mit Betonaufsatz: Setzung und Federsteifigkeiten mit unterschiedlicher EA für Beton und Holz sind nicht verifiziert und werden nicht ermittelt.",
+    "settlementTaper": "Konischer Holzpfahl: Setzung und Federsteifigkeiten mit veränderlicher EA sind nicht verifiziert und werden nicht ermittelt.",
+    "settlementHistorical": "Historische Setzung und Federsteifigkeiten sind nicht verifiziert und werden nicht ermittelt.",
+    "settlementLineUnsupported": "Last-Setzungs-Linie {{line}} noch nicht unterstützt: Setzung und Federsteifigkeiten werden nicht ermittelt.",
+    "extension": "Betonaufsatz {{size}} mm bis zum Stoß bei NAP {{joint}} m: Oberhalb des Stoßes wird der Umfang des Aufsatzes angesetzt, darunter der des Holzes; negative Mantelreibung mit dem mittleren Umfang über die Reibungszone, positive Mantelreibung je Schicht.",
+    "taperWithExtension": "Holzkonizität ab dem Stoß: positive Mantelreibung mit mittlerem Umfang je Schicht. Keine Erhöhung der Pfahlfaktoren infolge Konizität.",
+    "taper": "Holzkonizität: negative Mantelreibung mit mittlerem Umfang über die Reibungszone; positive Mantelreibung mit mittlerem Umfang je Schicht. Ohne Betonaufsatz oder Erhöhung infolge Konizität.",
+    "deviatingToeSize": "Abweichende Fußabmessung: Prüfen Sie den Pfahlfußformbeiwert β und den zulässigen Mantelreibungsbereich für dieses Herstellverfahren.",
+    "qbMaxCapped": "qb;max auf 15 MPa begrenzt (Rohwert {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Geben Sie endliche Pfahlfußtiefen an, eine je Zeile oder durch Semikolon getrennt.",
+      "toeLevelsDuplicate": "Jede Pfahlfußtiefe darf nur einmal vorkommen.",
+      "cptIdsInvalid": "Wählen Sie eindeutige Sondierungsnamen für die Tabelle.",
+      "toeNapsInvalid": "Die Tabelle erfordert eindeutige, endliche Pfahlfußtiefen.",
+      "sizesInvalid": "Geben Sie positive Pfahlabmessungen in mm an, getrennt durch Leerzeichen, Komma oder Semikolon.",
+      "sizesDuplicate": "Jede Pfahlabmessung darf nur einmal vorkommen.",
+      "levelRangeInvalid": "Geben Sie eine endliche obere und untere Höhe sowie einen positiven Schritt an.",
+      "tooManyLevels": "Höchstens {{max}} Pfahlfußtiefen; wählen Sie einen größeren Schritt.",
+      "sizesNotPositive": "Pfahlabmessungen müssen positiv sein.",
+      "targetRangeInvalid": "Die Obergrenze der erforderlichen Tragfähigkeit muss über der Untergrenze liegen."
+    },
+    "notes": {
+      "profileAboveToe": "Das Bodenprofil endet oberhalb des Pfahlfußes. Prüfen und verlängern Sie die Bodenschichten; fehlende Mantelschichten tragen nicht bei.",
+      "profileAboveDeepest": "Das Bodenprofil endet bei {{level}} m NAP, oberhalb der tiefsten Pfahlfußtiefe."
+    },
+    "reasons": {
+      "cptTooShort": "Sondierung außerhalb des Bereichs",
+      "kleefLevels": "über Reibungszone",
+      "eaMissing": "EA fehlt",
+      "notComputable": "nicht berechenbar"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Berechnung fehlgeschlagen",
+      "exampleFailed": "Beispiel {{cpt}}, {{size}} mm auf {{level}} m NAP ist nicht berechenbar: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Rund Ø{{size}}",
+    "square": "Quadratisch {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — historisches Referenzprofil",
+    "nen-6743-2006": "NEN 6743-1:2006 — historisch",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — ursprüngliche Faktoren",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — bestehendes Rechenmodell"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; öffentliche Referenz 05290 S. 31–32 (einzelner Fertigteilpfahl)",
+    "source2006": "NEN 6743-1:2006 Tabelle 2; NEN 6740:2006 Tabelle 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 Tabelle 7.c; ursprüngliche Faktoren vor der Abminderung",
+    "conditions": "Historisches Druckpfahlmodell: Sand; keine Pfahlgruppen-, OCR-, Korngrößen- oder Aushubkorrektur. Mantelspitzen konservativ auf 12 MPa begrenzt. Setzung nicht verifiziert."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, Tabelle 7.c (Sand/sandiger Kies)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Stahlrohrpfahl — gerammt (bestehendes Projektmodell)",
+      "shortName": "Stahlrohrpfahl — gerammt",
+      "conditions": "Bestehender Faktorensatz beibehalten; weicht für geschlossene Stahlrohrpfähle von Tabelle 7.c:2017 ab.",
+      "source": "Bestehendes Rechenmodell und Referenzbericht 984.pdf",
+      "edition": "2017/2019 — bestehendes Projektmodell"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Spannbeton-Fertigpfahl — gerammt"
+    },
+    "concrete-prefab-round": {
+      "name": "Beton-Fertigpfahl — rund, gerammt"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Stahlrohrpfahl — geschlossene Spitze (Tabelle 2017)",
+      "shortName": "Stahlrohrpfahl — geschlossene Spitze",
+      "conditions": "Fußplatte steht höchstens 10 mm über das Rohr über; betongefülltes Rohr."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Ortbetonrammpfahl — Vortreibrohr durch Rückrammen gezogen",
+      "conditions": "Beton liegt direkt am Boden an; Vortreibrohr durch Rückrammen und statisches Ziehen entfernt."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Ortbetonrammpfahl — Vortreibrohr durch Vibrieren gezogen",
+      "conditions": "Beton liegt direkt am Boden an; Vortreibrohr durch Vibrieren und statisches Ziehen entfernt."
+    },
+    "concrete-screw-displacement": {
+      "name": "Betonschraubpfahl — verlorene Spitze",
+      "conditions": "Glattes Vortreibrohr zurückgezogen; Beton liegt direkt am Boden an."
+    },
+    "steel-screw-grout": {
+      "name": "Stahlschraubpfahl — Verpressung",
+      "conditions": "Verpresskörper ≥ 300 mm; beim Einbringen nicht auf und ab bewegen. EA bezieht sich auf Stahl/Kern, nicht auf die Mantelfläche des Verpresskörpers."
+    },
+    "concrete-auger": {
+      "name": "Schneckenbohrpfahl — Beton",
+      "conditions": "Ausgabe 2017: Beginn qc;III auf 2 MPa begrenzt; keine Befreiung auf Grundlage von Nachsondierungen angewendet."
+    },
+    "concrete-bored": {
+      "name": "Bohrpfahl — mit Stützflüssigkeit"
+    },
+    "timber-uniform": {
+      "name": "Holzrammpfahl — rund, mit oder ohne Betonaufsatz",
+      "conditions": "Runder Holzquerschnitt, konstant oder linear konisch ab der Oberkante des Holzes; optional mit Betonaufsatz bis zum Stoß. Keine Erhöhung der Pfahlfaktoren infolge Konizität."
+    }
+  },
+  "soil": {
+    "sand-dry": "Sand, trocken",
+    "sand-wet": "Sand, gesättigt",
+    "clay": "Ton, gesättigt",
+    "peat": "Torf, gesättigt"
+  }
+}

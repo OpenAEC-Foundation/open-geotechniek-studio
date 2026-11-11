@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Calculations",
+    "tabs": {
+      "label": "View",
+      "sheet": "Input + printout",
+      "modelTitle": "Hide the printout so the drawing gets the full width",
+      "model": "Input + {{visual}}",
+      "modelCpt": "Input + CPT",
+      "print": "Print preview",
+      "settings": "Settings"
+    },
+    "defaultVisual": "CPT",
+    "draft": "Draft",
+    "input": "Input",
+    "settings": {
+      "title": "Settings · {{name}}",
+      "intro": "Parameters and default series for this calculation. Changes are recalculated immediately."
+    }
+  },
+  "empty": {
+    "title": "A new pile calculation",
+    "choose": "Choose pile bearing capacity or laterally loaded pile.",
+    "layout": "The input sits next to the worked-out printout.",
+    "new": "New calculation",
+    "noProject": "First create or open a project via File."
+  },
+  "sheet": {
+    "eyebrow": "Geotechnics / {{module}}",
+    "notice": "Indicative calculation. Check the soil parameters before using it in a design.",
+    "keyResults": "Key results",
+    "output": "Printout",
+    "governingPass": "Governing u.c. {{uc}} — OK",
+    "governingFail": "Governing u.c. {{uc}} — not OK",
+    "noDesignCheck": "No check against a design load"
+  },
+  "export": {
+    "failed": "Export failed: {{error}}",
+    "busy": "Working…",
+    "pdf": "Export PDF"
+  },
+  "print": {
+    "failed": "The report could not be generated: {{error}}",
+    "loading": "Generating report…"
+  },
+  "dialog": {
+    "title": "New calculation",
+    "name": "Name",
+    "namePlaceholder": "For example: Settlement of fill",
+    "alphaTitle": "Alpha — still in development, not production-ready",
+    "alpha": "DRAFT — in development",
+    "cancel": "Cancel",
+    "add": "Add"
+  },
+  "categories": {
+    "pile": "Piles",
+    "spread": "Foundations",
+    "wall": "Walls",
+    "anchor": "Anchors",
+    "report": "Reports",
+    "other": "Other"
+  },
+  "tree": {
+    "noProject": "Open a project to add calculations.",
+    "add": "+ New calculation",
+    "emptyHint": "No calculations yet. Click \"+\" to add one.",
+    "duplicate": "Duplicate",
+    "confirmDelete": "Delete \"{{name}}\"?",
+    "delete": "Delete",
+    "parts": "Parts of {{name}}",
+    "sheet": "Calculation sheet",
+    "settings": "Settings"
+  },
+  "comingSoon": {
+    "hint": "This module is still being built. Follow the roadmap on <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Calculation",
+    "new": "New",
+    "newTitle": "New geotechnical calculation",
+    "groupMethod": "Method",
+    "explanation": "Explanation",
+    "contextTitle": "Geotechnical calculations",
+    "contextModules": "Settlement · Spread footing",
+    "draftCalculation": "Draft calculation"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Pile bearing capacity",
+      "subtitle": "Pile bearing capacity — NEN 6743 / NEN 9997",
+      "norm": "Code version as set in the calculation input",
+      "tableLabel": "Bearing capacity table"
+    },
+    "laterally-loaded-pile": {
+      "name": "Laterally loaded pile",
+      "subtitle": "Soil springs, head force, head moment and N–M cross-section check",
+      "norm": "CUR166 initial subgrade reaction · Georgiadis layer correction · project spring law",
+      "visualLabel": "Pile and spring model",
+      "tableLabel": "Pile table"
+    },
+    "foundation-advice": {
+      "name": "Foundation advice",
+      "subtitle": "Report with site investigation, site plan, pile advice and appendices",
+      "visualLabel": "Site plan"
+    }
+  }
+}

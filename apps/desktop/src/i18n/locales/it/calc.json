@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Calcoli",
+    "tabs": {
+      "label": "Vista",
+      "sheet": "Dati + relazione",
+      "modelTitle": "Nascondi la relazione per dare al disegno l'intera larghezza",
+      "model": "Dati + {{visual}}",
+      "modelCpt": "Dati + CPT",
+      "print": "Anteprima di stampa",
+      "settings": "Impostazioni"
+    },
+    "defaultVisual": "CPT",
+    "draft": "Bozza",
+    "input": "Dati di input",
+    "settings": {
+      "title": "Impostazioni · {{name}}",
+      "intro": "Parametri e serie predefinite per questo calcolo. Le modifiche vengono ricalcolate immediatamente."
+    }
+  },
+  "empty": {
+    "title": "Un nuovo calcolo del palo",
+    "choose": "Scegli capacità portante del palo o palo caricato lateralmente.",
+    "layout": "I dati di input sono affiancati alla relazione di calcolo sviluppata.",
+    "new": "Nuovo calcolo",
+    "noProject": "Crea o apri prima un progetto tramite File."
+  },
+  "sheet": {
+    "eyebrow": "Geotecnica / {{module}}",
+    "notice": "Calcolo indicativo. Verifica i parametri del terreno prima di usarlo in un progetto.",
+    "keyResults": "Risultati principali",
+    "output": "Relazione",
+    "governingPass": "u.c. determinante {{uc}} — OK",
+    "governingFail": "u.c. determinante {{uc}} — non OK",
+    "noDesignCheck": "Nessuna verifica rispetto a un carico di progetto"
+  },
+  "export": {
+    "failed": "Esportazione non riuscita: {{error}}",
+    "busy": "Elaborazione…",
+    "pdf": "Esporta PDF"
+  },
+  "print": {
+    "failed": "Impossibile generare la relazione: {{error}}",
+    "loading": "Generazione della relazione…"
+  },
+  "dialog": {
+    "title": "Nuovo calcolo",
+    "name": "Nome",
+    "namePlaceholder": "Ad esempio: cedimento del rilevato",
+    "alphaTitle": "Alpha — ancora in sviluppo, non pronto per la produzione",
+    "alpha": "BOZZA — in sviluppo",
+    "cancel": "Annulla",
+    "add": "Aggiungi"
+  },
+  "categories": {
+    "pile": "Pali",
+    "spread": "Fondazioni",
+    "wall": "Paratie",
+    "anchor": "Ancoraggi",
+    "report": "Relazioni",
+    "other": "Altro"
+  },
+  "tree": {
+    "noProject": "Apri un progetto per aggiungere calcoli.",
+    "add": "+ Nuovo calcolo",
+    "emptyHint": "Nessun calcolo ancora. Fai clic su \"+\" per aggiungerne uno.",
+    "duplicate": "Duplica",
+    "confirmDelete": "Eliminare \"{{name}}\"?",
+    "delete": "Elimina",
+    "parts": "Parti di {{name}}",
+    "sheet": "Foglio di calcolo",
+    "settings": "Impostazioni"
+  },
+  "comingSoon": {
+    "hint": "Questo modulo è ancora in costruzione. Segui la roadmap su <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Calcolo",
+    "new": "Nuovo",
+    "newTitle": "Nuovo calcolo geotecnico",
+    "groupMethod": "Metodo",
+    "explanation": "Spiegazione",
+    "contextTitle": "Calcoli geotecnici",
+    "contextModules": "Cedimento · Fondazione superficiale",
+    "draftCalculation": "Calcolo in bozza"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Capacità portante del palo",
+      "subtitle": "Capacità portante del palo — NEN 6743 / NEN 9997",
+      "norm": "Versione della norma come impostata nei dati di calcolo",
+      "tableLabel": "Tabella della capacità portante"
+    },
+    "laterally-loaded-pile": {
+      "name": "Palo caricato lateralmente",
+      "subtitle": "Molle del terreno, forza in testa, momento in testa e verifica della sezione N–M",
+      "norm": "Modulo di reazione iniziale CUR166 · correzione degli strati di Georgiadis · legge della molla di progetto",
+      "visualLabel": "Modello del palo e delle molle",
+      "tableLabel": "Tabella dei pali"
+    },
+    "foundation-advice": {
+      "name": "Raccomandazione per le fondazioni",
+      "subtitle": "Relazione con indagine geotecnica, planimetria, raccomandazione sui pali e allegati",
+      "visualLabel": "Planimetria"
+    }
+  }
+}

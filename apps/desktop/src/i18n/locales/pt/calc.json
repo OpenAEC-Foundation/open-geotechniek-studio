@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Cálculos",
+    "tabs": {
+      "label": "Vista",
+      "sheet": "Dados + listagem",
+      "modelTitle": "Ocultar a listagem para que o desenho ocupe toda a largura",
+      "model": "Dados + {{visual}}",
+      "modelCpt": "Dados + CPT",
+      "print": "Pré-visualização",
+      "settings": "Definições"
+    },
+    "defaultVisual": "CPT",
+    "draft": "Rascunho",
+    "input": "Dados",
+    "settings": {
+      "title": "Definições · {{name}}",
+      "intro": "Parâmetros e séries predefinidas deste cálculo. As alterações são recalculadas de imediato."
+    }
+  },
+  "empty": {
+    "title": "Um novo cálculo de estacas",
+    "choose": "Escolha capacidade de carga da estaca ou estaca com carga horizontal.",
+    "layout": "Os dados ficam ao lado da listagem detalhada.",
+    "new": "Novo cálculo",
+    "noProject": "Crie ou abra primeiro um projeto através de Ficheiro."
+  },
+  "sheet": {
+    "eyebrow": "Geotecnia / {{module}}",
+    "notice": "Cálculo indicativo. Verifique os parâmetros do solo antes de o utilizar num projeto.",
+    "keyResults": "Resultados principais",
+    "output": "Listagem",
+    "governingPass": "u.c. condicionante {{uc}} — verifica",
+    "governingFail": "u.c. condicionante {{uc}} — não verifica",
+    "noDesignCheck": "Sem verificação com carga de cálculo"
+  },
+  "export": {
+    "failed": "A exportação falhou: {{error}}",
+    "busy": "A processar…",
+    "pdf": "Exportar PDF"
+  },
+  "print": {
+    "failed": "Não foi possível gerar o relatório: {{error}}",
+    "loading": "A gerar o relatório…"
+  },
+  "dialog": {
+    "title": "Novo cálculo",
+    "name": "Nome",
+    "namePlaceholder": "Por exemplo: Assentamento do aterro",
+    "alphaTitle": "Alfa — ainda em desenvolvimento, não pronto para produção",
+    "alpha": "RASCUNHO — em desenvolvimento",
+    "cancel": "Cancelar",
+    "add": "Adicionar"
+  },
+  "categories": {
+    "pile": "Estacas",
+    "spread": "Fundações",
+    "wall": "Muros",
+    "anchor": "Ancoragens",
+    "report": "Relatórios",
+    "other": "Outros"
+  },
+  "tree": {
+    "noProject": "Abra um projeto para adicionar cálculos.",
+    "add": "+ Novo cálculo",
+    "emptyHint": "Ainda sem cálculos. Clique em \"+\" para adicionar um.",
+    "duplicate": "Duplicar",
+    "confirmDelete": "Eliminar \"{{name}}\"?",
+    "delete": "Eliminar",
+    "parts": "Partes de {{name}}",
+    "sheet": "Folha de cálculo",
+    "settings": "Definições"
+  },
+  "comingSoon": {
+    "hint": "Este módulo ainda está em construção. Acompanhe o roteiro no <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Cálculo",
+    "new": "Novo",
+    "newTitle": "Novo cálculo geotécnico",
+    "groupMethod": "Método",
+    "explanation": "Explicação",
+    "contextTitle": "Cálculos geotécnicos",
+    "contextModules": "Assentamento · Sapata",
+    "draftCalculation": "Cálculo em rascunho"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Capacidade de carga de estacas",
+      "subtitle": "Capacidade de carga de estacas — NEN 6743 / NEN 9997",
+      "norm": "Versão da norma conforme os dados do cálculo",
+      "tableLabel": "Tabela de capacidade de carga"
+    },
+    "laterally-loaded-pile": {
+      "name": "Estaca com carga horizontal",
+      "subtitle": "Molas do solo, força na cabeça, momento na cabeça e verificação da secção N–M",
+      "norm": "Módulo de reação inicial CUR166 · correção de camadas de Georgiadis · lei de molas do projeto",
+      "visualLabel": "Modelo de estaca e molas",
+      "tableLabel": "Tabela de estacas"
+    },
+    "foundation-advice": {
+      "name": "Recomendação de fundação",
+      "subtitle": "Relatório com prospeção geotécnica, planta de localização, recomendação de estacas e anexos",
+      "visualLabel": "Planta de localização"
+    }
+  }
+}

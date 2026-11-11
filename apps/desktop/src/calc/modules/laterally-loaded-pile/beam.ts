@@ -1,3 +1,4 @@
+import { ct } from '../../i18n';
 /** Lineaire Euler–Bernoulli-ligger. z naar beneden, rotatie = dy/dz.
  * Eenheden: m, kN, kNm, EI in kNm²; bedding per lengte in kN/m².
  * Consistente bedding en lasten met vierpunts Gauss-integratie.
@@ -48,12 +49,12 @@ function cholesky(a: Float64Array[], b: Float64Array): number[] {
   const n = b.length, l = Array.from({ length: n }, () => new Float64Array(n));
   // Symmetrisch schalen vermijdt een eenhedenafhankelijke singulariteitsgrens.
   const scale = a.map((r, i) => Math.sqrt(r[i]));
-  if (scale.some(v => !(v > 0) || !Number.isFinite(v))) throw new Error('Instabiel model: onvoldoende steun.');
+  if (scale.some(v => !(v > 0) || !Number.isFinite(v))) throw new Error(ct('calcLateral', 'errors.unstableSupport', 'Instabiel model: onvoldoende steun.'));
   for (let i=0; i<n; i++) for (let j=0; j<=i; j++) {
     let s = a[i][j] / (scale[i]*scale[j]);
     for (let k=0; k<j; k++) s -= l[i][k]*l[j][k];
     if (i === j) {
-      if (s < 1e-12 || !Number.isFinite(s)) throw new Error('Instabiel of te slecht geconditioneerd model.');
+      if (s < 1e-12 || !Number.isFinite(s)) throw new Error(ct('calcLateral', 'errors.illConditioned', 'Instabiel of te slecht geconditioneerd model.'));
       l[i][j] = Math.sqrt(s);
     } else l[i][j] = s/l[j][j];
   }
@@ -66,19 +67,19 @@ export function solveBeam(input: BeamInput): BeamResult {
   const { lengthM:L, eiKnM2:ei, maxElementM:step, headForceKn:H, headMomentKnM:M } = input;
   if (![L,ei,step,H,M].every(Number.isFinite) || L<=0 || ei<=0 || step<=0 ||
       typeof input.headFixedRotation !== 'boolean' || typeof input.toeFixed !== 'boolean' || !Array.isArray(input.layers))
-    throw new Error('Ongeldige liggerinvoer.');
+    throw new Error(ct('calcLateral', 'errors.invalidBeam', 'Ongeldige liggerinvoer.'));
   const layers = [...input.layers].sort((a,b) => a.topM-b.topM);
   layers.forEach((v,i) => {
     if (![v.topM,v.bottomM,v.lineSpringKnM2,v.lineLoadKnM].every(Number.isFinite) ||
         v.topM<0 || v.bottomM>L || v.bottomM<=v.topM || v.lineSpringKnM2<0)
-      throw new Error('Ongeldige laag of bedding.');
-    if (i>0 && v.topM<layers[i-1].bottomM) throw new Error('Overlappende grondlagen.');
+      throw new Error(ct('calcLateral', 'errors.invalidLayerSpring', 'Ongeldige laag of bedding.'));
+    if (i>0 && v.topM<layers[i-1].bottomM) throw new Error(ct('calcLateral', 'errors.overlappingLayers', 'Overlappende grondlagen.'));
   });
   const cuts = [...new Set([0,L,...layers.flatMap(v => [v.topM,v.bottomM])])].sort((a,b)=>a-b);
   const zs = [0];
   for(let i=1;i<cuts.length;i++) {
     const n=Math.ceil((cuts[i]-cuts[i-1])/step);
-    if (zs.length+n>201) throw new Error('Maximaal 200 elementen; kies een grotere elementlengte.');
+    if (zs.length+n>201) throw new Error(ct('calcLateral', 'errors.maxElements', 'Maximaal 200 elementen; kies een grotere elementlengte.'));
     for(let j=1;j<=n;j++) zs.push(j===n ? cuts[i] : cuts[i-1]+(cuts[i]-cuts[i-1])*j/n);
   }
   const nd=2*zs.length;
@@ -104,7 +105,7 @@ export function solveBeam(input: BeamInput): BeamResult {
   if(input.headFixedRotation) fixed.add(1);
   const free=Array.from({length:nd},(_,i)=>i).filter(i=>!fixed.has(i));
   const uf=cholesky(free.map(i=>Float64Array.from(free,j=>K[i][j])),Float64Array.from(free,i=>F[i]));
-  if(!uf.every(Number.isFinite))throw new Error('Numerieke overloop; controleer eenheden en invoer.');
+  if(!uf.every(Number.isFinite))throw new Error(ct('calcLateral', 'errors.numericOverflow', 'Numerieke overloop; controleer eenheden en invoer.'));
   const u=Array(nd).fill(0); free.forEach((v,i)=>u[v]=uf[i]);
   const reactions=Array(nd).fill(0);
   for(const i of fixed) reactions[i]=K[i].reduce((s,v,j)=>s+v*u[j],0)-F[i];

@@ -77,5 +77,38 @@
   "baseLayers": "Grundkarten",
   "overlayLayers": "Überlagerungen",
   "dataLayers": "Daten",
-  "topotijdreis": "Historische Karten"
+  "topotijdreis": "Historische Karten",
+  "newProjectTitle": "Neues Projekt",
+  "newProjectWithCpts": "Neues Projekt ({{count}} Sondierungen)",
+  "mcp": {
+    "starting": "MCP wird gestartet…",
+    "startingHint": "Lokale MCP-Verbindung wird gestartet.",
+    "unavailable": "MCP nicht verfügbar",
+    "desktopOnly": "MCP-Steuerung ist in der Desktop-App verfügbar.",
+    "busy": "MCP aktiv · {{action}}",
+    "connectedFailed": "MCP verbunden · Befehl fehlgeschlagen",
+    "availableFailed": "MCP verfügbar · Befehl fehlgeschlagen",
+    "error": "MCP-Fehler",
+    "connected": "MCP verbunden",
+    "clients": "{{count}} MCP-Client(s): {{names}}",
+    "available": "MCP verfügbar",
+    "availableHint": "Der lokale Studio-MCP-Server ist verfügbar. Es ist kein MCP-Client verbunden.",
+    "notReady": "Die Studio-MCP-Verbindung ist noch nicht bereit.",
+    "actions": {
+      "studio_get_state": "Projektstatus lesen",
+      "studio_get_cpt": "Sondierung lesen",
+      "studio_new_project": "Projekt anlegen",
+      "studio_open_file": "Datei öffnen",
+      "studio_select_document": "Dokument auswählen",
+      "studio_show_view": "Ansicht öffnen",
+      "studio_set_project_meta": "Projektdaten ändern",
+      "studio_save_project": "Projekt speichern",
+      "studio_add_calculation": "Berechnung hinzufügen",
+      "studio_update_calculation": "Berechnung ändern",
+      "studio_select_calculation": "Berechnung auswählen",
+      "studio_get_calculation": "Berechnung lesen",
+      "studio_get_capacity_table": "Tragfähigkeitstabelle lesen",
+      "studio_export_report": "Bericht exportieren"
+    }
+  }
 }

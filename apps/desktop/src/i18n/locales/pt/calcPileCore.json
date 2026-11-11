@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "CPT {{id}}",
+    "notCalculated": "Não calculado",
+    "checks": {
+      "capacity": "capacidade de carga"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "A base do atrito negativo ({{given}}) fica fora da estaca; calculado com {{used}}.",
+    "posKleefClamped": "O topo do atrito lateral positivo ({{given}}) fica fora do troço do fuste; calculado com {{used}}."
+  },
+  "errors": {
+    "noCpt": "Nenhum CPT ativo",
+    "unknownStandard": "Versão da norma desconhecida",
+    "pileTypeNotSupported": "Tipo de estaca não suportado para esta versão da norma: {{id}}",
+    "extensionInvalid": "Um prolongamento em betão requer uma estaca de madeira, uma dimensão de prolongamento positiva e uma junta entre a cabeça e a ponta da estaca, sem dimensão de base separada",
+    "taperInvalidWithExtension": "A conicidade da madeira requer um diâmetro da ponta positivo ≤ diâmetro da madeira na junta e um comprimento cónico dentro da parte de madeira abaixo da junta",
+    "taperInvalid": "A conicidade da madeira requer um diâmetro da ponta positivo ≤ diâmetro da cabeça e um comprimento cónico dentro do comprimento da estaca, sem dimensão de base separada",
+    "toeSizeInvalid": "A dimensão da ponta deve ser positiva e finita",
+    "footPlateTooWide": "Para este tipo de estaca, a placa de base pode sobressair no máximo 10 mm de cada lado",
+    "groutScrewMinDiameter": "Esta predefinição de estaca aparafusada com calda requer um diâmetro do fuste de pelo menos 300 mm",
+    "timberConstantSection": "Este tipo de estaca de madeira requer uma secção constante sem peça de prolongamento",
+    "eaInvalid": "EA deve ser positivo e finito",
+    "eaRequired": "Introduza a rigidez axial EA específica do projeto para este tipo de estaca",
+    "projectFactorsInvalid": "Os coeficientes do projeto requerem valores válidos, uma fonte e uma edição compatível com a norma selecionada",
+    "nonFiniteInput": "Todos os valores introduzidos devem ser números finitos",
+    "diameterNotPositive": "O diâmetro ou o lado deve ser maior que zero",
+    "wallThicknessInvalid": "A espessura da parede deve ser maior que zero e menor que metade do diâmetro",
+    "toeAboveHead": "A ponta da estaca deve ficar abaixo da cabeça da estaca",
+    "factorsInvalid": "γm deve ser maior que zero; γf,nk e o mínimo de K0·tan(δ) não podem ser negativos",
+    "negativeLoads": "As cargas de compressão não podem ser negativas",
+    "kleefLevels": "As cotas de atrito devem situar-se entre a cabeça e a ponta da estaca; o atrito lateral positivo não pode sobrepor-se ao atrito negativo",
+    "soilLayerInvalid": "As camadas de solo requerem cotas válidas, pesos volúmicos e um ângulo de atrito entre 0 e 90 graus",
+    "soilLayerOrder": "As camadas de solo devem seguir de cima para baixo sem sobreposição",
+    "historicalCptData": "Um cálculo histórico requer profundidades crescentes com valores de qc completos e não negativos",
+    "historicalCptRange": "Um cálculo histórico requer o intervalo completo de 8 Deq acima a 4 Deq abaixo da ponta da estaca",
+    "historicalSandOnly": "O atrito lateral positivo histórico só está verificado para areia; ajuste o troço do fuste e o perfil do solo",
+    "historicalConstantSection": "O perfil histórico só suporta uma secção de estaca constante ou uma conicidade explícita da madeira",
+    "cptTooShallow": "CPT demasiado pouco profundo (atinge {{reach}} m, requer ≥ {{required}} m)",
+    "pileSizeInvalid": "A dimensão da estaca deve ser finita e maior que zero",
+    "historicalGroupAnalysis": "A análise histórica com vários CPT ainda não está verificada; utilize um único CPT"
+  },
+  "warnings": {
+    "factors": "Coeficientes: {{edition}}; {{source}}.",
+    "existingModel": "modelo existente",
+    "existingCatalog": "catálogo existente",
+    "projectFactors2025": "Aplicados coeficientes do projeto de 2025; não se trata de uma conversão completa do método de cálculo para a NEN 9997:2025.",
+    "settlementExtension": "Estaca de madeira com prolongamento em betão: o assentamento e os valores de mola com EA diferente para betão e madeira não estão verificados e não são determinados.",
+    "settlementTaper": "Estaca de madeira cónica: o assentamento e os valores de mola com EA variável não estão verificados e não são determinados.",
+    "settlementHistorical": "O assentamento e os valores de mola históricos não estão verificados e não são determinados.",
+    "settlementLineUnsupported": "Curva carga-assentamento {{line}} ainda não suportada: o assentamento e os valores de mola não são determinados.",
+    "extension": "Prolongamento em betão {{size}} mm até à junta a NAP {{joint}} m: acima da junta usa-se o perímetro do prolongamento, abaixo o da madeira; atrito negativo com o perímetro médio na zona de atrito, atrito lateral positivo por camada.",
+    "taperWithExtension": "Conicidade da madeira a partir da junta: atrito lateral positivo com perímetro médio por camada. Sem aumento dos coeficientes da estaca devido à conicidade.",
+    "taper": "Conicidade da madeira: atrito negativo com perímetro médio na zona de atrito; atrito lateral positivo com perímetro médio por camada. Sem prolongamento em betão nem aumento devido à conicidade.",
+    "deviatingToeSize": "Dimensão da ponta divergente: verifique o fator de forma da base da estaca β e o troço de atrito lateral admissível para este método de execução.",
+    "qbMaxCapped": "qb;max limitado a 15 MPa (valor bruto {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Introduza cotas da ponta finitas, uma por linha ou separadas por ponto e vírgula.",
+      "toeLevelsDuplicate": "Cada cota da ponta só pode ocorrer uma vez.",
+      "cptIdsInvalid": "Selecione nomes de CPT únicos para a tabela.",
+      "toeNapsInvalid": "A tabela requer cotas da ponta únicas e finitas.",
+      "sizesInvalid": "Introduza dimensões de estaca positivas em mm, separadas por espaço, vírgula ou ponto e vírgula.",
+      "sizesDuplicate": "Cada dimensão de estaca só pode ocorrer uma vez.",
+      "levelRangeInvalid": "Introduza uma cota superior e inferior finitas e um passo positivo.",
+      "tooManyLevels": "No máximo {{max}} cotas da ponta; escolha um passo maior.",
+      "sizesNotPositive": "As dimensões das estacas devem ser positivas.",
+      "targetRangeInvalid": "O limite superior da capacidade de carga pretendida deve ser superior ao limite inferior."
+    },
+    "notes": {
+      "profileAboveToe": "O perfil do solo termina acima da ponta da estaca. Verifique e prolongue as camadas de solo; as camadas do fuste em falta não contribuem.",
+      "profileAboveDeepest": "O perfil do solo termina a {{level}} m NAP, acima da cota da ponta mais profunda."
+    },
+    "reasons": {
+      "cptTooShort": "CPT fora do alcance",
+      "kleefLevels": "acima da zona de atrito",
+      "eaMissing": "EA em falta",
+      "notComputable": "não calculável"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "O cálculo falhou",
+      "exampleFailed": "O exemplo {{cpt}}, {{size}} mm a {{level}} m NAP não pode ser calculado: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Circular Ø{{size}}",
+    "square": "Quadrada {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — perfil de referência histórico",
+    "nen-6743-2006": "NEN 6743-1:2006 — histórica",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — coeficientes originais",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modelo de cálculo existente"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; referência pública 05290 pp. 31–32 (estaca pré-fabricada isolada)",
+    "source2006": "NEN 6743-1:2006 quadro 2; NEN 6740:2006 quadro 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 quadro 7.c; coeficientes originais antes da redução",
+    "conditions": "Modelo histórico de estaca à compressão: areia; sem correção de grupo de estacas, OCR, granulometria ou escavação. Picos no fuste limitados de forma conservadora a 12 MPa. Assentamento não verificado."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, quadro 7.c (areia/areia com seixo)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Estaca tubular de aço — cravada (modelo de projeto existente)",
+      "shortName": "Estaca tubular de aço — cravada",
+      "conditions": "Conjunto de coeficientes existente mantido; diverge do quadro 7.c:2017 para estacas tubulares de aço de ponta fechada.",
+      "source": "Modelo de cálculo existente e relatório de referência 984.pdf",
+      "edition": "2017/2019 — modelo de projeto existente"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Estaca pré-fabricada de betão pré-esforçado — cravada"
+    },
+    "concrete-prefab-round": {
+      "name": "Estaca pré-fabricada de betão — circular, cravada"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Estaca tubular de aço — ponta fechada (quadro 2017)",
+      "shortName": "Estaca tubular de aço — ponta fechada",
+      "conditions": "A placa de base sobressai no máximo 10 mm do tubo; tubo cheio de betão."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Estaca de betão moldada no local — tubo extraído por contra-cravação",
+      "conditions": "O betão fica em contacto direto com o solo; tubo extraído por contra-cravação e tração estática."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Estaca de betão moldada no local — tubo extraído por vibração",
+      "conditions": "O betão fica em contacto direto com o solo; tubo extraído por vibração e tração estática."
+    },
+    "concrete-screw-displacement": {
+      "name": "Estaca aparafusada de betão — ponta perdida",
+      "conditions": "Tubo liso retirado; o betão fica em contacto direto com o solo."
+    },
+    "steel-screw-grout": {
+      "name": "Estaca aparafusada de aço — injeção de calda",
+      "conditions": "Fuste de calda ≥ 300 mm; não subir e descer durante a instalação. EA refere-se ao aço/núcleo, não à superfície do fuste de calda."
+    },
+    "concrete-auger": {
+      "name": "Estaca de trado contínuo — betão",
+      "conditions": "Edição de 2017: início de qc;III limitado a 2 MPa; não aplicada isenção com base em CPT posteriores à instalação."
+    },
+    "concrete-bored": {
+      "name": "Estaca moldada — com fluido estabilizador"
+    },
+    "timber-uniform": {
+      "name": "Estaca cravada de madeira — circular, com ou sem prolongamento em betão",
+      "conditions": "Secção circular de madeira, constante ou linearmente cónica a partir do topo da madeira; opcionalmente com prolongamento em betão até à junta. Sem aumento dos coeficientes da estaca devido à conicidade."
+    }
+  },
+  "soil": {
+    "sand-dry": "Areia, seca",
+    "sand-wet": "Areia, saturada",
+    "clay": "Argila, saturada",
+    "peat": "Turfa, saturada"
+  }
+}
