@@ -27,6 +27,7 @@ SOURCES = {
     "site-plan.png": "05-situatietekening.jpg",
     "soil-model-3d.png": "10-soil-model-3d.png",
     "soil-model-3d-section.png": "11-soil-model-3d-section.png",
+    "ifcx-viewer.png": "13-ifcx-viewer.png",
 }
 
 

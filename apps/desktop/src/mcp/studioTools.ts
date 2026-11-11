@@ -330,6 +330,23 @@ export async function executeStudioTool(tool: string, rawArgs: unknown, changeVi
       keys(args, ["id"]); const { instance, module } = calculation(args.id);
       return structuredClone({ instance, result: module.compute(instance.input, context()) });
     }
+    case "studio_export_ifcx": {
+      keys(args, ["path"]);
+      const path = text(args.path, "Bestandspad");
+      if (!/^(?:[a-z]:[\\/]|\\\\|\/)/i.test(path) || path.includes("\0") || !/\.ifcx$/i.test(path)) {
+        throw new Error("Gebruik een absoluut pad naar een .ifcx-bestand");
+      }
+      const { activeIfcxSource } = await import("../ifcx/exportActive");
+      const { documentIfcx, stringifyIfcx } = await import("../ifcx/documentIfcx");
+      const source = activeIfcxSource();
+      if (!source) throw new Error("Open of maak eerst een project met sonderingen");
+      const { doc } = documentIfcx(source);
+      const bytes = new TextEncoder().encode(stringifyIfcx(doc));
+      const fs = await import("@tauri-apps/plugin-fs");
+      await fs.writeFile(path, bytes);
+      const count = (code: string) => doc.data.filter((e) => (e.attributes?.["bsi::ifc::class"] as { code?: string } | undefined)?.code === code).length;
+      return { path, bytes: bytes.length, boreholes: count("IfcBorehole"), strata: count("IfcGeotechnicalStratum"), piles: count("IfcPile") };
+    }
     case "studio_save_project": {
       keys(args, ["path"]); const path = filePath(args.path, true); const doc = project();
       const payload = activeProjectPayload(doc.id);

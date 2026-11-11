@@ -21,6 +21,7 @@ const ACTIONS: Record<string, string> = {
   studio_add_calculation: "Berekening toevoegen", studio_update_calculation: "Berekening wijzigen",
   studio_select_calculation: "Berekening selecteren", studio_get_calculation: "Berekening lezen",
   studio_get_capacity_table: "Draagvermogentabel lezen", studio_export_report: "Rapport exporteren",
+  studio_export_ifcx: "IFCX exporteren",
 };
 const actionText = (t: TFunction, tool: string) => (ACTIONS[tool] ? t(`mcp.actions.${tool}`, ACTIONS[tool]) : tool);
 export function StudioMcpStatusView({ status, desktop }: { status: StudioMcpStatus | null; desktop: boolean }) {

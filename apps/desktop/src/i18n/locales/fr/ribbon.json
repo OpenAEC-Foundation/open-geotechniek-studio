@@ -101,7 +101,13 @@
     "autoHint": "Les instantanés IFCX expérimentaux se mettent à jour en direct. L'export IFC4x3 est désactivé.",
     "autoLive": "En direct — généré automatiquement",
     "paneNoCpt": "Aucun CPT dans ce projet — ajoutez d'abord un CPT.",
-    "paneGenerating": "Génération..."
+    "paneGenerating": "Génération...",
+    "ifc5Ready": "Live — IFC5 (IFCX)",
+    "ifc5Hint": "Essais CPT, découpage en couches, modèle de sol et pieux ; mis à jour automatiquement.",
+    "exportGroup": "Exporter",
+    "export": "Exporter\nIFCX",
+    "exportHint": "Enregistrer le projet au format IFC5 (.ifcx) pour une plateforme openBIM",
+    "exportNothing": "Ouvrez d'abord un projet ou un essai CPT avec des coordonnées RD."
   },
   "report": {
     "sections": "Sections",
@@ -174,7 +180,8 @@
     "defaultCriterion": "par défaut ; à régler dans un avis de fondation",
     "cells": "cellules",
     "empty": "Ajoutez des essais CPT pour construire le modèle de sol.",
-    "noWebgl": "La vue 3D n'est pas disponible sur ce système (pas de WebGL)."
+    "noWebgl": "La vue 3D n'est pas disponible sur ce système (pas de WebGL).",
+    "ifcx": "Modèle\n(IFCX)"
   },
   "measure": "Mesurer",
   "exportImage": "Exporter\nen image",

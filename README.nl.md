@@ -73,6 +73,15 @@ Er is nog geen ingebouwde updater: installeer een nieuwe versie over de oude hee
 - **Erin kijken.** Overhoogte, dekking, een doorsnede langs beide assen, afgraven van boven en grondsoorten aan en uit.
 - **Aanzichten en export.** 3D, boven, voor en zij, en het beeld als PNG.
 
+## IFC5-export (IFCX)
+
+- **Het hele grondonderzoek in één open bestand.** Via het IFC-tabblad of het 3D-model exporteer je het project als IFC5 (IFCX alpha), het JSON-formaat van de volgende IFC-generatie, volgens de geotechnische voorbeelden van buildingSMART.
+- **Sonderingen** als `IfcBorehole` met metadata, de volledige reeksen qc, fs, Rf en u2 en de laagindeling, elke laag in de kleur van de grondsoort.
+- **3D-grondmodel** als `IfcGeomodel` met per grondsoort een `IfcGeotechnicalStratum`, gekoppeld aan de lagen in de sonderingen waarop het rust, plus de bovenkant van de draagkrachtige laag en de palen uit de paalberekeningen.
+- **Gegeorefereerd** in RD (EPSG:28992), NAP (EPSG:5709) en WGS84, zodat een openBIM-platform het op de kaart zet.
+
+![De geëxporteerde IFCX in de IFC5-viewer van buildingSMART: sonderingen, grondlagen en modelboom](docs/images/readme/ifcx-viewer.png)
+
 ## Paalberekeningen
 
 De berekeningen zijn **concept**: ze tonen elke stap, maar vervangen geen gecontroleerd ontwerp.

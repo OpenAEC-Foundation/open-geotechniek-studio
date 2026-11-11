@@ -108,7 +108,8 @@
       "studio_select_calculation": "Berechnung auswählen",
       "studio_get_calculation": "Berechnung lesen",
       "studio_get_capacity_table": "Tragfähigkeitstabelle lesen",
-      "studio_export_report": "Bericht exportieren"
+      "studio_export_report": "Bericht exportieren",
+      "studio_export_ifcx": "IFCX exportieren"
     }
   }
 }

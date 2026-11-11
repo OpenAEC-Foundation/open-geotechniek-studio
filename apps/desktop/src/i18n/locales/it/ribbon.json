@@ -101,7 +101,13 @@
     "autoHint": "Gli snapshot IFCX sperimentali si aggiornano in tempo reale. L'esportazione IFC4x3 è disattivata.",
     "autoLive": "Live — generato automaticamente",
     "paneNoCpt": "Nessuna CPT in questo progetto — aggiungine prima una.",
-    "paneGenerating": "Generazione..."
+    "paneGenerating": "Generazione...",
+    "ifc5Ready": "Live — IFC5 (IFCX)",
+    "ifc5Hint": "Prove CPT, stratigrafia, modello del terreno e pali; aggiornato automaticamente.",
+    "exportGroup": "Esporta",
+    "export": "Esporta\nIFCX",
+    "exportHint": "Salva il progetto come file IFC5 (.ifcx) per una piattaforma openBIM",
+    "exportNothing": "Apri prima un progetto o una prova CPT con coordinate RD."
   },
   "report": {
     "sections": "Sezioni",
@@ -174,7 +180,8 @@
     "defaultCriterion": "predefinito; impostalo in un parere di fondazione",
     "cells": "celle",
     "empty": "Aggiungi prove CPT per costruire il modello del terreno.",
-    "noWebgl": "La vista 3D non è disponibile su questo sistema (nessun WebGL)."
+    "noWebgl": "La vista 3D non è disponibile su questo sistema (nessun WebGL).",
+    "ifcx": "Modello\n(IFCX)"
   },
   "measure": "Misura",
   "exportImage": "Esporta\ncome immagine",

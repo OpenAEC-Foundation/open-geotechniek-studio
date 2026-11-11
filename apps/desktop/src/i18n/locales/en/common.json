@@ -108,7 +108,8 @@
       "studio_select_calculation": "Selecting calculation",
       "studio_get_calculation": "Reading calculation",
       "studio_get_capacity_table": "Reading bearing capacity table",
-      "studio_export_report": "Exporting report"
+      "studio_export_report": "Exporting report",
+      "studio_export_ifcx": "Exporting IFCX"
     }
   }
 }

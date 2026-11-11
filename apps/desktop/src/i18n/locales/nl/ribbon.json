@@ -101,7 +101,13 @@
     "autoHint": "Experimentele IFCX-snapshots worden bijgewerkt. IFC4x3-export is uitgeschakeld.",
     "autoLive": "Live — automatisch gegenereerd",
     "paneNoCpt": "Geen sonderingen in project — voeg eerst een sondering toe.",
-    "paneGenerating": "Bezig met genereren..."
+    "paneGenerating": "Bezig met genereren...",
+    "ifc5Ready": "Live — IFC5 (IFCX)",
+    "ifc5Hint": "Sonderingen, laagindeling, grondmodel en palen; wordt automatisch bijgewerkt.",
+    "exportGroup": "Exporteren",
+    "export": "IFCX\nexporteren",
+    "exportHint": "Sla het project op als IFC5-bestand (.ifcx) voor een openBIM-platform",
+    "exportNothing": "Open eerst een project of sondering met RD-coördinaten."
   },
   "report": {
     "sections": "Secties",
@@ -174,7 +180,8 @@
     "defaultCriterion": "standaard; stel in via een funderingsadvies",
     "cells": "cellen",
     "empty": "Voeg sonderingen toe om het grondmodel op te bouwen.",
-    "noWebgl": "3D-weergave is op dit systeem niet beschikbaar (geen WebGL)."
+    "noWebgl": "3D-weergave is op dit systeem niet beschikbaar (geen WebGL).",
+    "ifcx": "Model\n(IFCX)"
   },
   "measure": "Meten",
   "exportImage": "Exporteer\nals afbeelding",

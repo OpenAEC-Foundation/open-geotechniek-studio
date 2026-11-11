@@ -101,7 +101,13 @@
     "autoHint": "Eksperimentelle IFCX-øjebliksbilleder opdateres live. IFC4x3-eksport er slået fra.",
     "autoLive": "Live — automatisk genereret",
     "paneNoCpt": "Ingen sonderinger i dette projekt — tilføj en først.",
-    "paneGenerating": "Genererer..."
+    "paneGenerating": "Genererer...",
+    "ifc5Ready": "Live — IFC5 (IFCX)",
+    "ifc5Hint": "CPT-sonderinger, laginddeling, jordmodel og pæle; opdateres automatisk.",
+    "exportGroup": "Eksportér",
+    "export": "Eksportér\nIFCX",
+    "exportHint": "Gem projektet som IFC5-fil (.ifcx) til en openBIM-platform",
+    "exportNothing": "Åbn først et projekt eller en sondering med RD-koordinater."
   },
   "report": {
     "sections": "Afsnit",
@@ -174,7 +180,8 @@
     "defaultCriterion": "standard; indstil i en funderingsrådgivning",
     "cells": "celler",
     "empty": "Tilføj sonderinger for at opbygge jordmodellen.",
-    "noWebgl": "3D-visning er ikke tilgængelig på dette system (ingen WebGL)."
+    "noWebgl": "3D-visning er ikke tilgængelig på dette system (ingen WebGL).",
+    "ifcx": "Model\n(IFCX)"
   },
   "measure": "Mål",
   "exportImage": "Eksportér\nsom billede",

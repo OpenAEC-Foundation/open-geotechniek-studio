@@ -108,7 +108,8 @@
       "studio_select_calculation": "Berekening selecteren",
       "studio_get_calculation": "Berekening lezen",
       "studio_get_capacity_table": "Draagvermogentabel lezen",
-      "studio_export_report": "Rapport exporteren"
+      "studio_export_report": "Rapport exporteren",
+      "studio_export_ifcx": "IFCX exporteren"
     }
   }
 }
