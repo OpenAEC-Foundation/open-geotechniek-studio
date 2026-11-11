@@ -95,6 +95,13 @@
   },
   "model3dTab": "3D model",
   "model3d": {
+    "labels": "Labels",
+    "cutTop": "From top",
+    "top": "Top",
+    "front": "Front",
+    "side": "Side",
+    "exportGroup": "Export",
+    "png": "Image\n(PNG)",
     "showGroup": "Display",
     "cpts": "CPTs",
     "qc": "Cone resistance",

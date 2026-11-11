@@ -95,6 +95,13 @@
   },
   "model3dTab": "Modelo 3D",
   "model3d": {
+    "labels": "Rótulos",
+    "cutTop": "De cima",
+    "top": "Topo",
+    "front": "Frente",
+    "side": "Lado",
+    "exportGroup": "Exportar",
+    "png": "Imagem\n(PNG)",
     "showGroup": "Visualização",
     "cpts": "Ensaios CPT",
     "qc": "Resistência de ponta",

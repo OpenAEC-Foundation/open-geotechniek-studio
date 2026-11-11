@@ -95,6 +95,13 @@
   },
   "model3dTab": "3D-model",
   "model3d": {
+    "labels": "Etiketter",
+    "cutTop": "Fra oven",
+    "top": "Oven",
+    "front": "Front",
+    "side": "Side",
+    "exportGroup": "Eksportér",
+    "png": "Billede\n(PNG)",
     "showGroup": "Visning",
     "cpts": "CPT-sonderinger",
     "qc": "Spidsmodstand",

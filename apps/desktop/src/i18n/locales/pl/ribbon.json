@@ -95,6 +95,13 @@
   },
   "model3dTab": "Model 3D",
   "model3d": {
+    "labels": "Etykiety",
+    "cutTop": "Od góry",
+    "top": "Góra",
+    "front": "Przód",
+    "side": "Bok",
+    "exportGroup": "Eksport",
+    "png": "Obraz\n(PNG)",
     "showGroup": "Widok",
     "cpts": "Sondowania CPT",
     "qc": "Opór stożka",

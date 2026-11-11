@@ -227,6 +227,12 @@ function snapshot() {
 }
 
 /** Typed operations on the actual window stores; no keyboard or pointer injection. */
+/** Weergaven die `studio_show_view` kan openen, met de bijbehorende ribbon-tab. */
+export const STUDIO_VIEW_TABS: Record<string, string> = {
+  home: "start", map: "kaart", report: "rapport", drawing: "tekening",
+  calculations: "berekeningen", model3d: "model3d", ifc: "ifc",
+};
+
 export async function executeStudioTool(tool: string, rawArgs: unknown, changeView: (view: string) => void): Promise<unknown> {
   const args = object(rawArgs, "Argumenten");
   switch (tool) {
@@ -248,6 +254,15 @@ export async function executeStudioTool(tool: string, rawArgs: unknown, changeVi
       keys(args, ["id"]); const id = text(args.id, "Document-ID");
       if (!useCptStore.getState().documents.some(doc => doc.id === id)) throw new Error("Document is niet geopend");
       useCptStore.getState().setActiveDoc(id); changeView("default"); return snapshot();
+    }
+    case "studio_show_view": {
+      keys(args, ["view"]);
+      const view = text(args.view, "Weergave");
+      const tab = STUDIO_VIEW_TABS[view];
+      if (!tab) throw new Error(`Onbekende weergave; kies uit ${Object.keys(STUDIO_VIEW_TABS).join(", ")}`);
+      // Via de ribbon schakelen zodat tab en hoofdweergave gelijk blijven.
+      window.dispatchEvent(new CustomEvent("ogs:ribbon-switch", { detail: { tab } }));
+      return snapshot();
     }
     case "studio_open_file": {
       keys(args, ["path"]);

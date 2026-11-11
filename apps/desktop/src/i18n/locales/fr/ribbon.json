@@ -95,6 +95,13 @@
   },
   "model3dTab": "Modèle 3D",
   "model3d": {
+    "labels": "Étiquettes",
+    "cutTop": "Depuis le haut",
+    "top": "Dessus",
+    "front": "Face",
+    "side": "Côté",
+    "exportGroup": "Exporter",
+    "png": "Image\n(PNG)",
     "showGroup": "Affichage",
     "cpts": "Essais CPT",
     "qc": "Résistance de pointe",

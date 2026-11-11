@@ -95,6 +95,13 @@
   },
   "model3dTab": "3D-model",
   "model3d": {
+    "labels": "Labels",
+    "cutTop": "Van boven",
+    "top": "Boven",
+    "front": "Voor",
+    "side": "Zij",
+    "exportGroup": "Exporteren",
+    "png": "Afbeelding\n(PNG)",
     "showGroup": "Weergave",
     "cpts": "Sonderingen",
     "qc": "Conusweerstand",

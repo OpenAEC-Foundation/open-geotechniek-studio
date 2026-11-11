@@ -5,7 +5,8 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { useCptStore } from "../../store/useCptStore";
 import { useCalculationsStore } from "../../calc/framework/store";
 import { buildSoilModel, exposedCells, zoneInfo, type SoilModel } from "./soilModel";
-import { useSoil3DStore, type Soil3DSettings } from "./useSoil3DStore";
+import { useSoil3DStore, type CameraView, type Soil3DSettings } from "./useSoil3DStore";
+import { saveBlobAsFile } from "../../utils/browserSave";
 import "./soil3d.css";
 
 interface PileToe { cptId: string; name: string; toeNap: number }
@@ -67,7 +68,8 @@ function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[], acti
 
   if (s.showModel) {
     const limit = Math.round(s.cut * (s.cutAxis === "east" ? g.nx : g.ny));
-    const cells = exposedCells(g, (z, i, j) => !s.hiddenZones.includes(z) && (s.cutAxis === "east" ? i < limit : j < limit));
+    const topLimit = Math.round(s.cutTop * g.nz);
+    const cells = exposedCells(g, (z, i, j, k) => !s.hiddenZones.includes(z) && k >= topLimit && (s.cutAxis === "east" ? i < limit : j < limit));
     const box = new THREE.BoxGeometry(g.dx, g.dz * ex, g.dy);
     const m = new THREE.Matrix4();
     for (const [zone, list] of cells) {
@@ -98,9 +100,11 @@ function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[], acti
       shaft.position.set(x, ((c.groundNap + c.endNap) / 2) * ex, z);
       shaft.userData.cptId = c.id;
       root.add(shaft);
-      const label = textSprite(c.id, c.id === activeId ? "#2563eb" : textColor, Math.max(1, model.span / 28));
-      label.position.set(x, c.groundNap * ex + Math.max(1, model.span / 25), z);
-      root.add(label);
+      if (s.showLabels) {
+        const label = textSprite(c.id, c.id === activeId ? "#2563eb" : textColor, Math.max(1, model.span / 28));
+        label.position.set(x, c.groundNap * ex + Math.max(1, model.span / 25), z);
+        root.add(label);
+      }
     }
     if (s.showQc && c.qc.length > 1) {
       // qc-lijn in het verticale vlak oost van de sondering; 30 MPa ≈ 6 % van het model.
@@ -133,19 +137,33 @@ function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[], acti
   const axisPts: THREE.Vector3[] = [];
   for (let v = Math.ceil(bottom / step) * step; v <= g.topNap + 1e-6; v += step) {
     axisPts.push(new THREE.Vector3(x0, v * ex, z0), new THREE.Vector3(x0 - r * 2, v * ex, z0));
-    const lab = textSprite(`${v.toFixed(0)} m`, textColor, Math.max(0.9, model.span / 32));
-    lab.position.set(x0 - r * 2 - Math.max(1.5, model.span / 25), v * ex, z0);
-    root.add(lab);
+    if (s.showLabels) {
+      const lab = textSprite(`${v.toFixed(0)} m`, textColor, Math.max(0.9, model.span / 32));
+      lab.position.set(x0 - r * 2 - Math.max(1.5, model.span / 25), v * ex, z0);
+      root.add(lab);
+    }
   }
   axisPts.push(new THREE.Vector3(x0, bottom * ex, z0), new THREE.Vector3(x0, g.topNap * ex, z0));
   root.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(axisPts), new THREE.LineBasicMaterial({ color: textColor })));
-  const napLabel = textSprite("m NAP", textColor, Math.max(0.9, model.span / 32));
-  napLabel.position.set(x0 - Math.max(1.5, model.span / 25), g.topNap * ex + Math.max(1.2, model.span / 30), z0);
-  root.add(napLabel);
-  const north = textSprite("N ↑", textColor, Math.max(1, model.span / 28));
-  north.position.set(g.east0 + g.nx * g.dx, g.topNap * ex + 1, -(g.north0 + g.ny * g.dy));
-  root.add(north);
+  if (s.showLabels) {
+    const napLabel = textSprite("m NAP", textColor, Math.max(0.9, model.span / 32));
+    napLabel.position.set(x0 - Math.max(1.5, model.span / 25), g.topNap * ex + Math.max(1.2, model.span / 30), z0);
+    root.add(napLabel);
+    const north = textSprite("N ↑", textColor, Math.max(1, model.span / 28));
+    north.position.set(g.east0 + g.nx * g.dx, g.topNap * ex + 1, -(g.north0 + g.ny * g.dy));
+    root.add(north);
+  }
   return root;
+}
+
+/** Camerapositie per standaardaanzicht, als veelvoud van de modelgrootte vanaf het midden. */
+export function cameraOffset(view: CameraView, size: number): [number, number, number] {
+  switch (view) {
+    case "top": return [0, size * 2.2, size * 0.001];
+    case "front": return [0, 0, size * 2];
+    case "side": return [size * 2, 0, 0];
+    default: return [size * 1.3, size * 0.95, size * 1.55];
+  }
 }
 
 export function niceStep(range: number) {
@@ -174,7 +192,8 @@ export default function Soil3DView() {
   const byDoc = useCalculationsStore((s) => s.byDoc);
   const settings = useSoil3DStore();
   const mountRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<{ scene: THREE.Scene; camera: THREE.PerspectiveCamera; controls: OrbitControls; renderer: THREE.WebGLRenderer; content: THREE.Group | null } | null>(null);
+  const sceneRef = useRef<{ scene: THREE.Scene; camera: THREE.PerspectiveCamera; controls: OrbitControls; renderer: THREE.WebGLRenderer; content: THREE.Group | null; render: () => void } | null>(null);
+  const lastExport = useRef(settings.exportRequest);
   const [unavailable, setUnavailable] = useState(false);
 
   const calcs = useMemo(() => (activeDocId ? byDoc.get(activeDocId) : undefined) ?? [], [activeDocId, byDoc]);
@@ -204,7 +223,8 @@ export default function Soil3DView() {
     const el = mountRef.current;
     if (!el) return;
     let renderer: THREE.WebGLRenderer;
-    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); } catch { setUnavailable(true); return; }
+    // preserveDrawingBuffer: nodig om het beeld als PNG te exporteren.
+    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true }); } catch { setUnavailable(true); return; }
     renderer.setPixelRatio(window.devicePixelRatio);
     el.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
@@ -215,12 +235,16 @@ export default function Soil3DView() {
     const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100000);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    sceneRef.current = { scene, camera, controls, renderer, content: null };
+    // Ook direct renderen na elke wijziging: requestAnimationFrame staat stil
+    // zolang het venster verborgen is, en de export moet altijd actueel zijn.
+    const render = () => renderer.render(scene, camera);
+    sceneRef.current = { scene, camera, controls, renderer, content: null, render };
     const resize = () => {
       const w = el.clientWidth || 1, h = el.clientHeight || 1;
       renderer.setSize(w, h);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+      render();
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -247,6 +271,7 @@ export default function Soil3DView() {
     if (!model) return;
     ref.content = buildContent(model, settings, toes, activeCptId, cssVar("--theme-text", "#1f2933"));
     ref.scene.add(ref.content);
+    ref.render();
   }, [model, settings, toes, activeCptId]);
 
   // Passend in beeld: bij een nieuw model en op verzoek vanuit het lint.
@@ -257,13 +282,26 @@ export default function Soil3DView() {
     const mid = new THREE.Vector3(g.east0 + (g.nx * g.dx) / 2, (g.topNap - (g.nz * g.dz) / 2) * ex, -(g.north0 + (g.ny * g.dy) / 2));
     const size = Math.max(g.nx * g.dx, g.ny * g.dy, g.nz * g.dz * ex);
     ref.controls.target.copy(mid);
-    ref.camera.position.set(mid.x + size * 1.1, mid.y + size * 0.8, mid.z + size * 1.3);
+    const [ox, oy, oz] = cameraOffset(settings.cameraRequest.view, size);
+    ref.camera.position.set(mid.x + ox, mid.y + oy, mid.z + oz);
     ref.camera.near = size / 500;
     ref.camera.far = size * 50;
     ref.camera.updateProjectionMatrix();
     ref.controls.update();
+    ref.render();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [model, settings.fitRequest, settings.exaggeration]);
+  }, [model, settings.cameraRequest, settings.exaggeration]);
+
+  // Beeld exporteren als PNG.
+  useEffect(() => {
+    const ref = sceneRef.current;
+    if (!ref || settings.exportRequest === lastExport.current) return;
+    lastExport.current = settings.exportRequest;
+    ref.render();
+    ref.renderer.domElement.toBlob((blob) => {
+      if (blob) void saveBlobAsFile(blob, "grondmodel-3d.png", { "image/png": [".png"] });
+    }, "image/png");
+  }, [settings.exportRequest]);
 
   // Klik op een sondering maakt haar actief.
   useEffect(() => {

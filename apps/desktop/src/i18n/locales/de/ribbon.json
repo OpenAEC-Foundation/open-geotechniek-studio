@@ -95,6 +95,13 @@
   },
   "model3dTab": "3D-Modell",
   "model3d": {
+    "labels": "Beschriftungen",
+    "cutTop": "Von oben",
+    "top": "Oben",
+    "front": "Vorne",
+    "side": "Seite",
+    "exportGroup": "Exportieren",
+    "png": "Bild\n(PNG)",
     "showGroup": "Anzeige",
     "cpts": "Drucksondierungen",
     "qc": "Spitzendruck",

@@ -95,6 +95,13 @@
   },
   "model3dTab": "Modelo 3D",
   "model3d": {
+    "labels": "Etiquetas",
+    "cutTop": "Desde arriba",
+    "top": "Planta",
+    "front": "Frente",
+    "side": "Lateral",
+    "exportGroup": "Exportar",
+    "png": "Imagen\n(PNG)",
     "showGroup": "Visualización",
     "cpts": "Ensayos CPT",
     "qc": "Resistencia de punta",
