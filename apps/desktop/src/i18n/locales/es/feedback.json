@@ -1,0 +1,23 @@
+{
+  "title": "Enviar comentarios",
+  "email": "Correo electrónico",
+  "emailPlaceholder": "su@correo.es",
+  "fullName": "Nombre completo",
+  "fullNamePlaceholder": "Su nombre (opcional)",
+  "categoryGeneral": "General",
+  "categoryBug": "Error",
+  "categoryFeature": "Función",
+  "messagePlaceholder": "Cuéntenos qué piensa... (mínimo 10 caracteres)",
+  "attachImages": "Adjuntar imágenes",
+  "imageLimit": "Máx. 3 imágenes, 1 MB en total",
+  "sentiment": "¿Cómo se siente?",
+  "sentimentFrustrated": "Frustrado",
+  "sentimentNeutral": "Neutral",
+  "sentimentHappy": "Contento",
+  "submit": "Enviar comentarios",
+  "submitting": "Enviando...",
+  "successTitle": "¡Gracias!",
+  "successMessage": "Sus comentarios se han enviado correctamente.",
+  "sendAnother": "Enviar otro",
+  "errorGeneric": "No se pudieron enviar los comentarios. Inténtelo de nuevo."
+}

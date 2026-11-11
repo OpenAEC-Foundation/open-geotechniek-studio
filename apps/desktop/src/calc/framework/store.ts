@@ -1,9 +1,16 @@
 import { create } from "zustand";
 import type { CalculationInstance } from "./types";
 
+/** Weergave binnen een berekening; 'table' met cptId = één sondering. */
+export type SheetView = "sheet" | "model" | "table" | "print" | "settings";
+export interface SheetNav { calcId: string | null; view: SheetView; cptId: string | null }
+
 interface CalculationsStore {
   byDoc: Map<string, CalculationInstance[]>;
   activeCalcId: string | null;
+  /** Gedeeld tussen de projectboom en de werkbalk. */
+  sheetNav: SheetNav;
+  navigate: (calcId: string, view: SheetView, cptId?: string | null) => void;
 
   addCalculation: (docId: string, moduleId: string, name: string, input?: unknown) => string;
   updateCalculation: (
@@ -30,6 +37,8 @@ function nowIso(): string {
 export const useCalculationsStore = create<CalculationsStore>((set, get) => ({
   byDoc: new Map(),
   activeCalcId: null,
+  sheetNav: { calcId: null, view: "sheet", cptId: null },
+  navigate: (calcId, view, cptId = null) => set({ activeCalcId: calcId, sheetNav: { calcId, view, cptId } }),
 
   addCalculation: (docId, moduleId, name, input = {}) => {
     const id = makeId();

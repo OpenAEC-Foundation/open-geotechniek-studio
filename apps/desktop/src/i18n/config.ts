@@ -3,25 +3,27 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { getSetting } from "../store";
 
-// English
-import enCommon from "./locales/en/common.json";
-import enRibbon from "./locales/en/ribbon.json";
-import enBackstage from "./locales/en/backstage.json";
-import enSettings from "./locales/en/settings.json";
-import enFeedback from "./locales/en/feedback.json";
-import enCpt from "./locales/en/cpt.json";
-// Dutch
-import nlCommon from "./locales/nl/common.json";
-import nlRibbon from "./locales/nl/ribbon.json";
-import nlBackstage from "./locales/nl/backstage.json";
-import nlSettings from "./locales/nl/settings.json";
-import nlFeedback from "./locales/nl/feedback.json";
-import nlCpt from "./locales/nl/cpt.json";
+// Alle talen uit locales/<taal>/<namespace>.json; een nieuwe taalmap wordt vanzelf opgepikt.
+const files = import.meta.glob<{ default: Record<string, unknown> }>("./locales/*/*.json", { eager: true });
+const resources: Record<string, Record<string, Record<string, unknown>>> = {};
+for (const [path, mod] of Object.entries(files)) {
+  const [, lang, ns] = path.match(/\.\/locales\/([^/]+)\/([^/]+)\.json$/)!;
+  (resources[lang] ??= {})[ns] = mod.default;
+}
 
+/** Talen in de keuzelijst, met hun eigen naam. */
 export const LANGUAGES = [
   { code: "auto", name: "Auto-detect" },
   { code: "en", name: "English" },
   { code: "nl", name: "Nederlands" },
+  { code: "de", name: "Deutsch" },
+  { code: "fr", name: "Français" },
+  { code: "es", name: "Español" },
+  { code: "it", name: "Italiano" },
+  { code: "pt", name: "Português" },
+  { code: "pl", name: "Polski" },
+  { code: "sv", name: "Svenska" },
+  { code: "da", name: "Dansk" },
 ];
 
 const ns = ["common", "ribbon", "backstage", "settings", "feedback", "cpt"];
@@ -30,10 +32,7 @@ i18next
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      en: { common: enCommon, ribbon: enRibbon, backstage: enBackstage, settings: enSettings, feedback: enFeedback, cpt: enCpt },
-      nl: { common: nlCommon, ribbon: nlRibbon, backstage: nlBackstage, settings: nlSettings, feedback: nlFeedback, cpt: nlCpt },
-    },
+    resources,
     ns,
     defaultNS: "common",
     fallbackLng: "en",

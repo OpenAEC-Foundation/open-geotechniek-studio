@@ -1,0 +1,133 @@
+.pile-explorer { color: var(--oa-text); padding: 18px; font: 12px var(--oa-font-body); container-type: inline-size; container-name: pile-explorer; }
+.pile-explorer h2 { font: 500 15px var(--oa-font-heading); margin: 0 0 8px; }
+.pile-explorer h2 span { color: var(--oa-accent-text); border: 1px solid var(--oa-border-strong); font-size: 10px; padding: 3px 6px; margin-left: 8px; }
+.pile-explorer p { line-height: 1.6; margin: 8px 0; }
+.pile-convergence,.pile-scale,.pile-model-note,.pile-orbit-help { color: var(--oa-text-secondary); font-size: 11px; }
+.pile-explorer-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; border-block: 1px solid var(--oa-border); padding: 10px 0; margin-top: 14px; }
+.pile-explorer button,.pile-explorer input,.pile-explorer select { color: var(--oa-text); background: var(--oa-panel); font: inherit; border: 1px solid var(--oa-border-strong); border-radius: 0; padding: 6px 8px; }
+.pile-explorer button { cursor: pointer; }
+.pile-explorer button:hover { background: var(--oa-hover); }
+.pile-explorer :focus-visible { outline: 2px solid var(--oa-accent-text); outline-offset: 2px; }
+.pile-explorer-toolbar label { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.pile-explorer-toolbar input { width: 66px; font-family: var(--oa-font-numbers); }
+.pile-tabs { display: flex; gap: 0; }
+.pile-tabs button { border-color: var(--oa-border); }
+.pile-tabs button[aria-selected=true] { color: var(--oa-accent-text); background: var(--oa-selected); border-bottom: 2px solid var(--oa-accent-text); }
+.pile-explorer-layout { display: grid; grid-template-columns: minmax(0,1fr) 310px; gap: 18px; padding-top: 12px; }
+.pile-explorer-layout aside { min-width: 0; border-left: 1px solid var(--oa-border); padding-left: 16px; }
+.pile-view { min-width: 0; }
+.pile-depth-select { display: grid; gap: 6px; font-size: 11px; color: var(--oa-text-secondary); }
+.pile-depth-select select { width: 100%; min-width: 0; }
+.pile-scene { height: 540px; width: 100%; background: var(--oa-panel); border: 1px solid var(--oa-border); overflow: hidden; }
+.pile-scene canvas { display: block; touch-action: none; }
+.pile-explorer svg { width: 100%; height: auto; display: block; }
+.pile-explorer svg text { fill: var(--oa-text-secondary); font: 10px var(--oa-font-numbers); }
+.pile-model { max-height: 650px; overflow: auto; }
+.pile-model svg { min-width: 390px; }
+.pile-grid { stroke: var(--oa-border); stroke-width: .6; }
+.pile-axis { stroke: var(--oa-text-secondary); stroke-width: 1; }
+.pile-element { stroke: var(--oa-text); stroke-width: 3; }
+.pile-node { fill: var(--oa-text); }
+.pile-reference { fill: none; stroke: var(--oa-text-secondary); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.pile-tangent { fill: none; stroke: var(--oa-text); stroke-width: 1.2; stroke-dasharray: 2 3; }
+.pile-response { fill: none; stroke: var(--oa-accent-text); stroke-width: 2; }
+.pile-operating { fill: var(--oa-accent-text); stroke: var(--oa-panel); stroke-width: 2; }
+.pile-soil { fill: var(--oa-selected); opacity: .5; }
+.pile-soil-alt { fill: var(--oa-hover); opacity: .5; }
+.pile-load { fill: none; stroke: var(--oa-accent-text); stroke-width: 2; }
+.pile-arrow-fill { fill: var(--oa-accent-text); }
+.pile-support { fill: none; stroke: var(--oa-text); stroke-width: 1.5; }
+.pile-spring { cursor: pointer; }
+.pile-spring-line { fill: none; stroke: var(--oa-text-secondary); stroke-width: 1; }
+.pile-spring-point { fill: var(--oa-accent-text); }
+.pile-hit-area { fill: transparent; }
+.pile-spring.is-selected .pile-spring-line,.pile-spring:hover .pile-spring-line { stroke: var(--oa-accent-text); stroke-width: 2; }
+.pile-spring.is-selected .pile-spring-point { stroke: var(--oa-text); stroke-width: 2; }
+.pile-inspector h3 { font: 500 13px var(--oa-font-heading); margin: 20px 0 5px; }
+.pile-inspector h4 { font: 500 12px var(--oa-font-heading); margin: 16px 0 7px; }
+.pile-point-id { color: var(--oa-text-secondary); overflow-wrap: anywhere; font-family: var(--oa-font-numbers); }
+.pile-inspector dl { margin: 14px 0; }
+.pile-inspector dl>div { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--oa-border); }
+.pile-inspector dt { color: var(--oa-text-secondary); }
+.pile-inspector dd { text-align: right; margin: 0; font-family: var(--oa-font-numbers); }
+.pile-inspector p { font-size: 11px; }
+.pile-formula { font-family: var(--oa-font-numbers); }
+.pile-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 10px; color: var(--oa-text-secondary); }
+.pile-legend span::before { content: ''; display: inline-block; width: 16px; border-top: 2px solid var(--oa-accent-text); margin-right: 5px; vertical-align: middle; }
+.pile-legend .pile-legend-reference::before { border-color: var(--oa-text-secondary); border-style: dashed; }
+.pile-legend .pile-legend-tangent::before { border-color: var(--oa-text); border-style: dotted; }
+.pile-inspector summary { cursor: pointer; margin-top: 12px; }
+.pile-inspector details { max-height: 230px; overflow: auto; }
+.pile-inspector table { width: 100%; border-collapse: collapse; font: 11px var(--oa-font-numbers); }
+.pile-inspector th,.pile-inspector td { text-align: right; border-bottom: 1px solid var(--oa-border); padding: 5px; }
+.pile-webgl-fallback { color: var(--oa-text-secondary); border: 1px solid var(--oa-border); padding: 10px; }
+@media(max-width:1100px) { .pile-explorer-layout { grid-template-columns: minmax(0,1fr); } .pile-explorer-layout aside { border-left: 0; border-top: 1px solid var(--oa-border); padding: 16px 0 0; } .pile-inspector svg { max-width: 450px; } .pile-scene { height: 480px; } }
+@container pile-explorer (max-width:760px) { .pile-explorer-layout { grid-template-columns: minmax(0,1fr); } .pile-explorer-layout aside { border-left:0; border-top:1px solid var(--oa-border); padding:16px 0 0; } .pile-inspector svg { max-width:450px; } }
+
+/* ─── Veerveld: alle grondveren langs de paal ─────────────── */
+.pile-springfield svg { width: 100%; max-width: 620px; height: auto; display: block; margin: 0 auto; }
+.pile-springfield text { font-size: 10px; fill: var(--oa-text-secondary); }
+.pile-springfield .pile-springfield-title { font-size: 11.5px; font-weight: 600; fill: var(--oa-text); }
+.pile-springfield .pile-springfield-sub { font-size: 9.5px; }
+.pile-springfield .pile-springfield-layer { font-size: 9px; }
+.pile-springfield-k0 { fill: none; stroke: var(--oa-text-secondary); stroke-width: .8; }
+.pile-springfield-ksec, .pile-springfield-mob { stroke: none; }
+.mob-low .pile-springfield-ksec, .pile-springfield-mob.mob-low { fill: var(--oa-success); opacity: .75; }
+.mob-mid .pile-springfield-ksec, .pile-springfield-mob.mob-mid { fill: var(--oa-warning); opacity: .85; }
+.mob-high .pile-springfield-ksec, .pile-springfield-mob.mob-high { fill: var(--oa-error); }
+.mob-linear .pile-springfield-ksec { fill: var(--oa-accent-text); opacity: .6; }
+.pile-springfield-bar.is-selected .pile-springfield-k0, .pile-springfield-bar:hover .pile-springfield-k0 { stroke: var(--oa-text); stroke-width: 1.6; }
+.pile-springfield-bar:focus-visible { outline: none; }
+.pile-springfield-bar:focus-visible .pile-springfield-k0 { stroke: var(--oa-focus); stroke-width: 2; }
+.pile-springfield-limit { stroke: var(--oa-error); stroke-width: 1; stroke-dasharray: 4 3; }
+.pile-springfield-legend span::before { border-top-width: 6px !important; width: 12px !important; }
+.pile-springfield-legend .mob-low::before { border-color: var(--oa-success); }
+.pile-springfield-legend .mob-mid::before { border-color: var(--oa-warning); }
+.pile-springfield-legend .mob-high::before { border-color: var(--oa-error); }
+.pile-springfield-legend .mob-linear::before { border-color: var(--oa-accent-text); }
+.pile-springfield-summary { margin: 6px 0 0; font-size: 12px; color: var(--oa-text); }
+
+
+/* Diagrammen: diepte in m NAP, gearceerde vlakken, max/min. */
+.pile-diagrams svg { display: block; width: 100%; height: auto; }
+.pile-diagrams text { fill: var(--oa-text); font: 10px var(--oa-font-numbers, inherit); }
+.pile-diagram-title { font: 600 11.5px var(--oa-font-heading) !important; }
+.pile-diagram-unit { fill: var(--oa-text-secondary) !important; font-size: 10px; }
+.pile-diagram-head { fill: var(--oa-text-secondary) !important; font-size: 9px !important; }
+.pile-diagram-frame { fill: none; stroke: var(--oa-border); stroke-width: .8; }
+.pile-diagrams { --tone: var(--oa-accent-text); }
+.pile-diagram.tone-moment { --tone: #dc2626; }
+.pile-diagram.tone-shear { --tone: #2563eb; }
+.pile-diagram.tone-disp { --tone: #15803d; }
+.pile-diagram.tone-soil { --tone: #b45309; }
+.pile-hatch line { stroke: var(--tone); stroke-width: .9; opacity: .55; }
+.pile-curve { fill: none; stroke: var(--tone); stroke-width: 2; }
+.pile-zero { stroke: var(--oa-text); stroke-width: 1.3; }
+.pile-bend-sign path { fill: none; stroke: var(--oa-text); stroke-width: 1.4; }
+.pile-bend-sign .pile-bend-tension { stroke-dasharray: 2.5 2; stroke-width: 1.1; }
+.pile-shear-sign rect { fill: var(--oa-panel); stroke: var(--oa-text); stroke-width: 1.1; }
+.pile-shear-sign line { stroke: var(--oa-text); stroke-width: 1.2; }
+.pile-shear-sign path { fill: var(--oa-text); }
+.pile-sign { font: 700 16px var(--oa-font-body) !important; fill: var(--oa-text) !important; paint-order: stroke; stroke: var(--oa-panel); stroke-width: 3px; }
+.pile-extreme circle { fill: var(--oa-panel); stroke: var(--oa-text); stroke-width: 1.4; }
+.pile-extreme text { font-size: 9.5px; paint-order: stroke; stroke: var(--oa-panel); stroke-width: 3px; }
+.pile-extreme-kind { font-weight: 700; }
+.pile-extreme-nap { fill: var(--oa-text-secondary) !important; font-size: 8.5px; }
+.pile-diagram-note { font-size: 11px; color: var(--oa-text-secondary); }
+
+/* Uitgebreide uitdraai */
+.lateral-sheet-section { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; align-items: start; }
+.lateral-sheet-soil { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px; align-items: start; margin-bottom: 10px; }
+.lateral-soil-column text { font: 8.5px var(--oa-font-numbers, inherit); fill: #333; }
+.lateral-soil-column .lateral-soil-name { font-weight: 700; font-size: 10px; }
+.lateral-soil-pile { fill: #a9abaf; stroke: #444; stroke-width: .7; }
+.lateral-swatch { display: inline-block; width: 12px; height: 12px; border: 1px solid #555; vertical-align: middle; }
+.lateral-soil-table small { color: #6b6e73; font-size: 9.5px; }
+.lateral-sum td { font-weight: 600; border-top: 1.5px solid currentColor; }
+.lateral-depth-table td, .lateral-depth-table th { padding: 2px 8px 2px 0; font-size: 11px; }
+.lateral-nm { margin: 12px 0 0; }
+.lateral-nm svg { width: 100%; max-width: 420px; height: auto; }
+.lateral-nm text { font: 9px var(--oa-font-numbers, inherit); fill: #333; }
+.lateral-nm-area { fill: rgba(37, 99, 235, .12); stroke: #2563eb; stroke-width: 1.4; }
+.lateral-nm-ok { fill: #15803d; } .lateral-nm-fail { fill: #dc2626; }
+.lateral-nm figcaption { font-size: 11px; color: #6b6e73; }

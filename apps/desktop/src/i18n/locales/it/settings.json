@@ -1,0 +1,33 @@
+{
+  "title": "Impostazioni",
+  "resetToDefaults": "Ripristina predefiniti",
+  "resetConfirm": "Ripristinare davvero tutte le impostazioni ai valori predefiniti?",
+  "tabs": {
+    "general": "Generale",
+    "appearance": "Aspetto",
+    "extensions": "Estensioni",
+    "about": "Informazioni"
+  },
+  "general": {
+    "application": "Applicazione",
+    "language": "Lingua"
+  },
+  "appearance": {
+    "theme": "Tema",
+    "light": "Chiaro",
+    "forge": "Forge (scuro)",
+    "dark": "OpenAEC (scuro)",
+    "blueprint": "Blueprint",
+    "contrast": "Contrasto elevato",
+    "contrastLight": "Contrasto elevato chiaro"
+  },
+  "about": {
+    "appName": "Open Geotechniek Studio",
+    "version": "Versione",
+    "license": "Licenza",
+    "description": "Visualizzatore desktop e generatore di report per dati di prove penetrometriche statiche (CPT) olandesi. Basato sull'identità visiva della OpenAEC Foundation.",
+    "openaecLink": "OpenAEC Foundation",
+    "builtOn": "identità visiva e librerie di base",
+    "sourceLink": "Codice sorgente"
+  }
+}

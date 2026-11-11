@@ -1,0 +1,25 @@
+.lateral-input section + section { margin-top: 28px; }
+.lateral-input h2,.lateral-result h2,.lateral-visual h2 { font: 500 15px var(--oa-font-heading); margin: 0 0 14px; }
+.lateral-input .settlement-fields { gap: 12px; margin-bottom: 12px; }
+.lateral-input label { font-size: 12px; display: grid; gap: 6px; margin: 8px 0; }
+.lateral-input label:has(input[type=checkbox]) { display: flex; gap: 8px; align-items: baseline; }
+.lateral-input select { width: 100%; background: var(--oa-panel); color: var(--oa-text); border: 1px solid var(--oa-border-strong); padding: 7px; font: inherit; }
+.lateral-input fieldset { border: 1px solid var(--oa-border); padding: 12px; margin: 14px 0; min-width: 0; }
+.lateral-input legend { font: 12px var(--oa-font-heading); }
+.lateral-input button { background: var(--oa-panel); color: var(--oa-text); border: 1px solid var(--oa-border); padding: 6px 10px; cursor: pointer; }
+.lateral-visual { padding: 18px; }
+.lateral-visual svg { width: 100%; min-width: 550px; height: auto; }
+.lateral-visual svg text { fill: var(--oa-text); font: 11px var(--oa-font-numbers); }
+.lateral-visual p,.lateral-result p { font-size: 12px; line-height: 1.6; }
+.lateral-soil { fill: var(--oa-selected); opacity: .4; }
+.lateral-soil-odd { fill: var(--oa-hover); }
+.lateral-axis { stroke: var(--oa-text-secondary); stroke-width: 1; }
+.lateral-grid { stroke: var(--oa-border); stroke-width: .6; }
+.lateral-curve { fill: none; stroke: var(--oa-accent-text); stroke-width: 2; }
+.lateral-result h3 { margin-top: 24px; }
+.lateral-values > div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--oa-border); padding: 8px 0; font-size: 12px; }
+.lateral-values dd { font-family: var(--oa-font-numbers); text-align: right; }
+.lateral-result table { border-collapse: collapse; width: 100%; font: 11px var(--oa-font-numbers); margin: 12px 0; }
+.lateral-result td,.lateral-result th { text-align: right; padding: 7px 4px; border-bottom: 1px solid var(--oa-border); }
+.lateral-result details { margin: 18px 0; font-size: 12px; }
+.lateral-result li { margin: 8px 0; overflow-wrap: anywhere; }

@@ -1,0 +1,23 @@
+{
+  "title": "Feedback senden",
+  "email": "E-Mail",
+  "emailPlaceholder": "ihre@email.de",
+  "fullName": "Vollständiger Name",
+  "fullNamePlaceholder": "Ihr Name (optional)",
+  "categoryGeneral": "Allgemein",
+  "categoryBug": "Fehler",
+  "categoryFeature": "Funktion",
+  "messagePlaceholder": "Was möchten Sie uns mitteilen? (mindestens 10 Zeichen)",
+  "attachImages": "Bilder anhängen",
+  "imageLimit": "Max. 3 Bilder, insgesamt 1 MB",
+  "sentiment": "Wie geht es Ihnen?",
+  "sentimentFrustrated": "Frustriert",
+  "sentimentNeutral": "Neutral",
+  "sentimentHappy": "Zufrieden",
+  "submit": "Feedback absenden",
+  "submitting": "Wird gesendet...",
+  "successTitle": "Vielen Dank!",
+  "successMessage": "Ihr Feedback wurde erfolgreich gesendet.",
+  "sendAnother": "Weiteres senden",
+  "errorGeneric": "Feedback konnte nicht gesendet werden. Bitte versuchen Sie es erneut."
+}

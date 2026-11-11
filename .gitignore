@@ -39,6 +39,9 @@ docs/*
 # REST/MCP-API-documentatie hoort in de repo.
 !docs/API.md
 !docs/READINESS.md
+# README-beelden (OpenAEC README-standaard) en de releaseprocedure.
+!docs/images/
+!docs/RELEASE.md
 /export/
 
 # Additional web verification outputs

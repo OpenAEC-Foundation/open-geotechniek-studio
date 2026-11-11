@@ -506,25 +506,7 @@ function AboutPanel() {
       <h2 className="bs-about-title">{t("aboutPanel.title")}</h2>
       <div className="bs-about-app">
         <div className="bs-about-logo">
-          <svg
-            viewBox="0 0 1024 1024"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect x="40" y="40" width="944" height="944" rx="180" fill="var(--theme-accent)" />
-            <text
-              x="512"
-              y="600"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fill="var(--theme-accent-text)"
-              fontSize="320"
-              fontFamily="'Space Grotesk', 'Inter', Arial, sans-serif"
-              fontWeight="700"
-            >
-              OA
-            </text>
-          </svg>
+          <img src={`${import.meta.env.BASE_URL}open-geo-studio-icon.svg`} width="48" height="48" alt="" />
         </div>
         <div className="bs-about-app-info">
           <h1 className="bs-about-app-name">{t("aboutPanel.appName")}</h1>

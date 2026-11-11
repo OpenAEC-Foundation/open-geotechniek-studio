@@ -8,6 +8,7 @@ import Ondergrond3dTab from "./Ondergrond3dTab";
 import RapportTab from "./RapportTab";
 import SonderingstekeningTab from "./SonderingstekeningTab";
 import { BerekeningenTab } from "./BerekeningenTab";
+import Model3DTab from "./Model3DTab";
 import { useExtension, useAllExtensions } from "../../hooks/useExtensions";
 import "./Ribbon.css";
 
@@ -28,7 +29,7 @@ interface RibbonProps {
 // UIT) — gebruiker zet ze aan via Instellingen → Extensies. Berekeningen
 // verschijnt zodra ÉÉN van de `calc.*` modules geactiveerd is. Rapport,
 // Home, Kaart en IFC zijn kern-tabs en blijven altijd zichtbaar.
-const ALL_TABS = ["start", "kaart", "ondergrond3d", "rapport", "tekening", "berekeningen", "ifc"] as const;
+const ALL_TABS = ["start", "kaart", "ondergrond3d", "rapport", "tekening", "berekeningen", "model3d", "ifc"] as const;
 type TabId = (typeof ALL_TABS)[number];
 
 export default function Ribbon({ onFileTabClick, onProjectSettingsClick, onViewChange }: RibbonProps) {
@@ -137,6 +138,7 @@ export default function Ribbon({ onFileTabClick, onProjectSettingsClick, onViewC
     else if (newTab === "ondergrond3d") onViewChange("ondergrond3d");
     else if (newTab === "tekening") onViewChange("tekening");
     else if (newTab === "berekeningen") onViewChange("calculations");
+    else if (newTab === "model3d") onViewChange("soil3d");
     else onViewChange("default");
   }, [activeTab, onViewChange]);
 
@@ -174,6 +176,7 @@ export default function Ribbon({ onFileTabClick, onProjectSettingsClick, onViewC
       case "rapport":       return <RapportTab onOpenProjectSettings={onProjectSettingsClick ?? (() => {})} />;
       case "tekening":      return <SonderingstekeningTab />;
       case "berekeningen":  return <BerekeningenTab />;
+      case "model3d":       return <Model3DTab />;
     }
   };
 

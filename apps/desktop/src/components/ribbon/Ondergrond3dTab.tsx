@@ -22,58 +22,58 @@ export default function Ondergrond3dTab() {
   return (
     <div className="ribbon-content">
       <div className="ribbon-groups">
-        <RibbonGroup label={t("model3d.show", "Weergave")}>
+        <RibbonGroup label={t("ondergrond3d.show", "Weergave")}>
           <RibbonButton
             icon={viewerLoadIcon}
-            label={t("model3d.voxels", "Grond-\nmodel")}
+            label={t("ondergrond3d.voxels", "Grond-\nmodel")}
             active={s.showVoxels}
             onClick={() => s.set({ showVoxels: !s.showVoxels })}
           />
           <RibbonButton
             icon={cptIcon}
-            label={t("model3d.cpts", "Sonde-\nringen")}
+            label={t("ondergrond3d.cpts", "Sonde-\nringen")}
             active={s.showCpts}
             onClick={() => s.set({ showCpts: !s.showCpts })}
           />
           <RibbonButton
             icon={labelIcon}
-            label={t("model3d.labels", "Labels")}
+            label={t("ondergrond3d.labels", "Labels")}
             active={s.showLabels}
             onClick={() => s.set({ showLabels: !s.showLabels })}
           />
           <RibbonButton
             icon={viewerWireframeIcon}
-            label={t("model3d.transparent", "Transparant")}
+            label={t("ondergrond3d.transparent", "Transparant")}
             active={s.opacity < 1}
             onClick={() => s.set({ opacity: s.opacity < 1 ? 1 : 0.35 })}
           />
         </RibbonGroup>
-        <RibbonGroup label={t("model3d.camera", "Aanzicht")}>
+        <RibbonGroup label={t("ondergrond3d.camera", "Aanzicht")}>
           <RibbonButton
             icon={viewerOrbitIcon}
-            label={t("model3d.iso", "3D")}
+            label={t("ondergrond3d.iso", "3D")}
             onClick={() => s.requestCamera("iso")}
           />
           <RibbonButton
             icon={topIcon}
-            label={t("model3d.top", "Boven")}
+            label={t("ondergrond3d.top", "Boven")}
             onClick={() => s.requestCamera("top")}
           />
           <RibbonButton
             icon={frontIcon}
-            label={t("model3d.front", "Voor")}
+            label={t("ondergrond3d.front", "Voor")}
             onClick={() => s.requestCamera("front")}
           />
           <RibbonButton
             icon={viewerFitIcon}
-            label={t("model3d.side", "Zij")}
+            label={t("ondergrond3d.side", "Zij")}
             onClick={() => s.requestCamera("side")}
           />
         </RibbonGroup>
-        <RibbonGroup label={t("model3d.section", "Doorsnede")}>
+        <RibbonGroup label={t("ondergrond3d.section", "Doorsnede")}>
           <RibbonButton
             icon={viewerSectionIcon}
-            label={t("model3d.cutCorner", "Hoek\nuitsnijden")}
+            label={t("ondergrond3d.cutCorner", "Hoek\nuitsnijden")}
             active={s.cutX < 1 || s.cutY < 1}
             onClick={() =>
               s.cutX < 1 || s.cutY < 1
@@ -82,10 +82,10 @@ export default function Ondergrond3dTab() {
             }
           />
         </RibbonGroup>
-        <RibbonGroup label={t("model3d.export", "Exporteren")}>
+        <RibbonGroup label={t("ondergrond3d.export", "Exporteren")}>
           <RibbonButton
             icon={imageIcon}
-            label={t("model3d.png", "Afbeelding\n(PNG)")}
+            label={t("ondergrond3d.png", "Afbeelding\n(PNG)")}
             onClick={() => s.requestExport()}
           />
         </RibbonGroup>

@@ -36,7 +36,7 @@ def set_version(version):
     p=APP/'src-tauri/Cargo.toml';p.write_text(re.sub(r'(\[package\][\s\S]*?\nversion = ")[^"]+',lambda m:m[1]+version,p.read_text(),count=1))
     p=APP/'src-tauri/Cargo.lock';p.write_text(re.sub(r'(name = "open-geo-studio"\nversion = ")[^"]+',lambda m:m[1]+version,p.read_text(),count=1))
     p=ROOT/'snap/snapcraft.yaml';p.write_text(re.sub(r'^version:.*',f"version: '{version}'",p.read_text(),flags=re.M))
-    for lang in ['nl','en']:
+    for lang in sorted(d.name for d in (APP/'src/i18n/locales').iterdir() if d.is_dir()):
         p=APP/f'src/i18n/locales/{lang}/common.json';d=json.loads(p.read_text());d['version']=f'Open Geotechniek Studio v{version}';p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
     p=ROOT/'packages/core/package.json';d=json.loads(p.read_text());d['version']=version;p.write_text(json.dumps(d,indent=2)+'\n')
     p=ROOT/'packages/native/Cargo.toml';p.write_text(re.sub(r'(\[package\][\s\S]*?\nversion = ")[^"]+',lambda m:m[1]+version,p.read_text(),count=1))

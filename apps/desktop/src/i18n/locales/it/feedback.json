@@ -1,0 +1,23 @@
+{
+  "title": "Invia feedback",
+  "email": "E-mail",
+  "emailPlaceholder": "tua@email.it",
+  "fullName": "Nome completo",
+  "fullNamePlaceholder": "Il tuo nome (facoltativo)",
+  "categoryGeneral": "Generale",
+  "categoryBug": "Bug",
+  "categoryFeature": "Funzionalità",
+  "messagePlaceholder": "Dicci cosa ne pensi... (minimo 10 caratteri)",
+  "attachImages": "Allega immagini",
+  "imageLimit": "Max 3 immagini, 1 MB in totale",
+  "sentiment": "Come ti senti?",
+  "sentimentFrustrated": "Frustrato",
+  "sentimentNeutral": "Neutrale",
+  "sentimentHappy": "Soddisfatto",
+  "submit": "Invia feedback",
+  "submitting": "Invio in corso...",
+  "successTitle": "Grazie!",
+  "successMessage": "Il tuo feedback è stato inviato.",
+  "sendAnother": "Invia un altro",
+  "errorGeneric": "Invio del feedback non riuscito. Riprova."
+}

@@ -168,9 +168,31 @@
 }
 .calc-tree li {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
 }
+.calc-tree-children {
+  flex-basis: 100%;
+  margin: 2px 0 6px 10px !important;
+  padding-left: 8px !important;
+  border-left: 1px solid var(--oa-border, #d4d4d8);
+}
+.calc-tree-child button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 3px;
+  padding: 4px 8px;
+  color: var(--oa-text-secondary, #71717a);
+  font: 400 0.78rem "Inter", sans-serif;
+  cursor: pointer;
+}
+.calc-tree-child.depth-1 button { padding-left: 20px; }
+.calc-tree-child button:hover { background: var(--oa-hover, #f5f5f4); color: var(--oa-text, #36363e); }
+.calc-tree-child.current button { background: var(--oa-selected, #fef3c7); color: var(--oa-text, #36363e); font-weight: 600; }
+.calc-tree-child { flex-basis: 100%; }
 .calc-tree li.active .calc-tree-item {
   background: var(--theme-bg-lighter, #f5f5f4);
   border-color: var(--amber, #d97706);

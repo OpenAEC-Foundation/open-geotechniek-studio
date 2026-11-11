@@ -18,6 +18,7 @@ const actions: Record<string, string> = {
   studio_set_project_meta: "Projectgegevens wijzigen", studio_save_project: "Project opslaan",
   studio_add_calculation: "Berekening toevoegen", studio_update_calculation: "Berekening wijzigen",
   studio_select_calculation: "Berekening selecteren", studio_get_calculation: "Berekening lezen",
+  studio_get_capacity_table: "Draagvermogentabel lezen", studio_export_report: "Rapport exporteren",
 };
 export function StudioMcpStatusView({ status, desktop }: { status: StudioMcpStatus | null; desktop: boolean }) {
   let label = "MCP starten…", kind = "idle", title = "Lokale MCP-koppeling wordt gestart.";

@@ -4,6 +4,7 @@ import { useCptStore } from "../../../store/useCptStore";
 import { getCalcModule } from "../registry";
 import type { CalculationInstance } from "../types";
 
+
 interface Props {
   onAddClick: () => void;
 }
@@ -26,7 +27,11 @@ export function ProjectTreePanel({ onAddClick }: Props) {
     [activeDocId, byDoc],
   ) as CalculationInstance[];
   const visibleList = list.filter((calculation) => getCalcModule(calculation.moduleId));
-  const setActive = useCalculationsStore((s) => s.setActive);
+  const navigate = useCalculationsStore((s) => s.navigate);
+  const nav = useCalculationsStore((s) => s.sheetNav);
+  const cpts = useCptStore((s) => s.cpts);
+  const activeCptId = useCptStore((s) => s.activeCptId);
+  const projectMeta = useCptStore((s) => s.projectMeta);
   const remove = useCalculationsStore((s) => s.removeCalculation);
   const duplicate = useCalculationsStore((s) => s.duplicate);
   const update = useCalculationsStore((s) => s.updateCalculation);
@@ -55,6 +60,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
     spread: "Funderingen",
     wall: "Wanden",
     anchor: "Ankers",
+    report: "Rapporten",
     other: "Overig",
   };
 
@@ -99,7 +105,7 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                   ) : (
                     <button
                       className="calc-tree-item"
-                      onClick={() => setActive(c.id)}
+                      onClick={() => navigate(c.id, mod?.table ? "table" : "sheet")}
                       onDoubleClick={() => {
                         setRenaming(c.id);
                         setDraftName(c.name);
@@ -130,6 +136,23 @@ export function ProjectTreePanel({ onAddClick }: Props) {
                       ×
                     </button>
                   </div>
+                  {isActive && mod?.table && (() => {
+                    const table = mod.table, items = table.items(c.input, { cpts, activeCptId, projectMeta });
+                    const here = nav.calcId === c.id ? nav : { view: "sheet", cptId: null };
+                    const node = (label: string, current: boolean, go: () => void, depth = 0) => (
+                      <li key={label} className={`calc-tree-child depth-${depth}${current ? " current" : ""}`}>
+                        <button type="button" onClick={go} aria-current={current ? "page" : undefined}>{label}</button>
+                      </li>
+                    );
+                    return (
+                      <ul className="calc-tree-children" aria-label={`Onderdelen van ${c.name}`}>
+                        {node(table.label, here.view === "table" && !here.cptId, () => navigate(c.id, "table"))}
+                        {items.map((it) => node(it.label, here.view === "table" && here.cptId === it.id, () => navigate(c.id, "table", it.id), 1))}
+                        {node("Rekenblad", here.view !== "table" && here.view !== "settings", () => navigate(c.id, "sheet"))}
+                        {node("Instellingen", here.view === "settings", () => navigate(c.id, "settings"))}
+                      </ul>
+                    );
+                  })()}
                 </li>
               );
             })}

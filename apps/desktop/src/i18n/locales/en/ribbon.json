@@ -93,5 +93,33 @@
     "sectionContent": "Content",
     "sectionAppendices": "Appendices",
     "sectionBackcover": "Back cover"
+  },
+  "model3dTab": "3D model",
+  "model3d": {
+    "showGroup": "Display",
+    "cpts": "CPTs",
+    "qc": "Cone resistance",
+    "model": "Soil model",
+    "ground": "Ground level",
+    "bearing": "Bearing layer",
+    "toes": "Pile toes",
+    "modelGroup": "Model",
+    "exaggeration": "Exaggeration",
+    "opacity": "Opacity",
+    "cutGroup": "Section",
+    "cutAxis": "Direction",
+    "cutEast": "West → east",
+    "cutNorth": "South → north",
+    "cut": "Cut",
+    "viewGroup": "View",
+    "fit": "Fit",
+    "legend": "Soil types",
+    "over": "over",
+    "from": "from",
+    "to": "to",
+    "defaultCriterion": "default; set it in a foundation advice",
+    "cells": "cells",
+    "empty": "Add CPTs to build the soil model.",
+    "noWebgl": "3D view is not available on this system (no WebGL)."
   }
 }

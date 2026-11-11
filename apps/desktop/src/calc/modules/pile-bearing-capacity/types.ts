@@ -35,6 +35,15 @@ export interface PileTypeSpec {
   qcIIIStartCapMpa?: number;
 }
 
+/** Betonopzetter op een houten paal: boven de las beton, eronder hout. */
+export interface ConcreteExtension {
+  /** Onderkant van de opzetter, de las tussen beton en hout [m NAP]. */
+  jointNap: number;
+  /** Zijde (vierkant) of diameter (rond) van de opzetter [mm]. */
+  sizeMm: number;
+  isCircular: boolean;
+}
+
 export interface ProjectPileFactors {
   alphaP: number;
   alphaS: number;
@@ -45,7 +54,27 @@ export interface ProjectPileFactors {
   edition: string;
 }
 
+export interface PilePresets {
+  /** Maatreeks per paaltype [mm]. */
+  sizesMm?: Record<string, number[]>;
+  extensions?: Array<{ sizeMm: number; isCircular: boolean }>;
+  extensionLengthsM?: number[];
+  timberToeMm?: number;
+}
+
 export interface PileInput {
+  /** Gedeelde invoer met afzonderlijke resultaten per sondering en puntniveau. */
+  /** Instellingen van deze berekening: eigen standaardreeksen. Ontbrekend = standaard. */
+  presets?: PilePresets;
+  capacityTable?: {
+    cptIds:string[];toeNaps:number[];
+    /** Paalmaten [mm] voor de tabel; ontbrekend = alleen diameterMm. */
+    sizesMm?:number[];
+    /** Gezocht netto draagvermogen Rc;net;d [kN]. */
+    targetKn?:{minKn:number;maxKn:number};
+    /** Voorbeeldberekeningen die volledig in de uitdraai komen; daarna alleen de tabellen. */
+    examples?:Array<{cptId:string;sizeMm:number;toeNap:number}>;
+  };
   /** Ontbrekend: behoud het bestaande projectmodel. */
   standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017";
   cptId: string | null;        // referentie naar CPT in project
@@ -54,8 +83,12 @@ export interface PileInput {
   wallThicknessMm: number;     // 8.0 — voor EA
   /** Ontbrekend betekent dezelfde maat als de schacht (bestaande projecten). */
   baseDiameterMm?: number;
-  /** Hout: lineair verloop vanaf kopdiameter over lengthM, daarna constante puntdiameter. */
+  /** Hout: lineair verloop vanaf de bovenkant van het hout (paalkop, of de
+   *  las bij een betonopzetter) over lengthM, daarna constante puntdiameter. */
   timberTaper?: { toeDiameterMm: number; lengthM: number };
+  /** Hout: betonopzetter van paalkop tot de las. Daaronder het hout, met
+   *  diameterMm als houtdiameter bij de las. */
+  concreteExtension?: ConcreteExtension;
   /** Projectspecifieke axiale stijfheid EA, in kN. */
   axialStiffnessKn?: number;
   projectFactors?: ProjectPileFactors;

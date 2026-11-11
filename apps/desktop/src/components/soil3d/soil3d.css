@@ -1,0 +1,16 @@
+/* 3D-grondmodel */
+.soil3d-view { position: relative; flex: 1; min-height: 0; min-width: 0; display: flex; background: var(--theme-bg); color: var(--theme-text); overflow: hidden; }
+.soil3d-canvas { position: absolute; inset: 0; }
+.soil3d-canvas canvas { display: block; }
+.soil3d-empty { margin: auto; padding: 24px; color: var(--theme-text-secondary, #6b7280); font-size: 13px; z-index: 1; }
+.soil3d-legend { position: absolute; top: 10px; left: 10px; z-index: 1; width: 230px; max-height: calc(100% - 20px); overflow: auto; padding: 8px 10px; font-size: 12px; background: color-mix(in srgb, var(--theme-bg-lighter, #fff) 92%, transparent); border: 1px solid var(--theme-border-subtle, #e7e5e4); border-radius: 6px; box-shadow: 0 2px 8px rgb(0 0 0 / .08); }
+.soil3d-legend-title { margin: 6px 0 4px; font-weight: 600; }
+.soil3d-legend-title:first-child { margin-top: 0; }
+.soil3d-zone { display: flex; align-items: center; gap: 6px; padding: 1px 0; cursor: pointer; }
+.soil3d-swatch { width: 12px; height: 12px; border-radius: 2px; border: 1px solid rgb(0 0 0 / .25); flex: none; }
+.soil3d-note { margin-top: 4px; line-height: 1.45; }
+.soil3d-muted { color: var(--theme-text-secondary, #6b7280); }
+.soil3d-warn { color: #b45309; }
+/* Lint */
+.soil3d-ribbon-field { display: flex; flex-direction: column; gap: 3px; padding: 2px 6px; font-size: 11px; min-width: 96px; }
+.soil3d-ribbon-field select, .soil3d-ribbon-field input[type="range"] { font-size: 11px; width: 100%; }

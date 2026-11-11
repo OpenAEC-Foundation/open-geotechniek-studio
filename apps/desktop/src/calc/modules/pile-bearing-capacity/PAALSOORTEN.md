@@ -28,7 +28,7 @@ Een typewissel verwijdert projectspecifieke factoren, puntmaat en EA. Deze mogen
 - De bestaande lastzakkingslijn 1 is beschikbaar. Voor avegaarpalen (lijn 2) en boorpalen (lijn 3) worden draagkrachtcomponenten bepaald, maar geen zakking of veerwaarden getoond of gerapporteerd.
 - De avegaarvariant uit 2017 begrenst de start van qc;III op 2 MPa; er is geen vrijstelling voor nasonderingen ingevoerd. Bij expliciete projectfactoren 2025 vervalt deze oude begrenzing volgens de toelichting van NEN.
 - De gesloten buispreset uit 2017 accepteert maximaal 10 mm uitsteken van de voetplaat per zijde. De groutschroefpreset vereist minimaal 300 mm schachtdiameter.
-- Hout ondersteunt een constante of lineair taps verlopende ronde doorsnede, zonder betonoplanger. Zakking en veerwaarden voor taps hout zijn niet geverifieerd.
+- Hout ondersteunt een constante of lineair taps verlopende ronde doorsnede, optioneel met een betonopzetter (vierkant of rond) van paalkop tot de las. Boven de las geldt de omtrek van de opzetter, eronder die van het hout; de tapsheid telt vanaf de bovenkant van het hout. Negatieve kleef rekent met de lengtegemiddelde omtrek over de kleefzone, positieve kleef per laag. Zakking en veerwaarden voor taps hout en voor hout met opzetter (verschillende EA) zijn niet geverifieerd en worden niet bepaald.
 - Open stalen buizen, profielen, micropalen, trek, horizontale belasting en wapening zijn niet toegevoegd. De daarvoor vereiste aanvullende rekenmodellen zijn niet uitwisselbaar met de huidige drukpaalberekening.
 - Bij afwijkende voetmaten blijven de projectspecifieke beta-factor en het toegestane schachtwrijvingstraject te controleren. De app leidt beta niet automatisch af uit voethoogte.
 
@@ -50,8 +50,9 @@ de omtrekafhankelijkheid is ook beschreven in het openbare
 [Handboek Funderingen](https://kennisbank.crow.nl/public/gastgebruiker/FUNT/Handboek_Funderingen_%E2%80%93_Deel_A_%28Eurocode_7%29/A_3400%C2%A0Funderingen_op_palen/64497).
 Dit is een geometrische uitbreiding van het experimentele model. Er wordt
 geen extra draagkracht door coniciteit toegevoegd en geen zelfstandige
-reductiefactor op negatieve kleef aangenomen. Geen betonoplanger,
-houtsterkte- of aantastingscontrole. De beperkte editie 1991 ondersteunt
+reductiefactor op negatieve kleef aangenomen. Een betonopzetter wijzigt
+alleen de schachtomtrek boven de las; geen controle van de las zelf,
+houtsterkte of aantasting. De beperkte editie 1991 ondersteunt
 nog steeds uitsluitend vierkante prefab betonpalen.
 
 Analytische tests controleren de omtrek bij meerdere kleefgrenzen, een
