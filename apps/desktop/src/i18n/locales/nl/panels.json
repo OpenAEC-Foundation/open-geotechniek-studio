@@ -1,0 +1,262 @@
+{
+  "bore": {
+    "belowGround": "m −mv",
+    "colour": "Kleur: {{colour}}",
+    "depth": "Diepte",
+    "fallbackTitle": "Boring",
+    "layers": "Lagen",
+    "noLayers": "Geen lagen aangetroffen in deze boring.",
+    "noLayersHint": "De BHR-GT XML bevatte geen <0>describedInterval</0> elementen.",
+    "zoomHint": "Ctrl + scroll om in/uit te zoomen",
+    "zoomIn": "Inzoomen",
+    "zoomOut": "Uitzoomen",
+    "zoomReset": "Reset zoom"
+  },
+  "chart": {
+    "depthAxis": "Diepte (m)",
+    "fsHeader": "Plaatselijke wrijving (fs, MPa)",
+    "qcHeader": "Conusweerstand (qc, MPa)",
+    "removeAllMarkers": "Alles verwijderen",
+    "removeMarker": "Verwijderen",
+    "rfHeader": "Wrijvingsgetal (Rf, %)",
+    "u2Header": "Waterspanning (u2, kN/m²)"
+  },
+  "gwp": {
+    "axisLevel": "Waterstand (m NAP)",
+    "col": {
+      "material": "Materiaal",
+      "screenBottom": "Filter onder",
+      "screenLength": "Filterlengte",
+      "screenTop": "Filter boven",
+      "status": "Status",
+      "tubeDiameter": "Buisdiameter",
+      "tubeTop": "Buisbovenkant"
+    },
+    "constructed": "Geconstrueerd",
+    "csvFailed": "CSV laden mislukt: {{error}}",
+    "deepestFilter": "Onderste filter",
+    "fetchFailed": "Kon GLD's niet ophalen: {{error}}",
+    "gldTitle": "Grondwaterstand over de tijd (GLD)",
+    "groundLevel": "Maaiveld",
+    "loading": "Grondwaterstanden ophalen…",
+    "noCoords": "Put heeft geen WGS84-coördinaten — kan GLD's niet zoeken.",
+    "noSeries": "Geen GLD-tijdseries gevonden in de buurt van deze put.",
+    "noValues": "GLD's gevonden ({{n}}) maar geen meetwaarden ontvangen.",
+    "observations": "{{n}} metingen",
+    "openBroloket": "Open in BROloket ↗",
+    "owner": "eigenaar {{owner}}",
+    "seriesFound": "{{n}} tijdseries gevonden bij deze put. Scrollen = horizontaal zoomen, slepen = verschuiven, dubbelklik = reset.",
+    "subtitle": "Grondwatermonitoringput (BRO/GMW)",
+    "tubeCount": "Aantal buizen",
+    "tubesTitle": "Monitoring-buizen (filters)"
+  },
+  "ifcView": {
+    "disabledText": "De oude STEP-export voldoet niet aan het IFC-schema. Gebruik het projectbestand om alle gegevens te bewaren. De IFCX-snapshot is experimenteel.",
+    "disabledTitle": "IFC4x3-export uitgeschakeld"
+  },
+  "ifcxPreview": {
+    "close": "Sluiten",
+    "copied": "Gekopieerd",
+    "copy": "Kopieer JSON",
+    "failed": "Kon geen preview maken:",
+    "generating": "IFCX genereren…",
+    "hint": "Dit is exact de inhoud die in het <0>.ifcgis</0> bestand komt te staan wanneer je het project opslaat — IFC5-alpha (IFCX) shaped JSON met IfcProject, IfcSite, IfcBorehole, IfcAnnotation entities en cross-references via <1>#id</1>.",
+    "noDoc": "Geen actief document — open of maak een project om een IFCX-preview te zien.",
+    "projectOnly": "De IFCX-preview werkt alleen voor project-documenten. Voor losse sonderingen of boringen gebruik de IFC-tab.",
+    "size": "{{bytes}} bytes IFCX (IFC4X3_ADD2)",
+    "tip": "Tip: voor de IFCX-conversie moet de Rust-side de <0>to_ifcx_json</0> functie hebben (ifcgis-0.4+). Herstart de Tauri-dev-app als je net een nieuwe cpt-core build hebt gemaakt.",
+    "title": "IFCX-preview — wat komt er in het .ifcgis bestand"
+  },
+  "layerAnalysis": {
+    "invalidDepth": "Bronpunt {{n}}: ongeldige of afnemende diepte niet gebruikt voor laaginterpretatie.",
+    "invalidRanges": "Lagen moeten positief dik, op volgorde, zonder overlap en binnen de meetdiepte liggen; kies zone 1–9.",
+    "notList": "Laagindeling moet een lijst zijn.",
+    "savedInvalid": "Opgeslagen laagindeling ongeldig: {{error}}",
+    "settingsRange": "Minimumdikte en hysterese moeten tussen 0 en 50 m liggen.",
+    "thinIsolated": "Dunne geïsoleerde laag behouden; geen buurlaag over een meetgat verondersteld.",
+    "unknownProvenance": "Onbekende of niet passende herkomst van opgeslagen laagindeling.",
+    "zeroThickness": "Los meetpunt zonder dikte niet als laag geïnterpreteerd."
+  },
+  "layers": {
+    "add": "Voeg laag toe",
+    "bottom": "Onderkant (m)",
+    "bottomAria": "Onderkant laag {{n}}",
+    "cancel": "Annuleren",
+    "colBottom": "Onderkant",
+    "colTop": "Top",
+    "colZone": "Zone",
+    "edit": "Laaginterpretatie bewerken",
+    "export": "Exporteer lagen JSON",
+    "fillSettings": "Vul minimumdikte en hysterese in.",
+    "footer": "Bron: {{source}}. Hysterese bevestigt een nieuwe zone met twee opeenvolgende punten. Grenzen worden apart bewaard; meetpunten blijven behouden. Meetcurves tonen de indicatieve puntindeling.",
+    "hysteresis": "Hysterese (m)",
+    "jsonFilter": "Laaginterpretatie JSON",
+    "layerN": "Laag {{n}}",
+    "minThickness": "Minimumdikte (m)",
+    "noCpt": "Geen sondering geselecteerd.",
+    "none": "Geen laaginterpretatie beschikbaar.",
+    "provenanceAuto": "Indicatieve qc/Rf-laaginterpretatie · minimum {{min}} m · hysterese {{hyst}} m",
+    "provenanceManual": "Handmatige laaginterpretatie · minimum {{min}} m · hysterese {{hyst}} m",
+    "recalculate": "Automatisch herberekenen",
+    "remove": "Verwijder laag {{n}}",
+    "saveManual": "Handmatige lagen opslaan",
+    "splitLast": "Splits laatste laag",
+    "top": "Bovenkant (m)",
+    "topAria": "Bovenkant laag {{n}}",
+    "zone": "Indicatieve zone",
+    "zoneAria": "Zone laag {{n}}"
+  },
+  "left": {
+    "bore": {
+      "accountableParty": "Bronhouder",
+      "base": "Basis",
+      "boreData": "Boringsgegevens",
+      "delivery": "Levering",
+      "descriptionDate": "Beschrijfdatum",
+      "descriptionProcedure": "Beschrijfprocedure",
+      "endDate": "Einddatum",
+      "fileMetadata": "Bestandsmetadata",
+      "finalDepth": "Eindiepte",
+      "id": "Boring-ID",
+      "layerCount": "Aantal lagen",
+      "layers": "Lagen",
+      "method": "Boormethode",
+      "noExtras": "Geen aanvullende metadata.",
+      "noLayers": "Geen lagen.",
+      "project": "Project",
+      "projectNumber": "Projectnr",
+      "soilType": "Grondsoort",
+      "startDate": "Startdatum",
+      "top": "Top"
+    },
+    "gwp": {
+      "constructed": "Geconstrueerd",
+      "filterBottom": "Filter onder",
+      "filterTop": "Filter top",
+      "initialFunction": "Initiële functie",
+      "manager": "Beheerder",
+      "noTubes": "Geen buizen.",
+      "owner": "Eigenaar",
+      "status": "Status",
+      "subtitle": "Grondwatermonitoringput (BRO/GMW)",
+      "tubeCount": "Aantal buizen",
+      "tubes": "Buizen (filters)",
+      "wellCode": "Put-code",
+      "wellData": "Putgegevens",
+      "wellHeadProtector": "Putkop-bescherming"
+    },
+    "measurements": {
+      "depth": "diepte",
+      "depthTitle": "Diepte onder maaiveld",
+      "napTitle": "Diepte t.o.v. NAP"
+    },
+    "meta": {
+      "groundLevelNap": "Maaiveld NAP",
+      "qualityRegime": "Kwaliteitsregime"
+    },
+    "photos": {
+      "hintBore": "BRO hosts foto's van deze boring (indien aanwezig) op BROloket.",
+      "hintCpt": "BRO hosts foto's van deze sondering (indien aanwezig) op BROloket.",
+      "hintGwp": "BRO hosts foto's van deze grondwaterput (indien aanwezig) op BROloket.",
+      "link": "Bekijk foto's op BROloket ↗",
+      "onlyBro": "Foto's zijn alleen beschikbaar voor BRO-objecten (BHR/CPT/GMW-id vereist).",
+      "title": "Foto's & inspectie"
+    },
+    "rawXml": {
+      "copied": "Gekopieerd",
+      "copy": "Kopieer XML",
+      "none": "Geen ruwe XML beschikbaar.",
+      "title": "Ruwe data (XML)"
+    }
+  },
+  "normalized": {
+    "error": {
+      "missing": "Vul alle meetwaarden en spanningen in.",
+      "notPositive": "Netto conusweerstand en effectieve verticale spanning moeten positief zijn.",
+      "outOfRange": "Punt ligt buiten het numerieke bereik.",
+      "range": "Vereist: qc en fs > 0, 0 < a ≤ 1 en totale spanning ≥ 0."
+    },
+    "field": {
+      "areaRatio": "Conusoppervlakteverhouding a",
+      "totalStress": "Totale spanning σv0 [kPa]",
+      "waterPressure": "Hydrostatische druk u0 [kPa]"
+    },
+    "icZone": "Ic / zone",
+    "intro": "Puntanalyse Qt / Fr / Bq / Ic met opgegeven spanningen, volgens Robertson–Wride (vaste exponent n = 1).",
+    "note": "Gevoelige en gecementeerde gronden (zones 1, 8, 9) volgen niet uit Ic alleen. Geen omzetting naar een NEN-grondbeschrijving.",
+    "reference": "Robertson & Cabal, 2022, figuur 16",
+    "title": "Genormaliseerde SBTn-puntanalyse",
+    "zones": {
+      "z2": "Organische grond",
+      "z3": "Klei",
+      "z4": "Siltmengsel",
+      "z5": "Zandmengsel",
+      "z6": "Zand",
+      "z7": "Grindhoudend zand"
+    }
+  },
+  "projectSettings": {
+    "boreMeta": "{{layers}} lagen · {{depth}} m diepte",
+    "close": "Sluiten",
+    "cptMeta": "{{points}} punten · {{depth}} m diepte",
+    "newProject": "Nieuw project",
+    "noProject": "Geen project actief — open of maak een <0>.ifcgis</0> project.",
+    "noProjectHint": "De huidige actieve tab is een losse sondering. Projectinfo (titel, opdrachtgever, locatie, sonderingenlijst) leeft binnen een project — maak er een aan of open een bestaand <0>.ifcgis</0> bestand."
+  },
+  "reportPreview": {
+    "chartScale": "Grafiekschaal",
+    "coverTitle": "Titel voorblad",
+    "onePagePerCpt": "Eén blad per sondering",
+    "openFailed": "PDF openen mislukt: {{error}}"
+  },
+  "soil3d": {
+    "bearingRange": "NAP {{top}} tot {{bottom}} m ({{found}}/{{total}})",
+    "criterion": "qc ≥ {{qc}} MPa over ≥ {{thickness}} m",
+    "criterionFrom": "uit {{source}}",
+    "grid": "{{nx}} × {{ny}} × {{nz}} cellen ({{dx}} × {{dy}} × {{dz}} m), IDW",
+    "warn": {
+      "bearingNone": "Draagkrachtige laag in geen enkele sondering gevonden.",
+      "bearingPartial": "Draagkrachtige laag niet gevonden in {{ids}}; daar is het vlak geïnterpoleerd.",
+      "missingRd": "Zonder RD-coördinaten (niet in het model): {{ids}}.",
+      "noLayers": "Sondering {{id}} heeft geen laagindeling.",
+      "noRd": "Geen RD-coördinaten: de sonderingen staan op een rij met 10 m tussenafstand."
+    },
+    "zoneN": "Zone {{n}}"
+  },
+  "validation": {
+    "column": "kolom {{n}}",
+    "counts": "{{errors}} fouten · {{warnings}} waarschuwingen",
+    "depth": "Diepte: {{method}}",
+    "depthMethod": {
+      "corrected": "gemeten gecorrigeerde diepte",
+      "inclination": "hellingcorrectie uit sondeerlengte",
+      "mixed": "gemengde methoden; per record in JSON",
+      "penetration": "sondeerlengte als verticale benadering"
+    },
+    "diagnostics": "Diagnostiek ({{n}})",
+    "exportAll": "Exporteer het rapport voor alle meldingen.",
+    "line": "regel {{n}}",
+    "measurements": "Meetgrootheden & eenheden ({{n}})",
+    "noReport": "Dit bestand heeft nog geen validatierapport. Importeer het opnieuw met de actuele parser.",
+    "points": "{{points}} meetpunten · {{voids}} voids · {{omitted}} weggelaten records",
+    "preExcavated": "Voorontgraven: {{depth}} m",
+    "predrilled": "Voorgeboord: {{depth}} m",
+    "record": "record {{n}}",
+    "regime": "Regime: {{regime}}",
+    "removedLayer": "Laag tot {{depth}} m: {{description}}",
+    "report": "Meld dit bestand",
+    "showOutliers": "Toon {{n}} uitschieters (bronrecords {{records}})",
+    "variables": "Meetvariabelen & nulmetingen"
+  },
+  "zones": {
+    "z1": "Gevoelig fijnkorrelig",
+    "z2": "Organisch / veen",
+    "z3": "Klei",
+    "z4": "Silt mengsels",
+    "z5": "Zand mengsels",
+    "z6": "Zand",
+    "z7": "Grof zand / grind",
+    "z8": "Zeer vast zand/klei",
+    "z9": "Zeer vast fijnkorrelig"
+  }
+}

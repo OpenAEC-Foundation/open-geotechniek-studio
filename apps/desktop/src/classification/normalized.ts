@@ -2,6 +2,7 @@
  * Robertson & Cabal, Guide to In-Situ Testing, 2nd ed. 2022, Fig. 16 / glossary.
  * This does not infer sensitive/cemented zones 1, 8, 9 from Ic alone.
  */
+import { pt } from "../utils/panelsI18n";
 export interface NormalizedInput {
   qcMpa: number;
   fsMpa: number;
@@ -51,7 +52,7 @@ export function normalizeCpt(
       "waterPressureKpa",
     ].every((key) => Number.isFinite(input[key as keyof NormalizedInput]))
   )
-    return { ok: false, error: "Vul alle meetwaarden en spanningen in." };
+    return { ok: false, error: pt("normalized.error.missing", "Vul alle meetwaarden en spanningen in.") };
   if (
     input.areaRatio <= 0 ||
     input.areaRatio > 1 ||
@@ -61,7 +62,7 @@ export function normalizeCpt(
   )
     return {
       ok: false,
-      error: "Vereist: qc en fs > 0, 0 < a ≤ 1 en totale spanning ≥ 0.",
+      error: pt("normalized.error.range", "Vereist: qc en fs > 0, 0 < a ≤ 1 en totale spanning ≥ 0."),
     };
   const qtMpa = input.qcMpa + (1 - input.areaRatio) * input.u2Mpa;
   const netResistanceKpa = qtMpa * 1000 - input.totalStressKpa,
@@ -69,8 +70,10 @@ export function normalizeCpt(
   if (netResistanceKpa <= 0 || effectiveStressKpa <= 0)
     return {
       ok: false,
-      error:
+      error: pt(
+        "normalized.error.notPositive",
         "Netto conusweerstand en effectieve verticale spanning moeten positief zijn.",
+      ),
     };
   const Qt = netResistanceKpa / effectiveStressKpa,
     Fr = (100 * input.fsMpa * 1000) / netResistanceKpa,
@@ -83,7 +86,7 @@ export function normalizeCpt(
     ) ||
     !zone
   )
-    return { ok: false, error: "Punt ligt buiten het numerieke bereik." };
+    return { ok: false, error: pt("normalized.error.outOfRange", "Punt ligt buiten het numerieke bereik.") };
   return {
     ok: true,
     qtMpa,

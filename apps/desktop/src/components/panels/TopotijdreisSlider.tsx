@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * Historical Topotijdreis years available from the Kadaster/Esri NL
@@ -71,6 +72,7 @@ export function getTopotijdreisState() {
 }
 
 export default function TopotijdreisSlider() {
+  const { t } = useTranslation("map");
   // sliderIdx === 0 → off. Otherwise points into TOPO_YEARS at idx - 1.
   // Start disabled, then restore the choice when returning to this view.
   const [sliderIdx, setSliderIdx] = useState(savedSliderIdx);
@@ -136,13 +138,13 @@ export default function TopotijdreisSlider() {
           type="checkbox"
           checked={isOn}
           onChange={(e) => onChange(e.target.checked ? max : 0)}
-          aria-label="Topotijdreis aan/uit"
+          aria-label={t("topo.toggle", "Topotijdreis aan/uit")}
         />
-        <span className="topotijdreis-toggle-label">Topotijdreis</span>
+        <span className="topotijdreis-toggle-label">{t("topo.title", "Topotijdreis")}</span>
         {current ? (
           <span className="topotijdreis-year-label">{current.year}</span>
         ) : (
-          <span className="topotijdreis-year-off">Uit</span>
+          <span className="topotijdreis-year-off">{t("topo.off", "Uit")}</span>
         )}
       </label>
       <div className="topotijdreis-controls">
@@ -155,14 +157,14 @@ export default function TopotijdreisSlider() {
           value={Math.max(1, sliderIdx)}
           disabled={!isOn}
           onChange={(e) => onChange(Number(e.currentTarget.value))}
-          aria-label="Jaartal historische kaart"
+          aria-label={t("topo.year", "Jaartal historische kaart")}
         />
         <button
           type="button"
           className="topotijdreis-latest-btn"
           onClick={() => onChange(max)}
           disabled={sliderIdx === max}
-          title="Spring naar meest recente jaar"
+          title={t("topo.latest", "Spring naar meest recente jaar")}
         >
           {TOPO_YEARS[TOPO_YEARS.length - 1].year}
         </button>
@@ -179,7 +181,7 @@ export default function TopotijdreisSlider() {
         ))}
       </div>
       <div className="topotijdreis-opacity">
-        <span className="topotijdreis-opacity-label">Transparantie</span>
+        <span className="topotijdreis-opacity-label">{t("topo.opacity", "Transparantie")}</span>
         <input
           type="range"
           min={0}
@@ -198,7 +200,7 @@ export default function TopotijdreisSlider() {
               }),
             );
           }}
-          aria-label="Transparantie historische kaart"
+          aria-label={t("topo.opacityAria", "Transparantie historische kaart")}
         />
         <span className="topotijdreis-opacity-val">
           {Math.round(topoOpacity * 100)}%

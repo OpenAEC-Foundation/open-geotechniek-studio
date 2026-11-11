@@ -7,6 +7,10 @@
  * fetch_bro_bore command) since boring XMLs are small enough to parse
  * client-side without measurable cost.
  */
+import i18next from "i18next";
+
+const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
 
 export interface BorePosition {
   x_rd: number;
@@ -77,7 +81,7 @@ export function parseBhrgtXml(xml: string, sourceFile: string): Bore {
   const dom = new DOMParser().parseFromString(xml, "application/xml");
   const err = dom.querySelector("parsererror");
   if (err) {
-    throw new Error(`Boring XML kon niet worden gelezen: ${err.textContent}`);
+    throw new Error(m("bore.xmlParseError", "Boring XML kon niet worden gelezen: {{detail}}", { detail: err.textContent }));
   }
 
   // Local-name lookup helper — case-insensitive, ignores prefixes.

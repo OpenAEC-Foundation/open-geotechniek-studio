@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Aerial photo © PDOK",
+    "mapData": "Map data © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Lines extended to a corner at the intersection",
+    "extendSecond": "Extend — now click the second line; both are extended to a corner at the intersection",
+    "hintExtend": "Extend — first click the reference line (the boundary to extend to)",
+    "hintMirror": "Mirror — first select a line (click it), then click two points for the mirror axis",
+    "hintOffset": "Offset — click a line to choose the source (you will be asked for the distance next)",
+    "hintTrim": "Trim — first click the reference line (cutting edge)",
+    "mirrorDone": "Line mirrored about the axis",
+    "mirrorNeedsLine": "Select a line first (click it) before using Mirror",
+    "mirrorSecond": "Mirror — now click the second point of the mirror axis",
+    "offsetDone": "Parallel line placed at {{dist}} m",
+    "offsetPickFirst": "Offset — first click a line to choose the source",
+    "offsetPrompt": "Offset distance in metres? (positive number)",
+    "offsetSide": "Offset {{dist}} m — click on the side where the copy should go",
+    "parallel": "Lines are parallel — no intersection, no corner possible",
+    "pickOtherLine": "Choose a different line than the first one",
+    "trimDone": "Lines trimmed to a corner at the intersection",
+    "trimSecond": "Trim — now click the second line; both are trimmed to a corner at the intersection"
+  },
+  "coordTable": {
+    "more": "+ {{n}} not shown",
+    "nr": "No.",
+    "title": "CPTs still to be performed (RD)"
+  },
+  "crop": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Crop & add",
+    "cropPage": "Crop page {{page}}",
+    "imageTitle": "Crop image",
+    "loadingPdf": "Reading PDF…",
+    "otherPage": "← Other page",
+    "otherPageTitle": "Choose another page",
+    "page": "Page {{page}}",
+    "pageCount": "{{n}} pages",
+    "pageCountOne": "1 page",
+    "pdfReadError": "PDF could not be read",
+    "pickPage": "PDF — select page",
+    "rendering": "Rendering page…"
+  },
+  "dwg": {
+    "askRd": "Export in RD coordinates (EPSG:28992)?\n\nYes = true RD coordinates (georeferenced).\nNo = local origin, drawing at 0,0.",
+    "askTitle": "DWG/DXF export",
+    "desktopOnly": "DWG export only works in the desktop app",
+    "exported": "Exported ({{n}} objects)",
+    "exportedWithImages": "Exported ({{n}} objects + {{images}} img.)",
+    "exporting": "Exporting DWG…",
+    "failed": "DWG export failed: {{error}}",
+    "filterDwg": "CAD drawing (DWG)",
+    "filterDxf": "CAD exchange (DXF)",
+    "nothing": "Nothing to export"
+  },
+  "export": {
+    "defaultFileName": "site-plan"
+  },
+  "handle": {
+    "moveRaster": "Drag to move the grid",
+    "rotate": "Drag to rotate"
+  },
+  "move": {
+    "hint": "Move the mouse and click to place (Esc = cancel)",
+    "notMovable": "This object cannot be moved",
+    "pickObject": "Click the object you want to move"
+  },
+  "northArrow": "North arrow",
+  "note": {
+    "prompt": "Note:"
+  },
+  "paper": {
+    "dwgStub": "DWG/DXF parser coming soon"
+  },
+  "pdf": {
+    "exported": "PDF exported",
+    "exporting": "Exporting PDF…",
+    "failed": "PDF export failed: {{error}}",
+    "timeout": "PDF rasterisation took longer than 30 seconds"
+  },
+  "props": {
+    "a2Landscape": "A2 landscape",
+    "a3Landscape": "A3 landscape",
+    "areaHeader": "Area {{id}}",
+    "background": "Background",
+    "color": "Colour",
+    "cols": "Columns",
+    "cptHeader": "CPT {{id}}",
+    "cptNumber": "CPT no.",
+    "deleteArea": "Delete area",
+    "deleteBackground": "Delete background",
+    "deleteCpt": "Delete CPT",
+    "deleteLine": "Delete line",
+    "deleteNote": "Delete note",
+    "deleteRaster": "Delete grid",
+    "dimensionHeader": "Dimension line {{id}}",
+    "dragMarkerHint": "Drag the marker on the map to move it.",
+    "emptyHint": "Click a CPT, grid or object on the paper to edit its properties.",
+    "fillColor": "Fill colour",
+    "frame": "Drawing frame",
+    "freeze": "Freeze viewport",
+    "freezeTitle": "Freeze pan + zoom so the drawing stays exactly in place",
+    "friction": "Friction measurement",
+    "frictionWithSymbol": "Friction measurement (dash under symbol)",
+    "hideInExport": "Hide grid in PDF/DWG export",
+    "layer": "Layer",
+    "layerBackground": "Background (below lines/markers)",
+    "layerForeground": "Foreground (above everything)",
+    "lineHeader": "Line {{id}}",
+    "loading": "Loading properties…",
+    "noSelection": "No selection",
+    "noteHeader": "Note {{id}}",
+    "numbering": "Numbering",
+    "numberingPlaceholder": "e.g. S",
+    "numberingTitle": "Prefix for the cell numbering, e.g. 'S' gives S1, S2, … Empty = default R01-S01 notation.",
+    "overlayTip": "Tip: press <kbd>M</kbd> or <kbd>G</kbd> to move (cursor follows; click commits, Esc cancels). Drag a corner handle to scale.",
+    "paper": "Paper",
+    "paperScale": "Paper & scale",
+    "rasterHeader": "Grid {{id}}",
+    "resetColor": "Reset to default",
+    "rotation": "Rotation (°)",
+    "rows": "Rows",
+    "scaleField": "Scale 1:",
+    "scaleFieldTitle": "Type a scale (e.g. 1000 for 1:1000) and press Enter — the drawing adjusts",
+    "scalePresets": "Scale presets",
+    "setScale": "Set scale to 1:{{scale}}",
+    "spacingX": "Spacing X (m)",
+    "spacingY": "Spacing Y (m)",
+    "startNumber": "Start no.",
+    "strokeColor": "Border colour",
+    "text": "Text",
+    "titleBlock": {
+      "address": "Address",
+      "checkedBy": "Checked by",
+      "date": "Date",
+      "drawingNumber": "Drawing no.",
+      "drawnBy": "Drawn by",
+      "project": "Project",
+      "projectNumber": "Project no.",
+      "scale": "Scale",
+      "version": "Version"
+    },
+    "width": "Width (m)"
+  },
+  "quotes": {
+    "cancel": "Cancel",
+    "hint": "Sorted by distance to the project. The 3 nearest companies are preselected. Adjust the selection and click “Open email” to open Outlook with a quote request for all selected companies.",
+    "more": "+ {{hidden}} more companies not shown. The catalogue ({{total}} companies) is in <code>{{path}}</code>.",
+    "openMail": "Open email ({{n}})",
+    "openMailTitle": "Opens your default mail app (Outlook) with a prefilled quote request",
+    "selected": "{{n}} companies selected",
+    "selectedOne": "1 company selected",
+    "title": "Request 3 quotes from CPT contractors"
+  },
+  "rotate": {
+    "notRotatable": "This object type cannot be rotated",
+    "prompt": "Rotate by how many degrees? (negative = counter-clockwise)",
+    "selectFirst": "Select an object to rotate first"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Street, house number, project location",
+    "addressTitle": "Click to edit the address",
+    "author": "Author",
+    "drawingType": "Site plan",
+    "firstDate": "First date",
+    "format": "Format",
+    "logoAlt": "Company logo",
+    "logoTitle": "Click to choose your own logo (PNG / JPG / SVG)",
+    "projectNumber": "Project no.",
+    "projectPlaceholder": "Project name",
+    "projectTitle": "Click to edit the project name",
+    "reference": "Reference",
+    "revision": "Rev.",
+    "scale": "Scale",
+    "scaleTitle": "Click to edit the scale (e.g. 1:850)",
+    "sheet": "Sheet"
+  },
+  "toast": {
+    "areaHint": "Area — click the vertices; Enter or double-click closes, Esc cancels",
+    "broIncomplete": "BRO incomplete: {{error}}",
+    "dwgParserPending": "DWG/DXF parser coming soon — file recognised but not displayed yet.",
+    "frameMustBeSvg": "The drawing frame must be an SVG file",
+    "invalidScale": "Invalid scale: use for example 1:850 (50–100,000).",
+    "logoReadFailed": "Could not read the logo",
+    "noteHint": "Note — click where the text should go",
+    "objectsDeleted": "{{n}} object(s) deleted",
+    "objectsSelected": "{{n}} object(s) selected — press Delete to remove",
+    "rasterPlaced": "Grid {{id}} placed — drag a corner to stretch it (CPTs are added automatically at max {{spacing}} m c/c)",
+    "unsupportedFile": "File type .{{ext}} is not supported yet"
+  }
+}

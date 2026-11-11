@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Photo aérienne © PDOK",
+    "mapData": "Données cartographiques © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Lignes prolongées jusqu'à un angle à l'intersection",
+    "extendSecond": "Prolonger — cliquez maintenant sur la deuxième ligne ; les deux sont prolongées jusqu'à un angle à l'intersection",
+    "hintExtend": "Prolonger — cliquez d'abord sur la ligne de référence (la limite jusqu'à laquelle prolonger)",
+    "hintMirror": "Symétrie — sélectionnez d'abord une ligne (cliquez dessus), puis cliquez sur deux points de l'axe de symétrie",
+    "hintOffset": "Décaler — cliquez sur une ligne pour choisir la source (la distance vous sera ensuite demandée)",
+    "hintTrim": "Ajuster — cliquez d'abord sur la ligne de référence (arête de coupe)",
+    "mirrorDone": "Ligne symétrisée par rapport à l'axe",
+    "mirrorNeedsLine": "Sélectionnez d'abord une ligne (cliquez dessus) avant d'utiliser Symétrie",
+    "mirrorSecond": "Symétrie — cliquez maintenant sur le deuxième point de l'axe de symétrie",
+    "offsetDone": "Ligne parallèle placée à {{dist}} m",
+    "offsetPickFirst": "Décaler — cliquez d'abord sur une ligne pour choisir la source",
+    "offsetPrompt": "Distance de décalage en mètres ? (nombre positif)",
+    "offsetSide": "Décalage de {{dist}} m — cliquez du côté où placer la copie",
+    "parallel": "Les lignes sont parallèles — pas d'intersection, aucun angle possible",
+    "pickOtherLine": "Choisissez une ligne différente de la première",
+    "trimDone": "Lignes ajustées jusqu'à un angle à l'intersection",
+    "trimSecond": "Ajuster — cliquez maintenant sur la deuxième ligne ; les deux sont ajustées jusqu'à un angle à l'intersection"
+  },
+  "coordTable": {
+    "more": "+ {{n}} non affichés",
+    "nr": "N°",
+    "title": "CPT restant à réaliser (RD)"
+  },
+  "crop": {
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "confirm": "Recadrer et ajouter",
+    "cropPage": "Recadrer la page {{page}}",
+    "imageTitle": "Recadrer l'image",
+    "loadingPdf": "Lecture du PDF…",
+    "otherPage": "← Autre page",
+    "otherPageTitle": "Choisir une autre page",
+    "page": "Page {{page}}",
+    "pageCount": "{{n}} pages",
+    "pageCountOne": "1 page",
+    "pdfReadError": "Impossible de lire le PDF",
+    "pickPage": "PDF — sélectionner la page",
+    "rendering": "Rendu de la page…"
+  },
+  "dwg": {
+    "askRd": "Exporter en coordonnées RD (EPSG:28992) ?\n\nOui = vraies coordonnées RD (géoréférencées).\nNon = origine locale, dessin en 0,0.",
+    "askTitle": "Export DWG/DXF",
+    "desktopOnly": "L'export DWG ne fonctionne que dans l'application de bureau",
+    "exported": "Exporté ({{n}} objets)",
+    "exportedWithImages": "Exporté ({{n}} objets + {{images}} img.)",
+    "exporting": "Export DWG…",
+    "failed": "Échec de l'export DWG : {{error}}",
+    "filterDwg": "Dessin CAO (DWG)",
+    "filterDxf": "Échange CAO (DXF)",
+    "nothing": "Rien à exporter"
+  },
+  "export": {
+    "defaultFileName": "plan-de-situation"
+  },
+  "handle": {
+    "moveRaster": "Faites glisser pour déplacer la grille",
+    "rotate": "Faites glisser pour pivoter"
+  },
+  "move": {
+    "hint": "Déplacez la souris et cliquez pour placer (Échap = annuler)",
+    "notMovable": "Cet objet ne peut pas être déplacé",
+    "pickObject": "Cliquez sur l'objet à déplacer"
+  },
+  "northArrow": "Flèche du nord",
+  "note": {
+    "prompt": "Note :"
+  },
+  "paper": {
+    "dwgStub": "Lecteur DWG/DXF bientôt disponible"
+  },
+  "pdf": {
+    "exported": "PDF exporté",
+    "exporting": "Export PDF…",
+    "failed": "Échec de l'export PDF : {{error}}",
+    "timeout": "La rastérisation du PDF a pris plus de 30 secondes"
+  },
+  "props": {
+    "a2Landscape": "A2 paysage",
+    "a3Landscape": "A3 paysage",
+    "areaHeader": "Zone {{id}}",
+    "background": "Arrière-plan",
+    "color": "Couleur",
+    "cols": "Colonnes",
+    "cptHeader": "CPT {{id}}",
+    "cptNumber": "N° CPT",
+    "deleteArea": "Supprimer la zone",
+    "deleteBackground": "Supprimer l'arrière-plan",
+    "deleteCpt": "Supprimer le CPT",
+    "deleteLine": "Supprimer la ligne",
+    "deleteNote": "Supprimer la note",
+    "deleteRaster": "Supprimer la grille",
+    "dimensionHeader": "Ligne de cote {{id}}",
+    "dragMarkerHint": "Faites glisser le repère sur la carte pour le déplacer.",
+    "emptyHint": "Cliquez sur un CPT, une grille ou un objet de la feuille pour modifier ses propriétés.",
+    "fillColor": "Couleur de remplissage",
+    "frame": "Cadre du dessin",
+    "freeze": "Figer la vue",
+    "freezeTitle": "Figer le panoramique et le zoom pour que le dessin reste exactement en place",
+    "friction": "Mesure de frottement",
+    "frictionWithSymbol": "Mesure de frottement (tiret sous le symbole)",
+    "hideInExport": "Masquer la grille à l'export PDF/DWG",
+    "layer": "Plan",
+    "layerBackground": "Arrière-plan (sous les lignes/repères)",
+    "layerForeground": "Premier plan (au-dessus de tout)",
+    "lineHeader": "Ligne {{id}}",
+    "loading": "Chargement des propriétés…",
+    "noSelection": "Aucune sélection",
+    "noteHeader": "Note {{id}}",
+    "numbering": "Numérotation",
+    "numberingPlaceholder": "p. ex. S",
+    "numberingTitle": "Préfixe de la numérotation des cellules, p. ex. « S » donne S1, S2, … Vide = notation par défaut R01-S01.",
+    "overlayTip": "Astuce : appuyez sur <kbd>M</kbd> ou <kbd>G</kbd> pour déplacer (le curseur suit ; un clic valide, Échap annule). Faites glisser une poignée d'angle pour mettre à l'échelle.",
+    "paper": "Papier",
+    "paperScale": "Papier et échelle",
+    "rasterHeader": "Grille {{id}}",
+    "resetColor": "Rétablir la valeur par défaut",
+    "rotation": "Rotation (°)",
+    "rows": "Lignes",
+    "scaleField": "Échelle 1:",
+    "scaleFieldTitle": "Saisissez une échelle (p. ex. 1000 pour 1:1000) et appuyez sur Entrée — le dessin s'adapte",
+    "scalePresets": "Échelles prédéfinies",
+    "setScale": "Régler l'échelle sur 1:{{scale}}",
+    "spacingX": "Espacement X (m)",
+    "spacingY": "Espacement Y (m)",
+    "startNumber": "N° de départ",
+    "strokeColor": "Couleur de bordure",
+    "text": "Texte",
+    "titleBlock": {
+      "address": "Adresse",
+      "checkedBy": "Vérifié par",
+      "date": "Date",
+      "drawingNumber": "N° de dessin",
+      "drawnBy": "Dessiné par",
+      "project": "Projet",
+      "projectNumber": "N° de projet",
+      "scale": "Échelle",
+      "version": "Version"
+    },
+    "width": "Largeur (m)"
+  },
+  "quotes": {
+    "cancel": "Annuler",
+    "hint": "Triées par distance au projet. Les 3 entreprises les plus proches sont présélectionnées. Ajustez la sélection et cliquez sur « Ouvrir l'e-mail » pour ouvrir Outlook avec une demande de devis pour toutes les entreprises sélectionnées.",
+    "more": "+ {{hidden}} autres entreprises non affichées. Le catalogue ({{total}} entreprises) se trouve dans <code>{{path}}</code>.",
+    "openMail": "Ouvrir l'e-mail ({{n}})",
+    "openMailTitle": "Ouvre votre messagerie par défaut (Outlook) avec une demande de devis préremplie",
+    "selected": "{{n}} entreprises sélectionnées",
+    "selectedOne": "1 entreprise sélectionnée",
+    "title": "Demander 3 devis à des entreprises d'essais CPT"
+  },
+  "rotate": {
+    "notRotatable": "Ce type d'objet ne peut pas être pivoté",
+    "prompt": "Pivoter de combien de degrés ? (négatif = sens antihoraire)",
+    "selectFirst": "Sélectionnez d'abord un objet à pivoter"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Rue, numéro, emplacement du projet",
+    "addressTitle": "Cliquez pour modifier l'adresse",
+    "author": "Auteur",
+    "drawingType": "Plan de situation",
+    "firstDate": "Première date",
+    "format": "Format",
+    "logoAlt": "Logo de l'entreprise",
+    "logoTitle": "Cliquez pour choisir votre propre logo (PNG / JPG / SVG)",
+    "projectNumber": "N° de projet",
+    "projectPlaceholder": "Nom du projet",
+    "projectTitle": "Cliquez pour modifier le nom du projet",
+    "reference": "Référence",
+    "revision": "Ind.",
+    "scale": "Échelle",
+    "scaleTitle": "Cliquez pour modifier l'échelle (p. ex. 1:850)",
+    "sheet": "Feuille"
+  },
+  "toast": {
+    "areaHint": "Zone — cliquez sur les sommets ; Entrée ou double-clic ferme, Échap annule",
+    "broIncomplete": "BRO incomplet : {{error}}",
+    "dwgParserPending": "Lecteur DWG/DXF bientôt disponible — fichier reconnu mais pas encore affiché.",
+    "frameMustBeSvg": "Le cadre du dessin doit être un fichier SVG",
+    "invalidScale": "Échelle non valide : utilisez par exemple 1:850 (50–100 000).",
+    "logoReadFailed": "Impossible de lire le logo",
+    "noteHint": "Note — cliquez à l'endroit où placer le texte",
+    "objectsDeleted": "{{n}} objet(s) supprimé(s)",
+    "objectsSelected": "{{n}} objet(s) sélectionné(s) — appuyez sur Suppr pour supprimer",
+    "rasterPlaced": "Grille {{id}} placée — faites glisser un angle pour l'étirer (les CPT sont ajoutés automatiquement à {{spacing}} m d'entraxe max.)",
+    "unsupportedFile": "Le type de fichier .{{ext}} n'est pas encore pris en charge"
+  }
+}

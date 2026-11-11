@@ -1,5 +1,9 @@
+import i18next from "i18next";
 import type { Cpt, ProjectMeta } from "./cpt";
 import type { Bore } from "./bore";
+
+const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
 
 export interface ProjectFile {
   project: Partial<ProjectMeta>;
@@ -26,7 +30,7 @@ function payload(value: unknown): unknown {
   if (!object(value)) return value;
   if (value.schema === "ifcx-cpt-0.1" && Array.isArray(value.objects)) {
     const project = value.objects.find(item => object(item) && item.type === "IfcProject");
-    if (!object(project)) throw new Error("IFCX mist projectgegevens.");
+    if (!object(project)) throw new Error(m("project.ifcxMissingProject", "IFCX mist projectgegevens."));
     return {
       project: { ...project, title: project.name },
       cpts: value.objects.filter(item => object(item) && item.type === "OpenGeoCpt").map(item => ({
@@ -52,12 +56,12 @@ export function validateCpt(value: unknown): asserts value is Cpt {
   if (!object(value) || typeof value.id !== "string" || !value.id.trim() ||
       !object(value.metadata) || typeof value.metadata.source_file !== "string" ||
       !Array.isArray(value.points) || value.points.some(p => !object(p) || typeof p.depth !== "number" || !Number.isFinite(p.depth))) {
-    throw new Error("Ongeldige sondering: id, metadata of meetpunten ontbreken.");
+    throw new Error(m("project.invalidCpt", "Ongeldige sondering: id, metadata of meetpunten ontbreken."));
   }
   const channels = ["depth_nap", "qc", "fs", "rf", "u2", "inclination"];
   if ((value.points as Record<string, unknown>[]).some(point => channels.some(key =>
     point[key] != null && (typeof point[key] !== "number" || !Number.isFinite(point[key]))))) {
-    throw new Error("Ongeldige sondering: meetwaarden moeten eindige getallen zijn.");
+    throw new Error(m("project.invalidCptValues", "Ongeldige sondering: meetwaarden moeten eindige getallen zijn."));
   }
   validatePosition(value.position);
 }
@@ -66,7 +70,7 @@ function validatePosition(value: unknown): void {
   if (value == null) return;
   if (!object(value) || ["x_rd", "y_rd"].some(key => typeof value[key] !== "number" || !Number.isFinite(value[key])) ||
       (value.z_nap != null && (typeof value.z_nap !== "number" || !Number.isFinite(value.z_nap)))) {
-    throw new Error("Ongeldige locatiecoördinaten.");
+    throw new Error(m("project.invalidPosition", "Ongeldige locatiecoördinaten."));
   }
 }
 
@@ -79,18 +83,18 @@ export function parseCptSnapshot(content: string): Cpt {
 export function parseProjectFile(content: string): ProjectFile {
   const data = payload(readJson(content));
   if (!object(data) || !object(data.project)) {
-    throw new Error("Dit projectbestand bevat geen bewerkbare projectgegevens.");
+    throw new Error(m("project.noProjectData", "Dit projectbestand bevat geen bewerkbare projectgegevens."));
   }
   for (const key of ["title", "client", "location", "project_number", "author", "date"]) {
     if (data.project[key] != null && typeof data.project[key] !== "string") {
-      throw new Error(`Ongeldig projectveld: ${key}.`);
+      throw new Error(m("project.invalidField", "Ongeldig projectveld: {{field}}.", { field: key }));
     }
   }
-  if (data.cpts !== undefined && !Array.isArray(data.cpts)) throw new Error("Ongeldige sonderingenlijst.");
+  if (data.cpts !== undefined && !Array.isArray(data.cpts)) throw new Error(m("project.invalidCptList", "Ongeldige sonderingenlijst."));
   for (const cpt of (data.cpts ?? []) as unknown[]) validateCpt(cpt);
   if (data.bores !== undefined && (!Array.isArray(data.bores) || data.bores.some(b =>
       !object(b) || typeof b.id !== "string" || !b.id || !object(b.metadata) || !Array.isArray(b.layers)))) {
-    throw new Error("Ongeldige boringenlijst.");
+    throw new Error(m("project.invalidBoreList", "Ongeldige boringenlijst."));
   }
   for (const bore of (data.bores ?? []) as Bore[]) {
     validatePosition(bore.position);
@@ -98,12 +102,12 @@ export function parseProjectFile(content: string): ProjectFile {
       !object(layer) || typeof layer.top_depth !== "number" || !Number.isFinite(layer.top_depth) ||
       typeof layer.base_depth !== "number" || !Number.isFinite(layer.base_depth) ||
       layer.top_depth < 0 || layer.base_depth <= layer.top_depth || typeof layer.soil_name !== "string")) {
-      throw new Error("Ongeldige boorlagen.");
+      throw new Error(m("project.invalidBoreLayers", "Ongeldige boorlagen."));
     }
   }
   for (const objects of [data.cpts ?? [], data.bores ?? []] as { id: string }[][]) {
     if (new Set(objects.map(item => item.id)).size !== objects.length) {
-      throw new Error("Dubbele object-id in projectbestand; import zou gegevens overschrijven.");
+      throw new Error(m("project.duplicateId", "Dubbele object-id in projectbestand; import zou gegevens overschrijven."));
     }
   }
   return data as unknown as ProjectFile;

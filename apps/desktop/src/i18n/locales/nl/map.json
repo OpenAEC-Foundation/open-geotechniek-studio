@@ -1,0 +1,145 @@
+{
+  "topo": {
+    "toggle": "Topotijdreis aan/uit",
+    "title": "Topotijdreis",
+    "off": "Uit",
+    "year": "Jaartal historische kaart",
+    "latest": "Spring naar meest recente jaar",
+    "opacity": "Transparantie",
+    "opacityAria": "Transparantie historische kaart"
+  },
+  "search": {
+    "placeholder": "Zoek adres, plaats of coordinaat (RD / WGS84)…",
+    "aria": "Adres of coordinaat zoeken",
+    "clear": "Wissen",
+    "flyTo": "Vlieg naar locatie",
+    "types": {
+      "adres": "adres",
+      "weg": "weg",
+      "postcode": "postcode",
+      "woonplaats": "woonplaats",
+      "gemeente": "gemeente",
+      "provincie": "provincie",
+      "waterschap": "waterschap",
+      "perceel": "perceel",
+      "hectometerpaal": "hectometerpaal",
+      "appartementsrecht": "appartementsrecht",
+      "buurt": "buurt",
+      "wijk": "wijk"
+    }
+  },
+  "layers": {
+    "topography": "Topografie (BRT)",
+    "aerialCurrent": "Luchtfoto (actueel)",
+    "aerialYear": "Luchtfoto {{year}}",
+    "addresses": "Adressen + straten",
+    "elevation": "AHN hoogtekaart",
+    "cadastral": "Kadastrale grenzen",
+    "buildings": "BAG (gebouwen)",
+    "bgt": "BGT topografie",
+    "zoning": "Bestemmingsplan",
+    "geomorphology": "Geomorfologische kaart",
+    "soilMap": "Bodemkaart 1:50.000",
+    "cables": "Kabels & leidingen (KLIC)",
+    "broCpts": "BRO Sonderingen",
+    "broBoreholes": "BRO Boringen",
+    "broWells": "BRO Grondwaterputten",
+    "projectCpts": "Project sonderingen"
+  },
+  "layerPanel": {
+    "opacityTitle": "Transparantie: {{pct}}% — slider regelt zichtbaarheid",
+    "opacityAria": "Transparantie {{layer}}",
+    "ahnLegend": "Hoogte NAP"
+  },
+  "status": {
+    "initial": "Zoom in en klik 'Laad gebied'",
+    "zoomIn": "Zoom in tot zoomniveau {{zoom}}+ om archief te laden",
+    "loading": "Bezig met laden...",
+    "cptError": "Sonderingen: {{error}}",
+    "boreError": "Boringen: {{error}}",
+    "incomplete": "BRO onvolledig: {{errors}}",
+    "error": "Fout: {{error}}",
+    "cleared": "BRO-markers gewist",
+    "addFailed": "Toevoegen mislukt: {{error}}",
+    "cptCount": "{{n}} sondering(en)",
+    "loadedBoth": "{{cpt}} sondering(en) / {{bore}} boring(en) geladen",
+    "loadedCpt": "{{cpt}} sondering(en) geladen",
+    "loadedBore": "{{bore}} boring(en) geladen",
+    "loadedNone": "geladen"
+  },
+  "gwp": {
+    "type": "Type: Grondwaterput (GMW)",
+    "manager": "Beheerder: {{name}}",
+    "groundLevel": "Maaiveld NAP: {{value}} m",
+    "tubes": "Aantal filters: {{n}}"
+  },
+  "popup": {
+    "openViewer": "Open in viewer",
+    "openBroloket": "Open in BROloket",
+    "depthTo": "diepte tot {{depth}} m",
+    "kindCpt": "Sondering (BRO)",
+    "kindBore": "Boring (BHR-GT)",
+    "merge": "Maak project + voeg toe",
+    "addToProject": "Voeg toe aan project",
+    "toggleSelect": "Selecteer / deselecteer voor toevoegen"
+  },
+  "klic": {
+    "alert": "Kabels & leidingen — geen publieke WMS-laag beschikbaar.\n\nSinds 10 december 2025 host PDOK geen landelijke kabel/leiding-viewer meer (Liander dataset uit productie). Voor een graafmelding moet je een KLIC-aanvraag doen via:\n\n{{url}}\n\nDe aanvraag is gratis en de tekeningen krijg je binnen 1-3 werkdagen."
+  },
+  "measure": {
+    "on": "Meet-modus: klik op een punt of sondering om te starten",
+    "off": "Meet-modus uit",
+    "from": "Meet vanaf {{id}} — klik op een tweede punt",
+    "started": "Startpunt vastgelegd — klik op een tweede punt",
+    "point": "punt",
+    "distance": "Afstand {{from}} ↔ {{to}}: {{dist}}",
+    "cancelled": "Meet-modus geannuleerd",
+    "otherCpt": "Kies een andere sondering"
+  },
+  "export": {
+    "fileName": "kaart"
+  },
+  "bro": {
+    "docChangedKeep": "Het actieve document is gewijzigd; resterende selectie behouden.",
+    "docChanged": "Het actieve document is gewijzigd.",
+    "added": "{{n}} BRO-sondering(en) toegevoegd",
+    "addedPartial": "{{n}} toegevoegd. {{error}}",
+    "selected": "{{n}} BRO-sondering(en) geselecteerd",
+    "adding": "Toevoegen…",
+    "addSelection": "Voeg selectie toe aan project",
+    "clearSelection": "Wis BRO-selectie",
+    "invalidArea": "Ongeldig BRO-zoekgebied.",
+    "areaTooLarge": "BRO-zoekgebied blijft te groot; zoom verder in. Geen gedeeltelijke resultaten weergegeven.",
+    "limitReached": "BRO-limiet blijft bereikt op dezelfde locatie; verklein periode of gebied. Geen gedeeltelijke resultaten weergegeven.",
+    "parseError": "BRO XML parse-fout: {{detail}}",
+    "resultLimit": "BRO beperkt de zoekactie tot {{max}} objecten."
+  },
+  "selection": {
+    "count": "{{n}} geselecteerd",
+    "clearTitle": "Wis selectie (Esc)",
+    "clear": "Wis"
+  },
+  "cursor": {
+    "aria": "Cursor-coördinaten"
+  },
+  "broField": {
+    "registered": "Geregistreerd",
+    "reportDate": "Rapportdatum",
+    "finalDepth": "Einddiepte (m)",
+    "finalDepthBore": "Einddiepte boring (m)",
+    "predrilled": "Voorboring (m)",
+    "groundLevel": "Maaiveld t.o.v. NAP (m)",
+    "qualityRegime": "Kwaliteitsregime",
+    "positionAccuracy": "Locatie-onzekerheid (m)",
+    "positionMethod": "Locatiebepaling",
+    "qualityClass": "Kwaliteitsklasse",
+    "cptStandard": "CPT-norm",
+    "purpose": "Onderzoeksdoel",
+    "discipline": "Discipline",
+    "stopCriterion": "Stopcriterium",
+    "sourceHolder": "Bronhouder",
+    "rockReached": "Vaste rots bereikt",
+    "verticalDatum": "Verticaal datum",
+    "deregistered": "Uitgeschreven"
+  }
+}

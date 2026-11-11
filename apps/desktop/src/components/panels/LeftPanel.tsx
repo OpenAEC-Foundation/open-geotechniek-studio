@@ -54,6 +54,7 @@ export default function LeftPanel() {
 // ──────────────────────────────────────────────────────────────
 
 function GwpDetails({ doc }: { doc: GwpDocument }) {
+  const { t } = useTranslation("panels");
   const g = doc.gwp;
   return (
     <div className="left-panel-body">
@@ -62,22 +63,22 @@ function GwpDetails({ doc }: { doc: GwpDocument }) {
         <div className="project-header-text">
           <div className="project-header-title">{g.broId || doc.title}</div>
           <div className="project-header-sub">
-            Grondwatermonitoringput (BRO/GMW)
+            {t("left.gwp.subtitle", "Grondwatermonitoringput (BRO/GMW)")}
             {g.wellCode ? ` · ${g.wellCode}` : ""}
           </div>
         </div>
       </div>
 
-      <PanelSection title="Putgegevens" defaultOpen>
+      <PanelSection title={t("left.gwp.wellData", "Putgegevens")} defaultOpen>
         <GwpMetadataList gwp={g} />
       </PanelSection>
-      <PanelSection title="Buizen (filters)" defaultOpen>
+      <PanelSection title={t("left.gwp.tubes", "Buizen (filters)")} defaultOpen>
         <GwpTubesList gwp={g} />
       </PanelSection>
-      <PanelSection title="Foto's & inspectie">
+      <PanelSection title={t("left.photos.title", "Foto's & inspectie")}>
         <BroPhotos broId={g.broId} kind="gwp" />
       </PanelSection>
-      <PanelSection title="Ruwe data (XML)">
+      <PanelSection title={t("left.rawXml.title", "Ruwe data (XML)")}>
         <BoreRawXml xml={doc.rawXml} />
       </PanelSection>
     </div>
@@ -85,16 +86,17 @@ function GwpDetails({ doc }: { doc: GwpDocument }) {
 }
 
 function GwpMetadataList({ gwp }: { gwp: Gwp }) {
+  const { t } = useTranslation("panels");
   return (
     <dl className="metadata-list">
       <dt>BRO-id</dt><dd>{gwp.broId || "—"}</dd>
-      <dt>Put-code</dt><dd>{gwp.wellCode ?? "—"}</dd>
-      <dt>Beheerder</dt><dd>{gwp.deliveryAccountableParty ?? "—"}</dd>
-      <dt>Eigenaar</dt><dd>{gwp.owner ?? "—"}</dd>
-      <dt>Kwaliteitsregime</dt><dd>{gwp.qualityRegime ?? "—"}</dd>
-      <dt>Geconstrueerd</dt><dd>{gwp.constructionDate ?? "—"}</dd>
-      <dt>Initiële functie</dt><dd>{gwp.initialFunction ?? "—"}</dd>
-      <dt>Putkop-bescherming</dt><dd>{gwp.wellHeadProtector ?? "—"}</dd>
+      <dt>{t("left.gwp.wellCode", "Put-code")}</dt><dd>{gwp.wellCode ?? "—"}</dd>
+      <dt>{t("left.gwp.manager", "Beheerder")}</dt><dd>{gwp.deliveryAccountableParty ?? "—"}</dd>
+      <dt>{t("left.gwp.owner", "Eigenaar")}</dt><dd>{gwp.owner ?? "—"}</dd>
+      <dt>{t("left.meta.qualityRegime", "Kwaliteitsregime")}</dt><dd>{gwp.qualityRegime ?? "—"}</dd>
+      <dt>{t("left.gwp.constructed", "Geconstrueerd")}</dt><dd>{gwp.constructionDate ?? "—"}</dd>
+      <dt>{t("left.gwp.initialFunction", "Initiële functie")}</dt><dd>{gwp.initialFunction ?? "—"}</dd>
+      <dt>{t("left.gwp.wellHeadProtector", "Putkop-bescherming")}</dt><dd>{gwp.wellHeadProtector ?? "—"}</dd>
       <dt>RD x/y</dt>
       <dd>
         {typeof gwp.rdX === "number" && typeof gwp.rdY === "number"
@@ -107,29 +109,30 @@ function GwpMetadataList({ gwp }: { gwp: Gwp }) {
           ? `${gwp.lat.toFixed(5)}, ${gwp.lon.toFixed(5)}`
           : "—"}
       </dd>
-      <dt>Maaiveld NAP</dt>
+      <dt>{t("left.meta.groundLevelNap", "Maaiveld NAP")}</dt>
       <dd>
         {typeof gwp.groundLevelNap === "number"
           ? `${gwp.groundLevelNap.toFixed(2)} m`
           : "—"}
       </dd>
-      <dt>Aantal buizen</dt><dd>{gwp.numberOfMonitoringTubes ?? gwp.tubes.length}</dd>
+      <dt>{t("left.gwp.tubeCount", "Aantal buizen")}</dt><dd>{gwp.numberOfMonitoringTubes ?? gwp.tubes.length}</dd>
     </dl>
   );
 }
 
 function GwpTubesList({ gwp }: { gwp: Gwp }) {
+  const { t: tr } = useTranslation("panels");
   if (gwp.tubes.length === 0) {
-    return <p className="panel-empty">Geen buizen.</p>;
+    return <p className="panel-empty">{tr("left.gwp.noTubes", "Geen buizen.")}</p>;
   }
   return (
     <table className="layers-table">
       <thead>
         <tr>
           <th>#</th>
-          <th>Filter top</th>
-          <th>Filter onder</th>
-          <th>Status</th>
+          <th>{tr("left.gwp.filterTop", "Filter top")}</th>
+          <th>{tr("left.gwp.filterBottom", "Filter onder")}</th>
+          <th>{tr("left.gwp.status", "Status")}</th>
         </tr>
       </thead>
       <tbody>
@@ -154,6 +157,7 @@ function GwpTubesList({ gwp }: { gwp: Gwp }) {
 // ──────────────────────────────────────────────────────────────
 
 function BoreDetails({ doc }: { doc: BoreDocument }) {
+  const { t } = useTranslation("panels");
   const b = doc.bore;
   return (
     <div className="left-panel-body">
@@ -165,19 +169,19 @@ function BoreDetails({ doc }: { doc: BoreDocument }) {
         </div>
       </div>
 
-      <PanelSection title="Boringsgegevens" defaultOpen>
+      <PanelSection title={t("left.bore.boreData", "Boringsgegevens")} defaultOpen>
         <BoreMetadataList bore={b} />
       </PanelSection>
-      <PanelSection title="Bestandsmetadata">
+      <PanelSection title={t("left.bore.fileMetadata", "Bestandsmetadata")}>
         <BoreExtraList bore={b} />
       </PanelSection>
-      <PanelSection title="Lagen" defaultOpen>
+      <PanelSection title={t("left.bore.layers", "Lagen")} defaultOpen>
         <BoreLayersList bore={b} />
       </PanelSection>
-      <PanelSection title="Foto's & inspectie">
+      <PanelSection title={t("left.photos.title", "Foto's & inspectie")}>
         <BroPhotos broId={b.id} kind="bore" />
       </PanelSection>
-      <PanelSection title="Ruwe data (XML)">
+      <PanelSection title={t("left.rawXml.title", "Ruwe data (XML)")}>
         <BoreRawXml xml={doc.rawXml} />
       </PanelSection>
     </div>
@@ -195,21 +199,23 @@ function BoreDetails({ doc }: { doc: BoreDocument }) {
  * accepteert alle drie domein-prefixes.
  */
 function BroPhotos({ broId, kind }: { broId?: string; kind: "cpt" | "bore" | "gwp" }) {
+  const { t } = useTranslation("panels");
   if (!broId || !/^[A-Z]{3}\d{12,}$/.test(broId)) {
     return (
       <p className="panel-empty">
-        Foto's zijn alleen beschikbaar voor BRO-objecten (BHR/CPT/GMW-id vereist).
+        {t("left.photos.onlyBro", "Foto's zijn alleen beschikbaar voor BRO-objecten (BHR/CPT/GMW-id vereist).")}
       </p>
     );
   }
   const brokloketUrl = `https://www.broloket.nl/ondergrondgegevens?bro-id=${encodeURIComponent(broId)}`;
-  const label =
-    kind === "bore" ? "boring" :
-    kind === "gwp" ? "grondwaterput" : "sondering";
+  const hint =
+    kind === "bore" ? t("left.photos.hintBore", "BRO hosts foto's van deze boring (indien aanwezig) op BROloket.") :
+    kind === "gwp" ? t("left.photos.hintGwp", "BRO hosts foto's van deze grondwaterput (indien aanwezig) op BROloket.") :
+    t("left.photos.hintCpt", "BRO hosts foto's van deze sondering (indien aanwezig) op BROloket.");
   return (
     <div className="bore-photo-wrap">
       <p className="bore-photo-hint">
-        BRO hosts foto's van deze {label} (indien aanwezig) op BROloket.
+        {hint}
       </p>
       <a
         className="bore-photo-link"
@@ -217,48 +223,49 @@ function BroPhotos({ broId, kind }: { broId?: string; kind: "cpt" | "bore" | "gw
         target="_blank"
         rel="noopener noreferrer"
       >
-        Bekijk foto's op BROloket ↗
+        {t("left.photos.link", "Bekijk foto's op BROloket ↗")}
       </a>
     </div>
   );
 }
 
 function BoreMetadataList({ bore }: { bore: Bore }) {
+  const { t } = useTranslation("panels");
   const m = bore.metadata;
   return (
     <>
     {m.extra?.Gegevenscontrole && <p role="alert" className="panel-error">{m.extra.Gegevenscontrole}</p>}
     <dl className="metadata-list">
-      <dt>Boring-ID</dt><dd>{bore.id || "—"}</dd>
-      <dt>Project</dt><dd>{m.project_name ?? "—"}</dd>
-      <dt>Projectnr</dt><dd>{m.project_number ?? "—"}</dd>
-      <dt>Bronhouder</dt><dd>{m.accountable_party ?? "—"}</dd>
-      <dt>Startdatum</dt><dd>{m.start_date ?? "—"}</dd>
-      <dt>Einddatum</dt><dd>{m.end_date ?? "—"}</dd>
-      <dt>Beschrijfdatum</dt><dd>{m.description_date ?? "—"}</dd>
-      <dt>Kwaliteitsregime</dt><dd>{m.quality_regime ?? "—"}</dd>
-      <dt>Beschrijfprocedure</dt><dd>{m.description_procedure ?? "—"}</dd>
-      <dt>Boormethode</dt><dd>{m.bore_method ?? "—"}</dd>
-      <dt>Levering</dt><dd>{m.delivered_via ?? "—"}</dd>
+      <dt>{t("left.bore.id", "Boring-ID")}</dt><dd>{bore.id || "—"}</dd>
+      <dt>{t("left.bore.project", "Project")}</dt><dd>{m.project_name ?? "—"}</dd>
+      <dt>{t("left.bore.projectNumber", "Projectnr")}</dt><dd>{m.project_number ?? "—"}</dd>
+      <dt>{t("left.bore.accountableParty", "Bronhouder")}</dt><dd>{m.accountable_party ?? "—"}</dd>
+      <dt>{t("left.bore.startDate", "Startdatum")}</dt><dd>{m.start_date ?? "—"}</dd>
+      <dt>{t("left.bore.endDate", "Einddatum")}</dt><dd>{m.end_date ?? "—"}</dd>
+      <dt>{t("left.bore.descriptionDate", "Beschrijfdatum")}</dt><dd>{m.description_date ?? "—"}</dd>
+      <dt>{t("left.meta.qualityRegime", "Kwaliteitsregime")}</dt><dd>{m.quality_regime ?? "—"}</dd>
+      <dt>{t("left.bore.descriptionProcedure", "Beschrijfprocedure")}</dt><dd>{m.description_procedure ?? "—"}</dd>
+      <dt>{t("left.bore.method", "Boormethode")}</dt><dd>{m.bore_method ?? "—"}</dd>
+      <dt>{t("left.bore.delivery", "Levering")}</dt><dd>{m.delivered_via ?? "—"}</dd>
       <dt>RD x/y</dt>
       <dd>
         {bore.position
           ? `${bore.position.x_rd.toFixed(1)}, ${bore.position.y_rd.toFixed(1)}`
           : "—"}
       </dd>
-      <dt>Maaiveld NAP</dt>
+      <dt>{t("left.meta.groundLevelNap", "Maaiveld NAP")}</dt>
       <dd>
         {typeof bore.position?.z_nap === "number"
           ? `${bore.position.z_nap.toFixed(2)} m`
           : "—"}
       </dd>
-      <dt>Eindiepte</dt>
+      <dt>{t("left.bore.finalDepth", "Eindiepte")}</dt>
       <dd>
         {typeof bore.final_depth === "number"
           ? `${bore.final_depth.toFixed(2)} m`
           : "—"}
       </dd>
-      <dt>Aantal lagen</dt><dd>{bore.layers.length}</dd>
+      <dt>{t("left.bore.layerCount", "Aantal lagen")}</dt><dd>{bore.layers.length}</dd>
     </dl>
     </>
   );
@@ -268,10 +275,11 @@ function BoreMetadataList({ bore }: { bore: Bore }) {
  *  velden (boordiameter, peilbuis-info, organische-stofklasse) ook
  *  zichtbaar zijn. */
 function BoreExtraList({ bore }: { bore: Bore }) {
+  const { t } = useTranslation("panels");
   const extra = bore.metadata.extra ?? {};
   const entries = Object.entries(extra).filter(([key])=>!key.startsWith("ogs:"));
   if (entries.length === 0) {
-    return <p className="panel-empty">Geen aanvullende metadata.</p>;
+    return <p className="panel-empty">{t("left.bore.noExtras", "Geen aanvullende metadata.")}</p>;
   }
   return (
     <dl className="metadata-list metadata-list-extra">
@@ -289,16 +297,17 @@ function BoreExtraList({ bore }: { bore: Bore }) {
  *  staat in BoreView; deze tabel is voor snel scannen vanuit de
  *  verkenner. */
 function BoreLayersList({ bore }: { bore: Bore }) {
+  const { t } = useTranslation("panels");
   if (bore.layers.length === 0) {
-    return <p className="panel-empty">Geen lagen.</p>;
+    return <p className="panel-empty">{t("left.bore.noLayers", "Geen lagen.")}</p>;
   }
   return (
     <table className="layers-table">
       <thead>
         <tr>
-          <th>Top</th>
-          <th>Basis</th>
-          <th>Grondsoort</th>
+          <th>{t("left.bore.top", "Top")}</th>
+          <th>{t("left.bore.base", "Basis")}</th>
+          <th>{t("left.bore.soilType", "Grondsoort")}</th>
         </tr>
       </thead>
       <tbody>
@@ -318,9 +327,10 @@ function BoreLayersList({ bore }: { bore: Bore }) {
  *  voor de eenvoud — wel een copy-knop en monospace font zodat de
  *  inspringing leesbaar blijft. */
 function BoreRawXml({ xml }: { xml?: string }) {
+  const { t } = useTranslation("panels");
   const [copied, setCopied] = useState(false);
   if (!xml) {
-    return <p className="panel-empty">Geen ruwe XML beschikbaar.</p>;
+    return <p className="panel-empty">{t("left.rawXml.none", "Geen ruwe XML beschikbaar.")}</p>;
   }
   const onCopy = async () => {
     try {
@@ -338,7 +348,7 @@ function BoreRawXml({ xml }: { xml?: string }) {
         className="bore-raw-copy"
         onClick={() => void onCopy()}
       >
-        {copied ? "Gekopieerd" : "Kopieer XML"}
+        {copied ? t("left.rawXml.copied", "Gekopieerd") : t("left.rawXml.copy", "Kopieer XML")}
       </button>
       <pre className="bore-raw-pre">{xml}</pre>
     </div>
@@ -483,6 +493,7 @@ function ProjectBrowser() {
 
 function CptDetails({ cpt }: { cpt: Cpt }) {
   const { t } = useTranslation("cpt");
+  const { t: tp } = useTranslation("panels");
   return (
     <div className="left-panel-body">
       <div className="project-header">
@@ -506,7 +517,7 @@ function CptDetails({ cpt }: { cpt: Cpt }) {
       <PanelSection title={t("measurements")}>
         <MeasurementsTable cpt={cpt} />
       </PanelSection>
-      <PanelSection title="Foto's & inspectie">
+      <PanelSection title={tp("left.photos.title", "Foto's & inspectie")}>
         <BroPhotos broId={cpt.id} kind="cpt" />
       </PanelSection>
     </div>
@@ -584,6 +595,7 @@ function ExtraMetadataList({ cpt }: { cpt: Cpt }) {
 }
 
 function MeasurementsTable({ cpt }: { cpt: Cpt | null }) {
+  const { t } = useTranslation("panels");
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 50;
   if (!cpt) return <p className="panel-empty">—</p>;
@@ -596,8 +608,8 @@ function MeasurementsTable({ cpt }: { cpt: Cpt | null }) {
       <table className="measurements-table">
         <thead>
           <tr>
-            <th title="Diepte onder maaiveld">diepte</th>
-            <th title="Diepte t.o.v. NAP">m NAP</th>
+            <th title={t("left.measurements.depthTitle", "Diepte onder maaiveld")}>{t("left.measurements.depth", "diepte")}</th>
+            <th title={t("left.measurements.napTitle", "Diepte t.o.v. NAP")}>m NAP</th>
             <th>qc</th><th>fs</th><th>Rf</th>
           </tr>
         </thead>

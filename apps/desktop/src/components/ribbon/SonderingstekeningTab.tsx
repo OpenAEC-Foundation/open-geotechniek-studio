@@ -190,6 +190,7 @@ const dispatch = (name: string, detail?: unknown) =>
 
 export default function SonderingstekeningTab() {
   const { t } = useTranslation("ribbon");
+  const { t: td } = useTranslation("drawing");
   const extOffertes = useExtension("offertes");
 
   // Houd lokaal bij of select-mode aan staat in de view, zodat de
@@ -254,7 +255,7 @@ export default function SonderingstekeningTab() {
               )}
               onClick={() => {
                 const raw = window.prompt(
-                  "Roteer met hoeveel graden? (negatief = tegen de klok in)",
+                  td("rotate.prompt", "Roteer met hoeveel graden? (negatief = tegen de klok in)"),
                   "90",
                 );
                 if (raw === null) return;

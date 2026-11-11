@@ -1,0 +1,145 @@
+{
+  "topo": {
+    "toggle": "Mapas históricos sí/no",
+    "title": "Mapas históricos",
+    "off": "No",
+    "year": "Año del mapa histórico",
+    "latest": "Ir al año más reciente",
+    "opacity": "Transparencia",
+    "opacityAria": "Transparencia del mapa histórico"
+  },
+  "search": {
+    "placeholder": "Buscar dirección, localidad o coordenada (RD / WGS84)…",
+    "aria": "Buscar dirección o coordenada",
+    "clear": "Borrar",
+    "flyTo": "Ir a la ubicación",
+    "types": {
+      "adres": "dirección",
+      "weg": "carretera",
+      "postcode": "código postal",
+      "woonplaats": "localidad",
+      "gemeente": "municipio",
+      "provincie": "provincia",
+      "waterschap": "junta de aguas",
+      "perceel": "parcela",
+      "hectometerpaal": "hito hectométrico",
+      "appartementsrecht": "derecho de propiedad horizontal",
+      "buurt": "barrio",
+      "wijk": "distrito"
+    }
+  },
+  "layers": {
+    "topography": "Topografía (BRT)",
+    "aerialCurrent": "Ortofoto (actual)",
+    "aerialYear": "Ortofoto {{year}}",
+    "addresses": "Direcciones + calles",
+    "elevation": "Mapa de elevaciones AHN",
+    "cadastral": "Límites catastrales",
+    "buildings": "BAG (edificios)",
+    "bgt": "Topografía BGT",
+    "zoning": "Plan de ordenación",
+    "geomorphology": "Mapa geomorfológico",
+    "soilMap": "Mapa de suelos 1:50.000",
+    "cables": "Cables y conducciones (KLIC)",
+    "broCpts": "CPT de BRO",
+    "broBoreholes": "Sondeos de BRO",
+    "broWells": "Pozos de agua subterránea de BRO",
+    "projectCpts": "CPT del proyecto"
+  },
+  "layerPanel": {
+    "opacityTitle": "Transparencia: {{pct}}% — el control deslizante regula la visibilidad",
+    "opacityAria": "Transparencia {{layer}}",
+    "ahnLegend": "Elevación NAP"
+  },
+  "status": {
+    "initial": "Acerque el zoom y haga clic en 'Cargar zona'",
+    "zoomIn": "Acerque hasta el nivel de zoom {{zoom}}+ para cargar el archivo",
+    "loading": "Cargando...",
+    "cptError": "CPT: {{error}}",
+    "boreError": "Sondeos: {{error}}",
+    "incomplete": "BRO incompleto: {{errors}}",
+    "error": "Error: {{error}}",
+    "cleared": "Marcadores de BRO borrados",
+    "addFailed": "Error al añadir: {{error}}",
+    "cptCount": "{{n}} CPT",
+    "loadedBoth": "{{cpt}} CPT / {{bore}} sondeo(s) cargados",
+    "loadedCpt": "{{cpt}} CPT cargados",
+    "loadedBore": "{{bore}} sondeo(s) cargados",
+    "loadedNone": "cargado"
+  },
+  "gwp": {
+    "type": "Tipo: pozo de agua subterránea (GMW)",
+    "manager": "Gestor: {{name}}",
+    "groundLevel": "Cota del terreno NAP: {{value}} m",
+    "tubes": "Número de filtros: {{n}}"
+  },
+  "popup": {
+    "openViewer": "Abrir en el visor",
+    "openBroloket": "Abrir en BROloket",
+    "depthTo": "profundidad hasta {{depth}} m",
+    "kindCpt": "CPT (BRO)",
+    "kindBore": "Sondeo (BHR-GT)",
+    "merge": "Crear proyecto + añadir",
+    "addToProject": "Añadir al proyecto",
+    "toggleSelect": "Seleccionar / deseleccionar para añadir"
+  },
+  "klic": {
+    "alert": "Cables y conducciones — no hay ninguna capa WMS pública disponible.\n\nDesde el 10 de diciembre de 2025, PDOK ya no aloja un visor nacional de cables/conducciones (conjunto de datos de Liander retirado de producción). Para notificar una excavación debe presentar una solicitud KLIC a través de:\n\n{{url}}\n\nLa solicitud es gratuita y recibirá los planos en un plazo de 1-3 días laborables."
+  },
+  "measure": {
+    "on": "Modo de medición: haga clic en un punto o CPT para empezar",
+    "off": "Modo de medición desactivado",
+    "from": "Midiendo desde {{id}} — haga clic en un segundo punto",
+    "started": "Punto inicial fijado — haga clic en un segundo punto",
+    "point": "punto",
+    "distance": "Distancia {{from}} ↔ {{to}}: {{dist}}",
+    "cancelled": "Modo de medición cancelado",
+    "otherCpt": "Elija otro CPT"
+  },
+  "export": {
+    "fileName": "mapa"
+  },
+  "bro": {
+    "docChangedKeep": "El documento activo ha cambiado; se conserva la selección restante.",
+    "docChanged": "El documento activo ha cambiado.",
+    "added": "{{n}} CPT de BRO añadidos",
+    "addedPartial": "{{n}} añadidos. {{error}}",
+    "selected": "{{n}} CPT de BRO seleccionados",
+    "adding": "Añadiendo…",
+    "addSelection": "Añadir la selección al proyecto",
+    "clearSelection": "Borrar la selección de BRO",
+    "invalidArea": "Zona de búsqueda de BRO no válida.",
+    "areaTooLarge": "La zona de búsqueda de BRO sigue siendo demasiado grande; acerque más el zoom. No se muestran resultados parciales.",
+    "limitReached": "Se sigue alcanzando el límite de BRO en la misma ubicación; reduzca el periodo o la zona. No se muestran resultados parciales.",
+    "parseError": "Error al analizar el XML de BRO: {{detail}}",
+    "resultLimit": "BRO limita la búsqueda a {{max}} objetos."
+  },
+  "selection": {
+    "count": "{{n}} seleccionados",
+    "clearTitle": "Borrar selección (Esc)",
+    "clear": "Borrar"
+  },
+  "cursor": {
+    "aria": "Coordenadas del cursor"
+  },
+  "broField": {
+    "registered": "Registrado",
+    "reportDate": "Fecha del informe",
+    "finalDepth": "Profundidad final (m)",
+    "finalDepthBore": "Profundidad final del sondeo (m)",
+    "predrilled": "Preperforación (m)",
+    "groundLevel": "Cota del terreno respecto a NAP (m)",
+    "qualityRegime": "Régimen de calidad",
+    "positionAccuracy": "Incertidumbre de posición (m)",
+    "positionMethod": "Método de posicionamiento",
+    "qualityClass": "Clase de calidad",
+    "cptStandard": "Norma CPT",
+    "purpose": "Objetivo del reconocimiento",
+    "discipline": "Disciplina",
+    "stopCriterion": "Criterio de parada",
+    "sourceHolder": "Titular de la fuente",
+    "rockReached": "Roca alcanzada",
+    "verticalDatum": "Referencia vertical",
+    "deregistered": "Dado de baja"
+  }
+}

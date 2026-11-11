@@ -1,0 +1,145 @@
+{
+  "topo": {
+    "toggle": "Historiske kort til/fra",
+    "title": "Historiske kort",
+    "off": "Fra",
+    "year": "Årstal for historisk kort",
+    "latest": "Gå til seneste år",
+    "opacity": "Gennemsigtighed",
+    "opacityAria": "Gennemsigtighed for historisk kort"
+  },
+  "search": {
+    "placeholder": "Søg adresse, sted eller koordinat (RD / WGS84)…",
+    "aria": "Søg adresse eller koordinat",
+    "clear": "Ryd",
+    "flyTo": "Flyv til placering",
+    "types": {
+      "adres": "adresse",
+      "weg": "vej",
+      "postcode": "postnummer",
+      "woonplaats": "by",
+      "gemeente": "kommune",
+      "provincie": "provins",
+      "waterschap": "vandmyndighed",
+      "perceel": "matrikel",
+      "hectometerpaal": "hektometerpæl",
+      "appartementsrecht": "ejerlejlighed",
+      "buurt": "kvarter",
+      "wijk": "bydel"
+    }
+  },
+  "layers": {
+    "topography": "Topografi (BRT)",
+    "aerialCurrent": "Luftfoto (aktuelt)",
+    "aerialYear": "Luftfoto {{year}}",
+    "addresses": "Adresser + gader",
+    "elevation": "AHN-højdekort",
+    "cadastral": "Matrikelgrænser",
+    "buildings": "BAG (bygninger)",
+    "bgt": "BGT-topografi",
+    "zoning": "Lokalplan",
+    "geomorphology": "Geomorfologisk kort",
+    "soilMap": "Jordbundskort 1:50.000",
+    "cables": "Kabler og ledninger (KLIC)",
+    "broCpts": "BRO-sonderinger",
+    "broBoreholes": "BRO-boringer",
+    "broWells": "BRO-grundvandsboringer",
+    "projectCpts": "Projektsonderinger"
+  },
+  "layerPanel": {
+    "opacityTitle": "Gennemsigtighed: {{pct}}% — skyderen styrer synligheden",
+    "opacityAria": "Gennemsigtighed {{layer}}",
+    "ahnLegend": "Højde NAP"
+  },
+  "status": {
+    "initial": "Zoom ind og klik på 'Indlæs område'",
+    "zoomIn": "Zoom ind til niveau {{zoom}}+ for at indlæse arkivet",
+    "loading": "Indlæser...",
+    "cptError": "Sonderinger: {{error}}",
+    "boreError": "Boringer: {{error}}",
+    "incomplete": "BRO ufuldstændig: {{errors}}",
+    "error": "Fejl: {{error}}",
+    "cleared": "BRO-markører ryddet",
+    "addFailed": "Tilføjelse mislykkedes: {{error}}",
+    "cptCount": "{{n}} sondering(er)",
+    "loadedBoth": "{{cpt}} sondering(er) / {{bore}} boring(er) indlæst",
+    "loadedCpt": "{{cpt}} sondering(er) indlæst",
+    "loadedBore": "{{bore}} boring(er) indlæst",
+    "loadedNone": "indlæst"
+  },
+  "gwp": {
+    "type": "Type: grundvandsboring (GMW)",
+    "manager": "Ejer: {{name}}",
+    "groundLevel": "Terrænkote NAP: {{value}} m",
+    "tubes": "Antal filtre: {{n}}"
+  },
+  "popup": {
+    "openViewer": "Åbn i viewer",
+    "openBroloket": "Åbn i BROloket",
+    "depthTo": "dybde til {{depth}} m",
+    "kindCpt": "Sondering (BRO)",
+    "kindBore": "Boring (BHR-GT)",
+    "merge": "Opret projekt + tilføj",
+    "addToProject": "Tilføj til projekt",
+    "toggleSelect": "Vælg / fravælg til tilføjelse"
+  },
+  "klic": {
+    "alert": "Kabler og ledninger — intet offentligt WMS-lag tilgængeligt.\n\nSiden 10. december 2025 hoster PDOK ikke længere en national viewer for kabler/ledninger (Liander-datasættet er taget ud af drift). For at anmelde et gravearbejde skal du indsende en KLIC-forespørgsel via:\n\n{{url}}\n\nForespørgslen er gratis, og du modtager tegningerne inden for 1-3 arbejdsdage."
+  },
+  "measure": {
+    "on": "Måletilstand: klik på et punkt eller en sondering for at starte",
+    "off": "Måletilstand fra",
+    "from": "Måler fra {{id}} — klik på et andet punkt",
+    "started": "Startpunkt fastlagt — klik på et andet punkt",
+    "point": "punkt",
+    "distance": "Afstand {{from}} ↔ {{to}}: {{dist}}",
+    "cancelled": "Måletilstand annulleret",
+    "otherCpt": "Vælg en anden sondering"
+  },
+  "export": {
+    "fileName": "kort"
+  },
+  "bro": {
+    "docChangedKeep": "Det aktive dokument er ændret; resterende udvalg bevaret.",
+    "docChanged": "Det aktive dokument er ændret.",
+    "added": "{{n}} BRO-sondering(er) tilføjet",
+    "addedPartial": "{{n}} tilføjet. {{error}}",
+    "selected": "{{n}} BRO-sondering(er) valgt",
+    "adding": "Tilføjer…",
+    "addSelection": "Tilføj udvalg til projekt",
+    "clearSelection": "Ryd BRO-udvalg",
+    "invalidArea": "Ugyldigt BRO-søgeområde.",
+    "areaTooLarge": "BRO-søgeområdet er stadig for stort; zoom længere ind. Ingen delvise resultater vist.",
+    "limitReached": "BRO-grænsen nås stadig på samme placering; reducér periode eller område. Ingen delvise resultater vist.",
+    "parseError": "BRO XML-parsefejl: {{detail}}",
+    "resultLimit": "BRO begrænser søgningen til {{max}} objekter."
+  },
+  "selection": {
+    "count": "{{n}} valgt",
+    "clearTitle": "Ryd udvalg (Esc)",
+    "clear": "Ryd"
+  },
+  "cursor": {
+    "aria": "Markørkoordinater"
+  },
+  "broField": {
+    "registered": "Registreret",
+    "reportDate": "Rapportdato",
+    "finalDepth": "Slutdybde (m)",
+    "finalDepthBore": "Boringens slutdybde (m)",
+    "predrilled": "Forboret dybde (m)",
+    "groundLevel": "Terrænkote i forhold til NAP (m)",
+    "qualityRegime": "Kvalitetsregime",
+    "positionAccuracy": "Positionsusikkerhed (m)",
+    "positionMethod": "Positioneringsmetode",
+    "qualityClass": "Kvalitetsklasse",
+    "cptStandard": "CPT-standard",
+    "purpose": "Undersøgelsesformål",
+    "discipline": "Fagområde",
+    "stopCriterion": "Stopkriterium",
+    "sourceHolder": "Dataejer",
+    "rockReached": "Fast fjeld nået",
+    "verticalDatum": "Vertikalt datum",
+    "deregistered": "Afmeldt"
+  }
+}

@@ -12,11 +12,12 @@ import { toIfcxArray } from "../calc/framework/persistence";
 import { useCptStore } from "./useCptStore";
 import { IS_TAURI } from "../utils/platform";
 import { invoke } from "@tauri-apps/api/core";
+import i18next from "i18next";
 
 export function activeProjectPayload(docId?: string) {
   const state = useCptStore.getState();
   const doc = state.documents.find(d => d.id === (docId ?? state.activeDocId));
-  if (!doc || doc.kind !== "project") throw new Error("Geen project actief.");
+  if (!doc || doc.kind !== "project") throw new Error(i18next.t("app:store.noProject", { defaultValue: "Geen project actief." }));
   const tek = getLatestTekening(doc.id);
   const calcs = useCalculationsStore.getState().byDoc.get(doc.id) ?? [];
   return {

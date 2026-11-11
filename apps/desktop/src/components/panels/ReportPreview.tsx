@@ -24,6 +24,7 @@ import "./ReportPreview.css";
  */
 export default function ReportPreview() {
   const { t } = useTranslation("ribbon");
+  const { t: tp } = useTranslation("panels");
   const cptsMap = useCptStore((s) => s.cpts);
   const cpts = useMemo(() => Array.from(cptsMap.values()), [cptsMap]);
   const projectMeta = useCptStore((s) => s.projectMeta);
@@ -132,7 +133,7 @@ export default function ReportPreview() {
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error("[ReportPreview] PDF openen mislukt:", e);
-      setError(`PDF openen mislukt: ${String(e)}`);
+      setError(tp("reportPreview.openFailed", "PDF openen mislukt: {{error}}", { error: String(e) }));
     }
   };
 
@@ -217,10 +218,10 @@ export default function ReportPreview() {
       </div>
 
       <div className="report-layout-options">
-        <label>Grafiekschaal<select aria-label="Grafiekschaal" value={sections.chartScale ?? 'fit'} onChange={(e) => setSections((s) => ({ ...s, chartScale: e.target.value === 'fit' ? null : Number(e.target.value) }))}>
-          <option value="fit">Eén blad per sondering</option>{[50,100,200,500,1000].map((scale) => <option key={scale} value={scale}>1:{scale}</option>)}
+        <label>{tp("reportPreview.chartScale", "Grafiekschaal")}<select aria-label={tp("reportPreview.chartScale", "Grafiekschaal")} value={sections.chartScale ?? 'fit'} onChange={(e) => setSections((s) => ({ ...s, chartScale: e.target.value === 'fit' ? null : Number(e.target.value) }))}>
+          <option value="fit">{tp("reportPreview.onePagePerCpt", "Eén blad per sondering")}</option>{[50,100,200,500,1000].map((scale) => <option key={scale} value={scale}>1:{scale}</option>)}
         </select></label>
-        <label>Titel voorblad<input aria-label="Titel voorblad" value={sections.coverTitle ?? ''} placeholder={projectMeta.title} onChange={(e) => setSections((s) => ({ ...s, coverTitle: e.target.value }))} /></label>
+        <label>{tp("reportPreview.coverTitle", "Titel voorblad")}<input aria-label={tp("reportPreview.coverTitle", "Titel voorblad")} value={sections.coverTitle ?? ''} placeholder={projectMeta.title} onChange={(e) => setSections((s) => ({ ...s, coverTitle: e.target.value }))} /></label>
       </div>
       {/* Bottom: generate PDF action */}
       <div className="report-sidebar-footer">

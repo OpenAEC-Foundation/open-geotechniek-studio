@@ -1,0 +1,262 @@
+{
+  "bore": {
+    "belowGround": "m p.p.t.",
+    "colour": "Barwa: {{colour}}",
+    "depth": "Głębokość",
+    "fallbackTitle": "Odwiert",
+    "layers": "Warstwy",
+    "noLayers": "W tym odwiercie nie znaleziono warstw.",
+    "noLayersHint": "BHR-GT XML nie zawierał elementów <0>describedInterval</0>.",
+    "zoomHint": "Ctrl + kółko myszy, aby powiększyć/pomniejszyć",
+    "zoomIn": "Powiększ",
+    "zoomOut": "Pomniejsz",
+    "zoomReset": "Resetuj powiększenie"
+  },
+  "chart": {
+    "depthAxis": "Głębokość (m)",
+    "fsHeader": "Tarcie na tulei (fs, MPa)",
+    "qcHeader": "Opór stożka (qc, MPa)",
+    "removeAllMarkers": "Usuń wszystkie",
+    "removeMarker": "Usuń",
+    "rfHeader": "Współczynnik tarcia (Rf, %)",
+    "u2Header": "Ciśnienie wody w porach (u2, kN/m²)"
+  },
+  "gwp": {
+    "axisLevel": "Poziom wody (m NAP)",
+    "col": {
+      "material": "Materiał",
+      "screenBottom": "Spód filtra",
+      "screenLength": "Długość filtra",
+      "screenTop": "Góra filtra",
+      "status": "Status",
+      "tubeDiameter": "Średnica rury",
+      "tubeTop": "Góra rury"
+    },
+    "constructed": "Wykonano",
+    "csvFailed": "Wczytywanie CSV nie powiodło się: {{error}}",
+    "deepestFilter": "Najniższy filtr",
+    "fetchFailed": "Nie udało się pobrać GLD: {{error}}",
+    "gldTitle": "Poziom wód gruntowych w czasie (GLD)",
+    "groundLevel": "Rzędna terenu",
+    "loading": "Pobieranie poziomów wód gruntowych…",
+    "noCoords": "Studnia nie ma współrzędnych WGS84 — nie można wyszukać GLD.",
+    "noSeries": "W pobliżu tej studni nie znaleziono szeregów czasowych GLD.",
+    "noValues": "Znaleziono GLD ({{n}}), ale nie otrzymano pomiarów.",
+    "observations": "Pomiary: {{n}}",
+    "openBroloket": "Otwórz w BROloket ↗",
+    "owner": "właściciel {{owner}}",
+    "seriesFound": "Szeregi czasowe znalezione przy tej studni: {{n}}. Kółko = powiększenie w poziomie, przeciąganie = przesuwanie, dwuklik = reset.",
+    "subtitle": "Studnia obserwacyjna wód gruntowych (BRO/GMW)",
+    "tubeCount": "Liczba rur",
+    "tubesTitle": "Rury obserwacyjne (filtry)"
+  },
+  "ifcView": {
+    "disabledText": "Stary eksport STEP nie jest zgodny ze schematem IFC. Użyj pliku projektu, aby zachować wszystkie dane. Migawka IFCX jest eksperymentalna.",
+    "disabledTitle": "Eksport IFC4x3 wyłączony"
+  },
+  "ifcxPreview": {
+    "close": "Zamknij",
+    "copied": "Skopiowano",
+    "copy": "Kopiuj JSON",
+    "failed": "Nie udało się utworzyć podglądu:",
+    "generating": "Generowanie IFCX…",
+    "hint": "To dokładnie ta treść, która jest zapisywana w pliku <0>.ifcgis</0> przy zapisie projektu — JSON w kształcie IFC5-alpha (IFCX) z encjami IfcProject, IfcSite, IfcBorehole i IfcAnnotation oraz odwołaniami przez <1>#id</1>.",
+    "noDoc": "Brak aktywnego dokumentu — otwórz lub utwórz projekt, aby zobaczyć podgląd IFCX.",
+    "projectOnly": "Podgląd IFCX działa tylko dla dokumentów projektu. Dla pojedynczych sondowań lub odwiertów użyj karty IFC.",
+    "size": "{{bytes}} bajtów IFCX (IFC4X3_ADD2)",
+    "tip": "Wskazówka: konwersja IFCX wymaga funkcji <0>to_ifcx_json</0> po stronie Rust (ifcgis-0.4+). Uruchom ponownie aplikację deweloperską Tauri, jeśli właśnie zbudowano nową wersję cpt-core.",
+    "title": "Podgląd IFCX — co trafia do pliku .ifcgis"
+  },
+  "layerAnalysis": {
+    "invalidDepth": "Punkt źródłowy {{n}}: nieprawidłowa lub malejąca głębokość nieużyta w interpretacji warstw.",
+    "invalidRanges": "Warstwy muszą mieć dodatnią miąższość, być uporządkowane, nie nakładać się i leżeć w zakresie zmierzonej głębokości; wybierz strefę 1–9.",
+    "notList": "Interpretacja warstw musi być listą.",
+    "savedInvalid": "Zapisana interpretacja warstw jest nieprawidłowa: {{error}}",
+    "settingsRange": "Minimalna miąższość i histereza muszą mieścić się w zakresie od 0 do 50 m.",
+    "thinIsolated": "Zachowano cienką izolowaną warstwę; nie przyjęto sąsiedniej warstwy ponad luką pomiarową.",
+    "unknownProvenance": "Nieznane lub niezgodne pochodzenie zapisanej interpretacji warstw.",
+    "zeroThickness": "Izolowany punkt pomiarowy bez miąższości nie został zinterpretowany jako warstwa."
+  },
+  "layers": {
+    "add": "Dodaj warstwę",
+    "bottom": "Spód (m)",
+    "bottomAria": "Spód warstwy {{n}}",
+    "cancel": "Anuluj",
+    "colBottom": "Spód",
+    "colTop": "Strop",
+    "colZone": "Strefa",
+    "edit": "Edytuj interpretację warstw",
+    "export": "Eksportuj warstwy JSON",
+    "fillSettings": "Podaj minimalną miąższość i histerezę.",
+    "footer": "Źródło: {{source}}. Histereza potwierdza nową strefę dwoma kolejnymi punktami. Granice są zapisywane oddzielnie; punkty pomiarowe są zachowywane. Krzywe pomiarowe pokazują orientacyjną klasyfikację punktów.",
+    "hysteresis": "Histereza (m)",
+    "jsonFilter": "Interpretacja warstw JSON",
+    "layerN": "Warstwa {{n}}",
+    "minThickness": "Minimalna miąższość (m)",
+    "noCpt": "Nie wybrano sondowania.",
+    "none": "Brak dostępnej interpretacji warstw.",
+    "provenanceAuto": "Orientacyjna interpretacja warstw qc/Rf · minimum {{min}} m · histereza {{hyst}} m",
+    "provenanceManual": "Ręczna interpretacja warstw · minimum {{min}} m · histereza {{hyst}} m",
+    "recalculate": "Przelicz automatycznie",
+    "remove": "Usuń warstwę {{n}}",
+    "saveManual": "Zapisz warstwy ręczne",
+    "splitLast": "Podziel ostatnią warstwę",
+    "top": "Strop (m)",
+    "topAria": "Strop warstwy {{n}}",
+    "zone": "Strefa orientacyjna",
+    "zoneAria": "Strefa warstwy {{n}}"
+  },
+  "left": {
+    "bore": {
+      "accountableParty": "Dysponent danych",
+      "base": "Spód",
+      "boreData": "Dane odwiertu",
+      "delivery": "Dostawa",
+      "descriptionDate": "Data opisu",
+      "descriptionProcedure": "Procedura opisu",
+      "endDate": "Data zakończenia",
+      "fileMetadata": "Metadane pliku",
+      "finalDepth": "Głębokość końcowa",
+      "id": "ID odwiertu",
+      "layerCount": "Liczba warstw",
+      "layers": "Warstwy",
+      "method": "Metoda wiercenia",
+      "noExtras": "Brak dodatkowych metadanych.",
+      "noLayers": "Brak warstw.",
+      "project": "Projekt",
+      "projectNumber": "Nr projektu",
+      "soilType": "Rodzaj gruntu",
+      "startDate": "Data rozpoczęcia",
+      "top": "Strop"
+    },
+    "gwp": {
+      "constructed": "Wykonano",
+      "filterBottom": "Spód filtra",
+      "filterTop": "Góra filtra",
+      "initialFunction": "Funkcja pierwotna",
+      "manager": "Zarządca",
+      "noTubes": "Brak rur.",
+      "owner": "Właściciel",
+      "status": "Status",
+      "subtitle": "Studnia obserwacyjna wód gruntowych (BRO/GMW)",
+      "tubeCount": "Liczba rur",
+      "tubes": "Rury (filtry)",
+      "wellCode": "Kod studni",
+      "wellData": "Dane studni",
+      "wellHeadProtector": "Zabezpieczenie głowicy studni"
+    },
+    "measurements": {
+      "depth": "głębokość",
+      "depthTitle": "Głębokość poniżej poziomu terenu",
+      "napTitle": "Głębokość względem NAP"
+    },
+    "meta": {
+      "groundLevelNap": "Rzędna terenu NAP",
+      "qualityRegime": "Reżim jakości"
+    },
+    "photos": {
+      "hintBore": "BRO udostępnia zdjęcia tego odwiertu (jeśli są dostępne) w BROloket.",
+      "hintCpt": "BRO udostępnia zdjęcia tego sondowania (jeśli są dostępne) w BROloket.",
+      "hintGwp": "BRO udostępnia zdjęcia tej studni wód gruntowych (jeśli są dostępne) w BROloket.",
+      "link": "Zobacz zdjęcia w BROloket ↗",
+      "onlyBro": "Zdjęcia są dostępne tylko dla obiektów BRO (wymagany identyfikator BHR/CPT/GMW).",
+      "title": "Zdjęcia i inspekcja"
+    },
+    "rawXml": {
+      "copied": "Skopiowano",
+      "copy": "Kopiuj XML",
+      "none": "Brak surowego XML.",
+      "title": "Dane surowe (XML)"
+    }
+  },
+  "normalized": {
+    "error": {
+      "missing": "Podaj wszystkie wartości pomiarowe i naprężenia.",
+      "notPositive": "Opór stożka netto i efektywne naprężenie pionowe muszą być dodatnie.",
+      "outOfRange": "Punkt leży poza zakresem numerycznym.",
+      "range": "Wymagane: qc i fs > 0, 0 < a ≤ 1 oraz naprężenie całkowite ≥ 0."
+    },
+    "field": {
+      "areaRatio": "Współczynnik powierzchni stożka a",
+      "totalStress": "Naprężenie całkowite σv0 [kPa]",
+      "waterPressure": "Ciśnienie hydrostatyczne u0 [kPa]"
+    },
+    "icZone": "Ic / strefa",
+    "intro": "Analiza punktowa Qt / Fr / Bq / Ic dla podanych naprężeń według Robertsona–Wride’a (stały wykładnik n = 1).",
+    "note": "Gruntów wrażliwych i scementowanych (strefy 1, 8, 9) nie można wyznaczyć wyłącznie z Ic. Brak przeliczenia na opis gruntu według NEN.",
+    "reference": "Robertson i Cabal, 2022, rysunek 16",
+    "title": "Znormalizowana analiza punktowa SBTn",
+    "zones": {
+      "z2": "Grunt organiczny",
+      "z3": "Ił",
+      "z4": "Mieszanina pyłowa",
+      "z5": "Mieszanina piaszczysta",
+      "z6": "Piasek",
+      "z7": "Piasek żwirowy"
+    }
+  },
+  "projectSettings": {
+    "boreMeta": "warstwy: {{layers}} · głębokość {{depth}} m",
+    "close": "Zamknij",
+    "cptMeta": "punkty: {{points}} · głębokość {{depth}} m",
+    "newProject": "Nowy projekt",
+    "noProject": "Brak aktywnego projektu — otwórz lub utwórz projekt <0>.ifcgis</0>.",
+    "noProjectHint": "Bieżąca aktywna karta to pojedyncze sondowanie. Informacje o projekcie (tytuł, zleceniodawca, lokalizacja, lista sondowań) są częścią projektu — utwórz nowy lub otwórz istniejący plik <0>.ifcgis</0>."
+  },
+  "reportPreview": {
+    "chartScale": "Skala wykresu",
+    "coverTitle": "Tytuł okładki",
+    "onePagePerCpt": "Jedna strona na sondowanie",
+    "openFailed": "Otwieranie PDF nie powiodło się: {{error}}"
+  },
+  "soil3d": {
+    "bearingRange": "NAP od {{top}} do {{bottom}} m ({{found}}/{{total}})",
+    "criterion": "qc ≥ {{qc}} MPa na długości ≥ {{thickness}} m",
+    "criterionFrom": "z {{source}}",
+    "grid": "{{nx}} × {{ny}} × {{nz}} komórek ({{dx}} × {{dy}} × {{dz}} m), IDW",
+    "warn": {
+      "bearingNone": "Nie znaleziono warstwy nośnej w żadnym sondowaniu.",
+      "bearingPartial": "Nie znaleziono warstwy nośnej w {{ids}}; w tych miejscach powierzchnia jest interpolowana.",
+      "missingRd": "Bez współrzędnych RD (poza modelem): {{ids}}.",
+      "noLayers": "Sondowanie {{id}} nie ma interpretacji warstw.",
+      "noRd": "Brak współrzędnych RD: sondowania są ustawione w rzędzie co 10 m."
+    },
+    "zoneN": "Strefa {{n}}"
+  },
+  "validation": {
+    "column": "kolumna {{n}}",
+    "counts": "błędy: {{errors}} · ostrzeżenia: {{warnings}}",
+    "depth": "Głębokość: {{method}}",
+    "depthMethod": {
+      "corrected": "zmierzona głębokość skorygowana",
+      "inclination": "korekta nachylenia z długości penetracji",
+      "mixed": "metody mieszane; dla każdego rekordu w JSON",
+      "penetration": "długość penetracji jako przybliżenie pionowe"
+    },
+    "diagnostics": "Diagnostyka ({{n}})",
+    "exportAll": "Eksportuj raport dla wszystkich komunikatów.",
+    "line": "wiersz {{n}}",
+    "measurements": "Wielkości mierzone i jednostki ({{n}})",
+    "noReport": "Ten plik nie ma jeszcze raportu walidacji. Zaimportuj go ponownie bieżącym parserem.",
+    "points": "punkty pomiarowe: {{points}} · puste wartości: {{voids}} · pominięte rekordy: {{omitted}}",
+    "preExcavated": "Wstępnie wykopano: {{depth}} m",
+    "predrilled": "Nawiercono wstępnie: {{depth}} m",
+    "record": "rekord {{n}}",
+    "regime": "Reżim: {{regime}}",
+    "removedLayer": "Warstwa do {{depth}} m: {{description}}",
+    "report": "Zgłoś ten plik",
+    "showOutliers": "Pokaż wartości odstające: {{n}} (rekordy źródłowe {{records}})",
+    "variables": "Zmienne pomiarowe i odczyty zerowe"
+  },
+  "zones": {
+    "z1": "Wrażliwy drobnoziarnisty",
+    "z2": "Organiczny / torf",
+    "z3": "Ił",
+    "z4": "Mieszaniny pyłowe",
+    "z5": "Mieszaniny piaszczyste",
+    "z6": "Piasek",
+    "z7": "Piasek żwirowy / żwir",
+    "z8": "Bardzo sztywny piasek/ił",
+    "z9": "Bardzo sztywny drobnoziarnisty"
+  }
+}

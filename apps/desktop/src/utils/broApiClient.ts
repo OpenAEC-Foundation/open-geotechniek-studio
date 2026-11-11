@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import {isBroLimit} from "./broSearch";
 /**
  * Browser-zijdige client voor de BRO publieke REST-API
@@ -124,7 +125,7 @@ function parseCharacteristics(xml: string, kind: BroKind): BroFeature[] {
   const doc = new DOMParser().parseFromString(xml, "text/xml");
   const errs = doc.getElementsByTagName("parsererror");
   if (errs.length > 0) {
-    throw new Error(`BRO XML parse-fout: ${errs[0].textContent ?? "unknown"}`);
+    throw new Error(i18next.t("map:bro.parseError", { defaultValue: "BRO XML parse-fout: {{detail}}", detail: errs[0].textContent ?? "unknown" }));
   }
 
   // Rejection-response heeft géén dispatchDocument — alleen
@@ -136,7 +137,7 @@ function parseCharacteristics(xml: string, kind: BroKind): BroFeature[] {
   }
 
   const count=Number(textByLocalName(doc.documentElement,'numberOfDocuments'));
-  if(count>=2000||docs.length>=2000)throw new Error('OGS_BRO_RESULT_LIMIT: BRO beperkt de zoekactie tot 2000 objecten.');
+  if(count>=2000||docs.length>=2000)throw new Error('OGS_BRO_RESULT_LIMIT: '+i18next.t("map:bro.resultLimit", { defaultValue: "BRO beperkt de zoekactie tot {{max}} objecten.", max: 2000 }));
   const out: BroFeature[] = [];
   for (const d of docs) {
     const f = buildFeatureFromDoc(d, kind);

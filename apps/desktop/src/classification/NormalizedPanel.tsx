@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { numberLocale } from "../calc/i18n";
 import { normalizeCpt, type NormalizedInput } from "./normalized";
 const fields = [
-  ["qcMpa", "qc [MPa]"],
-  ["fsMpa", "fs [MPa]"],
-  ["u2Mpa", "u2 [MPa]"],
-  ["areaRatio", "Conusoppervlakteverhouding a"],
-  ["totalStressKpa", "Totale spanning σv0 [kPa]"],
-  ["waterPressureKpa", "Hydrostatische druk u0 [kPa]"],
+  ["qcMpa", "qc [MPa]", null],
+  ["fsMpa", "fs [MPa]", null],
+  ["u2Mpa", "u2 [MPa]", null],
+  ["areaRatio", "Conusoppervlakteverhouding a", "normalized.field.areaRatio"],
+  ["totalStressKpa", "Totale spanning σv0 [kPa]", "normalized.field.totalStress"],
+  ["waterPressureKpa", "Hydrostatische druk u0 [kPa]", "normalized.field.waterPressure"],
 ] as const;
 export default function NormalizedPanel() {
+  const { t } = useTranslation("panels");
   const [input, setInput] = useState<NormalizedInput>({
     qcMpa: 10.1,
     fsMpa: 0.1,
@@ -18,15 +21,16 @@ export default function NormalizedPanel() {
     waterPressureKpa: 0,
   });
   const result = normalizeCpt(input),
-    f = (n: number) => n.toLocaleString("nl-NL", { maximumFractionDigits: 3 });
+    f = (n: number) => n.toLocaleString(numberLocale(), { maximumFractionDigits: 3 });
   return (
     <details className="normalized-panel">
-      <summary>Genormaliseerde SBTn-puntanalyse</summary>
+      <summary>{t("normalized.title", "Genormaliseerde SBTn-puntanalyse")}</summary>
       <p>
-        Puntanalyse Qt / Fr / Bq / Ic met opgegeven spanningen, volgens
-        Robertson–Wride (vaste exponent n = 1).
+        {t("normalized.intro", "Puntanalyse Qt / Fr / Bq / Ic met opgegeven spanningen, volgens Robertson–Wride (vaste exponent n = 1).")}
       </p>
-      {fields.map(([key, label]) => (
+      {fields.map(([key, source, i18nKey]) => {
+        const label = i18nKey ? t(i18nKey, source) : source;
+        return (
         <label key={key}>
           {label}
           <input
@@ -39,7 +43,8 @@ export default function NormalizedPanel() {
             }
           />
         </label>
-      ))}
+        );
+      })}
       {result.ok ? (
         <dl>
           <dt>qt</dt>
@@ -50,24 +55,23 @@ export default function NormalizedPanel() {
           <dd>
             {f(result.Qt)} / {f(result.Fr)}% / {f(result.Bq)}
           </dd>
-          <dt>Ic / zone</dt>
+          <dt>{t("normalized.icZone", "Ic / zone")}</dt>
           <dd>
-            {f(result.Ic)} · {result.zone.number}: {result.zone.name}
+            {f(result.Ic)} · {result.zone.number}: {t(`normalized.zones.z${result.zone.number}`, { defaultValue: result.zone.name })}
           </dd>
         </dl>
       ) : (
         <p role="alert">{result.error}</p>
       )}
       <p>
-        Gevoelige en gecementeerde gronden (zones 1, 8, 9) volgen niet uit Ic
-        alleen. Geen omzetting naar een NEN-grondbeschrijving.
+        {t("normalized.note", "Gevoelige en gecementeerde gronden (zones 1, 8, 9) volgen niet uit Ic alleen. Geen omzetting naar een NEN-grondbeschrijving.")}
       </p>
       <a
         href="https://www.cpt-robertson.com/PublicationsPDF/In-Situ-Testing-Guide-2024.pdf"
         target="_blank"
         rel="noreferrer"
       >
-        Robertson & Cabal, 2022, figuur 16
+        {t("normalized.reference", "Robertson & Cabal, 2022, figuur 16")}
       </a>
     </details>
   );

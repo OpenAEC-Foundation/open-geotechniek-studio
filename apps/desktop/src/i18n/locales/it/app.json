@@ -1,0 +1,81 @@
+{
+  "detached": {
+    "view": "Vista separata",
+    "dockBackTitle": "Riaggancia alla finestra principale",
+    "dockBack": "Riaggancia",
+    "untitled": "Senza titolo"
+  },
+  "drop": {
+    "hint": "Rilascia per aprire — GEF, BRO XML o .ifcgeo",
+    "browserOpenFailed": "Impossibile aprire {{name}} in modalità browser:\n{{message}}\n\nSuggerimento: BHR-GT XML, GMW XML e GEF funzionano nel browser. Per BRO CPT XML e i file di progetto serve la versione desktop."
+  },
+  "errorBoundary": {
+    "title": "⚠ Crash di rendering React — ErrorBoundary di livello superiore",
+    "intro": "Un componente dell'app ha generato un errore durante il rendering. Lo stack trace qui sotto aiuta a individuarne la causa.",
+    "reload": "Ricarica app",
+    "noStack": "(nessuno stack disponibile)",
+    "componentStack": "Stack dei componenti"
+  },
+  "backstage": {
+    "noProject": "Nessun progetto attivo — apri o crea un progetto .ifcgeo.",
+    "projectFilter": "File di Open Geotechniek Studio",
+    "saveFailed": "Salvataggio non riuscito: {{error}}",
+    "geoObjectFilter": "Oggetto geotecnico (.ifcgeo)",
+    "cptSnapshotFilter": "CPT con dati sorgente",
+    "snapshotSaveFailed": "Salvataggio dell'istantanea non riuscito: {{error}}",
+    "gefExportStopped": "Esportazione GEF interrotta: {{error}}",
+    "broBrowserUnavailable": "La generazione di una nuova consegna BRO è disponibile solo tramite la vecchia esportazione desktop. Usa GEF o un'istantanea JSON per un'esportazione fedele alla sorgente.",
+    "browserOpenFailed": "Impossibile aprire {{name}} in modalità browser:\n{{message}}\n\nSuggerimento: BHR-GT XML, GMW XML, GEF e BRO CPT XML funzionano nel browser. Per i file di progetto .ifcgeo/.ifcgis serve la versione desktop.",
+    "openFailed": "Impossibile aprire {{name}}: {{message}}",
+    "minutesAgo": "{{n}} min fa",
+    "hoursAgo": "{{n}} h fa",
+    "daysAgo": "{{n}} g fa"
+  },
+  "extensions": {
+    "tekening": {
+      "name": "Planimetria",
+      "description": "Foglio CAD (A2/A3/A4) con CPT, snap, sovrapposizioni ed esportazione PDF."
+    },
+    "offertes": {
+      "name": "Richiedi preventivi",
+      "description": "Richiede preventivi alle imprese di prove CPT più vicine."
+    },
+    "category": {
+      "drawing": "Disegno",
+      "workflow": "Flusso di lavoro",
+      "calculation": "Calcolo"
+    },
+    "lockedLabel": "Non ancora pronto per la produzione",
+    "inDevelopment": "In sviluppo",
+    "lockedDescription": "Questo calcolo è ancora in sviluppo — i suoi risultati non sono ancora stati verificati per l'uso in produzione. L'interruttore è quindi disattivato.",
+    "noCatalog": "Nessun catalogo di estensioni esterno disponibile.",
+    "builtInOnly": "Open Geotechniek Studio al momento usa solo estensioni integrate (vedi la scheda \"{{tab}}\"). Un catalogo della community seguirà in una versione successiva."
+  },
+  "statusBar": {
+    "depth": "Profondità"
+  },
+  "startSidebar": {
+    "title": "Home",
+    "collapse": "Comprimi",
+    "expand": "Apri pannello Home",
+    "exampleProject": "Progetto di esempio"
+  },
+  "releaseNotes": {
+    "title": "Novità",
+    "loadFailed": "Impossibile caricare le note di rilascio ({{error}})",
+    "loading": "Caricamento…",
+    "none": "Nessuna release trovata"
+  },
+  "store": {
+    "noProject": "Nessun progetto attivo.",
+    "noProjectForBro": "Nessun progetto attivo — impossibile aggiungere la CPT BRO.",
+    "targetProjectClosed": "Il progetto di destinazione è stato chiuso durante l'aggiunta.",
+    "gmwParseFailed": "{{filename}}: impossibile analizzare un invio GMW (nessuna radice <GMW_PO>/<GMW_O> o nessun broId trovato)",
+    "unsupportedBore": "{{filename}}: non è un sondaggio BHR XML o GEF supportato"
+  },
+  "platform": {
+    "unknownCptFormat": "Formato CPT sconosciuto ({{filename}}). Previsto GEF o BRO CPT XML.",
+    "pdfWindowClosed": "La finestra del PDF è stata chiusa. Apri di nuovo la relazione.",
+    "popupBlocked": "Consenti i pop-up o usa Genera PDF per scaricare."
+  }
+}

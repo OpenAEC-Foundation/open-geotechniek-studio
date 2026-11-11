@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import CropStage, { type CropStageHandle } from "./CropStage";
 import "./ImageCropDialog.css";
 import "./PdfCropDialog.css";
@@ -43,6 +44,7 @@ export default function PdfCropDialog({
   onConfirm,
   onCancel,
 }: Props) {
+  const { t } = useTranslation("drawing");
   const [thumbs, setThumbs] = useState<string[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   // 1-indexed page number — null while the user is still picking.
@@ -173,7 +175,7 @@ export default function PdfCropDialog({
           onMouseDown={(e) => e.stopPropagation()}
         >
           <header className="icrop-header">
-            <span className="icrop-title">PDF kan niet worden ingelezen</span>
+            <span className="icrop-title">{t("crop.pdfReadError", "PDF kan niet worden ingelezen")}</span>
             <span className="icrop-filename" title={fileName}>
               {fileName}
             </span>
@@ -187,7 +189,7 @@ export default function PdfCropDialog({
                 className="icrop-btn"
                 onClick={onCancel}
               >
-                Sluiten
+                {t("crop.close", "Sluiten")}
               </button>
             </div>
           </footer>
@@ -212,12 +214,12 @@ export default function PdfCropDialog({
                 setSelectedPage(null);
                 setPageImage(null);
               }}
-              title="Andere pagina kiezen"
+              title={t("crop.otherPageTitle", "Andere pagina kiezen")}
             >
-              ← Andere pagina
+              {t("crop.otherPage", "← Andere pagina")}
             </button>
             <span className="icrop-title">
-              Pagina {selectedPage} bijsnijden
+              {t("crop.cropPage", "Pagina {{page}} bijsnijden", { page: selectedPage })}
             </span>
             <span className="icrop-filename" title={fileName}>
               {fileName}
@@ -232,7 +234,7 @@ export default function PdfCropDialog({
               }
             />
           ) : (
-            <div className="pcrop-loading">Pagina wordt gerenderd…</div>
+            <div className="pcrop-loading">{t("crop.rendering", "Pagina wordt gerenderd…")}</div>
           )}
           <footer className="icrop-footer">
             <div className="icrop-info">{pageImage ? info : ""}</div>
@@ -242,7 +244,7 @@ export default function PdfCropDialog({
                 className="icrop-btn"
                 onClick={onCancel}
               >
-                Annuleren
+                {t("crop.cancel", "Annuleren")}
               </button>
               <button
                 type="button"
@@ -250,7 +252,7 @@ export default function PdfCropDialog({
                 disabled={!pageImage}
                 onClick={doConfirm}
               >
-                Bijsnijden &amp; toevoegen
+                {t("crop.confirm", "Bijsnijden & toevoegen")}
               </button>
             </div>
           </footer>
@@ -267,7 +269,7 @@ export default function PdfCropDialog({
         onMouseDown={(e) => e.stopPropagation()}
       >
         <header className="icrop-header">
-          <span className="icrop-title">PDF — selecteer pagina</span>
+          <span className="icrop-title">{t("crop.pickPage", "PDF — selecteer pagina")}</span>
           <span className="icrop-filename" title={fileName}>
             {fileName}
           </span>
@@ -280,25 +282,27 @@ export default function PdfCropDialog({
                 type="button"
                 className="pcrop-thumb"
                 onClick={() => setSelectedPage(i + 1)}
-                title={`Pagina ${i + 1}`}
+                title={t("crop.page", "Pagina {{page}}", { page: i + 1 })}
               >
-                <img src={src} alt={`Pagina ${i + 1}`} />
-                <span className="pcrop-thumb-label">Pagina {i + 1}</span>
+                <img src={src} alt={t("crop.page", "Pagina {{page}}", { page: i + 1 })} />
+                <span className="pcrop-thumb-label">{t("crop.page", "Pagina {{page}}", { page: i + 1 })}</span>
               </button>
             ))}
           </div>
         ) : (
-          <div className="pcrop-loading">PDF wordt ingelezen…</div>
+          <div className="pcrop-loading">{t("crop.loadingPdf", "PDF wordt ingelezen…")}</div>
         )}
         <footer className="icrop-footer">
           <div className="icrop-info">
             {thumbs
-              ? `${thumbs.length} pagina${thumbs.length === 1 ? "" : "'s"}`
+              ? thumbs.length === 1
+                ? t("crop.pageCountOne", "1 pagina")
+                : t("crop.pageCount", "{{n}} pagina's", { n: thumbs.length })
               : ""}
           </div>
           <div className="icrop-actions">
             <button type="button" className="icrop-btn" onClick={onCancel}>
-              Annuleren
+              {t("crop.cancel", "Annuleren")}
             </button>
           </div>
         </footer>

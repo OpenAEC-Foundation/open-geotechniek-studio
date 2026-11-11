@@ -1,0 +1,145 @@
+{
+  "topo": {
+    "toggle": "Historische Karten ein/aus",
+    "title": "Historische Karten",
+    "off": "Aus",
+    "year": "Jahr der historischen Karte",
+    "latest": "Zum neuesten Jahr springen",
+    "opacity": "Transparenz",
+    "opacityAria": "Transparenz der historischen Karte"
+  },
+  "search": {
+    "placeholder": "Adresse, Ort oder Koordinate suchen (RD / WGS84)…",
+    "aria": "Adresse oder Koordinate suchen",
+    "clear": "Leeren",
+    "flyTo": "Zum Standort fliegen",
+    "types": {
+      "adres": "Adresse",
+      "weg": "Straße",
+      "postcode": "Postleitzahl",
+      "woonplaats": "Ort",
+      "gemeente": "Gemeinde",
+      "provincie": "Provinz",
+      "waterschap": "Wasserverband",
+      "perceel": "Flurstück",
+      "hectometerpaal": "Hektometerstein",
+      "appartementsrecht": "Wohnungseigentum",
+      "buurt": "Nachbarschaft",
+      "wijk": "Stadtteil"
+    }
+  },
+  "layers": {
+    "topography": "Topografie (BRT)",
+    "aerialCurrent": "Luftbild (aktuell)",
+    "aerialYear": "Luftbild {{year}}",
+    "addresses": "Adressen + Straßen",
+    "elevation": "AHN-Höhenkarte",
+    "cadastral": "Flurstücksgrenzen",
+    "buildings": "BAG (Gebäude)",
+    "bgt": "BGT-Topografie",
+    "zoning": "Bebauungsplan",
+    "geomorphology": "Geomorphologische Karte",
+    "soilMap": "Bodenkarte 1:50.000",
+    "cables": "Kabel & Leitungen (KLIC)",
+    "broCpts": "BRO-Sondierungen",
+    "broBoreholes": "BRO-Bohrungen",
+    "broWells": "BRO-Grundwassermessstellen",
+    "projectCpts": "Projektsondierungen"
+  },
+  "layerPanel": {
+    "opacityTitle": "Transparenz: {{pct}} % — der Schieberegler steuert die Sichtbarkeit",
+    "opacityAria": "Transparenz {{layer}}",
+    "ahnLegend": "Höhe NAP"
+  },
+  "status": {
+    "initial": "Hineinzoomen und auf „Gebiet laden“ klicken",
+    "zoomIn": "Zoomen Sie auf Stufe {{zoom}}+, um das Archiv zu laden",
+    "loading": "Wird geladen...",
+    "cptError": "Sondierungen: {{error}}",
+    "boreError": "Bohrungen: {{error}}",
+    "incomplete": "BRO unvollständig: {{errors}}",
+    "error": "Fehler: {{error}}",
+    "cleared": "BRO-Marker entfernt",
+    "addFailed": "Hinzufügen fehlgeschlagen: {{error}}",
+    "cptCount": "{{n}} Sondierung(en)",
+    "loadedBoth": "{{cpt}} Sondierung(en) / {{bore}} Bohrung(en) geladen",
+    "loadedCpt": "{{cpt}} Sondierung(en) geladen",
+    "loadedBore": "{{bore}} Bohrung(en) geladen",
+    "loadedNone": "geladen"
+  },
+  "gwp": {
+    "type": "Typ: Grundwassermessstelle (GMW)",
+    "manager": "Betreiber: {{name}}",
+    "groundLevel": "Geländehöhe NAP: {{value}} m",
+    "tubes": "Anzahl Filter: {{n}}"
+  },
+  "popup": {
+    "openViewer": "Im Viewer öffnen",
+    "openBroloket": "In BROloket öffnen",
+    "depthTo": "Tiefe bis {{depth}} m",
+    "kindCpt": "Sondierung (BRO)",
+    "kindBore": "Bohrung (BHR-GT)",
+    "merge": "Projekt erstellen + hinzufügen",
+    "addToProject": "Zum Projekt hinzufügen",
+    "toggleSelect": "Zum Hinzufügen aus-/abwählen"
+  },
+  "klic": {
+    "alert": "Kabel & Leitungen — keine öffentliche WMS-Ebene verfügbar.\n\nSeit dem 10. Dezember 2025 stellt PDOK keinen landesweiten Kabel-/Leitungsviewer mehr bereit (Liander-Datensatz außer Betrieb genommen). Um Erdarbeiten anzumelden, müssen Sie eine KLIC-Anfrage stellen über:\n\n{{url}}\n\nDie Anfrage ist kostenlos und Sie erhalten die Zeichnungen innerhalb von 1–3 Werktagen."
+  },
+  "measure": {
+    "on": "Messmodus: Klicken Sie auf einen Punkt oder eine Sondierung, um zu beginnen",
+    "off": "Messmodus aus",
+    "from": "Messung ab {{id}} — klicken Sie auf einen zweiten Punkt",
+    "started": "Startpunkt gesetzt — klicken Sie auf einen zweiten Punkt",
+    "point": "Punkt",
+    "distance": "Abstand {{from}} ↔ {{to}}: {{dist}}",
+    "cancelled": "Messmodus abgebrochen",
+    "otherCpt": "Wählen Sie eine andere Sondierung"
+  },
+  "export": {
+    "fileName": "karte"
+  },
+  "bro": {
+    "docChangedKeep": "Das aktive Dokument hat sich geändert; die verbleibende Auswahl bleibt erhalten.",
+    "docChanged": "Das aktive Dokument hat sich geändert.",
+    "added": "{{n}} BRO-Sondierung(en) hinzugefügt",
+    "addedPartial": "{{n}} hinzugefügt. {{error}}",
+    "selected": "{{n}} BRO-Sondierung(en) ausgewählt",
+    "adding": "Wird hinzugefügt…",
+    "addSelection": "Auswahl zum Projekt hinzufügen",
+    "clearSelection": "BRO-Auswahl aufheben",
+    "invalidArea": "Ungültiges BRO-Suchgebiet.",
+    "areaTooLarge": "Das BRO-Suchgebiet ist noch zu groß; zoomen Sie weiter hinein. Es werden keine Teilergebnisse angezeigt.",
+    "limitReached": "Das BRO-Limit wird an derselben Stelle weiterhin erreicht; verkleinern Sie den Zeitraum oder das Gebiet. Es werden keine Teilergebnisse angezeigt.",
+    "parseError": "BRO-XML-Parserfehler: {{detail}}",
+    "resultLimit": "BRO begrenzt die Suche auf {{max}} Objekte."
+  },
+  "selection": {
+    "count": "{{n}} ausgewählt",
+    "clearTitle": "Auswahl aufheben (Esc)",
+    "clear": "Aufheben"
+  },
+  "cursor": {
+    "aria": "Cursorkoordinaten"
+  },
+  "broField": {
+    "registered": "Registriert",
+    "reportDate": "Berichtsdatum",
+    "finalDepth": "Endtiefe (m)",
+    "finalDepthBore": "Endtiefe der Bohrung (m)",
+    "predrilled": "Vorbohrtiefe (m)",
+    "groundLevel": "Geländehöhe bezogen auf NAP (m)",
+    "qualityRegime": "Qualitätsregime",
+    "positionAccuracy": "Lageunsicherheit (m)",
+    "positionMethod": "Verfahren der Lagebestimmung",
+    "qualityClass": "Qualitätsklasse",
+    "cptStandard": "Sondiernorm",
+    "purpose": "Untersuchungszweck",
+    "discipline": "Fachgebiet",
+    "stopCriterion": "Abbruchkriterium",
+    "sourceHolder": "Quellenhalter",
+    "rockReached": "Fels erreicht",
+    "verticalDatum": "Höhenbezug",
+    "deregistered": "Abgemeldet"
+  }
+}

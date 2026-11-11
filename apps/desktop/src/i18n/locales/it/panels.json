@@ -1,0 +1,262 @@
+{
+  "bore": {
+    "belowGround": "m sotto p.c.",
+    "colour": "Colore: {{colour}}",
+    "depth": "Profondità",
+    "fallbackTitle": "Sondaggio",
+    "layers": "Strati",
+    "noLayers": "Nessuno strato trovato in questo sondaggio.",
+    "noLayersHint": "Il file BHR-GT XML non conteneva elementi <0>describedInterval</0>.",
+    "zoomHint": "Ctrl + rotellina per ingrandire/ridurre",
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci",
+    "zoomReset": "Ripristina zoom"
+  },
+  "chart": {
+    "depthAxis": "Profondità (m)",
+    "fsHeader": "Attrito laterale (fs, MPa)",
+    "qcHeader": "Resistenza alla punta (qc, MPa)",
+    "removeAllMarkers": "Rimuovi tutti",
+    "removeMarker": "Rimuovi",
+    "rfHeader": "Rapporto d'attrito (Rf, %)",
+    "u2Header": "Pressione interstiziale (u2, kN/m²)"
+  },
+  "gwp": {
+    "axisLevel": "Livello dell'acqua (m NAP)",
+    "col": {
+      "material": "Materiale",
+      "screenBottom": "Base del filtro",
+      "screenLength": "Lunghezza del filtro",
+      "screenTop": "Sommità del filtro",
+      "status": "Stato",
+      "tubeDiameter": "Diametro del tubo",
+      "tubeTop": "Sommità del tubo"
+    },
+    "constructed": "Costruito",
+    "csvFailed": "Caricamento CSV non riuscito: {{error}}",
+    "deepestFilter": "Filtro più profondo",
+    "fetchFailed": "Impossibile recuperare le GLD: {{error}}",
+    "gldTitle": "Livello di falda nel tempo (GLD)",
+    "groundLevel": "Piano campagna",
+    "loading": "Recupero dei livelli di falda…",
+    "noCoords": "Il pozzo non ha coordinate WGS84 — impossibile cercare GLD.",
+    "noSeries": "Nessuna serie temporale GLD trovata vicino a questo pozzo.",
+    "noValues": "GLD trovate ({{n}}) ma nessuna misura ricevuta.",
+    "observations": "{{n}} misure",
+    "openBroloket": "Apri in BROloket ↗",
+    "owner": "proprietario {{owner}}",
+    "seriesFound": "{{n}} serie temporali trovate in questo pozzo. Rotellina = zoom orizzontale, trascina = panoramica, doppio clic = ripristina.",
+    "subtitle": "Pozzo di monitoraggio delle acque sotterranee (BRO/GMW)",
+    "tubeCount": "Numero di tubi",
+    "tubesTitle": "Tubi di monitoraggio (filtri)"
+  },
+  "ifcView": {
+    "disabledText": "La vecchia esportazione STEP non è conforme allo schema IFC. Usa il file di progetto per conservare tutti i dati. L'istantanea IFCX è sperimentale.",
+    "disabledTitle": "Esportazione IFC4x3 disattivata"
+  },
+  "ifcxPreview": {
+    "close": "Chiudi",
+    "copied": "Copiato",
+    "copy": "Copia JSON",
+    "failed": "Impossibile creare un'anteprima:",
+    "generating": "Generazione IFCX…",
+    "hint": "Questo è esattamente il contenuto scritto nel file <0>.ifcgis</0> quando salvi il progetto — JSON in formato IFC5-alpha (IFCX) con entità IfcProject, IfcSite, IfcBorehole e IfcAnnotation e riferimenti incrociati tramite <1>#id</1>.",
+    "noDoc": "Nessun documento attivo — apri o crea un progetto per vedere un'anteprima IFCX.",
+    "projectOnly": "L'anteprima IFCX funziona solo per i documenti di progetto. Per singole CPT o sondaggi usa la scheda IFC.",
+    "size": "{{bytes}} byte IFCX (IFC4X3_ADD2)",
+    "tip": "Suggerimento: la conversione IFCX richiede la funzione <0>to_ifcx_json</0> lato Rust (ifcgis-0.4+). Riavvia l'app di sviluppo Tauri se hai appena creato una nuova build di cpt-core.",
+    "title": "Anteprima IFCX — cosa finisce nel file .ifcgis"
+  },
+  "layerAnalysis": {
+    "invalidDepth": "Punto sorgente {{n}}: profondità non valida o decrescente, non usata per l'interpretazione stratigrafica.",
+    "invalidRanges": "Gli strati devono avere spessore positivo, essere in ordine, non sovrapporsi e trovarsi entro la profondità misurata; scegli la zona 1–9.",
+    "notList": "L'interpretazione stratigrafica deve essere un elenco.",
+    "savedInvalid": "L'interpretazione stratigrafica salvata non è valida: {{error}}",
+    "settingsRange": "Lo spessore minimo e l'isteresi devono essere compresi tra 0 e 50 m.",
+    "thinIsolated": "Strato sottile isolato mantenuto; nessuno strato adiacente ipotizzato attraverso una lacuna di misura.",
+    "unknownProvenance": "Provenienza sconosciuta o non corrispondente dell'interpretazione stratigrafica salvata.",
+    "zeroThickness": "Punto di misura isolato senza spessore, non interpretato come strato."
+  },
+  "layers": {
+    "add": "Aggiungi strato",
+    "bottom": "Base (m)",
+    "bottomAria": "Base dello strato {{n}}",
+    "cancel": "Annulla",
+    "colBottom": "Base",
+    "colTop": "Tetto",
+    "colZone": "Zona",
+    "edit": "Modifica interpretazione stratigrafica",
+    "export": "Esporta strati JSON",
+    "fillSettings": "Inserisci lo spessore minimo e l'isteresi.",
+    "footer": "Fonte: {{source}}. L'isteresi conferma una nuova zona con due punti consecutivi. I limiti sono salvati separatamente; i punti di misura vengono mantenuti. Le curve di misura mostrano la classificazione indicativa dei punti.",
+    "hysteresis": "Isteresi (m)",
+    "jsonFilter": "Interpretazione stratigrafica JSON",
+    "layerN": "Strato {{n}}",
+    "minThickness": "Spessore minimo (m)",
+    "noCpt": "Nessuna CPT selezionata.",
+    "none": "Nessuna interpretazione stratigrafica disponibile.",
+    "provenanceAuto": "Interpretazione stratigrafica indicativa qc/Rf · minimo {{min}} m · isteresi {{hyst}} m",
+    "provenanceManual": "Interpretazione stratigrafica manuale · minimo {{min}} m · isteresi {{hyst}} m",
+    "recalculate": "Ricalcola automaticamente",
+    "remove": "Rimuovi strato {{n}}",
+    "saveManual": "Salva strati manuali",
+    "splitLast": "Dividi l'ultimo strato",
+    "top": "Tetto (m)",
+    "topAria": "Tetto dello strato {{n}}",
+    "zone": "Zona indicativa",
+    "zoneAria": "Zona dello strato {{n}}"
+  },
+  "left": {
+    "bore": {
+      "accountableParty": "Titolare della fonte",
+      "base": "Base",
+      "boreData": "Dati del sondaggio",
+      "delivery": "Consegna",
+      "descriptionDate": "Data della descrizione",
+      "descriptionProcedure": "Procedura di descrizione",
+      "endDate": "Data di fine",
+      "fileMetadata": "Metadati del file",
+      "finalDepth": "Profondità finale",
+      "id": "ID sondaggio",
+      "layerCount": "Numero di strati",
+      "layers": "Strati",
+      "method": "Metodo di perforazione",
+      "noExtras": "Nessun metadato aggiuntivo.",
+      "noLayers": "Nessuno strato.",
+      "project": "Progetto",
+      "projectNumber": "N. progetto",
+      "soilType": "Tipo di terreno",
+      "startDate": "Data di inizio",
+      "top": "Tetto"
+    },
+    "gwp": {
+      "constructed": "Costruito",
+      "filterBottom": "Base del filtro",
+      "filterTop": "Sommità del filtro",
+      "initialFunction": "Funzione iniziale",
+      "manager": "Gestore",
+      "noTubes": "Nessun tubo.",
+      "owner": "Proprietario",
+      "status": "Stato",
+      "subtitle": "Pozzo di monitoraggio delle acque sotterranee (BRO/GMW)",
+      "tubeCount": "Numero di tubi",
+      "tubes": "Tubi (filtri)",
+      "wellCode": "Codice del pozzo",
+      "wellData": "Dati del pozzo",
+      "wellHeadProtector": "Protezione della testa del pozzo"
+    },
+    "measurements": {
+      "depth": "profondità",
+      "depthTitle": "Profondità sotto il piano campagna",
+      "napTitle": "Profondità rispetto a NAP"
+    },
+    "meta": {
+      "groundLevelNap": "Piano campagna NAP",
+      "qualityRegime": "Regime di qualità"
+    },
+    "photos": {
+      "hintBore": "BRO pubblica le foto di questo sondaggio (se disponibili) su BROloket.",
+      "hintCpt": "BRO pubblica le foto di questa CPT (se disponibili) su BROloket.",
+      "hintGwp": "BRO pubblica le foto di questo pozzo di monitoraggio (se disponibili) su BROloket.",
+      "link": "Vedi le foto su BROloket ↗",
+      "onlyBro": "Le foto sono disponibili solo per oggetti BRO (serve un id BHR/CPT/GMW).",
+      "title": "Foto e ispezione"
+    },
+    "rawXml": {
+      "copied": "Copiato",
+      "copy": "Copia XML",
+      "none": "Nessun XML grezzo disponibile.",
+      "title": "Dati grezzi (XML)"
+    }
+  },
+  "normalized": {
+    "error": {
+      "missing": "Inserisci tutti i valori misurati e le tensioni.",
+      "notPositive": "La resistenza netta alla punta e la tensione verticale efficace devono essere positive.",
+      "outOfRange": "Il punto è fuori dall'intervallo numerico.",
+      "range": "Richiesto: qc e fs > 0, 0 < a ≤ 1 e tensione totale ≥ 0."
+    },
+    "field": {
+      "areaRatio": "Rapporto d'area della punta a",
+      "totalStress": "Tensione totale σv0 [kPa]",
+      "waterPressure": "Pressione idrostatica u0 [kPa]"
+    },
+    "icZone": "Ic / zona",
+    "intro": "Analisi puntuale di Qt / Fr / Bq / Ic con le tensioni indicate, secondo Robertson–Wride (esponente fisso n = 1).",
+    "note": "I terreni sensitivi e cementati (zone 1, 8, 9) non possono essere ricavati dal solo Ic. Nessuna conversione in una descrizione del terreno NEN.",
+    "reference": "Robertson & Cabal, 2022, figura 16",
+    "title": "Analisi puntuale SBTn normalizzata",
+    "zones": {
+      "z2": "Terreno organico",
+      "z3": "Argilla",
+      "z4": "Miscela limosa",
+      "z5": "Miscela sabbiosa",
+      "z6": "Sabbia",
+      "z7": "Sabbia ghiaiosa"
+    }
+  },
+  "projectSettings": {
+    "boreMeta": "{{layers}} strati · {{depth}} m di profondità",
+    "close": "Chiudi",
+    "cptMeta": "{{points}} punti · {{depth}} m di profondità",
+    "newProject": "Nuovo progetto",
+    "noProject": "Nessun progetto attivo — apri o crea un progetto <0>.ifcgis</0>.",
+    "noProjectHint": "La scheda attiva è una singola CPT. Le informazioni di progetto (titolo, committente, località, elenco CPT) stanno all'interno di un progetto — creane uno o apri un file <0>.ifcgis</0> esistente."
+  },
+  "reportPreview": {
+    "chartScale": "Scala del grafico",
+    "coverTitle": "Titolo della copertina",
+    "onePagePerCpt": "Una pagina per CPT",
+    "openFailed": "Apertura del PDF non riuscita: {{error}}"
+  },
+  "soil3d": {
+    "bearingRange": "NAP da {{top}} a {{bottom}} m ({{found}}/{{total}})",
+    "criterion": "qc ≥ {{qc}} MPa su ≥ {{thickness}} m",
+    "criterionFrom": "da {{source}}",
+    "grid": "{{nx}} × {{ny}} × {{nz}} celle ({{dx}} × {{dy}} × {{dz}} m), IDW",
+    "warn": {
+      "bearingNone": "Strato portante non trovato in nessuna CPT.",
+      "bearingPartial": "Strato portante non trovato in {{ids}}; lì la superficie è interpolata.",
+      "missingRd": "Senza coordinate RD (non nel modello): {{ids}}.",
+      "noLayers": "La CPT {{id}} non ha un'interpretazione stratigrafica.",
+      "noRd": "Nessuna coordinata RD: le CPT sono disposte in fila a 10 m di distanza."
+    },
+    "zoneN": "Zona {{n}}"
+  },
+  "validation": {
+    "column": "colonna {{n}}",
+    "counts": "{{errors}} errori · {{warnings}} avvisi",
+    "depth": "Profondità: {{method}}",
+    "depthMethod": {
+      "corrected": "profondità corretta misurata",
+      "inclination": "correzione per inclinazione dalla lunghezza di penetrazione",
+      "mixed": "metodi misti; per record nel JSON",
+      "penetration": "lunghezza di penetrazione come approssimazione verticale"
+    },
+    "diagnostics": "Diagnostica ({{n}})",
+    "exportAll": "Esporta il rapporto per tutti i messaggi.",
+    "line": "riga {{n}}",
+    "measurements": "Grandezze misurate e unità ({{n}})",
+    "noReport": "Questo file non ha ancora un rapporto di validazione. Importalo di nuovo con il parser attuale.",
+    "points": "{{points}} punti di misura · {{voids}} valori nulli · {{omitted}} record omessi",
+    "preExcavated": "Prescavo: {{depth}} m",
+    "predrilled": "Preforo: {{depth}} m",
+    "record": "record {{n}}",
+    "regime": "Regime: {{regime}}",
+    "removedLayer": "Strato fino a {{depth}} m: {{description}}",
+    "report": "Segnala questo file",
+    "showOutliers": "Mostra {{n}} valori anomali (record sorgente {{records}})",
+    "variables": "Variabili di misura e letture di zero"
+  },
+  "zones": {
+    "z1": "Fine sensitivo",
+    "z2": "Organico / torba",
+    "z3": "Argilla",
+    "z4": "Miscele limose",
+    "z5": "Miscele sabbiose",
+    "z6": "Sabbia",
+    "z7": "Sabbia ghiaiosa / ghiaia",
+    "z8": "Sabbia/argilla molto rigida",
+    "z9": "Fine molto rigido"
+  }
+}

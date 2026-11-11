@@ -1,0 +1,262 @@
+{
+  "bore": {
+    "belowGround": "m u. terræn",
+    "colour": "Farve: {{colour}}",
+    "depth": "Dybde",
+    "fallbackTitle": "Boring",
+    "layers": "Lag",
+    "noLayers": "Ingen lag fundet i denne boring.",
+    "noLayersHint": "BHR-GT XML-filen indeholdt ingen <0>describedInterval</0>-elementer.",
+    "zoomHint": "Ctrl + rul for at zoome ind/ud",
+    "zoomIn": "Zoom ind",
+    "zoomOut": "Zoom ud",
+    "zoomReset": "Nulstil zoom"
+  },
+  "chart": {
+    "depthAxis": "Dybde (m)",
+    "fsHeader": "Lokal friktion (fs, MPa)",
+    "qcHeader": "Konusmodstand (qc, MPa)",
+    "removeAllMarkers": "Fjern alle",
+    "removeMarker": "Fjern",
+    "rfHeader": "Friktionsforhold (Rf, %)",
+    "u2Header": "Poretryk (u2, kN/m²)"
+  },
+  "gwp": {
+    "axisLevel": "Vandstand (m NAP)",
+    "col": {
+      "material": "Materiale",
+      "screenBottom": "Filter bund",
+      "screenLength": "Filterlængde",
+      "screenTop": "Filter top",
+      "status": "Status",
+      "tubeDiameter": "Rørdiameter",
+      "tubeTop": "Rørtop"
+    },
+    "constructed": "Etableret",
+    "csvFailed": "Indlæsning af CSV mislykkedes: {{error}}",
+    "deepestFilter": "Nederste filter",
+    "fetchFailed": "Kunne ikke hente GLD'er: {{error}}",
+    "gldTitle": "Grundvandsstand over tid (GLD)",
+    "groundLevel": "Terræn",
+    "loading": "Henter grundvandsstande…",
+    "noCoords": "Boringen har ingen WGS84-koordinater — kan ikke søge efter GLD'er.",
+    "noSeries": "Ingen GLD-tidsserier fundet i nærheden af denne boring.",
+    "noValues": "GLD'er fundet ({{n}}), men ingen måleværdier modtaget.",
+    "observations": "{{n}} målinger",
+    "openBroloket": "Åbn i BROloket ↗",
+    "owner": "ejer {{owner}}",
+    "seriesFound": "{{n}} tidsserier fundet ved denne boring. Rul = zoom vandret, træk = panorér, dobbeltklik = nulstil.",
+    "subtitle": "Grundvandsovervågningsboring (BRO/GMW)",
+    "tubeCount": "Antal rør",
+    "tubesTitle": "Pejlerør (filtre)"
+  },
+  "ifcView": {
+    "disabledText": "Den gamle STEP-eksport overholder ikke IFC-skemaet. Brug projektfilen for at bevare alle data. IFCX-øjebliksbilledet er eksperimentelt.",
+    "disabledTitle": "IFC4x3-eksport deaktiveret"
+  },
+  "ifcxPreview": {
+    "close": "Luk",
+    "copied": "Kopieret",
+    "copy": "Kopiér JSON",
+    "failed": "Kunne ikke oprette en forhåndsvisning:",
+    "generating": "Genererer IFCX…",
+    "hint": "Dette er præcis det indhold, der skrives til <0>.ifcgis</0>-filen, når du gemmer projektet — JSON i IFC5-alpha-form (IFCX) med IfcProject-, IfcSite-, IfcBorehole- og IfcAnnotation-entiteter og krydsreferencer via <1>#id</1>.",
+    "noDoc": "Intet aktivt dokument — åbn eller opret et projekt for at se en IFCX-forhåndsvisning.",
+    "projectOnly": "IFCX-forhåndsvisningen virker kun for projektdokumenter. Brug fanen IFC til enkelte sonderinger eller boringer.",
+    "size": "{{bytes}} bytes IFCX (IFC4X3_ADD2)",
+    "tip": "Tip: IFCX-konverteringen kræver funktionen <0>to_ifcx_json</0> på Rust-siden (ifcgis-0.4+). Genstart Tauri-dev-appen, hvis du lige har lavet et nyt cpt-core-build.",
+    "title": "IFCX-forhåndsvisning — hvad der kommer i .ifcgis-filen"
+  },
+  "layerAnalysis": {
+    "invalidDepth": "Kildepunkt {{n}}: ugyldig eller aftagende dybde ikke brugt til lagtolkningen.",
+    "invalidRanges": "Lag skal have positiv tykkelse, ligge i rækkefølge, ikke overlappe og ligge inden for den målte dybde; vælg zone 1–9.",
+    "notList": "Lagtolkningen skal være en liste.",
+    "savedInvalid": "Den gemte lagtolkning er ugyldig: {{error}}",
+    "settingsRange": "Minimumstykkelse og hysterese skal ligge mellem 0 og 50 m.",
+    "thinIsolated": "Tyndt isoleret lag bevaret; intet nabolag antaget hen over et målehul.",
+    "unknownProvenance": "Ukendt eller uoverensstemmende oprindelse af den gemte lagtolkning.",
+    "zeroThickness": "Isoleret målepunkt uden tykkelse ikke tolket som et lag."
+  },
+  "layers": {
+    "add": "Tilføj lag",
+    "bottom": "Bund (m)",
+    "bottomAria": "Bund af lag {{n}}",
+    "cancel": "Annuller",
+    "colBottom": "Bund",
+    "colTop": "Top",
+    "colZone": "Zone",
+    "edit": "Rediger lagtolkning",
+    "export": "Eksportér lag som JSON",
+    "fillSettings": "Angiv minimumstykkelse og hysterese.",
+    "footer": "Kilde: {{source}}. Hysterese bekræfter en ny zone med to på hinanden følgende punkter. Grænser gemmes separat; målepunkter bevares. Målekurverne viser den vejledende punktklassificering.",
+    "hysteresis": "Hysterese (m)",
+    "jsonFilter": "Lagtolkning JSON",
+    "layerN": "Lag {{n}}",
+    "minThickness": "Minimumstykkelse (m)",
+    "noCpt": "Ingen sondering valgt.",
+    "none": "Ingen lagtolkning tilgængelig.",
+    "provenanceAuto": "Vejledende qc/Rf-lagtolkning · minimum {{min}} m · hysterese {{hyst}} m",
+    "provenanceManual": "Manuel lagtolkning · minimum {{min}} m · hysterese {{hyst}} m",
+    "recalculate": "Genberegn automatisk",
+    "remove": "Fjern lag {{n}}",
+    "saveManual": "Gem manuelle lag",
+    "splitLast": "Opdel sidste lag",
+    "top": "Top (m)",
+    "topAria": "Top af lag {{n}}",
+    "zone": "Vejledende zone",
+    "zoneAria": "Zone for lag {{n}}"
+  },
+  "left": {
+    "bore": {
+      "accountableParty": "Dataejer",
+      "base": "Basis",
+      "boreData": "Boringsdata",
+      "delivery": "Levering",
+      "descriptionDate": "Beskrivelsesdato",
+      "descriptionProcedure": "Beskrivelsesprocedure",
+      "endDate": "Slutdato",
+      "fileMetadata": "Filmetadata",
+      "finalDepth": "Slutdybde",
+      "id": "Borings-ID",
+      "layerCount": "Antal lag",
+      "layers": "Lag",
+      "method": "Boremetode",
+      "noExtras": "Ingen yderligere metadata.",
+      "noLayers": "Ingen lag.",
+      "project": "Projekt",
+      "projectNumber": "Projektnr.",
+      "soilType": "Jordart",
+      "startDate": "Startdato",
+      "top": "Top"
+    },
+    "gwp": {
+      "constructed": "Etableret",
+      "filterBottom": "Filter bund",
+      "filterTop": "Filter top",
+      "initialFunction": "Oprindelig funktion",
+      "manager": "Forvalter",
+      "noTubes": "Ingen rør.",
+      "owner": "Ejer",
+      "status": "Status",
+      "subtitle": "Grundvandsovervågningsboring (BRO/GMW)",
+      "tubeCount": "Antal rør",
+      "tubes": "Rør (filtre)",
+      "wellCode": "Boringskode",
+      "wellData": "Boringsdata",
+      "wellHeadProtector": "Beskyttelse af boringstop"
+    },
+    "measurements": {
+      "depth": "dybde",
+      "depthTitle": "Dybde under terræn",
+      "napTitle": "Dybde i forhold til NAP"
+    },
+    "meta": {
+      "groundLevelNap": "Terrænkote NAP",
+      "qualityRegime": "Kvalitetsregime"
+    },
+    "photos": {
+      "hintBore": "BRO har fotos af denne boring (hvis tilgængelige) på BROloket.",
+      "hintCpt": "BRO har fotos af denne sondering (hvis tilgængelige) på BROloket.",
+      "hintGwp": "BRO har fotos af denne grundvandsboring (hvis tilgængelige) på BROloket.",
+      "link": "Se fotos på BROloket ↗",
+      "onlyBro": "Fotos er kun tilgængelige for BRO-objekter (BHR/CPT/GMW-id påkrævet).",
+      "title": "Fotos og inspektion"
+    },
+    "rawXml": {
+      "copied": "Kopieret",
+      "copy": "Kopiér XML",
+      "none": "Ingen rå XML tilgængelig.",
+      "title": "Rådata (XML)"
+    }
+  },
+  "normalized": {
+    "error": {
+      "missing": "Indtast alle måleværdier og spændinger.",
+      "notPositive": "Netto konusmodstand og effektiv lodret spænding skal være positive.",
+      "outOfRange": "Punktet ligger uden for det numeriske område.",
+      "range": "Krav: qc og fs > 0, 0 < a ≤ 1 og total spænding ≥ 0."
+    },
+    "field": {
+      "areaRatio": "Konusarealforhold a",
+      "totalStress": "Total spænding σv0 [kPa]",
+      "waterPressure": "Hydrostatisk tryk u0 [kPa]"
+    },
+    "icZone": "Ic / zone",
+    "intro": "Punktanalyse af Qt / Fr / Bq / Ic med de angivne spændinger efter Robertson–Wride (fast eksponent n = 1).",
+    "note": "Følsomme og cementerede jordarter (zone 1, 8, 9) kan ikke udledes af Ic alene. Ingen omsætning til en NEN-jordbeskrivelse.",
+    "reference": "Robertson & Cabal, 2022, figur 16",
+    "title": "Normaliseret SBTn-punktanalyse",
+    "zones": {
+      "z2": "Organisk jord",
+      "z3": "Ler",
+      "z4": "Siltblanding",
+      "z5": "Sandblanding",
+      "z6": "Sand",
+      "z7": "Gruset sand"
+    }
+  },
+  "projectSettings": {
+    "boreMeta": "{{layers}} lag · {{depth}} m dybde",
+    "close": "Luk",
+    "cptMeta": "{{points}} punkter · {{depth}} m dybde",
+    "newProject": "Nyt projekt",
+    "noProject": "Intet aktivt projekt — åbn eller opret et <0>.ifcgis</0>-projekt.",
+    "noProjectHint": "Den aktive fane er en enkelt sondering. Projektinfo (titel, bygherre, placering, sonderingsliste) findes i et projekt — opret et, eller åbn en eksisterende <0>.ifcgis</0>-fil."
+  },
+  "reportPreview": {
+    "chartScale": "Diagramskala",
+    "coverTitle": "Titel på forside",
+    "onePagePerCpt": "Én side pr. sondering",
+    "openFailed": "Åbning af PDF mislykkedes: {{error}}"
+  },
+  "soil3d": {
+    "bearingRange": "NAP {{top}} til {{bottom}} m ({{found}}/{{total}})",
+    "criterion": "qc ≥ {{qc}} MPa over ≥ {{thickness}} m",
+    "criterionFrom": "fra {{source}}",
+    "grid": "{{nx}} × {{ny}} × {{nz}} celler ({{dx}} × {{dy}} × {{dz}} m), IDW",
+    "warn": {
+      "bearingNone": "Bærende lag ikke fundet i nogen sondering.",
+      "bearingPartial": "Bærende lag ikke fundet i {{ids}}; fladen er interpoleret der.",
+      "missingRd": "Uden RD-koordinater (ikke i modellen): {{ids}}.",
+      "noLayers": "Sondering {{id}} har ingen lagtolkning.",
+      "noRd": "Ingen RD-koordinater: sonderingerne er placeret på række med 10 m afstand."
+    },
+    "zoneN": "Zone {{n}}"
+  },
+  "validation": {
+    "column": "kolonne {{n}}",
+    "counts": "{{errors}} fejl · {{warnings}} advarsler",
+    "depth": "Dybde: {{method}}",
+    "depthMethod": {
+      "corrected": "målt korrigeret dybde",
+      "inclination": "hældningskorrektion ud fra penetrationslængde",
+      "mixed": "blandede metoder; pr. post i JSON",
+      "penetration": "penetrationslængde som lodret tilnærmelse"
+    },
+    "diagnostics": "Diagnostik ({{n}})",
+    "exportAll": "Eksportér rapporten for alle meddelelser.",
+    "line": "linje {{n}}",
+    "measurements": "Målte størrelser og enheder ({{n}})",
+    "noReport": "Denne fil har endnu ingen valideringsrapport. Importér den igen med den aktuelle parser.",
+    "points": "{{points}} målepunkter · {{voids}} tomme værdier · {{omitted}} udeladte poster",
+    "preExcavated": "Forudgravet: {{depth}} m",
+    "predrilled": "Forboret: {{depth}} m",
+    "record": "post {{n}}",
+    "regime": "Regime: {{regime}}",
+    "removedLayer": "Lag til {{depth}} m: {{description}}",
+    "report": "Rapportér denne fil",
+    "showOutliers": "Vis {{n}} afvigende værdier (kildeposter {{records}})",
+    "variables": "Målevariabler og nulaflæsninger"
+  },
+  "zones": {
+    "z1": "Følsom finkornet",
+    "z2": "Organisk / tørv",
+    "z3": "Ler",
+    "z4": "Siltblandinger",
+    "z5": "Sandblandinger",
+    "z6": "Sand",
+    "z7": "Gruset sand / grus",
+    "z8": "Meget fast sand/ler",
+    "z9": "Meget fast finkornet"
+  }
+}

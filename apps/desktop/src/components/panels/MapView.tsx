@@ -1,6 +1,8 @@
 import {rdToWgs84} from "../../utils/coordinates";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as L from "leaflet";
+import i18next from "i18next";
+import { useTranslation } from "react-i18next";
 import { toPng } from "html-to-image";
 import { fetchBagPanden, fetchKadasterPercelen } from "../../utils/pdokWfs";
 import { AdressenLayer } from "../../utils/adressenLayer";
@@ -37,6 +39,10 @@ proj4.defs(
     "+units=m +no_defs",
 );
 const RD_TO_3857 = proj4("EPSG:28992", "EPSG:3857");
+
+/** Vertaling buiten de render: Leaflet-popups en statusregels uit effecten. */
+const mt = (key: string, nl: string, vars?: Record<string, unknown>): string =>
+  i18next.t(`map:${key}`, { defaultValue: nl, ...vars }) as string;
 
 /** Tile-matrix metadata for the PDOK / AGS RD tiling scheme
  *  (`default028mm`, scale 1:12 288 000 → 1:6 000). Derived from the
@@ -243,6 +249,7 @@ const BRO_REFETCH_DEBOUNCE_MS = 500;
 let lastMapDocId: string | null | undefined;
 
 export default function MapView() {
+  const { t } = useTranslation("map");
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
 
@@ -308,7 +315,7 @@ export default function MapView() {
   const measureModeRef = useRef(false);
   const measureStartRef = useRef<{ id: string; lat: number; lon: number; xRd?: number; yRd?: number } | null>(null);
 
-  const [status, setStatus] = useState("Zoom in en klik 'Laad gebied'");
+  const [status, setStatus] = useState(() => mt("status.initial", "Zoom in en klik 'Laad gebied'"));
   const [measureMode, setMeasureMode] = useState(false);
   /** Live cursor-coordinaten — null wanneer de muis BUITEN de kaart is.
    *  Wordt bijgewerkt door de mousemove-handler op de leaflet-map en
@@ -768,7 +775,7 @@ export default function MapView() {
         return;
       }
       if (!force && z < MIN_BRO_AUTOFETCH_ZOOM) {
-        setStatus(`Zoom in tot zoomniveau ${MIN_BRO_AUTOFETCH_ZOOM}+ om archief te laden`);
+        setStatus(mt("status.zoomIn", "Zoom in tot zoomniveau {{zoom}}+ om archief te laden", { zoom: MIN_BRO_AUTOFETCH_ZOOM }));
         return;
       }
       // Cancel any in-flight load — a second pan during loading would
@@ -784,7 +791,7 @@ export default function MapView() {
         max_lat: b.getNorth(),
         max_lon: b.getEast(),
       };
-      setStatus("Bezig met laden...");
+      setStatus(mt("status.loading", "Bezig met laden..."));
       // Fire both calls in parallel — independent endpoints.
       const tasks: Promise<void>[] = [];
       const searchErrors:string[]=[];
@@ -808,7 +815,7 @@ export default function MapView() {
             })
             .catch((e) => {
               console.warn("fetch_bro_area failed", e);
-              searchErrors.push(`Sonderingen: ${String(e)}`);
+              searchErrors.push(mt("status.cptError", "Sonderingen: {{error}}", { error: String(e) }));
               broLayerRef.current?.clearLayers();
             }),
         );
@@ -831,7 +838,7 @@ export default function MapView() {
             })
             .catch((e) => {
               console.warn("fetch_bro_bores failed", e);
-              searchErrors.push(`Boringen: ${String(e)}`);
+              searchErrors.push(mt("status.boreError", "Boringen: {{error}}", { error: String(e) }));
               broBoresLayerRef.current?.clearLayers();
             }),
         );
@@ -861,12 +868,12 @@ export default function MapView() {
                 const beheerder = String(props.delivery_accountable_party ?? props.deliveryAccountableParty ?? "");
                 const groundNap = props.ground_level_position ?? props.groundLevelPosition;
                 const nTubes = props.number_of_monitoring_tubes ?? props.numberOfMonitoringTubes;
-                const popup = `<strong>${broId}</strong><br/>Type: Grondwaterput (GMW)`
-                  + (beheerder ? `<br/>Beheerder: ${beheerder}` : "")
-                  + (groundNap != null ? `<br/>Maaiveld NAP: ${groundNap} m` : "")
-                  + (nTubes != null ? `<br/>Aantal filters: ${nTubes}` : "")
-                  + `<br/><a href="#" class="bro-popup-gwp-open" data-gwp-id="${broId}">Open in viewer</a>`
-                  + `<br/><a href="https://www.broloket.nl/ondergrondgegevens?bro-id=${encodeURIComponent(broId)}" target="_blank">Open in BROloket</a>`;
+                const popup = `<strong>${broId}</strong><br/>${mt("gwp.type", "Type: Grondwaterput (GMW)")}`
+                  + (beheerder ? `<br/>${mt("gwp.manager", "Beheerder: {{name}}", { name: beheerder })}` : "")
+                  + (groundNap != null ? `<br/>${mt("gwp.groundLevel", "Maaiveld NAP: {{value}} m", { value: groundNap })}` : "")
+                  + (nTubes != null ? `<br/>${mt("gwp.tubes", "Aantal filters: {{n}}", { n: nTubes })}` : "")
+                  + `<br/><a href="#" class="bro-popup-gwp-open" data-gwp-id="${broId}">${mt("popup.openViewer", "Open in viewer")}</a>`
+                  + `<br/><a href="https://www.broloket.nl/ondergrondgegevens?bro-id=${encodeURIComponent(broId)}" target="_blank">${mt("popup.openBroloket", "Open in BROloket")}</a>`;
                 const m = L.circleMarker([lat, lon], {
                   radius: 4.5,
                   color: "#0EA5E9",        // cyaan — onderscheidend van CPT (oranje) en bore (grijs)
@@ -894,9 +901,9 @@ export default function MapView() {
         await Promise.all(tasks);
         if (myAbort.signal.aborted) return;
         emitBroCounts(cptCount, boreCount);
-        setStatus(searchErrors.length?`BRO onvolledig: ${searchErrors.join(" · ")}`:broCountSummary(cptCount, boreCount, sondOn, boresOn));
+        setStatus(searchErrors.length?mt("status.incomplete", "BRO onvolledig: {{errors}}", { errors: searchErrors.join(" · ") }):broCountSummary(cptCount, boreCount, sondOn, boresOn));
       } catch (e) {
-        if (!myAbort.signal.aborted) setStatus(`Fout: ${String(e)}`);
+        if (!myAbort.signal.aborted) setStatus(mt("status.error", "Fout: {{error}}", { error: String(e) }));
       }
     };
 
@@ -911,7 +918,7 @@ export default function MapView() {
       broLayerRef.current?.clearLayers();
       broBoresLayerRef.current?.clearLayers();
       emitBroCounts(0, 0);
-      setStatus("BRO-markers gewist");
+      setStatus(mt("status.cleared", "BRO-markers gewist"));
     };
 
     // Auto-refetch on pan/zoom-end, debounced. Only kicks in when at
@@ -1064,7 +1071,7 @@ export default function MapView() {
           window.dispatchEvent(new CustomEvent("ogs:ribbon-switch", { detail: { tab: "start" } }));
         }
       } catch (err) {
-        setStatus(`Toevoegen mislukt: ${String(err)}`);
+        setStatus(mt("status.addFailed", "Toevoegen mislukt: {{error}}", { error: String(err) }));
       }
     };
     document.addEventListener("click", onPopupClick);
@@ -1114,12 +1121,16 @@ export default function MapView() {
       if (id === "kabels-leidingen") {
         if (enabled && !wasEnabled) {
           alert(
-            "Kabels & leidingen — geen publieke WMS-laag beschikbaar.\n\n" +
-            "Sinds 10 december 2025 host PDOK geen landelijke kabel/leiding-" +
-            "viewer meer (Liander dataset uit productie). Voor een graafmelding " +
-            "moet je een KLIC-aanvraag doen via:\n\n" +
-            "https://www.kadaster.nl/zakelijk/producten/graafwerk/klic-viewer\n\n" +
-            "De aanvraag is gratis en de tekeningen krijg je binnen 1-3 werkdagen.",
+            mt(
+              "klic.alert",
+              "Kabels & leidingen — geen publieke WMS-laag beschikbaar.\n\n" +
+              "Sinds 10 december 2025 host PDOK geen landelijke kabel/leiding-" +
+              "viewer meer (Liander dataset uit productie). Voor een graafmelding " +
+              "moet je een KLIC-aanvraag doen via:\n\n" +
+              "{{url}}\n\n" +
+              "De aanvraag is gratis en de tekeningen krijg je binnen 1-3 werkdagen.",
+              { url: "https://www.kadaster.nl/zakelijk/producten/graafwerk/klic-viewer" },
+            ),
           );
           // Reset het vinkje — er wordt geen laag aan de kaart toegevoegd.
           window.dispatchEvent(
@@ -1260,8 +1271,8 @@ export default function MapView() {
       measureLayerRef.current?.clearLayers();
       measurePreviewLayerRef.current?.clearLayers();
       setStatus(measureModeRef.current
-        ? "Meet-modus: klik op een punt of sondering om te starten"
-        : "Meet-modus uit");
+        ? mt("measure.on", "Meet-modus: klik op een punt of sondering om te starten")
+        : mt("measure.off", "Meet-modus uit"));
     };
 
     /** Generic map-click handler for measure mode — works for any spot on
@@ -1295,8 +1306,8 @@ export default function MapView() {
         measureLayerRef.current?.addLayer(startMarker);
         setStatus(
           id
-            ? `Meet vanaf ${id} — klik op een tweede punt`
-            : `Startpunt vastgelegd — klik op een tweede punt`,
+            ? mt("measure.from", "Meet vanaf {{id}} — klik op een tweede punt", { id })
+            : mt("measure.started", "Startpunt vastgelegd — klik op een tweede punt"),
         );
         return;
       }
@@ -1322,9 +1333,10 @@ export default function MapView() {
         interactive: false,
       });
       measureLayerRef.current?.addLayer(label);
-      const startLabel = start.id !== "punt" ? start.id : "punt";
-      const endLabel = id ?? "punt";
-      setStatus(`Afstand ${startLabel} ↔ ${endLabel}: ${formatDist(dist)}`);
+      const pointLabel = mt("measure.point", "punt");
+      const startLabel = start.id !== "punt" ? start.id : pointLabel;
+      const endLabel = id ?? pointLabel;
+      setStatus(mt("measure.distance", "Afstand {{from}} ↔ {{to}}: {{dist}}", { from: startLabel, to: endLabel, dist: formatDist(dist) }));
       measureModeRef.current = false;
       setMeasureMode(false);
       measureStartRef.current = null;
@@ -1380,7 +1392,7 @@ export default function MapView() {
         measureStartRef.current = null;
         measureLayerRef.current?.clearLayers();
         measurePreviewLayerRef.current?.clearLayers();
-        setStatus("Meet-modus geannuleerd");
+        setStatus(mt("measure.cancelled", "Meet-modus geannuleerd"));
       }
     };
 
@@ -1553,7 +1565,7 @@ export default function MapView() {
           iconAnchor: [11, 20],            // anchor at the apex (now at the bottom)
         }),
         opacity: layerOpacityRef.current["project-sonderingen"] ?? 1,
-      }).bindPopup(`<strong>${cpt.id}</strong><br>${cpt.metadata.project_name ?? ""}<br>RD ${cpt.position!.x_rd.toFixed(1)}, ${cpt.position!.y_rd.toFixed(1)}<br>diepte tot ${cpt.points.reduce((m, p) => Math.max(m, p.depth), 0).toFixed(1)} m`);
+      }).bindPopup(`<strong>${cpt.id}</strong><br>${cpt.metadata.project_name ?? ""}<br>RD ${cpt.position!.x_rd.toFixed(1)}, ${cpt.position!.y_rd.toFixed(1)}<br>${mt("popup.depthTo", "diepte tot {{depth}} m", { depth: cpt.points.reduce((m, p) => Math.max(m, p.depth), 0).toFixed(1) })}`);
 
       // Click handler met drie modes:
       //   1. Measure-mode (al actief) → CPT-to-CPT afstand kiezen
@@ -1565,7 +1577,7 @@ export default function MapView() {
           L.DomEvent.stopPropagation(e);
           marker.closePopup();
           if (measureStartRef.current?.id === cpt.id) {
-            setStatus("Kies een andere sondering");
+            setStatus(mt("measure.otherCpt", "Kies een andere sondering"));
             return;
           }
           const handler = (
@@ -1791,7 +1803,7 @@ export default function MapView() {
       });
       const link = document.createElement("a");
       const ts = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-      link.download = `kaart-${ts}.png`;
+      link.download = `${mt("export.fileName", "kaart")}-${ts}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -1819,11 +1831,11 @@ export default function MapView() {
     try {
       for (const id of ids) {
         const state = useCptStore.getState();
-        if (state.activeDocId !== targetDocId) throw new Error("Het actieve document is gewijzigd; resterende selectie behouden.");
+        if (state.activeDocId !== targetDocId) throw new Error(mt("bro.docChangedKeep", "Het actieve document is gewijzigd; resterende selectie behouden."));
         const active = state.documents.find(doc => doc.id === targetDocId);
         if (active?.kind === "cpt") {
           const xml = await broPlatform.fetchCptXml(id);
-          if (useCptStore.getState().activeDocId !== targetDocId) throw new Error("Het actieve document is gewijzigd.");
+          if (useCptStore.getState().activeDocId !== targetDocId) throw new Error(mt("bro.docChanged", "Het actieve document is gewijzigd."));
           await mergeIntoNewProject(active.cpt.id, xml, `${id}.xml`);
           targetDocId = useCptStore.getState().activeDocId;
         } else {
@@ -1836,9 +1848,9 @@ export default function MapView() {
         added++;
         setSelectedBroIds(current => current.filter(value => value !== id));
       }
-      setStatus(`${added} BRO-sondering(en) toegevoegd`);
+      setStatus(mt("bro.added", "{{n}} BRO-sondering(en) toegevoegd", { n: added }));
     } catch (error) {
-      setStatus(`${added} toegevoegd. ${String(error)}`);
+      setStatus(mt("bro.addedPartial", "{{n}} toegevoegd. {{error}}", { n: added, error: String(error) }));
     } finally {
       addingBroRef.current = false;
       setAddingBro(false);
@@ -1851,31 +1863,31 @@ export default function MapView() {
       {selectedCptIds.size > 0 && (
         <div className="map-selection-badge" role="status">
           <span className="map-selection-count">
-            {selectedCptIds.size} geselecteerd
+            {t("selection.count", "{{n}} geselecteerd", { n: selectedCptIds.size })}
           </span>
           <button
             type="button"
             className="map-selection-clear"
             onClick={clearCptSelection}
-            title="Wis selectie (Esc)"
+            title={t("selection.clearTitle", "Wis selectie (Esc)")}
           >
-            Wis
+            {t("selection.clear", "Wis")}
           </button>
         </div>
       )}
       {selectedBroIds.length > 0 && (
         <div style={{ position: "absolute", top: 55, left: 12, zIndex: 1000, background: "white", padding: 8, borderRadius: 6 }}>
-          <span role="status">{selectedBroIds.length} BRO-sondering(en) geselecteerd </span>
+          <span role="status">{t("bro.selected", "{{n}} BRO-sondering(en) geselecteerd", { n: selectedBroIds.length })} </span>
           <button type="button" disabled={addingBro} onClick={() => void addSelectedBro()}>
-            {addingBro ? "Toevoegen…" : "Voeg selectie toe aan project"}
+            {addingBro ? t("bro.adding", "Toevoegen…") : t("bro.addSelection", "Voeg selectie toe aan project")}
           </button>
-          <button type="button" disabled={addingBro} onClick={() => setSelectedBroIds([])}>Wis BRO-selectie</button>
+          <button type="button" disabled={addingBro} onClick={() => setSelectedBroIds([])}>{t("bro.clearSelection", "Wis BRO-selectie")}</button>
         </div>
       )}
       <MapAddressSearch />
       <div className="map-status">
         {cpts.filter((c) => c.position).length > 0 && (
-          <span className="map-cpt-count">{cpts.filter((c) => c.position).length} sondering(en) ·&nbsp;</span>
+          <span className="map-cpt-count">{t("status.cptCount", "{{n}} sondering(en)", { n: cpts.filter((c) => c.position).length })} ·&nbsp;</span>
         )}
         {status}
       </div>
@@ -1885,7 +1897,7 @@ export default function MapView() {
       {/* ─── Cursor-coords rechtsonder — RD + WGS84, alleen tonen
               wanneer de muis BINNEN de kaart zit (cursorCoords != null). */}
       {cursorCoords && (
-        <div className="map-cursor-coords" role="status" aria-label="Cursor-coördinaten">
+        <div className="map-cursor-coords" role="status" aria-label={t("cursor.aria", "Cursor-coördinaten")}>
           <div className="map-cursor-coords-row">
             <span className="map-cursor-coords-label">RD</span>
             <span className="map-cursor-coords-val">
@@ -1933,29 +1945,29 @@ type PopupAction = "addToProject" | "merge" | "openOnly";
  *   - `a.bro-popup-add-to-project[data-id]` → "Voeg toe aan project"
  */
 function buildPopupHtml(f: BroFeature, loadable: boolean, action: PopupAction): string {
-  const kindLabel = f.kind === "cpt" ? "Sondering (BRO)" : "Boring (BHR-GT)";
+  const kindLabel = f.kind === "cpt" ? mt("popup.kindCpt", "Sondering (BRO)") : mt("popup.kindBore", "Boring (BHR-GT)");
   const reg = f.registration_date ? ` &middot; ${escapeHtml(f.registration_date)}` : "";
   const rows = Object.entries(f.extra)
     .map(
       ([k, v]) =>
-        `<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`,
+        `<tr><td>${escapeHtml(broFieldLabel(k))}</td><td>${escapeHtml(v)}</td></tr>`,
     )
     .join("");
   const id = escapeHtml(f.id);
   const kindAttr = escapeHtml(f.kind);
   const openAction = loadable
-    ? `<a href="#" class="bro-popup-open" data-id="${id}" data-kind="${kindAttr}">Open in viewer &rarr;</a>`
+    ? `<a href="#" class="bro-popup-open" data-id="${id}" data-kind="${kindAttr}">${mt("popup.openViewer", "Open in viewer")} &rarr;</a>`
     : "";
   const secondaryAction =
     !loadable
       ? ""
       : action === "merge"
-        ? `<a href="#" class="bro-popup-merge" data-id="${id}">Maak project + voeg toe</a>`
+        ? `<a href="#" class="bro-popup-merge" data-id="${id}">${mt("popup.merge", "Maak project + voeg toe")}</a>`
         : action === "addToProject"
-          ? `<a href="#" class="bro-popup-add-to-project" data-id="${id}">Voeg toe aan project</a>`
+          ? `<a href="#" class="bro-popup-add-to-project" data-id="${id}">${mt("popup.addToProject", "Voeg toe aan project")}</a>`
           : "";
   const actionRow = openAction || secondaryAction
-    ? `<div class="bro-popup-actions">${openAction}${secondaryAction}${f.kind === "cpt" ? `<a href="#" class="bro-popup-select" data-id="${id}">Selecteer / deselecteer voor toevoegen</a>` : ""}</div>`
+    ? `<div class="bro-popup-actions">${openAction}${secondaryAction}${f.kind === "cpt" ? `<a href="#" class="bro-popup-select" data-id="${id}">${mt("popup.toggleSelect", "Selecteer / deselecteer voor toevoegen")}</a>` : ""}</div>`
     : "";
   return `
     <div class="bro-popup">
@@ -1978,10 +1990,40 @@ function emitBroCounts(cpt: number, bore: number) {
 
 /** Compose a status-bar string summarising what was just loaded. */
 function broCountSummary(cpt: number, bore: number, sondOn: boolean, boresOn: boolean): string {
-  const parts: string[] = [];
-  if (sondOn) parts.push(`${cpt} sondering(en)`);
-  if (boresOn) parts.push(`${bore} boring(en)`);
-  return `${parts.join(" / ")} geladen`;
+  if (sondOn && boresOn) return mt("status.loadedBoth", "{{cpt}} sondering(en) / {{bore}} boring(en) geladen", { cpt, bore });
+  if (sondOn) return mt("status.loadedCpt", "{{cpt}} sondering(en) geladen", { cpt });
+  if (boresOn) return mt("status.loadedBore", "{{bore}} boring(en) geladen", { bore });
+  return mt("status.loadedNone", "geladen");
+}
+
+/** Vertaalsleutels voor de Nederlandse veldnamen die de BRO-zoekactie
+ *  (Rust-command en browser-client) in `extra` zet. Onbekende velden
+ *  blijven ongewijzigd staan. */
+const BRO_FIELD_KEYS: Record<string, string> = {
+  "Geregistreerd": "registered",
+  "Rapportdatum": "reportDate",
+  "Einddiepte (m)": "finalDepth",
+  "Einddiepte boring (m)": "finalDepthBore",
+  "Voorboring (m)": "predrilled",
+  "Maaiveld t.o.v. NAP (m)": "groundLevel",
+  "Kwaliteitsregime": "qualityRegime",
+  "Locatie-onzekerheid (m)": "positionAccuracy",
+  "Locatiebepaling": "positionMethod",
+  "Kwaliteitsklasse": "qualityClass",
+  "CPT-norm": "cptStandard",
+  "Onderzoeksdoel": "purpose",
+  "Discipline": "discipline",
+  "Stopcriterium": "stopCriterion",
+  "Bronhouder": "sourceHolder",
+  "Vaste rots bereikt": "rockReached",
+  "Verticaal datum": "verticalDatum",
+  "Uitgeschreven": "deregistered",
+};
+
+/** Weergavenaam van een BRO-veld in de actieve taal. */
+function broFieldLabel(name: string): string {
+  const key = BRO_FIELD_KEYS[name];
+  return key ? mt(`broField.${key}`, name) : name;
 }
 
 /** Cheap HTML escape — popups embed user-uncontrolled BRO text. */

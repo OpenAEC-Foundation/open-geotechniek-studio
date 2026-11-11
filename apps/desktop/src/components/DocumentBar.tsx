@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useCptStore } from "../store/useCptStore";
 import "./DocumentBar.css";
 
@@ -7,6 +8,7 @@ interface DocumentBarProps {
 }
 
 export default function DocumentBar({ onOpenClick }: DocumentBarProps) {
+  const { t } = useTranslation("common");
   const documents = useCptStore((s) => s.documents);
   const activeDocId = useCptStore((s) => s.activeDocId);
   const setActiveDoc = useCptStore((s) => s.setActiveDoc);
@@ -33,7 +35,7 @@ export default function DocumentBar({ onOpenClick }: DocumentBarProps) {
                 className="document-tab-close"
                 role="button"
                 tabIndex={-1}
-                aria-label="Sluiten"
+                aria-label={t("close")}
                 onClick={(e) => {
                   e.stopPropagation();
                   void closeDoc(doc.id);
@@ -59,8 +61,8 @@ export default function DocumentBar({ onOpenClick }: DocumentBarProps) {
             type="button"
             className="document-tab document-tab-add"
             onClick={onOpenClick}
-            title="Openen"
-            aria-label="Openen"
+            title={t("open")}
+            aria-label={t("open")}
           >
             <svg
               width="12"

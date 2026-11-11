@@ -1,0 +1,262 @@
+{
+  "bore": {
+    "belowGround": "m sous TN",
+    "colour": "Couleur : {{colour}}",
+    "depth": "Profondeur",
+    "fallbackTitle": "Forage",
+    "layers": "Couches",
+    "noLayers": "Aucune couche trouvée dans ce forage.",
+    "noLayersHint": "Le BHR-GT XML ne contenait aucun élément <0>describedInterval</0>.",
+    "zoomHint": "Ctrl + molette pour zoomer/dézoomer",
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière",
+    "zoomReset": "Réinitialiser le zoom"
+  },
+  "chart": {
+    "depthAxis": "Profondeur (m)",
+    "fsHeader": "Frottement latéral (fs, MPa)",
+    "qcHeader": "Résistance de cône (qc, MPa)",
+    "removeAllMarkers": "Tout supprimer",
+    "removeMarker": "Supprimer",
+    "rfHeader": "Rapport de frottement (Rf, %)",
+    "u2Header": "Pression interstitielle (u2, kN/m²)"
+  },
+  "gwp": {
+    "axisLevel": "Niveau d'eau (m NAP)",
+    "col": {
+      "material": "Matériau",
+      "screenBottom": "Bas de crépine",
+      "screenLength": "Longueur de crépine",
+      "screenTop": "Haut de crépine",
+      "status": "Statut",
+      "tubeDiameter": "Diamètre du tube",
+      "tubeTop": "Haut du tube"
+    },
+    "constructed": "Réalisé",
+    "csvFailed": "Échec du chargement du CSV : {{error}}",
+    "deepestFilter": "Crépine la plus basse",
+    "fetchFailed": "Impossible de récupérer les GLD : {{error}}",
+    "gldTitle": "Niveau de la nappe dans le temps (GLD)",
+    "groundLevel": "Niveau du terrain",
+    "loading": "Récupération des niveaux de nappe…",
+    "noCoords": "Le piézomètre n'a pas de coordonnées WGS84 — impossible de rechercher des GLD.",
+    "noSeries": "Aucune série temporelle GLD trouvée près de ce piézomètre.",
+    "noValues": "GLD trouvés ({{n}}) mais aucune mesure reçue.",
+    "observations": "{{n}} mesures",
+    "openBroloket": "Ouvrir dans BROloket ↗",
+    "owner": "propriétaire {{owner}}",
+    "seriesFound": "{{n}} séries temporelles trouvées pour ce piézomètre. Molette = zoom horizontal, glisser = panoramique, double-clic = réinitialiser.",
+    "subtitle": "Piézomètre de surveillance des eaux souterraines (BRO/GMW)",
+    "tubeCount": "Nombre de tubes",
+    "tubesTitle": "Tubes de mesure (crépines)"
+  },
+  "ifcView": {
+    "disabledText": "L'ancien export STEP n'est pas conforme au schéma IFC. Utilisez le fichier de projet pour conserver toutes les données. L'instantané IFCX est expérimental.",
+    "disabledTitle": "Export IFC4x3 désactivé"
+  },
+  "ifcxPreview": {
+    "close": "Fermer",
+    "copied": "Copié",
+    "copy": "Copier le JSON",
+    "failed": "Impossible de créer un aperçu :",
+    "generating": "Génération de l'IFCX…",
+    "hint": "Voici exactement le contenu écrit dans le fichier <0>.ifcgis</0> lors de l'enregistrement du projet — un JSON au format IFC5-alpha (IFCX) avec les entités IfcProject, IfcSite, IfcBorehole et IfcAnnotation et des références croisées via <1>#id</1>.",
+    "noDoc": "Aucun document actif — ouvrez ou créez un projet pour voir un aperçu IFCX.",
+    "projectOnly": "L'aperçu IFCX ne fonctionne que pour les documents de projet. Pour des CPT ou forages individuels, utilisez l'onglet IFC.",
+    "size": "{{bytes}} octets IFCX (IFC4X3_ADD2)",
+    "tip": "Astuce : la conversion IFCX nécessite la fonction <0>to_ifcx_json</0> côté Rust (ifcgis-0.4+). Redémarrez l'application Tauri de développement si vous venez de faire un nouveau build de cpt-core.",
+    "title": "Aperçu IFCX — ce qui va dans le fichier .ifcgis"
+  },
+  "layerAnalysis": {
+    "invalidDepth": "Point source {{n}} : profondeur non valide ou décroissante, non utilisée pour l'interprétation des couches.",
+    "invalidRanges": "Les couches doivent avoir une épaisseur positive, être dans l'ordre, ne pas se chevaucher et se situer dans la profondeur mesurée ; choisissez une zone de 1 à 9.",
+    "notList": "L'interprétation des couches doit être une liste.",
+    "savedInvalid": "L'interprétation des couches enregistrée n'est pas valide : {{error}}",
+    "settingsRange": "L'épaisseur minimale et l'hystérésis doivent être comprises entre 0 et 50 m.",
+    "thinIsolated": "Couche mince isolée conservée ; aucune couche voisine supposée au-delà d'une lacune de mesure.",
+    "unknownProvenance": "Provenance inconnue ou incohérente de l'interprétation des couches enregistrée.",
+    "zeroThickness": "Point de mesure isolé sans épaisseur non interprété comme une couche."
+  },
+  "layers": {
+    "add": "Ajouter une couche",
+    "bottom": "Bas (m)",
+    "bottomAria": "Bas de la couche {{n}}",
+    "cancel": "Annuler",
+    "colBottom": "Bas",
+    "colTop": "Haut",
+    "colZone": "Zone",
+    "edit": "Modifier l'interprétation des couches",
+    "export": "Exporter les couches en JSON",
+    "fillSettings": "Saisissez l'épaisseur minimale et l'hystérésis.",
+    "footer": "Source : {{source}}. L'hystérésis confirme une nouvelle zone par deux points consécutifs. Les limites sont stockées séparément ; les points de mesure sont conservés. Les courbes de mesure montrent la classification indicative des points.",
+    "hysteresis": "Hystérésis (m)",
+    "jsonFilter": "Interprétation des couches JSON",
+    "layerN": "Couche {{n}}",
+    "minThickness": "Épaisseur minimale (m)",
+    "noCpt": "Aucun CPT sélectionné.",
+    "none": "Aucune interprétation des couches disponible.",
+    "provenanceAuto": "Interprétation indicative des couches qc/Rf · minimum {{min}} m · hystérésis {{hyst}} m",
+    "provenanceManual": "Interprétation manuelle des couches · minimum {{min}} m · hystérésis {{hyst}} m",
+    "recalculate": "Recalculer automatiquement",
+    "remove": "Supprimer la couche {{n}}",
+    "saveManual": "Enregistrer les couches manuelles",
+    "splitLast": "Diviser la dernière couche",
+    "top": "Haut (m)",
+    "topAria": "Haut de la couche {{n}}",
+    "zone": "Zone indicative",
+    "zoneAria": "Zone de la couche {{n}}"
+  },
+  "left": {
+    "bore": {
+      "accountableParty": "Détenteur de la source",
+      "base": "Base",
+      "boreData": "Données du forage",
+      "delivery": "Livraison",
+      "descriptionDate": "Date de description",
+      "descriptionProcedure": "Procédure de description",
+      "endDate": "Date de fin",
+      "fileMetadata": "Métadonnées du fichier",
+      "finalDepth": "Profondeur finale",
+      "id": "ID du forage",
+      "layerCount": "Nombre de couches",
+      "layers": "Couches",
+      "method": "Méthode de forage",
+      "noExtras": "Aucune métadonnée supplémentaire.",
+      "noLayers": "Aucune couche.",
+      "project": "Projet",
+      "projectNumber": "N° de projet",
+      "soilType": "Type de sol",
+      "startDate": "Date de début",
+      "top": "Haut"
+    },
+    "gwp": {
+      "constructed": "Réalisé",
+      "filterBottom": "Bas de crépine",
+      "filterTop": "Haut de crépine",
+      "initialFunction": "Fonction initiale",
+      "manager": "Gestionnaire",
+      "noTubes": "Aucun tube.",
+      "owner": "Propriétaire",
+      "status": "Statut",
+      "subtitle": "Piézomètre de surveillance des eaux souterraines (BRO/GMW)",
+      "tubeCount": "Nombre de tubes",
+      "tubes": "Tubes (crépines)",
+      "wellCode": "Code du piézomètre",
+      "wellData": "Données du piézomètre",
+      "wellHeadProtector": "Protection de tête de puits"
+    },
+    "measurements": {
+      "depth": "profondeur",
+      "depthTitle": "Profondeur sous le niveau du terrain",
+      "napTitle": "Profondeur par rapport au NAP"
+    },
+    "meta": {
+      "groundLevelNap": "Niveau du terrain NAP",
+      "qualityRegime": "Régime de qualité"
+    },
+    "photos": {
+      "hintBore": "BRO héberge les photos de ce forage (si disponibles) sur BROloket.",
+      "hintCpt": "BRO héberge les photos de ce CPT (si disponibles) sur BROloket.",
+      "hintGwp": "BRO héberge les photos de ce piézomètre (si disponibles) sur BROloket.",
+      "link": "Voir les photos sur BROloket ↗",
+      "onlyBro": "Les photos ne sont disponibles que pour les objets BRO (identifiant BHR/CPT/GMW requis).",
+      "title": "Photos et inspection"
+    },
+    "rawXml": {
+      "copied": "Copié",
+      "copy": "Copier le XML",
+      "none": "Aucun XML brut disponible.",
+      "title": "Données brutes (XML)"
+    }
+  },
+  "normalized": {
+    "error": {
+      "missing": "Saisissez toutes les valeurs mesurées et les contraintes.",
+      "notPositive": "La résistance de cône nette et la contrainte verticale effective doivent être positives.",
+      "outOfRange": "Le point se situe hors du domaine numérique.",
+      "range": "Requis : qc et fs > 0, 0 < a ≤ 1 et contrainte totale ≥ 0."
+    },
+    "field": {
+      "areaRatio": "Rapport de surface du cône a",
+      "totalStress": "Contrainte totale σv0 [kPa]",
+      "waterPressure": "Pression hydrostatique u0 [kPa]"
+    },
+    "icZone": "Ic / zone",
+    "intro": "Analyse ponctuelle de Qt / Fr / Bq / Ic avec les contraintes données, selon Robertson–Wride (exposant fixe n = 1).",
+    "note": "Les sols sensibles et cimentés (zones 1, 8, 9) ne peuvent pas être déduits du seul Ic. Pas de conversion en description de sol NEN.",
+    "reference": "Robertson & Cabal, 2022, figure 16",
+    "title": "Analyse ponctuelle SBTn normalisée",
+    "zones": {
+      "z2": "Sol organique",
+      "z3": "Argile",
+      "z4": "Mélange limoneux",
+      "z5": "Mélange sableux",
+      "z6": "Sable",
+      "z7": "Sable graveleux"
+    }
+  },
+  "projectSettings": {
+    "boreMeta": "{{layers}} couches · {{depth}} m de profondeur",
+    "close": "Fermer",
+    "cptMeta": "{{points}} points · {{depth}} m de profondeur",
+    "newProject": "Nouveau projet",
+    "noProject": "Aucun projet actif — ouvrez ou créez un projet <0>.ifcgis</0>.",
+    "noProjectHint": "L'onglet actif est un CPT isolé. Les infos projet (titre, client, emplacement, liste des CPT) se trouvent dans un projet — créez-en un ou ouvrez un fichier <0>.ifcgis</0> existant."
+  },
+  "reportPreview": {
+    "chartScale": "Échelle du graphique",
+    "coverTitle": "Titre de la page de garde",
+    "onePagePerCpt": "Une page par CPT",
+    "openFailed": "Échec de l'ouverture du PDF : {{error}}"
+  },
+  "soil3d": {
+    "bearingRange": "NAP {{top}} à {{bottom}} m ({{found}}/{{total}})",
+    "criterion": "qc ≥ {{qc}} MPa sur ≥ {{thickness}} m",
+    "criterionFrom": "depuis {{source}}",
+    "grid": "{{nx}} × {{ny}} × {{nz}} cellules ({{dx}} × {{dy}} × {{dz}} m), IDW",
+    "warn": {
+      "bearingNone": "Couche porteuse introuvable dans tous les CPT.",
+      "bearingPartial": "Couche porteuse non trouvée dans {{ids}} ; la surface y est interpolée.",
+      "missingRd": "Sans coordonnées RD (hors du modèle) : {{ids}}.",
+      "noLayers": "Le CPT {{id}} n'a pas d'interprétation des couches.",
+      "noRd": "Pas de coordonnées RD : les CPT sont placés en ligne à 10 m d'intervalle."
+    },
+    "zoneN": "Zone {{n}}"
+  },
+  "validation": {
+    "column": "colonne {{n}}",
+    "counts": "{{errors}} erreurs · {{warnings}} avertissements",
+    "depth": "Profondeur : {{method}}",
+    "depthMethod": {
+      "corrected": "profondeur corrigée mesurée",
+      "inclination": "correction d'inclinaison à partir de la longueur de pénétration",
+      "mixed": "méthodes mixtes ; par enregistrement dans le JSON",
+      "penetration": "longueur de pénétration comme approximation verticale"
+    },
+    "diagnostics": "Diagnostics ({{n}})",
+    "exportAll": "Exporter le rapport pour tous les messages.",
+    "line": "ligne {{n}}",
+    "measurements": "Grandeurs mesurées et unités ({{n}})",
+    "noReport": "Ce fichier n'a pas encore de rapport de validation. Importez-le à nouveau avec l'analyseur actuel.",
+    "points": "{{points}} points de mesure · {{voids}} valeurs vides · {{omitted}} enregistrements omis",
+    "preExcavated": "Pré-excavé : {{depth}} m",
+    "predrilled": "Préforé : {{depth}} m",
+    "record": "enregistrement {{n}}",
+    "regime": "Régime : {{regime}}",
+    "removedLayer": "Couche jusqu'à {{depth}} m : {{description}}",
+    "report": "Signaler ce fichier",
+    "showOutliers": "Afficher {{n}} valeurs aberrantes (enregistrements source {{records}})",
+    "variables": "Variables de mesure et lectures du zéro"
+  },
+  "zones": {
+    "z1": "Fins sensibles",
+    "z2": "Organique / tourbe",
+    "z3": "Argile",
+    "z4": "Mélanges limoneux",
+    "z5": "Mélanges sableux",
+    "z6": "Sable",
+    "z7": "Sable graveleux / gravier",
+    "z8": "Sable/argile très raide",
+    "z9": "Fins très raides"
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "bore": {
+    "belowGround": "m u. my",
+    "colour": "Färg: {{colour}}",
+    "depth": "Djup",
+    "fallbackTitle": "Borrhål",
+    "layers": "Lager",
+    "noLayers": "Inga lager hittades i detta borrhål.",
+    "noLayersHint": "BHR-GT XML-filen innehöll inga <0>describedInterval</0>-element.",
+    "zoomHint": "Ctrl + rulla för att zooma in/ut",
+    "zoomIn": "Zooma in",
+    "zoomOut": "Zooma ut",
+    "zoomReset": "Återställ zoom"
+  },
+  "chart": {
+    "depthAxis": "Djup (m)",
+    "fsHeader": "Mantelfriktion (fs, MPa)",
+    "qcHeader": "Spetstryck (qc, MPa)",
+    "removeAllMarkers": "Ta bort alla",
+    "removeMarker": "Ta bort",
+    "rfHeader": "Friktionstal (Rf, %)",
+    "u2Header": "Portryck (u2, kN/m²)"
+  },
+  "gwp": {
+    "axisLevel": "Vattennivå (m NAP)",
+    "col": {
+      "material": "Material",
+      "screenBottom": "Filter underkant",
+      "screenLength": "Filterlängd",
+      "screenTop": "Filter överkant",
+      "status": "Status",
+      "tubeDiameter": "Rördiameter",
+      "tubeTop": "Rörets överkant"
+    },
+    "constructed": "Anlagd",
+    "csvFailed": "Det gick inte att läsa in CSV: {{error}}",
+    "deepestFilter": "Djupaste filtret",
+    "fetchFailed": "Det gick inte att hämta GLD:er: {{error}}",
+    "gldTitle": "Grundvattennivå över tid (GLD)",
+    "groundLevel": "Marknivå",
+    "loading": "Hämtar grundvattennivåer…",
+    "noCoords": "Röret saknar WGS84-koordinater — kan inte söka efter GLD:er.",
+    "noSeries": "Inga GLD-tidsserier hittades nära detta rör.",
+    "noValues": "GLD:er hittades ({{n}}) men inga mätvärden togs emot.",
+    "observations": "{{n}} mätningar",
+    "openBroloket": "Öppna i BROloket ↗",
+    "owner": "ägare {{owner}}",
+    "seriesFound": "{{n}} tidsserier hittades vid detta rör. Rulla = zooma vågrätt, dra = panorera, dubbelklick = återställ.",
+    "subtitle": "Grundvattenobservationsrör (BRO/GMW)",
+    "tubeCount": "Antal rör",
+    "tubesTitle": "Observationsrör (filter)"
+  },
+  "ifcView": {
+    "disabledText": "Den gamla STEP-exporten följer inte IFC-schemat. Använd projektfilen för att behålla alla data. IFCX-ögonblicksbilden är experimentell.",
+    "disabledTitle": "IFC4x3-export avstängd"
+  },
+  "ifcxPreview": {
+    "close": "Stäng",
+    "copied": "Kopierat",
+    "copy": "Kopiera JSON",
+    "failed": "Det gick inte att skapa en förhandsgranskning:",
+    "generating": "Skapar IFCX…",
+    "hint": "Detta är exakt det innehåll som skrivs till <0>.ifcgis</0>-filen när du sparar projektet — JSON i IFC5-alpha-form (IFCX) med entiteterna IfcProject, IfcSite, IfcBorehole och IfcAnnotation och korsreferenser via <1>#id</1>.",
+    "noDoc": "Inget aktivt dokument — öppna eller skapa ett projekt för att se en IFCX-förhandsgranskning.",
+    "projectOnly": "IFCX-förhandsgranskningen fungerar bara för projektdokument. För enskilda sonderingar eller borrhål, använd fliken IFC.",
+    "size": "{{bytes}} byte IFCX (IFC4X3_ADD2)",
+    "tip": "Tips: IFCX-konverteringen kräver funktionen <0>to_ifcx_json</0> på Rust-sidan (ifcgis-0.4+). Starta om Tauri-utvecklingsappen om du just har gjort ett nytt cpt-core-bygge.",
+    "title": "IFCX-förhandsgranskning — vad som hamnar i .ifcgis-filen"
+  },
+  "layerAnalysis": {
+    "invalidDepth": "Källpunkt {{n}}: ogiltigt eller minskande djup används inte för lagertolkningen.",
+    "invalidRanges": "Lager måste ha positiv tjocklek, ligga i ordning, inte överlappa och ligga inom mätdjupet; välj zon 1–9.",
+    "notList": "Lagertolkningen måste vara en lista.",
+    "savedInvalid": "Den sparade lagertolkningen är ogiltig: {{error}}",
+    "settingsRange": "Minsta tjocklek och hysteres måste ligga mellan 0 och 50 m.",
+    "thinIsolated": "Tunt isolerat lager behållet; inget angränsande lager antas över ett mätglapp.",
+    "unknownProvenance": "Okänt eller ej matchande ursprung för den sparade lagertolkningen.",
+    "zeroThickness": "Isolerad mätpunkt utan tjocklek tolkas inte som lager."
+  },
+  "layers": {
+    "add": "Lägg till lager",
+    "bottom": "Underkant (m)",
+    "bottomAria": "Underkant lager {{n}}",
+    "cancel": "Avbryt",
+    "colBottom": "Underkant",
+    "colTop": "Överkant",
+    "colZone": "Zon",
+    "edit": "Redigera lagertolkning",
+    "export": "Exportera lager som JSON",
+    "fillSettings": "Ange minsta tjocklek och hysteres.",
+    "footer": "Källa: {{source}}. Hysteres bekräftar en ny zon med två på varandra följande punkter. Gränser sparas separat; mätpunkterna behålls. Mätkurvorna visar den vägledande punktindelningen.",
+    "hysteresis": "Hysteres (m)",
+    "jsonFilter": "Lagertolkning JSON",
+    "layerN": "Lager {{n}}",
+    "minThickness": "Minsta tjocklek (m)",
+    "noCpt": "Ingen sondering vald.",
+    "none": "Ingen lagertolkning tillgänglig.",
+    "provenanceAuto": "Vägledande qc/Rf-lagertolkning · minst {{min}} m · hysteres {{hyst}} m",
+    "provenanceManual": "Manuell lagertolkning · minst {{min}} m · hysteres {{hyst}} m",
+    "recalculate": "Beräkna om automatiskt",
+    "remove": "Ta bort lager {{n}}",
+    "saveManual": "Spara manuella lager",
+    "splitLast": "Dela sista lagret",
+    "top": "Överkant (m)",
+    "topAria": "Överkant lager {{n}}",
+    "zone": "Vägledande zon",
+    "zoneAria": "Zon för lager {{n}}"
+  },
+  "left": {
+    "bore": {
+      "accountableParty": "Källinnehavare",
+      "base": "Bas",
+      "boreData": "Borrhålsdata",
+      "delivery": "Leverans",
+      "descriptionDate": "Beskrivningsdatum",
+      "descriptionProcedure": "Beskrivningsprocedur",
+      "endDate": "Slutdatum",
+      "fileMetadata": "Filmetadata",
+      "finalDepth": "Slutdjup",
+      "id": "Borrhåls-ID",
+      "layerCount": "Antal lager",
+      "layers": "Lager",
+      "method": "Borrmetod",
+      "noExtras": "Ingen ytterligare metadata.",
+      "noLayers": "Inga lager.",
+      "project": "Projekt",
+      "projectNumber": "Projektnr",
+      "soilType": "Jordart",
+      "startDate": "Startdatum",
+      "top": "Överkant"
+    },
+    "gwp": {
+      "constructed": "Anlagd",
+      "filterBottom": "Filter underkant",
+      "filterTop": "Filter överkant",
+      "initialFunction": "Ursprunglig funktion",
+      "manager": "Förvaltare",
+      "noTubes": "Inga rör.",
+      "owner": "Ägare",
+      "status": "Status",
+      "subtitle": "Grundvattenobservationsrör (BRO/GMW)",
+      "tubeCount": "Antal rör",
+      "tubes": "Rör (filter)",
+      "wellCode": "Rörkod",
+      "wellData": "Rördata",
+      "wellHeadProtector": "Skyddshuv"
+    },
+    "measurements": {
+      "depth": "djup",
+      "depthTitle": "Djup under markytan",
+      "napTitle": "Djup relativt NAP"
+    },
+    "meta": {
+      "groundLevelNap": "Marknivå NAP",
+      "qualityRegime": "Kvalitetsregim"
+    },
+    "photos": {
+      "hintBore": "BRO publicerar foton av detta borrhål (om de finns) på BROloket.",
+      "hintCpt": "BRO publicerar foton av denna sondering (om de finns) på BROloket.",
+      "hintGwp": "BRO publicerar foton av detta grundvattenrör (om de finns) på BROloket.",
+      "link": "Visa foton på BROloket ↗",
+      "onlyBro": "Foton finns bara för BRO-objekt (BHR/CPT/GMW-id krävs).",
+      "title": "Foton och inspektion"
+    },
+    "rawXml": {
+      "copied": "Kopierat",
+      "copy": "Kopiera XML",
+      "none": "Ingen rå XML tillgänglig.",
+      "title": "Rådata (XML)"
+    }
+  },
+  "normalized": {
+    "error": {
+      "missing": "Ange alla mätvärden och spänningar.",
+      "notPositive": "Netto spetstryck och effektiv vertikalspänning måste vara positiva.",
+      "outOfRange": "Punkten ligger utanför det numeriska intervallet.",
+      "range": "Krävs: qc och fs > 0, 0 < a ≤ 1 och totalspänning ≥ 0."
+    },
+    "field": {
+      "areaRatio": "Spetsens areaförhållande a",
+      "totalStress": "Totalspänning σv0 [kPa]",
+      "waterPressure": "Hydrostatiskt tryck u0 [kPa]"
+    },
+    "icZone": "Ic / zon",
+    "intro": "Punktanalys av Qt / Fr / Bq / Ic med angivna spänningar, enligt Robertson–Wride (fast exponent n = 1).",
+    "note": "Sensitiva och cementerade jordar (zon 1, 8, 9) kan inte härledas enbart ur Ic. Ingen omräkning till en NEN-jordbeskrivning.",
+    "reference": "Robertson & Cabal, 2022, figur 16",
+    "title": "Normaliserad SBTn-punktanalys",
+    "zones": {
+      "z2": "Organisk jord",
+      "z3": "Lera",
+      "z4": "Siltblandning",
+      "z5": "Sandblandning",
+      "z6": "Sand",
+      "z7": "Grusig sand"
+    }
+  },
+  "projectSettings": {
+    "boreMeta": "{{layers}} lager · {{depth}} m djup",
+    "close": "Stäng",
+    "cptMeta": "{{points}} punkter · {{depth}} m djup",
+    "newProject": "Nytt projekt",
+    "noProject": "Inget aktivt projekt — öppna eller skapa ett <0>.ifcgis</0>-projekt.",
+    "noProjectHint": "Den aktiva fliken är en enskild sondering. Projektinfo (titel, beställare, plats, sonderingslista) finns i ett projekt — skapa ett eller öppna en befintlig <0>.ifcgis</0>-fil."
+  },
+  "reportPreview": {
+    "chartScale": "Diagramskala",
+    "coverTitle": "Titel på försättsbladet",
+    "onePagePerCpt": "En sida per sondering",
+    "openFailed": "Det gick inte att öppna PDF:en: {{error}}"
+  },
+  "soil3d": {
+    "bearingRange": "NAP {{top}} till {{bottom}} m ({{found}}/{{total}})",
+    "criterion": "qc ≥ {{qc}} MPa över ≥ {{thickness}} m",
+    "criterionFrom": "från {{source}}",
+    "grid": "{{nx}} × {{ny}} × {{nz}} celler ({{dx}} × {{dy}} × {{dz}} m), IDW",
+    "warn": {
+      "bearingNone": "Bärande lager hittades inte i någon sondering.",
+      "bearingPartial": "Bärande lager hittades inte i {{ids}}; där är ytan interpolerad.",
+      "missingRd": "Utan RD-koordinater (inte med i modellen): {{ids}}.",
+      "noLayers": "Sondering {{id}} saknar lagertolkning.",
+      "noRd": "Inga RD-koordinater: sonderingarna placeras på rad med 10 m mellanrum."
+    },
+    "zoneN": "Zon {{n}}"
+  },
+  "validation": {
+    "column": "kolumn {{n}}",
+    "counts": "{{errors}} fel · {{warnings}} varningar",
+    "depth": "Djup: {{method}}",
+    "depthMethod": {
+      "corrected": "uppmätt korrigerat djup",
+      "inclination": "lutningskorrektion utifrån neddrivningslängd",
+      "mixed": "blandade metoder; per post i JSON",
+      "penetration": "neddrivningslängd som vertikal approximation"
+    },
+    "diagnostics": "Diagnostik ({{n}})",
+    "exportAll": "Exportera rapporten för alla meddelanden.",
+    "line": "rad {{n}}",
+    "measurements": "Mätstorheter och enheter ({{n}})",
+    "noReport": "Den här filen har ingen valideringsrapport ännu. Importera den igen med den aktuella tolken.",
+    "points": "{{points}} mätpunkter · {{voids}} tomma värden · {{omitted}} utelämnade poster",
+    "preExcavated": "Förschaktat: {{depth}} m",
+    "predrilled": "Förborrat: {{depth}} m",
+    "record": "post {{n}}",
+    "regime": "Regim: {{regime}}",
+    "removedLayer": "Lager till {{depth}} m: {{description}}",
+    "report": "Rapportera den här filen",
+    "showOutliers": "Visa {{n}} avvikande värden (källposter {{records}})",
+    "variables": "Mätvariabler och nollavläsningar"
+  },
+  "zones": {
+    "z1": "Sensitiv finkornig",
+    "z2": "Organisk / torv",
+    "z3": "Lera",
+    "z4": "Siltblandningar",
+    "z5": "Sandblandningar",
+    "z6": "Sand",
+    "z7": "Grusig sand / grus",
+    "z8": "Mycket fast sand/lera",
+    "z9": "Mycket fast finkornig"
+  }
+}

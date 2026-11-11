@@ -1,4 +1,5 @@
 import type { Zone } from "../types/cpt";
+import { pt } from "./panelsI18n";
 /** Robertson thresholds and layer merging match cpt-core. */
 export const zones: Zone[] = [
   ["Gevoelig fijnkorrelig", "#00BCD4"],
@@ -11,6 +12,16 @@ export const zones: Zone[] = [
   ["Zeer vast zand/klei", "#F44336"],
   ["Zeer vast fijnkorrelig", "#9C27B0"],
 ].map(([name, color], i) => ({ number: i + 1, name, color }));
+/**
+ * Zonenaam in de actieve taal voor weergave (legenda, tabellen). De data
+ * houdt de Nederlandse naam; die is ook de terugval voor onbekende zones.
+ */
+export function zoneName(number: number, fallback?: string): string {
+  const zone = zones.find((z) => z.number === number);
+  const nl = zone?.name ?? fallback ?? String(number);
+  if (!zone) return nl;
+  return pt(`zones.z${number}`, nl);
+}
 export function classify(qc?: number, rf?: number): Zone | null {
   if (
     qc == null ||

@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 import TopotijdreisSlider from "./TopotijdreisSlider";
 
 /**
@@ -99,6 +100,33 @@ const LAYER_DEFS: LayerDef[] = [
   // Project layer
   { id: "project-sonderingen", label: "Project sonderingen", group: "data", defaultOn: true },
 ];
+
+/** Vertaalsleutel per laag; de Nederlandse `label` is de brontekst. */
+const LAYER_KEYS: Partial<Record<LayerId, string>> = {
+  brt: "topography",
+  "luchtfoto-actueel": "aerialCurrent",
+  adressen: "addresses",
+  ahn: "elevation",
+  kadaster: "cadastral",
+  bag: "buildings",
+  bgt: "bgt",
+  bestemmingsplan: "zoning",
+  geomorfologie: "geomorphology",
+  bodemkaart: "soilMap",
+  "kabels-leidingen": "cables",
+  "bro-sonderingen": "broCpts",
+  "bro-boringen": "broBoreholes",
+  "bro-grondwaterputten": "broWells",
+  "project-sonderingen": "projectCpts",
+};
+
+/** Laagnaam in de actieve taal. */
+function layerLabel(d: LayerDef): string {
+  const year = /^luchtfoto-(\d{4})$/.exec(d.id)?.[1];
+  if (year) return i18next.t("map:layers.aerialYear", { defaultValue: "Luchtfoto {{year}}", year });
+  const key = LAYER_KEYS[d.id];
+  return key ? i18next.t(`map:layers.${key}`, { defaultValue: d.label }) : d.label;
+}
 
 /** AHN colour ramp stops (NAP metres). Mirrors the PDOK ramp closely
  *  enough that the user can read the map without opening PDOK's own
@@ -313,11 +341,11 @@ export default function GisLayerPanel() {
                       checked={enabled[d.id]}
                       onChange={() => toggle(d.id)}
                     />
-                    <span className="gis-layer-label">{d.label}</span>
+                    <span className="gis-layer-label">{layerLabel(d)}</span>
                   </label>
                   <div
                     className="gis-layer-opacity"
-                    title={`Transparantie: ${100 - pct}% — slider regelt zichtbaarheid`}
+                    title={t("map:layerPanel.opacityTitle", { defaultValue: "Transparantie: {{pct}}% — slider regelt zichtbaarheid", pct: 100 - pct })}
                   >
                     <input
                       type="range"
@@ -329,13 +357,13 @@ export default function GisLayerPanel() {
                       onChange={(e) =>
                         changeOpacity(d.id, Number(e.currentTarget.value) / 100)
                       }
-                      aria-label={`Transparantie ${d.label}`}
+                      aria-label={t("map:layerPanel.opacityAria", { defaultValue: "Transparantie {{layer}}", layer: layerLabel(d) })}
                     />
                     <span className="gis-layer-opacity-val">{pct}%</span>
                   </div>
                   {d.hasLegend && d.id === "ahn" && enabled[d.id] && (
                     <div className="gis-layer-legend">
-                      <div className="gis-legend-title">Hoogte NAP</div>
+                      <div className="gis-legend-title">{t("map:layerPanel.ahnLegend", "Hoogte NAP")}</div>
                       <ul className="gis-legend-list">
                         {AHN_LEGEND.map((stop) => (
                           <li key={stop.color}>

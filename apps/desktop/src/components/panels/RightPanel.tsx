@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useCptStore } from "../../store/useCptStore";
 import LocationMiniMap from "./LocationMiniMap";
+import { zoneName } from "../../utils/soilZones";
 
 const ROBERTSON_ZONES = [
   { number: 1, name: "Gevoelig fijnkorrelig",  color: "#00BCD4" },
@@ -43,7 +44,7 @@ export default function RightPanel() {
             <li key={z.number}>
               <span className="sbt-swatch" style={{ background: z.color }} />
               <span className="sbt-num">{z.number}</span>
-              <span className="sbt-name">{z.name}</span>
+              <span className="sbt-name">{zoneName(z.number, z.name)}</span>
             </li>
           ))}
         </ul>

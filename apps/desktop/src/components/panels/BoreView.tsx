@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import type { Bore } from "../../types/bore";
 import {
   mainWidthFraction,
@@ -26,6 +27,7 @@ const BASE_HEIGHT_PX = 360;
  * and project info if the XML supplied any.
  */
 export default function BoreView({ bore }: { bore: Bore }) {
+  const { t } = useTranslation("panels");
   const [zoom, setZoom] = useState(1);
 
   const totalDepth = useMemo(() => {
@@ -89,7 +91,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
       {/* ── Header ─────────────────────────────────────────────── */}
       <header className="bore-header">
         <div>
-          <h2 className="bore-title">{bore.id || "Boring"}</h2>
+          <h2 className="bore-title">{bore.id || t("bore.fallbackTitle", "Boring")}</h2>
           <p className="bore-sub">
             {bore.metadata.project_name ? `${bore.metadata.project_name} · ` : ""}
             BHR-GT (BRO)
@@ -116,7 +118,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
           )}
           {bore.final_depth && (
             <>
-              <dt>Diepte</dt>
+              <dt>{t("bore.depth", "Diepte")}</dt>
               <dd>
                 <code>{bore.final_depth.toFixed(2)} m</code>
               </dd>
@@ -124,7 +126,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
           )}
           {bore.layers.length > 0 && (
             <>
-              <dt>Lagen</dt>
+              <dt>{t("bore.layers", "Lagen")}</dt>
               <dd>
                 <code>{bore.layers.length}</code>
               </dd>
@@ -137,7 +139,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
       {bore.layers.length > 0 && (
         <div className="bore-toolbar">
           <span className="bore-toolbar-hint">
-            Ctrl + scroll om in/uit te zoomen
+            {t("bore.zoomHint", "Ctrl + scroll om in/uit te zoomen")}
           </span>
           <div className="bore-toolbar-zoom">
             <button
@@ -145,7 +147,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
               className="bore-zoom-btn"
               onClick={zoomOut}
               disabled={zoom <= ZOOM_MIN}
-              title="Uitzoomen"
+              title={t("bore.zoomOut", "Uitzoomen")}
             >
               −
             </button>
@@ -153,7 +155,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
               type="button"
               className="bore-zoom-btn bore-zoom-reset"
               onClick={zoomReset}
-              title="Reset zoom"
+              title={t("bore.zoomReset", "Reset zoom")}
             >
               {`${zoom.toFixed(1)}×`}
             </button>
@@ -162,7 +164,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
               className="bore-zoom-btn"
               onClick={zoomIn}
               disabled={zoom >= ZOOM_MAX}
-              title="Inzoomen"
+              title={t("bore.zoomIn", "Inzoomen")}
             >
               +
             </button>
@@ -174,9 +176,9 @@ export default function BoreView({ bore }: { bore: Bore }) {
       <div className="bore-body" ref={bodyRef}>
         {bore.layers.length === 0 ? (
           <div className="bore-empty">
-            <p>Geen lagen aangetroffen in deze boring.</p>
+            <p>{t("bore.noLayers", "Geen lagen aangetroffen in deze boring.")}</p>
             <p className="bore-empty-sub">
-              De BHR-GT XML bevatte geen <code>describedInterval</code> elementen.
+              <Trans t={t} i18nKey="bore.noLayersHint" defaults="De BHR-GT XML bevatte geen <0>describedInterval</0> elementen." components={[<code />]} />
             </p>
           </div>
         ) : (
@@ -211,7 +213,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
               })}
               <div className="bore-axis-spine" aria-hidden />
               <div className="bore-axis-title">
-                {typeof z0 === "number" ? "m NAP" : "m −mv"}
+                {typeof z0 === "number" ? "m NAP" : t("bore.belowGround", "m −mv")}
               </div>
             </div>
 
@@ -298,7 +300,7 @@ export default function BoreView({ bore }: { bore: Bore }) {
                       </div>
                     )}
                     {l.colour && (
-                      <div className="bore-description-extra">Kleur: {l.colour}</div>
+                      <div className="bore-description-extra">{t("bore.colour", "Kleur: {{colour}}", { colour: l.colour })}</div>
                     )}
                     {l.description && (
                       <div className="bore-description-extra">{l.description}</div>

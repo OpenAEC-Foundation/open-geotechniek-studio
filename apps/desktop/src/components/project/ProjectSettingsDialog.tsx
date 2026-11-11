@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { readTextFile } from "@tauri-apps/plugin-fs";
 import Modal from "../Modal";
@@ -26,6 +26,7 @@ interface ProjectSettingsDialogProps {
  */
 export default function ProjectSettingsDialog({ open, onClose }: ProjectSettingsDialogProps) {
   const { t } = useTranslation("cpt");
+  const { t: tp } = useTranslation("panels");
   const documents = useCptStore((s) => s.documents);
   const activeDocId = useCptStore((s) => s.activeDocId);
   const activeDoc = useMemo(
@@ -168,7 +169,7 @@ export default function ProjectSettingsDialog({ open, onClose }: ProjectSettings
                   <div className="ps-cpt-info">
                     <span className="ps-cpt-id">{c.id}</span>
                     <span className="ps-cpt-meta">
-                      {c.points.length} punten · {(c.points.reduce((m, p) => Math.max(m, p.depth), 0)).toFixed(1)} m diepte
+                      {tp("projectSettings.cptMeta", "{{points}} punten · {{depth}} m diepte", { points: c.points.length, depth: (c.points.reduce((m, p) => Math.max(m, p.depth), 0)).toFixed(1) })}
                       {c.position && ` · RD ${c.position.x_rd.toFixed(0)}, ${c.position.y_rd.toFixed(0)}`}
                     </span>
                   </div>
@@ -227,7 +228,7 @@ export default function ProjectSettingsDialog({ open, onClose }: ProjectSettings
                     <div className="ps-cpt-info">
                       <span className="ps-cpt-id">{b.id}</span>
                       <span className="ps-cpt-meta">
-                        {layerCount} lagen · {maxDepth.toFixed(1)} m diepte
+                        {tp("projectSettings.boreMeta", "{{layers}} lagen · {{depth}} m diepte", { layers: layerCount, depth: maxDepth.toFixed(1) })}
                         {b.position && ` · RD ${b.position.x_rd.toFixed(0)}, ${b.position.y_rd.toFixed(0)}`}
                       </span>
                     </div>
@@ -253,20 +254,19 @@ export default function ProjectSettingsDialog({ open, onClose }: ProjectSettings
 }
 
 function NoProjectHint({ onClose, onCreate }: { onClose: () => void; onCreate: () => void }) {
+  const { t } = useTranslation("panels");
   return (
     <div style={{ padding: "20px 24px" }}>
       <p style={{ margin: 0, marginBottom: 12, color: "var(--theme-text)" }}>
-        Geen project actief — open of maak een <code>.ifcgis</code> project.
+        <Trans t={t} i18nKey="projectSettings.noProject" defaults="Geen project actief — open of maak een <0>.ifcgis</0> project." components={[<code />]} />
       </p>
       <p style={{ margin: 0, marginBottom: 20, color: "var(--theme-text-muted)", fontSize: "0.9rem" }}>
-        De huidige actieve tab is een losse sondering. Projectinfo (titel,
-        opdrachtgever, locatie, sonderingenlijst) leeft binnen een project —
-        maak er een aan of open een bestaand <code>.ifcgis</code> bestand.
+        <Trans t={t} i18nKey="projectSettings.noProjectHint" defaults="De huidige actieve tab is een losse sondering. Projectinfo (titel, opdrachtgever, locatie, sonderingenlijst) leeft binnen een project — maak er een aan of open een bestaand <0>.ifcgis</0> bestand." components={[<code />]} />
       </p>
       <div className="ps-footer">
-        <button type="button" onClick={onClose}>Sluiten</button>
+        <button type="button" onClick={onClose}>{t("projectSettings.close", "Sluiten")}</button>
         <button type="button" className="btn-primary" onClick={onCreate}>
-          Nieuw project
+          {t("projectSettings.newProject", "Nieuw project")}
         </button>
       </div>
     </div>

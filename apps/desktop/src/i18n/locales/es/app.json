@@ -1,0 +1,81 @@
+{
+  "detached": {
+    "view": "Vista separada",
+    "dockBackTitle": "Volver a acoplar a la ventana principal",
+    "dockBack": "Acoplar",
+    "untitled": "Sin título"
+  },
+  "drop": {
+    "hint": "Suelte para abrir — GEF, BRO XML o .ifcgeo",
+    "browserOpenFailed": "No se pudo abrir {{name}} en el modo navegador:\n{{message}}\n\nConsejo: BHR-GT XML, GMW XML y GEF funcionan en el navegador. Para BRO CPT XML y archivos de proyecto necesita la versión de escritorio."
+  },
+  "errorBoundary": {
+    "title": "⚠ Fallo de renderizado de React — ErrorBoundary de nivel superior",
+    "intro": "Un componente de la aplicación produjo un error durante el renderizado. La traza de pila siguiente ayuda a localizar la causa.",
+    "reload": "Recargar la aplicación",
+    "noStack": "(no hay traza de pila disponible)",
+    "componentStack": "Pila de componentes"
+  },
+  "backstage": {
+    "noProject": "No hay ningún proyecto activo — abra o cree un proyecto .ifcgeo.",
+    "projectFilter": "Archivo de Open Geotechniek Studio",
+    "saveFailed": "Error al guardar: {{error}}",
+    "geoObjectFilter": "Objeto geotécnico (.ifcgeo)",
+    "cptSnapshotFilter": "CPT con datos de origen",
+    "snapshotSaveFailed": "Error al guardar la instantánea: {{error}}",
+    "gefExportStopped": "Exportación GEF detenida: {{error}}",
+    "broBrowserUnavailable": "La generación de una nueva entrega a BRO solo está disponible mediante la exportación heredada de escritorio. Use GEF o una instantánea JSON para una exportación fiel al origen.",
+    "browserOpenFailed": "No se pudo abrir {{name}} en el modo navegador:\n{{message}}\n\nConsejo: BHR-GT XML, GMW XML, GEF y BRO CPT XML sí funcionan en el navegador. Para archivos de proyecto .ifcgeo/.ifcgis necesita la versión de escritorio.",
+    "openFailed": "No se pudo abrir {{name}}: {{message}}",
+    "minutesAgo": "hace {{n}} min",
+    "hoursAgo": "hace {{n}} h",
+    "daysAgo": "hace {{n}} d"
+  },
+  "extensions": {
+    "tekening": {
+      "name": "Plano de situación",
+      "description": "Papel CAD (A2/A3/A4) con CPT, referencias a objetos, superposiciones y exportación PDF."
+    },
+    "offertes": {
+      "name": "Solicitar presupuestos",
+      "description": "Solicita presupuestos a las empresas de ensayos CPT más cercanas."
+    },
+    "category": {
+      "drawing": "Dibujo",
+      "workflow": "Flujo de trabajo",
+      "calculation": "Cálculo"
+    },
+    "lockedLabel": "Aún no apto para producción",
+    "inDevelopment": "En desarrollo",
+    "lockedDescription": "Este cálculo aún está en desarrollo — sus resultados todavía no se han verificado para uso en producción. Por eso el interruptor está desactivado.",
+    "noCatalog": "No hay ningún catálogo de extensiones externo disponible.",
+    "builtInOnly": "Open Geotechniek Studio solo utiliza por ahora extensiones integradas (vea la pestaña \"{{tab}}\"). En una versión posterior habrá un catálogo de la comunidad."
+  },
+  "statusBar": {
+    "depth": "Profundidad"
+  },
+  "startSidebar": {
+    "title": "Inicio",
+    "collapse": "Contraer",
+    "expand": "Abrir panel de inicio",
+    "exampleProject": "Proyecto de ejemplo"
+  },
+  "releaseNotes": {
+    "title": "Novedades",
+    "loadFailed": "No se pudieron cargar las notas de la versión ({{error}})",
+    "loading": "Cargando…",
+    "none": "No se encontraron versiones"
+  },
+  "store": {
+    "noProject": "No hay ningún proyecto activo.",
+    "noProjectForBro": "No hay ningún proyecto activo — no se puede añadir el CPT de BRO.",
+    "targetProjectClosed": "El proyecto de destino se cerró mientras se añadía.",
+    "gmwParseFailed": "{{filename}}: no se pudo analizar un envío GMW (no hay raíz <GMW_PO>/<GMW_O> o no se encontró ningún broId)",
+    "unsupportedBore": "{{filename}}: no es un sondeo BHR XML ni GEF compatible"
+  },
+  "platform": {
+    "unknownCptFormat": "Formato de CPT desconocido ({{filename}}). Se esperaba GEF o BRO CPT XML.",
+    "pdfWindowClosed": "Se cerró la ventana del PDF. Vuelva a abrir el informe.",
+    "popupBlocked": "Permita las ventanas emergentes o use Generar PDF para descargarlo."
+  }
+}
