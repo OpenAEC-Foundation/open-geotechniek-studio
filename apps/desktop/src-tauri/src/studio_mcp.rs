@@ -44,6 +44,7 @@ fn allowed_tool(tool: &str) -> bool {
             | "studio_save_project"
             | "studio_get_cpt"
             | "studio_select_document"
+            | "studio_show_view"
             | "studio_get_capacity_table"
             | "studio_export_report"
     )
@@ -630,6 +631,12 @@ fn tool_definitions() -> Value {
             "Activate an already opened Studio document",
             json!({"id":{"type":"string"}}),
             vec!["id"],
+        ),
+        (
+            "studio_show_view",
+            "Open a Studio view (ribbon tab): home, map, report, drawing, calculations, model3d (3D soil model from the project's CPTs) or ifc. Drawing and calculations only appear when their extension is enabled",
+            json!({"view":{"type":"string","enum":["home","map","report","drawing","calculations","model3d","ifc"]}}),
+            vec!["view"],
         ),
     ];
     Value::Array(definitions.into_iter().map(|(name, description, properties, required)| json!({"name":name,"description":description,"inputSchema":{"type":"object","properties":properties,"required":required,"additionalProperties":false}})).collect())

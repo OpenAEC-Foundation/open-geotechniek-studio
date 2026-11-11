@@ -14,7 +14,7 @@ export interface StudioMcpStatus {
 const actions: Record<string, string> = {
   studio_get_state: "Projectstatus lezen", studio_get_cpt: "Sondering lezen",
   studio_new_project: "Project maken", studio_open_file: "Bestand openen",
-  studio_select_document: "Document selecteren",
+  studio_select_document: "Document selecteren", studio_show_view: "Weergave openen",
   studio_set_project_meta: "Projectgegevens wijzigen", studio_save_project: "Project opslaan",
   studio_add_calculation: "Berekening toevoegen", studio_update_calculation: "Berekening wijzigen",
   studio_select_calculation: "Berekening selecteren", studio_get_calculation: "Berekening lezen",
