@@ -53,7 +53,7 @@ There is no built-in updater yet: install a new version over the old one. Your p
 |---|---|
 | ![A CPT with qc, fs and Rf against depth and the indicative soil zones](docs/images/readme/hero.png) **A CPT with indicative soil zones** | ![A BRO borehole with soil layers, admixtures and humus content](docs/images/readme/borehole.png) **A BRO borehole with its soil layers** |
 | ![The PDF report with cover, coordinate table and a page per CPT](docs/images/readme/report.png) **The PDF CPT report** | ![A site plan on A3 paper with a grid of CPTs and the title block](docs/images/readme/site-plan.png) **A site plan with a CPT grid** |
-| ![A 3D soil model interpolated between seven CPTs, with an NAP scale](docs/screenshots/10-ondergrond-3d.png) **A 3D soil model from the CPTs** | ![The 3D soil model with one corner cut away, showing the CPT columns in the section](docs/screenshots/11-ondergrond-3d-doorsnede.png) **The 3D model with a corner cut away** |
+| ![A 3D soil model interpolated between seven CPTs, with an NAP scale](docs/images/readme/soil-model-3d.png) **A 3D soil model from the CPTs** | ![The 3D soil model cut open, with the CPT columns, cone resistance and bearing layer](docs/images/readme/soil-model-3d-section.png) **The 3D model cut open at the CPTs** |
 
 The screenshots show the Dutch interface.
 
@@ -67,6 +67,13 @@ The screenshots show the Dutch interface.
 
 - **Map.** PDOK background maps, aerial photos 2016–2025, BAG buildings, cadastral parcels, zoning plans, BGT and elevation, with a live measuring tool. Load the BRO CPTs and boreholes in the visible area.
 - **Site plan.** A fixed A2 or A3 sheet at a true scale, with CPT markers, a CPT grid, dimension lines, RD coordinate tags, overlays from PDF or images, snapping to buildings and parcels, and a title block.
+
+## 3D soil model
+
+- **Built from the CPTs.** Every CPT with RD coordinates becomes a column in its layer colours, with the cone resistance beside it. Between the CPTs the soil type per cell is interpolated by inverse-distance weighted voting. The model is indicative: between CPTs the layering is an assumption.
+- **Bearing layer and pile toes.** The top of the bearing layer per CPT, as an interpolated surface, and the pile toe levels from the pile calculations.
+- **Look inside.** Vertical exaggeration, opacity, a section along either axis, cutting away from the top, and soil types on and off.
+- **Views and export.** 3D, top, front and side views, and the image as PNG.
 
 ## Pile calculations
 

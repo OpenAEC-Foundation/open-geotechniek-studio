@@ -1,5 +1,5 @@
 import { decodeSource } from "./utils/sourceEncoding";
-import { useState, useEffect, useRef, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import TitleBar from "./components/TitleBar";
 import Ribbon from "./components/ribbon/Ribbon";
@@ -34,8 +34,6 @@ import "./styles/blueprint/openaec-tokens.css";
 import "./themes.css";
 import "./App.css";
 import "./styles/shell.css";
-
-const Ondergrond3dView = lazy(() => import("./components/panels/Ondergrond3dView"));
 
 /**
  * Detached window — shows only one view, no ribbon/backstage/etc.
@@ -417,7 +415,7 @@ function App() {
   // Only Rapport + IFC + Calculations stay full-width because they
   // don't deal with maps.
   const isFullWidthView =
-    activeView === "report" || activeView === "ifc" || activeView === "calculations" || activeView === "soil3d" || activeView === "ondergrond3d";
+    activeView === "report" || activeView === "ifc" || activeView === "calculations" || activeView === "soil3d";
 
   const renderMainContent = () => {
     switch (activeView) {
@@ -427,12 +425,6 @@ function App() {
         return <MapView />;
       case "ifc":
         return <IfcView />;
-      case "ondergrond3d":
-        return (
-          <Suspense fallback={null}>
-            <Ondergrond3dView />
-          </Suspense>
-        );
       case "tekening":
         return <SonderingstekeningView key={activeDocId ?? "empty"} />;
       case "calculations":
