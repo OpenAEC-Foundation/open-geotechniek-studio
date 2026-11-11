@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "{{cpt}}, {{size}} mm auf {{level}} m NAP öffnen"
+  },
+  "chart": {
+    "baseSide": "R_b Spitze →",
+    "cptAria": "Sondierdiagramm mit Pfahl-Overlays",
+    "excavation": "Aushub {{nap}}",
+    "loadAxis": "Last [kN]",
+    "loadSettlement": "Last-Setzungs-Diagramm",
+    "negSkinBottom": "Grenze neg. Mantelreibung {{nap}}",
+    "pileToe": "Pfahlfuß {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Pfahlkopf {{nap}}",
+    "posSkinTop": "OK pos. Mantelreibung {{nap}}",
+    "qcPosSkinAvg": "qc;pos.Mantel;mittel = {{v}} MPa",
+    "shaftSide": "← R_s Mantel",
+    "water": "Wasser {{nap}}",
+    "zoomIn": "Vergrößern",
+    "zoomInTitle": "Vergrößern (oder Mausrad nach oben)",
+    "zoomOut": "Verkleinern",
+    "zoomOutTitle": "Verkleinern (oder Mausrad nach unten)",
+    "zoomReset": "Zoom zurücksetzen",
+    "zoomResetTitle": "Zoom zurücksetzen (oder Doppelklick auf das Diagramm)",
+    "zoomToe": "Auf Pfahlfuß zoomen",
+    "zoomToeTitle": "Auf Pfahlfuß zoomen (1 m Rand um den Pfahl)",
+    "zoomToolbar": "Diagramm-Zoom"
+  },
+  "choice": {
+    "aboveMaxTitle": "Auch der kürzeste Pfahl, der den Nachweis erfüllt, liegt über der Obergrenze.",
+    "caption": "Höchste Pfahlfußtiefe [m NAP], bei der Rc;net;d ≥ {{min}} kN, je Pfahlabmessung und Sondierung. Klicken Sie auf eine Tiefe, um das Rechenblatt zu öffnen.",
+    "cptOutOfRange": "Sondierung außerhalb des Bereichs",
+    "dropsDeeper": "tiefer prüfen",
+    "dropsDeeperTitle": "Weiter unten fällt die Tragfähigkeit wieder unter die Untergrenze.",
+    "highest": "Höchste",
+    "lowest": "Tiefste",
+    "notReached": "nicht erreicht",
+    "notReachedAria": "{{cpt}}, {{size}} mm: nicht erreicht",
+    "reached": "Erreicht",
+    "size": "Abmessung [mm]",
+    "smallestSpread": "kleinste Streuung",
+    "spread": "Streuung",
+    "tableAria": "Pfahlfußtiefe je Pfahlabmessung und Sondierung",
+    "title": "Auswahltabelle"
+  },
+  "cpt": {
+    "choose": "— Sondierung wählen —",
+    "title": "Sondierung"
+  },
+  "cpts": {
+    "all": "Alle Sondierungen",
+    "legend": "Sondierungen",
+    "missingOption": "{{id}} (fehlt)"
+  },
+  "examples": {
+    "add": "Beispiel hinzufügen",
+    "cptAria": "Beispiel: Sondierung",
+    "hint": "Vollständig ausgearbeitet im Bericht, gefolgt von der Auswahltabelle und den Tabellen je Sondierung. Ohne Auswahl wird das aktuelle Rechenblatt aufgenommen.",
+    "legend": "Ausdruck",
+    "levelAria": "Beispiel: Pfahlfußtiefe",
+    "listAria": "Beispielberechnungen",
+    "removeAria": "Beispiel {{cpt}}, {{size}} mm auf {{level}} m NAP entfernen",
+    "sizeAria": "Beispiel: Abmessung"
+  },
+  "extension": {
+    "customJoint": "Eigener Stoß",
+    "diameter": "Durchmesser Aufsatz",
+    "joint": "Stoß (Unterkante Aufsatz)",
+    "jointAria": "Stoß [m NAP]",
+    "jointTooHigh": "Der Stoß liegt weniger als 0,5 m unter dem Grundwasserstand (NAP {{water}}): Das Holz bleibt dort nicht dauerhaft nass. Wählen Sie einen längeren Aufsatz.",
+    "length": "Länge Aufsatz",
+    "lengthAria": "Länge Aufsatz [m]",
+    "perimeterHint": "Oberhalb des Stoßes wird der Umfang des Aufsatzes angesetzt, darunter der des Holzes.",
+    "shape": "Form",
+    "shapeAria": "Form Aufsatz",
+    "side": "Seitenlänge Aufsatz",
+    "size": "Aufsatz",
+    "sizeAria": "Abmessung Aufsatz [mm]",
+    "title": "Betonaufsatz"
+  },
+  "factors": {
+    "alphaTLabel": "αt (kein Zugnachweis)",
+    "basis": "Normgrundlage: {{edition}}. {{source}}",
+    "edition": "Ausgabe",
+    "edition2025": "2025 — Projektfaktoren",
+    "source": "Quelle / Erklärung",
+    "sourceHint": "Die Quelle muss zu Pfahlsystem, Herstellverfahren und Abmessungen passen. Faktoren aus 2025 machen das gesamte Rechenverfahren nicht automatisch konform mit 2025.",
+    "title": "Pfahlfaktoren",
+    "useProject": "Projektfaktoren / Eigenerklärung verwenden"
+  },
+  "legend": {
+    "chosen": "gewählte Tiefe",
+    "over": "> {{max}} kN, reichlich",
+    "title": "Legende"
+  },
+  "levels": {
+    "applyList": "Tiefen übernehmen",
+    "applyRange": "Bereich übernehmen",
+    "count": "{{n}} Tiefen",
+    "custom": "Eigene Tiefen",
+    "excavation": "Aushub",
+    "excavationAria": "Aushub [m NAP]",
+    "from": "Von [m NAP]",
+    "legend": "Pfahlfußtiefen",
+    "listLabel": "Pfahlfußtiefen [m NAP]",
+    "pileToe": "Pfahlfuß",
+    "pileToeAria": "Pfahlfuß [m NAP]",
+    "pileTop": "Pfahlkopf",
+    "pileTopAria": "Pfahlkopf [m NAP]",
+    "step": "Schritt [m]",
+    "title": "Pfahlhöhen",
+    "to": "Bis [m NAP]",
+    "water": "Grundwasser",
+    "waterAria": "Grundwasser [m NAP]"
+  },
+  "load": {
+    "characteristic": "charakteristisch",
+    "design": "Bemessungslast",
+    "materialFactor": "Materialfaktor",
+    "negativeSkinFriction": "negative Mantelreibung",
+    "title": "Last"
+  },
+  "material": {
+    "concrete": "Beton",
+    "steel": "Stahl",
+    "wood": "Holz"
+  },
+  "pile": {
+    "axialStiffness": "Axialsteifigkeit EA",
+    "baseSize": "Fußabmessung",
+    "baseSizeAria": "Fußabmessung [mm] (leer = Schaft)",
+    "baseSizePlaceholder": "Schaft",
+    "customSize": "Eigene Abmessung",
+    "diameter": "Durchmesser",
+    "eaAriaOptional": "Axialsteifigkeit EA [kN] (optional)",
+    "eaAriaRequired": "Axialsteifigkeit EA [kN] (erforderlich)",
+    "eaMissing": "Für diesen Pfahltyp erforderlich — ohne EA wird nicht gerechnet.",
+    "headDiameter": "Kopfdurchmesser",
+    "material": "Material",
+    "optional": "optional",
+    "required": "erforderlich",
+    "sideLength": "Seitenlänge",
+    "title": "Pfahl",
+    "tubeSize": "Rohrabmessung",
+    "type": "Pfahltyp",
+    "wallThickness": "Wanddicke",
+    "wallThicknessAria": "Wanddicke [mm]",
+    "woodDiameterAtJoint": "Holzdurchmesser am Stoß"
+  },
+  "profile": {
+    "bottom": "Unten",
+    "fieldAria": "{{field}} Schicht {{n}}",
+    "soilType": "Bodenart",
+    "soilTypeAria": "Bodenart Schicht {{n}}",
+    "title": "Bodenprofil",
+    "tooShallow": "Das Bodenprofil endet bei NAP {{bottom}} m, oberhalb des Pfahlfußes bei NAP {{toe}} m. Über diesen Abschnitt wird keine Mantelreibung angesetzt; verlängern Sie die unterste Schicht.",
+    "top": "Oben"
+  },
+  "result": {
+    "base": {
+      "capped": "(begrenzt auf 15 MPa)",
+      "title": "Spitzenwiderstand"
+    },
+    "existingModel": "Bestehendes Projektmodell",
+    "facts": {
+      "diameterD": "Durchmesser D",
+      "equalToShaft": "gleich Schaft",
+      "extensionValue": "{{size}} mm, vom Pfahlkopf bis zum Stoß bei NAP {{joint}} m",
+      "projectFactors": "Projektfaktoren",
+      "sideA": "Seite a",
+      "tapered": "{{size}} mm (konisch)",
+      "title": "Annahmen",
+      "woodAtJoint": "Holz am Stoß"
+    },
+    "negSkin": {
+      "cappedNote": "begrenzt auf ksMin = {{v}}",
+      "cappedTitle": "Begrenzt auf ksMin={{v}}",
+      "extensionAndWood": "(Aufsatz und Holz)",
+      "layer": "Schicht",
+      "title": "Negative Mantelreibung",
+      "zone": "Zone: Pfahlkopf NAP {{top}} bis NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Geben Sie unter <strong>Pfahl</strong> die Axialsteifigkeit <strong>EA</strong> ein. Für diesen Pfahltyp wird EA nicht aus dem Querschnitt abgeleitet; der Wert ergibt sich aus dem gewählten Pfahlsystem.",
+      "missingOne": "Noch eine Angabe erforderlich",
+      "notYet": "Noch nicht berechenbar",
+      "note": "Sobald die Eingabe vollständig ist, erscheint hier die ausgearbeitete Berechnung."
+    },
+    "settlement": {
+      "title": "Setzung (Art. 7.6.4.2, Last-Setzungs-Linie 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} Schicht(en) — Σ der Beiträge je Schicht",
+      "title": "Maximale Mantelreibung"
+    },
+    "spring": {
+      "title": "Federsteifigkeit"
+    },
+    "summary": {
+      "check": "Nachweis",
+      "compression": "Drucktragfähigkeit",
+      "conclusion": "Fazit:",
+      "conclusionFail": "Der Pfahl erfüllt den Nachweis nicht; N<sub>Ed</sub> = {{nEd}} kN überschreitet R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "Keine Bemessungslast eingegeben; die Nettotragfähigkeit beträgt R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "Der Pfahl erfüllt den Nachweis; N<sub>Ed</sub> = {{nEd}} kN beträgt {{pct}} % von R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Nicht erfüllt",
+      "failsShort": "NICHT erfüllt",
+      "passes": "Erfüllt",
+      "passesShort": "erfüllt",
+      "quantity": "Größe",
+      "result": "Ergebnis",
+      "title": "Zusammenfassung"
+    },
+    "title": "Pfahltragfähigkeit",
+    "total": {
+      "title": "Maximale geotechnische Tragfähigkeit"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Aufsatz",
+    "defaultSource": "Berechnungseinstellungen",
+    "existingModel": "bestehendes Modell",
+    "extensionLengths": "Aufsatzlängen",
+    "extensionLengthsAria": "Aufsatzlängen [m]",
+    "extensionRemoveAria": "Aufsatz {{n}} entfernen",
+    "extensionShapeAria": "Form Aufsatz {{n}}",
+    "extensionSizeAria": "Abmessung Aufsatz {{n}} [mm]",
+    "extensionsAria": "Betonaufsätze",
+    "extensionsTitle": "Betonaufsätze auf Holz",
+    "factor": "Faktor",
+    "factorsHint": "Leer = Tabellenwert der gewählten Norm ({{edition}}). Ein Projektwert erfordert eine Begründung, zum Beispiel eine Probebelastung.",
+    "factorsTitle": "Pfahlfaktoren · {{type}}",
+    "gammaFnk": "γf;nk negative Mantelreibung",
+    "gammaM": "γm Materialfaktor",
+    "partialFactors": "Teilsicherheitsbeiwerte",
+    "project": "Projekt",
+    "projectValueAria": "{{factor}} Projekt",
+    "resetAll": "Alle Reihen auf Standard zurücksetzen",
+    "restoreSeries": "Standardreihe wiederherstellen",
+    "restoreSeriesNone": "Standardreihe wiederherstellen (keine)",
+    "series": "Standardreihen",
+    "seriesHint": "Die Reihe für die Auswahlliste in der Eingabe (Rohrabmessungen) und die Schaltfläche Standardreihe in der Tragfähigkeitstabelle.",
+    "sizeMm": "Abmessung [mm]",
+    "sizesAria": "Abmessungsreihe Pfahltyp [mm]",
+    "sizesFor": "Abmessungen {{type}}",
+    "sourceAria": "Quelle der Projektfaktoren",
+    "table": "Tabelle",
+    "timberToe": "Fußdurchmesser Holz",
+    "useTableValues": "Tabellenwerte verwenden"
+  },
+  "shape": {
+    "round": "Rund",
+    "square": "Quadratisch"
+  },
+  "sizes": {
+    "apply": "Abmessungen übernehmen",
+    "label": "Pfahlabmessungen [mm]",
+    "legend": "Pfahlabmessungen",
+    "standard": "Standardreihe"
+  },
+  "skin": {
+    "dragHint": "Pfahlhöhen und Mantelreibungszonen lassen sich auch in der Sondierung verschieben.",
+    "ksMinAria": "K0·tan(δ) Minimum",
+    "minimum": "Minimum",
+    "negBottom": "Unterkante negative Mantelreibung",
+    "negBottomAria": "Unterkante negative Mantelreibung [m NAP]",
+    "posTop": "Oberkante positive Mantelreibung",
+    "posTopAria": "Oberkante positive Mantelreibung [m NAP]",
+    "title": "Mantelreibungszonen"
+  },
+  "standard": {
+    "existingModel": "Bestehendes Projektmodell — unverändert",
+    "historicalHint": "Historische Druckberechnung für einen Einzelpfahl an einer Sondierung. Positive Mantelreibung in Sand, konstanter Querschnitt oder explizite Holzkonizität; Setzung und Pfahlgruppen sind nicht verifiziert. Beim Normwechsel werden Projektfaktoren gelöscht und γm neu eingestellt.",
+    "title": "Bemessungsnorm",
+    "version": "Normversion"
+  },
+  "table": {
+    "breadcrumb": "Navigationspfad",
+    "cpt": "Sondierung {{id}}",
+    "cptMissing": "Sondierung {{id}} fehlt im Projekt.",
+    "cptTableAria": "Rc;net;d Sondierung {{id}}",
+    "heading": "Tragfähigkeit je Sondierung",
+    "intro": "Ein Pfahlsystem in einer Reihe von Abmessungen und Pfahlfußtiefen, berechnet für jede Sondierung. Pfahltyp, Norm und Bodenprofil stellen Sie links ein.",
+    "selectCpt": "Wählen Sie mindestens eine Sondierung aus.",
+    "title": "Tragfähigkeitstabelle",
+    "toe": "Fuß [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "Der Holzdurchmesser nimmt vom Kopf aus linear ab; unterhalb des konischen Teils bleibt der Fußdurchmesser konstant. Der Reibungsumfang folgt der gewählten Länge; Setzung und Federsteifigkeiten werden nicht ermittelt.",
+    "hintFromJoint": "Der Holzdurchmesser nimmt vom Stoß aus linear ab; unterhalb des konischen Teils bleibt der Fußdurchmesser konstant. Der Reibungsumfang folgt der gewählten Länge; Setzung und Federsteifigkeiten werden nicht ermittelt.",
+    "lengthFromHead": "Konische Länge ab Kopf",
+    "lengthFromHeadAria": "Konische Länge ab Kopf [m]",
+    "lengthFromJoint": "Konische Länge ab Stoß",
+    "lengthFromJointAria": "Konische Länge ab Stoß [m]",
+    "title": "Konischer Holzpfahl",
+    "toeDiameter": "Fußdurchmesser",
+    "toeDiameterAria": "Fußdurchmesser Holz [mm]"
+  },
+  "target": {
+    "hint": "Die Auswahltabelle sucht je Abmessung den kürzesten Pfahl, der die Untergrenze erreicht. Oberhalb der Obergrenze ist die Abmessung reichlich bemessen.",
+    "inverted": "Die Obergrenze muss über der Untergrenze liegen; die Tabelle rechnet noch mit dem vorherigen Bereich.",
+    "legend": "Erforderliche Tragfähigkeit Rc;net;d",
+    "lower": "Untergrenze [kN]",
+    "notNumber": "Geben Sie Unter- und Obergrenze als Zahl in kN ein.",
+    "upper": "Obergrenze [kN]"
+  },
+  "visual": {
+    "cptHeading": "Sondierung: {{id}}",
+    "crossSection": "Querschnitt",
+    "crossSectionAria": "Pfahlquerschnitt",
+    "empty": {
+      "howTo": "Öffnen Sie eine GEF-, BRO-XML- oder Projektdatei über <strong>Öffnen</strong> oben. Wählen Sie anschließend die Sondierung unter <strong>Sondierung</strong> im Eingabebereich.",
+      "noCpt": "Mit dieser Berechnung ist noch keine Sondierung verknüpft.",
+      "then": "Hier erscheinen dann der Spitzendruck, der Pfahl und die Mantelreibungszonen.",
+      "title": "Sondierdiagramm"
+    },
+    "extensionTitle": "Betonaufsatz {{size}} mm bis zum Stoß bei NAP {{joint}} m",
+    "material": "Material",
+    "materials": {
+      "castInSitu": "Ortbeton",
+      "prefab": "Fertigteilbeton",
+      "steelEA": "Stahlpfahl; projektspezifische EA",
+      "steelTube": "Stahlrohrpfahl, betongefüllt",
+      "wood": "Holz, konstanter Querschnitt"
+    },
+    "noPoints": "Keine Messwerte in dieser Sondierung",
+    "notComputed": "Nicht berechnet: {{error}}. Verschieben Sie die Höhen oder passen Sie die Eingabe an.",
+    "rebarCage": "Bewehrungskorb",
+    "taperLength": "konische Länge ab Kopf",
+    "toeSize": "Fußabmessung",
+    "wall": "Wand"
+  }
+}

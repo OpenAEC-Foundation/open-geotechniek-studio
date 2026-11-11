@@ -1,6 +1,10 @@
+import i18next from "i18next";
 import { APP_VERSION } from "../version";
 import type { Cpt, MeasurementPoint } from "./cpt";
 import { validationOf } from "../validation/report";
+
+const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
 interface Column {
   quantity: number;
   unit: string;
@@ -12,7 +16,7 @@ const clean = (value: unknown) => {
   const text = String(value ?? "");
   if (/[\r\n]/.test(text))
     throw new Error(
-      "GEF-header bevat een regeleinde; exporteer een JSON-snapshot om de volledige tekst te bewaren.",
+      m("gefExport.headerLineBreak", "GEF-header bevat een regeleinde; exporteer een JSON-snapshot om de volledige tekst te bewaren."),
     );
   return text;
 };
@@ -38,7 +42,7 @@ const canonical = (
   if (!group) return { unit: rawUnit, factor: 1 };
   if (group[2][value] == null)
     throw new Error(
-      `Onbekende eenheid ${rawUnit} voor kwantiteit ${quantity}; GEF-export gestopt.`,
+      m("gefExport.unknownUnit", "Onbekende eenheid {{unit}} voor kwantiteit {{quantity}}; GEF-export gestopt.", { unit: rawUnit, quantity }),
     );
   return { unit: group[1], factor: group[2][value] };
 };
@@ -54,7 +58,7 @@ export function exportGef(cpt: Cpt): { text: string; warnings: string[] } {
     cpt.points.some((p) => !Number.isFinite(p.depth) || p.depth < 0)
   )
     throw new Error(
-      "GEF-export vereist een id en eindige niet-negatieve meetdiepten.",
+      m("gefExport.missingIdOrDepth", "GEF-export vereist een id en eindige niet-negatieve meetdiepten."),
     );
   if (
     validation?.diagnostics.some(
@@ -63,7 +67,7 @@ export function exportGef(cpt: Cpt): { text: string; warnings: string[] } {
     validation?.omittedRecords
   )
     throw new Error(
-      "Herstel de bronfouten en weggelaten records vóór GEF-export. Gebruik een JSON-snapshot om de herstelgegevens te bewaren.",
+      m("gefExport.unresolvedErrors", "Herstel de bronfouten en weggelaten records vóór GEF-export. Gebruik een JSON-snapshot om de herstelgegevens te bewaren."),
     );
   const extra = cpt.metadata.extra ?? {};
   let original: Record<string, string[]> = {};
@@ -86,7 +90,7 @@ export function exportGef(cpt: Cpt): { text: string; warnings: string[] } {
         i < 1
       )
         throw new Error(
-          "Onbekende of ongeldige GEF-bronkolom; volledige gegevens blijven beschikbaar als JSON-snapshot.",
+          m("gefExport.unknownSourceColumn", "Onbekende of ongeldige GEF-bronkolom; volledige gegevens blijven beschikbaar als JSON-snapshot."),
         );
       return {
         quantity: q,
@@ -99,12 +103,12 @@ export function exportGef(cpt: Cpt): { text: string; warnings: string[] } {
   if (columns.length) {
     if (new Set(columns.map((col) => col.quantity)).size !== columns.length)
       throw new Error(
-        "Dubbele GEF-kwantiteit; export als JSON-snapshot om alle bronkolommen te bewaren.",
+        m("gefExport.duplicateQuantity", "Dubbele GEF-kwantiteit; export als JSON-snapshot om alle bronkolommen te bewaren."),
       );
     if (!columns.some((col) => col.quantity === 1))
-      throw new Error("GEF-export mist de oorspronkelijke sondeerlengte.");
+      throw new Error(m("gefExport.missingPenetrationLength", "GEF-export mist de oorspronkelijke sondeerlengte."));
     if (columns.some((col, index) => col.sourceIndex !== index + 1))
-      throw new Error("Dubbele of ontbrekende GEF-bronkolom; export gestopt.");
+      throw new Error(m("gefExport.duplicateSourceColumn", "Dubbele of ontbrekende GEF-bronkolom; export gestopt."));
     if (!columns.some((col) => col.quantity === 11))
       columns.push({
         quantity: 11,
@@ -132,7 +136,7 @@ export function exportGef(cpt: Cpt): { text: string; warnings: string[] } {
       const value = point.parameters?.[`column_${col.sourceIndex}`];
       if (value === undefined)
         throw new Error(
-          "Oorspronkelijke kolomwaarden ontbreken; export als JSON-snapshot.",
+          m("gefExport.missingSourceValues", "Oorspronkelijke kolomwaarden ontbreken; export als JSON-snapshot."),
         );
       return value == null ? null : value * col.factor;
     }
@@ -156,7 +160,7 @@ export function exportGef(cpt: Cpt): { text: string; warnings: string[] } {
       row.some((value) => value != null && !Number.isFinite(value)),
     )
   )
-    throw new Error("GEF-export bevat een niet-eindige waarde.");
+    throw new Error(m("gefExport.nonFinite", "GEF-export bevat een niet-eindige waarde."));
   const headers: string[] = ["#GEFID= 1, 1, 0"];
   const header = (name: string, value: unknown) =>
     headers.push(`#${name}= ${clean(value)}`);
@@ -220,7 +224,7 @@ export function exportGef(cpt: Cpt): { text: string; warnings: string[] } {
       .length > 1
   )
     throw new Error(
-      "Meerdere bronwaarden voor voorontgravingsdiepte; GEF-export gestopt.",
+      m("gefExport.multiplePreExcavation", "Meerdere bronwaarden voor voorontgravingsdiepte; GEF-export gestopt."),
     );
   const pre =
     cpt.metadata.pre_excavated_depth_m ?? cpt.metadata.predrilled_depth_m;

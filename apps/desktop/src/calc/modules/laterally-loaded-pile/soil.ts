@@ -1,3 +1,4 @@
+import { ct } from '../../i18n';
 /** CUR C166 deel 1, tabel 3.3: uitsluitend eerste secanttraject.
  * Lokale BRIS-afdruk: publicatiedatum 2008, PDF p.25, figuur3.2/tabel3.3.
  * Wandbedding; geen impliciete driedimensionale correctie voor losse palen.
@@ -12,8 +13,10 @@ export const SOIL_SPRINGS = [
   {id:'peat-soft',label:'Veen · slap (cu circa 10 kPa)',low:1000,high:2250},
   {id:'peat-medium',label:'Veen · matig (cu circa 30 kPa)',low:2000,high:4500},
 ] as const;
+/** Vertaalsleutel van een grondsoort, b.v. 'sand-loose' → 'soils.sandLoose'. */
+export const soilKey = (id: string) => `soils.${id.replace(/-(\w)/g, (_, c: string) => c.toUpperCase())}`;
 export function springValue(id:string,scenario:'low'|'high') {
   const v=SOIL_SPRINGS.find(s=>s.id===id);
-  if(!v||!['low','high'].includes(scenario)) throw new Error('Onbekende bedding of scenario.');
+  if(!v||!['low','high'].includes(scenario)) throw new Error(ct('calcLateral', 'errors.unknownSpring', 'Onbekende bedding of scenario.'));
   return v[scenario];
 }

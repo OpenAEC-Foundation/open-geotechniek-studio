@@ -12,6 +12,7 @@ import type { Cpt } from "../../types/cpt";
 import { analyzeLayers } from "../../utils/layerAnalysis";
 import { bearingLayerTop } from "../../utils/bearingLayer";
 import { zones } from "../../utils/soilZones";
+import { pt } from "../../utils/panelsI18n";
 
 export interface ColumnLayer { topNap: number; bottomNap: number; zone: number; color: string; name: string }
 export interface Column {
@@ -105,13 +106,13 @@ export function buildSoilModel(cpts: Cpt[], opts: SoilModelOptions): SoilModel {
   const missing = cpts.filter((c) => !withRd.includes(c));
   for (const c of withRd) columns.push({ ...cptColumn(c, opts), east: c.position!.x_rd - origin.x, north: c.position!.y_rd - origin.y, placed: true });
   if (missing.length) {
-    if (allMissing) warnings.push("Geen RD-coördinaten: de sonderingen staan op een rij met 10 m tussenafstand.");
-    else warnings.push(`Zonder RD-coördinaten (niet in het model): ${missing.map((c) => c.id).join(", ")}.`);
+    if (allMissing) warnings.push(pt("soil3d.warn.noRd", "Geen RD-coördinaten: de sonderingen staan op een rij met 10 m tussenafstand."));
+    else warnings.push(pt("soil3d.warn.missingRd", "Zonder RD-coördinaten (niet in het model): {{ids}}.", { ids: missing.map((c) => c.id).join(", ") }));
     const south = allMissing ? 0 : Math.min(...columns.map((c) => c.north)) - 10;
     missing.forEach((c, i) => columns.push({ ...cptColumn(c, opts), east: (i - (missing.length - 1) / 2) * 10, north: south, placed: allMissing }));
   }
   const used = columns.filter((c) => c.placed);
-  for (const c of used) if (!c.layers.length) warnings.push(`Sondering ${c.id} heeft geen laagindeling.`);
+  for (const c of used) if (!c.layers.length) warnings.push(pt("soil3d.warn.noLayers", "Sondering {{id}} heeft geen laagindeling.", { id: c.id }));
 
   // Horizontale uitsnede: de sonderingen plus een rand.
   const es = used.map((c) => c.east), ns = used.map((c) => c.north);
@@ -135,8 +136,8 @@ export function buildSoilModel(cpts: Cpt[], opts: SoilModelOptions): SoilModel {
   const bottom = surf((c) => c.endNap)!;
   const bearing = surf((c) => c.bearingTopNap);
   const missingBearing = used.filter((c) => c.bearingTopNap === null).map((c) => c.id);
-  if (bearing && missingBearing.length) warnings.push(`Draagkrachtige laag niet gevonden in ${missingBearing.join(", ")}; daar is het vlak geïnterpoleerd.`);
-  if (!bearing) warnings.push("Draagkrachtige laag in geen enkele sondering gevonden.");
+  if (bearing && missingBearing.length) warnings.push(pt("soil3d.warn.bearingPartial", "Draagkrachtige laag niet gevonden in {{ids}}; daar is het vlak geïnterpoleerd.", { ids: missingBearing.join(", ") }));
+  if (!bearing) warnings.push(pt("soil3d.warn.bearingNone", "Draagkrachtige laag in geen enkele sondering gevonden."));
 
   const top = Math.max(...used.map((c) => c.groundNap)), low = Math.min(...used.map((c) => c.endNap));
   let dz = 0.5;

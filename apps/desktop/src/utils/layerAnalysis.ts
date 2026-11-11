@@ -1,6 +1,7 @@
 import { APP_VERSION } from "../version";
 import type { Cpt, Layer } from "../types/cpt";
 import { classify, zones } from "./soilZones";
+import { pt } from "./panelsI18n";
 export const LAYER_KEY = "ogs:layer-interpretation";
 export interface LayerSettings {
   minimumThicknessM: number;
@@ -28,12 +29,12 @@ export function validateLayerSettings(value: LayerSettings): void {
     )
   )
     throw new Error(
-      "Minimumdikte en hysterese moeten tussen 0 en 50 m liggen.",
+      pt("layerAnalysis.settingsRange", "Minimumdikte en hysterese moeten tussen 0 en 50 m liggen."),
     );
 }
 export function validateLayerRanges(layers: Layer[], cpt: Cpt): void {
   if (!Array.isArray(layers))
-    throw new Error("Laagindeling moet een lijst zijn.");
+    throw new Error(pt("layerAnalysis.notList", "Laagindeling moet een lijst zijn."));
   const bottom = cpt.points.reduce((max, p) => Math.max(max, p.depth), 0);
   let previous = -Infinity;
   for (const layer of layers) {
@@ -47,7 +48,7 @@ export function validateLayerRanges(layers: Layer[], cpt: Cpt): void {
       !zones.some((z) => z.number === layer.zone_number)
     )
       throw new Error(
-        "Lagen moeten positief dik, op volgorde, zonder overlap en binnen de meetdiepte liggen; kies zone 1–9.",
+        pt("layerAnalysis.invalidRanges", "Lagen moeten positief dik, op volgorde, zonder overlap en binnen de meetdiepte liggen; kies zone 1–9."),
       );
     previous = layer.depth_bottom;
   }
@@ -79,7 +80,7 @@ export function analyzeLayers(
         !["manual", "indicative-qc-rf"].includes(saved.method)
       )
         throw new Error(
-          "Onbekende of niet passende herkomst van opgeslagen laagindeling.",
+          pt("layerAnalysis.unknownProvenance", "Onbekende of niet passende herkomst van opgeslagen laagindeling."),
         );
       validateLayerSettings(saved.settings);
       if (saved.method === "manual" && !explicitSettings) {
@@ -105,7 +106,7 @@ export function analyzeLayers(
         settings: DEFAULT_LAYER_SETTINGS,
         layers: [],
       },
-      warnings: [`Opgeslagen laagindeling ongeldig: ${String(error)}`],
+      warnings: [pt("layerAnalysis.savedInvalid", "Opgeslagen laagindeling ongeldig: {{error}}", { error: String(error) })],
     };
   }
   const settings =
@@ -124,7 +125,7 @@ export function analyzeLayers(
       (previousDepth != null && point.depth < previousDepth)
     ) {
       warnings.push(
-        `Bronpunt ${i + 1}: ongeldige of afnemende diepte niet gebruikt voor laaginterpretatie.`,
+        pt("layerAnalysis.invalidDepth", "Bronpunt {{n}}: ongeldige of afnemende diepte niet gebruikt voor laaginterpretatie.", { n: i + 1 }),
       );
       continue;
     }
@@ -166,7 +167,7 @@ export function analyzeLayers(
       last = layers[layers.length - 1],
       next = raw[i + 1];
     if (layer.depth_bottom <= layer.depth_top) {
-      warnings.push("Los meetpunt zonder dikte niet als laag geïnterpreteerd.");
+      warnings.push(pt("layerAnalysis.zeroThickness", "Los meetpunt zonder dikte niet als laag geïnterpreteerd."));
       continue;
     }
     const contiguous =
@@ -186,7 +187,7 @@ export function analyzeLayers(
     else {
       if (layer.depth_bottom - layer.depth_top < settings.minimumThicknessM)
         warnings.push(
-          "Dunne geïsoleerde laag behouden; geen buurlaag over een meetgat verondersteld.",
+          pt("layerAnalysis.thinIsolated", "Dunne geïsoleerde laag behouden; geen buurlaag over een meetgat verondersteld."),
         );
       layers.push(layer);
     }

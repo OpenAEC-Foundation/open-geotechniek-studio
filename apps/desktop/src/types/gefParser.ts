@@ -1,3 +1,4 @@
+import i18next from "i18next";
 import { maskPreExcavation } from "./bedrockCompatibility";
 import type { Cpt, MeasurementPoint } from "./cpt";
 import {
@@ -5,6 +6,9 @@ import {
   type ValidationReport,
   type Diagnostic,
 } from "../validation/report";
+
+const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
 
 /** CUR GEF-CPT-Report 1.1.2, §3.4. Unknown columns and headers are retained. */
 const fields: Record<number, string> = {
@@ -66,14 +70,14 @@ export function parseGef(text: string, filename: string): Cpt {
   ) =>
     report.diagnostics.push({ severity, code, message, line, record, column });
   if (text.startsWith("\uFEFF")) {
-    diag("info", "BOM", "UTF-8 BOM verwijderd.", 1);
+    diag("info", "BOM", m("gef.bomRemoved", "UTF-8 BOM verwijderd."), 1);
     text = text.slice(1);
   }
   if (/[\uFFFD]|Ã[\u0080-\u00BF]|Â[\u0080-\u00BF]/.test(text))
     diag(
       "warning",
       "ENCODING",
-      "Mogelijk onjuiste tekencodering; controleer de oorspronkelijke tekst.",
+      m("gef.suspectEncoding", "Mogelijk onjuiste tekencodering; controleer de oorspronkelijke tekst."),
     );
   const lines = text.replace(/\r\n?/g, "\n").split("\n"),
     header = new Map<string, Array<{ value: string; line: number }>>();
@@ -87,7 +91,7 @@ export function parseGef(text: string, filename: string): Cpt {
         diag(
           "warning",
           "HEADER_LINE",
-          "Onherkende headerregel bewaard.",
+          m("gef.unrecognisedHeaderLine", "Onherkende headerregel bewaard."),
           i + 1,
         );
       }
@@ -104,7 +108,7 @@ export function parseGef(text: string, filename: string): Cpt {
     ]);
   }
   if (start < 0)
-    throw new Error("GEF parse-fout: ontbrekende #EOH= terminator");
+    throw new Error(m("gef.missingEoh", "GEF parse-fout: ontbrekende #EOH= terminator"));
   const first = (key: string) => header.get(key)?.[0]?.value;
   const extra: Record<string, string> = {};
   if (unparsedHeader.length)
@@ -117,7 +121,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "error",
         "MISSING_HEADER",
-        `Verplichte header #${required} ontbreekt.`,
+        m("gef.missingHeader", "Verplichte header #{{header}} ontbreekt.", { header: required }),
       );
   const number = (
     raw: string,
@@ -130,7 +134,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "EMPTY_NUMBER",
-        "Lege meetwaarde wordt void.",
+        m("gef.emptyValue", "Lege meetwaarde wordt void."),
         line,
         record,
         column,
@@ -142,7 +146,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "NUMBER_LOCALE",
-        "Duizendtalscheiding en decimale komma omgezet.",
+        m("gef.thousandsAndDecimalComma", "Duizendtalscheiding en decimale komma omgezet."),
         line,
         record,
         column,
@@ -152,7 +156,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "NUMBER_LOCALE",
-        "Duizendtalscheiding omgezet.",
+        m("gef.thousandsSeparator", "Duizendtalscheiding omgezet."),
         line,
         record,
         column,
@@ -162,7 +166,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "DECIMAL_COMMA",
-        "Decimale komma omgezet.",
+        m("gef.decimalComma", "Decimale komma omgezet."),
         line,
         record,
         column,
@@ -175,7 +179,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "INVALID_NUMBER",
-        `Ongeldig getal '${raw}' wordt void; kolom blijft behouden.`,
+        m("gef.invalidNumber", "Ongeldig getal '{{raw}}' wordt void; kolom blijft behouden.", { raw }),
         line,
         record,
         column,
@@ -192,14 +196,14 @@ export function parseGef(text: string, filename: string): Cpt {
       index = Number(parts[0]),
       quantity = Number(parts[3]);
     if (!Number.isInteger(index) || index < 1 || !Number.isInteger(quantity)) {
-      diag("error", "COLUMNINFO", "Ongeldige kolomdefinitie.", item.line);
+      diag("error", "COLUMNINFO", m("gef.invalidColumnInfo", "Ongeldige kolomdefinitie."), item.line);
       continue;
     }
     if (indices.has(index) || quantities.has(quantity))
       diag(
         "warning",
         "DUPLICATE_QUANTITY",
-        "Dubbele kolom of kwantiteit; eerste waarde heeft voorrang.",
+        m("gef.duplicateQuantity", "Dubbele kolom of kwantiteit; eerste waarde heeft voorrang."),
         item.line,
         undefined,
         index,
@@ -217,7 +221,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "UNKNOWN_COLUMN",
-        `Kwantiteit ${quantity} is onbekend; bewaard in parameters.`,
+        m("gef.unknownQuantity", "Kwantiteit {{quantity}} is onbekend; bewaard in parameters.", { quantity }),
         item.line,
         undefined,
         index,
@@ -233,8 +237,8 @@ export function parseGef(text: string, filename: string): Cpt {
     if (!choices) continue;
     const factor=choices[unit];
     unitFactors.set(col.index,factor ?? NaN);
-    if(factor===undefined)diag('error','UNKNOWN_UNIT',`Eenheid ${col.unit} voor kwantiteit ${col.quantity} onbekend; alleen oorspronkelijke parameters bewaard.`,col.line,undefined,col.index);
-    else if(factor!==1)diag('warning','UNIT_CONVERSION',`Kolom ${col.index}: ${col.unit} omgezet naar interne eenheid met factor ${factor}; oorspronkelijke waarden blijven in parameters.`,col.line,undefined,col.index);
+    if(factor===undefined)diag('error','UNKNOWN_UNIT',m("gef.unknownUnit", "Eenheid {{unit}} voor kwantiteit {{quantity}} onbekend; alleen oorspronkelijke parameters bewaard.", { unit: col.unit, quantity: col.quantity }),col.line,undefined,col.index);
+    else if(factor!==1)diag('warning','UNIT_CONVERSION',m("gef.unitConversion", "Kolom {{column}}: {{unit}} omgezet naar interne eenheid met factor {{factor}}; oorspronkelijke waarden blijven in parameters.", { column: col.index, unit: col.unit, factor }),col.line,undefined,col.index);
   }
   const interpreted=(col:Column,value:number|undefined):number|undefined=> {
     if(value===undefined)return undefined;
@@ -246,14 +250,14 @@ export function parseGef(text: string, filename: string): Cpt {
     const [col, value] = item.value.split(",");
     const v = number(value ?? "", item.line);
     const index=Number(col);
-    if(!Number.isInteger(index)||!indices.has(index))diag('error','COLUMNVOID','Voiddefinitie verwijst naar een ongeldige of onbekende kolom.',item.line,undefined,index);
-    else if(v!==undefined){if(voids.has(index))diag('warning','DUPLICATE_VOID','Herhaalde voiddefinitie; laatste waarde gebruikt, bronheaders bewaard.',item.line,undefined,index);voids.set(index,v);}
+    if(!Number.isInteger(index)||!indices.has(index))diag('error','COLUMNVOID',m("gef.invalidVoid", "Voiddefinitie verwijst naar een ongeldige of onbekende kolom."),item.line,undefined,index);
+    else if(v!==undefined){if(voids.has(index))diag('warning','DUPLICATE_VOID',m("gef.duplicateVoid", "Herhaalde voiddefinitie; laatste waarde gebruikt, bronheaders bewaard."),item.line,undefined,index);voids.set(index,v);}
   }
   for (const item of header.get("MEASUREMENTVAR") ?? []) {
     const [key, value, unit, ...description] = item.value
       .split(",")
       .map((v) => v.trim());
-    if(key in report.measurementVariables!)diag("warning","DUPLICATE_MEASUREMENT_VAR",`Meetvariabele ${key} herhaald; laatste getypeerde waarde gebruikt, alle bronheaders bewaard.`,item.line);
+    if(key in report.measurementVariables!)diag("warning","DUPLICATE_MEASUREMENT_VAR",m("gef.duplicateMeasurementVar", "Meetvariabele {{key}} herhaald; laatste getypeerde waarde gebruikt, alle bronheaders bewaard.", { key }),item.line);
     report.measurementVariables![key] = {
       value: number(value, item.line) ?? null,
       unit,
@@ -276,7 +280,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "UNKNOWN_XY_CRS",
-        `XYID ${xy[0]} is geen RD (31000); locatie wordt niet stil omgezet.`,
+        m("gef.unknownXyCrs", "XYID {{id}} is geen RD (31000); locatie wordt niet stil omgezet.", { id: xy[0] }),
       );
   }
   if (z) {
@@ -285,23 +289,23 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "UNKNOWN_Z_DATUM",
-        `ZID ${z[0]} is geen NAP (31000); hoogte niet als NAP gebruikt.`,
+        m("gef.unknownZDatum", "ZID {{id}} is geen NAP (31000); hoogte niet als NAP gebruikt.", { id: z[0] }),
       );
     if (ground === undefined)
-      diag("warning", "MISSING_GROUND", "ZID zonder geldige maaiveldhoogte.");
+      diag("warning", "MISSING_GROUND", m("gef.missingGround", "ZID zonder geldige maaiveldhoogte."));
   }
   const declared = Number(first("COLUMN")),
     expected =
       Number.isInteger(declared) && declared > 0
         ? declared
         : Math.max(0, ...columns.map((c) => c.index));
-  if(!Number.isInteger(declared)||declared<1)diag("error","COLUMN_DECLARATION","#COLUMN moet een positief geheel aantal kolommen zijn.",header.get("COLUMN")?.[0]?.line);
+  if(!Number.isInteger(declared)||declared<1)diag("error","COLUMN_DECLARATION",m("gef.columnDeclaration", "#COLUMN moet een positief geheel aantal kolommen zijn."),header.get("COLUMN")?.[0]?.line);
   for (let i = 1; i <= expected; i++)
     if (!indices.has(i))
       diag(
         "warning",
         "MISSING_COLUMNINFO",
-        `Kolom ${i} heeft geen COLUMNINFO; ruwe waarde blijft onder column_${i} bewaard.`,
+        m("gef.missingColumnInfo", "Kolom {{column}} heeft geen COLUMNINFO; ruwe waarde blijft onder column_{{column}} bewaard.", { column: i }),
         undefined,
         undefined,
         i,
@@ -311,9 +315,9 @@ export function parseGef(text: string, filename: string): Cpt {
   if (colSep === "\\t" || colSep?.toLowerCase() === "tab") colSep = "\t";
   if (recSep === "\\n") recSep = "\n";
   if (colSep && colSep.length !== 1)
-    throw new Error("GEF: COLUMNSEPARATOR moet één teken zijn.");
+    throw new Error(m("gef.columnSeparator", "GEF: COLUMNSEPARATOR moet één teken zijn."));
   if (recSep && recSep.length !== 1)
-    throw new Error("GEF: RECORDSEPARATOR moet één teken zijn.");
+    throw new Error(m("gef.recordSeparator", "GEF: RECORDSEPARATOR moet één teken zijn."));
   const body = lines.slice(start).join("\n"),
     records = body.split(recSep || "\n"),
     points: MeasurementPoint[] = [];
@@ -334,7 +338,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "RECORD_TERMINATOR",
-        "Niet gedeclareerd eindteken verwijderd.",
+        m("gef.recordTerminator", "Niet gedeclareerd eindteken verwijderd."),
         lineAt,
         record,
       );
@@ -343,13 +347,13 @@ export function parseGef(text: string, filename: string): Cpt {
       colSep && !/\s/.test(colSep) ? value.split(colSep) : value.split(/\s+/);
     if (colSep && !/\s/.test(colSep) && tokens.length === expected + 1 && tokens[tokens.length - 1].trim() === "") {
       tokens.pop();
-      diag("info", "TRAILING_COLUMN_SEPARATOR", "Afsluitend kolomscheidingsteken gelezen als recordopmaak; geen extra meetkolom.", lineAt, record, expected + 1);
+      diag("info", "TRAILING_COLUMN_SEPARATOR", m("gef.trailingColumnSeparator", "Afsluitend kolomscheidingsteken gelezen als recordopmaak; geen extra meetkolom."), lineAt, record, expected + 1);
     }
     if (tokens.length !== expected)
       diag(
         "error",
         "COLUMN_COUNT",
-        `Verwacht ${expected} kolommen, ontvangen ${tokens.length}; ontbrekende velden blijven void.`,
+        m("gef.columnCount", "Verwacht {{expected}} kolommen, ontvangen {{received}}; ontbrekende velden blijven void.", { expected, received: tokens.length }),
         lineAt,
         record,
       );
@@ -360,7 +364,7 @@ export function parseGef(text: string, filename: string): Cpt {
       if (v === -999999 || v === voids.get(i + 1)) {
         nums[i] = undefined;
         report.voids++;
-        diag("info", "VOID", "Void-waarde gefilterd.", lineAt, record, i + 1);
+        diag("info", "VOID", m("gef.voidFiltered", "Void-waarde gefilterd."), lineAt, record, i + 1);
       } else {
         const prev = ranges.get(i + 1);
         ranges.set(i + 1, {
@@ -394,7 +398,7 @@ export function parseGef(text: string, filename: string): Cpt {
     };
     const measured = get(11),
       length = get(1);
-    if(columns.some(col=>col.quantity===11)&&measured===undefined)diag("warning","DEPTH_FALLBACK","Gecorrigeerde diepte ontbreekt in dit record; sondeerlengte/helling als terugval gebruikt.",lineAt,record,columns.find(col=>col.quantity===11)?.index);
+    if(columns.some(col=>col.quantity===11)&&measured===undefined)diag("warning","DEPTH_FALLBACK",m("gef.depthFallback", "Gecorrigeerde diepte ontbreekt in dit record; sondeerlengte/helling als terugval gebruikt."),lineAt,record,columns.find(col=>col.quantity===11)?.index);
     if(length!==undefined)p.parameters!.penetration_length_m=length;
     let depth = measured ?? length;
     if (depth === undefined) {
@@ -402,7 +406,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "error",
         "MISSING_DEPTH",
-        "Record zonder diepte weggelaten.",
+        m("gef.missingDepth", "Record zonder diepte weggelaten."),
         lineAt,
         record,
       );
@@ -412,13 +416,13 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "NEGATIVE_DEPTH",
-        "Negatieve diepte naar positieve afstand onder maaiveld omgezet.",
+        m("gef.negativeDepth", "Negatieve diepte naar positieve afstand onder maaiveld omgezet."),
         lineAt,
         record,
       );
       depth = Math.abs(depth);
     }
-    if (length !== undefined && length < 0 && measured !== undefined)diag("warning","NEGATIVE_PENETRATION","Negatieve sondeerlengte; gecorrigeerde diepte blijft leidend.",lineAt,record,columns.find(c=>c.quantity===1)?.index);
+    if (length !== undefined && length < 0 && measured !== undefined)diag("warning","NEGATIVE_PENETRATION",m("gef.negativePenetration", "Negatieve sondeerlengte; gecorrigeerde diepte blijft leidend."),lineAt,record,columns.find(c=>c.quantity===1)?.index);
     if (measured !== undefined) {report.depthMethod = "corrected-depth";corrected=depth;previousLength=Math.abs(length??depth);}
     else {
       let angle = get(8);
@@ -446,7 +450,7 @@ export function parseGef(text: string, filename: string): Cpt {
           diag(
             "warning",
             "MISSING_INCLINATION",
-            "Helling ontbreekt of is ongeldig; dit interval is verticaal aangenomen.",
+            m("gef.missingInclination", "Helling ontbreekt of is ongeldig; dit interval is verticaal aangenomen."),
             lineAt,
             record,
           );
@@ -470,7 +474,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "DEPTH_ORDER",
-        "Diepte neemt af; bronvolgorde blijft behouden.",
+        m("gef.depthOrder", "Diepte neemt af; bronvolgorde blijft behouden."),
         lineAt,
         record,
       );
@@ -480,14 +484,14 @@ export function parseGef(text: string, filename: string): Cpt {
     diag(
       "warning",
       "INCLINATION_CORRECTION",
-      "Diepte geïntegreerd uit sondeerlengte en hellingresultante; controleer de meetmethode.",
+      m("gef.inclinationCorrection", "Diepte geïntegreerd uit sondeerlengte en hellingresultante; controleer de meetmethode."),
     );
   const count = Number(first("LASTSCAN"));
   if (first("LASTSCAN") && count !== report.records)
     diag(
       "warning",
       "LASTSCAN",
-      `LASTSCAN ${count} wijkt af van ${report.records} records.`,
+      m("gef.lastScan", "LASTSCAN {{declared}} wijkt af van {{records}} records.", { declared: count, records: report.records }),
     );
   for (const item of header.get("COLUMNMINMAX") ?? []) {
     const [col, min, max] = item.value.split(",").map(Number),
@@ -499,7 +503,7 @@ export function parseGef(text: string, filename: string): Cpt {
       diag(
         "warning",
         "COLUMNMINMAX",
-        `Kolom ${col}: gemeten min/max wijkt af van de header.`,
+        m("gef.columnMinMax", "Kolom {{column}}: gemeten min/max wijkt af van de header.", { column: col }),
         item.line,
         undefined,
         col,
@@ -508,10 +512,10 @@ export function parseGef(text: string, filename: string): Cpt {
   const preVariable=report.measurementVariables?.["13"];
   const preFactor=preVariable ? ({m:1,cm:0.01,mm:0.001} as Record<string,number>)[preVariable.unit.trim().toLowerCase().replace(/\s*\(.*\)\s*$/, "")] : undefined;
   const preDepth=preVariable?.value!=null && preFactor!=null ? preVariable.value*preFactor:undefined;
-  if(preVariable && preFactor!=null && preFactor!==1)diag("warning","UNIT_CONVERSION",`Voorontgravingsdiepte van ${preVariable.unit} naar m omgerekend; bronwaarde in meetvariabelen bewaard.`);
-  if(preVariable && preFactor==null)diag('error','UNKNOWN_PRE_EXCAVATION_UNIT',`Voorontgravingsdiepte met onbekende eenheid ${preVariable.unit} alleen als bronwaarde bewaard.`);
+  if(preVariable && preFactor!=null && preFactor!==1)diag("warning","UNIT_CONVERSION",m("gef.preExcavationUnitConversion", "Voorontgravingsdiepte van {{unit}} naar m omgerekend; bronwaarde in meetvariabelen bewaard.", { unit: preVariable.unit }));
+  if(preVariable && preFactor==null)diag('error','UNKNOWN_PRE_EXCAVATION_UNIT',m("gef.unknownPreExcavationUnit", "Voorontgravingsdiepte met onbekende eenheid {{unit}} alleen als bronwaarde bewaard.", { unit: preVariable.unit }));
   const masked=maskPreExcavation(points,preDepth,"penetration");
-  for(const record of masked.masked)diag("info","PRE_EXCAVATED","Meetkanalen in voorontgraven grond gemaskeerd; oorspronkelijke waarden blijven in parameters.",undefined,record);
+  for(const record of masked.masked)diag("info","PRE_EXCAVATED",m("gef.preExcavated", "Meetkanalen in voorontgraven grond gemaskeerd; oorspronkelijke waarden blijven in parameters."),undefined,record);
   const methods=[...new Set(report.depthMethods!.map(item=>item.method))];
   report.depthMethod=methods.length===1?methods[0]:methods.length?"mixed":undefined;
   report.points = points.length;

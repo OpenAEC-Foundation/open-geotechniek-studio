@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { Gwp } from "../../types/gwp";
 import "./GwpView.css";
 
@@ -14,6 +15,7 @@ import "./GwpView.css";
  * via de PDOK OGC API en laden vervolgens de CSV-tijdseries.
  */
 export default function GwpView({ gwp }: { gwp: Gwp }) {
+  const { t: tr } = useTranslation("panels");
   // Onderkant filter (diepste tube) — handig voor de header.
   const deepestFilter = useMemo(() => {
     let minN = Infinity;
@@ -36,9 +38,9 @@ export default function GwpView({ gwp }: { gwp: Gwp }) {
         <div>
           <h2 className="gwp-title">{gwp.broId}</h2>
           <p className="gwp-sub">
-            Grondwatermonitoringput (BRO/GMW)
+            {tr("gwp.subtitle", "Grondwatermonitoringput (BRO/GMW)")}
             {gwp.wellCode ? ` · ${gwp.wellCode}` : ""}
-            {gwp.owner ? ` · eigenaar ${gwp.owner}` : ""}
+            {gwp.owner ? ` · ${tr("gwp.owner", "eigenaar {{owner}}", { owner: gwp.owner })}` : ""}
           </p>
         </div>
         <dl className="gwp-meta">
@@ -64,7 +66,7 @@ export default function GwpView({ gwp }: { gwp: Gwp }) {
           )}
           {typeof gwp.groundLevelNap === "number" && (
             <>
-              <dt>Maaiveld</dt>
+              <dt>{tr("gwp.groundLevel", "Maaiveld")}</dt>
               <dd>
                 <code>{gwp.groundLevelNap.toFixed(2)} m NAP</code>
               </dd>
@@ -72,7 +74,7 @@ export default function GwpView({ gwp }: { gwp: Gwp }) {
           )}
           {typeof deepestFilter === "number" && (
             <>
-              <dt>Onderste filter</dt>
+              <dt>{tr("gwp.deepestFilter", "Onderste filter")}</dt>
               <dd>
                 <code>{deepestFilter.toFixed(2)} m NAP</code>
               </dd>
@@ -80,7 +82,7 @@ export default function GwpView({ gwp }: { gwp: Gwp }) {
           )}
           {gwp.constructionDate && (
             <>
-              <dt>Geconstrueerd</dt>
+              <dt>{tr("gwp.constructed", "Geconstrueerd")}</dt>
               <dd>
                 <code>{gwp.constructionDate}</code>
               </dd>
@@ -88,7 +90,7 @@ export default function GwpView({ gwp }: { gwp: Gwp }) {
           )}
           {typeof gwp.numberOfMonitoringTubes === "number" && (
             <>
-              <dt>Aantal buizen</dt>
+              <dt>{tr("gwp.tubeCount", "Aantal buizen")}</dt>
               <dd>
                 <code>{gwp.numberOfMonitoringTubes}</code>
               </dd>
@@ -105,26 +107,26 @@ export default function GwpView({ gwp }: { gwp: Gwp }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open in BROloket ↗
+          {tr("gwp.openBroloket", "Open in BROloket ↗")}
         </a>
       </div>
 
       {/* ── Tubes-tabel ────────────────────────────────────────── */}
       {gwp.tubes.length > 0 && (
         <section className="gwp-section">
-          <h3 className="gwp-section-title">Monitoring-buizen (filters)</h3>
+          <h3 className="gwp-section-title">{tr("gwp.tubesTitle", "Monitoring-buizen (filters)")}</h3>
           <div className="gwp-table-wrap">
             <table className="gwp-table">
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Status</th>
-                  <th>Materiaal</th>
-                  <th>Buisbovenkant<br/>(m NAP)</th>
-                  <th>Buisdiameter<br/>(mm)</th>
-                  <th>Filter boven<br/>(m NAP)</th>
-                  <th>Filter onder<br/>(m NAP)</th>
-                  <th>Filterlengte<br/>(m)</th>
+                  <th>{tr("gwp.col.status", "Status")}</th>
+                  <th>{tr("gwp.col.material", "Materiaal")}</th>
+                  <th>{tr("gwp.col.tubeTop", "Buisbovenkant")}<br/>(m NAP)</th>
+                  <th>{tr("gwp.col.tubeDiameter", "Buisdiameter")}<br/>(mm)</th>
+                  <th>{tr("gwp.col.screenTop", "Filter boven")}<br/>(m NAP)</th>
+                  <th>{tr("gwp.col.screenBottom", "Filter onder")}<br/>(m NAP)</th>
+                  <th>{tr("gwp.col.screenLength", "Filterlengte")}<br/>(m)</th>
                 </tr>
               </thead>
               <tbody>
@@ -161,7 +163,7 @@ export default function GwpView({ gwp }: { gwp: Gwp }) {
 
       {/* ── GLD-tijdsgrafiek ───────────────────────────────────── */}
       <section className="gwp-section">
-        <h3 className="gwp-section-title">Grondwaterstand over de tijd (GLD)</h3>
+        <h3 className="gwp-section-title">{tr("gwp.gldTitle", "Grondwaterstand over de tijd (GLD)")}</h3>
         <GldTimeseriesPanel gwp={gwp} />
       </section>
     </div>
@@ -192,6 +194,7 @@ interface GldSeries {
  * en daarna client-side getekend in een SVG met wheel-zoom + drag-pan.
  */
 function GldTimeseriesPanel({ gwp }: { gwp: Gwp }) {
+  const { t } = useTranslation("panels");
   const [summaries, setSummaries] = useState<GldSummary[] | null>(null);
   const [series, setSeries] = useState<GldSeries[]>([]);
   const [busy, setBusy] = useState(false);
@@ -200,7 +203,7 @@ function GldTimeseriesPanel({ gwp }: { gwp: Gwp }) {
   // Stap 1: zoek alle GLD-features binnen ~50 m van de put-positie.
   useEffect(() => {
     if (typeof gwp.lat !== "number" || typeof gwp.lon !== "number") {
-      setError("Put heeft geen WGS84-coördinaten — kan GLD's niet zoeken.");
+      setError(t("gwp.noCoords", "Put heeft geen WGS84-coördinaten — kan GLD's niet zoeken."));
       return;
     }
     let cancelled = false;
@@ -245,7 +248,7 @@ function GldTimeseriesPanel({ gwp }: { gwp: Gwp }) {
       })
       .catch((e: unknown) => {
         if (!cancelled) {
-          setError(`Kon GLD's niet ophalen: ${e instanceof Error ? e.message : String(e)}`);
+          setError(t("gwp.fetchFailed", "Kon GLD's niet ophalen: {{error}}", { error: e instanceof Error ? e.message : String(e) }));
         }
       })
       .finally(() => {
@@ -279,7 +282,7 @@ function GldTimeseriesPanel({ gwp }: { gwp: Gwp }) {
       })
       .catch((e: unknown) => {
         if (!cancelled) {
-          setError(`CSV laden mislukt: ${e instanceof Error ? e.message : String(e)}`);
+          setError(t("gwp.csvFailed", "CSV laden mislukt: {{error}}", { error: e instanceof Error ? e.message : String(e) }));
         }
       })
       .finally(() => {
@@ -294,24 +297,23 @@ function GldTimeseriesPanel({ gwp }: { gwp: Gwp }) {
     return <div className="gwp-empty">{error}</div>;
   }
   if (busy && series.length === 0) {
-    return <div className="gwp-empty">Grondwaterstanden ophalen…</div>;
+    return <div className="gwp-empty">{t("gwp.loading", "Grondwaterstanden ophalen…")}</div>;
   }
   if (!summaries || summaries.length === 0) {
     return (
       <div className="gwp-empty">
-        Geen GLD-tijdseries gevonden in de buurt van deze put.
+        {t("gwp.noSeries", "Geen GLD-tijdseries gevonden in de buurt van deze put.")}
       </div>
     );
   }
   if (series.length === 0) {
-    return <div className="gwp-empty">GLD's gevonden ({summaries.length}) maar geen meetwaarden ontvangen.</div>;
+    return <div className="gwp-empty">{t("gwp.noValues", "GLD's gevonden ({{n}}) maar geen meetwaarden ontvangen.", { n: summaries.length })}</div>;
   }
 
   return (
     <>
       <p className="gwp-section-sub">
-        {series.length} tijdseries{series.length === 1 ? "" : ""} gevonden bij deze put.
-        Scrollen = horizontaal zoomen, slepen = verschuiven, dubbelklik = reset.
+        {t("gwp.seriesFound", "{{n}} tijdseries gevonden bij deze put. Scrollen = horizontaal zoomen, slepen = verschuiven, dubbelklik = reset.", { n: series.length })}
       </p>
       <GldChart series={series} />
       <ul className="gwp-gld-list">
@@ -319,7 +321,7 @@ function GldTimeseriesPanel({ gwp }: { gwp: Gwp }) {
           <li key={s.broId}>
             <code>{s.broId}</code>
             {typeof s.numberOfObservations === "number" && (
-              <> · {s.numberOfObservations} metingen</>
+              <> · {t("gwp.observations", "{{n}} metingen", { n: s.numberOfObservations })}</>
             )}
             {s.firstDate && s.lastDate && (
               <> · {s.firstDate} → {s.lastDate}</>
@@ -372,6 +374,7 @@ function parseGldCsv(text: string): { t: number; v: number }[] {
 const COLORS = ["#0EA5E9", "#F97316", "#22C55E", "#EC4899", "#A855F7", "#EAB308"];
 
 function GldChart({ series }: { series: GldSeries[] }) {
+  const { t: tr } = useTranslation("panels");
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const [w, setW] = useState(800);
   const h = 320;
@@ -603,7 +606,7 @@ function GldChart({ series }: { series: GldSeries[] }) {
           transform={`rotate(-90, 8, ${padT + innerH / 2})`}
           textAnchor="middle"
         >
-          Waterstand (m NAP)
+          {tr("gwp.axisLevel", "Waterstand (m NAP)")}
         </text>
         {/* Frame */}
         <rect

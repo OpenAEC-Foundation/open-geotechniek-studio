@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Öppna {{cpt}}, {{size}} mm vid {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b spets →",
+    "cptAria": "CPT-diagram med påle",
+    "excavation": "Schakt {{nap}}",
+    "loadAxis": "Last [kN]",
+    "loadSettlement": "Last–sättningsdiagram",
+    "negSkinBottom": "Gräns neg. mantelfriktion {{nap}}",
+    "pileToe": "Pålspets {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Pålhuvud {{nap}}",
+    "posSkinTop": "Överkant pos. mantelfriktion {{nap}}",
+    "qcPosSkinAvg": "qc;pos.skin;avg = {{v}} MPa",
+    "shaftSide": "← R_s mantel",
+    "water": "Vatten {{nap}}",
+    "zoomIn": "Zooma in",
+    "zoomInTitle": "Zooma in (eller scrollhjulet uppåt)",
+    "zoomOut": "Zooma ut",
+    "zoomOutTitle": "Zooma ut (eller scrollhjulet nedåt)",
+    "zoomReset": "Återställ zoom",
+    "zoomResetTitle": "Återställ zoom (eller dubbelklicka i diagrammet)",
+    "zoomToe": "Zooma till pålspets",
+    "zoomToeTitle": "Zooma till pålspets (1 m marginal runt pålen)",
+    "zoomToolbar": "Diagramzoom"
+  },
+  "choice": {
+    "aboveMaxTitle": "Även den kortaste påle som uppfyller kraven ligger över den övre gränsen.",
+    "caption": "Högsta spetsnivå [m NAP] där Rc;net;d ≥ {{min}} kN, per påldimension och CPT-sondering. Klicka på en nivå för att öppna beräkningsbladet.",
+    "cptOutOfRange": "Utanför CPT-sonderingen",
+    "dropsDeeper": "kontrollera djupare",
+    "dropsDeeperTitle": "Längre ned sjunker bärförmågan åter under den undre gränsen.",
+    "highest": "Högsta",
+    "lowest": "Lägsta",
+    "notReached": "ej uppnådd",
+    "notReachedAria": "{{cpt}}, {{size}} mm: ej uppnådd",
+    "reached": "Uppnådd",
+    "size": "Dimension [mm]",
+    "smallestSpread": "minsta spridning",
+    "spread": "Spridning",
+    "tableAria": "Spetsnivå per påldimension och CPT-sondering",
+    "title": "Urvalstabell"
+  },
+  "cpt": {
+    "choose": "— välj CPT-sondering —",
+    "title": "CPT-sondering"
+  },
+  "cpts": {
+    "all": "Alla CPT-sonderingar",
+    "legend": "CPT-sonderingar",
+    "missingOption": "{{id}} (saknas)"
+  },
+  "examples": {
+    "add": "Lägg till exempel",
+    "cptAria": "Exempel: CPT-sondering",
+    "hint": "Fullständigt redovisat i rapporten, följt av urvalstabellen och tabellerna per CPT-sondering. Utan urval tas det aktuella beräkningsbladet med.",
+    "legend": "Utskrift",
+    "levelAria": "Exempel: spetsnivå",
+    "listAria": "Exempelberäkningar",
+    "removeAria": "Ta bort exempel {{cpt}}, {{size}} mm vid {{level}} m NAP",
+    "sizeAria": "Exempel: dimension"
+  },
+  "extension": {
+    "customJoint": "Egen skarv",
+    "diameter": "Förlängningens diameter",
+    "joint": "Skarv (underkant förlängning)",
+    "jointAria": "Skarv [m NAP]",
+    "jointTooHigh": "Skarven ligger mindre än 0,5 m under grundvattennivån (NAP {{water}}): träet förblir inte permanent vått där. Välj en längre förlängning.",
+    "length": "Förlängningens längd",
+    "lengthAria": "Förlängningens längd [m]",
+    "perimeterHint": "Ovanför skarven används förlängningens omkrets, under den träets.",
+    "shape": "Form",
+    "shapeAria": "Förlängningens form",
+    "side": "Förlängningens sida",
+    "size": "Förlängning",
+    "sizeAria": "Förlängningens dimension [mm]",
+    "title": "Betongförlängning"
+  },
+  "factors": {
+    "alphaTLabel": "αt (ingen dragkontroll)",
+    "basis": "Normgrund: {{edition}}. {{source}}",
+    "edition": "Utgåva",
+    "edition2025": "2025 — projektfaktorer",
+    "source": "Källa / deklaration",
+    "sourceHint": "Källan måste stämma med pålsystem, installationsmetod och dimensioner. Faktorer från 2025 gör inte automatiskt hela beräkningsmetoden förenlig med 2025.",
+    "title": "Pålfaktorer",
+    "useProject": "Använd projektfaktorer / egen deklaration"
+  },
+  "legend": {
+    "chosen": "vald nivå",
+    "over": "> {{max}} kN, rikligt",
+    "title": "Teckenförklaring"
+  },
+  "levels": {
+    "applyList": "Tillämpa nivåer",
+    "applyRange": "Tillämpa intervall",
+    "count": "{{n}} nivåer",
+    "custom": "Egna nivåer",
+    "excavation": "Schakt",
+    "excavationAria": "Schakt [m NAP]",
+    "from": "Från [m NAP]",
+    "legend": "Spetsnivåer",
+    "listLabel": "Spetsnivåer [m NAP]",
+    "pileToe": "Pålspets",
+    "pileToeAria": "Pålspets [m NAP]",
+    "pileTop": "Pålhuvud",
+    "pileTopAria": "Pålhuvud [m NAP]",
+    "step": "Steg [m]",
+    "title": "Pålnivåer",
+    "to": "Till [m NAP]",
+    "water": "Grundvatten",
+    "waterAria": "Grundvatten [m NAP]"
+  },
+  "load": {
+    "characteristic": "karakteristisk",
+    "design": "dimensionerande last",
+    "materialFactor": "materialfaktor",
+    "negativeSkinFriction": "negativ mantelfriktion",
+    "title": "Last"
+  },
+  "material": {
+    "concrete": "Betong",
+    "steel": "Stål",
+    "wood": "Trä"
+  },
+  "pile": {
+    "axialStiffness": "Axialstyvhet EA",
+    "baseSize": "Spetsdimension",
+    "baseSizeAria": "Spetsdimension [mm] (tom = mantel)",
+    "baseSizePlaceholder": "mantel",
+    "customSize": "Egen dimension",
+    "diameter": "Diameter",
+    "eaAriaOptional": "Axialstyvhet EA [kN] (valfri)",
+    "eaAriaRequired": "Axialstyvhet EA [kN] (obligatorisk)",
+    "eaMissing": "Obligatorisk för denna påltyp — utan EA görs ingen beräkning.",
+    "headDiameter": "Huvuddiameter",
+    "material": "Material",
+    "optional": "valfri",
+    "required": "obligatorisk",
+    "sideLength": "Sidlängd",
+    "title": "Påle",
+    "tubeSize": "Rördimension",
+    "type": "Påltyp",
+    "wallThickness": "Godstjocklek",
+    "wallThicknessAria": "Godstjocklek [mm]",
+    "woodDiameterAtJoint": "Trädiameter vid skarven"
+  },
+  "profile": {
+    "bottom": "Underkant",
+    "fieldAria": "{{field}} lager {{n}}",
+    "soilType": "Jordart",
+    "soilTypeAria": "Jordart lager {{n}}",
+    "title": "Jordlagerföljd",
+    "tooShallow": "Jordlagerföljden slutar vid NAP {{bottom}} m, ovanför pålspetsen vid NAP {{toe}} m. Ingen mantelfriktion räknas över den delen; förläng det understa lagret.",
+    "top": "Överkant"
+  },
+  "result": {
+    "base": {
+      "capped": "(begränsad till 15 MPa)",
+      "title": "Spetsmotstånd"
+    },
+    "existingModel": "Befintlig projektmodell",
+    "facts": {
+      "diameterD": "Diameter D",
+      "equalToShaft": "lika med mantel",
+      "extensionValue": "{{size}} mm, från pålhuvud till skarven vid NAP {{joint}} m",
+      "projectFactors": "projektfaktorer",
+      "sideA": "Sida a",
+      "tapered": "{{size}} mm (konisk)",
+      "title": "Grundantaganden",
+      "woodAtJoint": "Trä vid skarven"
+    },
+    "negSkin": {
+      "cappedNote": "begränsad till ksMin = {{v}}",
+      "cappedTitle": "Begränsad till ksMin={{v}}",
+      "extensionAndWood": "(förlängning och trä)",
+      "layer": "Lager",
+      "title": "Negativ mantelfriktion",
+      "zone": "Zon: pålhuvud NAP {{top}} till NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Ange axialstyvheten <strong>EA</strong> under <strong>Påle</strong>. För denna påltyp härleds EA inte ur tvärsnittet; värdet följer av valt pålsystem.",
+      "missingOne": "Ytterligare en indata behövs",
+      "notYet": "Kan inte beräknas ännu",
+      "note": "Så snart indata är fullständiga visas den redovisade beräkningen här."
+    },
+    "settlement": {
+      "title": "Sättning (art. 7.6.4.2, last–sättningskurva 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} lager — Σ av bidragen per lager",
+      "title": "Maximal mantelfriktion"
+    },
+    "spring": {
+      "title": "Fjäderstyvhet"
+    },
+    "summary": {
+      "check": "Kontroll",
+      "compression": "Bärförmåga för tryck",
+      "conclusion": "Slutsats:",
+      "conclusionFail": "pålen uppfyller inte kraven; N<sub>Ed</sub> = {{nEd}} kN överskrider R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "ingen dimensionerande last angiven; nettobärförmågan är R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "pålen uppfyller kraven; N<sub>Ed</sub> = {{nEd}} kN är {{pct}} % av R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Uppfyller inte kraven",
+      "failsShort": "uppfyller INTE kraven",
+      "passes": "Uppfyller kraven",
+      "passesShort": "uppfyller kraven",
+      "quantity": "Storhet",
+      "result": "Resultat",
+      "title": "Sammanfattning"
+    },
+    "title": "Pålens bärförmåga",
+    "total": {
+      "title": "Maximal geoteknisk bärförmåga"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Förlängning",
+    "defaultSource": "Beräkningsinställningar",
+    "existingModel": "befintlig modell",
+    "extensionLengths": "Förlängningslängder",
+    "extensionLengthsAria": "Förlängningslängder [m]",
+    "extensionRemoveAria": "Ta bort förlängning {{n}}",
+    "extensionShapeAria": "Förlängningens form {{n}}",
+    "extensionSizeAria": "Förlängningens dimension {{n}} [mm]",
+    "extensionsAria": "Betongförlängningar",
+    "extensionsTitle": "Betongförlängningar på trä",
+    "factor": "Faktor",
+    "factorsHint": "Tom = tabellvärde enligt vald norm ({{edition}}). Ett projektvärde kräver motivering, till exempel en provbelastning.",
+    "factorsTitle": "Pålfaktorer · {{type}}",
+    "gammaFnk": "γf;nk negativ mantelfriktion",
+    "gammaM": "γm materialfaktor",
+    "partialFactors": "Partialkoefficienter",
+    "project": "Projekt",
+    "projectValueAria": "{{factor}} projekt",
+    "resetAll": "Återställ alla serier till standard",
+    "restoreSeries": "Återställ standardserie",
+    "restoreSeriesNone": "Återställ standardserie (ingen)",
+    "series": "Standardserie",
+    "seriesHint": "Serien för rullgardinslistan i indata (rördimensioner) och knappen Standardserie i bärförmågetabellen.",
+    "sizeMm": "Dimension [mm]",
+    "sizesAria": "Dimensionsserie påltyp [mm]",
+    "sizesFor": "Dimensioner {{type}}",
+    "sourceAria": "Källa för projektfaktorer",
+    "table": "Tabell",
+    "timberToe": "Trädiameter vid spetsen",
+    "useTableValues": "Använd tabellvärden"
+  },
+  "shape": {
+    "round": "Rund",
+    "square": "Kvadratisk"
+  },
+  "sizes": {
+    "apply": "Tillämpa dimensioner",
+    "label": "Påldimensioner [mm]",
+    "legend": "Påldimensioner",
+    "standard": "Standardserie"
+  },
+  "skin": {
+    "dragHint": "Pålnivåer och mantelfriktionszoner kan även dras i CPT-sonderingen.",
+    "ksMinAria": "K0·tan(δ) minimum",
+    "minimum": "minimum",
+    "negBottom": "Underkant negativ mantelfriktion",
+    "negBottomAria": "Underkant negativ mantelfriktion [m NAP]",
+    "posTop": "Överkant positiv mantelfriktion",
+    "posTopAria": "Överkant positiv mantelfriktion [m NAP]",
+    "title": "Mantelfriktionszoner"
+  },
+  "standard": {
+    "existingModel": "Befintlig projektmodell — oförändrad",
+    "historicalHint": "Historisk tryckberäkning för en enskild påle vid en enskild CPT-sondering. Positiv mantelfriktion i sand, konstant tvärsnitt eller uttrycklig konicitet hos träpåle; sättning och pålgrupper är inte verifierade. Byte av norm rensar projektfaktorer och återställer γm.",
+    "title": "Dimensioneringsnorm",
+    "version": "Normversion"
+  },
+  "table": {
+    "breadcrumb": "Sökväg",
+    "cpt": "CPT-sondering {{id}}",
+    "cptMissing": "CPT-sondering {{id}} saknas i projektet.",
+    "cptTableAria": "Rc;net;d CPT-sondering {{id}}",
+    "heading": "Bärförmåga per CPT-sondering",
+    "intro": "Ett pålsystem i en serie dimensioner och spetsnivåer, beräknat för varje CPT-sondering. Ställ in påltyp, norm och jordlagerföljd till vänster.",
+    "selectCpt": "Välj minst en CPT-sondering.",
+    "title": "Bärförmågetabell",
+    "toe": "Spets [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "Trädiametern minskar linjärt från huvudet; under den koniska delen är spetsdiametern konstant. Friktionsomkretsen följer vald längd; sättning och fjäderstyvheter bestäms inte.",
+    "hintFromJoint": "Trädiametern minskar linjärt från skarven; under den koniska delen är spetsdiametern konstant. Friktionsomkretsen följer vald längd; sättning och fjäderstyvheter bestäms inte.",
+    "lengthFromHead": "Konisk längd från huvudet",
+    "lengthFromHeadAria": "Konisk längd från huvudet [m]",
+    "lengthFromJoint": "Konisk längd från skarven",
+    "lengthFromJointAria": "Konisk längd från skarven [m]",
+    "title": "Konisk träpåle",
+    "toeDiameter": "Spetsdiameter",
+    "toeDiameterAria": "Trädiameter vid spetsen [mm]"
+  },
+  "target": {
+    "hint": "För varje dimension söker urvalstabellen den kortaste påle som når den undre gränsen. Över den övre gränsen är dimensionen riklig.",
+    "inverted": "Den övre gränsen måste ligga över den undre; tabellen använder fortfarande det föregående intervallet.",
+    "legend": "Erforderlig bärförmåga Rc;net;d",
+    "lower": "Undre gräns [kN]",
+    "notNumber": "Ange undre och övre gräns som ett tal i kN.",
+    "upper": "Övre gräns [kN]"
+  },
+  "visual": {
+    "cptHeading": "CPT-sondering: {{id}}",
+    "crossSection": "Tvärsnitt",
+    "crossSectionAria": "Påltvärsnitt",
+    "empty": {
+      "howTo": "Öppna en GEF-, BRO-XML- eller projektfil via <strong>Öppna</strong> högst upp. Välj sedan CPT-sonderingen under <strong>CPT-sondering</strong> i indatapanelen.",
+      "noCpt": "Ingen CPT-sondering har kopplats till denna beräkning ännu.",
+      "then": "Spetstrycket, pålen och mantelfriktionszonerna visas då här.",
+      "title": "CPT-diagram"
+    },
+    "extensionTitle": "Betongförlängning {{size}} mm ned till skarven vid NAP {{joint}} m",
+    "material": "material",
+    "materials": {
+      "castInSitu": "Platsgjuten betong",
+      "prefab": "Prefabricerad betong",
+      "steelEA": "Stålpåle; projektspecifik EA",
+      "steelTube": "Stålrörspåle, betongfylld",
+      "wood": "Trä, konstant tvärsnitt"
+    },
+    "noPoints": "Inga mätvärden i denna CPT-sondering",
+    "notComputed": "Ej beräknad: {{error}}. Dra nivåerna eller justera indata.",
+    "rebarCage": "armeringskorg",
+    "taperLength": "konisk längd från huvudet",
+    "toeSize": "spetsdimension",
+    "wall": "gods"
+  }
+}

@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { zoneName } from "../../utils/soilZones";
 import { useCptStore } from "../../store/useCptStore";
 import { loadChartZoomPreference, useChartZoomStore } from "../../store/useChartZoomStore";
 import { chartWidthScale } from "./chart-zoom";
@@ -30,6 +32,7 @@ type Marker = { nap?: number; depth?: number; cptId?: string };
  *   - Re-render on `data-theme` attribute changes via MutationObserver
  */
 export default function ChartCanvas() {
+  const { t, i18n } = useTranslation("panels");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const scaleColumns = useChartZoomStore((s) => s.scaleColumns);
@@ -140,7 +143,7 @@ export default function ChartCanvas() {
     return () => ro.disconnect();
     // themeTick is intentionally a dep — the observer doesn't trigger React,
     // so we use the tick as a redraw signal.
-  }, [cpts, renderOpts, themeTick]);
+  }, [cpts, renderOpts, themeTick, i18n.language]);
 
   // ─── Wheel zoom ───
   useEffect(() => {
@@ -386,7 +389,7 @@ export default function ChartCanvas() {
             fs: hit.fs,
             rf: hit.rf,
             u2: hit.u2,
-            soil: hit.zone?.name,
+            soil: hit.zone ? zoneName(hit.zone.zone, hit.zone.name) : undefined,
           }
         : null,
     );
@@ -394,7 +397,7 @@ export default function ChartCanvas() {
     setHoverIndicator(hit ? { cptId: hit.cptId, depth: hit.depth } : null);
     // Floating tooltip showing the soil-layer name at cursor.
     if (hit?.zone?.name) {
-      setSoilTooltip({ x, y, soil: hit.zone.name });
+      setSoilTooltip({ x, y, soil: zoneName(hit.zone.zone, hit.zone.name) });
     } else {
       setSoilTooltip(null);
     }
@@ -460,7 +463,7 @@ export default function ChartCanvas() {
               setContextMenu(null);
             }}
           >
-            Verwijderen
+            {t("chart.removeMarker", "Verwijderen")}
           </button>
           {markers.length > 1 && (
             <button
@@ -468,7 +471,7 @@ export default function ChartCanvas() {
               className="chart-context-item"
               onClick={() => { setMarkers([]); setContextMenu(null); }}
             >
-              Alles verwijderen
+              {t("chart.removeAllMarkers", "Alles verwijderen")}
             </button>
           )}
         </div>

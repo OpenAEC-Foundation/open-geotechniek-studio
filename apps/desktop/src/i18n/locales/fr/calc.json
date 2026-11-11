@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Calculs",
+    "tabs": {
+      "label": "Affichage",
+      "sheet": "Saisie + note de calcul",
+      "modelTitle": "Masquer la note de calcul pour que le dessin occupe toute la largeur",
+      "model": "Saisie + {{visual}}",
+      "modelCpt": "Saisie + CPT",
+      "print": "Aperçu avant impression",
+      "settings": "Paramètres"
+    },
+    "defaultVisual": "CPT",
+    "draft": "Brouillon",
+    "input": "Saisie",
+    "settings": {
+      "title": "Paramètres · {{name}}",
+      "intro": "Paramètres et séries standard de ce calcul. Les modifications sont recalculées immédiatement."
+    }
+  },
+  "empty": {
+    "title": "Un nouveau calcul de pieu",
+    "choose": "Choisissez capacité portante des pieux ou pieu sous charge latérale.",
+    "layout": "La saisie figure à côté de la note de calcul détaillée.",
+    "new": "Nouveau calcul",
+    "noProject": "Créez ou ouvrez d'abord un projet via Fichier."
+  },
+  "sheet": {
+    "eyebrow": "Géotechnique / {{module}}",
+    "notice": "Calcul indicatif. Vérifiez les paramètres de sol avant toute utilisation dans un projet.",
+    "keyResults": "Résultats principaux",
+    "output": "Note de calcul",
+    "governingPass": "u.c. déterminant {{uc}} — vérifié",
+    "governingFail": "u.c. déterminant {{uc}} — non vérifié",
+    "noDesignCheck": "Pas de vérification avec une charge de calcul"
+  },
+  "export": {
+    "failed": "Échec de l'export : {{error}}",
+    "busy": "En cours…",
+    "pdf": "Exporter en PDF"
+  },
+  "print": {
+    "failed": "Le rapport n'a pas pu être généré : {{error}}",
+    "loading": "Génération du rapport…"
+  },
+  "dialog": {
+    "title": "Nouveau calcul",
+    "name": "Nom",
+    "namePlaceholder": "Par exemple : Tassement du remblai",
+    "alphaTitle": "Alpha — encore en développement, pas prêt pour la production",
+    "alpha": "BROUILLON — en développement",
+    "cancel": "Annuler",
+    "add": "Ajouter"
+  },
+  "categories": {
+    "pile": "Pieux",
+    "spread": "Fondations",
+    "wall": "Écrans",
+    "anchor": "Ancrages",
+    "report": "Rapports",
+    "other": "Autres"
+  },
+  "tree": {
+    "noProject": "Ouvrez un projet pour ajouter des calculs.",
+    "add": "+ Nouveau calcul",
+    "emptyHint": "Aucun calcul pour l'instant. Cliquez sur « + » pour en ajouter un.",
+    "duplicate": "Dupliquer",
+    "confirmDelete": "Supprimer « {{name}} » ?",
+    "delete": "Supprimer",
+    "parts": "Éléments de {{name}}",
+    "sheet": "Feuille de calcul",
+    "settings": "Paramètres"
+  },
+  "comingSoon": {
+    "hint": "Ce module est encore en construction. Suivez la feuille de route sur <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Calcul",
+    "new": "Nouveau",
+    "newTitle": "Nouveau calcul géotechnique",
+    "groupMethod": "Méthode",
+    "explanation": "Explication",
+    "contextTitle": "Calculs géotechniques",
+    "contextModules": "Tassement · Semelle superficielle",
+    "draftCalculation": "Calcul provisoire"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Capacité portante des pieux",
+      "subtitle": "Capacité portante des pieux — NEN 6743 / NEN 9997",
+      "norm": "Version de la norme selon la saisie du calcul",
+      "tableLabel": "Tableau de capacité portante"
+    },
+    "laterally-loaded-pile": {
+      "name": "Pieu sous charge latérale",
+      "subtitle": "Ressorts de sol, effort en tête, moment en tête et vérification de section N–M",
+      "norm": "Module de réaction initial CUR166 · correction de couche Georgiadis · loi de ressort du projet",
+      "visualLabel": "Modèle de pieu et de ressorts",
+      "tableLabel": "Tableau des pieux"
+    },
+    "foundation-advice": {
+      "name": "Recommandation de fondation",
+      "subtitle": "Rapport avec reconnaissance de sol, plan de situation, recommandation de pieux et annexes",
+      "visualLabel": "Plan de situation"
+    }
+  }
+}

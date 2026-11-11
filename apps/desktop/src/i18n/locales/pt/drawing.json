@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Fotografia aérea © PDOK",
+    "mapData": "Dados cartográficos © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Linhas estendidas até formarem um canto na interseção",
+    "extendSecond": "Estender — clique agora na segunda linha; ambas são estendidas até formarem um canto na interseção",
+    "hintExtend": "Estender — clique primeiro na linha de referência (o limite até onde estender)",
+    "hintMirror": "Espelhar — selecione primeiro uma linha (clique nela) e depois clique em dois pontos para o eixo de simetria",
+    "hintOffset": "Deslocar — clique numa linha para escolher a origem (a distância é pedida a seguir)",
+    "hintTrim": "Aparar — clique primeiro na linha de referência (aresta de corte)",
+    "mirrorDone": "Linha espelhada em relação ao eixo",
+    "mirrorNeedsLine": "Selecione primeiro uma linha (clique nela) antes de usar Espelhar",
+    "mirrorSecond": "Espelhar — clique agora no segundo ponto do eixo de simetria",
+    "offsetDone": "Linha paralela colocada a {{dist}} m",
+    "offsetPickFirst": "Deslocar — clique primeiro numa linha para escolher a origem",
+    "offsetPrompt": "Distância de deslocamento em metros? (número positivo)",
+    "offsetSide": "Deslocar {{dist}} m — clique no lado onde deve ficar a cópia",
+    "parallel": "As linhas são paralelas — sem interseção, não é possível formar um canto",
+    "pickOtherLine": "Escolha uma linha diferente da primeira",
+    "trimDone": "Linhas aparadas até formarem um canto na interseção",
+    "trimSecond": "Aparar — clique agora na segunda linha; ambas são aparadas até formarem um canto na interseção"
+  },
+  "coordTable": {
+    "more": "+ {{n}} não mostrados",
+    "nr": "N.º",
+    "title": "Ensaios CPT ainda a realizar (RD)"
+  },
+  "crop": {
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "confirm": "Recortar e adicionar",
+    "cropPage": "Recortar página {{page}}",
+    "imageTitle": "Recortar imagem",
+    "loadingPdf": "A ler o PDF…",
+    "otherPage": "← Outra página",
+    "otherPageTitle": "Escolher outra página",
+    "page": "Página {{page}}",
+    "pageCount": "{{n}} páginas",
+    "pageCountOne": "1 página",
+    "pdfReadError": "Não foi possível ler o PDF",
+    "pickPage": "PDF — selecionar página",
+    "rendering": "A renderizar a página…"
+  },
+  "dwg": {
+    "askRd": "Exportar em coordenadas RD (EPSG:28992)?\n\nSim = coordenadas RD reais (georreferenciadas).\nNão = origem local, desenho em 0,0.",
+    "askTitle": "Exportação DWG/DXF",
+    "desktopOnly": "A exportação DWG só funciona na aplicação de ambiente de trabalho",
+    "exported": "Exportado ({{n}} objetos)",
+    "exportedWithImages": "Exportado ({{n}} objetos + {{images}} img.)",
+    "exporting": "A exportar DWG…",
+    "failed": "A exportação DWG falhou: {{error}}",
+    "filterDwg": "Desenho CAD (DWG)",
+    "filterDxf": "Intercâmbio CAD (DXF)",
+    "nothing": "Nada para exportar"
+  },
+  "export": {
+    "defaultFileName": "planta-de-localizacao"
+  },
+  "handle": {
+    "moveRaster": "Arraste para mover a grelha",
+    "rotate": "Arraste para rodar"
+  },
+  "move": {
+    "hint": "Mova o rato e clique para colocar (Esc = cancelar)",
+    "notMovable": "Este objeto não pode ser movido",
+    "pickObject": "Clique no objeto que pretende mover"
+  },
+  "northArrow": "Seta do norte",
+  "note": {
+    "prompt": "Nota:"
+  },
+  "paper": {
+    "dwgStub": "Leitor DWG/DXF em breve"
+  },
+  "pdf": {
+    "exported": "PDF exportado",
+    "exporting": "A exportar PDF…",
+    "failed": "A exportação PDF falhou: {{error}}",
+    "timeout": "A rasterização do PDF demorou mais de 30 segundos"
+  },
+  "props": {
+    "a2Landscape": "A2 horizontal",
+    "a3Landscape": "A3 horizontal",
+    "areaHeader": "Área {{id}}",
+    "background": "Fundo",
+    "color": "Cor",
+    "cols": "Colunas",
+    "cptHeader": "CPT {{id}}",
+    "cptNumber": "N.º do CPT",
+    "deleteArea": "Eliminar área",
+    "deleteBackground": "Eliminar fundo",
+    "deleteCpt": "Eliminar CPT",
+    "deleteLine": "Eliminar linha",
+    "deleteNote": "Eliminar nota",
+    "deleteRaster": "Eliminar grelha",
+    "dimensionHeader": "Linha de cota {{id}}",
+    "dragMarkerHint": "Arraste o marcador no mapa para o mover.",
+    "emptyHint": "Clique num CPT, grelha ou objeto no papel para editar as propriedades.",
+    "fillColor": "Cor de preenchimento",
+    "frame": "Moldura do desenho",
+    "freeze": "Fixar vista",
+    "freezeTitle": "Fixar o deslocamento + zoom para que o desenho fique exatamente no lugar",
+    "friction": "Medição de atrito",
+    "frictionWithSymbol": "Medição de atrito (traço sob o símbolo)",
+    "hideInExport": "Ocultar a grelha na exportação PDF/DWG",
+    "layer": "Camada",
+    "layerBackground": "Fundo (sob linhas/marcadores)",
+    "layerForeground": "Primeiro plano (sobre tudo)",
+    "lineHeader": "Linha {{id}}",
+    "loading": "A carregar propriedades…",
+    "noSelection": "Nenhuma seleção",
+    "noteHeader": "Nota {{id}}",
+    "numbering": "Numeração",
+    "numberingPlaceholder": "p. ex. S",
+    "numberingTitle": "Prefixo para a numeração das células, p. ex. 'S' dá S1, S2, … Vazio = notação predefinida R01-S01.",
+    "overlayTip": "Dica: prima <kbd>M</kbd> ou <kbd>G</kbd> para mover (o cursor acompanha; clicar confirma, Esc cancela). Arraste uma pega de canto para escalar.",
+    "paper": "Papel",
+    "paperScale": "Papel e escala",
+    "rasterHeader": "Grelha {{id}}",
+    "resetColor": "Repor predefinição",
+    "rotation": "Rotação (°)",
+    "rows": "Linhas",
+    "scaleField": "Escala 1:",
+    "scaleFieldTitle": "Escreva uma escala (p. ex. 1000 para 1:1000) e prima Enter — o desenho ajusta-se",
+    "scalePresets": "Escalas predefinidas",
+    "setScale": "Definir escala para 1:{{scale}}",
+    "spacingX": "Espaçamento X (m)",
+    "spacingY": "Espaçamento Y (m)",
+    "startNumber": "N.º inicial",
+    "strokeColor": "Cor do contorno",
+    "text": "Texto",
+    "titleBlock": {
+      "address": "Morada",
+      "checkedBy": "Verificado",
+      "date": "Data",
+      "drawingNumber": "N.º do desenho",
+      "drawnBy": "Desenhado",
+      "project": "Projeto",
+      "projectNumber": "N.º do projeto",
+      "scale": "Escala",
+      "version": "Versão"
+    },
+    "width": "Largura (m)"
+  },
+  "quotes": {
+    "cancel": "Cancelar",
+    "hint": "Ordenado pela distância ao projeto. As 3 empresas mais próximas estão pré-selecionadas. Ajuste a seleção e clique em «Abrir e-mail» para abrir o Outlook com um pedido de orçamento para todas as empresas selecionadas.",
+    "more": "+ {{hidden}} outras empresas não mostradas. O catálogo ({{total}} empresas) está em <code>{{path}}</code>.",
+    "openMail": "Abrir e-mail ({{n}})",
+    "openMailTitle": "Abre a sua aplicação de e-mail predefinida (Outlook) com um pedido de orçamento pré-preenchido",
+    "selected": "{{n}} empresas selecionadas",
+    "selectedOne": "1 empresa selecionada",
+    "title": "Pedir 3 orçamentos a empresas de ensaios CPT"
+  },
+  "rotate": {
+    "notRotatable": "Este tipo de objeto não pode ser rodado",
+    "prompt": "Rodar quantos graus? (negativo = sentido anti-horário)",
+    "selectFirst": "Selecione primeiro um objeto para rodar"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Rua, número de porta, localidade do projeto",
+    "addressTitle": "Clique para editar a morada",
+    "author": "Autor",
+    "drawingType": "Planta de localização",
+    "firstDate": "1.ª data",
+    "format": "Formato",
+    "logoAlt": "Logótipo da empresa",
+    "logoTitle": "Clique para escolher o seu próprio logótipo (PNG / JPG / SVG)",
+    "projectNumber": "N.º do projeto",
+    "projectPlaceholder": "Nome do projeto",
+    "projectTitle": "Clique para editar o nome do projeto",
+    "reference": "Referência",
+    "revision": "Rev.",
+    "scale": "Escala",
+    "scaleTitle": "Clique para editar a escala (p. ex. 1:850)",
+    "sheet": "Folha"
+  },
+  "toast": {
+    "areaHint": "Área — clique nos vértices; Enter ou duplo clique fecha, Esc cancela",
+    "broIncomplete": "BRO incompleto: {{error}}",
+    "dwgParserPending": "Leitor DWG/DXF em breve — ficheiro reconhecido, mas ainda não apresentado.",
+    "frameMustBeSvg": "A moldura do desenho tem de ser um ficheiro SVG",
+    "invalidScale": "Escala inválida: use, por exemplo, 1:850 (50–100 000).",
+    "logoReadFailed": "Não foi possível ler o logótipo",
+    "noteHint": "Nota — clique onde deve ficar o texto",
+    "objectsDeleted": "{{n}} objeto(s) eliminado(s)",
+    "objectsSelected": "{{n}} objeto(s) selecionado(s) — prima Delete para remover",
+    "rasterPlaced": "Grelha {{id}} colocada — arraste um canto para a esticar (são adicionados CPT automaticamente com no máx. {{spacing}} m entre eixos)",
+    "unsupportedFile": "O tipo de ficheiro .{{ext}} ainda não é suportado"
+  }
+}

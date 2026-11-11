@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "CPT {{id}}",
+    "notCalculated": "Nie obliczono",
+    "checks": {
+      "capacity": "nośność"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "Spód strefy tarcia negatywnego ({{given}}) leży poza palem; obliczono z wartością {{used}}.",
+    "posKleefClamped": "Góra strefy tarcia na pobocznicy ({{given}}) leży poza zakresem pobocznicy; obliczono z wartością {{used}}."
+  },
+  "errors": {
+    "noCpt": "Brak aktywnego sondowania",
+    "unknownStandard": "Nieznana wersja normy",
+    "pileTypeNotSupported": "Typ pala nieobsługiwany dla tej wersji normy: {{id}}",
+    "extensionInvalid": "Nadstawka betonowa wymaga pala drewnianego, dodatniego wymiaru nadstawki i styku między głowicą a podstawą pala, bez osobnego wymiaru podstawy",
+    "taperInvalidWithExtension": "Zbieżność pala drewnianego wymaga dodatniej średnicy podstawy ≤ średnicy drewna na styku oraz długości zbieżności w obrębie drewnianej części poniżej styku",
+    "taperInvalid": "Zbieżność pala drewnianego wymaga dodatniej średnicy podstawy ≤ średnicy głowicy oraz długości zbieżności w obrębie długości pala, bez osobnego wymiaru podstawy",
+    "toeSizeInvalid": "Wymiar podstawy musi być dodatni i skończony",
+    "footPlateTooWide": "Dla tego typu pala płyta podstawy może wystawać najwyżej 10 mm z każdej strony",
+    "groutScrewMinDiameter": "Ten szablon pala wkręcanego z iniekcją wymaga średnicy trzonu co najmniej 300 mm",
+    "timberConstantSection": "Ten typ pala drewnianego wymaga stałego przekroju bez nadstawki",
+    "eaInvalid": "EA musi być dodatnie i skończone",
+    "eaRequired": "Podaj właściwą dla projektu sztywność osiową EA dla tego typu pala",
+    "projectFactorsInvalid": "Współczynniki projektowe wymagają poprawnych wartości, źródła i wydania zgodnego z wybraną normą",
+    "nonFiniteInput": "Wszystkie dane wejściowe muszą być liczbami skończonymi",
+    "diameterNotPositive": "Średnica lub długość boku musi być większa od zera",
+    "wallThicknessInvalid": "Grubość ścianki musi być większa od zera i mniejsza od połowy średnicy",
+    "toeAboveHead": "Podstawa pala musi leżeć niżej niż głowica pala",
+    "factorsInvalid": "γm musi być większe od zera; γf,nk i minimum K0·tan(δ) nie mogą być ujemne",
+    "negativeLoads": "Obciążenia ściskające nie mogą być ujemne",
+    "kleefLevels": "Poziomy tarcia muszą leżeć między głowicą a podstawą pala; tarcie na pobocznicy nie może nakładać się na tarcie negatywne",
+    "soilLayerInvalid": "Warstwy gruntu wymagają poprawnych poziomów, ciężarów objętościowych i kąta tarcia wewnętrznego od 0 do 90 stopni",
+    "soilLayerOrder": "Warstwy gruntu muszą następować od góry do dołu bez nakładania się",
+    "historicalCptData": "Obliczenie historyczne wymaga rosnących głębokości z kompletnymi, nieujemnymi wartościami qc",
+    "historicalCptRange": "Obliczenie historyczne wymaga pełnego zakresu od 8 Deq powyżej do 4 Deq poniżej podstawy pala",
+    "historicalSandOnly": "Historyczne tarcie na pobocznicy jest zweryfikowane tylko dla piasku; dostosuj zakres pobocznicy i profil gruntu",
+    "historicalConstantSection": "Profil historyczny obsługuje tylko stały przekrój pala lub jawnie podaną zbieżność pala drewnianego",
+    "cptTooShallow": "Sondowanie zbyt płytkie (sięga {{reach}} m, wymagane ≥ {{required}} m)",
+    "pileSizeInvalid": "Wymiar pala musi być skończony i większy od zera",
+    "historicalGroupAnalysis": "Historyczna analiza dla wielu sondowań nie jest jeszcze zweryfikowana; użyj jednego sondowania"
+  },
+  "warnings": {
+    "factors": "Współczynniki: {{edition}}; {{source}}.",
+    "existingModel": "istniejący model",
+    "existingCatalog": "istniejący katalog",
+    "projectFactors2025": "Zastosowano współczynniki projektowe 2025; nie jest to pełne przejście metody obliczeniowej na NEN 9997:2025.",
+    "settlementExtension": "Pal drewniany z nadstawką betonową: osiadanie i sztywności sprężyn przy różnym EA dla betonu i drewna nie są zweryfikowane i nie są wyznaczane.",
+    "settlementTaper": "Zbieżny pal drewniany: osiadanie i sztywności sprężyn przy zmiennym EA nie są zweryfikowane i nie są wyznaczane.",
+    "settlementHistorical": "Historyczne osiadanie i sztywności sprężyn nie są zweryfikowane i nie są wyznaczane.",
+    "settlementLineUnsupported": "Krzywa obciążenie–osiadanie {{line}} nie jest jeszcze obsługiwana: osiadanie i sztywności sprężyn nie są wyznaczane.",
+    "extension": "Nadstawka betonowa {{size}} mm do styku na NAP {{joint}} m: powyżej styku przyjmuje się obwód nadstawki, poniżej obwód drewna; tarcie negatywne ze średnim obwodem w strefie tarcia, tarcie na pobocznicy dla każdej warstwy.",
+    "taperWithExtension": "Zbieżność pala drewnianego od styku: tarcie na pobocznicy ze średnim obwodem dla każdej warstwy. Bez zwiększenia współczynników pala z tytułu zbieżności.",
+    "taper": "Zbieżność pala drewnianego: tarcie negatywne ze średnim obwodem w strefie tarcia; tarcie na pobocznicy ze średnim obwodem dla każdej warstwy. Bez nadstawki betonowej i bez zwiększenia z tytułu zbieżności.",
+    "deviatingToeSize": "Odmienny wymiar podstawy: sprawdź współczynnik kształtu podstawy pala β i dopuszczalny zakres tarcia na pobocznicy dla tej technologii wykonania.",
+    "qbMaxCapped": "qb;max ograniczono do 15 MPa (wartość surowa {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Podaj skończone poziomy podstawy, po jednym w wierszu lub rozdzielone średnikami.",
+      "toeLevelsDuplicate": "Każdy poziom podstawy może wystąpić tylko raz.",
+      "cptIdsInvalid": "Wybierz unikalne nazwy sondowań do tabeli.",
+      "toeNapsInvalid": "Tabela wymaga unikalnych, skończonych poziomów podstawy.",
+      "sizesInvalid": "Podaj dodatnie wymiary pali w mm, rozdzielone spacją, przecinkiem lub średnikiem.",
+      "sizesDuplicate": "Każdy wymiar pala może wystąpić tylko raz.",
+      "levelRangeInvalid": "Podaj skończony poziom górny i dolny oraz dodatni krok.",
+      "tooManyLevels": "Maksymalnie {{max}} poziomów podstawy; wybierz większy krok.",
+      "sizesNotPositive": "Wymiary pali muszą być dodatnie.",
+      "targetRangeInvalid": "Górna granica docelowej nośności musi być powyżej dolnej granicy."
+    },
+    "notes": {
+      "profileAboveToe": "Profil gruntu kończy się powyżej podstawy pala. Sprawdź i wydłuż warstwy gruntu; brakujące warstwy wzdłuż pobocznicy nie są uwzględniane.",
+      "profileAboveDeepest": "Profil gruntu kończy się na {{level}} m NAP, powyżej najgłębszego poziomu podstawy."
+    },
+    "reasons": {
+      "cptTooShort": "CPT poza zakresem",
+      "kleefLevels": "powyżej strefy tarcia",
+      "eaMissing": "brak EA",
+      "notComputable": "nie do obliczenia"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Obliczenie nie powiodło się",
+      "exampleFailed": "Przykład {{cpt}}, {{size}} mm na {{level}} m NAP nie może zostać obliczony: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Okrągła Ø{{size}}",
+    "square": "Kwadratowa {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — historyczny profil referencyjny",
+    "nen-6743-2006": "NEN 6743-1:2006 — historyczna",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — pierwotne współczynniki",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — istniejący model obliczeniowy"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; publiczne źródło referencyjne 05290 s. 31–32 (pojedynczy pal prefabrykowany)",
+    "source2006": "NEN 6743-1:2006 tabela 2; NEN 6740:2006 tabela 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 tabela 7.c; pierwotne współczynniki przed redukcją",
+    "conditions": "Historyczny model pala wciskanego: piasek; bez korekty na grupę pali, OCR, uziarnienie ani wykop. Szczyty oporu wzdłuż pobocznicy zachowawczo ograniczone do 12 MPa. Osiadanie niezweryfikowane."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, tabela 7.c (piasek/żwir piaszczysty)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Pal stalowy rurowy — wbijany (istniejący model projektu)",
+      "shortName": "Pal stalowy rurowy — wbijany",
+      "conditions": "Zachowano istniejący zestaw współczynników; odbiega od tabeli 7.c:2017 dla zamkniętych stalowych pali rurowych.",
+      "source": "Istniejący model obliczeniowy i raport referencyjny 984.pdf",
+      "edition": "2017/2019 — istniejący model projektu"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Prefabrykowany pal z betonu sprężonego — wbijany"
+    },
+    "concrete-prefab-round": {
+      "name": "Prefabrykowany pal betonowy — okrągły, wbijany"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Pal stalowy rurowy — zamknięty (tabela 2017)",
+      "shortName": "Pal stalowy rurowy — zamknięty",
+      "conditions": "Płyta podstawy wystaje najwyżej 10 mm poza rurę; rura wypełniona betonem."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Pal betonowy formowany w gruncie — rura osłonowa wyciągana z podbijaniem",
+      "conditions": "Beton przylega bezpośrednio do gruntu; rura osłonowa wyciągana z podbijaniem i statycznie."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Pal betonowy formowany w gruncie — rura osłonowa wyciągana wibracyjnie",
+      "conditions": "Beton przylega bezpośrednio do gruntu; rura osłonowa wyciągana wibracyjnie i statycznie."
+    },
+    "concrete-screw-displacement": {
+      "name": "Betonowy pal przemieszczeniowy wkręcany — tracony grot",
+      "conditions": "Gładka rura osłonowa wycofana; beton przylega bezpośrednio do gruntu."
+    },
+    "steel-screw-grout": {
+      "name": "Stalowy pal wkręcany — iniekcja zaczynu",
+      "conditions": "Trzon z zaczynu ≥ 300 mm; podczas wykonywania nie przesuwać w górę i w dół. EA dotyczy stali/rdzenia, nie powierzchni trzonu z zaczynu."
+    },
+    "concrete-auger": {
+      "name": "Pal CFA — betonowy",
+      "conditions": "Wydanie 2017: początek qc;III ograniczony do 2 MPa; nie zastosowano zwolnienia na podstawie sondowań kontrolnych."
+    },
+    "concrete-bored": {
+      "name": "Pal wiercony — z płuczką"
+    },
+    "timber-uniform": {
+      "name": "Drewniany pal wbijany — okrągły, z nadstawką betonową lub bez",
+      "conditions": "Okrągły przekrój drewniany, stały lub liniowo zbieżny od wierzchu drewna; opcjonalnie z nadstawką betonową do styku. Bez zwiększenia współczynników pala z tytułu zbieżności."
+    }
+  },
+  "soil": {
+    "sand-dry": "Piasek, suchy",
+    "sand-wet": "Piasek, nasycony",
+    "clay": "Ił, nasycony",
+    "peat": "Torf, nasycony"
+  }
+}

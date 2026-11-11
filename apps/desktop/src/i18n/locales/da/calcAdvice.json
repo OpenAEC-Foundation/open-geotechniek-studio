@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Dokument",
+    "reference": "Reference",
+    "version": "Version",
+    "status": "Status",
+    "advisor": "Rådgiver",
+    "checker": "Kontrolleret af",
+    "projectHint": "Projektnavn, -nummer, bygherre og placering hentes fra projektoplysningerne.",
+    "basis": "Dimensioneringsgrundlag",
+    "consequenceClass": "Konsekvensklasse",
+    "designLife": "Dimensioneringsbrugstid",
+    "years": "år",
+    "designLifeAria": "Dimensioneringsbrugstid [år]",
+    "floorLevel": "Referencekote (overside gulv)",
+    "floorLevelAria": "Referencekote [m NAP]",
+    "groundwater": "Grundvand",
+    "groundwaterAria": "Regningsmæssigt grundvandsspejl [m NAP]",
+    "structure": "Konstruktion og laster",
+    "structurePlaceholder": "For eksempel: industrihal i stål, 40 × 60 m, søjlelaster op til 600 kN",
+    "bearingLayer": "Bærende lag (vejledende)",
+    "qcMin": "Minimum qc",
+    "qcMinAria": "qc bærende lag [MPa]",
+    "overAtLeast": "Over mindst",
+    "minThicknessAria": "Minimumstykkelse [m]",
+    "include": "Medtag",
+    "cptsInAdvice": "Sonderinger i anbefalingen",
+    "cptItem": "CPT {{id}}",
+    "noCpts": "Ingen sonderinger i projektet endnu.",
+    "calcsInAdvice": "Beregninger i anbefalingen",
+    "noCalcs": "Ingen pæleberegninger i projektet endnu.",
+    "appendixCpts": "Bilag sonderinger",
+    "appendixCalcs": "Bilag beregningsark",
+    "ownText": "Egen tekst",
+    "introNote": "Supplerende indledning",
+    "remarks": "Bemærkninger til konklusionen"
+  },
+  "status": {
+    "concept": "Udkast",
+    "definitief": "Endelig",
+    "conceptLower": "udkast",
+    "definitiefLower": "endelig"
+  },
+  "visual": {
+    "aria": "Situationsplan med sonderinger",
+    "bearingTop": "bl NAP {{value}}",
+    "missing": "Uden koordinater (ikke tegnet): {{ids}}.",
+    "legend": "Trekant: sondering; bl = overside bærende lag (vejledende). Målfast, koordinater i RD."
+  },
+  "result": {
+    "title": "Funderingsanbefaling",
+    "header": "{{reference}} · version {{version}} · {{status}}",
+    "noReference": "ingen reference",
+    "toc": {
+      "title": "Rapportens indhold",
+      "intro": "Indledning: baggrund, formål og projektoplysninger",
+      "basis": "Dimensioneringsgrundlag",
+      "investigation": "Jordbundsundersøgelse: {{count}} sonderinger med situationsplan",
+      "soil": "Jordprofil og bærende lag",
+      "vertical": "Trykpæle: {{names}}",
+      "lateral": "Tværbelastede pæle: {{names}}",
+      "execution": "Negativ overflademodstand og udførelse",
+      "conclusions": "Konklusioner og anbefalinger",
+      "appendixCpts": "Bilag A: sonderinger",
+      "appendixCalcs": "Bilag B: beregningsark"
+    },
+    "bearing": {
+      "title": "Bærende lag",
+      "text": "Det bærende lag er vejledende antaget som det første interval, hvor konusmodstanden holder sig over {{qc}} MPa over mindst {{thickness}} m. Dette er en hjælp til overblikket; pælespidsens kote følger af bæreevneberegningen.",
+      "tableAria": "Bærende lag pr. sondering",
+      "cpt": "Sondering",
+      "ground": "Terræn [m NAP]",
+      "end": "Slut [m NAP]",
+      "top": "Bl [m NAP]",
+      "notFound": "ikke fundet",
+      "conclusion": "Overside bærende lag mellem NAP {{highest}} m og NAP {{lowest}} m; spredning {{spread}} m."
+    },
+    "calcs": {
+      "title": "Beregninger i anbefalingen",
+      "none": "Ingen pæleberegninger medtaget endnu.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, spids NAP {{toe}} m",
+      "notComputed": "(ikke beregnet)",
+      "lateral": "{{name}}: {{passing}} af {{count}} pæle opfylder kravene"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} sondering",
+    "cptMany": "{{count}} sonderinger",
+    "calcOne": "{{count}} beregning",
+    "calcMany": "{{count}} beregninger"
+  }
+}

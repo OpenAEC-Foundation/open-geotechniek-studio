@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "CPT {{id}}",
+    "notCalculated": "Non calcolato",
+    "checks": {
+      "capacity": "capacità portante"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "La base dell'attrito negativo ({{given}}) è al di fuori del palo; calcolato con {{used}}.",
+    "posKleefClamped": "Il limite superiore dell'attrito laterale positivo ({{given}}) è al di fuori del tratto del fusto; calcolato con {{used}}."
+  },
+  "errors": {
+    "noCpt": "Nessuna prova CPT attiva",
+    "unknownStandard": "Versione della norma sconosciuta",
+    "pileTypeNotSupported": "Tipo di palo non supportato per questa versione della norma: {{id}}",
+    "extensionInvalid": "Una prolunga in calcestruzzo richiede un palo in legno, una dimensione positiva della prolunga e un giunto tra testa e punta del palo, senza una dimensione di base separata",
+    "taperInvalidWithExtension": "La rastremazione del legno richiede un diametro di punta positivo ≤ diametro del legno al giunto e una lunghezza di rastremazione entro la parte in legno sotto il giunto",
+    "taperInvalid": "La rastremazione del legno richiede un diametro di punta positivo ≤ diametro di testa e una lunghezza di rastremazione entro la lunghezza del palo, senza una dimensione di base separata",
+    "toeSizeInvalid": "La dimensione della punta deve essere positiva e finita",
+    "footPlateTooWide": "Per questo tipo di palo la piastra di base può sporgere al massimo 10 mm per lato",
+    "groutScrewMinDiameter": "Questa preimpostazione di palo a vite con iniezione di malta richiede un diametro del fusto di almeno 300 mm",
+    "timberConstantSection": "Questo tipo di palo in legno richiede una sezione costante senza prolunga",
+    "eaInvalid": "EA deve essere positivo e finito",
+    "eaRequired": "Inserisci la rigidezza assiale EA specifica del progetto per questo tipo di palo",
+    "projectFactorsInvalid": "I fattori di progetto richiedono valori validi, una fonte e un'edizione corrispondente alla norma selezionata",
+    "nonFiniteInput": "Tutti i valori di input devono essere numeri finiti",
+    "diameterNotPositive": "Il diametro o la lunghezza del lato deve essere maggiore di zero",
+    "wallThicknessInvalid": "Lo spessore della parete deve essere maggiore di zero e minore di metà del diametro",
+    "toeAboveHead": "La punta del palo deve trovarsi sotto la testa del palo",
+    "factorsInvalid": "γm deve essere maggiore di zero; γf,nk e il minimo di K0·tan(δ) non devono essere negativi",
+    "negativeLoads": "I carichi di compressione non devono essere negativi",
+    "kleefLevels": "Le quote dell'attrito laterale devono trovarsi tra testa e punta del palo; l'attrito laterale positivo non deve sovrapporsi all'attrito negativo",
+    "soilLayerInvalid": "Gli strati di terreno richiedono quote valide, pesi di volume e un angolo d'attrito compreso tra 0 e 90 gradi",
+    "soilLayerOrder": "Gli strati di terreno devono procedere dall'alto verso il basso senza sovrapposizioni",
+    "historicalCptData": "Un calcolo storico richiede profondità crescenti con valori qc completi e non negativi",
+    "historicalCptRange": "Un calcolo storico richiede l'intero intervallo da 8 Deq sopra a 4 Deq sotto la punta del palo",
+    "historicalSandOnly": "L'attrito laterale positivo storico è verificato solo per la sabbia; adatta il tratto del fusto e il profilo stratigrafico",
+    "historicalConstantSection": "Il profilo storico supporta solo una sezione costante del palo o una rastremazione esplicita del legno",
+    "cptTooShallow": "Prova CPT troppo poco profonda (raggiunge {{reach}} m, richiede ≥ {{required}} m)",
+    "pileSizeInvalid": "La dimensione del palo deve essere finita e maggiore di zero",
+    "historicalGroupAnalysis": "L'analisi storica con più prove CPT non è ancora verificata; usa una sola prova CPT"
+  },
+  "warnings": {
+    "factors": "Fattori: {{edition}}; {{source}}.",
+    "existingModel": "modello esistente",
+    "existingCatalog": "catalogo esistente",
+    "projectFactors2025": "Applicati i fattori di progetto 2025; non si tratta di una conversione completa del metodo di calcolo alla NEN 9997:2025.",
+    "settlementExtension": "Palo in legno con prolunga in calcestruzzo: i valori di cedimento e delle molle con EA diversa per calcestruzzo e legno non sono verificati e non vengono determinati.",
+    "settlementTaper": "Palo in legno rastremato: i valori di cedimento e delle molle con EA variabile non sono verificati e non vengono determinati.",
+    "settlementHistorical": "I valori storici di cedimento e delle molle non sono verificati e non vengono determinati.",
+    "settlementLineUnsupported": "Curva carico-cedimento {{line}} non ancora supportata: i valori di cedimento e delle molle non vengono determinati.",
+    "extension": "Prolunga in calcestruzzo {{size}} mm fino al giunto a NAP {{joint}} m: sopra il giunto si usa il perimetro della prolunga, sotto quello del legno; attrito negativo con il perimetro medio sulla zona d'attrito, attrito laterale positivo per strato.",
+    "taperWithExtension": "Rastremazione del legno dal giunto: attrito laterale positivo con perimetro medio per strato. Nessun incremento dei fattori del palo per la rastremazione.",
+    "taper": "Rastremazione del legno: attrito negativo con perimetro medio sulla zona d'attrito; attrito laterale positivo con perimetro medio per strato. Senza prolunga in calcestruzzo né incremento per la rastremazione.",
+    "deviatingToeSize": "Dimensione della punta diversa: verifica il fattore di forma della base del palo β e il tratto d'attrito laterale ammesso per questo metodo di installazione.",
+    "qbMaxCapped": "qb;max limitato a 15 MPa (valore grezzo {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Inserisci quote della punta finite, una per riga o separate da punto e virgola.",
+      "toeLevelsDuplicate": "Ogni quota della punta può comparire una sola volta.",
+      "cptIdsInvalid": "Seleziona nomi di prove CPT univoci per la tabella.",
+      "toeNapsInvalid": "La tabella richiede quote della punta univoche e finite.",
+      "sizesInvalid": "Inserisci dimensioni positive dei pali in mm, separate da spazio, virgola o punto e virgola.",
+      "sizesDuplicate": "Ogni dimensione del palo può comparire una sola volta.",
+      "levelRangeInvalid": "Inserisci una quota superiore e inferiore finita e un passo positivo.",
+      "tooManyLevels": "Al massimo {{max}} quote della punta; scegli un passo maggiore.",
+      "sizesNotPositive": "Le dimensioni dei pali devono essere positive.",
+      "targetRangeInvalid": "Il limite superiore della capacità portante richiesta deve essere superiore al limite inferiore."
+    },
+    "notes": {
+      "profileAboveToe": "Il profilo stratigrafico termina sopra la punta del palo. Verifica ed estendi gli strati di terreno; gli strati mancanti lungo il fusto non contribuiscono.",
+      "profileAboveDeepest": "Il profilo stratigrafico termina a {{level}} m NAP, sopra la quota della punta più profonda."
+    },
+    "reasons": {
+      "cptTooShort": "CPT fuori intervallo",
+      "kleefLevels": "sopra la zona d'attrito",
+      "eaMissing": "EA mancante",
+      "notComputable": "non calcolabile"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Calcolo non riuscito",
+      "exampleFailed": "L'esempio {{cpt}}, {{size}} mm a {{level}} m NAP non può essere calcolato: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Circolare Ø{{size}}",
+    "square": "Quadrata {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — profilo di riferimento storico",
+    "nen-6743-2006": "NEN 6743-1:2006 — storica",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — fattori originali",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modello di calcolo esistente"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; riferimento pubblico 05290 pp. 31–32 (singolo palo prefabbricato)",
+    "source2006": "NEN 6743-1:2006 tabella 2; NEN 6740:2006 tabella 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 tabella 7.c; fattori originali prima della riduzione",
+    "conditions": "Modello storico di palo compresso: sabbia; nessuna correzione per gruppo di pali, OCR, granulometria o scavo. Picchi lungo il fusto limitati cautelativamente a 12 MPa. Cedimento non verificato."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, tabella 7.c (sabbia/ghiaia sabbiosa)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Palo tubolare in acciaio — battuto (modello di progetto esistente)",
+      "shortName": "Palo tubolare in acciaio — battuto",
+      "conditions": "Mantenuto il set di fattori esistente; si discosta dalla tabella 7.c:2017 per i pali tubolari in acciaio a punta chiusa.",
+      "source": "Modello di calcolo esistente e rapporto di riferimento 984.pdf",
+      "edition": "2017/2019 — modello di progetto esistente"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Palo prefabbricato in calcestruzzo precompresso — battuto"
+    },
+    "concrete-prefab-round": {
+      "name": "Palo prefabbricato in calcestruzzo — circolare, battuto"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Palo tubolare in acciaio — punta chiusa (tabella 2017)",
+      "shortName": "Palo tubolare in acciaio — punta chiusa",
+      "conditions": "La piastra di base sporge al massimo 10 mm oltre il tubo; tubo riempito di calcestruzzo."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Palo in calcestruzzo gettato in opera — camicia estratta mediante battitura inversa",
+      "conditions": "Il calcestruzzo è a diretto contatto con il terreno; camicia estratta mediante battitura inversa e trazione statica."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Palo in calcestruzzo gettato in opera — camicia estratta mediante vibrazione",
+      "conditions": "Il calcestruzzo è a diretto contatto con il terreno; camicia estratta mediante vibrazione e trazione statica."
+    },
+    "concrete-screw-displacement": {
+      "name": "Palo a vite in calcestruzzo — punta persa",
+      "conditions": "Camicia liscia estratta; il calcestruzzo è a diretto contatto con il terreno."
+    },
+    "steel-screw-grout": {
+      "name": "Palo a vite in acciaio — iniezione di malta",
+      "conditions": "Fusto in malta ≥ 300 mm; non muovere su e giù durante l'installazione. EA si riferisce all'acciaio/anima, non alla superficie del fusto in malta."
+    },
+    "concrete-auger": {
+      "name": "Palo a elica continua — calcestruzzo",
+      "conditions": "Edizione 2017: inizio di qc;III limitato a 2 MPa; non applicata alcuna esenzione basata su prove CPT successive all'installazione."
+    },
+    "concrete-bored": {
+      "name": "Palo trivellato — con fluido di sostegno"
+    },
+    "timber-uniform": {
+      "name": "Palo battuto in legno — circolare, con o senza prolunga in calcestruzzo",
+      "conditions": "Sezione circolare in legno, costante o rastremata linearmente dalla sommità del legno; eventualmente con una prolunga in calcestruzzo fino al giunto. Nessun incremento dei fattori del palo per la rastremazione."
+    }
+  },
+  "soil": {
+    "sand-dry": "Sabbia, asciutta",
+    "sand-wet": "Sabbia, satura",
+    "clay": "Argilla, satura",
+    "peat": "Torba, satura"
+  }
+}

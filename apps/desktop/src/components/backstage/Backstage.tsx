@@ -2,6 +2,7 @@ import { exportGef } from "../../types/gefWriter";
 import { APP_VERSION } from "../../version";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 import { invoke } from "@tauri-apps/api/core";
 import { save } from "@tauri-apps/plugin-dialog";
 import { useRecentFiles, type RecentFile } from "../../hooks/useRecentFiles";
@@ -17,6 +18,10 @@ import { downloadBlobAsFile, saveJsonAsFile } from "../../utils/browserSave";
 import { activeProjectPayload, projectNameFromFilename } from "../../store/projectSerialization";
 import ExtensionManagerPanel from "./ExtensionManagerPanel";
 import "./Backstage.css";
+
+/** Melding/label uit de `app`-namespace, buiten de render (alerts, dialogen). */
+const ta = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`app:backstage.${key}`, { defaultValue: nl, ...vars });
 
 const ICONS = {
   new: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6m-3 3h6"/></svg>',
@@ -103,7 +108,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
   const saveProject = useCallback(async () => {
     if (saving.current) return;
     if (!activeDoc || activeDoc.kind !== "project") {
-      alert("Geen project actief — open of maak een .ifcgeo project.");
+      alert(ta("noProject", "Geen project actief — open of maak een .ifcgeo project."));
       return;
     }
     saving.current = true;
@@ -123,7 +128,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
           // om project vs single te onderscheiden. `.ifcgis` en `.ifcx`
           // blijven leesbaar in de open-dialog (legacy bestanden).
           filters: [
-            { name: "Open Geotechniek Studio bestand", extensions: ["ifcgeo", "ifcgis", "ifcx"] },
+            { name: ta("projectFilter", "Open Geotechniek Studio bestand"), extensions: ["ifcgeo", "ifcgis", "ifcx"] },
           ],
         })
       : null;
@@ -146,7 +151,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
       onClose();
     } catch (err) {
       console.error("save_project_ifcgis_full failed", err);
-      alert(`Opslaan mislukt: ${err}`);
+      alert(ta("saveFailed", "Opslaan mislukt: {{error}}", { error: String(err) }));
     } finally {
       saving.current = false;
     }
@@ -180,17 +185,17 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
           ? "GEF (.gef)"
           : format === "bro"
           ? "BRO XML (.xml)"
-          : "Geotechniek-object (.ifcgeo)";
+          : ta("geoObjectFilter", "Geotechniek-object (.ifcgeo)");
       const baseName = activeDoc.cpt.id || "sondering";
       if(format === "ifcgeo") {
         try {
           if(IS_TAURI){
-            const path=await save({defaultPath:`${baseName}.ifcgeo`,filters:[{name:'Sondering met brongegevens',extensions:['ifcgeo']}]});
+            const path=await save({defaultPath:`${baseName}.ifcgeo`,filters:[{name:ta("cptSnapshotFilter", "Sondering met brongegevens"),extensions:['ifcgeo']}]});
             if(!path)return;
             const {writeTextFile}=await import('@tauri-apps/plugin-fs');await writeTextFile(path,JSON.stringify(activeDoc.cpt,null,2));
           }else downloadBlobAsFile(new Blob([JSON.stringify(activeDoc.cpt,null,2)],{type:'application/json'}),`${baseName}.ifcgeo`);
           setShowCptSaveAsMenu(false);onClose();
-        }catch(error){alert(`Snapshot opslaan mislukt: ${String(error)}`);}
+        }catch(error){alert(ta("snapshotSaveFailed", "Snapshot opslaan mislukt: {{error}}", { error: String(error) }));}
         return;
       }
       if(format === "gef") {
@@ -203,12 +208,12 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
             const {writeTextFile}=await import('@tauri-apps/plugin-fs');await writeTextFile(path,result.text);
           }else downloadBlobAsFile(new Blob([result.text],{type:'text/plain;charset=utf-8'}),`${baseName}.gef`);
           setShowCptSaveAsMenu(false);onClose();
-        }catch(error){alert(`GEF-export gestopt: ${String(error)}`);}
+        }catch(error){alert(ta("gefExportStopped", "GEF-export gestopt: {{error}}", { error: String(error) }));}
         return;
       }
 
       if (!IS_TAURI) {
-        alert("Een nieuwe BRO-levering genereren is alleen beschikbaar via de legacy desktop-export. Gebruik GEF of een JSON-snapshot voor een bronvaste export.");
+        alert(ta("broBrowserUnavailable", "Een nieuwe BRO-levering genereren is alleen beschikbaar via de legacy desktop-export. Gebruik GEF of een JSON-snapshot voor een bronvaste export."));
         return;
       }
       const dst = await save({
@@ -226,7 +231,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
         onClose();
       } catch (err) {
         console.error("save_cpt_as failed", err);
-        alert(`Opslaan mislukt: ${err}`);
+        alert(ta("saveFailed", "Opslaan mislukt: {{error}}", { error: String(err) }));
       }
     },
     [activeDoc, onClose],
@@ -273,12 +278,21 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
         if (!IS_TAURI) {
           const msg = err instanceof Error ? err.message : String(err);
           alert(
-            `Kon ${f.name} niet openen in browser-modus:\n${msg}\n\n` +
-            "Tip: BHR-GT XML + GMW XML + GEF + BRO CPT-XML werken wél in de browser. " +
-            "Voor .ifcgeo/.ifcgis projectbestanden heb je de desktop-versie nodig.",
+            ta(
+              "browserOpenFailed",
+              "Kon {{name}} niet openen in browser-modus:\n{{message}}\n\n" +
+                "Tip: BHR-GT XML + GMW XML + GEF + BRO CPT-XML werken wél in de browser. " +
+                "Voor .ifcgeo/.ifcgis projectbestanden heb je de desktop-versie nodig.",
+              { name: f.name, message: msg },
+            ),
           );
         } else {
-          alert(`Kon ${f.name} niet openen: ${err instanceof Error ? err.message : String(err)}`);
+          alert(
+            ta("openFailed", "Kon {{name}} niet openen: {{message}}", {
+              name: f.name,
+              message: err instanceof Error ? err.message : String(err),
+            }),
+          );
         }
       }
     }
@@ -408,7 +422,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
                 className="backstage-subitem"
                 onClick={() => void saveCptAs("ifcgeo")}
               >
-                Geotechniek-object (.ifcgeo)
+                {t("app:backstage.geoObjectFilter", "Geotechniek-object (.ifcgeo)")}
               </button>
             </div>
           )}
@@ -625,11 +639,11 @@ function OpenPanel({
     const diffMs = now.getTime() - d.getTime();
     const diffMin = Math.floor(diffMs / 60000);
     if (diffMin < 1) return t("openPanel.justNow", "Just now");
-    if (diffMin < 60) return `${diffMin}m ago`;
+    if (diffMin < 60) return t("app:backstage.minutesAgo", "{{n}} min geleden", { n: diffMin });
     const diffHr = Math.floor(diffMin / 60);
-    if (diffHr < 24) return `${diffHr}h ago`;
+    if (diffHr < 24) return t("app:backstage.hoursAgo", "{{n}} u geleden", { n: diffHr });
     const diffDay = Math.floor(diffHr / 24);
-    if (diffDay < 7) return `${diffDay}d ago`;
+    if (diffDay < 7) return t("app:backstage.daysAgo", "{{n}} d geleden", { n: diffDay });
     return d.toLocaleDateString();
   };
 

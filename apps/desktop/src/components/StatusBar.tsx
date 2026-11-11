@@ -29,7 +29,7 @@ export default function StatusBar() {
         <div className="status-hover-values">
         {hovered ? (
           <>
-            <Field label="Diepte" value={hovered.depth.toFixed(2)} unit="m" />
+            <Field label={t("app:statusBar.depth", "Diepte")} value={hovered.depth.toFixed(2)} unit="m" />
             {hovered.depthNap != null && (
               <>
                 <Sep />

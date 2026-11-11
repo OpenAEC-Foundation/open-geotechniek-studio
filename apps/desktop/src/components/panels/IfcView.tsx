@@ -18,6 +18,7 @@ import { useCptStore } from "../../store/useCptStore";
 
 export default function IfcView() {
   const { t } = useTranslation("ribbon");
+  const { t: tp } = useTranslation("panels");
 
   // Subscribe per primitive (Zustand v5 strict-equal).
   const activeDocId = useCptStore((s) => s.activeDocId);
@@ -40,8 +41,8 @@ export default function IfcView() {
   return (
     <div className="ifc-view-split">
       <div className="ifc-split-col ifc-split-col-left">
-        <h3>IFC4x3-export uitgeschakeld</h3>
-        <p>De oude STEP-export voldoet niet aan het IFC-schema. Gebruik het projectbestand om alle gegevens te bewaren. De IFCX-snapshot is experimenteel.</p>
+        <h3>{tp("ifcView.disabledTitle", "IFC4x3-export uitgeschakeld")}</h3>
+        <p>{tp("ifcView.disabledText", "De oude STEP-export voldoet niet aan het IFC-schema. Gebruik het projectbestand om alle gegevens te bewaren. De IFCX-snapshot is experimenteel.")}</p>
       </div>
       <div className="ifc-split-divider" aria-hidden />
       <div className="ifc-split-col ifc-split-col-right">

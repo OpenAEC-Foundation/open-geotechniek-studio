@@ -1,0 +1,81 @@
+{
+  "detached": {
+    "view": "Vista destacada",
+    "dockBackTitle": "Voltar a ancorar na janela principal",
+    "dockBack": "Ancorar",
+    "untitled": "Sem título"
+  },
+  "drop": {
+    "hint": "Largue para abrir — GEF, BRO XML ou .ifcgeo",
+    "browserOpenFailed": "Não foi possível abrir {{name}} no modo de navegador:\n{{message}}\n\nDica: BHR-GT XML, GMW XML e GEF funcionam no navegador. Para BRO CPT XML e ficheiros de projeto, precisa da versão de ambiente de trabalho."
+  },
+  "errorBoundary": {
+    "title": "⚠ Falha de renderização React — ErrorBoundary de nível superior",
+    "intro": "Um componente da aplicação lançou um erro durante a renderização. O rastreio da pilha abaixo ajuda a localizar a causa.",
+    "reload": "Recarregar aplicação",
+    "noStack": "(sem pilha disponível)",
+    "componentStack": "Pilha de componentes"
+  },
+  "backstage": {
+    "noProject": "Nenhum projeto ativo — abra ou crie um projeto .ifcgeo.",
+    "projectFilter": "Ficheiro do Open Geotechniek Studio",
+    "saveFailed": "Falha ao guardar: {{error}}",
+    "geoObjectFilter": "Objeto geotécnico (.ifcgeo)",
+    "cptSnapshotFilter": "CPT com dados de origem",
+    "snapshotSaveFailed": "Falha ao guardar o instantâneo: {{error}}",
+    "gefExportStopped": "Exportação GEF interrompida: {{error}}",
+    "broBrowserUnavailable": "A geração de uma nova entrega BRO só está disponível através da exportação legada de ambiente de trabalho. Use GEF ou um instantâneo JSON para uma exportação fiel à origem.",
+    "browserOpenFailed": "Não foi possível abrir {{name}} no modo de navegador:\n{{message}}\n\nDica: BHR-GT XML, GMW XML, GEF e BRO CPT XML funcionam no navegador. Para ficheiros de projeto .ifcgeo/.ifcgis, precisa da versão de ambiente de trabalho.",
+    "openFailed": "Não foi possível abrir {{name}}: {{message}}",
+    "minutesAgo": "há {{n}} min",
+    "hoursAgo": "há {{n}} h",
+    "daysAgo": "há {{n}} d"
+  },
+  "extensions": {
+    "tekening": {
+      "name": "Planta de localização",
+      "description": "Papel CAD (A2/A3/A4) com CPT, ajuste a pontos, sobreposições e exportação PDF."
+    },
+    "offertes": {
+      "name": "Pedir orçamentos",
+      "description": "Pede orçamentos às empresas de ensaios CPT mais próximas."
+    },
+    "category": {
+      "drawing": "Desenho",
+      "workflow": "Fluxo de trabalho",
+      "calculation": "Cálculo"
+    },
+    "lockedLabel": "Ainda não pronto para produção",
+    "inDevelopment": "Em desenvolvimento",
+    "lockedDescription": "Este cálculo ainda está em desenvolvimento — os resultados ainda não foram verificados para uso em produção. Por isso, o interruptor está desativado.",
+    "noCatalog": "Nenhum catálogo de extensões externo disponível.",
+    "builtInOnly": "O Open Geotechniek Studio usa atualmente apenas extensões incorporadas (ver o separador \"{{tab}}\"). Um catálogo da comunidade será disponibilizado numa versão futura."
+  },
+  "statusBar": {
+    "depth": "Profundidade"
+  },
+  "startSidebar": {
+    "title": "Início",
+    "collapse": "Recolher",
+    "expand": "Abrir painel inicial",
+    "exampleProject": "Projeto de exemplo"
+  },
+  "releaseNotes": {
+    "title": "Novidades",
+    "loadFailed": "Não foi possível carregar as notas de versão ({{error}})",
+    "loading": "A carregar…",
+    "none": "Nenhuma versão encontrada"
+  },
+  "store": {
+    "noProject": "Nenhum projeto ativo.",
+    "noProjectForBro": "Nenhum projeto ativo — não é possível adicionar o CPT BRO.",
+    "targetProjectClosed": "O projeto de destino foi fechado durante a adição.",
+    "gmwParseFailed": "{{filename}}: não foi possível ler uma entrega GMW (sem raiz <GMW_PO>/<GMW_O> ou sem broId)",
+    "unsupportedBore": "{{filename}}: não é uma sondagem BHR XML ou GEF suportada"
+  },
+  "platform": {
+    "unknownCptFormat": "Formato CPT desconhecido ({{filename}}). Esperado GEF ou BRO CPT XML.",
+    "pdfWindowClosed": "A janela do PDF foi fechada. Abra o relatório novamente.",
+    "popupBlocked": "Permita janelas pop-up ou use Gerar PDF para transferir."
+  }
+}

@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Ouvrir {{cpt}}, {{size}} mm à {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b pointe →",
+    "cptAria": "Graphique CPT avec superposition des pieux",
+    "excavation": "Excavation {{nap}}",
+    "loadAxis": "Charge [kN]",
+    "loadSettlement": "Diagramme charge-tassement",
+    "negSkinBottom": "Limite du frottement négatif {{nap}}",
+    "pileToe": "Pointe du pieu {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Tête du pieu {{nap}}",
+    "posSkinTop": "Début du frottement positif {{nap}}",
+    "qcPosSkinAvg": "qc;pos.skin;avg = {{v}} MPa",
+    "shaftSide": "← R_s fût",
+    "water": "Eau {{nap}}",
+    "zoomIn": "Zoom avant",
+    "zoomInTitle": "Zoom avant (ou molette vers le haut)",
+    "zoomOut": "Zoom arrière",
+    "zoomOutTitle": "Zoom arrière (ou molette vers le bas)",
+    "zoomReset": "Réinitialiser le zoom",
+    "zoomResetTitle": "Réinitialiser le zoom (ou double-clic sur le graphique)",
+    "zoomToe": "Zoomer sur la pointe",
+    "zoomToeTitle": "Zoomer sur la pointe du pieu (marge de 1 m autour du pieu)",
+    "zoomToolbar": "Zoom du graphique"
+  },
+  "choice": {
+    "aboveMaxTitle": "Même le pieu conforme le plus court dépasse la limite supérieure.",
+    "caption": "Niveau de pointe le plus haut [m NAP] pour lequel Rc;net;d ≥ {{min}} kN, par dimension de pieu et par CPT. Cliquez sur un niveau pour ouvrir la feuille de calcul.",
+    "cptOutOfRange": "CPT trop court",
+    "dropsDeeper": "vérifier plus bas",
+    "dropsDeeperTitle": "Plus en profondeur, la capacité portante redescend sous la limite inférieure.",
+    "highest": "Le plus haut",
+    "lowest": "Le plus bas",
+    "notReached": "non atteint",
+    "notReachedAria": "{{cpt}}, {{size}} mm : non atteint",
+    "reached": "Atteint",
+    "size": "Dimension [mm]",
+    "smallestSpread": "plus faible dispersion",
+    "spread": "Dispersion",
+    "tableAria": "Niveau de pointe par dimension de pieu et par CPT",
+    "title": "Tableau de choix"
+  },
+  "cpt": {
+    "choose": "— choisir un CPT —",
+    "title": "CPT"
+  },
+  "cpts": {
+    "all": "Tous les essais CPT",
+    "legend": "Essais CPT",
+    "missingOption": "{{id}} (manquant)"
+  },
+  "examples": {
+    "add": "Ajouter un exemple",
+    "cptAria": "Exemple : CPT",
+    "hint": "Entièrement détaillé dans le rapport, suivi du tableau de choix et des tableaux par CPT. Sans sélection, la feuille de calcul actuelle est incluse.",
+    "legend": "Note de calcul",
+    "levelAria": "Exemple : niveau de pointe",
+    "listAria": "Calculs d'exemple",
+    "removeAria": "Supprimer l'exemple {{cpt}}, {{size}} mm à {{level}} m NAP",
+    "sizeAria": "Exemple : dimension"
+  },
+  "extension": {
+    "customJoint": "Jonction personnalisée",
+    "diameter": "Diamètre de la rehausse",
+    "joint": "Jonction (bas de la rehausse)",
+    "jointAria": "Jonction [m NAP]",
+    "jointTooHigh": "La jonction se trouve à moins de 0,5 m sous le niveau de la nappe (NAP {{water}}) : le bois n'y restera pas immergé en permanence. Choisissez une rehausse plus longue.",
+    "length": "Longueur de la rehausse",
+    "lengthAria": "Longueur de la rehausse [m]",
+    "perimeterHint": "Au-dessus de la jonction, le périmètre de la rehausse est utilisé ; en dessous, celui du bois.",
+    "shape": "Forme",
+    "shapeAria": "Forme de la rehausse",
+    "side": "Côté de la rehausse",
+    "size": "Rehausse",
+    "sizeAria": "Dimension de la rehausse [mm]",
+    "title": "Rehausse en béton"
+  },
+  "factors": {
+    "alphaTLabel": "αt (pas de vérification en traction)",
+    "basis": "Base normative : {{edition}}. {{source}}",
+    "edition": "Édition",
+    "edition2025": "2025 — facteurs du projet",
+    "source": "Source / déclaration",
+    "sourceHint": "La source doit correspondre au système de pieu, à la méthode de mise en œuvre et aux dimensions. Des facteurs de 2025 ne rendent pas automatiquement l'ensemble de la méthode de calcul conforme à 2025.",
+    "title": "Facteurs de pieu",
+    "useProject": "Utiliser les facteurs du projet / auto-déclaration"
+  },
+  "legend": {
+    "chosen": "niveau choisi",
+    "over": "> {{max}} kN, large marge",
+    "title": "Légende"
+  },
+  "levels": {
+    "applyList": "Appliquer les niveaux",
+    "applyRange": "Appliquer la plage",
+    "count": "{{n}} niveaux",
+    "custom": "Niveaux personnalisés",
+    "excavation": "Excavation",
+    "excavationAria": "Excavation [m NAP]",
+    "from": "De [m NAP]",
+    "legend": "Niveaux de pointe",
+    "listLabel": "Niveaux de pointe [m NAP]",
+    "pileToe": "Pointe du pieu",
+    "pileToeAria": "Pointe du pieu [m NAP]",
+    "pileTop": "Tête du pieu",
+    "pileTopAria": "Tête du pieu [m NAP]",
+    "step": "Pas [m]",
+    "title": "Niveaux du pieu",
+    "to": "À [m NAP]",
+    "water": "Nappe phréatique",
+    "waterAria": "Nappe phréatique [m NAP]"
+  },
+  "load": {
+    "characteristic": "caractéristique",
+    "design": "charge de calcul",
+    "materialFactor": "facteur de matériau",
+    "negativeSkinFriction": "frottement négatif",
+    "title": "Charge"
+  },
+  "material": {
+    "concrete": "Béton",
+    "steel": "Acier",
+    "wood": "Bois"
+  },
+  "pile": {
+    "axialStiffness": "Rigidité axiale EA",
+    "baseSize": "Dimension de la pointe",
+    "baseSizeAria": "Dimension de la pointe [mm] (vide = fût)",
+    "baseSizePlaceholder": "fût",
+    "customSize": "Dimension personnalisée",
+    "diameter": "Diamètre",
+    "eaAriaOptional": "Rigidité axiale EA [kN] (facultatif)",
+    "eaAriaRequired": "Rigidité axiale EA [kN] (obligatoire)",
+    "eaMissing": "Obligatoire pour ce type de pieu — sans EA, aucun calcul n'est effectué.",
+    "headDiameter": "Diamètre en tête",
+    "material": "Matériau",
+    "optional": "facultatif",
+    "required": "obligatoire",
+    "sideLength": "Côté",
+    "title": "Pieu",
+    "tubeSize": "Dimension du tube",
+    "type": "Type de pieu",
+    "wallThickness": "Épaisseur de paroi",
+    "wallThicknessAria": "Épaisseur de paroi [mm]",
+    "woodDiameterAtJoint": "Diamètre du bois à la jonction"
+  },
+  "profile": {
+    "bottom": "Base",
+    "fieldAria": "{{field}} couche {{n}}",
+    "soilType": "Type de sol",
+    "soilTypeAria": "Type de sol couche {{n}}",
+    "title": "Profil de sol",
+    "tooShallow": "Le profil de sol s'arrête à NAP {{bottom}} m, au-dessus de la pointe du pieu à NAP {{toe}} m. Aucun frottement latéral n'est compté sur cette section ; prolongez la couche inférieure.",
+    "top": "Toit"
+  },
+  "result": {
+    "base": {
+      "capped": "(plafonnée à 15 MPa)",
+      "title": "Résistance de pointe"
+    },
+    "existingModel": "Modèle de projet existant",
+    "facts": {
+      "diameterD": "Diamètre D",
+      "equalToShaft": "égale au fût",
+      "extensionValue": "{{size}} mm, de la tête du pieu jusqu'à la jonction à NAP {{joint}} m",
+      "projectFactors": "facteurs du projet",
+      "sideA": "Côté a",
+      "tapered": "{{size}} mm (conique)",
+      "title": "Hypothèses de base",
+      "woodAtJoint": "Bois à la jonction"
+    },
+    "negSkin": {
+      "cappedNote": "plafonné à ksMin = {{v}}",
+      "cappedTitle": "Plafonné à ksMin={{v}}",
+      "extensionAndWood": "(rehausse et bois)",
+      "layer": "Couche",
+      "title": "Frottement négatif",
+      "zone": "Zone : tête du pieu NAP {{top}} à NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Saisissez la rigidité axiale <strong>EA</strong> sous <strong>Pieu</strong>. Pour ce type de pieu, EA n'est pas déduit de la section ; la valeur découle du système de pieu choisi.",
+      "missingOne": "Encore une donnée nécessaire",
+      "notYet": "Calcul pas encore possible",
+      "note": "Dès que la saisie est complète, le calcul détaillé apparaît ici."
+    },
+    "settlement": {
+      "title": "Tassement (art. 7.6.4.2, courbe charge-tassement 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} couche(s) — Σ des contributions par couche",
+      "title": "Frottement latéral maximal"
+    },
+    "spring": {
+      "title": "Raideur de ressort"
+    },
+    "summary": {
+      "check": "Vérification",
+      "compression": "Capacité portante en compression",
+      "conclusion": "Conclusion :",
+      "conclusionFail": "le pieu n'est pas vérifié ; N<sub>Ed</sub> = {{nEd}} kN dépasse R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "aucune charge de calcul saisie ; la capacité portante nette vaut R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "le pieu est vérifié ; N<sub>Ed</sub> = {{nEd}} kN représente {{pct}} % de R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Non vérifié",
+      "failsShort": "NON vérifié",
+      "passes": "Vérifié",
+      "passesShort": "vérifié",
+      "quantity": "Grandeur",
+      "result": "Résultat",
+      "title": "Synthèse"
+    },
+    "title": "Capacité portante du pieu",
+    "total": {
+      "title": "Capacité portante géotechnique maximale"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Rehausse",
+    "defaultSource": "Paramètres de calcul",
+    "existingModel": "modèle existant",
+    "extensionLengths": "Longueurs de rehausse",
+    "extensionLengthsAria": "Longueurs de rehausse [m]",
+    "extensionRemoveAria": "Supprimer la rehausse {{n}}",
+    "extensionShapeAria": "Forme de la rehausse {{n}}",
+    "extensionSizeAria": "Dimension de la rehausse {{n}} [mm]",
+    "extensionsAria": "Rehausses en béton",
+    "extensionsTitle": "Rehausses en béton sur pieux bois",
+    "factor": "Facteur",
+    "factorsHint": "Vide = valeur du tableau de la norme choisie ({{edition}}). Une valeur de projet doit être justifiée, par exemple par un essai de chargement.",
+    "factorsTitle": "Facteurs de pieu · {{type}}",
+    "gammaFnk": "γf;nk frottement négatif",
+    "gammaM": "γm facteur de matériau",
+    "partialFactors": "Facteurs partiels",
+    "project": "Projet",
+    "projectValueAria": "{{factor}} projet",
+    "resetAll": "Rétablir toutes les séries par défaut",
+    "restoreSeries": "Rétablir la série standard",
+    "restoreSeriesNone": "Rétablir la série standard (aucune)",
+    "series": "Séries standard",
+    "seriesHint": "Les séries de la liste déroulante de la saisie (dimensions de tube) et du bouton Série standard du tableau de capacité portante.",
+    "sizeMm": "Dimension [mm]",
+    "sizesAria": "Série de dimensions du type de pieu [mm]",
+    "sizesFor": "Dimensions {{type}}",
+    "sourceAria": "Source des facteurs du projet",
+    "table": "Tableau",
+    "timberToe": "Diamètre de pointe du bois",
+    "useTableValues": "Utiliser les valeurs du tableau"
+  },
+  "shape": {
+    "round": "Circulaire",
+    "square": "Carrée"
+  },
+  "sizes": {
+    "apply": "Appliquer les dimensions",
+    "label": "Dimensions de pieu [mm]",
+    "legend": "Dimensions de pieu",
+    "standard": "Série standard"
+  },
+  "skin": {
+    "dragHint": "Les niveaux du pieu et les zones de frottement peuvent aussi être déplacés dans le CPT.",
+    "ksMinAria": "K0·tan(δ) minimum",
+    "minimum": "minimum",
+    "negBottom": "Bas du frottement négatif",
+    "negBottomAria": "Bas du frottement négatif [m NAP]",
+    "posTop": "Haut du frottement positif",
+    "posTopAria": "Haut du frottement positif [m NAP]",
+    "title": "Zones de frottement"
+  },
+  "standard": {
+    "existingModel": "Modèle de projet existant — inchangé",
+    "historicalHint": "Calcul historique en compression d'un pieu isolé sur un seul CPT. Frottement latéral positif dans le sable, section constante ou conicité explicite du bois ; le tassement et les groupes de pieux n'ont pas été vérifiés. Changer de norme efface les facteurs du projet et réinitialise γm.",
+    "title": "Norme de calcul",
+    "version": "Version de la norme"
+  },
+  "table": {
+    "breadcrumb": "Fil d'Ariane",
+    "cpt": "CPT {{id}}",
+    "cptMissing": "Le CPT {{id}} est absent du projet.",
+    "cptTableAria": "Rc;net;d CPT {{id}}",
+    "heading": "Capacité portante par CPT",
+    "intro": "Un système de pieu dans une série de dimensions et de niveaux de pointe, calculé pour chaque CPT. Définissez le type de pieu, la norme et le profil de sol à gauche.",
+    "selectCpt": "Sélectionnez au moins un CPT.",
+    "title": "Tableau de capacité portante",
+    "toe": "Pointe [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "Le diamètre du bois diminue linéairement depuis la tête ; sous la partie conique, le diamètre de pointe reste constant. Le périmètre de frottement suit la longueur choisie ; le tassement et les raideurs de ressort ne sont pas déterminés.",
+    "hintFromJoint": "Le diamètre du bois diminue linéairement depuis la jonction ; sous la partie conique, le diamètre de pointe reste constant. Le périmètre de frottement suit la longueur choisie ; le tassement et les raideurs de ressort ne sont pas déterminés.",
+    "lengthFromHead": "Longueur conique depuis la tête",
+    "lengthFromHeadAria": "Longueur conique depuis la tête [m]",
+    "lengthFromJoint": "Longueur conique depuis la jonction",
+    "lengthFromJointAria": "Longueur conique depuis la jonction [m]",
+    "title": "Pieu bois conique",
+    "toeDiameter": "Diamètre de pointe",
+    "toeDiameterAria": "Diamètre de pointe du bois [mm]"
+  },
+  "target": {
+    "hint": "Pour chaque dimension, le tableau de choix recherche le pieu le plus court qui atteint la limite inférieure. Au-delà de la limite supérieure, la dimension offre une large marge.",
+    "inverted": "La limite supérieure doit être au-dessus de la limite inférieure ; le tableau utilise encore la plage précédente.",
+    "legend": "Capacité portante requise Rc;net;d",
+    "lower": "Limite inférieure [kN]",
+    "notNumber": "Saisissez les limites inférieure et supérieure sous forme de nombre en kN.",
+    "upper": "Limite supérieure [kN]"
+  },
+  "visual": {
+    "cptHeading": "CPT : {{id}}",
+    "crossSection": "Section",
+    "crossSectionAria": "Section du pieu",
+    "empty": {
+      "howTo": "Ouvrez un fichier GEF, BRO-XML ou de projet via <strong>Ouvrir</strong> en haut. Sélectionnez ensuite le CPT sous <strong>CPT</strong> dans le panneau de saisie.",
+      "noCpt": "Aucun CPT n'est encore lié à ce calcul.",
+      "then": "La résistance de cône, le pieu et les zones de frottement apparaîtront alors ici.",
+      "title": "Graphique CPT"
+    },
+    "extensionTitle": "Rehausse en béton {{size}} mm jusqu'à la jonction à NAP {{joint}} m",
+    "material": "matériau",
+    "materials": {
+      "castInSitu": "Béton coulé en place",
+      "prefab": "Béton préfabriqué",
+      "steelEA": "Pieu acier ; EA spécifique au projet",
+      "steelTube": "Pieu tubulaire en acier, rempli de béton",
+      "wood": "Bois, section constante"
+    },
+    "noPoints": "Aucune mesure dans ce CPT",
+    "notComputed": "Non calculé : {{error}}. Déplacez les niveaux ou ajustez la saisie.",
+    "rebarCage": "cage d'armature",
+    "taperLength": "longueur conique depuis la tête",
+    "toeSize": "dimension de la pointe",
+    "wall": "paroi"
+  }
+}

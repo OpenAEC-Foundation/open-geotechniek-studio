@@ -50,5 +50,14 @@
     "asImageDesc": "Opslaan als PNG- of JPEG-afbeeldingsbestanden",
     "asHtml": "Exporteren als HTML",
     "asHtmlDesc": "Exporteer het document als een HTML-bestand"
+  },
+  "openPanel": {
+    "title": "Recente bestanden",
+    "clearAll": "Alles wissen",
+    "justNow": "Zojuist",
+    "openTitle": "Openen",
+    "openAnyHint": "Sondering (GEF / BRO-XML) of project/sondering (.ifcgeo) — elk bestand opent in een eigen tab",
+    "noRecent": "Geen recente bestanden",
+    "remove": "Verwijderen"
   }
 }

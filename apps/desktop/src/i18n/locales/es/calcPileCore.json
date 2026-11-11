@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "CPT {{id}}",
+    "notCalculated": "No calculado",
+    "checks": {
+      "capacity": "capacidad portante"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "La base del rozamiento negativo ({{given}}) queda fuera del pilote; se calcula con {{used}}.",
+    "posKleefClamped": "El techo del rozamiento positivo por fuste ({{given}}) queda fuera del tramo de fuste; se calcula con {{used}}."
+  },
+  "errors": {
+    "noCpt": "Ningún CPT activo",
+    "unknownStandard": "Versión de la norma desconocida",
+    "pileTypeNotSupported": "Tipo de pilote no admitido para esta versión de la norma: {{id}}",
+    "extensionInvalid": "Un recrecido de hormigón requiere un pilote de madera, una dimensión de recrecido positiva y una junta entre la cabeza y la punta del pilote, sin dimensión de base independiente",
+    "taperInvalidWithExtension": "La conicidad de la madera requiere un diámetro de punta positivo ≤ diámetro de la madera en la junta y una longitud cónica dentro del tramo de madera bajo la junta",
+    "taperInvalid": "La conicidad de la madera requiere un diámetro de punta positivo ≤ diámetro de cabeza y una longitud cónica dentro de la longitud del pilote, sin dimensión de base independiente",
+    "toeSizeInvalid": "La dimensión de la punta debe ser positiva y finita",
+    "footPlateTooWide": "Para este tipo de pilote, la placa de base puede sobresalir como máximo 10 mm por cada lado",
+    "groutScrewMinDiameter": "Este tipo predefinido de pilote de rosca con lechada requiere un diámetro de fuste de al menos 300 mm",
+    "timberConstantSection": "Este tipo de pilote de madera requiere una sección constante sin recrecido",
+    "eaInvalid": "EA debe ser positivo y finito",
+    "eaRequired": "Introduzca la rigidez axial EA específica del proyecto para este tipo de pilote",
+    "projectFactorsInvalid": "Los coeficientes del proyecto requieren valores válidos, una fuente y una edición acorde con la norma seleccionada",
+    "nonFiniteInput": "Todos los valores de entrada deben ser números finitos",
+    "diameterNotPositive": "El diámetro o el lado debe ser mayor que cero",
+    "wallThicknessInvalid": "El espesor de pared debe ser mayor que cero y menor que la mitad del diámetro",
+    "toeAboveHead": "La punta del pilote debe estar por debajo de la cabeza del pilote",
+    "factorsInvalid": "γm debe ser mayor que cero; γf,nk y el mínimo de K0·tan(δ) no pueden ser negativos",
+    "negativeLoads": "Las cargas de compresión no pueden ser negativas",
+    "kleefLevels": "Las cotas de rozamiento deben estar entre la cabeza y la punta del pilote; el rozamiento positivo por fuste no puede solaparse con el rozamiento negativo",
+    "soilLayerInvalid": "Las capas del terreno requieren cotas válidas, pesos específicos y un ángulo de rozamiento entre 0 y 90 grados",
+    "soilLayerOrder": "Las capas del terreno deben ir de arriba abajo sin solaparse",
+    "historicalCptData": "Un cálculo histórico requiere profundidades crecientes con valores de qc completos y no negativos",
+    "historicalCptRange": "Un cálculo histórico requiere el tramo completo desde 8 Deq por encima hasta 4 Deq por debajo de la punta del pilote",
+    "historicalSandOnly": "El rozamiento positivo por fuste histórico solo está verificado para arena; ajuste el tramo de fuste y el perfil del terreno",
+    "historicalConstantSection": "El perfil histórico solo admite una sección de pilote constante o una conicidad explícita de la madera",
+    "cptTooShallow": "CPT demasiado somero (alcanza {{reach}} m, se requiere ≥ {{required}} m)",
+    "pileSizeInvalid": "La dimensión del pilote debe ser finita y mayor que cero",
+    "historicalGroupAnalysis": "El análisis histórico con varios CPT aún no está verificado; utilice un único CPT"
+  },
+  "warnings": {
+    "factors": "Coeficientes: {{edition}}; {{source}}.",
+    "existingModel": "modelo existente",
+    "existingCatalog": "catálogo existente",
+    "projectFactors2025": "Se han aplicado los coeficientes de proyecto de 2025; no se trata de una conversión completa del método de cálculo a NEN 9997:2025.",
+    "settlementExtension": "Pilote de madera con recrecido de hormigón: el asiento y los valores de muelle con distinta EA para hormigón y madera no están verificados y no se determinan.",
+    "settlementTaper": "Pilote de madera cónico: el asiento y los valores de muelle con EA variable no están verificados y no se determinan.",
+    "settlementHistorical": "El asiento histórico y los valores de muelle no están verificados y no se determinan.",
+    "settlementLineUnsupported": "Curva carga-asiento {{line}} aún no admitida: el asiento y los valores de muelle no se determinan.",
+    "extension": "Recrecido de hormigón de {{size}} mm hasta la junta a NAP {{joint}} m: por encima de la junta se usa el perímetro del recrecido y por debajo el de la madera; rozamiento negativo con el perímetro medio en la zona de rozamiento, rozamiento positivo por fuste por capa.",
+    "taperWithExtension": "Conicidad de la madera desde la junta: rozamiento positivo por fuste con el perímetro medio por capa. Sin aumento de los coeficientes del pilote por conicidad.",
+    "taper": "Conicidad de la madera: rozamiento negativo con el perímetro medio en la zona de rozamiento; rozamiento positivo por fuste con el perímetro medio por capa. Sin recrecido de hormigón ni aumento por conicidad.",
+    "deviatingToeSize": "Dimensión de punta distinta: compruebe el factor de forma de la base del pilote β y el tramo admisible de rozamiento por fuste para este método de ejecución.",
+    "qbMaxCapped": "qb;max limitado a 15 MPa (valor bruto {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Introduzca cotas de punta finitas, una por línea o separadas por punto y coma.",
+      "toeLevelsDuplicate": "Cada cota de punta solo puede aparecer una vez.",
+      "cptIdsInvalid": "Seleccione nombres de CPT únicos para la tabla.",
+      "toeNapsInvalid": "La tabla requiere cotas de punta únicas y finitas.",
+      "sizesInvalid": "Introduzca dimensiones de pilote positivas en mm, separadas por espacio, coma o punto y coma.",
+      "sizesDuplicate": "Cada dimensión de pilote solo puede aparecer una vez.",
+      "levelRangeInvalid": "Introduzca una cota superior e inferior finitas y un paso positivo.",
+      "tooManyLevels": "Como máximo {{max}} cotas de punta; elija un paso mayor.",
+      "sizesNotPositive": "Las dimensiones de pilote deben ser positivas.",
+      "targetRangeInvalid": "El límite superior de la capacidad portante objetivo debe estar por encima del límite inferior."
+    },
+    "notes": {
+      "profileAboveToe": "El perfil del terreno termina por encima de la punta del pilote. Compruebe y prolongue las capas del terreno; las capas de fuste que faltan no contribuyen.",
+      "profileAboveDeepest": "El perfil del terreno termina a {{level}} m NAP, por encima de la cota de punta más profunda."
+    },
+    "reasons": {
+      "cptTooShort": "CPT fuera de alcance",
+      "kleefLevels": "sobre la zona de rozamiento",
+      "eaMissing": "falta EA",
+      "notComputable": "no calculable"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Error en el cálculo",
+      "exampleFailed": "El ejemplo {{cpt}}, {{size}} mm a {{level}} m NAP no se puede calcular: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Circular Ø{{size}}",
+    "square": "Cuadrado {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — perfil de referencia histórico",
+    "nen-6743-2006": "NEN 6743-1:2006 — histórica",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — coeficientes originales",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modelo de cálculo existente"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; referencia pública 05290 pp. 31–32 (pilote prefabricado aislado)",
+    "source2006": "NEN 6743-1:2006 tabla 2; NEN 6740:2006 tabla 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 tabla 7.c; coeficientes originales antes de la reducción",
+    "conditions": "Modelo histórico de pilote a compresión: arena; sin corrección por grupo de pilotes, OCR, tamaño de grano ni excavación. Picos de fuste limitados de forma conservadora a 12 MPa. Asiento no verificado."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, tabla 7.c (arena/arena con grava)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Pilote tubular de acero — hincado (modelo de proyecto existente)",
+      "shortName": "Pilote tubular de acero — hincado",
+      "conditions": "Se mantiene el conjunto de coeficientes existente; difiere de la tabla 7.c:2017 para pilotes tubulares de acero de punta cerrada.",
+      "source": "Modelo de cálculo existente e informe de referencia 984.pdf",
+      "edition": "2017/2019 — modelo de proyecto existente"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Pilote prefabricado de hormigón pretensado — hincado"
+    },
+    "concrete-prefab-round": {
+      "name": "Pilote prefabricado de hormigón — circular, hincado"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Pilote tubular de acero — punta cerrada (tabla 2017)",
+      "shortName": "Pilote tubular de acero — punta cerrada",
+      "conditions": "La placa de base sobresale como máximo 10 mm del tubo; tubo relleno de hormigón."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Pilote de hormigón in situ — camisa extraída por contragolpeo",
+      "conditions": "El hormigón apoya directamente contra el terreno; camisa extraída por contragolpeo y tracción estática."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Pilote de hormigón in situ — camisa extraída por vibración",
+      "conditions": "El hormigón apoya directamente contra el terreno; camisa extraída por vibración y tracción estática."
+    },
+    "concrete-screw-displacement": {
+      "name": "Pilote de hormigón de rosca — punta perdida",
+      "conditions": "Camisa lisa retirada; el hormigón apoya directamente contra el terreno."
+    },
+    "steel-screw-grout": {
+      "name": "Pilote de rosca de acero — inyección de lechada",
+      "conditions": "Fuste de lechada ≥ 300 mm; no subir y bajar durante la instalación. EA se refiere al acero/núcleo, no a la superficie del fuste de lechada."
+    },
+    "concrete-auger": {
+      "name": "Pilote de barrena continua — hormigón",
+      "conditions": "Edición 2017: inicio de qc;III limitado a 2 MPa; no se aplica exención basada en CPT posteriores a la instalación."
+    },
+    "concrete-bored": {
+      "name": "Pilote perforado — con fluido estabilizador"
+    },
+    "timber-uniform": {
+      "name": "Pilote hincado de madera — circular, con o sin recrecido de hormigón",
+      "conditions": "Sección de madera circular, constante o con conicidad lineal desde la parte superior de la madera; opcionalmente con recrecido de hormigón hasta la junta. Sin aumento de los coeficientes del pilote por conicidad."
+    }
+  },
+  "soil": {
+    "sand-dry": "Arena, seca",
+    "sand-wet": "Arena, saturada",
+    "clay": "Arcilla, saturada",
+    "peat": "Turba, saturada"
+  }
+}

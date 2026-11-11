@@ -1,6 +1,7 @@
 import { APP_VERSION } from "../../version";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 import {
   useAllExtensions,
   setExtension,
@@ -8,6 +9,7 @@ import {
   type ExtensionId,
 } from "../../hooks/useExtensions";
 import { CALC_REGISTRY } from "../../calc/framework/registry";
+import { moduleName, moduleText } from "../../calc/framework/moduleText";
 import "./ExtensionManagerPanel.css";
 
 /**
@@ -30,21 +32,26 @@ interface ExtensionMeta {
   category: string;
 }
 
+const extT = (key: string, nl: string) => i18next.t(`app:extensions.${key}`, { defaultValue: nl });
+
+// Getters: naam en beschrijving volgen de actieve taal.
 const TEKENING_EXT: ExtensionMeta = {
   id: "tekening",
-  name: "Situatietekening",
+  get name() { return extT("tekening.name", "Situatietekening"); },
   version: APP_VERSION,
-  description:
-    "CAD-papier (A2/A3/A4) met sonderingen, snap-systeem, overlays en PDF-export.",
+  get description() {
+    return extT("tekening.description", "CAD-papier (A2/A3/A4) met sonderingen, snap-systeem, overlays en PDF-export.");
+  },
   author: "OpenAEC Foundation",
   category: "Tekening",
 };
 const OFFERTES_EXT: ExtensionMeta = {
   id: "offertes",
-  name: "Offertes opvragen",
+  get name() { return extT("offertes.name", "Offertes opvragen"); },
   version: APP_VERSION,
-  description:
-    "Vraagt offertes op bij dichtsbijzijnde sondeerbedrijven.",
+  get description() {
+    return extT("offertes.description", "Vraagt offertes op bij dichtsbijzijnde sondeerbedrijven.");
+  },
   author: "OpenAEC Foundation",
   category: "Werkflow",
 };
@@ -54,9 +61,10 @@ const INSTALLED_EXTENSIONS: ExtensionMeta[] = [
   OFFERTES_EXT,
   ...CALC_REGISTRY.map<ExtensionMeta>((m) => ({
     id: `calc.${m.id}` as ExtensionId,
-    name: m.name,
+    // Getters: naam en beschrijving volgen de actieve taal.
+    get name() { return moduleName(m); },
     version: APP_VERSION,
-    description: `${m.subtitle} — ${m.norm}`,
+    get description() { return `${moduleText(m, "subtitle")} — ${moduleText(m, "norm")}`; },
     author: "OpenAEC Foundation",
     category: "Berekening",
   })),
@@ -72,8 +80,16 @@ const CATEGORY_COLORS: Record<string, string> = {
   "Other": "#71717a",
 };
 
+/** Vertaalsleutel + Nederlandse brontekst per categorie (de categorie zelf blijft de kleur-sleutel). */
+const CATEGORY_LABELS: Record<string, [string, string]> = {
+  "Tekening": ["drawing", "Tekening"],
+  "Werkflow": ["workflow", "Werkflow"],
+  "Berekening": ["calculation", "Berekening"],
+};
+
 export default function ExtensionManagerPanel() {
   const { t } = useTranslation("backstage");
+  const { t: ta } = useTranslation("app");
   const [tab, setTab] = useState<"installed" | "browse">("installed");
   const [search, setSearch] = useState("");
   const enabledMap = useAllExtensions();
@@ -123,7 +139,8 @@ export default function ExtensionManagerPanel() {
           filteredInstalled.map((ext) => {
             const enabled = enabledMap[ext.id];
             const selectable = isExtensionSelectable(ext.id);
-            const lockedLabel = "Nog niet productie-gereed";
+            const lockedLabel = ta("extensions.lockedLabel", "Nog niet productie-gereed");
+            const categoryLabel = CATEGORY_LABELS[ext.category];
             return (
               <div
                 key={ext.id}
@@ -134,11 +151,11 @@ export default function ExtensionManagerPanel() {
                     className="ext-category-badge"
                     style={{ background: CATEGORY_COLORS[ext.category] || "#71717a" }}
                   >
-                    {ext.category}
+                    {categoryLabel ? ta(`extensions.category.${categoryLabel[0]}`, categoryLabel[1]) : ext.category}
                   </span>
                   {!selectable && (
                     <span className="ext-locked-badge" title={lockedLabel}>
-                      🚧 In ontwikkeling
+                      🚧 {ta("extensions.inDevelopment", "In ontwikkeling")}
                     </span>
                   )}
                   <span className="ext-version">v{ext.version}</span>
@@ -148,8 +165,10 @@ export default function ExtensionManagerPanel() {
                   <p className="ext-desc">{ext.description}</p>
                   {!selectable && (
                     <p className="ext-desc-locked">
-                      Deze berekening is nog in ontwikkeling — getallen zijn nog niet
-                      productie-geverifieerd. De toggle is daarom uitgeschakeld.
+                      {ta(
+                        "extensions.lockedDescription",
+                        "Deze berekening is nog in ontwikkeling — getallen zijn nog niet productie-geverifieerd. De toggle is daarom uitgeschakeld.",
+                      )}
                     </p>
                   )}
                   <span className="ext-author">{ext.author}</span>
@@ -183,12 +202,14 @@ export default function ExtensionManagerPanel() {
             }}
           >
             <p style={{ margin: 0 }}>
-              Geen externe extensie-catalogus beschikbaar.
+              {ta("extensions.noCatalog", "Geen externe extensie-catalogus beschikbaar.")}
             </p>
             <p style={{ margin: "8px 0 0", fontSize: 12 }}>
-              Open Geotechniek Studio gebruikt momenteel alleen ingebouwde extensies
-              (zie tab "{t("extInstalled")}"). Een community-catalogus volgt in een
-              latere versie.
+              {ta(
+                "extensions.builtInOnly",
+                "Open Geotechniek Studio gebruikt momenteel alleen ingebouwde extensies (zie tab \"{{tab}}\"). Een community-catalogus volgt in een latere versie.",
+                { tab: t("extInstalled") },
+              )}
             </p>
           </div>
         )}

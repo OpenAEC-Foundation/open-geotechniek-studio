@@ -1,0 +1,81 @@
+{
+  "detached": {
+    "view": "Abgedockte Ansicht",
+    "dockBackTitle": "Wieder an das Hauptfenster andocken",
+    "dockBack": "Wieder andocken",
+    "untitled": "Unbenannt"
+  },
+  "drop": {
+    "hint": "Loslassen zum Öffnen — GEF, BRO-XML oder .ifcgeo",
+    "browserOpenFailed": "{{name}} konnte im Browsermodus nicht geöffnet werden:\n{{message}}\n\nTipp: BHR-GT-XML, GMW-XML und GEF funktionieren im Browser. Für BRO-Sondierungs-XML und Projektdateien benötigen Sie die Desktop-Version."
+  },
+  "errorBoundary": {
+    "title": "⚠ React-Render-Absturz — ErrorBoundary der obersten Ebene",
+    "intro": "Eine Komponente der App hat beim Rendern einen Fehler ausgelöst. Der Stacktrace unten hilft, die Ursache zu finden.",
+    "reload": "App neu laden",
+    "noStack": "(kein Stack verfügbar)",
+    "componentStack": "Komponenten-Stack"
+  },
+  "backstage": {
+    "noProject": "Kein aktives Projekt — öffnen oder erstellen Sie ein .ifcgeo-Projekt.",
+    "projectFilter": "Open Geotechniek Studio-Datei",
+    "saveFailed": "Speichern fehlgeschlagen: {{error}}",
+    "geoObjectFilter": "Geotechnisches Objekt (.ifcgeo)",
+    "cptSnapshotFilter": "Sondierung mit Quelldaten",
+    "snapshotSaveFailed": "Speichern des Snapshots fehlgeschlagen: {{error}}",
+    "gefExportStopped": "GEF-Export abgebrochen: {{error}}",
+    "broBrowserUnavailable": "Das Erzeugen einer neuen BRO-Lieferung ist nur über den bisherigen Desktop-Export verfügbar. Verwenden Sie GEF oder einen JSON-Snapshot für einen quelltreuen Export.",
+    "browserOpenFailed": "{{name}} konnte im Browsermodus nicht geöffnet werden:\n{{message}}\n\nTipp: BHR-GT-XML, GMW-XML, GEF und BRO-Sondierungs-XML funktionieren im Browser. Für .ifcgeo/.ifcgis-Projektdateien benötigen Sie die Desktop-Version.",
+    "openFailed": "{{name}} konnte nicht geöffnet werden: {{message}}",
+    "minutesAgo": "vor {{n}} Min.",
+    "hoursAgo": "vor {{n}} Std.",
+    "daysAgo": "vor {{n}} T."
+  },
+  "extensions": {
+    "tekening": {
+      "name": "Lageplan",
+      "description": "CAD-Blatt (A2/A3/A4) mit Sondierungen, Fangfunktion, Überlagerungen und PDF-Export."
+    },
+    "offertes": {
+      "name": "Angebote anfordern",
+      "description": "Fordert Angebote bei den nächstgelegenen Sondierfirmen an."
+    },
+    "category": {
+      "drawing": "Zeichnung",
+      "workflow": "Arbeitsablauf",
+      "calculation": "Berechnung"
+    },
+    "lockedLabel": "Noch nicht produktionsreif",
+    "inDevelopment": "In Entwicklung",
+    "lockedDescription": "Diese Berechnung befindet sich noch in Entwicklung — ihre Ergebnisse sind für den produktiven Einsatz noch nicht verifiziert. Der Schalter ist daher deaktiviert.",
+    "noCatalog": "Kein externer Erweiterungskatalog verfügbar.",
+    "builtInOnly": "Open Geotechniek Studio verwendet derzeit nur integrierte Erweiterungen (siehe Tab „{{tab}}“). Ein Community-Katalog folgt in einer späteren Version."
+  },
+  "statusBar": {
+    "depth": "Tiefe"
+  },
+  "startSidebar": {
+    "title": "Start",
+    "collapse": "Einklappen",
+    "expand": "Startbereich öffnen",
+    "exampleProject": "Beispielprojekt"
+  },
+  "releaseNotes": {
+    "title": "Neuigkeiten",
+    "loadFailed": "Versionshinweise konnten nicht geladen werden ({{error}})",
+    "loading": "Wird geladen…",
+    "none": "Keine Versionen gefunden"
+  },
+  "store": {
+    "noProject": "Kein aktives Projekt.",
+    "noProjectForBro": "Kein aktives Projekt — die BRO-Sondierung kann nicht hinzugefügt werden.",
+    "targetProjectClosed": "Das Zielprojekt wurde während des Hinzufügens geschlossen.",
+    "gmwParseFailed": "{{filename}}: GMW-Lieferung konnte nicht geparst werden (kein <GMW_PO>/<GMW_O>-Wurzelelement oder keine broId gefunden)",
+    "unsupportedBore": "{{filename}}: keine unterstützte BHR-XML- oder GEF-Bohrung"
+  },
+  "platform": {
+    "unknownCptFormat": "Unbekanntes Sondierungsformat ({{filename}}). Erwartet: GEF oder BRO-Sondierungs-XML.",
+    "pdfWindowClosed": "Das PDF-Fenster wurde geschlossen. Öffnen Sie den Bericht erneut.",
+    "popupBlocked": "Erlauben Sie Pop-ups oder verwenden Sie „PDF erzeugen“ zum Herunterladen."
+  }
+}

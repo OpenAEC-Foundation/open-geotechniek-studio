@@ -1,7 +1,9 @@
 import type { LateralInput } from './compute';
 import type { AnalysisMode, SpringState } from './spring-types';
+import { useTranslation } from 'react-i18next';
+import { numberLocale } from '../../i18n';
 
-const f = (value: number, digits = 2) => value.toLocaleString('nl-NL', { maximumFractionDigits: digits });
+const f = (value: number, digits = 2) => value.toLocaleString(numberLocale(), { maximumFractionDigits: digits });
 
 /** Mobilisatie |p| / pu; null bij een lineaire veer zonder grens. */
 export function mobilisation(s: SpringState): number | null {
@@ -30,7 +32,8 @@ interface Props {
  * - mobilisatie p/pu met een 90 %-lijn waarboven de grond vrijwel plastisch is.
  */
 export function SpringField({ input, springs, mode, selectedId, onSelect }: Props) {
-  if (springs.length === 0) return <p>Geen actieve grondveren in dit model.</p>;
+  const { t } = useTranslation('calcLateral');
+  if (springs.length === 0) return <p>{t('spring.none', 'Geen actieve grondveren in dit model.')}</p>;
   const L = input.lengthM;
   const depth = (z: number) => 70 + 500 * z / L;
   const kMax = Math.max(1e-12, ...springs.map((s) => s.initialKnM2));
@@ -56,10 +59,10 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
   const softestRatio = softest.secantKnM2 / softest.initialKnM2;
 
   return <div className="pile-springfield">
-    <svg viewBox="0 0 480 610" role="img" aria-label="Veerveld langs de paal">
+    <svg viewBox="0 0 480 610" role="img" aria-label={t('field.aria', 'Veerveld langs de paal')}>
       {input.layers.map((l, k) => <g key={k}>
         <rect className={k % 2 ? 'pile-soil-alt' : 'pile-soil'} x="40" width={C.x0 + C.w - 40 + 4} y={depth(l.topM)} height={depth(l.bottomM) - depth(l.topM)} />
-        <text x={B.x0 + B.w - 2} y={depth(l.topM) + 11} textAnchor="end" className="pile-springfield-layer">laag {k + 1}</text>
+        <text x={B.x0 + B.w - 2} y={depth(l.topM) + 11} textAnchor="end" className="pile-springfield-layer">{t('field.layer', 'laag {{n}}', { n: k + 1 })}</text>
       </g>)}
       {[0, .25, .5, .75, 1].map((t) => <g key={t}>
         <line className="pile-grid" x1="40" x2={C.x0 + C.w + 4} y1={depth(t * L)} y2={depth(t * L)} />
@@ -68,14 +71,14 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
 
       {/* Kolom A — veerveld */}
       <text x="36" y="60" textAnchor="end" className="pile-springfield-sub">z [m]</text>
-      <text x={A.x0 + A.w / 2} y="22" textAnchor="middle" className="pile-springfield-title">Stijfheid k [kN/m²]</text>
-      <text x={A.x0 + A.w / 2} y="37" textAnchor="middle" className="pile-springfield-sub">omtrek k₀ · gevuld k<tspan baselineShift="sub">sec</tspan></text>
+      <text x={A.x0 + A.w / 2} y="22" textAnchor="middle" className="pile-springfield-title">{t('field.stiffness', 'Stijfheid')} k [kN/m²]</text>
+      <text x={A.x0 + A.w / 2} y="37" textAnchor="middle" className="pile-springfield-sub">{t('field.outline', 'omtrek')} k₀ · {t('field.filled', 'gevuld')} k<tspan baselineShift="sub">sec</tspan></text>
       <line className="pile-element" x1="42" x2="42" y1={depth(0)} y2={depth(L)} />
       {sorted.map((s) => {
         const m = mobilisation(s);
         const y = depth(s.zM) - barH / 2;
         const selected = s.id === selectedId;
-        return <g key={s.id} role="button" tabIndex={0} aria-label={`Selecteer veer ${s.id}`} aria-pressed={selected}
+        return <g key={s.id} role="button" tabIndex={0} aria-label={t('spring.select', 'Selecteer veer {{id}}', { id: s.id })} aria-pressed={selected}
           className={`pile-spring pile-springfield-bar mob-${mobilisationClass(m)}${selected ? ' is-selected' : ''}`}
           data-mobilisation={m ?? undefined}
           onClick={() => onSelect(s.id)}
@@ -89,8 +92,8 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
       <text x={A.x0} y="590">0</text><text x={A.x0 + A.w} y="590" textAnchor="end">{f(kMax, 0)}</text>
 
       {/* Kolom B — weerstand p en grens pu */}
-      <text x={B.x0 + B.w / 2} y="22" textAnchor="middle" className="pile-springfield-title">Weerstand p</text>
-      <text x={B.x0 + B.w / 2} y="37" textAnchor="middle" className="pile-springfield-sub">{linear ? 'kN/m · geen grens' : 'kN/m · gestreept pu'}</text>
+      <text x={B.x0 + B.w / 2} y="22" textAnchor="middle" className="pile-springfield-title">{t('field.resistance', 'Weerstand')} p</text>
+      <text x={B.x0 + B.w / 2} y="37" textAnchor="middle" className="pile-springfield-sub">kN/m · {linear ? t('field.noLimit', 'geen grens') : t('field.dashedPu', 'gestreept pu')}</text>
       <line className="pile-axis" x1={B.x0} x2={B.x0} y1={depth(0)} y2={depth(L)} />
       {!linear && <polyline className="pile-reference" points={sorted.filter((s) => s.ultimateKnM !== null).map((s) => `${px(s.ultimateKnM!)},${depth(s.zM)}`).join(' ')} />}
       <polyline className="pile-response" points={sorted.map((s) => `${px(Math.abs(s.resistanceKnM))},${depth(s.zM)}`).join(' ')} />
@@ -98,11 +101,11 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
       <text x={B.x0} y="590">0</text><text x={B.x0 + B.w} y="590" textAnchor="end">{f(pMax, 1)}</text>
 
       {/* Kolom C — mobilisatie */}
-      <text x={C.x0 + C.w / 2} y="22" textAnchor="middle" className="pile-springfield-title">Mobilisatie</text>
-      <text x={C.x0 + C.w / 2} y="37" textAnchor="middle" className="pile-springfield-sub">p/pu · lijn 90 %</text>
+      <text x={C.x0 + C.w / 2} y="22" textAnchor="middle" className="pile-springfield-title">{t('field.mobilisation', 'Mobilisatie')}</text>
+      <text x={C.x0 + C.w / 2} y="37" textAnchor="middle" className="pile-springfield-sub">p/pu · {t('field.line90', 'lijn 90 %')}</text>
       <line className="pile-axis" x1={C.x0} x2={C.x0} y1={depth(0)} y2={depth(L)} />
       {linear
-        ? <text x={C.x0 + C.w / 2} y={depth(L / 2)} textAnchor="middle" className="pile-springfield-sub">n.v.t.</text>
+        ? <text x={C.x0 + C.w / 2} y={depth(L / 2)} textAnchor="middle" className="pile-springfield-sub">{t('field.na', 'n.v.t.')}</text>
         : <>
           <line className="pile-springfield-limit" x1={mx(.9)} x2={mx(.9)} y1={depth(0)} y2={depth(L)} />
           {sorted.map((s) => {
@@ -113,14 +116,14 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
       <text x={C.x0} y="590">0</text><text x={C.x0 + C.w} y="590" textAnchor="end">100 %</text>
     </svg>
     <div className="pile-legend pile-springfield-legend">
-      <span className="mob-low">p/pu &lt; 50 %</span><span className="mob-mid">50–90 %</span><span className="mob-high">≥ 90 %, vrijwel plastisch</span>
-      {linear && <span className="mob-linear">lineaire veer</span>}
+      <span className="mob-low">p/pu &lt; 50 %</span><span className="mob-mid">50–90 %</span><span className="mob-high">{t('field.nearlyPlastic', '≥ 90 %, vrijwel plastisch')}</span>
+      {linear && <span className="mob-linear">{t('field.linearSpring', 'lineaire veer')}</span>}
     </div>
     <p className="pile-springfield-summary" aria-live="polite">
       {linear || worst === null || worstM === null
-        ? <>Lineair grondmodel: de secantstijfheid is gelijk aan k₀ en er is geen grensweerstand.</>
-        : <>Hoogste mobilisatie {f(worstM * 100, 0)} % op z = {f(worst.zM)} m (laag {worst.layerIndex + 1}); {plastic === 0 ? 'geen veren' : plastic === 1 ? '1 veer' : `${plastic} veren`} boven 90 %.
-          {' '}Grootste stijfheidsverlies: k<sub>sec</sub>/k₀ = {f(softestRatio)} op z = {f(softest.zM)} m.</>}
+        ? <>{t('field.linearSummary', 'Lineair grondmodel: de secantstijfheid is gelijk aan k₀ en er is geen grensweerstand.')}</>
+        : <>{t('field.summary', 'Hoogste mobilisatie {{pct}} % op z = {{z}} m (laag {{layer}}); {{springs}} boven 90 %.', { pct: f(worstM * 100, 0), z: f(worst.zM), layer: worst.layerIndex + 1, springs: plastic === 0 ? t('field.noSprings', 'geen veren') : plastic === 1 ? t('field.oneSpring', '1 veer') : t('field.nSprings', '{{count}} veren', { count: plastic }) })}
+          {' '}{t('field.largestLoss', 'Grootste stijfheidsverlies:')} k<sub>sec</sub>/k₀ = {t('field.ratioAt', '{{ratio}} op z = {{z}} m.', { ratio: f(softestRatio), z: f(softest.zM) })}</>}
     </p>
   </div>;
 }

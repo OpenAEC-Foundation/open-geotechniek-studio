@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Dokument",
+    "reference": "Referens",
+    "version": "Version",
+    "status": "Status",
+    "advisor": "Konsult",
+    "checker": "Granskad av",
+    "projectHint": "Projektnamn, -nummer, beställare och plats hämtas från projektuppgifterna.",
+    "basis": "Dimensioneringsförutsättningar",
+    "consequenceClass": "Konsekvensklass",
+    "designLife": "Avsedd livslängd",
+    "years": "år",
+    "designLifeAria": "Avsedd livslängd [år]",
+    "floorLevel": "Referensnivå (överkant golv)",
+    "floorLevelAria": "Referensnivå [m NAP]",
+    "groundwater": "Grundvatten",
+    "groundwaterAria": "Dimensionerande grundvattennivå [m NAP]",
+    "structure": "Byggnadsverk och laster",
+    "structurePlaceholder": "Till exempel: industribyggnad i stål, 40 × 60 m, pelarlaster upp till 600 kN",
+    "bearingLayer": "Bärande lager (vägledande)",
+    "qcMin": "Minsta qc",
+    "qcMinAria": "qc bärande lager [MPa]",
+    "overAtLeast": "Över minst",
+    "minThicknessAria": "Minsta tjocklek [m]",
+    "include": "Ta med",
+    "cptsInAdvice": "CPT-sonderingar i rekommendationen",
+    "cptItem": "CPT-sondering {{id}}",
+    "noCpts": "Inga CPT-sonderingar i projektet ännu.",
+    "calcsInAdvice": "Beräkningar i rekommendationen",
+    "noCalcs": "Inga pålberäkningar i projektet ännu.",
+    "appendixCpts": "Bilaga CPT-sonderingar",
+    "appendixCalcs": "Bilaga beräkningsblad",
+    "ownText": "Egen text",
+    "introNote": "Kompletterande inledning",
+    "remarks": "Anmärkningar till slutsatsen"
+  },
+  "status": {
+    "concept": "Utkast",
+    "definitief": "Slutlig",
+    "conceptLower": "utkast",
+    "definitiefLower": "slutlig"
+  },
+  "visual": {
+    "aria": "Situationsplan med CPT-sonderingar",
+    "bearingTop": "bl NAP {{value}}",
+    "missing": "Utan koordinater (ej ritade): {{ids}}.",
+    "legend": "Triangel: CPT-sondering; bl = överkant bärande lager (vägledande). Skalenlig, koordinater i RD."
+  },
+  "result": {
+    "title": "Grundläggningsrekommendation",
+    "header": "{{reference}} · version {{version}} · {{status}}",
+    "noReference": "ingen referens",
+    "toc": {
+      "title": "Rapportens innehåll",
+      "intro": "Inledning: bakgrund, syfte och projektuppgifter",
+      "basis": "Dimensioneringsförutsättningar",
+      "investigation": "Geoteknisk undersökning: {{count}} CPT-sonderingar med situationsplan",
+      "soil": "Jordlagerföljd och bärande lager",
+      "vertical": "Tryckbelastade pålar: {{names}}",
+      "lateral": "Horisontellt belastade pålar: {{names}}",
+      "execution": "Negativ mantelfriktion och utförande",
+      "conclusions": "Slutsatser och rekommendationer",
+      "appendixCpts": "Bilaga A: CPT-sonderingar",
+      "appendixCalcs": "Bilaga B: beräkningsblad"
+    },
+    "bearing": {
+      "title": "Bärande lager",
+      "text": "Som bärande lager har vägledande antagits det första intervall där spetstrycket ligger över {{qc}} MPa över minst {{thickness}} m. Detta är ett hjälpmedel för överblicken; pålspetsens nivå följer av bärförmågeberäkningen.",
+      "tableAria": "Bärande lager per CPT-sondering",
+      "cpt": "CPT",
+      "ground": "Markyta [m NAP]",
+      "end": "Slut [m NAP]",
+      "top": "Bl [m NAP]",
+      "notFound": "ej funnet",
+      "conclusion": "Överkant bärande lager mellan NAP {{highest}} m och NAP {{lowest}} m; spridning {{spread}} m."
+    },
+    "calcs": {
+      "title": "Beräkningar i rekommendationen",
+      "none": "Inga pålberäkningar har tagits med ännu.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, spets NAP {{toe}} m",
+      "notComputed": "(ej beräknad)",
+      "lateral": "{{name}}: {{passing}} av {{count}} pålar uppfyller kraven"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} CPT-sondering",
+    "cptMany": "{{count}} CPT-sonderingar",
+    "calcOne": "{{count}} beräkning",
+    "calcMany": "{{count}} beräkningar"
+  }
+}

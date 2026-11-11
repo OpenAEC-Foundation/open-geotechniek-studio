@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Open {{cpt}}, {{size}} mm op {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b punt →",
+    "cptAria": "CPT-grafiek met paaloverlays",
+    "excavation": "Ontgraving {{nap}}",
+    "loadAxis": "Belasting [kN]",
+    "loadSettlement": "Lastzakkingsdiagram",
+    "negSkinBottom": "Neg.kleef-grens {{nap}}",
+    "pileToe": "Paalpunt {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Paalkop {{nap}}",
+    "posSkinTop": "Pos.kleef-top {{nap}}",
+    "qcPosSkinAvg": "qc;pos-kleef;gem = {{v}} MPa",
+    "shaftSide": "← R_s schacht",
+    "water": "Water {{nap}}",
+    "zoomIn": "Zoom in",
+    "zoomInTitle": "Zoom in (of scrollwiel omhoog)",
+    "zoomOut": "Zoom uit",
+    "zoomOutTitle": "Zoom uit (of scrollwiel omlaag)",
+    "zoomReset": "Reset zoom",
+    "zoomResetTitle": "Reset zoom (of dubbelklik op de grafiek)",
+    "zoomToe": "Zoom op paalpunt",
+    "zoomToeTitle": "Zoom op paalpunt (1 m padding rondom de paal)",
+    "zoomToolbar": "Grafiekzoom"
+  },
+  "choice": {
+    "aboveMaxTitle": "Ook de kortste paal die voldoet zit boven de bovengrens.",
+    "caption": "Hoogste puntniveau [m NAP] waarop Rc;net;d ≥ {{min}} kN, per paalmaat en sondering. Klik een niveau voor het rekenblad.",
+    "cptOutOfRange": "sondering buiten bereik",
+    "dropsDeeper": "let op dieper",
+    "dropsDeeperTitle": "Dieper zakt het draagvermogen weer onder de ondergrens.",
+    "highest": "Hoogste",
+    "lowest": "Laagste",
+    "notReached": "niet gehaald",
+    "notReachedAria": "{{cpt}}, {{size}} mm: niet gehaald",
+    "reached": "Gehaald",
+    "size": "Maat [mm]",
+    "smallestSpread": "kleinste spreiding",
+    "spread": "Spreiding",
+    "tableAria": "Puntniveau per paalmaat en sondering",
+    "title": "Keuzetabel"
+  },
+  "cpt": {
+    "choose": "— kies sondering —",
+    "title": "Sondering"
+  },
+  "cpts": {
+    "all": "Alle sonderingen",
+    "legend": "Sonderingen",
+    "missingOption": "{{id}} (ontbreekt)"
+  },
+  "examples": {
+    "add": "Voorbeeld toevoegen",
+    "cptAria": "Voorbeeld: sondering",
+    "hint": "Volledig uitgewerkt in het rapport; daarna volgen de keuzetabel en de tabellen per sondering. Zonder keuze gaat het huidige rekenblad mee.",
+    "legend": "Uitdraai",
+    "levelAria": "Voorbeeld: puntniveau",
+    "listAria": "Voorbeeldberekeningen",
+    "removeAria": "Verwijder voorbeeld {{cpt}}, {{size}} mm op {{level}} m NAP",
+    "sizeAria": "Voorbeeld: maat"
+  },
+  "extension": {
+    "customJoint": "Eigen las",
+    "diameter": "Diameter opzetter",
+    "joint": "Las (onderkant opzetter)",
+    "jointAria": "Las [m NAP]",
+    "jointTooHigh": "De las ligt minder dan 0,5 m onder de grondwaterstand (NAP {{water}}): het hout blijft daar niet permanent nat. Kies een langere opzetter.",
+    "length": "Lengte opzetter",
+    "lengthAria": "Lengte opzetter [m]",
+    "perimeterHint": "Boven de las rekent de omtrek van de opzetter, eronder die van het hout.",
+    "shape": "Vorm",
+    "shapeAria": "Vorm opzetter",
+    "side": "Zijde opzetter",
+    "size": "Opzetter",
+    "sizeAria": "Maat opzetter [mm]",
+    "title": "Betonopzetter"
+  },
+  "factors": {
+    "alphaTLabel": "αt (geen trekcontrole)",
+    "basis": "Normbasis: {{edition}}. {{source}}",
+    "edition": "Editie",
+    "edition2025": "2025 — projectfactoren",
+    "source": "Bron / verklaring",
+    "sourceHint": "De bron moet passen bij paalsysteem, uitvoering en afmetingen. Factoren uit 2025 maken de volledige rekenmethode niet automatisch conform 2025.",
+    "title": "Paalfactoren",
+    "useProject": "Projectfactoren / zelfverklaring gebruiken"
+  },
+  "legend": {
+    "chosen": "gekozen niveau",
+    "over": "> {{max}} kN, ruim",
+    "title": "Legenda"
+  },
+  "levels": {
+    "applyList": "Niveaus toepassen",
+    "applyRange": "Reeks toepassen",
+    "count": "{{n}} niveaus",
+    "custom": "Eigen niveaus",
+    "excavation": "Ontgraving",
+    "excavationAria": "Ontgraving [m NAP]",
+    "from": "Van [m NAP]",
+    "legend": "Puntniveaus",
+    "listLabel": "Puntniveaus [m NAP]",
+    "pileToe": "Paalpunt",
+    "pileToeAria": "Paalpunt [m NAP]",
+    "pileTop": "Paalkop",
+    "pileTopAria": "Paalkop [m NAP]",
+    "step": "Stap [m]",
+    "title": "Paalniveaus",
+    "to": "Tot [m NAP]",
+    "water": "Grondwater",
+    "waterAria": "Grondwater [m NAP]"
+  },
+  "load": {
+    "characteristic": "karakteristiek",
+    "design": "ontwerpbelasting",
+    "materialFactor": "materiaalfactor",
+    "negativeSkinFriction": "negatieve kleef",
+    "title": "Belasting"
+  },
+  "material": {
+    "concrete": "Beton",
+    "steel": "Staal",
+    "wood": "Hout"
+  },
+  "pile": {
+    "axialStiffness": "Axiale stijfheid EA",
+    "baseSize": "Puntafmeting",
+    "baseSizeAria": "Puntafmeting [mm] (leeg = schacht)",
+    "baseSizePlaceholder": "schacht",
+    "customSize": "Eigen maat",
+    "diameter": "Diameter",
+    "eaAriaOptional": "Axiale stijfheid EA [kN] (optioneel)",
+    "eaAriaRequired": "Axiale stijfheid EA [kN] (verplicht)",
+    "eaMissing": "Vereist voor dit paaltype — zonder EA wordt er niet gerekend.",
+    "headDiameter": "Kopdiameter",
+    "material": "Materiaal",
+    "optional": "optioneel",
+    "required": "verplicht",
+    "sideLength": "Zijlengte",
+    "title": "Paal",
+    "tubeSize": "Buismaat",
+    "type": "Paaltype",
+    "wallThickness": "Wanddikte",
+    "wallThicknessAria": "Wanddikte [mm]",
+    "woodDiameterAtJoint": "Houtdiameter bij de las"
+  },
+  "profile": {
+    "bottom": "Onder",
+    "fieldAria": "{{field}} laag {{n}}",
+    "soilType": "Grondsoort",
+    "soilTypeAria": "Grondsoort laag {{n}}",
+    "title": "Grondprofiel",
+    "tooShallow": "Het grondprofiel stopt op NAP {{bottom}} m, boven de paalpunt op NAP {{toe}} m. Over dat stuk telt geen schachtwrijving mee; verleng de onderste laag.",
+    "top": "Boven"
+  },
+  "result": {
+    "base": {
+      "capped": "(gecapt op 15 MPa)",
+      "title": "Puntdraagvermogen"
+    },
+    "existingModel": "Bestaand projectmodel",
+    "facts": {
+      "diameterD": "Diameter D",
+      "equalToShaft": "gelijk aan schacht",
+      "extensionValue": "{{size}} mm, van paalkop tot de las op NAP {{joint}} m",
+      "projectFactors": "projectfactoren",
+      "sideA": "Zijde a",
+      "tapered": "{{size}} mm (taps)",
+      "title": "Uitgangspunten",
+      "woodAtJoint": "Hout bij de las"
+    },
+    "negSkin": {
+      "cappedNote": "gecapt op ksMin = {{v}}",
+      "cappedTitle": "Gecapt op ksMin={{v}}",
+      "extensionAndWood": "(opzetter en hout)",
+      "layer": "Laag",
+      "title": "Negatieve kleef",
+      "zone": "Zone: paalkop NAP {{top}} tot NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Vul bij <strong>Paal</strong> de axiale stijfheid <strong>EA</strong> in. Voor dit paaltype wordt EA niet uit de doorsnede afgeleid; de waarde volgt uit het gekozen paalsysteem.",
+      "missingOne": "Nog één gegeven nodig",
+      "notYet": "Nog niet te berekenen",
+      "note": "Zodra de invoer compleet is, verschijnt hier de uitgewerkte berekening."
+    },
+    "settlement": {
+      "title": "Zakking (art. 7.6.4.2, lastzakkingslijn 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} laag/lagen — Σ van per-laag bijdragen",
+      "title": "Maximumschachtwrijving"
+    },
+    "spring": {
+      "title": "Veerwaarde"
+    },
+    "summary": {
+      "check": "Toets",
+      "compression": "Draagvermogen op druk",
+      "conclusion": "Conclusie:",
+      "conclusionFail": "de paal voldoet niet; N<sub>Ed</sub> = {{nEd}} kN overschrijdt R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "geen ontwerpbelasting ingevoerd; het netto draagvermogen is R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "de paal voldoet; N<sub>Ed</sub> = {{nEd}} kN is {{pct}}% van R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Voldoet niet",
+      "failsShort": "voldoet NIET",
+      "passes": "Voldoet",
+      "passesShort": "voldoet",
+      "quantity": "Grootheid",
+      "result": "Resultaat",
+      "title": "Samenvatting"
+    },
+    "title": "Paaldraagvermogen",
+    "total": {
+      "title": "Maximum gronddraagvermogen"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Opzetter",
+    "defaultSource": "Instellingen van de berekening",
+    "existingModel": "bestaand model",
+    "extensionLengths": "Lengtes opzetter",
+    "extensionLengthsAria": "Lengtes opzetter [m]",
+    "extensionRemoveAria": "Opzetter {{n}} verwijderen",
+    "extensionShapeAria": "Vorm opzetter {{n}}",
+    "extensionSizeAria": "Maat opzetter {{n}} [mm]",
+    "extensionsAria": "Betonopzetters",
+    "extensionsTitle": "Betonopzetters op hout",
+    "factor": "Factor",
+    "factorsHint": "Leeg = tabelwaarde van de gekozen norm ({{edition}}). Een projectwaarde vraagt een onderbouwing, bijvoorbeeld een proefbelasting.",
+    "factorsTitle": "Paalfactoren · {{type}}",
+    "gammaFnk": "γf;nk negatieve kleef",
+    "gammaM": "γm materiaalfactor",
+    "partialFactors": "Partiële factoren",
+    "project": "Project",
+    "projectValueAria": "{{factor}} project",
+    "resetAll": "Alle reeksen terug naar standaard",
+    "restoreSeries": "Standaardreeks herstellen",
+    "restoreSeriesNone": "Standaardreeks herstellen (geen)",
+    "series": "Standaardreeksen",
+    "seriesHint": "De reeks voor de keuzelijst in de invoer (buismaten) en de knop Standaardreeks in de draagvermogentabel.",
+    "sizeMm": "Maat [mm]",
+    "sizesAria": "Maatreeks paaltype [mm]",
+    "sizesFor": "Maten {{type}}",
+    "sourceAria": "Bron projectfactoren",
+    "table": "Tabel",
+    "timberToe": "Puntdiameter hout",
+    "useTableValues": "Tabelwaarden gebruiken"
+  },
+  "shape": {
+    "round": "Rond",
+    "square": "Vierkant"
+  },
+  "sizes": {
+    "apply": "Maten toepassen",
+    "label": "Paalmaten [mm]",
+    "legend": "Paalmaten",
+    "standard": "Standaardreeks"
+  },
+  "skin": {
+    "dragHint": "Paalniveaus en kleefzones zijn ook te verslepen in de sondering.",
+    "ksMinAria": "K0·tan(δ) minimum",
+    "minimum": "minimum",
+    "negBottom": "Onderkant negatieve kleef",
+    "negBottomAria": "Onderkant negatieve kleef [m NAP]",
+    "posTop": "Bovenkant positieve kleef",
+    "posTopAria": "Bovenkant positieve kleef [m NAP]",
+    "title": "Kleefzones"
+  },
+  "standard": {
+    "existingModel": "Bestaand projectmodel — ongewijzigd",
+    "historicalHint": "Historische drukberekening voor één paal bij één sondering. Positieve schachtwrijving in zand, constante doorsnede of expliciete houttapsheid; zakking en paalgroepen zijn niet geverifieerd. Bij normwissel worden projectfactoren gewist en γm opnieuw ingesteld.",
+    "title": "Rekennorm",
+    "version": "Normversie"
+  },
+  "table": {
+    "breadcrumb": "Kruimelpad",
+    "cpt": "Sondering {{id}}",
+    "cptMissing": "Sondering {{id}} ontbreekt in het project.",
+    "cptTableAria": "Rc;net;d sondering {{id}}",
+    "heading": "Draagvermogen per sondering",
+    "intro": "Eén paalsysteem in een reeks maten en puntniveaus, gerekend op iedere sondering. Paaltype, norm en grondopbouw stel je links in.",
+    "selectCpt": "Selecteer ten minste één sondering.",
+    "title": "Draagvermogentabel",
+    "toe": "Punt [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "De houtdiameter neemt lineair af vanaf de kop; onder het tapse deel blijft de puntdiameter constant. De kleefomtrek volgt het gekozen traject; zakking en veerwaarden worden niet bepaald.",
+    "hintFromJoint": "De houtdiameter neemt lineair af vanaf de las; onder het tapse deel blijft de puntdiameter constant. De kleefomtrek volgt het gekozen traject; zakking en veerwaarden worden niet bepaald.",
+    "lengthFromHead": "Tapse lengte vanaf kop",
+    "lengthFromHeadAria": "Tapse lengte vanaf kop [m]",
+    "lengthFromJoint": "Tapse lengte vanaf de las",
+    "lengthFromJointAria": "Tapse lengte vanaf de las [m]",
+    "title": "Tapse houten paal",
+    "toeDiameter": "Puntdiameter",
+    "toeDiameterAria": "Puntdiameter hout [mm]"
+  },
+  "target": {
+    "hint": "De keuzetabel zoekt per maat de kortste paal die de ondergrens haalt. Boven de bovengrens is de maat ruim.",
+    "inverted": "De bovengrens moet boven de ondergrens liggen; de tabel rekent nog met de vorige band.",
+    "legend": "Gezocht draagvermogen Rc;net;d",
+    "lower": "Ondergrens [kN]",
+    "notNumber": "Vul de onder- en bovengrens in als getal in kN.",
+    "upper": "Bovengrens [kN]"
+  },
+  "visual": {
+    "cptHeading": "Sondering: {{id}}",
+    "crossSection": "Doorsnede",
+    "crossSectionAria": "Paal-doorsnede",
+    "empty": {
+      "howTo": "Open een GEF-, BRO-XML- of projectbestand via <strong>Openen</strong> bovenin. Kies daarna de sondering bij <strong>Sondering</strong> in het invoerpaneel.",
+      "noCpt": "Er is nog geen sondering aan deze berekening gekoppeld.",
+      "then": "Hier verschijnen dan de conusweerstand, de paal en de kleeftrajecten.",
+      "title": "Sonderingsgrafiek"
+    },
+    "extensionTitle": "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m",
+    "material": "materiaal",
+    "materials": {
+      "castInSitu": "In de grond gevormd beton",
+      "prefab": "Prefab beton",
+      "steelEA": "Stalen paal; projectspecifieke EA",
+      "steelTube": "Stalen buispaal, betongevuld",
+      "wood": "Hout, constante doorsnede"
+    },
+    "noPoints": "Geen meetwaarden in deze CPT",
+    "notComputed": "Niet berekend: {{error}}. Versleep de niveaus of pas de invoer aan.",
+    "rebarCage": "wapeningskorf",
+    "taperLength": "tapse lengte vanaf kop",
+    "toeSize": "puntmaat",
+    "wall": "wand"
+  }
+}

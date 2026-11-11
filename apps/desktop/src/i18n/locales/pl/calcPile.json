@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Otwórz {{cpt}}, {{size}} mm na {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b podstawa →",
+    "cptAria": "Wykres CPT z nałożonym palem",
+    "excavation": "Wykop {{nap}}",
+    "loadAxis": "Obciążenie [kN]",
+    "loadSettlement": "Wykres obciążenie–osiadanie",
+    "negSkinBottom": "Granica tarcia negatywnego {{nap}}",
+    "pileToe": "Podstawa pala {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Głowica pala {{nap}}",
+    "posSkinTop": "Góra tarcia na pobocznicy {{nap}}",
+    "qcPosSkinAvg": "qc;pos.skin;avg = {{v}} MPa",
+    "shaftSide": "← R_s pobocznica",
+    "water": "Woda {{nap}}",
+    "zoomIn": "Powiększ",
+    "zoomInTitle": "Powiększ (lub kółko myszy w górę)",
+    "zoomOut": "Pomniejsz",
+    "zoomOutTitle": "Pomniejsz (lub kółko myszy w dół)",
+    "zoomReset": "Resetuj powiększenie",
+    "zoomResetTitle": "Resetuj powiększenie (lub kliknij dwukrotnie wykres)",
+    "zoomToe": "Powiększ do podstawy pala",
+    "zoomToeTitle": "Powiększ do podstawy pala (margines 1 m wokół pala)",
+    "zoomToolbar": "Powiększenie wykresu"
+  },
+  "choice": {
+    "aboveMaxTitle": "Nawet najkrótszy pal spełniający warunek przekracza górną granicę.",
+    "caption": "Najwyższy poziom podstawy [m NAP], przy którym Rc;net;d ≥ {{min}} kN, dla każdego wymiaru pala i sondowania. Kliknij poziom, aby otworzyć arkusz obliczeniowy.",
+    "cptOutOfRange": "CPT poza zakresem",
+    "dropsDeeper": "sprawdź głębiej",
+    "dropsDeeperTitle": "Głębiej nośność ponownie spada poniżej dolnej granicy.",
+    "highest": "Najwyższy",
+    "lowest": "Najniższy",
+    "notReached": "nie osiągnięto",
+    "notReachedAria": "{{cpt}}, {{size}} mm: nie osiągnięto",
+    "reached": "Osiągnięto",
+    "size": "Wymiar [mm]",
+    "smallestSpread": "najmniejszy rozrzut",
+    "spread": "Rozrzut",
+    "tableAria": "Poziom podstawy dla każdego wymiaru pala i sondowania",
+    "title": "Tabela doboru"
+  },
+  "cpt": {
+    "choose": "— wybierz CPT —",
+    "title": "CPT"
+  },
+  "cpts": {
+    "all": "Wszystkie sondowania",
+    "legend": "Sondowania CPT",
+    "missingOption": "{{id}} (brak)"
+  },
+  "examples": {
+    "add": "Dodaj przykład",
+    "cptAria": "Przykład: CPT",
+    "hint": "W pełni rozpisane w raporcie, a następnie tabela doboru i tabele dla każdego sondowania. Bez wyboru dołączany jest bieżący arkusz obliczeniowy.",
+    "legend": "Wydruk",
+    "levelAria": "Przykład: poziom podstawy",
+    "listAria": "Obliczenia przykładowe",
+    "removeAria": "Usuń przykład {{cpt}}, {{size}} mm na {{level}} m NAP",
+    "sizeAria": "Przykład: wymiar"
+  },
+  "extension": {
+    "customJoint": "Własny styk",
+    "diameter": "Średnica nadstawki",
+    "joint": "Styk (spód nadstawki)",
+    "jointAria": "Styk [m NAP]",
+    "jointTooHigh": "Styk leży mniej niż 0,5 m poniżej poziomu wody gruntowej (NAP {{water}}): drewno nie pozostanie tam stale mokre. Wybierz dłuższą nadstawkę.",
+    "length": "Długość nadstawki",
+    "lengthAria": "Długość nadstawki [m]",
+    "perimeterHint": "Powyżej styku przyjmuje się obwód nadstawki, poniżej obwód drewna.",
+    "shape": "Kształt",
+    "shapeAria": "Kształt nadstawki",
+    "side": "Bok nadstawki",
+    "size": "Nadstawka",
+    "sizeAria": "Wymiar nadstawki [mm]",
+    "title": "Nadstawka betonowa"
+  },
+  "factors": {
+    "alphaTLabel": "αt (bez sprawdzenia na wyciąganie)",
+    "basis": "Podstawa normowa: {{edition}}. {{source}}",
+    "edition": "Wydanie",
+    "edition2025": "2025 — współczynniki projektowe",
+    "source": "Źródło / deklaracja",
+    "sourceHint": "Źródło musi odpowiadać systemowi pali, technologii wykonania i wymiarom. Współczynniki z 2025 nie sprawiają automatycznie, że cała metoda obliczeniowa jest zgodna z wydaniem 2025.",
+    "title": "Współczynniki pala",
+    "useProject": "Użyj współczynników projektowych / własnej deklaracji"
+  },
+  "legend": {
+    "chosen": "wybrany poziom",
+    "over": "> {{max}} kN, z zapasem",
+    "title": "Legenda"
+  },
+  "levels": {
+    "applyList": "Zastosuj poziomy",
+    "applyRange": "Zastosuj zakres",
+    "count": "Poziomy: {{n}}",
+    "custom": "Własne poziomy",
+    "excavation": "Wykop",
+    "excavationAria": "Wykop [m NAP]",
+    "from": "Od [m NAP]",
+    "legend": "Poziomy podstawy",
+    "listLabel": "Poziomy podstawy [m NAP]",
+    "pileToe": "Podstawa pala",
+    "pileToeAria": "Podstawa pala [m NAP]",
+    "pileTop": "Głowica pala",
+    "pileTopAria": "Głowica pala [m NAP]",
+    "step": "Krok [m]",
+    "title": "Poziomy pala",
+    "to": "Do [m NAP]",
+    "water": "Woda gruntowa",
+    "waterAria": "Woda gruntowa [m NAP]"
+  },
+  "load": {
+    "characteristic": "charakterystyczne",
+    "design": "obciążenie obliczeniowe",
+    "materialFactor": "współczynnik materiałowy",
+    "negativeSkinFriction": "tarcie negatywne",
+    "title": "Obciążenie"
+  },
+  "material": {
+    "concrete": "Beton",
+    "steel": "Stal",
+    "wood": "Drewno"
+  },
+  "pile": {
+    "axialStiffness": "Sztywność osiowa EA",
+    "baseSize": "Wymiar podstawy",
+    "baseSizeAria": "Wymiar podstawy [mm] (puste = trzon)",
+    "baseSizePlaceholder": "trzon",
+    "customSize": "Własny wymiar",
+    "diameter": "Średnica",
+    "eaAriaOptional": "Sztywność osiowa EA [kN] (opcjonalnie)",
+    "eaAriaRequired": "Sztywność osiowa EA [kN] (wymagane)",
+    "eaMissing": "Wymagane dla tego typu pala — bez EA obliczenie nie jest wykonywane.",
+    "headDiameter": "Średnica głowicy",
+    "material": "Materiał",
+    "optional": "opcjonalnie",
+    "required": "wymagane",
+    "sideLength": "Długość boku",
+    "title": "Pal",
+    "tubeSize": "Wymiar rury",
+    "type": "Typ pala",
+    "wallThickness": "Grubość ścianki",
+    "wallThicknessAria": "Grubość ścianki [mm]",
+    "woodDiameterAtJoint": "Średnica drewna na styku"
+  },
+  "profile": {
+    "bottom": "Spód",
+    "fieldAria": "{{field}} warstwa {{n}}",
+    "soilType": "Rodzaj gruntu",
+    "soilTypeAria": "Rodzaj gruntu warstwa {{n}}",
+    "title": "Profil gruntu",
+    "tooShallow": "Profil gruntu kończy się na NAP {{bottom}} m, powyżej podstawy pala na NAP {{toe}} m. Na tym odcinku tarcie na pobocznicy nie jest uwzględniane; wydłuż najniższą warstwę.",
+    "top": "Strop"
+  },
+  "result": {
+    "base": {
+      "capped": "(ograniczono do 15 MPa)",
+      "title": "Opór podstawy"
+    },
+    "existingModel": "Istniejący model projektu",
+    "facts": {
+      "diameterD": "Średnica D",
+      "equalToShaft": "równy trzonowi",
+      "extensionValue": "{{size}} mm, od głowicy pala do styku na NAP {{joint}} m",
+      "projectFactors": "współczynniki projektowe",
+      "sideA": "Bok a",
+      "tapered": "{{size}} mm (zbieżny)",
+      "title": "Założenia podstawowe",
+      "woodAtJoint": "Drewno na styku"
+    },
+    "negSkin": {
+      "cappedNote": "ograniczono do ksMin = {{v}}",
+      "cappedTitle": "Ograniczono do ksMin={{v}}",
+      "extensionAndWood": "(nadstawka i drewno)",
+      "layer": "Warstwa",
+      "title": "Tarcie negatywne",
+      "zone": "Strefa: głowica pala NAP {{top}} do NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Podaj sztywność osiową <strong>EA</strong> w sekcji <strong>Pal</strong>. Dla tego typu pala EA nie wynika z przekroju; wartość zależy od wybranego systemu pali.",
+      "missingOne": "Brakuje jeszcze jednej danej",
+      "notYet": "Nie można jeszcze obliczyć",
+      "note": "Gdy tylko dane będą kompletne, pojawi się tu rozpisane obliczenie."
+    },
+    "settlement": {
+      "title": "Osiadanie (art. 7.6.4.2, krzywa obciążenie–osiadanie 1)"
+    },
+    "shaft": {
+      "layers": "Warstwy: {{n}} — Σ udziałów poszczególnych warstw",
+      "title": "Maksymalne tarcie na pobocznicy"
+    },
+    "spring": {
+      "title": "Sztywność sprężyny"
+    },
+    "summary": {
+      "check": "Sprawdzenie",
+      "compression": "Nośność na wciskanie",
+      "conclusion": "Wniosek:",
+      "conclusionFail": "pal nie spełnia warunku; N<sub>Ed</sub> = {{nEd}} kN przekracza R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "nie podano obciążenia obliczeniowego; nośność netto wynosi R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "pal spełnia warunek; N<sub>Ed</sub> = {{nEd}} kN stanowi {{pct}}% R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Nie spełnia",
+      "failsShort": "NIE spełnia",
+      "passes": "Spełnia",
+      "passesShort": "spełnia",
+      "quantity": "Wielkość",
+      "result": "Wynik",
+      "title": "Podsumowanie"
+    },
+    "title": "Nośność pala",
+    "total": {
+      "title": "Maksymalna nośność geotechniczna"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Nadstawka",
+    "defaultSource": "Ustawienia obliczenia",
+    "existingModel": "istniejący model",
+    "extensionLengths": "Długości nadstawek",
+    "extensionLengthsAria": "Długości nadstawek [m]",
+    "extensionRemoveAria": "Usuń nadstawkę {{n}}",
+    "extensionShapeAria": "Kształt nadstawki {{n}}",
+    "extensionSizeAria": "Wymiar nadstawki {{n}} [mm]",
+    "extensionsAria": "Nadstawki betonowe",
+    "extensionsTitle": "Nadstawki betonowe na palach drewnianych",
+    "factor": "Współczynnik",
+    "factorsHint": "Puste = wartość tabelaryczna wybranej normy ({{edition}}). Wartość projektowa wymaga uzasadnienia, np. próbnego obciążenia.",
+    "factorsTitle": "Współczynniki pala · {{type}}",
+    "gammaFnk": "γf;nk tarcie negatywne",
+    "gammaM": "γm współczynnik materiałowy",
+    "partialFactors": "Współczynniki częściowe",
+    "project": "Projekt",
+    "projectValueAria": "{{factor}} projekt",
+    "resetAll": "Przywróć domyślne wszystkie serie",
+    "restoreSeries": "Przywróć serię standardową",
+    "restoreSeriesNone": "Przywróć serię standardową (brak)",
+    "series": "Serie standardowe",
+    "seriesHint": "Seria dla listy rozwijanej w danych wejściowych (wymiary rur) i przycisku Seria standardowa w tabeli nośności.",
+    "sizeMm": "Wymiar [mm]",
+    "sizesAria": "Seria wymiarów typu pala [mm]",
+    "sizesFor": "Wymiary {{type}}",
+    "sourceAria": "Źródło współczynników projektowych",
+    "table": "Tabela",
+    "timberToe": "Średnica podstawy pala drewnianego",
+    "useTableValues": "Użyj wartości tabelarycznych"
+  },
+  "shape": {
+    "round": "Okrągły",
+    "square": "Kwadratowy"
+  },
+  "sizes": {
+    "apply": "Zastosuj wymiary",
+    "label": "Wymiary pali [mm]",
+    "legend": "Wymiary pali",
+    "standard": "Seria standardowa"
+  },
+  "skin": {
+    "dragHint": "Poziomy pala i strefy tarcia można też przeciągać na wykresie CPT.",
+    "ksMinAria": "K0·tan(δ) minimum",
+    "minimum": "minimum",
+    "negBottom": "Spód tarcia negatywnego",
+    "negBottomAria": "Spód tarcia negatywnego [m NAP]",
+    "posTop": "Góra tarcia na pobocznicy",
+    "posTopAria": "Góra tarcia na pobocznicy [m NAP]",
+    "title": "Strefy tarcia"
+  },
+  "standard": {
+    "existingModel": "Istniejący model projektu — bez zmian",
+    "historicalHint": "Historyczne obliczenie na wciskanie dla pojedynczego pala przy jednym sondowaniu. Tarcie na pobocznicy w piasku, stały przekrój lub jawnie podana zbieżność pala drewnianego; osiadanie i grupy pali nie zostały zweryfikowane. Zmiana normy usuwa współczynniki projektowe i resetuje γm.",
+    "title": "Norma projektowa",
+    "version": "Wersja normy"
+  },
+  "table": {
+    "breadcrumb": "Ścieżka nawigacji",
+    "cpt": "CPT {{id}}",
+    "cptMissing": "Brak sondowania CPT {{id}} w projekcie.",
+    "cptTableAria": "Rc;net;d CPT {{id}}",
+    "heading": "Nośność dla każdego sondowania",
+    "intro": "Jeden system pali w szeregu wymiarów i poziomów podstawy, obliczony dla każdego sondowania. Typ pala, normę i profil gruntu ustaw po lewej stronie.",
+    "selectCpt": "Wybierz co najmniej jedno sondowanie.",
+    "title": "Tabela nośności",
+    "toe": "Podstawa [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "Średnica drewna maleje liniowo od głowicy; poniżej części zbieżnej średnica podstawy pozostaje stała. Obwód tarcia odpowiada wybranej długości; osiadanie i sztywności sprężyn nie są wyznaczane.",
+    "hintFromJoint": "Średnica drewna maleje liniowo od styku; poniżej części zbieżnej średnica podstawy pozostaje stała. Obwód tarcia odpowiada wybranej długości; osiadanie i sztywności sprężyn nie są wyznaczane.",
+    "lengthFromHead": "Długość zbieżna od głowicy",
+    "lengthFromHeadAria": "Długość zbieżna od głowicy [m]",
+    "lengthFromJoint": "Długość zbieżna od styku",
+    "lengthFromJointAria": "Długość zbieżna od styku [m]",
+    "title": "Zbieżny pal drewniany",
+    "toeDiameter": "Średnica podstawy",
+    "toeDiameterAria": "Średnica podstawy pala drewnianego [mm]"
+  },
+  "target": {
+    "hint": "Dla każdego wymiaru tabela doboru wyszukuje najkrótszy pal osiągający dolną granicę. Powyżej górnej granicy wymiar jest z zapasem.",
+    "inverted": "Górna granica musi być powyżej dolnej; tabela nadal używa poprzedniego zakresu.",
+    "legend": "Wymagana nośność Rc;net;d",
+    "lower": "Dolna granica [kN]",
+    "notNumber": "Podaj dolną i górną granicę jako liczbę w kN.",
+    "upper": "Górna granica [kN]"
+  },
+  "visual": {
+    "cptHeading": "CPT: {{id}}",
+    "crossSection": "Przekrój",
+    "crossSectionAria": "Przekrój pala",
+    "empty": {
+      "howTo": "Otwórz plik GEF, BRO-XML lub plik projektu przez <strong>Otwórz</strong> u góry. Następnie wybierz sondowanie w sekcji <strong>CPT</strong> w panelu danych.",
+      "noCpt": "Do tego obliczenia nie przypisano jeszcze sondowania.",
+      "then": "Pojawią się tu wtedy opór stożka, pal i strefy tarcia.",
+      "title": "Wykres CPT"
+    },
+    "extensionTitle": "Nadstawka betonowa {{size}} mm do styku na NAP {{joint}} m",
+    "material": "materiał",
+    "materials": {
+      "castInSitu": "Beton wylewany na miejscu",
+      "prefab": "Beton prefabrykowany",
+      "steelEA": "Pal stalowy; EA właściwe dla projektu",
+      "steelTube": "Pal stalowy rurowy, wypełniony betonem",
+      "wood": "Drewno, stały przekrój"
+    },
+    "noPoints": "Brak pomiarów w tym sondowaniu",
+    "notComputed": "Nie obliczono: {{error}}. Przeciągnij poziomy lub zmień dane wejściowe.",
+    "rebarCage": "kosz zbrojeniowy",
+    "taperLength": "długość zbieżna od głowicy",
+    "toeSize": "wymiar podstawy",
+    "wall": "ścianka"
+  }
+}

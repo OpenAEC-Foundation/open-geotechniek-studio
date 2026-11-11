@@ -1,0 +1,262 @@
+{
+  "bore": {
+    "belowGround": "m below GL",
+    "colour": "Colour: {{colour}}",
+    "depth": "Depth",
+    "fallbackTitle": "Borehole",
+    "layers": "Layers",
+    "noLayers": "No layers found in this borehole.",
+    "noLayersHint": "The BHR-GT XML contained no <0>describedInterval</0> elements.",
+    "zoomHint": "Ctrl + scroll to zoom in/out",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Reset zoom"
+  },
+  "chart": {
+    "depthAxis": "Depth (m)",
+    "fsHeader": "Sleeve friction (fs, MPa)",
+    "qcHeader": "Cone resistance (qc, MPa)",
+    "removeAllMarkers": "Remove all",
+    "removeMarker": "Remove",
+    "rfHeader": "Friction ratio (Rf, %)",
+    "u2Header": "Pore pressure (u2, kN/m²)"
+  },
+  "gwp": {
+    "axisLevel": "Water level (m NAP)",
+    "col": {
+      "material": "Material",
+      "screenBottom": "Screen bottom",
+      "screenLength": "Screen length",
+      "screenTop": "Screen top",
+      "status": "Status",
+      "tubeDiameter": "Tube diameter",
+      "tubeTop": "Tube top"
+    },
+    "constructed": "Constructed",
+    "csvFailed": "Loading CSV failed: {{error}}",
+    "deepestFilter": "Lowest screen",
+    "fetchFailed": "Could not fetch GLDs: {{error}}",
+    "gldTitle": "Groundwater level over time (GLD)",
+    "groundLevel": "Ground level",
+    "loading": "Fetching groundwater levels…",
+    "noCoords": "The well has no WGS84 coordinates — cannot search for GLDs.",
+    "noSeries": "No GLD time series found near this well.",
+    "noValues": "GLDs found ({{n}}) but no measurements received.",
+    "observations": "{{n}} measurements",
+    "openBroloket": "Open in BROloket ↗",
+    "owner": "owner {{owner}}",
+    "seriesFound": "{{n}} time series found at this well. Scroll = zoom horizontally, drag = pan, double-click = reset.",
+    "subtitle": "Groundwater monitoring well (BRO/GMW)",
+    "tubeCount": "Number of tubes",
+    "tubesTitle": "Monitoring tubes (screens)"
+  },
+  "ifcView": {
+    "disabledText": "The old STEP export does not comply with the IFC schema. Use the project file to keep all data. The IFCX snapshot is experimental.",
+    "disabledTitle": "IFC4x3 export disabled"
+  },
+  "ifcxPreview": {
+    "close": "Close",
+    "copied": "Copied",
+    "copy": "Copy JSON",
+    "failed": "Could not create a preview:",
+    "generating": "Generating IFCX…",
+    "hint": "This is exactly the content written to the <0>.ifcgis</0> file when you save the project — IFC5-alpha (IFCX) shaped JSON with IfcProject, IfcSite, IfcBorehole and IfcAnnotation entities and cross-references via <1>#id</1>.",
+    "noDoc": "No active document — open or create a project to see an IFCX preview.",
+    "projectOnly": "The IFCX preview only works for project documents. For individual CPTs or boreholes, use the IFC tab.",
+    "size": "{{bytes}} bytes IFCX (IFC4X3_ADD2)",
+    "tip": "Tip: the IFCX conversion requires the <0>to_ifcx_json</0> function on the Rust side (ifcgis-0.4+). Restart the Tauri dev app if you have just made a new cpt-core build.",
+    "title": "IFCX preview — what goes into the .ifcgis file"
+  },
+  "layerAnalysis": {
+    "invalidDepth": "Source point {{n}}: invalid or decreasing depth not used for the layer interpretation.",
+    "invalidRanges": "Layers must have positive thickness, be in order, not overlap and lie within the measured depth; choose zone 1–9.",
+    "notList": "The layer interpretation must be a list.",
+    "savedInvalid": "Saved layer interpretation is invalid: {{error}}",
+    "settingsRange": "Minimum thickness and hysteresis must be between 0 and 50 m.",
+    "thinIsolated": "Thin isolated layer kept; no neighbouring layer assumed across a measurement gap.",
+    "unknownProvenance": "Unknown or mismatching provenance of the saved layer interpretation.",
+    "zeroThickness": "Isolated measurement point without thickness not interpreted as a layer."
+  },
+  "layers": {
+    "add": "Add layer",
+    "bottom": "Bottom (m)",
+    "bottomAria": "Bottom of layer {{n}}",
+    "cancel": "Cancel",
+    "colBottom": "Bottom",
+    "colTop": "Top",
+    "colZone": "Zone",
+    "edit": "Edit layer interpretation",
+    "export": "Export layers JSON",
+    "fillSettings": "Enter the minimum thickness and hysteresis.",
+    "footer": "Source: {{source}}. Hysteresis confirms a new zone with two consecutive points. Boundaries are stored separately; measurement points are kept. Measurement curves show the indicative point classification.",
+    "hysteresis": "Hysteresis (m)",
+    "jsonFilter": "Layer interpretation JSON",
+    "layerN": "Layer {{n}}",
+    "minThickness": "Minimum thickness (m)",
+    "noCpt": "No CPT selected.",
+    "none": "No layer interpretation available.",
+    "provenanceAuto": "Indicative qc/Rf layer interpretation · minimum {{min}} m · hysteresis {{hyst}} m",
+    "provenanceManual": "Manual layer interpretation · minimum {{min}} m · hysteresis {{hyst}} m",
+    "recalculate": "Recalculate automatically",
+    "remove": "Remove layer {{n}}",
+    "saveManual": "Save manual layers",
+    "splitLast": "Split last layer",
+    "top": "Top (m)",
+    "topAria": "Top of layer {{n}}",
+    "zone": "Indicative zone",
+    "zoneAria": "Zone of layer {{n}}"
+  },
+  "left": {
+    "bore": {
+      "accountableParty": "Source holder",
+      "base": "Base",
+      "boreData": "Borehole data",
+      "delivery": "Delivery",
+      "descriptionDate": "Description date",
+      "descriptionProcedure": "Description procedure",
+      "endDate": "End date",
+      "fileMetadata": "File metadata",
+      "finalDepth": "Final depth",
+      "id": "Borehole ID",
+      "layerCount": "Number of layers",
+      "layers": "Layers",
+      "method": "Drilling method",
+      "noExtras": "No additional metadata.",
+      "noLayers": "No layers.",
+      "project": "Project",
+      "projectNumber": "Project no.",
+      "soilType": "Soil type",
+      "startDate": "Start date",
+      "top": "Top"
+    },
+    "gwp": {
+      "constructed": "Constructed",
+      "filterBottom": "Screen bottom",
+      "filterTop": "Screen top",
+      "initialFunction": "Initial function",
+      "manager": "Manager",
+      "noTubes": "No tubes.",
+      "owner": "Owner",
+      "status": "Status",
+      "subtitle": "Groundwater monitoring well (BRO/GMW)",
+      "tubeCount": "Number of tubes",
+      "tubes": "Tubes (screens)",
+      "wellCode": "Well code",
+      "wellData": "Well data",
+      "wellHeadProtector": "Well head protector"
+    },
+    "measurements": {
+      "depth": "depth",
+      "depthTitle": "Depth below ground level",
+      "napTitle": "Depth relative to NAP"
+    },
+    "meta": {
+      "groundLevelNap": "Ground level NAP",
+      "qualityRegime": "Quality regime"
+    },
+    "photos": {
+      "hintBore": "BRO hosts photos of this borehole (if available) on BROloket.",
+      "hintCpt": "BRO hosts photos of this CPT (if available) on BROloket.",
+      "hintGwp": "BRO hosts photos of this groundwater well (if available) on BROloket.",
+      "link": "View photos on BROloket ↗",
+      "onlyBro": "Photos are only available for BRO objects (BHR/CPT/GMW id required).",
+      "title": "Photos & inspection"
+    },
+    "rawXml": {
+      "copied": "Copied",
+      "copy": "Copy XML",
+      "none": "No raw XML available.",
+      "title": "Raw data (XML)"
+    }
+  },
+  "normalized": {
+    "error": {
+      "missing": "Enter all measured values and stresses.",
+      "notPositive": "Net cone resistance and effective vertical stress must be positive.",
+      "outOfRange": "The point is outside the numerical range.",
+      "range": "Required: qc and fs > 0, 0 < a ≤ 1 and total stress ≥ 0."
+    },
+    "field": {
+      "areaRatio": "Cone area ratio a",
+      "totalStress": "Total stress σv0 [kPa]",
+      "waterPressure": "Hydrostatic pressure u0 [kPa]"
+    },
+    "icZone": "Ic / zone",
+    "intro": "Point analysis of Qt / Fr / Bq / Ic with the given stresses, following Robertson–Wride (fixed exponent n = 1).",
+    "note": "Sensitive and cemented soils (zones 1, 8, 9) cannot be derived from Ic alone. No conversion to a NEN soil description.",
+    "reference": "Robertson & Cabal, 2022, figure 16",
+    "title": "Normalized SBTn point analysis",
+    "zones": {
+      "z2": "Organic soil",
+      "z3": "Clay",
+      "z4": "Silt mixture",
+      "z5": "Sand mixture",
+      "z6": "Sand",
+      "z7": "Gravelly sand"
+    }
+  },
+  "projectSettings": {
+    "boreMeta": "{{layers}} layers · {{depth}} m depth",
+    "close": "Close",
+    "cptMeta": "{{points}} points · {{depth}} m depth",
+    "newProject": "New project",
+    "noProject": "No active project — open or create a <0>.ifcgis</0> project.",
+    "noProjectHint": "The current active tab is a single CPT. Project info (title, client, location, CPT list) lives inside a project — create one or open an existing <0>.ifcgis</0> file."
+  },
+  "reportPreview": {
+    "chartScale": "Chart scale",
+    "coverTitle": "Cover page title",
+    "onePagePerCpt": "One page per CPT",
+    "openFailed": "Opening PDF failed: {{error}}"
+  },
+  "soil3d": {
+    "bearingRange": "NAP {{top}} to {{bottom}} m ({{found}}/{{total}})",
+    "criterion": "qc ≥ {{qc}} MPa over ≥ {{thickness}} m",
+    "criterionFrom": "from {{source}}",
+    "grid": "{{nx}} × {{ny}} × {{nz}} cells ({{dx}} × {{dy}} × {{dz}} m), IDW",
+    "warn": {
+      "bearingNone": "Bearing layer not found in any CPT.",
+      "bearingPartial": "Bearing layer not found in {{ids}}; the surface is interpolated there.",
+      "missingRd": "Without RD coordinates (not in the model): {{ids}}.",
+      "noLayers": "CPT {{id}} has no layer interpretation.",
+      "noRd": "No RD coordinates: the CPTs are placed in a row 10 m apart."
+    },
+    "zoneN": "Zone {{n}}"
+  },
+  "validation": {
+    "column": "column {{n}}",
+    "counts": "{{errors}} errors · {{warnings}} warnings",
+    "depth": "Depth: {{method}}",
+    "depthMethod": {
+      "corrected": "measured corrected depth",
+      "inclination": "inclination correction from penetration length",
+      "mixed": "mixed methods; per record in JSON",
+      "penetration": "penetration length as vertical approximation"
+    },
+    "diagnostics": "Diagnostics ({{n}})",
+    "exportAll": "Export the report for all messages.",
+    "line": "line {{n}}",
+    "measurements": "Measured quantities & units ({{n}})",
+    "noReport": "This file has no validation report yet. Import it again with the current parser.",
+    "points": "{{points}} measurement points · {{voids}} voids · {{omitted}} omitted records",
+    "preExcavated": "Pre-excavated: {{depth}} m",
+    "predrilled": "Predrilled: {{depth}} m",
+    "record": "record {{n}}",
+    "regime": "Regime: {{regime}}",
+    "removedLayer": "Layer to {{depth}} m: {{description}}",
+    "report": "Report this file",
+    "showOutliers": "Show {{n}} outliers (source records {{records}})",
+    "variables": "Measurement variables & zero readings"
+  },
+  "zones": {
+    "z1": "Sensitive fine-grained",
+    "z2": "Organic / peat",
+    "z3": "Clay",
+    "z4": "Silt mixtures",
+    "z5": "Sand mixtures",
+    "z6": "Sand",
+    "z7": "Gravelly sand / gravel",
+    "z8": "Very stiff sand/clay",
+    "z9": "Very stiff fine-grained"
+  }
+}

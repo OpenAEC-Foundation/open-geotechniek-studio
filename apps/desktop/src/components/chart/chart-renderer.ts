@@ -1,5 +1,6 @@
 import { classify } from "../../utils/browserCore";
 import { chartAxisZoom } from "./chart-zoom";
+import { pt } from "../../utils/panelsI18n";
 /**
  * CPT Chart Renderer — pure Canvas drawing.
  *
@@ -827,7 +828,7 @@ function drawDepthAxis(
     ctx.textAlign = "center";
     ctx.font = '600 9px Inter, system-ui, sans-serif';
     ctx.fillStyle = colors.text;
-    ctx.fillText(hasNap ? "NAP (m)" : "Diepte (m)", 0, 0);
+    ctx.fillText(hasNap ? "NAP (m)" : pt("chart.depthAxis", "Diepte (m)"), 0, 0);
     ctx.restore();
   }
 }
@@ -1429,12 +1430,12 @@ export function renderChart(
     }
 
     drawPanelHeader(ctx, colors, shared, c.layout.soil, "qc/Rf*", colors.textBright, null, null);
-    drawPanelHeader(ctx, colors, shared, c.layout.qc,   "Conusweerstand (qc, MPa)",  colors.qc, c.qcViewMin, c.qcViewMax, QC_LADDER);
-    drawPanelHeader(ctx, colors, shared, c.layout.fs,   "Plaatselijke wrijving (fs, MPa)", colors.fs, c.fsViewMin, c.fsViewMax, FS_LADDER);
+    drawPanelHeader(ctx, colors, shared, c.layout.qc,   pt("chart.qcHeader", "Conusweerstand (qc, MPa)"),  colors.qc, c.qcViewMin, c.qcViewMax, QC_LADDER);
+    drawPanelHeader(ctx, colors, shared, c.layout.fs,   pt("chart.fsHeader", "Plaatselijke wrijving (fs, MPa)"), colors.fs, c.fsViewMin, c.fsViewMax, FS_LADDER);
     // Rf header is mirrored — pass max/min swapped so label "0" lands on
     // the right edge and the highest Rf value lands on the left.
-    drawPanelHeader(ctx, colors, shared, c.layout.rf,   "Wrijvingsgetal (Rf, %)",   colors.rf, c.rfViewMax, c.rfViewMin, RF_LADDER);
-    if (c.layout.u2) drawPanelHeader(ctx, colors, shared, c.layout.u2, "Waterspanning (u2, kN/m²)", colors.u2, c.u2ViewMin, c.u2ViewMax, U2_LADDER, 1000);
+    drawPanelHeader(ctx, colors, shared, c.layout.rf,   pt("chart.rfHeader", "Wrijvingsgetal (Rf, %)"),   colors.rf, c.rfViewMax, c.rfViewMin, RF_LADDER);
+    if (c.layout.u2) drawPanelHeader(ctx, colors, shared, c.layout.u2, pt("chart.u2Header", "Waterspanning (u2, kN/m²)"), colors.u2, c.u2ViewMin, c.u2ViewMax, U2_LADDER, 1000);
 
     if (curves.qc) drawCurve(ctx, shared, c, c.layout.qc, "qc", c.qcViewMin, c.qcViewMax, colors.qc, 1.8);
     if (curves.fs) drawCurve(ctx, shared, c, c.layout.fs, "fs", c.fsViewMin, c.fsViewMax, colors.fs, 1.4);

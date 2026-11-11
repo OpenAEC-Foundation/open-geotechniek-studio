@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { Trans, useTranslation } from "react-i18next";
+import { numberLocale } from "../../calc/i18n";
 import Modal from "../Modal";
 import { useCptStore } from "../../store/useCptStore";
 import {
@@ -30,6 +32,7 @@ export interface IfcxPreviewDialogProps {
 }
 
 export default function IfcxPreviewDialog({ open, onClose }: IfcxPreviewDialogProps) {
+  const { t } = useTranslation("panels");
   const documents = useCptStore((s) => s.documents);
   const activeDocId = useCptStore((s) => s.activeDocId);
   const activeDoc = useMemo(
@@ -48,12 +51,12 @@ export default function IfcxPreviewDialog({ open, onClose }: IfcxPreviewDialogPr
     if (!open) return;
     if (!activeDoc) {
       setIfcxText("");
-      setError("Geen actief document — open of maak een project om een IFCX-preview te zien.");
+      setError(t("ifcxPreview.noDoc", "Geen actief document — open of maak een project om een IFCX-preview te zien."));
       return;
     }
     if (activeDoc.kind !== "project") {
       setIfcxText("");
-      setError("De IFCX-preview werkt alleen voor project-documenten. Voor losse sonderingen of boringen gebruik de IFC-tab.");
+      setError(t("ifcxPreview.projectOnly", "De IFCX-preview werkt alleen voor project-documenten. Voor losse sonderingen of boringen gebruik de IFC-tab."));
       return;
     }
     setLoading(true);
@@ -145,7 +148,7 @@ export default function IfcxPreviewDialog({ open, onClose }: IfcxPreviewDialogPr
     <Modal
       open={open}
       onClose={onClose}
-      title="IFCX-preview — wat komt er in het .ifcgis bestand"
+      title={t("ifcxPreview.title", "IFCX-preview — wat komt er in het .ifcgis bestand")}
       width={900}
       height="78vh"
       className="ifcx-preview-modal"
@@ -153,7 +156,7 @@ export default function IfcxPreviewDialog({ open, onClose }: IfcxPreviewDialogPr
         <div className="ifcx-preview-footer">
           <span className="ifcx-preview-info">
             {ifcxText
-              ? `${ifcxText.length.toLocaleString("nl-NL")} bytes IFCX (IFC4X3_ADD2)`
+              ? t("ifcxPreview.size", "{{bytes}} bytes IFCX (IFC4X3_ADD2)", { bytes: ifcxText.length.toLocaleString(numberLocale()) })
               : ""}
           </span>
           <button
@@ -161,7 +164,7 @@ export default function IfcxPreviewDialog({ open, onClose }: IfcxPreviewDialogPr
             className="ifcx-preview-btn-secondary"
             onClick={onClose}
           >
-            Sluiten
+            {t("ifcxPreview.close", "Sluiten")}
           </button>
           <button
             type="button"
@@ -169,29 +172,33 @@ export default function IfcxPreviewDialog({ open, onClose }: IfcxPreviewDialogPr
             onClick={() => void onCopy()}
             disabled={!ifcxText}
           >
-            {copied ? "Gekopieerd" : "Kopieer JSON"}
+            {copied ? t("ifcxPreview.copied", "Gekopieerd") : t("ifcxPreview.copy", "Kopieer JSON")}
           </button>
         </div>
       }
     >
       <p className="ifcx-preview-hint">
-        Dit is exact de inhoud die in het <code>.ifcgis</code> bestand
-        komt te staan wanneer je het project opslaat — IFC5-alpha
-        (IFCX) shaped JSON met IfcProject, IfcSite, IfcBorehole,
-        IfcAnnotation entities en cross-references via <code>#id</code>.
+        <Trans
+          t={t}
+          i18nKey="ifcxPreview.hint"
+          defaults="Dit is exact de inhoud die in het <0>.ifcgis</0> bestand komt te staan wanneer je het project opslaat — IFC5-alpha (IFCX) shaped JSON met IfcProject, IfcSite, IfcBorehole, IfcAnnotation entities en cross-references via <1>#id</1>."
+          components={[<code />, <code />]}
+        />
       </p>
       {loading && (
-        <div className="ifcx-preview-status">IFCX genereren…</div>
+        <div className="ifcx-preview-status">{t("ifcxPreview.generating", "IFCX genereren…")}</div>
       )}
       {error && (
         <div className="ifcx-preview-error">
-          <strong>Kon geen preview maken:</strong>
+          <strong>{t("ifcxPreview.failed", "Kon geen preview maken:")}</strong>
           <pre>{error}</pre>
           <p className="ifcx-preview-hint">
-            Tip: voor de IFCX-conversie moet de Rust-side de
-            <code>to_ifcx_json</code> functie hebben (ifcgis-0.4+).
-            Herstart de Tauri-dev-app als je net een nieuwe cpt-core
-            build hebt gemaakt.
+            <Trans
+              t={t}
+              i18nKey="ifcxPreview.tip"
+              defaults="Tip: voor de IFCX-conversie moet de Rust-side de <0>to_ifcx_json</0> functie hebben (ifcgis-0.4+). Herstart de Tauri-dev-app als je net een nieuwe cpt-core build hebt gemaakt."
+              components={[<code />]}
+            />
           </p>
         </div>
       )}

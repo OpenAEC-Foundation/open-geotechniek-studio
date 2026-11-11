@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "CPT {{id}}",
+    "notCalculated": "Non calculé",
+    "checks": {
+      "capacity": "capacité portante"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "Le bas du frottement négatif ({{given}}) se situe hors du pieu ; calculé avec {{used}}.",
+    "posKleefClamped": "Le haut du frottement latéral positif ({{given}}) se situe hors de la plage du fût ; calculé avec {{used}}."
+  },
+  "errors": {
+    "noCpt": "Aucun CPT actif",
+    "unknownStandard": "Version de norme inconnue",
+    "pileTypeNotSupported": "Type de pieu non pris en charge pour cette version de norme : {{id}}",
+    "extensionInvalid": "Une rehausse en béton nécessite un pieu bois, une dimension de rehausse positive et une jonction entre la tête et la pointe du pieu, sans dimension de pointe distincte",
+    "taperInvalidWithExtension": "La conicité du bois nécessite un diamètre de pointe positif ≤ diamètre du bois à la jonction et une longueur conique comprise dans la partie en bois sous la jonction",
+    "taperInvalid": "La conicité du bois nécessite un diamètre de pointe positif ≤ diamètre en tête et une longueur conique comprise dans la longueur du pieu, sans dimension de pointe distincte",
+    "toeSizeInvalid": "La dimension de la pointe doit être positive et finie",
+    "footPlateTooWide": "Pour ce type de pieu, la plaque de pointe peut dépasser d'au plus 10 mm de chaque côté",
+    "groutScrewMinDiameter": "Ce préréglage de pieu vissé injecté nécessite un diamètre de fût d'au moins 300 mm",
+    "timberConstantSection": "Ce type de pieu bois nécessite une section constante sans rehausse",
+    "eaInvalid": "EA doit être positif et fini",
+    "eaRequired": "Saisissez la rigidité axiale EA spécifique au projet pour ce type de pieu",
+    "projectFactorsInvalid": "Les facteurs du projet nécessitent des valeurs valides, une source et une édition correspondant à la norme choisie",
+    "nonFiniteInput": "Toutes les valeurs saisies doivent être des nombres finis",
+    "diameterNotPositive": "Le diamètre ou le côté doit être supérieur à zéro",
+    "wallThicknessInvalid": "L'épaisseur de paroi doit être supérieure à zéro et inférieure à la moitié du diamètre",
+    "toeAboveHead": "La pointe du pieu doit se situer sous la tête du pieu",
+    "factorsInvalid": "γm doit être supérieur à zéro ; γf,nk et le minimum K0·tan(δ) ne doivent pas être négatifs",
+    "negativeLoads": "Les charges de compression ne doivent pas être négatives",
+    "kleefLevels": "Les niveaux de frottement doivent se situer entre la tête et la pointe du pieu ; le frottement latéral positif ne doit pas chevaucher le frottement négatif",
+    "soilLayerInvalid": "Les couches de sol nécessitent des niveaux valides, des poids volumiques et un angle de frottement compris entre 0 et 90 degrés",
+    "soilLayerOrder": "Les couches de sol doivent se suivre de haut en bas sans chevauchement",
+    "historicalCptData": "Un calcul historique nécessite des profondeurs croissantes avec des valeurs de qc complètes et non négatives",
+    "historicalCptRange": "Un calcul historique nécessite toute la plage de 8 Deq au-dessus à 4 Deq sous la pointe du pieu",
+    "historicalSandOnly": "Le frottement latéral positif historique n'est vérifié que pour le sable ; ajustez la plage du fût et le profil de sol",
+    "historicalConstantSection": "Le profil historique ne prend en charge qu'une section de pieu constante ou une conicité explicite du bois",
+    "cptTooShallow": "CPT trop peu profond (atteint {{reach}} m, nécessite ≥ {{required}} m)",
+    "pileSizeInvalid": "La dimension du pieu doit être finie et supérieure à zéro",
+    "historicalGroupAnalysis": "L'analyse historique sur plusieurs CPT n'est pas encore vérifiée ; utilisez un seul CPT"
+  },
+  "warnings": {
+    "factors": "Facteurs : {{edition}} ; {{source}}.",
+    "existingModel": "modèle existant",
+    "existingCatalog": "catalogue existant",
+    "projectFactors2025": "Facteurs du projet 2025 appliqués ; il ne s'agit pas d'une conversion complète de la méthode de calcul vers la NEN 9997:2025.",
+    "settlementExtension": "Pieu bois avec rehausse en béton : les valeurs de tassement et de ressort avec des EA différents pour le béton et le bois ne sont pas vérifiées et ne sont pas déterminées.",
+    "settlementTaper": "Pieu bois conique : les valeurs de tassement et de ressort avec un EA variable ne sont pas vérifiées et ne sont pas déterminées.",
+    "settlementHistorical": "Les valeurs historiques de tassement et de ressort ne sont pas vérifiées et ne sont pas déterminées.",
+    "settlementLineUnsupported": "Courbe charge-tassement {{line}} pas encore prise en charge : les valeurs de tassement et de ressort ne sont pas déterminées.",
+    "extension": "Rehausse en béton {{size}} mm jusqu'à la jonction à NAP {{joint}} m : au-dessus de la jonction, le périmètre de la rehausse est utilisé, en dessous celui du bois ; frottement négatif avec le périmètre moyen sur la zone de frottement, frottement latéral positif par couche.",
+    "taperWithExtension": "Conicité du bois depuis la jonction : frottement latéral positif avec le périmètre moyen par couche. Pas de majoration des facteurs de pieu pour la conicité.",
+    "taper": "Conicité du bois : frottement négatif avec le périmètre moyen sur la zone de frottement ; frottement latéral positif avec le périmètre moyen par couche. Sans rehausse en béton ni majoration pour la conicité.",
+    "deviatingToeSize": "Dimension de pointe différente : vérifiez le facteur de forme de pointe β et la plage de frottement latéral admise pour cette méthode de mise en œuvre.",
+    "qbMaxCapped": "qb;max plafonné à 15 MPa (valeur brute {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Saisissez des niveaux de pointe finis, un par ligne ou séparés par des points-virgules.",
+      "toeLevelsDuplicate": "Chaque niveau de pointe ne peut apparaître qu'une seule fois.",
+      "cptIdsInvalid": "Sélectionnez des noms de CPT uniques pour le tableau.",
+      "toeNapsInvalid": "Le tableau nécessite des niveaux de pointe uniques et finis.",
+      "sizesInvalid": "Saisissez des dimensions de pieu positives en mm, séparées par un espace, une virgule ou un point-virgule.",
+      "sizesDuplicate": "Chaque dimension de pieu ne peut apparaître qu'une seule fois.",
+      "levelRangeInvalid": "Saisissez un niveau haut et un niveau bas finis ainsi qu'un pas positif.",
+      "tooManyLevels": "Au plus {{max}} niveaux de pointe ; choisissez un pas plus grand.",
+      "sizesNotPositive": "Les dimensions de pieu doivent être positives.",
+      "targetRangeInvalid": "La limite supérieure de la capacité portante visée doit être au-dessus de la limite inférieure."
+    },
+    "notes": {
+      "profileAboveToe": "Le profil de sol s'arrête au-dessus de la pointe du pieu. Vérifiez et prolongez les couches de sol ; les couches manquantes le long du fût ne contribuent pas.",
+      "profileAboveDeepest": "Le profil de sol s'arrête à {{level}} m NAP, au-dessus du niveau de pointe le plus bas."
+    },
+    "reasons": {
+      "cptTooShort": "CPT trop court",
+      "kleefLevels": "au-dessus de la zone de frottement",
+      "eaMissing": "EA manquant",
+      "notComputable": "non calculable"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Échec du calcul",
+      "exampleFailed": "L'exemple {{cpt}}, {{size}} mm à {{level}} m NAP ne peut pas être calculé : {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Circulaire Ø{{size}}",
+    "square": "Carrée {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — profil de référence historique",
+    "nen-6743-2006": "NEN 6743-1:2006 — historique",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — facteurs d'origine",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modèle de calcul existant"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991 ; référence publique 05290 p. 31–32 (pieu préfabriqué isolé)",
+    "source2006": "NEN 6743-1:2006 tableau 2 ; NEN 6740:2006 tableau 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 tableau 7.c ; facteurs d'origine avant réduction",
+    "conditions": "Modèle historique de pieu en compression : sable ; pas de correction pour groupe de pieux, OCR, granulométrie ou excavation. Pics le long du fût plafonnés de manière prudente à 12 MPa. Tassement non vérifié."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, tableau 7.c (sable/gravier sableux)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Pieu tubulaire en acier — battu (modèle de projet existant)",
+      "shortName": "Pieu tubulaire en acier — battu",
+      "conditions": "Jeu de facteurs existant conservé ; diffère du tableau 7.c:2017 pour les pieux tubulaires en acier à extrémité fermée.",
+      "source": "Modèle de calcul existant et rapport de référence 984.pdf",
+      "edition": "2017/2019 — modèle de projet existant"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Pieu en béton préfabriqué précontraint — battu"
+    },
+    "concrete-prefab-round": {
+      "name": "Pieu en béton préfabriqué — circulaire, battu"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Pieu tubulaire en acier — extrémité fermée (tableau 2017)",
+      "shortName": "Pieu tubulaire en acier — extrémité fermée",
+      "conditions": "Plaque de pointe dépassant d'au plus 10 mm du tube ; tube rempli de béton."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Pieu en béton coulé en place — tubage extrait par battage inverse",
+      "conditions": "Béton directement au contact du sol ; tubage extrait par battage inverse et traction statique."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Pieu en béton coulé en place — tubage extrait par vibration",
+      "conditions": "Béton directement au contact du sol ; tubage extrait par vibration et traction statique."
+    },
+    "concrete-screw-displacement": {
+      "name": "Pieu vissé en béton — pointe perdue",
+      "conditions": "Tubage lisse retiré ; béton directement au contact du sol."
+    },
+    "steel-screw-grout": {
+      "name": "Pieu vissé en acier — injection de coulis",
+      "conditions": "Fût de coulis ≥ 300 mm ; ne pas monter ni descendre pendant la mise en œuvre. EA se rapporte à l'acier/au noyau, pas à la surface du fût de coulis."
+    },
+    "concrete-auger": {
+      "name": "Pieu foré à la tarière continue — béton",
+      "conditions": "Édition 2017 : début de qc;III plafonné à 2 MPa ; aucune dérogation fondée sur des CPT réalisés après la mise en œuvre."
+    },
+    "concrete-bored": {
+      "name": "Pieu foré — sous fluide de forage"
+    },
+    "timber-uniform": {
+      "name": "Pieu bois battu — circulaire, avec ou sans rehausse en béton",
+      "conditions": "Section de bois circulaire, constante ou à conicité linéaire depuis le haut du bois ; éventuellement avec une rehausse en béton jusqu'à la jonction. Pas de majoration des facteurs de pieu pour la conicité."
+    }
+  },
+  "soil": {
+    "sand-dry": "Sable, sec",
+    "sand-wet": "Sable, saturé",
+    "clay": "Argile, saturée",
+    "peat": "Tourbe, saturée"
+  }
+}

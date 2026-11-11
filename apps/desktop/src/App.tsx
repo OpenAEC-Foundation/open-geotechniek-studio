@@ -1,6 +1,7 @@
 import { decodeSource } from "./utils/sourceEncoding";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 import TitleBar from "./components/TitleBar";
 import Ribbon from "./components/ribbon/Ribbon";
 import DocumentBar from "./components/DocumentBar";
@@ -41,6 +42,7 @@ import "./styles/shell.css";
  */
 function DetachedApp({ view, title }: { view: string; title: string }) {
   const { requestDockBack } = useWindowManager();
+  const { t } = useTranslation("app");
 
   useEffect(() => {
     getSetting("theme", "light").then((saved) => applyTheme(saved));
@@ -58,7 +60,7 @@ function DetachedApp({ view, title }: { view: string; title: string }) {
       case "report":
         return <ReportPreview />;
       default:
-        return <div className="placeholder"><p>Detached view</p></div>;
+        return <div className="placeholder"><p>{t("detached.view", "Losgekoppelde weergave")}</p></div>;
     }
   };
 
@@ -68,11 +70,11 @@ function DetachedApp({ view, title }: { view: string; title: string }) {
       {/* Dock-back bar */}
       <div className="detached-dock-bar">
         <span className="detached-dock-title">{title}</span>
-        <button className="detached-dock-btn" onClick={handleDockBack} title="Dock back to main window">
+        <button className="detached-dock-btn" onClick={handleDockBack} title={t("detached.dockBackTitle", "Terugzetten in het hoofdvenster")}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
           </svg>
-          <span>Dock back</span>
+          <span>{t("detached.dockBack", "Terugzetten")}</span>
         </button>
       </div>
       <main className="main-view" style={{ flex: 1 }}>
@@ -88,7 +90,7 @@ function App() {
   // Check if this is a detached window
   const detachedParams = getDetachedParams();
   if (detachedParams.detached && detachedParams.view) {
-    return <DetachedApp view={detachedParams.view} title={detachedParams.title ?? "Untitled"} />;
+    return <DetachedApp view={detachedParams.view} title={detachedParams.title ?? i18next.t("app:detached.untitled", { defaultValue: "Naamloos" })} />;
   }
   const { t } = useTranslation();
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -246,9 +248,14 @@ function App() {
           console.error("Browser drop open failed for", f.name, err);
           const msg = err instanceof Error ? err.message : String(err);
           alert(
-            `Kon ${f.name} niet openen in browser-modus:\n${msg}\n\n` +
-            "Tip: BHR-GT XML + GMW XML + GEF werken in de browser. " +
-            "Voor BRO CPT-XML en projectbestanden heb je de desktop-versie nodig.",
+            i18next.t("app:drop.browserOpenFailed", {
+              defaultValue:
+                "Kon {{name}} niet openen in browser-modus:\n{{message}}\n\n" +
+                "Tip: BHR-GT XML + GMW XML + GEF werken in de browser. " +
+                "Voor BRO CPT-XML en projectbestanden heb je de desktop-versie nodig.",
+              name: f.name,
+              message: msg,
+            }),
           );
         }
       }
@@ -460,7 +467,7 @@ function App() {
               <polyline points="17 8 12 3 7 8"/>
               <line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
-            <p>Laat los om te openen — GEF, BRO-XML of .ifcgeo</p>
+            <p>{t("app:drop.hint", "Laat los om te openen — GEF, BRO-XML of .ifcgeo")}</p>
           </div>
         </div>
       )}

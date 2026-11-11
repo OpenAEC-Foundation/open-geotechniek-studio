@@ -18,6 +18,7 @@
 
 import type { PileInput } from "../types";
 import { historicalXi, usesHistoricalProcedure } from "../standards";
+import { ct } from "../../../i18n";
 
 /** Eén sondering-case in de multi-CPT analyse. */
 export interface PerCptCase {
@@ -167,7 +168,7 @@ export function computeMultiCptSummary(inputs: MultiCptInputs): MultiCptSummary 
   const { cases, gammaM, nEd, stiffness = "non-stiff", fnkDOverride, fnkDMode = "max" } = inputs;
   const n = cases.length;
   if (n === 0) throw new Error("multi-CPT summary: geen sonderingen");
-  if (usesHistoricalProcedure(inputs.standard) && n !== 1) throw new Error("Historische paalgroepanalyse is nog niet geverifieerd; gebruik één sondering");
+  if (usesHistoricalProcedure(inputs.standard) && n !== 1) throw new Error(ct("calcPileCore", "errors.historicalGroupAnalysis", "Historische paalgroepanalyse is nog niet geverifieerd; gebruik één sondering"));
 
   const rcCalValues = cases.map((c) => c.rcCal);
   const rcCalMean = rcCalValues.reduce((a, b) => a + b, 0) / n;

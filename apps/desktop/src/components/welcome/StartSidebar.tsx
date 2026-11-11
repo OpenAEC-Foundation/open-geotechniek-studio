@@ -19,16 +19,17 @@ export function StartSidebar({
   onClose,
 }: StartSidebarProps) {
   const { t } = useTranslation();
+  const { t: ta } = useTranslation("app");
   const { recentFiles } = useRecentFiles();
 
   return (
     <aside className="start-sidebar">
       <div className="start-sidebar-toolbar">
-        <span className="start-sidebar-title">Start</span>
+        <span className="start-sidebar-title">{ta("startSidebar.title", "Start")}</span>
         <button
           className="start-sidebar-close-btn"
           onClick={onClose}
-          title="Inklappen"
+          title={ta("startSidebar.collapse", "Inklappen")}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M10.78 4.22a.75.75 0 010 1.06L8.06 8l2.72 2.72a.75.75 0 11-1.06 1.06L6.94 8.53a.75.75 0 010-1.06l2.78-2.78a.75.75 0 011.06 0z" />
@@ -68,14 +69,14 @@ export function StartSidebar({
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4M12 2v13M9 6l3-3 3 3" />
               </svg>
-              <span>Voorbeeldproject</span>
+              <span>{ta("startSidebar.exampleProject", "Voorbeeldproject")}</span>
             </button>
           )}
         </div>
 
         {recentFiles.length > 0 && (
           <div className="start-recent">
-            <h3 className="start-recent-title">Recente bestanden</h3>
+            <h3 className="start-recent-title">{t("welcome.recent", "Recente bestanden")}</h3>
             <div className="start-recent-list">
               {recentFiles.map((file) => {
                 const name = file.name.replace(/\.(ifcx?|json|oaec|oaecproj)$/i, "");
@@ -117,13 +118,14 @@ export function StartSidebar({
 
 /** Vertical collapsed tab — shown when the sidebar is closed. */
 export function StartSidebarCollapsedTab({ onOpen }: { onOpen: () => void }) {
+  const { t } = useTranslation("app");
   return (
     <button
       className="start-sidebar-collapsed-tab"
       onClick={onOpen}
-      title="Start openen"
+      title={t("startSidebar.expand", "Start openen")}
     >
-      <span>Start</span>
+      <span>{t("startSidebar.title", "Start")}</span>
     </button>
   );
 }

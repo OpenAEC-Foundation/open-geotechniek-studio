@@ -1,0 +1,81 @@
+{
+  "detached": {
+    "view": "Detached view",
+    "dockBackTitle": "Dock back to the main window",
+    "dockBack": "Dock back",
+    "untitled": "Untitled"
+  },
+  "drop": {
+    "hint": "Release to open — GEF, BRO XML or .ifcgeo",
+    "browserOpenFailed": "Could not open {{name}} in browser mode:\n{{message}}\n\nTip: BHR-GT XML, GMW XML and GEF work in the browser. For BRO CPT XML and project files you need the desktop version."
+  },
+  "errorBoundary": {
+    "title": "⚠ React render crash — top-level ErrorBoundary",
+    "intro": "A component in the app threw an error while rendering. The stack trace below helps to locate the cause.",
+    "reload": "Reload app",
+    "noStack": "(no stack available)",
+    "componentStack": "Component stack"
+  },
+  "backstage": {
+    "noProject": "No active project — open or create an .ifcgeo project.",
+    "projectFilter": "Open Geotechniek Studio file",
+    "saveFailed": "Save failed: {{error}}",
+    "geoObjectFilter": "Geotechnical object (.ifcgeo)",
+    "cptSnapshotFilter": "CPT with source data",
+    "snapshotSaveFailed": "Saving the snapshot failed: {{error}}",
+    "gefExportStopped": "GEF export stopped: {{error}}",
+    "broBrowserUnavailable": "Generating a new BRO delivery is only available through the legacy desktop export. Use GEF or a JSON snapshot for a source-faithful export.",
+    "browserOpenFailed": "Could not open {{name}} in browser mode:\n{{message}}\n\nTip: BHR-GT XML, GMW XML, GEF and BRO CPT XML do work in the browser. For .ifcgeo/.ifcgis project files you need the desktop version.",
+    "openFailed": "Could not open {{name}}: {{message}}",
+    "minutesAgo": "{{n}} min ago",
+    "hoursAgo": "{{n}} h ago",
+    "daysAgo": "{{n}} d ago"
+  },
+  "extensions": {
+    "tekening": {
+      "name": "Site plan",
+      "description": "CAD paper (A2/A3/A4) with CPTs, snapping, overlays and PDF export."
+    },
+    "offertes": {
+      "name": "Request quotes",
+      "description": "Requests quotes from the nearest CPT contractors."
+    },
+    "category": {
+      "drawing": "Drawing",
+      "workflow": "Workflow",
+      "calculation": "Calculation"
+    },
+    "lockedLabel": "Not yet production-ready",
+    "inDevelopment": "In development",
+    "lockedDescription": "This calculation is still in development — its results have not yet been verified for production use. The toggle is therefore disabled.",
+    "noCatalog": "No external extension catalogue available.",
+    "builtInOnly": "Open Geotechniek Studio currently only uses built-in extensions (see the \"{{tab}}\" tab). A community catalogue will follow in a later version."
+  },
+  "statusBar": {
+    "depth": "Depth"
+  },
+  "startSidebar": {
+    "title": "Start",
+    "collapse": "Collapse",
+    "expand": "Open start panel",
+    "exampleProject": "Example project"
+  },
+  "releaseNotes": {
+    "title": "What's new",
+    "loadFailed": "Could not load release notes ({{error}})",
+    "loading": "Loading…",
+    "none": "No releases found"
+  },
+  "store": {
+    "noProject": "No active project.",
+    "noProjectForBro": "No active project — cannot add the BRO CPT.",
+    "targetProjectClosed": "The target project was closed while adding.",
+    "gmwParseFailed": "{{filename}}: could not parse a GMW dispatch (no <GMW_PO>/<GMW_O> root or no broId found)",
+    "unsupportedBore": "{{filename}}: not a supported BHR XML or GEF borehole"
+  },
+  "platform": {
+    "unknownCptFormat": "Unknown CPT format ({{filename}}). Expected GEF or BRO CPT XML.",
+    "pdfWindowClosed": "The PDF window was closed. Open the report again.",
+    "popupBlocked": "Allow pop-ups or use Generate PDF to download."
+  }
+}

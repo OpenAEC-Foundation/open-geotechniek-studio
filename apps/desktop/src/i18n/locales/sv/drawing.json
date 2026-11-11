@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Flygfoto © PDOK",
+    "mapData": "Kartdata © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Linjerna förlängdes till ett hörn i skärningspunkten",
+    "extendSecond": "Förläng — klicka nu på den andra linjen; båda förlängs till ett hörn i skärningspunkten",
+    "hintExtend": "Förläng — klicka först på referenslinjen (gränsen att förlänga till)",
+    "hintMirror": "Spegla — markera först en linje (klicka på den) och klicka sedan på två punkter för spegelaxeln",
+    "hintOffset": "Förskjut — klicka på en linje för att välja källa (avståndet efterfrågas sedan)",
+    "hintTrim": "Trimma — klicka först på referenslinjen (skärkanten)",
+    "mirrorDone": "Linjen speglades kring axeln",
+    "mirrorNeedsLine": "Markera först en linje (klicka på den) innan du använder Spegla",
+    "mirrorSecond": "Spegla — klicka nu på spegelaxelns andra punkt",
+    "offsetDone": "Parallell linje placerad på {{dist}} m",
+    "offsetPickFirst": "Förskjut — klicka först på en linje för att välja källa",
+    "offsetPrompt": "Förskjutningsavstånd i meter? (positivt tal)",
+    "offsetSide": "Förskjut {{dist}} m — klicka på den sida där kopian ska hamna",
+    "parallel": "Linjerna är parallella — ingen skärningspunkt, inget hörn möjligt",
+    "pickOtherLine": "Välj en annan linje än den första",
+    "trimDone": "Linjerna trimmades till ett hörn i skärningspunkten",
+    "trimSecond": "Trimma — klicka nu på den andra linjen; båda trimmas till ett hörn i skärningspunkten"
+  },
+  "coordTable": {
+    "more": "+ {{n}} visas inte",
+    "nr": "Nr",
+    "title": "Sonderingar som återstår att utföra (RD)"
+  },
+  "crop": {
+    "cancel": "Avbryt",
+    "close": "Stäng",
+    "confirm": "Beskär och lägg till",
+    "cropPage": "Beskär sida {{page}}",
+    "imageTitle": "Beskär bild",
+    "loadingPdf": "Läser PDF…",
+    "otherPage": "← Annan sida",
+    "otherPageTitle": "Välj en annan sida",
+    "page": "Sida {{page}}",
+    "pageCount": "{{n}} sidor",
+    "pageCountOne": "1 sida",
+    "pdfReadError": "PDF:en kunde inte läsas",
+    "pickPage": "PDF — välj sida",
+    "rendering": "Renderar sida…"
+  },
+  "dwg": {
+    "askRd": "Exportera i RD-koordinater (EPSG:28992)?\n\nJa = verkliga RD-koordinater (georefererat).\nNej = lokalt origo, ritningen vid 0,0.",
+    "askTitle": "DWG/DXF-export",
+    "desktopOnly": "DWG-export fungerar endast i skrivbordsappen",
+    "exported": "Exporterat ({{n}} objekt)",
+    "exportedWithImages": "Exporterat ({{n}} objekt + {{images}} bilder)",
+    "exporting": "Exporterar DWG…",
+    "failed": "DWG-exporten misslyckades: {{error}}",
+    "filterDwg": "CAD-ritning (DWG)",
+    "filterDxf": "CAD-utbyte (DXF)",
+    "nothing": "Inget att exportera"
+  },
+  "export": {
+    "defaultFileName": "situationsplan"
+  },
+  "handle": {
+    "moveRaster": "Dra för att flytta rastret",
+    "rotate": "Dra för att rotera"
+  },
+  "move": {
+    "hint": "Flytta musen och klicka för att placera (Esc = avbryt)",
+    "notMovable": "Det här objektet kan inte flyttas",
+    "pickObject": "Klicka på objektet du vill flytta"
+  },
+  "northArrow": "Nordpil",
+  "note": {
+    "prompt": "Anteckning:"
+  },
+  "paper": {
+    "dwgStub": "DWG/DXF-tolk kommer snart"
+  },
+  "pdf": {
+    "exported": "PDF exporterad",
+    "exporting": "Exporterar PDF…",
+    "failed": "PDF-exporten misslyckades: {{error}}",
+    "timeout": "Rastreringen av PDF:en tog längre än 30 sekunder"
+  },
+  "props": {
+    "a2Landscape": "A2 liggande",
+    "a3Landscape": "A3 liggande",
+    "areaHeader": "Yta {{id}}",
+    "background": "Bakgrund",
+    "color": "Färg",
+    "cols": "Kolumner",
+    "cptHeader": "Sondering {{id}}",
+    "cptNumber": "Sonderingsnr",
+    "deleteArea": "Ta bort yta",
+    "deleteBackground": "Ta bort bakgrund",
+    "deleteCpt": "Ta bort sondering",
+    "deleteLine": "Ta bort linje",
+    "deleteNote": "Ta bort anteckning",
+    "deleteRaster": "Ta bort raster",
+    "dimensionHeader": "Måttlinje {{id}}",
+    "dragMarkerHint": "Dra markören på kartan för att flytta den.",
+    "emptyHint": "Klicka på en sondering, ett raster eller ett objekt på papperet för att redigera dess egenskaper.",
+    "fillColor": "Fyllnadsfärg",
+    "frame": "Ritningsram",
+    "freeze": "Lås vy",
+    "freezeTitle": "Lås panorering + zoom så att ritningen ligger exakt kvar",
+    "friction": "Mantelfriktionsmätning",
+    "frictionWithSymbol": "Mantelfriktionsmätning (streck under symbolen)",
+    "hideInExport": "Dölj rastret i PDF-/DWG-export",
+    "layer": "Lager",
+    "layerBackground": "Bakgrund (under linjer/markörer)",
+    "layerForeground": "Förgrund (över allt)",
+    "lineHeader": "Linje {{id}}",
+    "loading": "Läser in egenskaper…",
+    "noSelection": "Ingen markering",
+    "noteHeader": "Anteckning {{id}}",
+    "numbering": "Numrering",
+    "numberingPlaceholder": "t.ex. S",
+    "numberingTitle": "Prefix för cellnumreringen, t.ex. 'S' ger S1, S2, … Tomt = standardnotation R01-S01.",
+    "overlayTip": "Tips: tryck <kbd>M</kbd> eller <kbd>G</kbd> för att flytta (markören följer med; klick bekräftar, Esc avbryter). Dra i ett hörnhandtag för att skala.",
+    "paper": "Papper",
+    "paperScale": "Papper och skala",
+    "rasterHeader": "Raster {{id}}",
+    "resetColor": "Återställ till standard",
+    "rotation": "Rotation (°)",
+    "rows": "Rader",
+    "scaleField": "Skala 1:",
+    "scaleFieldTitle": "Skriv en skala (t.ex. 1000 för 1:1000) och tryck Enter — ritningen anpassas",
+    "scalePresets": "Förinställda skalor",
+    "setScale": "Ställ in skala 1:{{scale}}",
+    "spacingX": "C/c-avstånd X (m)",
+    "spacingY": "C/c-avstånd Y (m)",
+    "startNumber": "Startnr",
+    "strokeColor": "Kantfärg",
+    "text": "Text",
+    "titleBlock": {
+      "address": "Adress",
+      "checkedBy": "Granskad av",
+      "date": "Datum",
+      "drawingNumber": "Ritningsnr",
+      "drawnBy": "Ritad av",
+      "project": "Projekt",
+      "projectNumber": "Projektnr",
+      "scale": "Skala",
+      "version": "Version"
+    },
+    "width": "Bredd (m)"
+  },
+  "quotes": {
+    "cancel": "Avbryt",
+    "hint": "Sorterat efter avstånd till projektet. De 3 närmaste företagen är förvalda. Justera urvalet och klicka på ”Öppna e-post” för att öppna Outlook med en offertförfrågan till alla valda företag.",
+    "more": "+ ytterligare {{hidden}} företag visas inte. Katalogen ({{total}} företag) finns i <code>{{path}}</code>.",
+    "openMail": "Öppna e-post ({{n}})",
+    "openMailTitle": "Öppnar ditt standardprogram för e-post (Outlook) med en ifylld offertförfrågan",
+    "selected": "{{n}} företag valda",
+    "selectedOne": "1 företag valt",
+    "title": "Begär 3 offerter från sonderingsföretag"
+  },
+  "rotate": {
+    "notRotatable": "Den här objekttypen kan inte roteras",
+    "prompt": "Rotera hur många grader? (negativ = moturs)",
+    "selectFirst": "Markera först ett objekt att rotera"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Gata, husnummer, projektort",
+    "addressTitle": "Klicka för att redigera adressen",
+    "author": "Författare",
+    "drawingType": "Situationsplan",
+    "firstDate": "Första datum",
+    "format": "Format",
+    "logoAlt": "Företagslogotyp",
+    "logoTitle": "Klicka för att välja en egen logotyp (PNG / JPG / SVG)",
+    "projectNumber": "Projektnr",
+    "projectPlaceholder": "Projektnamn",
+    "projectTitle": "Klicka för att redigera projektnamnet",
+    "reference": "Referens",
+    "revision": "Rev.",
+    "scale": "Skala",
+    "scaleTitle": "Klicka för att redigera skalan (t.ex. 1:850)",
+    "sheet": "Blad"
+  },
+  "toast": {
+    "areaHint": "Yta — klicka på hörnpunkterna; Enter eller dubbelklick stänger, Esc avbryter",
+    "broIncomplete": "BRO ofullständigt: {{error}}",
+    "dwgParserPending": "DWG/DXF-tolk kommer snart — filen känns igen men visas inte ännu.",
+    "frameMustBeSvg": "Ritningsramen måste vara en SVG-fil",
+    "invalidScale": "Ogiltig skala: använd till exempel 1:850 (50–100 000).",
+    "logoReadFailed": "Det gick inte att läsa logotypen",
+    "noteHint": "Anteckning — klicka där texten ska placeras",
+    "objectsDeleted": "{{n}} objekt borttagna",
+    "objectsSelected": "{{n}} objekt markerade — tryck Delete för att ta bort",
+    "rasterPlaced": "Raster {{id}} placerat — dra i ett hörn för att sträcka ut det (sonderingar läggs till automatiskt med max {{spacing}} m c/c)",
+    "unsupportedFile": "Filtypen .{{ext}} stöds inte ännu"
+  }
+}

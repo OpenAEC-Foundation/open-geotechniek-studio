@@ -1,0 +1,107 @@
+{
+  "view": {
+    "heading": "Beräkningar",
+    "tabs": {
+      "label": "Visning",
+      "sheet": "Indata + utskrift",
+      "modelTitle": "Dölj utskriften så att ritningen får hela bredden",
+      "model": "Indata + {{visual}}",
+      "modelCpt": "Indata + CPT-sondering",
+      "print": "Förhandsgranskning",
+      "settings": "Inställningar"
+    },
+    "defaultVisual": "CPT-sondering",
+    "draft": "Utkast",
+    "input": "Indata",
+    "settings": {
+      "title": "Inställningar · {{name}}",
+      "intro": "Parametrar och standardserier för denna beräkning. Ändringar räknas om direkt."
+    }
+  },
+  "empty": {
+    "title": "En ny pålberäkning",
+    "choose": "Välj pålens bärförmåga eller horisontellt belastad påle.",
+    "layout": "Indata visas bredvid den utförliga utskriften.",
+    "new": "Ny beräkning",
+    "noProject": "Skapa eller öppna först ett projekt via Arkiv."
+  },
+  "sheet": {
+    "eyebrow": "Geoteknik / {{module}}",
+    "notice": "Vägledande beräkning. Kontrollera jordparametrarna innan den används i en dimensionering.",
+    "keyResults": "Huvudresultat",
+    "output": "Utskrift",
+    "governingPass": "Dimensionerande u.c. {{uc}} — OK",
+    "governingFail": "Dimensionerande u.c. {{uc}} — ej OK",
+    "noDesignCheck": "Ingen kontroll mot dimensionerande last"
+  },
+  "export": {
+    "failed": "Exporten misslyckades: {{error}}",
+    "busy": "Arbetar…",
+    "pdf": "Exportera PDF"
+  },
+  "print": {
+    "failed": "Rapporten kunde inte skapas: {{error}}",
+    "loading": "Skapar rapport…"
+  },
+  "dialog": {
+    "title": "Ny beräkning",
+    "name": "Namn",
+    "namePlaceholder": "Till exempel: Sättning av utfyllnad",
+    "alphaTitle": "Alfa — fortfarande under utveckling, inte produktionsklar",
+    "alpha": "UTKAST — under utveckling",
+    "cancel": "Avbryt",
+    "add": "Lägg till"
+  },
+  "categories": {
+    "pile": "Pålar",
+    "spread": "Grundläggningar",
+    "wall": "Stödkonstruktioner",
+    "anchor": "Stag",
+    "report": "Rapporter",
+    "other": "Övrigt"
+  },
+  "tree": {
+    "noProject": "Öppna ett projekt för att lägga till beräkningar.",
+    "add": "+ Ny beräkning",
+    "emptyHint": "Inga beräkningar ännu. Klicka på \"+\" för att lägga till en.",
+    "duplicate": "Duplicera",
+    "confirmDelete": "Ta bort \"{{name}}\"?",
+    "delete": "Ta bort",
+    "parts": "Delar av {{name}}",
+    "sheet": "Beräkningsblad",
+    "settings": "Inställningar"
+  },
+  "comingSoon": {
+    "hint": "Denna modul är fortfarande under uppbyggnad. Följ färdplanen på <link>GitHub</link>."
+  },
+  "ribbon": {
+    "groupCalculation": "Beräkning",
+    "new": "Ny",
+    "newTitle": "Ny geoteknisk beräkning",
+    "groupMethod": "Metod",
+    "explanation": "Förklaring",
+    "contextTitle": "Geotekniska beräkningar",
+    "contextModules": "Sättning · Platta på mark",
+    "draftCalculation": "Utkastberäkning"
+  },
+  "modules": {
+    "pile-bearing-capacity": {
+      "name": "Pålens bärförmåga",
+      "subtitle": "Pålens bärförmåga — NEN 6743 / NEN 9997",
+      "norm": "Normversion enligt beräkningens indata",
+      "tableLabel": "Bärförmågetabell"
+    },
+    "laterally-loaded-pile": {
+      "name": "Horisontellt belastad påle",
+      "subtitle": "Jordfjädrar, huvudkraft, huvudmoment och N–M-tvärsnittskontroll",
+      "norm": "CUR166 initial bäddmodul · Georgiadis skiktkorrektion · projektets fjäderlag",
+      "visualLabel": "Påle- och fjädermodell",
+      "tableLabel": "Påltabell"
+    },
+    "foundation-advice": {
+      "name": "Grundläggningsrekommendation",
+      "subtitle": "Rapport med geoteknisk undersökning, situationsplan, pålrekommendation och bilagor",
+      "visualLabel": "Situationsplan"
+    }
+  }
+}

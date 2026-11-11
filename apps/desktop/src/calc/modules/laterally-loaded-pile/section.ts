@@ -1,3 +1,4 @@
+import { ct } from '../../i18n';
 /** Doorsnedemechanica met expliciete projectsterkten (MPa).
  * Beton: parabool-rechthoek, eps_c2=2‰, eps_cu=3,5‰ (normaal beton).
  * Staal: elastisch-perfect plastisch; betontrek telt niet mee in ULS.
@@ -22,12 +23,12 @@ function geometry(s:PileSection) {
     s.concreteFactor<=0 || s.concreteFactor>1 || s.creepCoefficient<0 ||
     s.fckMpa<=0 || s.fckMpa>50 || s.fcdMpa<=0 || s.fcdMpa>s.fckMpa || s.fydMpa<=0 || s.tubeFydMpa<=0 ||
     !Number.isInteger(s.barCount) || s.barCount<0 || s.barCount>100 || s.barDiameterMm<=0)
-    throw new Error('Ongeldige doorsnede of materiaalwaarden.');
+    throw new Error(ct('calcLateral', 'errors.invalidSection', 'Ongeldige doorsnede of materiaalwaarden.'));
   const D=s.diameterMm/1000, tube=s.kind==='steel-tube'||s.kind==='filled-tube';
-  if(tube && (s.wallMm<=0 || 2*s.wallMm>=s.diameterMm)) throw new Error('Ongeldige restwanddikte.');
+  if(tube && (s.wallMm<=0 || 2*s.wallMm>=s.diameterMm)) throw new Error(ct('calcLateral', 'errors.invalidWall', 'Ongeldige restwanddikte.'));
   const core=tube ? D-2*s.wallMm/1000 : D, square=s.kind==='concrete-square';
   const bars=s.kind==='steel-tube' ? 0 : s.barCount, d=s.barDiameterMm/1000, c=s.coverToBarCentreMm/1000;
-  if(bars && (bars<4 || (square&&bars%4!==0) || c<d/2 || c>=core/2)) throw new Error('Ongeldige ligging van de wapening.');
+  if(bars && (bars<4 || (square&&bars%4!==0) || c<d/2 || c>=core/2)) throw new Error(ct('calcLateral', 'errors.invalidRebarLayout', 'Ongeldige ligging van de wapening.'));
   const coords:Array<{x:number;y:number}>=[];
   for(let i=0;i<bars;i++) {
     const r=core/2-c;
@@ -37,9 +38,9 @@ function geometry(s:PileSection) {
     } else coords.push({x:r*Math.cos(2*Math.PI*i/bars),y:r*Math.sin(2*Math.PI*i/bars)});
   }
   for(let i=0;i<coords.length;i++) for(let j=0;j<i;j++)
-    if(Math.hypot(coords[i].x-coords[j].x,coords[i].y-coords[j].y)<d) throw new Error('Wapeningsstaven overlappen.');
+    if(Math.hypot(coords[i].x-coords[j].x,coords[i].y-coords[j].y)<d) throw new Error(ct('calcLateral', 'errors.barsOverlap', 'Wapeningsstaven overlappen.'));
   const ac=s.kind==='steel-tube'?0:square?core**2:circleA(core);
-  if(bars*circleA(d)>=ac && bars) throw new Error('Te veel wapening voor de doorsnede.');
+  if(bars*circleA(d)>=ac && bars) throw new Error(ct('calcLateral', 'errors.tooMuchRebar', 'Te veel wapening voor de doorsnede.'));
   return {D,core,square,tube,coords,d,ac};
 }
 export function sectionStiffness(s:PileSection) {
@@ -58,7 +59,7 @@ const concreteStress=(eps:number,fcd:number)=>eps<=0?0:eps>=.002?fcd:fcd*(1-(1-e
 const steelStress=(eps:number,e:number,fy:number)=>Math.max(-fy,Math.min(fy,e*eps));
 export function sectionCapacity(s:PileSection,nEdKn:number) {
   const g=geometry(s);
-  if(!Number.isFinite(nEdKn)) throw new Error('Ongeldige normaalkracht.');
+  if(!Number.isFinite(nEdKn)) throw new Error(ct('calcLateral', 'errors.invalidNormalForce', 'Ongeldige normaalkracht.'));
   const fy=s.tubeFydMpa*1000, fc=s.fcdMpa*1000, fr=s.fydMpa*1000;
   // De verplaatsende neutrale as en plastische materiaaldelen worden apart geïntegreerd.
   const response=(x:number) => {
@@ -95,7 +96,7 @@ export function sectionCapacity(s:PileSection,nEdKn:number) {
   let lo=pureSteel?-g.D:g.core*1e-9, hi=pureSteel?g.D:g.core*1e9;
   let a=response(lo), b=response(hi);
   const nMin=Math.min(a.n,b.n),nMax=Math.max(a.n,b.n);
-  if(nEdKn<nMin-.001 || nEdKn>nMax+.001) throw new Error('Normaalkracht buiten de doorsnedeweerstand.');
+  if(nEdKn<nMin-.001 || nEdKn>nMax+.001) throw new Error(ct('calcLateral', 'errors.normalForceOutside', 'Normaalkracht buiten de doorsnedeweerstand.'));
   for(let i=0;i<100;i++) {
     const mid=(lo+hi)/2, r=response(mid);
     if((r.n<nEdKn)===(a.n<b.n)) {lo=mid;a=r;} else {hi=mid;b=r;}

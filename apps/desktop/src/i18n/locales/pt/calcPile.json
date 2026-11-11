@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Abrir {{cpt}}, {{size}} mm a {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b ponta →",
+    "cptAria": "Gráfico do CPT com sobreposição da estaca",
+    "excavation": "Escavação {{nap}}",
+    "loadAxis": "Carga [kN]",
+    "loadSettlement": "Diagrama carga-assentamento",
+    "negSkinBottom": "Limite do atrito neg. {{nap}}",
+    "pileToe": "Ponta da estaca {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Cabeça da estaca {{nap}}",
+    "posSkinTop": "Topo do atrito pos. {{nap}}",
+    "qcPosSkinAvg": "qc;atr.pos;méd = {{v}} MPa",
+    "shaftSide": "← R_s fuste",
+    "water": "Água {{nap}}",
+    "zoomIn": "Ampliar",
+    "zoomInTitle": "Ampliar (ou roda do rato para cima)",
+    "zoomOut": "Reduzir",
+    "zoomOutTitle": "Reduzir (ou roda do rato para baixo)",
+    "zoomReset": "Repor zoom",
+    "zoomResetTitle": "Repor zoom (ou duplo clique no gráfico)",
+    "zoomToe": "Zoom na ponta da estaca",
+    "zoomToeTitle": "Zoom na ponta da estaca (margem de 1 m em redor da estaca)",
+    "zoomToolbar": "Zoom do gráfico"
+  },
+  "choice": {
+    "aboveMaxTitle": "Mesmo a estaca mais curta que verifica fica acima do limite superior.",
+    "caption": "Cota da ponta mais alta [m NAP] para a qual Rc;net;d ≥ {{min}} kN, por dimensão de estaca e CPT. Clique numa cota para abrir a folha de cálculo.",
+    "cptOutOfRange": "CPT fora do alcance",
+    "dropsDeeper": "verificar mais fundo",
+    "dropsDeeperTitle": "Mais em profundidade, a capacidade de carga volta a descer abaixo do limite inferior.",
+    "highest": "Mais alta",
+    "lowest": "Mais baixa",
+    "notReached": "não atingido",
+    "notReachedAria": "{{cpt}}, {{size}} mm: não atingido",
+    "reached": "Atingido",
+    "size": "Dimensão [mm]",
+    "smallestSpread": "menor dispersão",
+    "spread": "Dispersão",
+    "tableAria": "Cota da ponta por dimensão de estaca e CPT",
+    "title": "Tabela de seleção"
+  },
+  "cpt": {
+    "choose": "— selecionar CPT —",
+    "title": "CPT"
+  },
+  "cpts": {
+    "all": "Todos os CPT",
+    "legend": "CPT",
+    "missingOption": "{{id}} (em falta)"
+  },
+  "examples": {
+    "add": "Adicionar exemplo",
+    "cptAria": "Exemplo: CPT",
+    "hint": "Totalmente desenvolvido no relatório, seguido da tabela de seleção e das tabelas por CPT. Sem seleção, é incluída a folha de cálculo atual.",
+    "legend": "Listagem",
+    "levelAria": "Exemplo: cota da ponta",
+    "listAria": "Cálculos de exemplo",
+    "removeAria": "Remover exemplo {{cpt}}, {{size}} mm a {{level}} m NAP",
+    "sizeAria": "Exemplo: dimensão"
+  },
+  "extension": {
+    "customJoint": "Junta personalizada",
+    "diameter": "Diâmetro do prolongamento",
+    "joint": "Junta (base do prolongamento)",
+    "jointAria": "Junta [m NAP]",
+    "jointTooHigh": "A junta fica menos de 0,5 m abaixo do nível freático (NAP {{water}}): aí a madeira não se mantém permanentemente húmida. Escolha um prolongamento mais comprido.",
+    "length": "Comprimento do prolongamento",
+    "lengthAria": "Comprimento do prolongamento [m]",
+    "perimeterHint": "Acima da junta usa-se o perímetro do prolongamento, abaixo o da madeira.",
+    "shape": "Forma",
+    "shapeAria": "Forma do prolongamento",
+    "side": "Lado do prolongamento",
+    "size": "Prolongamento",
+    "sizeAria": "Dimensão do prolongamento [mm]",
+    "title": "Prolongamento em betão"
+  },
+  "factors": {
+    "alphaTLabel": "αt (sem verificação à tração)",
+    "basis": "Base normativa: {{edition}}. {{source}}",
+    "edition": "Edição",
+    "edition2025": "2025 — coeficientes do projeto",
+    "source": "Fonte / declaração",
+    "sourceHint": "A fonte deve corresponder ao sistema de estaca, ao método de execução e às dimensões. Os coeficientes de 2025 não tornam automaticamente todo o método de cálculo conforme com 2025.",
+    "title": "Coeficientes da estaca",
+    "useProject": "Usar coeficientes do projeto / autodeclaração"
+  },
+  "legend": {
+    "chosen": "cota selecionada",
+    "over": "> {{max}} kN, folgado",
+    "title": "Legenda"
+  },
+  "levels": {
+    "applyList": "Aplicar cotas",
+    "applyRange": "Aplicar intervalo",
+    "count": "{{n}} cotas",
+    "custom": "Cotas personalizadas",
+    "excavation": "Escavação",
+    "excavationAria": "Escavação [m NAP]",
+    "from": "De [m NAP]",
+    "legend": "Cotas da ponta",
+    "listLabel": "Cotas da ponta [m NAP]",
+    "pileToe": "Ponta da estaca",
+    "pileToeAria": "Ponta da estaca [m NAP]",
+    "pileTop": "Cabeça da estaca",
+    "pileTopAria": "Cabeça da estaca [m NAP]",
+    "step": "Passo [m]",
+    "title": "Cotas da estaca",
+    "to": "Até [m NAP]",
+    "water": "Nível freático",
+    "waterAria": "Nível freático [m NAP]"
+  },
+  "load": {
+    "characteristic": "característica",
+    "design": "carga de cálculo",
+    "materialFactor": "coeficiente do material",
+    "negativeSkinFriction": "atrito negativo",
+    "title": "Carga"
+  },
+  "material": {
+    "concrete": "Betão",
+    "steel": "Aço",
+    "wood": "Madeira"
+  },
+  "pile": {
+    "axialStiffness": "Rigidez axial EA",
+    "baseSize": "Dimensão da ponta",
+    "baseSizeAria": "Dimensão da ponta [mm] (vazio = fuste)",
+    "baseSizePlaceholder": "fuste",
+    "customSize": "Dimensão personalizada",
+    "diameter": "Diâmetro",
+    "eaAriaOptional": "Rigidez axial EA [kN] (opcional)",
+    "eaAriaRequired": "Rigidez axial EA [kN] (obrigatório)",
+    "eaMissing": "Obrigatório para este tipo de estaca — sem EA não é efetuado qualquer cálculo.",
+    "headDiameter": "Diâmetro da cabeça",
+    "material": "Material",
+    "optional": "opcional",
+    "required": "obrigatório",
+    "sideLength": "Lado",
+    "title": "Estaca",
+    "tubeSize": "Dimensão do tubo",
+    "type": "Tipo de estaca",
+    "wallThickness": "Espessura da parede",
+    "wallThicknessAria": "Espessura da parede [mm]",
+    "woodDiameterAtJoint": "Diâmetro da madeira na junta"
+  },
+  "profile": {
+    "bottom": "Base",
+    "fieldAria": "{{field}} camada {{n}}",
+    "soilType": "Tipo de solo",
+    "soilTypeAria": "Tipo de solo camada {{n}}",
+    "title": "Perfil do solo",
+    "tooShallow": "O perfil do solo termina a NAP {{bottom}} m, acima da ponta da estaca a NAP {{toe}} m. Nesse troço não é contabilizado atrito lateral; prolongue a camada inferior.",
+    "top": "Topo"
+  },
+  "result": {
+    "base": {
+      "capped": "(limitado a 15 MPa)",
+      "title": "Resistência de ponta"
+    },
+    "existingModel": "Modelo de projeto existente",
+    "facts": {
+      "diameterD": "Diâmetro D",
+      "equalToShaft": "igual ao fuste",
+      "extensionValue": "{{size}} mm, da cabeça da estaca até à junta a NAP {{joint}} m",
+      "projectFactors": "coeficientes do projeto",
+      "sideA": "Lado a",
+      "tapered": "{{size}} mm (cónica)",
+      "title": "Pressupostos de base",
+      "woodAtJoint": "Madeira na junta"
+    },
+    "negSkin": {
+      "cappedNote": "limitado a ksMin = {{v}}",
+      "cappedTitle": "Limitado a ksMin={{v}}",
+      "extensionAndWood": "(prolongamento e madeira)",
+      "layer": "Camada",
+      "title": "Atrito negativo",
+      "zone": "Zona: cabeça da estaca NAP {{top}} até NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Introduza a rigidez axial <strong>EA</strong> em <strong>Estaca</strong>. Para este tipo de estaca, EA não é derivado da secção; o valor resulta do sistema de estaca selecionado.",
+      "missingOne": "Falta mais um dado",
+      "notYet": "Ainda não é possível calcular",
+      "note": "Assim que os dados estiverem completos, o cálculo detalhado aparece aqui."
+    },
+    "settlement": {
+      "title": "Assentamento (art. 7.6.4.2, curva carga-assentamento 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} camada(s) — Σ das contribuições por camada",
+      "title": "Atrito lateral máximo"
+    },
+    "spring": {
+      "title": "Rigidez de mola"
+    },
+    "summary": {
+      "check": "Verificação",
+      "compression": "Capacidade de carga à compressão",
+      "conclusion": "Conclusão:",
+      "conclusionFail": "a estaca não verifica; N<sub>Ed</sub> = {{nEd}} kN excede R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "não foi introduzida carga de cálculo; a capacidade de carga líquida é R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "a estaca verifica; N<sub>Ed</sub> = {{nEd}} kN corresponde a {{pct}}% de R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Não verifica",
+      "failsShort": "NÃO verifica",
+      "passes": "Verifica",
+      "passesShort": "verifica",
+      "quantity": "Grandeza",
+      "result": "Resultado",
+      "title": "Resumo"
+    },
+    "title": "Capacidade de carga da estaca",
+    "total": {
+      "title": "Capacidade de carga geotécnica máxima"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Prolongamento",
+    "defaultSource": "Definições do cálculo",
+    "existingModel": "modelo existente",
+    "extensionLengths": "Comprimentos do prolongamento",
+    "extensionLengthsAria": "Comprimentos do prolongamento [m]",
+    "extensionRemoveAria": "Remover prolongamento {{n}}",
+    "extensionShapeAria": "Forma do prolongamento {{n}}",
+    "extensionSizeAria": "Dimensão do prolongamento {{n}} [mm]",
+    "extensionsAria": "Prolongamentos em betão",
+    "extensionsTitle": "Prolongamentos em betão sobre madeira",
+    "factor": "Coeficiente",
+    "factorsHint": "Vazio = valor do quadro da norma selecionada ({{edition}}). Um valor do projeto requer justificação, por exemplo um ensaio de carga.",
+    "factorsTitle": "Coeficientes da estaca · {{type}}",
+    "gammaFnk": "γf;nk atrito negativo",
+    "gammaM": "γm coeficiente do material",
+    "partialFactors": "Coeficientes parciais",
+    "project": "Projeto",
+    "projectValueAria": "{{factor}} projeto",
+    "resetAll": "Repor todas as séries predefinidas",
+    "restoreSeries": "Restaurar série padrão",
+    "restoreSeriesNone": "Restaurar série padrão (nenhuma)",
+    "series": "Séries padrão",
+    "seriesHint": "A série para a lista pendente nos dados (dimensões de tubo) e para o botão Série padrão na tabela de capacidade de carga.",
+    "sizeMm": "Dimensão [mm]",
+    "sizesAria": "Série de dimensões do tipo de estaca [mm]",
+    "sizesFor": "Dimensões {{type}}",
+    "sourceAria": "Fonte dos coeficientes do projeto",
+    "table": "Quadro",
+    "timberToe": "Diâmetro da ponta da madeira",
+    "useTableValues": "Usar valores do quadro"
+  },
+  "shape": {
+    "round": "Circular",
+    "square": "Quadrada"
+  },
+  "sizes": {
+    "apply": "Aplicar dimensões",
+    "label": "Dimensões das estacas [mm]",
+    "legend": "Dimensões das estacas",
+    "standard": "Série padrão"
+  },
+  "skin": {
+    "dragHint": "As cotas da estaca e as zonas de atrito também podem ser arrastadas no CPT.",
+    "ksMinAria": "K0·tan(δ) mínimo",
+    "minimum": "mínimo",
+    "negBottom": "Base do atrito negativo",
+    "negBottomAria": "Base do atrito negativo [m NAP]",
+    "posTop": "Topo do atrito lateral positivo",
+    "posTopAria": "Topo do atrito lateral positivo [m NAP]",
+    "title": "Zonas de atrito"
+  },
+  "standard": {
+    "existingModel": "Modelo de projeto existente — inalterado",
+    "historicalHint": "Cálculo histórico à compressão para uma única estaca num único CPT. Atrito lateral positivo em areia, secção constante ou conicidade explícita da madeira; o assentamento e os grupos de estacas não foram verificados. Ao mudar de norma, os coeficientes do projeto são apagados e γm é reposto.",
+    "title": "Norma de cálculo",
+    "version": "Versão da norma"
+  },
+  "table": {
+    "breadcrumb": "Trilho de navegação",
+    "cpt": "CPT {{id}}",
+    "cptMissing": "O CPT {{id}} não existe no projeto.",
+    "cptTableAria": "Rc;net;d CPT {{id}}",
+    "heading": "Capacidade de carga por CPT",
+    "intro": "Um sistema de estaca numa série de dimensões e cotas da ponta, calculado para cada CPT. Defina o tipo de estaca, a norma e o perfil do solo à esquerda.",
+    "selectCpt": "Selecione pelo menos um CPT.",
+    "title": "Tabela de capacidade de carga",
+    "toe": "Ponta [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "O diâmetro da madeira diminui linearmente a partir da cabeça; abaixo da parte cónica, o diâmetro da ponta mantém-se constante. O perímetro de atrito segue o comprimento selecionado; o assentamento e as rigidezes de mola não são determinados.",
+    "hintFromJoint": "O diâmetro da madeira diminui linearmente a partir da junta; abaixo da parte cónica, o diâmetro da ponta mantém-se constante. O perímetro de atrito segue o comprimento selecionado; o assentamento e as rigidezes de mola não são determinados.",
+    "lengthFromHead": "Comprimento cónico a partir da cabeça",
+    "lengthFromHeadAria": "Comprimento cónico a partir da cabeça [m]",
+    "lengthFromJoint": "Comprimento cónico a partir da junta",
+    "lengthFromJointAria": "Comprimento cónico a partir da junta [m]",
+    "title": "Estaca de madeira cónica",
+    "toeDiameter": "Diâmetro da ponta",
+    "toeDiameterAria": "Diâmetro da ponta da madeira [mm]"
+  },
+  "target": {
+    "hint": "Para cada dimensão, a tabela de seleção procura a estaca mais curta que atinge o limite inferior. Acima do limite superior, a dimensão é folgada.",
+    "inverted": "O limite superior deve ser superior ao limite inferior; a tabela continua a usar o intervalo anterior.",
+    "legend": "Capacidade de carga necessária Rc;net;d",
+    "lower": "Limite inferior [kN]",
+    "notNumber": "Introduza o limite inferior e o superior como número em kN.",
+    "upper": "Limite superior [kN]"
+  },
+  "visual": {
+    "cptHeading": "CPT: {{id}}",
+    "crossSection": "Secção transversal",
+    "crossSectionAria": "Secção transversal da estaca",
+    "empty": {
+      "howTo": "Abra um ficheiro GEF, BRO-XML ou de projeto através de <strong>Abrir</strong> no topo. Depois selecione o CPT em <strong>CPT</strong> no painel de dados.",
+      "noCpt": "Ainda não foi associado nenhum CPT a este cálculo.",
+      "then": "A resistência de ponta do cone, a estaca e as zonas de atrito aparecem então aqui.",
+      "title": "Gráfico do CPT"
+    },
+    "extensionTitle": "Prolongamento em betão {{size}} mm até à junta a NAP {{joint}} m",
+    "material": "material",
+    "materials": {
+      "castInSitu": "Betão moldado no local",
+      "prefab": "Betão pré-fabricado",
+      "steelEA": "Estaca de aço; EA específico do projeto",
+      "steelTube": "Estaca tubular de aço, cheia de betão",
+      "wood": "Madeira, secção constante"
+    },
+    "noPoints": "Sem medições neste CPT",
+    "notComputed": "Não calculado: {{error}}. Arraste as cotas ou ajuste os dados.",
+    "rebarCage": "armadura (gaiola)",
+    "taperLength": "comprimento cónico a partir da cabeça",
+    "toeSize": "dimensão da ponta",
+    "wall": "parede"
+  }
+}

@@ -1,5 +1,6 @@
 // Gangbare maten voor paalsystemen. De invoer biedt ze als keuzelijst aan;
 // een eigen maat blijft altijd mogelijk.
+import { ct } from "../../i18n";
 
 /** Buitendiameters van stalen buispalen [mm], volgens de gangbare buisreeks. */
 export const STEEL_TUBE_OD = [168.3, 193.7, 219.1, 244.5, 273, 323.9, 355.6, 406.4, 457, 508, 559, 610];
@@ -42,7 +43,9 @@ export interface Presets {
 export interface ExtensionPreset { id: string; label: string; sizeMm: number; isCircular: boolean }
 const extensionPreset = (e: { sizeMm: number; isCircular: boolean }): ExtensionPreset => ({
   id: `${e.isCircular ? "rond" : "vierkant"}-${e.sizeMm}`,
-  label: e.isCircular ? `Rond Ø${sizeText(e.sizeMm)}` : `Vierkant ${sizeText(e.sizeMm)}×${sizeText(e.sizeMm)}`,
+  label: e.isCircular
+    ? ct("calcPileCore", "extensions.round", "Rond Ø{{size}}", { size: sizeText(e.sizeMm) })
+    : ct("calcPileCore", "extensions.square", "Vierkant {{size}}×{{size}}", { size: sizeText(e.sizeMm) }),
   sizeMm: e.sizeMm, isCircular: e.isCircular,
 });
 

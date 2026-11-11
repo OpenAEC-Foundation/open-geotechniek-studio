@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Apri {{cpt}}, {{size}} mm a {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b punta →",
+    "cptAria": "Grafico CPT con sovrapposizione del palo",
+    "excavation": "Scavo {{nap}}",
+    "loadAxis": "Carico [kN]",
+    "loadSettlement": "Diagramma carico-cedimento",
+    "negSkinBottom": "Limite attrito negativo {{nap}}",
+    "pileToe": "Punta del palo {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Testa del palo {{nap}}",
+    "posSkinTop": "Inizio attrito laterale pos. {{nap}}",
+    "qcPosSkinAvg": "qc;pos.skin;avg = {{v}} MPa",
+    "shaftSide": "← R_s fusto",
+    "water": "Falda {{nap}}",
+    "zoomIn": "Ingrandisci",
+    "zoomInTitle": "Ingrandisci (o rotella del mouse in su)",
+    "zoomOut": "Riduci",
+    "zoomOutTitle": "Riduci (o rotella del mouse in giù)",
+    "zoomReset": "Ripristina zoom",
+    "zoomResetTitle": "Ripristina zoom (o doppio clic sul grafico)",
+    "zoomToe": "Zoom sulla punta del palo",
+    "zoomToeTitle": "Zoom sulla punta del palo (1 m di margine attorno al palo)",
+    "zoomToolbar": "Zoom del grafico"
+  },
+  "choice": {
+    "aboveMaxTitle": "Anche il palo più corto che soddisfa la verifica supera il limite superiore.",
+    "caption": "Quota della punta più alta [m NAP] alla quale Rc;net;d ≥ {{min}} kN, per dimensione del palo e prova CPT. Fai clic su una quota per aprire il foglio di calcolo.",
+    "cptOutOfRange": "CPT fuori intervallo",
+    "dropsDeeper": "verifica più in profondità",
+    "dropsDeeperTitle": "Più in profondità la capacità portante scende di nuovo sotto il limite inferiore.",
+    "highest": "Più alta",
+    "lowest": "Più bassa",
+    "notReached": "non raggiunto",
+    "notReachedAria": "{{cpt}}, {{size}} mm: non raggiunto",
+    "reached": "Raggiunto",
+    "size": "Dimensione [mm]",
+    "smallestSpread": "dispersione minima",
+    "spread": "Dispersione",
+    "tableAria": "Quota della punta per dimensione del palo e prova CPT",
+    "title": "Tabella di selezione"
+  },
+  "cpt": {
+    "choose": "— seleziona CPT —",
+    "title": "CPT"
+  },
+  "cpts": {
+    "all": "Tutte le prove CPT",
+    "legend": "Prove CPT",
+    "missingOption": "{{id}} (mancante)"
+  },
+  "examples": {
+    "add": "Aggiungi esempio",
+    "cptAria": "Esempio: CPT",
+    "hint": "Sviluppato per intero nella relazione, seguito dalla tabella di selezione e dalle tabelle per prova CPT. Senza selezione viene incluso il foglio di calcolo corrente.",
+    "legend": "Relazione",
+    "levelAria": "Esempio: quota della punta",
+    "listAria": "Calcoli di esempio",
+    "removeAria": "Rimuovi esempio {{cpt}}, {{size}} mm a {{level}} m NAP",
+    "sizeAria": "Esempio: dimensione"
+  },
+  "extension": {
+    "customJoint": "Giunto personalizzato",
+    "diameter": "Diametro della prolunga",
+    "joint": "Giunto (base della prolunga)",
+    "jointAria": "Giunto [m NAP]",
+    "jointTooHigh": "Il giunto si trova meno di 0,5 m sotto il livello di falda (NAP {{water}}): lì il legno non resta permanentemente bagnato. Scegli una prolunga più lunga.",
+    "length": "Lunghezza della prolunga",
+    "lengthAria": "Lunghezza della prolunga [m]",
+    "perimeterHint": "Sopra il giunto si usa il perimetro della prolunga, sotto quello del legno.",
+    "shape": "Forma",
+    "shapeAria": "Forma della prolunga",
+    "side": "Lato della prolunga",
+    "size": "Prolunga",
+    "sizeAria": "Dimensione della prolunga [mm]",
+    "title": "Prolunga in calcestruzzo"
+  },
+  "factors": {
+    "alphaTLabel": "αt (nessuna verifica a trazione)",
+    "basis": "Base normativa: {{edition}}. {{source}}",
+    "edition": "Edizione",
+    "edition2025": "2025 — fattori di progetto",
+    "source": "Fonte / dichiarazione",
+    "sourceHint": "La fonte deve corrispondere al sistema di palo, al metodo di installazione e alle dimensioni. I fattori del 2025 non rendono automaticamente conforme al 2025 l'intero metodo di calcolo.",
+    "title": "Fattori del palo",
+    "useProject": "Usa fattori di progetto / autodichiarazione"
+  },
+  "legend": {
+    "chosen": "quota selezionata",
+    "over": "> {{max}} kN, ampiamente sufficiente",
+    "title": "Legenda"
+  },
+  "levels": {
+    "applyList": "Applica quote",
+    "applyRange": "Applica intervallo",
+    "count": "{{n}} quote",
+    "custom": "Quote personalizzate",
+    "excavation": "Scavo",
+    "excavationAria": "Scavo [m NAP]",
+    "from": "Da [m NAP]",
+    "legend": "Quote della punta",
+    "listLabel": "Quote della punta [m NAP]",
+    "pileToe": "Punta del palo",
+    "pileToeAria": "Punta del palo [m NAP]",
+    "pileTop": "Testa del palo",
+    "pileTopAria": "Testa del palo [m NAP]",
+    "step": "Passo [m]",
+    "title": "Quote del palo",
+    "to": "A [m NAP]",
+    "water": "Falda",
+    "waterAria": "Falda [m NAP]"
+  },
+  "load": {
+    "characteristic": "caratteristico",
+    "design": "carico di progetto",
+    "materialFactor": "fattore del materiale",
+    "negativeSkinFriction": "attrito negativo",
+    "title": "Carico"
+  },
+  "material": {
+    "concrete": "Calcestruzzo",
+    "steel": "Acciaio",
+    "wood": "Legno"
+  },
+  "pile": {
+    "axialStiffness": "Rigidezza assiale EA",
+    "baseSize": "Dimensione della punta",
+    "baseSizeAria": "Dimensione della punta [mm] (vuoto = fusto)",
+    "baseSizePlaceholder": "fusto",
+    "customSize": "Dimensione personalizzata",
+    "diameter": "Diametro",
+    "eaAriaOptional": "Rigidezza assiale EA [kN] (facoltativa)",
+    "eaAriaRequired": "Rigidezza assiale EA [kN] (obbligatoria)",
+    "eaMissing": "Obbligatoria per questo tipo di palo — senza EA non viene eseguito alcun calcolo.",
+    "headDiameter": "Diametro di testa",
+    "material": "Materiale",
+    "optional": "facoltativo",
+    "required": "obbligatorio",
+    "sideLength": "Lunghezza del lato",
+    "title": "Palo",
+    "tubeSize": "Dimensione del tubo",
+    "type": "Tipo di palo",
+    "wallThickness": "Spessore della parete",
+    "wallThicknessAria": "Spessore della parete [mm]",
+    "woodDiameterAtJoint": "Diametro del legno al giunto"
+  },
+  "profile": {
+    "bottom": "Base",
+    "fieldAria": "{{field}} strato {{n}}",
+    "soilType": "Tipo di terreno",
+    "soilTypeAria": "Tipo di terreno strato {{n}}",
+    "title": "Profilo stratigrafico",
+    "tooShallow": "Il profilo stratigrafico termina a NAP {{bottom}} m, sopra la punta del palo a NAP {{toe}} m. Su quel tratto non viene conteggiato attrito laterale; estendi lo strato inferiore.",
+    "top": "Tetto"
+  },
+  "result": {
+    "base": {
+      "capped": "(limitata a 15 MPa)",
+      "title": "Resistenza alla punta"
+    },
+    "existingModel": "Modello di progetto esistente",
+    "facts": {
+      "diameterD": "Diametro D",
+      "equalToShaft": "uguale al fusto",
+      "extensionValue": "{{size}} mm, dalla testa del palo al giunto a NAP {{joint}} m",
+      "projectFactors": "fattori di progetto",
+      "sideA": "Lato a",
+      "tapered": "{{size}} mm (rastremato)",
+      "title": "Ipotesi di base",
+      "woodAtJoint": "Legno al giunto"
+    },
+    "negSkin": {
+      "cappedNote": "limitato a ksMin = {{v}}",
+      "cappedTitle": "Limitato a ksMin={{v}}",
+      "extensionAndWood": "(prolunga e legno)",
+      "layer": "Strato",
+      "title": "Attrito negativo",
+      "zone": "Zona: testa del palo NAP {{top}} fino a NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Inserisci la rigidezza assiale <strong>EA</strong> in <strong>Palo</strong>. Per questo tipo di palo EA non è ricavata dalla sezione; il valore deriva dal sistema di palo selezionato.",
+      "missingOne": "Manca ancora un dato",
+      "notYet": "Non ancora calcolabile",
+      "note": "Non appena i dati sono completi, qui compare il calcolo sviluppato."
+    },
+    "settlement": {
+      "title": "Cedimento (art. 7.6.4.2, curva carico-cedimento 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} strato/i — Σ dei contributi per strato",
+      "title": "Attrito laterale massimo"
+    },
+    "spring": {
+      "title": "Rigidezza della molla"
+    },
+    "summary": {
+      "check": "Verifica",
+      "compression": "Capacità portante a compressione",
+      "conclusion": "Conclusione:",
+      "conclusionFail": "il palo non è verificato; N<sub>Ed</sub> = {{nEd}} kN supera R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "nessun carico di progetto inserito; la capacità portante netta è R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "il palo è verificato; N<sub>Ed</sub> = {{nEd}} kN è il {{pct}}% di R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Non verificato",
+      "failsShort": "NON verificato",
+      "passes": "Verificato",
+      "passesShort": "verificato",
+      "quantity": "Grandezza",
+      "result": "Risultato",
+      "title": "Riepilogo"
+    },
+    "title": "Capacità portante del palo",
+    "total": {
+      "title": "Capacità portante geotecnica massima"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Prolunga",
+    "defaultSource": "Impostazioni di calcolo",
+    "existingModel": "modello esistente",
+    "extensionLengths": "Lunghezze della prolunga",
+    "extensionLengthsAria": "Lunghezze della prolunga [m]",
+    "extensionRemoveAria": "Rimuovi prolunga {{n}}",
+    "extensionShapeAria": "Forma della prolunga {{n}}",
+    "extensionSizeAria": "Dimensione della prolunga {{n}} [mm]",
+    "extensionsAria": "Prolunghe in calcestruzzo",
+    "extensionsTitle": "Prolunghe in calcestruzzo su legno",
+    "factor": "Fattore",
+    "factorsHint": "Vuoto = valore tabellare della norma selezionata ({{edition}}). Un valore di progetto richiede una giustificazione, ad esempio una prova di carico.",
+    "factorsTitle": "Fattori del palo · {{type}}",
+    "gammaFnk": "γf;nk attrito negativo",
+    "gammaM": "γm fattore del materiale",
+    "partialFactors": "Coefficienti parziali",
+    "project": "Progetto",
+    "projectValueAria": "{{factor}} progetto",
+    "resetAll": "Ripristina tutte le serie ai valori predefiniti",
+    "restoreSeries": "Ripristina serie standard",
+    "restoreSeriesNone": "Ripristina serie standard (nessuna)",
+    "series": "Serie standard",
+    "seriesHint": "La serie per l'elenco a discesa nei dati di input (dimensioni dei tubi) e per il pulsante Serie standard nella tabella della capacità portante.",
+    "sizeMm": "Dimensione [mm]",
+    "sizesAria": "Serie di dimensioni tipo di palo [mm]",
+    "sizesFor": "Dimensioni {{type}}",
+    "sourceAria": "Fonte dei fattori di progetto",
+    "table": "Tabella",
+    "timberToe": "Diametro di punta del legno",
+    "useTableValues": "Usa valori tabellari"
+  },
+  "shape": {
+    "round": "Circolare",
+    "square": "Quadrata"
+  },
+  "sizes": {
+    "apply": "Applica dimensioni",
+    "label": "Dimensioni dei pali [mm]",
+    "legend": "Dimensioni dei pali",
+    "standard": "Serie standard"
+  },
+  "skin": {
+    "dragHint": "Le quote del palo e le zone d'attrito laterale si possono anche trascinare nel grafico CPT.",
+    "ksMinAria": "K0·tan(δ) minimo",
+    "minimum": "minimo",
+    "negBottom": "Base dell'attrito negativo",
+    "negBottomAria": "Base dell'attrito negativo [m NAP]",
+    "posTop": "Inizio dell'attrito laterale positivo",
+    "posTopAria": "Inizio dell'attrito laterale positivo [m NAP]",
+    "title": "Zone d'attrito laterale"
+  },
+  "standard": {
+    "existingModel": "Modello di progetto esistente — invariato",
+    "historicalHint": "Calcolo storico a compressione per un singolo palo su una singola prova CPT. Attrito laterale positivo in sabbia, sezione costante o rastremazione esplicita del legno; cedimento e gruppi di pali non sono stati verificati. Cambiare la norma cancella i fattori di progetto e ripristina γm.",
+    "title": "Norma di progetto",
+    "version": "Versione della norma"
+  },
+  "table": {
+    "breadcrumb": "Percorso di navigazione",
+    "cpt": "CPT {{id}}",
+    "cptMissing": "La prova CPT {{id}} manca nel progetto.",
+    "cptTableAria": "Rc;net;d CPT {{id}}",
+    "heading": "Capacità portante per prova CPT",
+    "intro": "Un sistema di palo in una serie di dimensioni e quote della punta, calcolato per ogni prova CPT. Imposta tipo di palo, norma e profilo stratigrafico a sinistra.",
+    "selectCpt": "Seleziona almeno una prova CPT.",
+    "title": "Tabella della capacità portante",
+    "toe": "Punta [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "Il diametro del legno diminuisce linearmente dalla testa; sotto la parte rastremata il diametro di punta resta costante. Il perimetro d'attrito segue la lunghezza selezionata; cedimento e rigidezze delle molle non vengono determinati.",
+    "hintFromJoint": "Il diametro del legno diminuisce linearmente dal giunto; sotto la parte rastremata il diametro di punta resta costante. Il perimetro d'attrito segue la lunghezza selezionata; cedimento e rigidezze delle molle non vengono determinati.",
+    "lengthFromHead": "Lunghezza rastremata dalla testa",
+    "lengthFromHeadAria": "Lunghezza rastremata dalla testa [m]",
+    "lengthFromJoint": "Lunghezza rastremata dal giunto",
+    "lengthFromJointAria": "Lunghezza rastremata dal giunto [m]",
+    "title": "Palo in legno rastremato",
+    "toeDiameter": "Diametro di punta",
+    "toeDiameterAria": "Diametro di punta del legno [mm]"
+  },
+  "target": {
+    "hint": "Per ogni dimensione, la tabella di selezione trova il palo più corto che raggiunge il limite inferiore. Sopra il limite superiore la dimensione è ampiamente sufficiente.",
+    "inverted": "Il limite superiore deve essere maggiore del limite inferiore; la tabella usa ancora l'intervallo precedente.",
+    "legend": "Capacità portante richiesta Rc;net;d",
+    "lower": "Limite inferiore [kN]",
+    "notNumber": "Inserisci il limite inferiore e superiore come numero in kN.",
+    "upper": "Limite superiore [kN]"
+  },
+  "visual": {
+    "cptHeading": "CPT: {{id}}",
+    "crossSection": "Sezione",
+    "crossSectionAria": "Sezione del palo",
+    "empty": {
+      "howTo": "Apri un file GEF, BRO-XML o di progetto tramite <strong>Apri</strong> in alto. Poi seleziona la prova CPT in <strong>CPT</strong> nel pannello dei dati di input.",
+      "noCpt": "A questo calcolo non è ancora collegata alcuna prova CPT.",
+      "then": "Qui compariranno quindi la resistenza alla punta del cono, il palo e le zone d'attrito laterale.",
+      "title": "Grafico CPT"
+    },
+    "extensionTitle": "Prolunga in calcestruzzo {{size}} mm fino al giunto a NAP {{joint}} m",
+    "material": "materiale",
+    "materials": {
+      "castInSitu": "Calcestruzzo gettato in opera",
+      "prefab": "Calcestruzzo prefabbricato",
+      "steelEA": "Palo in acciaio; EA specifica del progetto",
+      "steelTube": "Palo tubolare in acciaio, riempito di calcestruzzo",
+      "wood": "Legno, sezione costante"
+    },
+    "noPoints": "Nessuna misura in questa prova CPT",
+    "notComputed": "Non calcolato: {{error}}. Trascina le quote o modifica i dati di input.",
+    "rebarCage": "gabbia d'armatura",
+    "taperLength": "lunghezza rastremata dalla testa",
+    "toeSize": "dimensione della punta",
+    "wall": "parete"
+  }
+}

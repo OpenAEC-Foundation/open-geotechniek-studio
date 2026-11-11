@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import CropStage, { type CropStageHandle } from "./CropStage";
 import "./ImageCropDialog.css";
 
@@ -28,6 +29,7 @@ export default function ImageCropDialog({
   onConfirm,
   onCancel,
 }: Props) {
+  const { t } = useTranslation("drawing");
   const stageRef = useRef<CropStageHandle>(null);
   const [info, setInfo] = useState("…");
 
@@ -55,7 +57,7 @@ export default function ImageCropDialog({
     <div className="icrop-backdrop" onMouseDown={onCancel}>
       <div className="icrop-dialog" onMouseDown={(e) => e.stopPropagation()}>
         <header className="icrop-header">
-          <span className="icrop-title">Afbeelding bijsnijden</span>
+          <span className="icrop-title">{t("crop.imageTitle", "Afbeelding bijsnijden")}</span>
           <span className="icrop-filename" title={fileName}>
             {fileName}
           </span>
@@ -71,14 +73,14 @@ export default function ImageCropDialog({
           <div className="icrop-info">{info}</div>
           <div className="icrop-actions">
             <button type="button" className="icrop-btn" onClick={onCancel}>
-              Annuleren
+              {t("crop.cancel", "Annuleren")}
             </button>
             <button
               type="button"
               className="icrop-btn icrop-btn-primary"
               onClick={doConfirm}
             >
-              Bijsnijden &amp; toevoegen
+              {t("crop.confirm", "Bijsnijden & toevoegen")}
             </button>
           </div>
         </footer>

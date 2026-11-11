@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import Modal from "../Modal";
 import "./OffertesDialog.css";
 
@@ -57,6 +58,7 @@ export default function OffertesDialog({
   projectAddress,
   aantalSonderingen,
 }: OffertesDialogProps) {
+  const { t } = useTranslation("drawing");
   const projectLoc = useMemo(() => {
     if (projectLat != null && projectLon != null) {
       return { lat: projectLat, lon: projectLon };
@@ -161,39 +163,40 @@ Met vriendelijke groet,
     <Modal
       open={open}
       onClose={onClose}
-      title="Vraag 3 offertes aan bij sondeerbedrijven"
+      title={t("quotes.title", "Vraag 3 offertes aan bij sondeerbedrijven")}
       width={640}
       className="offertes-modal"
       footer={
         <div className="offertes-footer">
           <span className="offertes-footer-info">
-            {selectedCompanies.length} bedrijf
-            {selectedCompanies.length === 1 ? "" : "ven"} geselecteerd
+            {selectedCompanies.length === 1
+              ? t("quotes.selectedOne", "1 bedrijf geselecteerd")
+              : t("quotes.selected", "{{n}} bedrijven geselecteerd", { n: selectedCompanies.length })}
           </span>
           <button
             type="button"
             className="offertes-btn-secondary"
             onClick={onClose}
           >
-            Annuleren
+            {t("quotes.cancel", "Annuleren")}
           </button>
           <button
             type="button"
             className="offertes-btn-primary"
             disabled={selectedCompanies.length === 0}
             onClick={onOpenMail}
-            title="Opent je standaard mail-app (Outlook) met een prefilled offerte-aanvraag"
+            title={t("quotes.openMailTitle", "Opent je standaard mail-app (Outlook) met een prefilled offerte-aanvraag")}
           >
-            Email openen ({selectedCompanies.length})
+            {t("quotes.openMail", "Email openen ({{n}})", { n: selectedCompanies.length })}
           </button>
         </div>
       }
     >
       <p className="offertes-hint">
-        Gesorteerd op afstand tot het project. De 3 dichtstbijzijnde
-        bedrijven zijn voorgevinkt. Pas de selectie aan en klik
-        &ldquo;Email openen&rdquo; om Outlook te openen met een
-        offerte-aanvraag voor alle geselecteerde bedrijven.
+        {t(
+          "quotes.hint",
+          "Gesorteerd op afstand tot het project. De 3 dichtstbijzijnde bedrijven zijn voorgevinkt. Pas de selectie aan en klik “Email openen” om Outlook te openen met een offerte-aanvraag voor alle geselecteerde bedrijven.",
+        )}
       </p>
       <div className="offertes-list" role="list">
         {sorted.slice(0, 15).map((b) => {
@@ -237,9 +240,13 @@ Met vriendelijke groet,
       </div>
       {sorted.length > 15 && (
         <p className="offertes-more">
-          + {sorted.length - 15} verdere bedrijven niet getoond. De
-          catalogus ({sorted.length} bedrijven) staat in
-          <code>apps/desktop/src/data/sondeerbedrijven.ts</code>.
+          <Trans
+            t={t}
+            i18nKey="quotes.more"
+            defaults="+ {{hidden}} verdere bedrijven niet getoond. De catalogus ({{total}} bedrijven) staat in <code>{{path}}</code>."
+            values={{ hidden: sorted.length - 15, total: sorted.length, path: "apps/desktop/src/data/sondeerbedrijven.ts" }}
+            components={{ code: <code /> }}
+          />
         </p>
       )}
     </Modal>

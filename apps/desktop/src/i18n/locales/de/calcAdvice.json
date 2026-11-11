@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Dokument",
+    "reference": "Zeichen",
+    "version": "Version",
+    "status": "Status",
+    "advisor": "Bearbeiter",
+    "checker": "Geprüft von",
+    "projectHint": "Projektname, -nummer, Auftraggeber und Standort werden aus den Projektdaten übernommen.",
+    "basis": "Bemessungsgrundlagen",
+    "consequenceClass": "Schadensfolgeklasse",
+    "designLife": "Nutzungsdauer",
+    "years": "Jahre",
+    "designLifeAria": "Nutzungsdauer [Jahre]",
+    "floorLevel": "Bezugshöhe (Oberkante Fußboden)",
+    "floorLevelAria": "Bezugshöhe [m NAP]",
+    "groundwater": "Grundwasser",
+    "groundwaterAria": "Bemessungsgrundwasserstand [m NAP]",
+    "structure": "Bauwerk und Lasten",
+    "structurePlaceholder": "Zum Beispiel: Stahl-Gewerbehalle, 40 × 60 m, Stützenlasten bis 600 kN",
+    "bearingLayer": "Tragfähige Schicht (orientierend)",
+    "qcMin": "qc mindestens",
+    "qcMinAria": "qc tragfähige Schicht [MPa]",
+    "overAtLeast": "Über mindestens",
+    "minThicknessAria": "Mindestdicke [m]",
+    "include": "Aufnehmen",
+    "cptsInAdvice": "Sondierungen in der Empfehlung",
+    "cptItem": "Sondierung {{id}}",
+    "noCpts": "Noch keine Sondierungen im Projekt.",
+    "calcsInAdvice": "Berechnungen in der Empfehlung",
+    "noCalcs": "Noch keine Pfahlberechnungen im Projekt.",
+    "appendixCpts": "Anlage Sondierungen",
+    "appendixCalcs": "Anlage Rechenblätter",
+    "ownText": "Eigener Text",
+    "introNote": "Ergänzung zur Einleitung",
+    "remarks": "Anmerkungen zur Schlussfolgerung"
+  },
+  "status": {
+    "concept": "Entwurf",
+    "definitief": "Endfassung",
+    "conceptLower": "Entwurf",
+    "definitiefLower": "Endfassung"
+  },
+  "visual": {
+    "aria": "Lageplan mit Sondierungen",
+    "bearingTop": "OK tS NAP {{value}}",
+    "missing": "Ohne Koordinaten (nicht gezeichnet): {{ids}}.",
+    "legend": "Dreieck: Sondierung; OK tS = Oberkante tragfähige Schicht (orientierend). Maßstäblich, Koordinaten in RD."
+  },
+  "result": {
+    "title": "Gründungsempfehlung",
+    "header": "{{reference}} · Version {{version}} · {{status}}",
+    "noReference": "ohne Zeichen",
+    "toc": {
+      "title": "Inhalt des Berichts",
+      "intro": "Einleitung: Anlass, Zweck und Projektdaten",
+      "basis": "Bemessungsgrundlagen",
+      "investigation": "Baugrunderkundung: {{count}} Sondierungen mit Lageplan",
+      "soil": "Schichtenaufbau und tragfähige Schicht",
+      "vertical": "Druckpfähle: {{names}}",
+      "lateral": "Horizontal belastete Pfähle: {{names}}",
+      "execution": "Negative Mantelreibung und Ausführung",
+      "conclusions": "Schlussfolgerungen und Empfehlungen",
+      "appendixCpts": "Anlage A: Sondierungen",
+      "appendixCalcs": "Anlage B: Rechenblätter"
+    },
+    "bearing": {
+      "title": "Tragfähige Schicht",
+      "text": "Als tragfähige Schicht wurde orientierend der erste Bereich angesetzt, in dem der Spitzendruck über mindestens {{thickness}} m oberhalb von {{qc}} MPa bleibt. Dies ist eine Hilfe für die Übersicht; die Pfahlfußtiefe ergibt sich aus der Tragfähigkeitsberechnung.",
+      "tableAria": "Tragfähige Schicht je Sondierung",
+      "cpt": "Sondierung",
+      "ground": "Geländeoberkante [m NAP]",
+      "end": "Ende [m NAP]",
+      "top": "OK tS [m NAP]",
+      "notFound": "nicht gefunden",
+      "conclusion": "Oberkante tragfähige Schicht zwischen NAP {{highest}} m und NAP {{lowest}} m; Streuung {{spread}} m."
+    },
+    "calcs": {
+      "title": "Berechnungen in der Empfehlung",
+      "none": "Noch keine Pfahlberechnungen aufgenommen.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, Fuß NAP {{toe}} m",
+      "notComputed": "(nicht berechnet)",
+      "lateral": "{{name}}: {{passing}} von {{count}} Pfählen erfüllt"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} Sondierung",
+    "cptMany": "{{count}} Sondierungen",
+    "calcOne": "{{count}} Berechnung",
+    "calcMany": "{{count}} Berechnungen"
+  }
+}

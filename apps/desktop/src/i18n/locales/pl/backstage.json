@@ -50,5 +50,14 @@
     "asImageDesc": "Zapisz jako obraz PNG lub JPEG",
     "asHtml": "Eksportuj jako HTML",
     "asHtmlDesc": "Eksportuj dokument jako plik HTML"
+  },
+  "openPanel": {
+    "title": "Ostatnie pliki",
+    "clearAll": "Wyczyść wszystko",
+    "justNow": "Przed chwilą",
+    "openTitle": "Otwórz",
+    "openAnyHint": "Sondowanie CPT (GEF / BRO-XML) lub projekt/sondowanie (.ifcgeo) — każdy plik otwiera się w osobnej karcie",
+    "noRecent": "Brak ostatnich plików",
+    "remove": "Usuń"
   }
 }

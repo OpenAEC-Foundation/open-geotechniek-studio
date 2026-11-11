@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { Cpt } from "../types/cpt";
 import { validationOf } from "./report";
 import { downloadBlobAsFile } from "../utils/browserSave";
@@ -6,14 +7,14 @@ import { outliersOf, withBroOutliers } from "./depthOutliers";
 import { useCptStore } from "../store/useCptStore";
 import { IS_TAURI } from "../utils/platform";
 export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
+  const { t } = useTranslation("panels");
   const outliers = outliersOf(cpt);
   const report = validationOf(cpt),
     [error, setError] = useState<string | null>(null);
   if (!report)
     return (
       <p className="panel-empty">
-        Dit bestand heeft nog geen validatierapport. Importeer het opnieuw met
-        de actuele parser.
+        {t("validation.noReport", "Dit bestand heeft nog geen validatierapport. Importeer het opnieuw met de actuele parser.")}
       </p>
     );
   const errors = report.diagnostics.filter(
@@ -63,29 +64,28 @@ export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
   return (
     <div className="validation-panel">
       <p>
-        {errors} fouten · {warnings} waarschuwingen
+        {t("validation.counts", "{{errors}} fouten · {{warnings}} waarschuwingen", { errors, warnings })}
       </p>
       <p>
-        {cpt.points.length} meetpunten · {report.voids} voids ·{" "}
-        {report.omittedRecords} weggelaten records
+        {t("validation.points", "{{points}} meetpunten · {{voids}} voids · {{omitted}} weggelaten records", { points: cpt.points.length, voids: report.voids, omitted: report.omittedRecords })}
       </p>
-      {report.depthMethod && <p>Diepte: {({'corrected-depth':'gemeten gecorrigeerde diepte','inclination-corrected':'hellingcorrectie uit sondeerlengte','penetration-length':'sondeerlengte als verticale benadering','mixed':'gemengde methoden; per record in JSON'} as Record<string,string>)[report.depthMethod]??report.depthMethod}</p>}
+      {report.depthMethod && <p>{t("validation.depth", "Diepte: {{method}}", { method: ({'corrected-depth':t("validation.depthMethod.corrected", "gemeten gecorrigeerde diepte"),'inclination-corrected':t("validation.depthMethod.inclination", "hellingcorrectie uit sondeerlengte"),'penetration-length':t("validation.depthMethod.penetration", "sondeerlengte als verticale benadering"),'mixed':t("validation.depthMethod.mixed", "gemengde methoden; per record in JSON")} as Record<string,string>)[report.depthMethod]??report.depthMethod })}</p>}
       {cpt.metadata.predrilled_depth_m != null && (
-        <p>Voorgeboord: {cpt.metadata.predrilled_depth_m} m</p>
+        <p>{t("validation.predrilled", "Voorgeboord: {{depth}} m", { depth: cpt.metadata.predrilled_depth_m })}</p>
       )}
       {cpt.metadata.pre_excavated_depth_m != null && (
-        <p>Voorontgraven: {cpt.metadata.pre_excavated_depth_m} m</p>
+        <p>{t("validation.preExcavated", "Voorontgraven: {{depth}} m", { depth: cpt.metadata.pre_excavated_depth_m })}</p>
       )}
       {cpt.metadata.removed_layers?.map((layer, i) => (
         <p key={i}>
-          Laag tot {layer.bottom_depth_m} m: {layer.description}
+          {t("validation.removedLayer", "Laag tot {{depth}} m: {{description}}", { depth: layer.bottom_depth_m, description: layer.description })}
         </p>
       ))}
       {cpt.metadata.quality_regime && (
-        <p>Regime: {cpt.metadata.quality_regime}</p>
+        <p>{t("validation.regime", "Regime: {{regime}}", { regime: cpt.metadata.quality_regime })}</p>
       )}
-      {cpt.metadata.measurements && cpt.metadata.measurements.length>0 && <details><summary>Meetgrootheden & eenheden ({cpt.metadata.measurements.length})</summary><dl>{cpt.metadata.measurements.map((m,i)=><div key={i}><dt>{m.name}</dt><dd>{m.value??'—'} {m.unit}</dd></div>)}</dl></details>}
-      {report.measurementVariables && <details><summary>Meetvariabelen & nulmetingen</summary><dl>{Object.entries(report.measurementVariables).map(([id,m])=><div key={id}><dt>{id}: {m.description}</dt><dd>{m.value??'—'} {m.unit}</dd></div>)}</dl></details>}
+      {cpt.metadata.measurements && cpt.metadata.measurements.length>0 && <details><summary>{t("validation.measurements", "Meetgrootheden & eenheden ({{n}})", { n: cpt.metadata.measurements.length })}</summary><dl>{cpt.metadata.measurements.map((m,i)=><div key={i}><dt>{m.name}</dt><dd>{m.value??'—'} {m.unit}</dd></div>)}</dl></details>}
+      {report.measurementVariables && <details><summary>{t("validation.variables", "Meetvariabelen & nulmetingen")}</summary><dl>{Object.entries(report.measurementVariables).map(([id,m])=><div key={id}><dt>{id}: {m.description}</dt><dd>{m.value??'—'} {m.unit}</dd></div>)}</dl></details>}
       {outliers && (
         <label>
           <input
@@ -97,8 +97,7 @@ export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
                 .replaceCpt(withBroOutliers(cpt, e.target.checked))
             }
           />{" "}
-          Toon {outliers.excluded.length} uitschieters (bronrecords{" "}
-          {outliers.excluded.join(", ")})
+          {t("validation.showOutliers", "Toon {{n}} uitschieters (bronrecords {{records}})", { n: outliers.excluded.length, records: outliers.excluded.join(", ") })}
         </label>
       )}
       <div className="validation-actions">
@@ -109,24 +108,24 @@ export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
           target="_blank"
           rel="noreferrer"
         >
-          Meld dit bestand
+          {t("validation.report", "Meld dit bestand")}
         </a>
       </div>
       {error && <p role="alert">{error}</p>}
       {report.diagnostics.length > 0 && (
         <details>
-          <summary>Diagnostiek ({report.diagnostics.length})</summary>
+          <summary>{t("validation.diagnostics", "Diagnostiek ({{n}})", { n: report.diagnostics.length })}</summary>
           <ol>
             {report.diagnostics.slice(0, 100).map((d, i) => (
               <li key={i}>
-                <strong>{d.code}</strong> {d.line != null && `regel ${d.line}`}{" "}
-                {d.record != null && `record ${d.record}`}{" "}
-                {d.column != null && `kolom ${d.column}`} — {d.message}
+                <strong>{d.code}</strong> {d.line != null && t("validation.line", "regel {{n}}", { n: d.line })}{" "}
+                {d.record != null && t("validation.record", "record {{n}}", { n: d.record })}{" "}
+                {d.column != null && t("validation.column", "kolom {{n}}", { n: d.column })} — {d.message}
               </li>
             ))}
           </ol>
           {report.diagnostics.length > 100 && (
-            <p>Exporteer het rapport voor alle meldingen.</p>
+            <p>{t("validation.exportAll", "Exporteer het rapport voor alle meldingen.")}</p>
           )}
         </details>
       )}

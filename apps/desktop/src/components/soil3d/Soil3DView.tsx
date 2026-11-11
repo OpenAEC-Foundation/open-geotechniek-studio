@@ -7,6 +7,7 @@ import { useCalculationsStore } from "../../calc/framework/store";
 import { buildSoilModel, exposedCells, zoneInfo, type SoilModel } from "./soilModel";
 import { useSoil3DStore, type CameraView, type Soil3DSettings } from "./useSoil3DStore";
 import { saveBlobAsFile } from "../../utils/browserSave";
+import { zoneName } from "../../utils/soilZones";
 import "./soil3d.css";
 
 interface PileToe { cptId: string; name: string; toeNap: number }
@@ -185,6 +186,7 @@ function disposeTree(obj: THREE.Object3D) {
 
 export default function Soil3DView() {
   const { t } = useTranslation("ribbon");
+  const { t: tp, i18n } = useTranslation("panels");
   const cpts = useCptStore((s) => s.cpts);
   const activeCptId = useCptStore((s) => s.activeCptId);
   const setActive = useCptStore((s) => s.setActive);
@@ -216,7 +218,9 @@ export default function Soil3DView() {
     if (!list.length) return { model: null, error: null };
     try { return { model: buildSoilModel(list, { bearingQcMpa: criterion.qcMpa, bearingMinThicknessM: criterion.thicknessM }), error: null }; }
     catch (e) { return { model: null, error: String(e) }; }
-  }, [cpts, criterion]);
+    // De taal is een afhankelijkheid: de waarschuwingen in het model zijn vertaald.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cpts, criterion, i18n.language]);
 
   // Scène, camera en besturing één keer opzetten.
   useEffect(() => {
@@ -340,19 +344,19 @@ export default function Soil3DView() {
               <label key={z} className="soil3d-zone">
                 <input type="checkbox" checked={!settings.hiddenZones.includes(z)} onChange={() => settings.toggleZone(z)} />
                 <span className="soil3d-swatch" style={{ background: info?.color }} />
-                {info?.name ?? `Zone ${z}`}
+                {info ? zoneName(z, info.name) : tp("soil3d.zoneN", "Zone {{n}}", { n: z })}
               </label>
             );
           })}
           <div className="soil3d-legend-title">{t("model3d.bearing", "Draagkrachtige laag")}</div>
           <div className="soil3d-note">
-            qc ≥ {criterion.qcMpa} MPa {t("model3d.over", "over")} ≥ {criterion.thicknessM} m
+            {tp("soil3d.criterion", "qc ≥ {{qc}} MPa over ≥ {{thickness}} m", { qc: criterion.qcMpa, thickness: criterion.thicknessM })}
             <br />
-            {criterion.source ? `${t("model3d.from", "uit")} ${criterion.source}` : t("model3d.defaultCriterion", "standaard; stel in via een funderingsadvies")}
-            {tops.length > 0 && <><br />NAP {Math.max(...tops).toFixed(2)} {t("model3d.to", "tot")} {Math.min(...tops).toFixed(2)} m ({tops.length}/{placed.length})</>}
+            {criterion.source ? tp("soil3d.criterionFrom", "uit {{source}}", { source: criterion.source }) : t("model3d.defaultCriterion", "standaard; stel in via een funderingsadvies")}
+            {tops.length > 0 && <><br />{tp("soil3d.bearingRange", "NAP {{top}} tot {{bottom}} m ({{found}}/{{total}})", { top: Math.max(...tops).toFixed(2), bottom: Math.min(...tops).toFixed(2), found: tops.length, total: placed.length })}</>}
           </div>
           <div className="soil3d-note soil3d-muted">
-            {model.grid.nx} × {model.grid.ny} × {model.grid.nz} {t("model3d.cells", "cellen")} ({model.grid.dx.toFixed(1)} × {model.grid.dy.toFixed(1)} × {model.grid.dz.toFixed(1)} m), IDW
+            {tp("soil3d.grid", "{{nx}} × {{ny}} × {{nz}} cellen ({{dx}} × {{dy}} × {{dz}} m), IDW", { nx: model.grid.nx, ny: model.grid.ny, nz: model.grid.nz, dx: model.grid.dx.toFixed(1), dy: model.grid.dy.toFixed(1), dz: model.grid.dz.toFixed(1) })}
           </div>
           {model.warnings.map((w) => <div key={w} className="soil3d-note soil3d-warn">{w}</div>)}
         </aside>

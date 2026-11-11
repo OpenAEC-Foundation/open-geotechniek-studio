@@ -31,5 +31,11 @@
   "remove": "Entfernen",
   "hide": "Ausblenden",
   "show": "Einblenden",
-  "noCptsHint": "Noch keine Sondierungen. Klicken Sie auf „Sondierung hinzufügen“ oder ziehen Sie GEF/BRO-XML-Dateien in das Fenster."
+  "noCptsHint": "Noch keine Sondierungen. Klicken Sie auf „Sondierung hinzufügen“ oder ziehen Sie GEF/BRO-XML-Dateien in das Fenster.",
+  "noTitle": "(kein Titel)",
+  "fileMetadata": "Dateimetadaten",
+  "noExtras": "Keine weiteren Metadaten.",
+  "boresInProject": "Bohrungen in diesem Projekt",
+  "addBore": "Bohrung hinzufügen",
+  "noBoresHint": "Noch keine Bohrungen hinzugefügt. Klicken Sie auf „Bohrung hinzufügen“, um BHR-GT-XML zu importieren."
 }

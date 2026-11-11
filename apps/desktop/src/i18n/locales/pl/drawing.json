@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Ortofotomapa © PDOK",
+    "mapData": "Dane mapy © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Linie wydłużone do narożnika w punkcie przecięcia",
+    "extendSecond": "Wydłuż — teraz kliknij drugą linię; obie zostaną wydłużone do narożnika w punkcie przecięcia",
+    "hintExtend": "Wydłuż — najpierw kliknij linię odniesienia (granicę, do której wydłużyć)",
+    "hintMirror": "Odbij — najpierw zaznacz linię (kliknij ją), potem kliknij dwa punkty osi odbicia",
+    "hintOffset": "Odsunięcie — kliknij linię, aby wybrać źródło (następnie zostaniesz zapytany o odległość)",
+    "hintTrim": "Przytnij — najpierw kliknij linię odniesienia (krawędź cięcia)",
+    "mirrorDone": "Linia odbita względem osi",
+    "mirrorNeedsLine": "Najpierw zaznacz linię (kliknij ją), zanim użyjesz Odbij",
+    "mirrorSecond": "Odbij — teraz kliknij drugi punkt osi odbicia",
+    "offsetDone": "Umieszczono linię równoległą w odległości {{dist}} m",
+    "offsetPickFirst": "Odsunięcie — najpierw kliknij linię, aby wybrać źródło",
+    "offsetPrompt": "Odległość odsunięcia w metrach? (liczba dodatnia)",
+    "offsetSide": "Odsunięcie {{dist}} m — kliknij po stronie, po której ma powstać kopia",
+    "parallel": "Linie są równoległe — brak punktu przecięcia, narożnik niemożliwy",
+    "pickOtherLine": "Wybierz inną linię niż pierwsza",
+    "trimDone": "Linie przycięte do narożnika w punkcie przecięcia",
+    "trimSecond": "Przytnij — teraz kliknij drugą linię; obie zostaną przycięte do narożnika w punkcie przecięcia"
+  },
+  "coordTable": {
+    "more": "+ {{n}} niepokazanych",
+    "nr": "Nr",
+    "title": "Sondowania do wykonania (RD)"
+  },
+  "crop": {
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "confirm": "Przytnij i dodaj",
+    "cropPage": "Przytnij stronę {{page}}",
+    "imageTitle": "Przytnij obraz",
+    "loadingPdf": "Wczytywanie PDF…",
+    "otherPage": "← Inna strona",
+    "otherPageTitle": "Wybierz inną stronę",
+    "page": "Strona {{page}}",
+    "pageCount": "Liczba stron: {{n}}",
+    "pageCountOne": "1 strona",
+    "pdfReadError": "Nie udało się odczytać PDF",
+    "pickPage": "PDF — wybierz stronę",
+    "rendering": "Renderowanie strony…"
+  },
+  "dwg": {
+    "askRd": "Eksportować we współrzędnych RD (EPSG:28992)?\n\nTak = rzeczywiste współrzędne RD (georeferencja).\nNie = lokalny początek układu, rysunek w punkcie 0,0.",
+    "askTitle": "Eksport DWG/DXF",
+    "desktopOnly": "Eksport DWG działa tylko w aplikacji desktopowej",
+    "exported": "Wyeksportowano (obiekty: {{n}})",
+    "exportedWithImages": "Wyeksportowano (obiekty: {{n}} + obrazy: {{images}})",
+    "exporting": "Eksportowanie DWG…",
+    "failed": "Eksport DWG nie powiódł się: {{error}}",
+    "filterDwg": "Rysunek CAD (DWG)",
+    "filterDxf": "Wymiana CAD (DXF)",
+    "nothing": "Brak danych do eksportu"
+  },
+  "export": {
+    "defaultFileName": "plan-sytuacyjny"
+  },
+  "handle": {
+    "moveRaster": "Przeciągnij, aby przesunąć siatkę",
+    "rotate": "Przeciągnij, aby obrócić"
+  },
+  "move": {
+    "hint": "Przesuń mysz i kliknij, aby umieścić (Esc = anuluj)",
+    "notMovable": "Tego obiektu nie można przesunąć",
+    "pickObject": "Kliknij obiekt, który chcesz przesunąć"
+  },
+  "northArrow": "Strzałka północy",
+  "note": {
+    "prompt": "Notatka:"
+  },
+  "paper": {
+    "dwgStub": "Parser DWG/DXF wkrótce"
+  },
+  "pdf": {
+    "exported": "Wyeksportowano PDF",
+    "exporting": "Eksportowanie PDF…",
+    "failed": "Eksport PDF nie powiódł się: {{error}}",
+    "timeout": "Rasteryzacja PDF trwała dłużej niż 30 sekund"
+  },
+  "props": {
+    "a2Landscape": "A2 poziomo",
+    "a3Landscape": "A3 poziomo",
+    "areaHeader": "Obszar {{id}}",
+    "background": "Tło",
+    "color": "Kolor",
+    "cols": "Kolumny",
+    "cptHeader": "Sondowanie {{id}}",
+    "cptNumber": "Nr sondowania",
+    "deleteArea": "Usuń obszar",
+    "deleteBackground": "Usuń tło",
+    "deleteCpt": "Usuń sondowanie",
+    "deleteLine": "Usuń linię",
+    "deleteNote": "Usuń notatkę",
+    "deleteRaster": "Usuń siatkę",
+    "dimensionHeader": "Linia wymiarowa {{id}}",
+    "dragMarkerHint": "Przeciągnij znacznik na mapie, aby go przesunąć.",
+    "emptyHint": "Kliknij sondowanie, siatkę lub obiekt na arkuszu, aby edytować jego właściwości.",
+    "fillColor": "Kolor wypełnienia",
+    "frame": "Ramka rysunku",
+    "freeze": "Zablokuj widok",
+    "freezeTitle": "Zablokuj przesuwanie i powiększenie, aby rysunek pozostał dokładnie na miejscu",
+    "friction": "Pomiar tarcia",
+    "frictionWithSymbol": "Pomiar tarcia (kreska pod symbolem)",
+    "hideInExport": "Ukryj siatkę w eksporcie PDF/DWG",
+    "layer": "Warstwa",
+    "layerBackground": "Tło (pod liniami/znacznikami)",
+    "layerForeground": "Pierwszy plan (nad wszystkim)",
+    "lineHeader": "Linia {{id}}",
+    "loading": "Wczytywanie właściwości…",
+    "noSelection": "Brak zaznaczenia",
+    "noteHeader": "Notatka {{id}}",
+    "numbering": "Numeracja",
+    "numberingPlaceholder": "np. S",
+    "numberingTitle": "Prefiks numeracji komórek, np. 'S' daje S1, S2, … Puste = domyślny zapis R01-S01.",
+    "overlayTip": "Wskazówka: naciśnij <kbd>M</kbd> lub <kbd>G</kbd>, aby przesunąć (kursor podąża; kliknięcie zatwierdza, Esc anuluje). Przeciągnij uchwyt narożny, aby skalować.",
+    "paper": "Papier",
+    "paperScale": "Papier i skala",
+    "rasterHeader": "Siatka {{id}}",
+    "resetColor": "Przywróć domyślny",
+    "rotation": "Obrót (°)",
+    "rows": "Wiersze",
+    "scaleField": "Skala 1:",
+    "scaleFieldTitle": "Wpisz skalę (np. 1000 dla 1:1000) i naciśnij Enter — rysunek się dostosuje",
+    "scalePresets": "Predefiniowane skale",
+    "setScale": "Ustaw skalę 1:{{scale}}",
+    "spacingX": "Rozstaw X (m)",
+    "spacingY": "Rozstaw Y (m)",
+    "startNumber": "Nr początkowy",
+    "strokeColor": "Kolor obramowania",
+    "text": "Tekst",
+    "titleBlock": {
+      "address": "Adres",
+      "checkedBy": "Sprawdził",
+      "date": "Data",
+      "drawingNumber": "Nr rysunku",
+      "drawnBy": "Rysował",
+      "project": "Projekt",
+      "projectNumber": "Nr projektu",
+      "scale": "Skala",
+      "version": "Wersja"
+    },
+    "width": "Szerokość (m)"
+  },
+  "quotes": {
+    "cancel": "Anuluj",
+    "hint": "Posortowano według odległości od projektu. 3 najbliższe firmy są wstępnie zaznaczone. Dostosuj wybór i kliknij „Otwórz e-mail”, aby otworzyć Outlook z zapytaniem ofertowym do wszystkich zaznaczonych firm.",
+    "more": "+ {{hidden}} kolejnych firm niepokazanych. Katalog (firmy: {{total}}) znajduje się w <code>{{path}}</code>.",
+    "openMail": "Otwórz e-mail ({{n}})",
+    "openMailTitle": "Otwiera domyślny program pocztowy (Outlook) z wstępnie wypełnionym zapytaniem ofertowym",
+    "selected": "Zaznaczone firmy: {{n}}",
+    "selectedOne": "Zaznaczono 1 firmę",
+    "title": "Poproś o 3 oferty od firm wykonujących sondowania"
+  },
+  "rotate": {
+    "notRotatable": "Tego typu obiektu nie można obrócić",
+    "prompt": "O ile stopni obrócić? (ujemny = przeciwnie do ruchu wskazówek zegara)",
+    "selectFirst": "Najpierw zaznacz obiekt do obrócenia"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Ulica, numer domu, lokalizacja projektu",
+    "addressTitle": "Kliknij, aby edytować adres",
+    "author": "Autor",
+    "drawingType": "Plan sytuacyjny",
+    "firstDate": "Data pierwszego wydania",
+    "format": "Format",
+    "logoAlt": "Logo firmy",
+    "logoTitle": "Kliknij, aby wybrać własne logo (PNG / JPG / SVG)",
+    "projectNumber": "Nr projektu",
+    "projectPlaceholder": "Nazwa projektu",
+    "projectTitle": "Kliknij, aby edytować nazwę projektu",
+    "reference": "Sygnatura",
+    "revision": "Rew.",
+    "scale": "Skala",
+    "scaleTitle": "Kliknij, aby edytować skalę (np. 1:850)",
+    "sheet": "Arkusz"
+  },
+  "toast": {
+    "areaHint": "Obszar — klikaj wierzchołki; Enter lub dwuklik zamyka, Esc anuluje",
+    "broIncomplete": "BRO niekompletne: {{error}}",
+    "dwgParserPending": "Parser DWG/DXF wkrótce — plik rozpoznany, ale jeszcze niewyświetlany.",
+    "frameMustBeSvg": "Ramka rysunku musi być plikiem SVG",
+    "invalidScale": "Nieprawidłowa skala: użyj na przykład 1:850 (50–100 000).",
+    "logoReadFailed": "Nie udało się odczytać logo",
+    "noteHint": "Notatka — kliknij miejsce, w którym ma się znaleźć tekst",
+    "objectsDeleted": "Usunięte obiekty: {{n}}",
+    "objectsSelected": "Zaznaczone obiekty: {{n}} — naciśnij Delete, aby usunąć",
+    "rasterPlaced": "Umieszczono siatkę {{id}} — przeciągnij narożnik, aby ją rozciągnąć (sondowania są dodawane automatycznie w rozstawie maks. {{spacing}} m o/o)",
+    "unsupportedFile": "Typ pliku .{{ext}} nie jest jeszcze obsługiwany"
+  }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import "./TekeningProperties.css";
 
 /**
@@ -84,6 +85,8 @@ interface Snapshot {
   selectedLine?: { id: string; kind: "line" | "dimension"; color?: string } | null;
 }
 
+/** Velden van het tekeningkader; het label is de Nederlandse brontekst
+ *  voor `props.titleBlock.<key>`. */
 const TB_FIELDS: { key: keyof TitleBlockData; label: string }[] = [
   { key: "project",       label: "Project" },
   { key: "projectNumber", label: "Projectnr" },
@@ -97,6 +100,7 @@ const TB_FIELDS: { key: keyof TitleBlockData; label: string }[] = [
 ];
 
 export default function TekeningProperties() {
+  const { t } = useTranslation("drawing");
   const [snap, setSnap] = useState<Snapshot | null>(null);
 
   // Subscribe to state snapshots from SonderingstekeningView.
@@ -135,7 +139,7 @@ export default function TekeningProperties() {
   if (!snap) {
     return (
       <div className="tekprops">
-        <p className="tekprops-empty">Eigenschappen laden…</p>
+        <p className="tekprops-empty">{t("props.loading", "Eigenschappen laden…")}</p>
       </div>
     );
   }
@@ -145,11 +149,11 @@ export default function TekeningProperties() {
       {/* ── Paper + scale (moved from view topbar) ───────────── */}
       <section className="tekprops-section">
         <header className="tekprops-section-header">
-          <span>Papier &amp; schaal</span>
+          <span>{t("props.paperScale", "Papier & schaal")}</span>
         </header>
         <div className="tekprops-body">
           <label className="tekprops-field tekprops-field-wide">
-            <span>Papier</span>
+            <span>{t("props.paper", "Papier")}</span>
             <select
               value={snap.paperSize}
               onChange={(e) =>
@@ -160,8 +164,8 @@ export default function TekeningProperties() {
                 )
               }
             >
-              <option value="A2">A2 liggend</option>
-              <option value="A3">A3 liggend</option>
+              <option value="A2">{t("props.a2Landscape", "A2 liggend")}</option>
+              <option value="A3">{t("props.a3Landscape", "A3 liggend")}</option>
             </select>
           </label>
           {/* Schaal als getal-input — geen dropdown meer. Typ "850" of
@@ -177,7 +181,7 @@ export default function TekeningProperties() {
               getypte waarde). Active-state op chip die matcht de
               huidige requested scale (snap.scale, niet liveScale —
               anders flikkert het bij zoom-correcties). */}
-          <div className="tekprops-scale-presets" role="group" aria-label="Schaal-presets">
+          <div className="tekprops-scale-presets" role="group" aria-label={t("props.scalePresets", "Schaal-presets")}>
             {[500, 1000, 2000, 5000].map((preset) => (
               <button
                 key={preset}
@@ -190,7 +194,7 @@ export default function TekeningProperties() {
                     }),
                   )
                 }
-                title={`Zet schaal op 1:${preset}`}
+                title={t("props.setScale", "Zet schaal op 1:{{scale}}", { scale: preset })}
               >
                 1:{preset}
               </button>
@@ -200,7 +204,7 @@ export default function TekeningProperties() {
               knop blijft ook bestaan; ze schrijven naar dezelfde state
               via `ogs:tekening-toggle-freeze`. */}
           <label className="tekprops-field tekprops-field-wide">
-            <span>Freeze viewport</span>
+            <span>{t("props.freeze", "Freeze viewport")}</span>
             <input
               type="checkbox"
               checked={!!snap.frozen}
@@ -209,7 +213,7 @@ export default function TekeningProperties() {
                   new CustomEvent("ogs:tekening-toggle-freeze"),
                 )
               }
-              title="Bevries pan + zoom zodat de tekening exact blijft staan"
+              title={t("props.freezeTitle", "Bevries pan + zoom zodat de tekening exact blijft staan")}
             />
           </label>
         </div>
@@ -219,22 +223,22 @@ export default function TekeningProperties() {
       <section className="tekprops-section">
         <header className="tekprops-section-header">
           {snap.selectionKind === "raster" && snap.selectedRaster && (
-            <span>Raster {snap.selectedRaster.id}</span>
+            <span>{t("props.rasterHeader", "Raster {{id}}", { id: snap.selectedRaster.id })}</span>
           )}
           {snap.selectionKind === "marker" && snap.selectionId && (
-            <span>Sondering {snap.selectionId}</span>
+            <span>{t("props.cptHeader", "Sondering {{id}}", { id: snap.selectionId })}</span>
           )}
           {snap.selectionKind === "overlay" && snap.selectedOverlay && (
-            <span>Achtergrond</span>
+            <span>{t("props.background", "Achtergrond")}</span>
           )}
-          {!snap.selectionKind && <span>Geen selectie</span>}
+          {!snap.selectionKind && <span>{t("props.noSelection", "Geen selectie")}</span>}
         </header>
 
         {snap.selectionKind === "raster" && snap.selectedRaster && (
           <div className="tekprops-body">
             <div className="tekprops-row">
               <label className="tekprops-field">
-                <span>Rijen</span>
+                <span>{t("props.rows", "Rijen")}</span>
                 <input
                   type="number"
                   min={1}
@@ -248,7 +252,7 @@ export default function TekeningProperties() {
                 />
               </label>
               <label className="tekprops-field">
-                <span>Kolommen</span>
+                <span>{t("props.cols", "Kolommen")}</span>
                 <input
                   type="number"
                   min={1}
@@ -264,7 +268,7 @@ export default function TekeningProperties() {
             </div>
             <div className="tekprops-row">
               <label className="tekprops-field">
-                <span>H.o.h. X (m)</span>
+                <span>{t("props.spacingX", "H.o.h. X (m)")}</span>
                 <input
                   type="number"
                   min={0.5}
@@ -279,7 +283,7 @@ export default function TekeningProperties() {
                 />
               </label>
               <label className="tekprops-field">
-                <span>H.o.h. Y (m)</span>
+                <span>{t("props.spacingY", "H.o.h. Y (m)")}</span>
                 <input
                   type="number"
                   min={0.5}
@@ -295,7 +299,7 @@ export default function TekeningProperties() {
               </label>
             </div>
             <label className="tekprops-field tekprops-field-wide">
-              <span>Rotatie (°)</span>
+              <span>{t("props.rotation", "Rotatie (°)")}</span>
               <input
                 type="range"
                 min={-180}
@@ -312,19 +316,19 @@ export default function TekeningProperties() {
             </label>
             <div className="tekprops-row">
               <label className="tekprops-field">
-                <span>Nummering</span>
+                <span>{t("props.numbering", "Nummering")}</span>
                 <input
                   type="text"
                   value={snap.selectedRaster.labelPrefix ?? ""}
-                  placeholder="bv. S"
-                  title="Prefix voor de celnummering, bv. 'S' geeft S1, S2, … Leeg = standaard R01-S01-notatie."
+                  placeholder={t("props.numberingPlaceholder", "bv. S")}
+                  title={t("props.numberingTitle", "Prefix voor de celnummering, bv. 'S' geeft S1, S2, … Leeg = standaard R01-S01-notatie.")}
                   onChange={(e) =>
                     updateRaster({ labelPrefix: e.target.value })
                   }
                 />
               </label>
               <label className="tekprops-field">
-                <span>Startnr</span>
+                <span>{t("props.startNumber", "Startnr")}</span>
                 <input
                   type="number"
                   min={0}
@@ -344,7 +348,7 @@ export default function TekeningProperties() {
                 checked={!!snap.selectedRaster.kleefmeting}
                 onChange={(e) => updateRaster({ kleefmeting: e.target.checked })}
               />
-              <span>Kleefmeting (streepje onder symbool)</span>
+              <span>{t("props.frictionWithSymbol", "Kleefmeting (streepje onder symbool)")}</span>
             </label>
             <label className="tekprops-field tekprops-field-wide tekprops-checkbox">
               <input
@@ -352,14 +356,14 @@ export default function TekeningProperties() {
                 checked={!!snap.selectedRaster.hideInExport}
                 onChange={(e) => updateRaster({ hideInExport: e.target.checked })}
               />
-              <span>Raster verbergen in PDF-/DWG-export</span>
+              <span>{t("props.hideInExport", "Raster verbergen in PDF-/DWG-export")}</span>
             </label>
             <button
               type="button"
               className="tekprops-btn tekprops-btn-danger"
               onClick={deleteSelection}
             >
-              Verwijder raster
+              {t("props.deleteRaster", "Verwijder raster")}
             </button>
           </div>
         )}
@@ -367,7 +371,7 @@ export default function TekeningProperties() {
         {snap.selectionKind === "marker" && snap.selectionId && (
           <div className="tekprops-body">
             <label className="tekprops-field tekprops-field-wide">
-              <span>Sonderingsnr</span>
+              <span>{t("props.cptNumber", "Sonderingsnr")}</span>
               <input
                 type="text"
                 value={snap.selectionId}
@@ -383,7 +387,7 @@ export default function TekeningProperties() {
               />
             </label>
             <label className="tekprops-field tekprops-field-wide">
-              <span>Kleefmeting</span>
+              <span>{t("props.friction", "Kleefmeting")}</span>
               <input
                 type="checkbox"
                 checked={!!snap.selectedMarker?.kleefmeting}
@@ -400,14 +404,14 @@ export default function TekeningProperties() {
               />
             </label>
             <p className="tekprops-hint">
-              Sleep de marker op de kaart om te verplaatsen.
+              {t("props.dragMarkerHint", "Sleep de marker op de kaart om te verplaatsen.")}
             </p>
             <button
               type="button"
               className="tekprops-btn tekprops-btn-danger"
               onClick={deleteSelection}
             >
-              Verwijder sondering
+              {t("props.deleteCpt", "Verwijder sondering")}
             </button>
           </div>
         )}
@@ -415,10 +419,12 @@ export default function TekeningProperties() {
         {snap.selectionKind === "line" && snap.selectedLine && (
           <div className="tekprops-body">
             <p className="tekprops-hint">
-              {snap.selectedLine.kind === "dimension" ? "Maatlijn" : "Lijn"} {snap.selectedLine.id}
+              {snap.selectedLine.kind === "dimension"
+                ? t("props.dimensionHeader", "Maatlijn {{id}}", { id: snap.selectedLine.id })
+                : t("props.lineHeader", "Lijn {{id}}", { id: snap.selectedLine.id })}
             </p>
             <label className="tekprops-field tekprops-field-wide">
-              <span>Kleur</span>
+              <span>{t("props.color", "Kleur")}</span>
               <input
                 type="color"
                 value={
@@ -446,7 +452,7 @@ export default function TekeningProperties() {
                   )
                 }
               >
-                Reset naar standaard
+                {t("props.resetColor", "Reset naar standaard")}
               </button>
             )}
             <button
@@ -454,16 +460,16 @@ export default function TekeningProperties() {
               className="tekprops-btn tekprops-btn-danger"
               onClick={deleteSelection}
             >
-              Verwijder lijn
+              {t("props.deleteLine", "Verwijder lijn")}
             </button>
           </div>
         )}
 
         {snap.selectionKind === "vlak" && snap.selectedVlak && (
           <div className="tekprops-body">
-            <p className="tekprops-hint">Vlak {snap.selectedVlak.id}</p>
+            <p className="tekprops-hint">{t("props.areaHeader", "Vlak {{id}}", { id: snap.selectedVlak.id })}</p>
             <label className="tekprops-field tekprops-field-wide">
-              <span>Vulkleur</span>
+              <span>{t("props.fillColor", "Vulkleur")}</span>
               <input
                 type="color"
                 value={snap.selectedVlak.fillColor}
@@ -477,7 +483,7 @@ export default function TekeningProperties() {
               />
             </label>
             <label className="tekprops-field tekprops-field-wide">
-              <span>Randkleur</span>
+              <span>{t("props.strokeColor", "Randkleur")}</span>
               <input
                 type="color"
                 value={snap.selectedVlak.strokeColor}
@@ -495,16 +501,16 @@ export default function TekeningProperties() {
               className="tekprops-btn tekprops-btn-danger"
               onClick={deleteSelection}
             >
-              Verwijder vlak
+              {t("props.deleteArea", "Verwijder vlak")}
             </button>
           </div>
         )}
 
         {snap.selectionKind === "note" && snap.selectedNote && (
           <div className="tekprops-body">
-            <p className="tekprops-hint">Opmerking {snap.selectedNote.id}</p>
+            <p className="tekprops-hint">{t("props.noteHeader", "Opmerking {{id}}", { id: snap.selectedNote.id })}</p>
             <label className="tekprops-field tekprops-field-wide">
-              <span>Tekst</span>
+              <span>{t("props.text", "Tekst")}</span>
               <textarea
                 rows={3}
                 value={snap.selectedNote.text}
@@ -522,7 +528,7 @@ export default function TekeningProperties() {
               className="tekprops-btn tekprops-btn-danger"
               onClick={deleteSelection}
             >
-              Verwijder opmerking
+              {t("props.deleteNote", "Verwijder opmerking")}
             </button>
           </div>
         )}
@@ -533,7 +539,7 @@ export default function TekeningProperties() {
               {snap.selectedOverlay.name}
             </p>
             <label className="tekprops-field tekprops-field-wide">
-              <span>Breedte (m)</span>
+              <span>{t("props.width", "Breedte (m)")}</span>
               <input
                 type="number"
                 min={1}
@@ -550,7 +556,7 @@ export default function TekeningProperties() {
               />
             </label>
             <label className="tekprops-field tekprops-field-wide">
-              <span>Laag</span>
+              <span>{t("props.layer", "Laag")}</span>
               <select
                 value={snap.selectedOverlay.foreground ? "foreground" : "background"}
                 onChange={(e) =>
@@ -561,20 +567,24 @@ export default function TekeningProperties() {
                   )
                 }
               >
-                <option value="background">Achtergrond (onder lijnen/markers)</option>
-                <option value="foreground">Voorgrond (boven alles)</option>
+                <option value="background">{t("props.layerBackground", "Achtergrond (onder lijnen/markers)")}</option>
+                <option value="foreground">{t("props.layerForeground", "Voorgrond (boven alles)")}</option>
               </select>
             </label>
             <p className="tekprops-hint">
-              Tip: druk <kbd>M</kbd> of <kbd>G</kbd> om te verplaatsen (cursor volgt; klik commit, Esc cancelt).
-              Sleep aan een hoek-handle om te schalen.
+              <Trans
+                t={t}
+                i18nKey="props.overlayTip"
+                defaults="Tip: druk <kbd>M</kbd> of <kbd>G</kbd> om te verplaatsen (cursor volgt; klik commit, Esc cancelt). Sleep aan een hoek-handle om te schalen."
+                components={{ kbd: <kbd /> }}
+              />
             </p>
             <button
               type="button"
               className="tekprops-btn tekprops-btn-danger"
               onClick={deleteSelection}
             >
-              Verwijder achtergrond
+              {t("props.deleteBackground", "Verwijder achtergrond")}
             </button>
           </div>
         )}
@@ -582,8 +592,7 @@ export default function TekeningProperties() {
         {!snap.selectionKind && (
           <div className="tekprops-body">
             <p className="tekprops-hint">
-              Klik op een sondering, raster of object op het papier om
-              de eigenschappen te bewerken.
+              {t("props.emptyHint", "Klik op een sondering, raster of object op het papier om de eigenschappen te bewerken.")}
             </p>
           </div>
         )}
@@ -592,12 +601,12 @@ export default function TekeningProperties() {
       {/* ── Tekeningkader / titleblock ──────────────────────── */}
       <section className="tekprops-section">
         <header className="tekprops-section-header">
-          <span>Tekeningkader</span>
+          <span>{t("props.frame", "Tekeningkader")}</span>
         </header>
         <div className="tekprops-body">
           {TB_FIELDS.map(({ key, label }) => (
             <label key={key} className="tekprops-field tekprops-field-wide">
-              <span>{label}</span>
+              <span>{t(`props.titleBlock.${key}`, label)}</span>
               <input
                 type="text"
                 value={snap.titleBlock[key] ?? ""}
@@ -636,6 +645,7 @@ function ScaleNumberField({
     liveScale != null && Math.abs(liveScale - scale) <= 2
       ? scale
       : (liveScale ?? scale);
+  const { t } = useTranslation("drawing");
   const [draft, setDraft] = useState<string | null>(null);
   const value = draft ?? String(displayed);
 
@@ -654,9 +664,9 @@ function ScaleNumberField({
   return (
     <label
       className="tekprops-field tekprops-field-wide"
-      title="Typ een schaal (bv. 1000 voor 1:1000) en Enter — de tekening past zich aan"
+      title={t("props.scaleFieldTitle", "Typ een schaal (bv. 1000 voor 1:1000) en Enter — de tekening past zich aan")}
     >
-      <span>Schaal 1:</span>
+      <span>{t("props.scaleField", "Schaal 1:")}</span>
       <input
         type="text"
         inputMode="numeric"
