@@ -50,5 +50,14 @@
     "asImageDesc": "Als PNG- oder JPEG-Bilddatei speichern",
     "asHtml": "Als HTML exportieren",
     "asHtmlDesc": "Dokument als HTML-Datei exportieren"
+  },
+  "openPanel": {
+    "title": "Zuletzt verwendete Dateien",
+    "clearAll": "Alle entfernen",
+    "justNow": "Gerade eben",
+    "openTitle": "Öffnen",
+    "openAnyHint": "Drucksondierung (GEF / BRO-XML) oder Projekt/Sondierung (.ifcgeo) — jede Datei öffnet sich in einem eigenen Tab",
+    "noRecent": "Keine zuletzt verwendeten Dateien",
+    "remove": "Entfernen"
   }
 }

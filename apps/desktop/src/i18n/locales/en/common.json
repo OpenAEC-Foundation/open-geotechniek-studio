@@ -64,5 +64,18 @@
     "erpUrl": "ERPNext URL",
     "erpSearch": "Search Project",
     "erpSearchPlaceholder": "Search by project name or number..."
-  }
+  },
+  "sonderingen": "CPTs",
+  "hoverHint": "Hover over the chart for values",
+  "sondingen": "CPTs",
+  "boringen": "boreholes",
+  "loaded": "loaded",
+  "refreshBro": "Refresh the BRO archive for the visible area",
+  "refresh": "Refresh",
+  "layers": "Layers",
+  "gisLayers": "Map layers + BRO",
+  "baseLayers": "Base layers",
+  "overlayLayers": "Overlays",
+  "dataLayers": "Data",
+  "topotijdreis": "Historical maps"
 }

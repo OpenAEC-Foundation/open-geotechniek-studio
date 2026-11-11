@@ -64,5 +64,18 @@
     "erpUrl": "ERPNext URL",
     "erpSearch": "Project Zoeken",
     "erpSearchPlaceholder": "Zoek op projectnaam of nummer..."
-  }
+  },
+  "sonderingen": "Sonderingen",
+  "hoverHint": "Houd muis op chart voor waarden",
+  "sondingen": "sonderingen",
+  "boringen": "boringen",
+  "loaded": "geladen",
+  "refreshBro": "Vernieuw BRO archief voor zichtbaar gebied",
+  "refresh": "Vernieuw",
+  "layers": "Lagen",
+  "gisLayers": "Kaartlagen + BRO",
+  "baseLayers": "Onderlagen",
+  "overlayLayers": "Overlay",
+  "dataLayers": "Data",
+  "topotijdreis": "Topotijdreis"
 }

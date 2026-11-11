@@ -50,5 +50,14 @@
     "asImageDesc": "Guardar como imagem PNG ou JPEG",
     "asHtml": "Exportar como HTML",
     "asHtmlDesc": "Exportar o documento como ficheiro HTML"
+  },
+  "openPanel": {
+    "title": "Ficheiros recentes",
+    "clearAll": "Limpar tudo",
+    "justNow": "Agora mesmo",
+    "openTitle": "Abrir",
+    "openAnyHint": "Ensaio CPT (GEF / BRO-XML) ou projeto/ensaio (.ifcgeo) — cada ficheiro abre no seu próprio separador",
+    "noRecent": "Sem ficheiros recentes",
+    "remove": "Remover"
   }
 }

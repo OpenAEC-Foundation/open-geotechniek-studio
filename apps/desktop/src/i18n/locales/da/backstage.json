@@ -50,5 +50,14 @@
     "asImageDesc": "Gem som PNG- eller JPEG-billede",
     "asHtml": "Eksportér som HTML",
     "asHtmlDesc": "Eksportér dokumentet som HTML-fil"
+  },
+  "openPanel": {
+    "title": "Seneste filer",
+    "clearAll": "Ryd alle",
+    "justNow": "Lige nu",
+    "openTitle": "Åbn",
+    "openAnyHint": "CPT-sondering (GEF / BRO-XML) eller projekt/sondering (.ifcgeo) — hver fil åbnes i sin egen fane",
+    "noRecent": "Ingen seneste filer",
+    "remove": "Fjern"
   }
 }

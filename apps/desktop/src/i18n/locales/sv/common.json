@@ -64,5 +64,18 @@
     "erpUrl": "ERPNext-URL",
     "erpSearch": "Sök projekt",
     "erpSearchPlaceholder": "Sök på projektnamn eller nummer..."
-  }
+  },
+  "sonderingen": "CPT-sonderingar",
+  "hoverHint": "Håll muspekaren över diagrammet för värden",
+  "sondingen": "CPT-sonderingar",
+  "boringen": "borrhål",
+  "loaded": "inlästa",
+  "refreshBro": "Uppdatera BRO-arkivet för det synliga området",
+  "refresh": "Uppdatera",
+  "layers": "Lager",
+  "gisLayers": "Kartlager + BRO",
+  "baseLayers": "Baslager",
+  "overlayLayers": "Överlägg",
+  "dataLayers": "Data",
+  "topotijdreis": "Historiska kartor"
 }

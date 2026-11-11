@@ -50,5 +50,14 @@
     "asImageDesc": "Spara som PNG- eller JPEG-bild",
     "asHtml": "Exportera som HTML",
     "asHtmlDesc": "Exportera dokumentet som HTML-fil"
+  },
+  "openPanel": {
+    "title": "Senaste filer",
+    "clearAll": "Rensa alla",
+    "justNow": "Nyss",
+    "openTitle": "Öppna",
+    "openAnyHint": "CPT-sondering (GEF / BRO-XML) eller projekt/sondering (.ifcgeo) — varje fil öppnas i en egen flik",
+    "noRecent": "Inga senaste filer",
+    "remove": "Ta bort"
   }
 }

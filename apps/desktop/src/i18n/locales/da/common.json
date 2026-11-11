@@ -64,5 +64,18 @@
     "erpUrl": "ERPNext-URL",
     "erpSearch": "Søg projekt",
     "erpSearchPlaceholder": "Søg efter projektnavn eller -nummer..."
-  }
+  },
+  "sonderingen": "CPT-sonderinger",
+  "hoverHint": "Hold musen over diagrammet for værdier",
+  "sondingen": "CPT-sonderinger",
+  "boringen": "boringer",
+  "loaded": "indlæst",
+  "refreshBro": "Opdater BRO-arkivet for det synlige område",
+  "refresh": "Opdater",
+  "layers": "Lag",
+  "gisLayers": "Kortlag + BRO",
+  "baseLayers": "Baggrundskort",
+  "overlayLayers": "Overlejringer",
+  "dataLayers": "Data",
+  "topotijdreis": "Historiske kort"
 }

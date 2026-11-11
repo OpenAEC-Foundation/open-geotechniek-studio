@@ -64,5 +64,18 @@
     "erpUrl": "URL de ERPNext",
     "erpSearch": "Buscar proyecto",
     "erpSearchPlaceholder": "Buscar por nombre o número de proyecto..."
-  }
+  },
+  "sonderingen": "Ensayos CPT",
+  "hoverHint": "Pase el ratón sobre el gráfico para ver los valores",
+  "sondingen": "ensayos CPT",
+  "boringen": "sondeos",
+  "loaded": "cargados",
+  "refreshBro": "Actualizar el archivo BRO para el área visible",
+  "refresh": "Actualizar",
+  "layers": "Capas",
+  "gisLayers": "Capas del mapa + BRO",
+  "baseLayers": "Capas base",
+  "overlayLayers": "Superposiciones",
+  "dataLayers": "Datos",
+  "topotijdreis": "Mapas históricos"
 }

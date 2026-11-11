@@ -64,5 +64,18 @@
     "erpUrl": "Adres URL ERPNext",
     "erpSearch": "Szukaj projektu",
     "erpSearchPlaceholder": "Szukaj po nazwie lub numerze projektu..."
-  }
+  },
+  "sonderingen": "Sondowania CPT",
+  "hoverHint": "Najedź na wykres, aby zobaczyć wartości",
+  "sondingen": "sondowania CPT",
+  "boringen": "odwierty",
+  "loaded": "wczytano",
+  "refreshBro": "Odśwież archiwum BRO dla widocznego obszaru",
+  "refresh": "Odśwież",
+  "layers": "Warstwy",
+  "gisLayers": "Warstwy mapy + BRO",
+  "baseLayers": "Mapy bazowe",
+  "overlayLayers": "Nakładki",
+  "dataLayers": "Dane",
+  "topotijdreis": "Mapy historyczne"
 }

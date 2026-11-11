@@ -64,5 +64,18 @@
     "erpUrl": "ERPNext-URL",
     "erpSearch": "Projekt suchen",
     "erpSearchPlaceholder": "Nach Projektname oder -nummer suchen..."
-  }
+  },
+  "sonderingen": "Drucksondierungen",
+  "hoverHint": "Maus über das Diagramm halten für Werte",
+  "sondingen": "Drucksondierungen",
+  "boringen": "Bohrungen",
+  "loaded": "geladen",
+  "refreshBro": "BRO-Archiv für den sichtbaren Bereich aktualisieren",
+  "refresh": "Aktualisieren",
+  "layers": "Ebenen",
+  "gisLayers": "Kartenebenen + BRO",
+  "baseLayers": "Grundkarten",
+  "overlayLayers": "Überlagerungen",
+  "dataLayers": "Daten",
+  "topotijdreis": "Historische Karten"
 }

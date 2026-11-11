@@ -64,5 +64,18 @@
     "erpUrl": "URL ERPNext",
     "erpSearch": "Cerca progetto",
     "erpSearchPlaceholder": "Cerca per nome o numero di progetto..."
-  }
+  },
+  "sonderingen": "Prove CPT",
+  "hoverHint": "Passa il mouse sul grafico per i valori",
+  "sondingen": "prove CPT",
+  "boringen": "sondaggi",
+  "loaded": "caricati",
+  "refreshBro": "Aggiorna l'archivio BRO per l'area visibile",
+  "refresh": "Aggiorna",
+  "layers": "Livelli",
+  "gisLayers": "Livelli mappa + BRO",
+  "baseLayers": "Mappe di base",
+  "overlayLayers": "Sovrapposizioni",
+  "dataLayers": "Dati",
+  "topotijdreis": "Mappe storiche"
 }
