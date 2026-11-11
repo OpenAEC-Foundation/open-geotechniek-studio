@@ -37,6 +37,15 @@ Teken een sonderingsraster op A2/A3-papier met professionele titelbalk en automa
 
 ![Situatietekening met sonderingsraster + offertes-dialog](docs/screenshots/05-situatietekening.jpg)
 
+### Ondergrond 3D — ruimtelijk grondmodel uit sonderingen
+Alle sonderingen van een project met RD-coördinaten worden automatisch omgezet in een 3D-voxelmodel van de ondergrond. Per sondering wordt de Robertson-laagindeling in NAP bepaald; tussen de sonderingen wordt per cel de grondsoort geïnterpoleerd (inverse afstandsweging). Draaien, pannen en zoomen met de muis, verticale overdrijving instelbaar, en het model is open te snijden met doorsneden oost-west, noord-zuid en van boven. Exporteer het beeld als PNG. Het model is indicatief: tussen sonderingen blijft de laagopbouw een aanname.
+
+![Ondergrond 3D — voxelmodel van zeven sonderingen met NAP-schaal](docs/screenshots/10-ondergrond-3d.png)
+
+![Ondergrond 3D — hoek uitgesneden, sonderingen zichtbaar in de doorsnede](docs/screenshots/11-ondergrond-3d-doorsnede.png)
+
+![Ondergrond 3D — alleen de sonderingskolommen met laagindeling](docs/screenshots/12-ondergrond-3d-sonderingen.png)
+
 ---
 
 ## Downloads
