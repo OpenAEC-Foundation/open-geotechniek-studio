@@ -64,5 +64,10 @@
     "erpUrl": "ERPNext URL",
     "erpSearch": "Project Zoeken",
     "erpSearchPlaceholder": "Zoek op projectnaam of nummer..."
+  },
+  "docs": {
+    "nameInDocs": "Naam in Docs",
+    "noFiles": "Er staan nog geen passende bestanden in deze map in Docs.",
+    "choose": "Welk bestand openen? Typ het nummer."
   }
 }

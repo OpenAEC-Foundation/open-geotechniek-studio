@@ -64,5 +64,10 @@
     "erpUrl": "URL ERPNext",
     "erpSearch": "Rechercher un projet",
     "erpSearchPlaceholder": "Rechercher par nom ou numéro de projet..."
+  },
+  "docs": {
+    "nameInDocs": "Nom dans Docs",
+    "noFiles": "Ce dossier Docs ne contient pas encore de fichiers correspondants.",
+    "choose": "Quel fichier ouvrir ? Saisissez son numéro."
   }
 }

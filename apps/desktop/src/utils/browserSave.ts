@@ -13,6 +13,8 @@
  * geen filter-keuze toe.
  */
 
+import { bewaarInDocs, siteHost } from "./siteHost";
+
 export type MimeAcceptMap = Record<string, string[]>;
 
 /** True als de moderne File System Access API (showSaveFilePicker)
@@ -45,6 +47,9 @@ export async function saveBlobAsFile(
   mimeAccept?: MimeAcceptMap,
 ): Promise<string | null> {
   const contents = (filename: string) => typeof blob === "function" ? blob(filename) : blob;
+  // In de SuperCloud-werkplek: naar Docs (utils/siteHost.ts).
+  const host = siteHost();
+  if (host) return bewaarInDocs(host, contents, suggestedName);
   if (hasFileSystemAccess()) {
     const picker = (
       window as unknown as {

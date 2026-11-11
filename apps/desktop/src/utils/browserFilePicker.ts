@@ -1,4 +1,5 @@
 import { decodeSource } from "./sourceEncoding";
+import { kiesUitDocs, siteHost } from "./siteHost";
 import type { Diagnostic } from "../validation/report";
 /**
  * Browser-fallback voor `@tauri-apps/plugin-dialog` open() — gebruikt
@@ -36,6 +37,9 @@ export interface BrowserPickOptions {
  * Resolves met een (lege) array bij annulering.
  */
 export function pickFiles(opts: BrowserPickOptions = {}): Promise<BrowserPickedFile[]> {
+  // In de SuperCloud-werkplek: kiezen uit dezelfde map in Docs (utils/siteHost.ts).
+  const host = siteHost();
+  if (host) return kiesUitDocs(host, opts.accept);
   return new Promise((resolve) => {
     const input = document.createElement("input");
     input.type = "file";
