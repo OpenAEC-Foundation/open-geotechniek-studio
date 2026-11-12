@@ -2,10 +2,10 @@ name: Build Snap Package
 
 on:
   # workflow_run werkt alleen als dit workflowbestand op de DEFAULT branch staat.
-  # De workflow wordt getriggerd zodra "Release — Tauri cross-platform installers"
-  # afrondt, ongeacht hoe DIE startte (tag-push óf een eigen workflow_dispatch op main).
+  # De workflow wordt getriggerd zodra "Signed desktop release"
+  # afrondt na een tag-push. Andere builds publiceren alleen via Snap-dispatch.
   workflow_run:
-    workflows: ["Release — Tauri cross-platform installers"]
+    workflows: ["Signed desktop release"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -45,7 +45,13 @@ jobs:
     runs-on: ubuntu-22.04
     # `types: [completed]` vuurt OOK als de release-workflow faalde of werd
     # geannuleerd; zonder deze gate zou een mislukte release alsnog een snap bouwen.
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    # Candidate builds and desktop dispatches on main have no unambiguous release
+    # tag. Use an explicit Snap dispatch for those; never pick the latest release.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       startsWith(github.event.workflow_run.head_branch, 'v20'))
     permissions:
       contents: write
     env:
@@ -76,13 +82,7 @@ jobs:
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             VERSION="$DISPATCH_VERSION"
           elif [ "$EVENT_NAME" = "workflow_run" ]; then
-            # head_branch bevat bij een TAG-push de tagnaam; startte de release-
-            # workflow zelf via dispatch op main, dan staat hier 'main'.
-            if printf '%s' "$HEAD_BRANCH" | grep -qE '^v[0-9]'; then
-              VERSION="$HEAD_BRANCH"
-            else
-              VERSION="$(gh release list --exclude-drafts --limit 1 --json tagName --jq '.[0].tagName // empty')"
-            fi
+            VERSION="$HEAD_BRANCH"
           else
             VERSION=""
           fi
@@ -146,15 +146,58 @@ jobs:
         uses: snapcore/action-build@v1
         id: snapcraft
 
-      # Echte release (via workflow_run): snap als asset aan de release hangen.
-      - name: Upload snap to GitHub release
-        if: github.event_name == 'workflow_run'
+      - uses: actions/setup-node@v5
+        if: github.event_name == 'workflow_run' || inputs.publish
+        with:
+          node-version: 22
+
+      - name: Sign and verify Snap and its checksum manifest
+        if: github.event_name == 'workflow_run' || inputs.publish
+        env:
+          SNAP: ${{ steps.snapcraft.outputs.snap }}
+          OPENAEC_GPG_PRIVATE_KEY: ${{ secrets.OPENAEC_GPG_PRIVATE_KEY }}
+          OPENAEC_GPG_PASSPHRASE: ${{ secrets.OPENAEC_GPG_PASSPHRASE }}
+          OPENAEC_GPG_FINGERPRINT: ${{ vars.OPENAEC_GPG_FINGERPRINT }}
+        run: |
+          set -euo pipefail
+          mkdir snap-artifacts
+          cp "$SNAP" snap-artifacts/
+          node scripts/ci/checksums.mjs snap-artifacts
+          bash scripts/ci/sign-linux.sh snap-artifacts SHA256SUMS-snap.txt
+          cd snap-artifacts
+          sha256sum --check SHA256SUMS-snap.txt
+
+      # Separate manifest: do not overwrite the desktop release's signed checksums.
+      - name: Upload signed Snap to GitHub release
+        if: github.event_name == 'workflow_run' || inputs.publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.get-version.outputs.version }}
+        run: |
+          gh release upload "$VERSION" snap-artifacts/*.snap snap-artifacts/*.snap.asc \
+            snap-artifacts/SHA256SUMS-snap.txt snap-artifacts/SHA256SUMS-snap.txt.asc --clobber
+
+      - name: Verify downloaded Snap release assets
+        if: github.event_name == 'workflow_run' || inputs.publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.get-version.outputs.version }}
           SNAP: ${{ steps.snapcraft.outputs.snap }}
         run: |
-          gh release upload "$VERSION" "$SNAP" --clobber
+          set -euo pipefail
+          snap_name=$(basename "$SNAP")
+          gh release download "$VERSION" --dir snap-downloads \
+            --pattern "$snap_name" --pattern "$snap_name.asc" \
+            --pattern SHA256SUMS-snap.txt --pattern SHA256SUMS-snap.txt.asc
+          export GNUPGHOME
+          GNUPGHOME=$(mktemp -d)
+          chmod 700 "$GNUPGHOME"
+          trap 'gpgconf --kill gpg-agent; rm -rf "$GNUPGHOME"' EXIT
+          gpg --batch --import snap-artifacts/linux-signing-public-key.asc
+          cd snap-downloads
+          gpg --batch --verify SHA256SUMS-snap.txt.asc SHA256SUMS-snap.txt
+          sha256sum --check SHA256SUMS-snap.txt
+          gpg --batch --verify "$snap_name.asc" "$snap_name"
 
       # Handmatige test: snap als CI-artifact (de release NIET aanraken).
       - name: Upload snap as workflow artifact
