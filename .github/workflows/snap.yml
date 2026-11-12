@@ -24,6 +24,11 @@ on:
         type: boolean
         required: false
         default: false
+      sign_existing:
+        description: 'Alleen de bestaande GitHub Snap-download ondertekenen; geen herbouw of Store-publicatie'
+        type: boolean
+        required: false
+        default: false
 
 # Minimale default; de build-snap-job zet zelf `contents: write` omdat hij de
 # snap als asset aan de release hangt.
@@ -48,7 +53,7 @@ jobs:
     # Candidate builds and desktop dispatches on main have no unambiguous release
     # tag. Use an explicit Snap dispatch for those; never pick the latest release.
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && !inputs.sign_existing) ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event == 'push' &&
        startsWith(github.event.workflow_run.head_branch, 'v20'))
@@ -220,3 +225,58 @@ jobs:
         with:
           snap: ${{ steps.snapcraft.outputs.snap }}
           release: stable
+
+  sign-existing:
+    if: github.event_name == 'workflow_dispatch' && inputs.sign_existing
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Download the existing Snap without rebuilding
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          PUBLISH: ${{ inputs.publish }}
+        run: |
+          set -euo pipefail
+          if [ "$PUBLISH" = true ]; then
+            echo 'sign_existing cannot be combined with Store publication' >&2
+            exit 1
+          fi
+          [[ "$VERSION" =~ ^v20[0-9]{2}\.[1-9][0-9]?\.[0-9]+$ ]]
+          snap_name="open-geotechniek-studio_${VERSION#v}_amd64.snap"
+          gh release download "$VERSION" --pattern "$snap_name" --dir snap-artifacts
+          node scripts/ci/checksums.mjs snap-artifacts
+      - name: Sign and verify the existing download
+        env:
+          OPENAEC_GPG_PRIVATE_KEY: ${{ secrets.OPENAEC_GPG_PRIVATE_KEY }}
+          OPENAEC_GPG_PASSPHRASE: ${{ secrets.OPENAEC_GPG_PASSPHRASE }}
+          OPENAEC_GPG_FINGERPRINT: ${{ vars.OPENAEC_GPG_FINGERPRINT }}
+        run: bash scripts/ci/sign-linux.sh snap-artifacts SHA256SUMS-snap.txt
+      - name: Publish signatures and verify downloaded release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          snap_name="open-geotechniek-studio_${VERSION#v}_amd64.snap"
+          # Upload only new verification files; never replace the released binary.
+          gh release upload "$VERSION" "snap-artifacts/$snap_name.asc" \
+            snap-artifacts/SHA256SUMS-snap.txt snap-artifacts/SHA256SUMS-snap.txt.asc --clobber
+          gh release download "$VERSION" --dir snap-downloads \
+            --pattern "$snap_name" --pattern "$snap_name.asc" \
+            --pattern SHA256SUMS-snap.txt --pattern SHA256SUMS-snap.txt.asc
+          export GNUPGHOME
+          GNUPGHOME=$(mktemp -d)
+          chmod 700 "$GNUPGHOME"
+          trap 'gpgconf --kill gpg-agent; rm -rf "$GNUPGHOME"' EXIT
+          gpg --batch --import snap-artifacts/linux-signing-public-key.asc
+          cd snap-downloads
+          gpg --batch --verify SHA256SUMS-snap.txt.asc SHA256SUMS-snap.txt
+          sha256sum --check SHA256SUMS-snap.txt
+          gpg --batch --verify "$snap_name.asc" "$snap_name"

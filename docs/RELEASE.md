@@ -37,6 +37,12 @@ ongeldige signinggegevens stoppen de publicatie. Het desktopmanifest
 Het Snap-manifest en beide `.asc`-handtekeningen staan naast de Snap in de
 GitHub-release. Dit vervangt de winkelassertions van de Snap Store niet.
 
+Voor een bestaande Snap-download zonder handtekening kan dezelfde workflow met
+`sign_existing=true` en `publish=false` draaien. Deze herstelroute downloadt de
+Snap uit de opgegeven release en voegt alleen de handtekening en het ondertekende
+Snap-manifest toe. Ze vervangt de binary niet, bouwt niets opnieuw en publiceert
+niets naar de Store. Ook deze route verifieert de opnieuw gedownloade bestanden.
+
 Controleer na downloaden de sleutel tegen de onafhankelijk bekende OpenAEC-
 fingerprint (niet alleen tegen een meegeleverd fingerprintbestand) en voer uit:
 
