@@ -41,5 +41,10 @@
     }
   ],
   "snap_store_payload_matches_github_sha3_384": true,
-  "snap_confinement_test": "Not completed: Snap Store API connection refused while installing runtime prerequisites. This does not establish resolution of issue #43."
+  "snap_confinement_test": "Not completed: Snap Store API connection refused while installing runtime prerequisites. This does not establish resolution of issue #43.",
+  "additional_ico_check": {
+    "released_24px_corner_alpha": 2,
+    "released_32px_and_48px_corner_alpha": 0,
+    "generator_fix": "All ICO frames now preserve fully transparent master corners. Only the four outer corner pixels of each 24px frame change. Requires a new Windows installer before issue #34 is complete."
+  }
 }
