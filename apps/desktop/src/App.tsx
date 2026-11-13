@@ -18,6 +18,7 @@ import ChartView from "./components/panels/ChartView";
 import MapView from "./components/panels/MapView";
 import IfcView from "./components/panels/IfcView";
 import Soil3DView from "./components/soil3d/Soil3DView";
+import { initBrand } from "./report/brandSettings";
 import "./components/panels/IfcView.css";
 import SonderingstekeningView from "./components/panels/SonderingstekeningView";
 import { CalculationsView } from "./calc/framework/views/CalculationsView";
@@ -35,6 +36,7 @@ import "./styles/blueprint/openaec-tokens.css";
 import "./themes.css";
 import "./App.css";
 import "./styles/shell.css";
+import { OaIcon } from "./components/icons/oaIcon";
 
 /**
  * Detached window — shows only one view, no ribbon/backstage/etc.
@@ -71,9 +73,7 @@ function DetachedApp({ view, title }: { view: string; title: string }) {
       <div className="detached-dock-bar">
         <span className="detached-dock-title">{title}</span>
         <button className="detached-dock-btn" onClick={handleDockBack} title={t("detached.dockBackTitle", "Terugzetten in het hoofdvenster")}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-          </svg>
+          <OaIcon id="workspace.dock-back" />
           <span>{t("detached.dockBack", "Terugzetten")}</span>
         </button>
       </div>
@@ -111,6 +111,8 @@ function App() {
   // view terecht. De StartSidebar is bedoeld als eerste-keer-hint voor
   // de desktop-versie ("klik hier om een bestand te openen"), wat in
   // de browser misleidend zou zijn want File→Open werkt daar anders.
+  // Huisstijl van de rapporten: standaard, eigen of uit de SuperCloud.
+  useEffect(() => { void initBrand(); }, []);
   const [startSidebarVisible, setStartSidebarVisible] = useState<boolean | null>(null);
   useEffect(() => {
     if (!IS_TAURI) {
@@ -507,7 +509,7 @@ function App() {
                 <div className="left-panel-toolbar">
                   <span className="left-panel-title">{t("explorer")}</span>
                   <button className="left-panel-close-btn" onClick={() => setLeftPanelOpen(false)} title={t("close")}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A1.5 1.5 0 013.5 1h9A1.5 1.5 0 0114 2.5v11a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 012 13.5v-11zM3.5 2a.5.5 0 00-.5.5v11a.5.5 0 00.5.5H6V2H3.5zM7 2v12h5.5a.5.5 0 00.5-.5v-11a.5.5 0 00-.5-.5H7z" /></svg>
+                    <OaIcon id="panel.left" />
                   </button>
                 </div>
                 {activeView === "map" || activeView === "tekening"
@@ -536,7 +538,7 @@ function App() {
                 <div className="right-panel-toolbar">
                   <span className="right-panel-title">{t("properties")}</span>
                   <button className="right-panel-close-btn" onClick={() => setRightPanelOpen(false)} title={t("close")}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A1.5 1.5 0 013.5 1h9A1.5 1.5 0 0114 2.5v11a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 012 13.5v-11zM3.5 2a.5.5 0 00-.5.5v11a.5.5 0 00.5.5H9V2H3.5zM10 2v12h2.5a.5.5 0 00.5-.5v-11a.5.5 0 00-.5-.5H10z" /></svg>
+                    <OaIcon id="panel.right" />
                   </button>
                 </div>
                 {activeView === "tekening"

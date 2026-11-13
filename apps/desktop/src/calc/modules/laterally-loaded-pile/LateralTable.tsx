@@ -6,6 +6,7 @@ import { NumField, NumberInput } from '../../framework/views/SheetForm';
 import type { LateralInput } from './compute';
 import { computePileTable, defaultRows, lightestSize, rowInput, type LateralRow, type LateralTableConfig, type RowSummary } from './pile-table';
 import './pile-table.css';
+import { OaIcon } from '../../../components/icons/oaIcon';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
 
@@ -65,7 +66,7 @@ export function LateralTable({ input, onChange, onOpen, focus, onFocus }: TableP
         <td className="lat-table-actions">
           <button type="button" className="lat-mini" onClick={(e) => { e.stopPropagation(); open(row); }} aria-label={t('table.sheetAria', 'Rekenblad {{name}}', { name: row.name })}>{t('table.sheet', 'Rekenblad')}</button>
           <button type="button" className="lat-mini" onClick={(e) => { e.stopPropagation(); update({ rows: [...rows, { ...row, id: newId(), name: t('table.copyName', '{{name}} (kopie)', { name: row.name }) }] }); }} aria-label={t('table.duplicate', 'Dupliceer {{name}}', { name: row.name })}>⎘</button>
-          <button type="button" className="lat-mini" disabled={rows.length < 2} onClick={(e) => { e.stopPropagation(); update({ rows: rows.filter((r) => r.id !== row.id), examples: [...examples].filter((x) => x !== row.id) }); }} aria-label={t('table.remove', 'Verwijder {{name}}', { name: row.name })}>×</button>
+          <button type="button" className="lat-mini" disabled={rows.length < 2} onClick={(e) => { e.stopPropagation(); update({ rows: rows.filter((r) => r.id !== row.id), examples: [...examples].filter((x) => x !== row.id) }); }} aria-label={t('table.remove', 'Verwijder {{name}}', { name: row.name })}><OaIcon id="edit.delete" /></button>
         </td>
       </tr>)}</tbody>
     </table></div>

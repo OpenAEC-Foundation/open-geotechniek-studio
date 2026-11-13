@@ -117,7 +117,7 @@
 .welcome-action-btn svg {
   flex-shrink: 0;
   margin-top: 2px;
-  stroke: var(--theme-accent);
+  color: var(--theme-text);
 }
 
 .welcome-action-btn div {
@@ -243,4 +243,8 @@
   background: var(--theme-btn-secondary-hover-bg);
   border-color: var(--theme-accent);
   color: var(--theme-accent);
+}
+
+.welcome-recent-item svg[data-icon] {
+  color: var(--theme-text-secondary);
 }

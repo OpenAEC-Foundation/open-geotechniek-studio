@@ -1,6 +1,7 @@
 import type { CalcModule, PanelProps } from '../../framework/types';
 import { computeSettlement, type SettlementInput, type SettlementResult } from './compute';
 import './styles.css';
+import { OaIcon } from '../../../components/icons/oaIcon';
 
 type Props = PanelProps<SettlementInput, SettlementResult>;
 const format = (value: number, digits = 2) => value.toLocaleString('nl-NL', { maximumFractionDigits: digits });
@@ -21,7 +22,7 @@ function InputPanel({ input, onChange }: Props) {
       </label>)}
     </div>
     <p className="settlement-help">Gebruik de oedometer-modulus M voor het beschouwde spanningstraject.</p>
-    <button className="settlement-example" type="button" onClick={() => onChange?.(example)}><span aria-hidden="true">↺</span> Controlevoorbeeld laden</button>
+    <button className="settlement-example" type="button" onClick={() => onChange?.(example)}><OaIcon id="calc.example-input" /> Controlevoorbeeld laden</button>
   </div>;
 }
 function VisualPanel({ input, result }: Props) {

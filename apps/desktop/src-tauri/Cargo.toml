@@ -40,6 +40,8 @@ tokio = { version = "1", features = ["rt-multi-thread", "net", "sync", "time"] }
 # Base64 voor het encoderen van PDF-bytes in MCP-respons (stdio is text-only;
 # binary data moet als base64-string in JSON-respons).
 base64 = "0.22"
+# PKCE (S256) voor het inloggen met het OpenAEC-account.
+sha2 = "0.10"
 # REST/HTTP-API (--serve mode). axum bovenop tokio/hyper; spiegelt dezelfde
 # core-functies als de MCP-server, maar over HTTP. Lokaal (127.0.0.1) bedoeld.
 axum = "0.7"

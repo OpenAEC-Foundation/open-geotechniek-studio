@@ -210,3 +210,11 @@
   padding-top: 16px;
   border-top: 1px solid var(--theme-border);
 }
+
+/* B2-iconen: grijs met een oranje accent, ook bij hover. */
+.start-action-btn svg[data-icon],
+.start-action-btn:hover svg[data-icon],
+.start-recent-item svg[data-icon],
+.start-sidebar-close-btn svg[data-icon] {
+  color: var(--theme-text-secondary);
+}

@@ -197,7 +197,7 @@ function advicePatch(input:unknown,patch:unknown) {
   for(const [key,value] of Object.entries(fields)){
     if(value===null&&['floorLevelNap','groundwaterNap','cptIds','calcIds'].includes(key)){delete next[key];continue;}
     if(['designLifeYears','bearingQcMpa','bearingMinThicknessM','floorLevelNap','groundwaterNap'].includes(key))next[key]=number(value,key);
-    else if(['appendixCpts','appendixCalcs'].includes(key)){if(typeof value!=='boolean')throw new Error(`${key} moet waar of onwaar zijn`);next[key]=value;}
+    else if(['appendixCpts','appendixCalcs','soilModel3d'].includes(key)){if(typeof value!=='boolean')throw new Error(`${key} moet waar of onwaar zijn`);next[key]=value;}
     else if(key==='status'){if(!['concept','definitief'].includes(String(value)))throw new Error('Status is concept of definitief');next[key]=value;}
     else if(key==='consequenceClass'){if(!['CC1','CC2','CC3'].includes(String(value)))throw new Error('Gevolgklasse is CC1, CC2 of CC3');next[key]=value;}
     else if(key==='cptIds'||key==='calcIds'){if(!Array.isArray(value))throw new Error(`${key} moet een lijst zijn`);next[key]=value.map(v=>text(v,key));}

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { OaIcon } from "./icons/oaIcon";
 
 interface Option {
   value: string;
@@ -31,9 +32,7 @@ export default function ThemedSelect({ value, options, onChange, style }: Themed
     <div className="themed-select" ref={ref} style={style}>
       <button className="themed-select-trigger" onClick={() => setOpen(!open)}>
         <span className="themed-select-label">{selected?.label ?? value}</span>
-        <svg className="themed-select-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none">
-          <path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <OaIcon id="ui.dropdown" className="themed-select-chevron" />
       </button>
       {open && (
         <div className="themed-select-menu">

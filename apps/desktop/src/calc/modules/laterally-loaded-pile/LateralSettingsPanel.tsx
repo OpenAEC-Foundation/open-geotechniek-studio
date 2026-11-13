@@ -7,6 +7,7 @@ import type { LateralInput, LateralResult } from './compute';
 import type { UltimateProfile } from './spring-types';
 import { SOIL_SPRINGS, soilKey } from './soil';
 import { soilColor } from './report-data';
+import { OaIcon } from '../../../components/icons/oaIcon';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
 
@@ -46,7 +47,7 @@ export function LateralSettingsPanel({ input: i, onChange }: PanelProps<LateralI
           {(['low', 'high'] as const).map((sc) => <td key={sc} className={i.scenario === sc ? 'cs-settings-active' : ''}>
             <span className="cs-settings-default">{s[sc].toLocaleString(numberLocale())}</span>
             <NumberInput label={t('settings.khAriaCell', 'kh {{id}} {{scenario}} [kN/m³]', { id: s.id, scenario: sc === 'low' ? t('settings.low', 'laag') : t('settings.high', 'hoog') })} value={overrides[s.id]?.[sc]} onChange={(v) => setKh(s.id, sc, v)} />
-            {overrides[s.id]?.[sc] !== undefined && <button type="button" className="lat-mini" aria-label={t('settings.tableValue', 'Tabelwaarde {{id}} {{scenario}}', { id: s.id, scenario: sc === 'low' ? t('settings.low', 'laag') : t('settings.high', 'hoog') })} onClick={() => setKh(s.id, sc, undefined)}>×</button>}
+            {overrides[s.id]?.[sc] !== undefined && <button type="button" className="lat-mini" aria-label={t('settings.tableValue', 'Tabelwaarde {{id}} {{scenario}}', { id: s.id, scenario: sc === 'low' ? t('settings.low', 'laag') : t('settings.high', 'hoog') })} title={t('settings.backToTable', 'Terug naar tabelwaarde')} onClick={() => setKh(s.id, sc, undefined)}><OaIcon id="input.reset-default" /></button>}
           </td>)}
           <td className="cs-settings-default">{used(s.id) || ''}</td>
         </tr>)}</tbody>

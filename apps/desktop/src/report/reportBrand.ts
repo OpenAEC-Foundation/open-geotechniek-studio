@@ -17,8 +17,20 @@ export interface ReportBrand {
   website: string;
   /** Accentkleur voor naam, blokjes en labels. */
   accent: Rgb;
-  /** Optioneel logo als PNG/JPEG data-URL; vervangt het accentblokje. */
+  /** Tweede kleur (verloop en patroon op het voorblad); ontbrekend = afgeleid van het accent. */
+  secondary?: Rgb;
+  /** Donkere vlakkleur van het voorblad; ontbrekend = de standaard. */
+  dark?: Rgb;
+  /** Optioneel logo als PNG/JPEG data-URL, voor een lichte achtergrond. */
   logoDataUrl?: string;
+  /** Optioneel logo voor de donkere kop van het voorblad (wit of licht). */
+  logoOnDarkDataUrl?: string;
+  /** Eigen voorblad als paginagrote afbeelding (uit een PDF); vervangt de getekende opmaak. */
+  coverImage?: string;
+  /** Briefpapier voor de vervolgpagina's als paginagrote afbeelding (uit een PDF). */
+  pageImage?: string;
+  /** Contactregel onder op het voorblad (adres, telefoon, e-mail, KvK). */
+  contact?: string;
   /** Labels rechts op het voorblad, maximaal drie. */
   badges: string[];
 }
@@ -58,15 +70,23 @@ export const useReportBrand = create<BrandState>((set) => ({
 const filled = (v: unknown): v is string => typeof v === "string" && v.trim().length > 0;
 
 /** Vult ontbrekende of ongeldige velden aan met de standaard. */
+const isRgb = (c: unknown): c is Rgb => Array.isArray(c) && c.length === 3 && c.every((v) => Number.isInteger(v) && v >= 0 && v <= 255);
+const isImage = (v: unknown): v is string => filled(v) && /^data:image\/(png|jpe?g);base64,/.test(v);
+
 export function mergeBrand(patch: Partial<ReportBrand>): ReportBrand {
-  const accent = Array.isArray(patch.accent) && patch.accent.length === 3 && patch.accent.every((c) => Number.isInteger(c) && c >= 0 && c <= 255)
-    ? (patch.accent as Rgb) : DEFAULT_BRAND.accent;
+  const accent = isRgb(patch.accent) ? patch.accent : DEFAULT_BRAND.accent;
   return {
+    secondary: isRgb(patch.secondary) ? patch.secondary : undefined,
+    dark: isRgb(patch.dark) ? patch.dark : undefined,
+    logoOnDarkDataUrl: isImage(patch.logoOnDarkDataUrl) ? patch.logoOnDarkDataUrl : undefined,
+    contact: filled(patch.contact) ? patch.contact.trim() : undefined,
+    coverImage: isImage(patch.coverImage) ? patch.coverImage : undefined,
+    pageImage: isImage(patch.pageImage) ? patch.pageImage : undefined,
     organization: filled(patch.organization) ? patch.organization.trim() : DEFAULT_BRAND.organization,
     tagline: typeof patch.tagline === "string" ? patch.tagline.trim() : DEFAULT_BRAND.tagline,
     website: typeof patch.website === "string" ? patch.website.trim() : DEFAULT_BRAND.website,
     accent,
-    logoDataUrl: filled(patch.logoDataUrl) && /^data:image\/(png|jpe?g);base64,/.test(patch.logoDataUrl) ? patch.logoDataUrl : undefined,
+    logoDataUrl: isImage(patch.logoDataUrl) ? patch.logoDataUrl : undefined,
     badges: Array.isArray(patch.badges) ? patch.badges.filter(filled).slice(0, 3) : DEFAULT_BRAND.badges,
   };
 }

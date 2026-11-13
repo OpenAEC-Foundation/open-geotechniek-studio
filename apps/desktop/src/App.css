@@ -122,7 +122,7 @@ body,
   height: 20px;
   border: none;
   background: transparent;
-  color: var(--theme-accent);
+  color: var(--theme-text-secondary);
   cursor: default;
   border-radius: 3px;
   padding: 0;
@@ -131,7 +131,7 @@ body,
 
 .left-panel-close-btn:hover {
   background: var(--theme-ribbon-btn-hover);
-  color: var(--theme-accent);
+  color: var(--theme-text);
   opacity: 1;
 }
 
@@ -280,7 +280,7 @@ body,
   height: 20px;
   border: none;
   background: transparent;
-  color: var(--theme-accent);
+  color: var(--theme-text-secondary);
   cursor: default;
   border-radius: 3px;
   padding: 0;
@@ -289,7 +289,7 @@ body,
 
 .right-panel-close-btn:hover {
   background: var(--theme-ribbon-btn-hover);
-  color: var(--theme-accent);
+  color: var(--theme-text);
   opacity: 1;
 }
 
@@ -478,11 +478,9 @@ body,
 
 .cpt-list-eye:hover {
   opacity: 1;
-  color: var(--amber, #D97706);
 }
 
 .cpt-list-eye.is-hidden {
-  /* Eye-slash uses neutral (scaffold) gray; hover still goes amber. */
   color: var(--theme-text-muted, #A1A1AA);
   opacity: 0.85;
 }
@@ -1198,6 +1196,8 @@ body,
   width: 28px; height: 28px;
   background: var(--amber, #D97706);
   color: white;
+  /* Op het oranje vlak: het icoon in één kleur. */
+  --icon-accent: currentColor;
   border-radius: 6px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
@@ -1224,7 +1224,7 @@ body,
   background: transparent; border: 0; cursor: pointer;
   width: 24px; height: 24px;
   border-radius: 4px;
-  color: var(--amber, #D97706);
+  color: var(--theme-text-secondary);
   display: flex; align-items: center; justify-content: center;
   align-self: center;
   transition: background 0.12s ease;

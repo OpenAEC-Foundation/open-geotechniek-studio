@@ -8,6 +8,7 @@ import { Hint, NumberInput, Row, Section } from "../../../framework/views/SheetF
 import { catalogText, resolvePileType } from "../catalog";
 import type { PileInput, PileResult, ProjectPileFactors } from "../types";
 import { DEFAULT_SIZES, seriesFor, sizeText } from "../standard-sizes";
+import { OaIcon } from '../../../../components/icons/oaIcon';
 
 const FACTORS: Array<[keyof Pick<ProjectPileFactors, "alphaP" | "alphaS" | "alphaT" | "beta" | "s">, string]> = [
   ["alphaP", "αp"], ["alphaS", "αs"], ["alphaT", "αt"], ["beta", "β"], ["s", "s"],
@@ -77,7 +78,7 @@ export function SettingsPanel({ input, onChange }: PanelProps<PileInput, PileRes
             <option value="rond">{t("shape.round", "Rond")}</option><option value="vierkant">{t("shape.square", "Vierkant")}</option></select></td>
           <td><NumberInput label={t("settings.extensionSizeAria", "Maat opzetter {{n}} [mm]", { n: k + 1 })} value={e.sizeMm} onChange={(v) => set({ presets: { ...presets, extensions: series.extensions.map((x, j) => ({ sizeMm: j === k ? v : x.sizeMm, isCircular: x.isCircular })) } })} /></td>
           <td><button type="button" className="lat-mini" aria-label={t("settings.extensionRemoveAria", "Opzetter {{n}} verwijderen", { n: k + 1 })} disabled={series.extensions.length < 2}
-            onClick={() => set({ presets: { ...presets, extensions: series.extensions.filter((_, j) => j !== k).map((x) => ({ sizeMm: x.sizeMm, isCircular: x.isCircular })) } })}>×</button></td>
+            onClick={() => set({ presets: { ...presets, extensions: series.extensions.filter((_, j) => j !== k).map((x) => ({ sizeMm: x.sizeMm, isCircular: x.isCircular })) } })}><OaIcon id="edit.delete" /></button></td>
         </tr>)}</tbody>
       </table>
       <button type="button" className="lat-add" onClick={() => set({ presets: { ...presets, extensions: [...series.extensions.map((x) => ({ sizeMm: x.sizeMm, isCircular: x.isCircular })), { sizeMm: 220, isCircular: true }] } })}>{t("settings.addExtension", "+ Opzetter")}</button>
