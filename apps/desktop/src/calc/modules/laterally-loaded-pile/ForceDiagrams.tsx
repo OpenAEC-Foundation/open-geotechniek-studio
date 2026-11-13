@@ -1,8 +1,10 @@
 import type { LateralInput } from './compute';
 import type { BeamResult } from './beam';
+import { useTranslation } from 'react-i18next';
+import { numberLocale } from '../../i18n';
 
 type Sample = BeamResult['samples'][number];
-const nl = (v: number, d = 1) => v.toLocaleString('nl-NL', { minimumFractionDigits: d, maximumFractionDigits: d });
+const nl = (v: number, d = 1) => v.toLocaleString(numberLocale(), { minimumFractionDigits: d, maximumFractionDigits: d });
 
 /** Ronde schaalwaarden (1, 2, 2,5 of 5 × 10ⁿ) die het bereik inclusief 0 dekken. */
 export function niceTicks(lo: number, hi: number, target = 4): number[] {
@@ -66,6 +68,7 @@ function ShearSign({ x, y, sense }: { x: number; y: number; sense: 1 | -1 }) {
  * afschuiftekens, en de grootste en kleinste waarde met hun niveau.
  */
 export function ForceDiagrams({ input, beam }: { input: LateralInput; beam: BeamResult }) {
+  const { t } = useTranslation('calcLateral');
   const head = input.headNap ?? 0, L = input.lengthM;
   const top = 76, bottom = 560, y = (z: number) => top + (bottom - top) * z / L;
   const napStep = L <= 6 ? 0.5 : L <= 15 ? 1 : L <= 30 ? 2 : 5;
@@ -75,11 +78,11 @@ export function ForceDiagrams({ input, beam }: { input: LateralInput; beam: Beam
   const W = 168, gap = 26, x0 = 84, hatchStep = 4.5;
 
   return <div className="pile-diagrams">
-    <svg viewBox={`0 0 ${x0 + 4 * W + 3 * gap + 12} 640`} role="img" aria-label="Diagrammen over de paaldiepte">
+    <svg viewBox={`0 0 ${x0 + 4 * W + 3 * gap + 12} 640`} role="img" aria-label={t('diagrams.aria', 'Diagrammen over de paaldiepte')}>
       <text x="8" y="40" className="pile-diagram-unit">m NAP</text>
       {input.layers.map((l, k) => <rect key={k} className={k % 2 ? 'pile-soil-alt' : 'pile-soil'} x={x0} width={4 * W + 3 * gap} y={y(l.topM)} height={y(l.bottomM) - y(l.topM)} />)}
       {napTicks.map((n) => <g key={n}><line className="pile-grid" x1={x0 - 4} x2={x0 + 4 * W + 3 * gap} y1={y(head - n)} y2={y(head - n)} /><text x={x0 - 8} y={y(head - n) + 3.5} textAnchor="end">{nl(n, napStep < 1 ? 1 : 0)}</text></g>)}
-      <text x={x0 - 8} y={top - 8} textAnchor="end" className="pile-diagram-head">kop {nl(head, 2)}</text>
+      <text x={x0 - 8} y={top - 8} textAnchor="end" className="pile-diagram-head">{t('diagrams.head', 'kop {{nap}}', { nap: nl(head, 2) })}</text>
 
       {CURVES.map((c, i) => {
         const left = x0 + i * (W + gap), dir = c.mirror ? -1 : 1;
@@ -92,7 +95,7 @@ export function ForceDiagrams({ input, beam }: { input: LateralInput; beam: Beam
         const hatch: number[] = [];
         for (let py = y(samples[0].zM); py <= y(samples[samples.length - 1].zM); py += hatchStep) hatch.push(py);
         const ext = extremes(samples, c.value), absMax = Math.max(Math.abs(ext.max.v), Math.abs(ext.min.v)) || 1;
-        const label = (v: number) => `${nl(v, c.digits)} ${c.unit}`;
+        const label = (v: number) => `${nl(v, c.digits)} ${c.unit}`, title = t(`diagrams.curves.${c.key}`, c.title);
         const mark = (e: { v: number; z: number }, kind: 'max' | 'min') => {
           const px = x(dir * e.v), right = px > left + W * 0.55;
           const ty = Math.min(bottom - 4, Math.max(top + 10, y(e.z) + (kind === 'max' ? -8 : 14)));
@@ -111,9 +114,9 @@ export function ForceDiagrams({ input, beam }: { input: LateralInput; beam: Beam
             : c.sign === 'shear' ? <ShearSign key={s} x={mid} y={cy} sense={s as 1 | -1} />
             : c.sign === 'plain' ? <text key={s} className="pile-sign" x={mid} y={cy + 5} textAnchor="middle">{s > 0 ? '+' : '−'}</text> : null;
         });
-        return <g key={c.key} className={`pile-diagram pile-diagram-${c.key} tone-${c.tone}`} aria-label={`${c.title} [${c.unit}]: max ${label(ext.max.v)}, min ${label(ext.min.v)}`}>
-          <text x={left + W / 2} y="22" textAnchor="middle" className="pile-diagram-title">{c.title}</text>
-          <text x={left + W / 2} y="38" textAnchor="middle" className="pile-diagram-unit">{c.symbol} [{c.unit}]{c.mirror ? ' · getrokken zijde' : ''}</text>
+        return <g key={c.key} className={`pile-diagram pile-diagram-${c.key} tone-${c.tone}`} aria-label={`${title} [${c.unit}]: max ${label(ext.max.v)}, min ${label(ext.min.v)}`}>
+          <text x={left + W / 2} y="22" textAnchor="middle" className="pile-diagram-title">{title}</text>
+          <text x={left + W / 2} y="38" textAnchor="middle" className="pile-diagram-unit">{c.symbol} [{c.unit}]{c.mirror ? ` · ${t('diagrams.tensionSide', 'getrokken zijde')}` : ''}</text>
           <rect x={left} y={top} width={W} height={bottom - top} className="pile-diagram-frame" />
           {ticks.map((t) => <g key={t}><line className="pile-grid" x1={x(t)} x2={x(t)} y1={top} y2={bottom} /><line className="pile-axis" x1={x(t)} x2={x(t)} y1={bottom} y2={bottom + 4} />
             <text x={x(t)} y={bottom + 16} textAnchor="middle">{nl(dir * t === 0 ? 0 : dir * t, Math.abs(ticks[1] - ticks[0]) < 1 ? 1 : 0)}</text></g>)}
@@ -127,6 +130,6 @@ export function ForceDiagrams({ input, beam }: { input: LateralInput; beam: Beam
         </g>;
       })}
     </svg>
-    <p className="pile-diagram-note">Diepte in m NAP vanaf paalkop {nl(head, 2)}{input.headNap === undefined ? ' (aangenomen)' : ''}. Elke grootheid heeft een eigen schaal. Het moment staat aan de getrokken zijde (buigteken: streeplijn aan de getrokken vezel). Dwarskracht met afschuifteken; tekens volgen de rekenkern met z omlaag en H naar rechts.</p>
+    <p className="pile-diagram-note">{t('diagrams.depthNote', 'Diepte in m NAP vanaf paalkop {{nap}}', { nap: nl(head, 2) })}{input.headNap === undefined ? ` ${t('diagrams.assumed', '(aangenomen)')}` : ''}. {t('diagrams.note', 'Elke grootheid heeft een eigen schaal. Het moment staat aan de getrokken zijde (buigteken: streeplijn aan de getrokken vezel). Dwarskracht met afschuifteken; tekens volgen de rekenkern met z omlaag en H naar rechts.')}</p>
   </div>;
 }

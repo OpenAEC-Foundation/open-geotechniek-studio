@@ -31,6 +31,19 @@
     "builtOn": "visuel identitet og kernebiblioteker",
     "sourceLink": "Kildekode"
   },
+  "extensions": {
+    "title": "Udvidelser",
+    "intro": "Valgfrie moduler — slå det til, du bruger. Ændringer træder i kraft med det samme (ingen genstart).",
+    "comingSoon": "kommer snart",
+    "tekening": {
+      "title": "Situationsplan",
+      "description": "Tilføjer fanen »Situationsplan« — CAD-ark (A2/A3) med sonderinger på kortet, ramme, målestok, snap, overlejringer og eksport til PDF."
+    },
+    "offertes": {
+      "title": "Indhent tilbud",
+      "description": "Tilføjer knappen »Indhent tilbud« til situationsplanens bånd (kræver udvidelsen Situationsplan). Åbner en dialog med de nærmeste sonderingsfirmaer og en udfyldt tilbudsforespørgsel pr. e-mail."
+    }
+  },
   "brand": {
     "title": "Designprofil",
     "desktopOnly": "Designprofilen fra SuperCloud er kun tilgængelig i desktop-appen.",

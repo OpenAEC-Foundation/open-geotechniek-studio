@@ -31,5 +31,11 @@
   "remove": "Fjern",
   "hide": "Skjul",
   "show": "Vis",
-  "noCptsHint": "Ingen sonderinger endnu. Klik på »Tilføj sondering« eller træk GEF/BRO-XML-filer ind i vinduet."
+  "noCptsHint": "Ingen sonderinger endnu. Klik på »Tilføj sondering« eller træk GEF/BRO-XML-filer ind i vinduet.",
+  "noTitle": "(ingen titel)",
+  "fileMetadata": "Filmetadata",
+  "noExtras": "Ingen yderligere metadata.",
+  "boresInProject": "Boringer i dette projekt",
+  "addBore": "Tilføj boring",
+  "noBoresHint": "Ingen boringer tilføjet endnu. Klik på »Tilføj boring« for at importere BHR-GT XML."
 }

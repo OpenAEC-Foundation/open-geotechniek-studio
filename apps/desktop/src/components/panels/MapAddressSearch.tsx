@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import proj4 from "proj4";
 import { useCptStore } from "../../store/useCptStore";
 import { OaIcon } from "../icons/oaIcon";
@@ -108,6 +109,7 @@ const SUGGEST_URL = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest";
 const LOOKUP_URL = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup";
 
 export default function MapAddressSearch() {
+  const { t } = useTranslation("map");
   // Begin met wat er de vorige keer gezocht is. Kaart en Situatietekening
   // worden bij een tab-wissel ge-unmount, dus zonder deze seed staat het
   // veld daarna weer leeg terwijl de kaart nog op dat adres staat.
@@ -267,7 +269,7 @@ export default function MapAddressSearch() {
           className="map-addrsearch-input"
           type="text"
           value={query}
-          placeholder="Zoek adres, plaats of coordinaat (RD / WGS84)…"
+          placeholder={t("search.placeholder", "Zoek adres, plaats of coordinaat (RD / WGS84)…")}
           onChange={(e) => {
             typedRef.current = true;
             setQuery(e.target.value);
@@ -275,14 +277,14 @@ export default function MapAddressSearch() {
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
-          aria-label="Adres of coordinaat zoeken"
+          aria-label={t("search.aria", "Adres of coordinaat zoeken")}
         />
         {query && (
           <button
             type="button"
             className="map-addrsearch-clear"
             onClick={() => { setQuery(""); setItems([]); remember(""); }}
-            title="Wissen"
+            title={t("search.clear", "Wissen")}
           >
             ✕
           </button>
@@ -299,7 +301,7 @@ export default function MapAddressSearch() {
                 role="option"
                 aria-selected={true}
               >
-                <span className="map-addrsearch-item-name">📍 Vlieg naar locatie</span>
+                <span className="map-addrsearch-item-name">📍 {t("search.flyTo", "Vlieg naar locatie")}</span>
                 <span className="map-addrsearch-item-type">{coordLabel}</span>
               </button>
             </li>
@@ -315,7 +317,7 @@ export default function MapAddressSearch() {
                 aria-selected={i === highlight && !parsedCoords}
               >
                 <span className="map-addrsearch-item-name">{it.weergavenaam}</span>
-                <span className="map-addrsearch-item-type">{it.type}</span>
+                <span className="map-addrsearch-item-type">{t(`search.types.${it.type}`, it.type)}</span>
               </button>
             </li>
           ))}

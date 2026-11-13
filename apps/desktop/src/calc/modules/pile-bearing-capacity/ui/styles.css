@@ -163,14 +163,14 @@
   pointer-events: none;
 }
 .pile-gfx-arrow-label {
-  font-size: 9px;
+  font-size: calc(9px * var(--pile-chart-text-k, 1));
   font-weight: 600;
   font-family: var(--font-code, "JetBrains Mono"), monospace;
   pointer-events: none;
 }
 .pile-gfx-arrow-label--strong {
   font-weight: 700;
-  font-size: 10px;
+  font-size: calc(10px * var(--pile-chart-text-k, 1));
 }
 
 /* ─── Wapeningskorf (rebar cage) — alleen voor betongevulde
@@ -206,11 +206,11 @@
 }
 .pile-cpt-axis-label {
   fill: var(--theme-text-secondary, #71717a);
-  font-size: 10px;
+  font-size: calc(10px * var(--pile-chart-text-k, 1));
 }
 .pile-cpt-axis-title {
   fill: var(--theme-text, #36363e);
-  font-size: 11px;
+  font-size: calc(11px * var(--pile-chart-text-k, 1));
   font-weight: 600;
 }
 
@@ -331,7 +331,7 @@
   opacity: 0.85;
 }
 .pile-cpt-zone-label {
-  font-size: 10px;
+  font-size: calc(10px * var(--pile-chart-text-k, 1));
   font-weight: 700;
   font-family: var(--font-code, "JetBrains Mono"), monospace;
 }
@@ -442,7 +442,7 @@
 /* ─── Overlay labels ─── */
 .pile-cpt-overlay-label {
   fill: var(--theme-text, #36363e);
-  font-size: 10px;
+  font-size: calc(10px * var(--pile-chart-text-k, 1));
   font-weight: 500;
   pointer-events: none;
 }
@@ -458,7 +458,7 @@
 /* ─── Right-side numbered labels (qc;I / qc;II / qc;III / qb;max) ─── */
 .pile-cpt-side-label {
   fill: var(--theme-text-secondary, #71717a);
-  font-size: 10px;
+  font-size: calc(10px * var(--pile-chart-text-k, 1));
   font-weight: 500;
   font-family: var(--font-code, "JetBrains Mono"), monospace;
 }
@@ -681,12 +681,20 @@
   font: 500 0.78rem var(--font-code, "JetBrains Mono"), monospace;
   margin-bottom: 6px;
 }
-/* Brede tabel — voor neg-kleef-detail met 11 kolommen. Horizontaal
-   scrollbaar in een wrapper als de pane te smal is, anders shrink
-   tabel zelf via kleinere font-size + minder padding. */
+/* Brede tabel — voor neg-kleef-detail met 11 kolommen. Even groot als
+   de gewone formuletabel; past hij niet, dan scrollt de wrapper
+   horizontaal in plaats van dat de tekst onleesbaar klein wordt. */
+.pile-formula-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
 .pile-formula-table--wide {
-  font-size: 0.66rem;
   table-layout: auto;
+}
+/* Subscripts niet onder ~8 px laten zakken. */
+.pile-formula-table sub,
+.pile-visual-footnote sub {
+  font-size: max(0.85em, 8px);
 }
 .pile-formula-table--wide th,
 .pile-formula-table--wide td {

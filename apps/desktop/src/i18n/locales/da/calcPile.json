@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Åbn {{cpt}}, {{size}} mm ved {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b spids →",
+    "cptAria": "Sonderingsdiagram med pæleoverlejringer",
+    "excavation": "Udgravning {{nap}}",
+    "loadAxis": "Last [kN]",
+    "loadSettlement": "Last-sætningsdiagram",
+    "negSkinBottom": "Grænse neg. overflademodstand {{nap}}",
+    "pileToe": "Pælespids {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Pælehoved {{nap}}",
+    "posSkinTop": "Top pos. overflademodstand {{nap}}",
+    "qcPosSkinAvg": "qc;pos.skin;avg = {{v}} MPa",
+    "shaftSide": "← R_s skaft",
+    "water": "Vand {{nap}}",
+    "zoomIn": "Zoom ind",
+    "zoomInTitle": "Zoom ind (eller rullehjul op)",
+    "zoomOut": "Zoom ud",
+    "zoomOutTitle": "Zoom ud (eller rullehjul ned)",
+    "zoomReset": "Nulstil zoom",
+    "zoomResetTitle": "Nulstil zoom (eller dobbeltklik på diagrammet)",
+    "zoomToe": "Zoom til pælespids",
+    "zoomToeTitle": "Zoom til pælespids (1 m margen omkring pælen)",
+    "zoomToolbar": "Diagramzoom"
+  },
+  "choice": {
+    "aboveMaxTitle": "Selv den korteste pæl, der opfylder kravet, ligger over den øvre grænse.",
+    "caption": "Højeste spidskote [m NAP], hvor Rc;net;d ≥ {{min}} kN, pr. pælestørrelse og sondering. Klik på en kote for at åbne beregningsarket.",
+    "cptOutOfRange": "Sondering uden for område",
+    "dropsDeeper": "kontrollér dybere",
+    "dropsDeeperTitle": "Længere nede falder bæreevnen igen under den nedre grænse.",
+    "highest": "Højeste",
+    "lowest": "Laveste",
+    "notReached": "ikke nået",
+    "notReachedAria": "{{cpt}}, {{size}} mm: ikke nået",
+    "reached": "Nået",
+    "size": "Størrelse [mm]",
+    "smallestSpread": "mindste spredning",
+    "spread": "Spredning",
+    "tableAria": "Spidskote pr. pælestørrelse og sondering",
+    "title": "Valgtabel"
+  },
+  "cpt": {
+    "choose": "— vælg sondering —",
+    "title": "Sondering"
+  },
+  "cpts": {
+    "all": "Alle sonderinger",
+    "legend": "Sonderinger",
+    "missingOption": "{{id}} (mangler)"
+  },
+  "examples": {
+    "add": "Tilføj eksempel",
+    "cptAria": "Eksempel: sondering",
+    "hint": "Fuldt udregnet i rapporten, efterfulgt af valgtabellen og tabellerne pr. sondering. Uden valg medtages det aktuelle beregningsark.",
+    "legend": "Udskrift",
+    "levelAria": "Eksempel: spidskote",
+    "listAria": "Eksempelberegninger",
+    "removeAria": "Fjern eksempel {{cpt}}, {{size}} mm ved {{level}} m NAP",
+    "sizeAria": "Eksempel: størrelse"
+  },
+  "extension": {
+    "customJoint": "Egen samling",
+    "diameter": "Forlængerdiameter",
+    "joint": "Samling (underside forlænger)",
+    "jointAria": "Samling [m NAP]",
+    "jointTooHigh": "Samlingen ligger mindre end 0,5 m under grundvandsspejlet (NAP {{water}}): træet forbliver ikke permanent vådt der. Vælg en længere forlænger.",
+    "length": "Forlængerlængde",
+    "lengthAria": "Forlængerlængde [m]",
+    "perimeterHint": "Over samlingen bruges forlængerens omkreds, under den træets.",
+    "shape": "Form",
+    "shapeAria": "Forlængerens form",
+    "side": "Forlængerside",
+    "size": "Forlænger",
+    "sizeAria": "Forlængerstørrelse [mm]",
+    "title": "Betonforlænger"
+  },
+  "factors": {
+    "alphaTLabel": "αt (ingen trækeftervisning)",
+    "basis": "Normgrundlag: {{edition}}. {{source}}",
+    "edition": "Udgave",
+    "edition2025": "2025 — projektfaktorer",
+    "source": "Kilde / erklæring",
+    "sourceHint": "Kilden skal svare til pælesystem, installationsmetode og dimensioner. Faktorer fra 2025 gør ikke automatisk hele beregningsmetoden 2025-kompatibel.",
+    "title": "Pælefaktorer",
+    "useProject": "Brug projektfaktorer / egenerklæring"
+  },
+  "legend": {
+    "chosen": "valgt kote",
+    "over": "> {{max}} kN, rigelig",
+    "title": "Signaturforklaring"
+  },
+  "levels": {
+    "applyList": "Anvend koter",
+    "applyRange": "Anvend interval",
+    "count": "{{n}} koter",
+    "custom": "Egne koter",
+    "excavation": "Udgravning",
+    "excavationAria": "Udgravning [m NAP]",
+    "from": "Fra [m NAP]",
+    "legend": "Spidskoter",
+    "listLabel": "Spidskoter [m NAP]",
+    "pileToe": "Pælespids",
+    "pileToeAria": "Pælespids [m NAP]",
+    "pileTop": "Pælehoved",
+    "pileTopAria": "Pælehoved [m NAP]",
+    "step": "Trin [m]",
+    "title": "Pælekoter",
+    "to": "Til [m NAP]",
+    "water": "Grundvand",
+    "waterAria": "Grundvand [m NAP]"
+  },
+  "load": {
+    "characteristic": "karakteristisk",
+    "design": "regningsmæssig last",
+    "materialFactor": "materialefaktor",
+    "negativeSkinFriction": "negativ overflademodstand",
+    "title": "Last"
+  },
+  "material": {
+    "concrete": "Beton",
+    "steel": "Stål",
+    "wood": "Træ"
+  },
+  "pile": {
+    "axialStiffness": "Aksial stivhed EA",
+    "baseSize": "Spidsstørrelse",
+    "baseSizeAria": "Spidsstørrelse [mm] (tom = skaft)",
+    "baseSizePlaceholder": "skaft",
+    "customSize": "Egen størrelse",
+    "diameter": "Diameter",
+    "eaAriaOptional": "Aksial stivhed EA [kN] (valgfri)",
+    "eaAriaRequired": "Aksial stivhed EA [kN] (påkrævet)",
+    "eaMissing": "Påkrævet for denne pæletype — uden EA foretages ingen beregning.",
+    "headDiameter": "Hoveddiameter",
+    "material": "Materiale",
+    "optional": "valgfri",
+    "required": "påkrævet",
+    "sideLength": "Sidelængde",
+    "title": "Pæl",
+    "tubeSize": "Rørstørrelse",
+    "type": "Pæletype",
+    "wallThickness": "Godstykkelse",
+    "wallThicknessAria": "Godstykkelse [mm]",
+    "woodDiameterAtJoint": "Trædiameter ved samlingen"
+  },
+  "profile": {
+    "bottom": "Bund",
+    "fieldAria": "{{field}} lag {{n}}",
+    "soilType": "Jordart",
+    "soilTypeAria": "Jordart lag {{n}}",
+    "title": "Jordprofil",
+    "tooShallow": "Jordprofilen ender ved NAP {{bottom}} m, over pælespidsen ved NAP {{toe}} m. Over den strækning medregnes ingen overflademodstand; forlæng det nederste lag.",
+    "top": "Top"
+  },
+  "result": {
+    "base": {
+      "capped": "(begrænset til 15 MPa)",
+      "title": "Spidsmodstand"
+    },
+    "existingModel": "Eksisterende projektmodel",
+    "facts": {
+      "diameterD": "Diameter D",
+      "equalToShaft": "lig med skaft",
+      "extensionValue": "{{size}} mm, fra pælehoved til samlingen ved NAP {{joint}} m",
+      "projectFactors": "projektfaktorer",
+      "sideA": "Side a",
+      "tapered": "{{size}} mm (konisk)",
+      "title": "Grundlæggende forudsætninger",
+      "woodAtJoint": "Træ ved samlingen"
+    },
+    "negSkin": {
+      "cappedNote": "begrænset til ksMin = {{v}}",
+      "cappedTitle": "Begrænset til ksMin={{v}}",
+      "extensionAndWood": "(forlænger og træ)",
+      "layer": "Lag",
+      "title": "Negativ overflademodstand",
+      "zone": "Zone: pælehoved NAP {{top}} til NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Indtast den aksiale stivhed <strong>EA</strong> under <strong>Pæl</strong>. For denne pæletype udledes EA ikke af tværsnittet; værdien følger af det valgte pælesystem.",
+      "missingOne": "Der mangler ét input",
+      "notYet": "Kan endnu ikke beregnes",
+      "note": "Så snart inputtet er komplet, vises den udførlige beregning her."
+    },
+    "settlement": {
+      "title": "Sætning (art. 7.6.4.2, last-sætningskurve 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} lag — Σ af bidrag pr. lag",
+      "title": "Maksimal overflademodstand"
+    },
+    "spring": {
+      "title": "Fjederstivhed"
+    },
+    "summary": {
+      "check": "Eftervisning",
+      "compression": "Trykbæreevne",
+      "conclusion": "Konklusion:",
+      "conclusionFail": "pælen opfylder ikke kravet; N<sub>Ed</sub> = {{nEd}} kN overstiger R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "ingen regningsmæssig last indtastet; nettobæreevnen er R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "pælen opfylder kravet; N<sub>Ed</sub> = {{nEd}} kN er {{pct}} % af R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Opfylder ikke",
+      "failsShort": "opfylder IKKE",
+      "passes": "Opfylder",
+      "passesShort": "opfylder",
+      "quantity": "Størrelse",
+      "result": "Resultat",
+      "title": "Sammenfatning"
+    },
+    "title": "Pælebæreevne",
+    "total": {
+      "title": "Maksimal geoteknisk bæreevne"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Forlænger",
+    "defaultSource": "Beregningsindstillinger",
+    "existingModel": "eksisterende model",
+    "extensionLengths": "Forlængerlængder",
+    "extensionLengthsAria": "Forlængerlængder [m]",
+    "extensionRemoveAria": "Fjern forlænger {{n}}",
+    "extensionShapeAria": "Forlængerens form {{n}}",
+    "extensionSizeAria": "Forlængerstørrelse {{n}} [mm]",
+    "extensionsAria": "Betonforlængere",
+    "extensionsTitle": "Betonforlængere på træ",
+    "factor": "Faktor",
+    "factorsHint": "Tom = tabelværdi for den valgte norm ({{edition}}). En projektværdi kræver dokumentation, for eksempel en prøvebelastning.",
+    "factorsTitle": "Pælefaktorer · {{type}}",
+    "gammaFnk": "γf;nk negativ overflademodstand",
+    "gammaM": "γm materialefaktor",
+    "partialFactors": "Partialkoefficienter",
+    "project": "Projekt",
+    "projectValueAria": "{{factor}} projekt",
+    "resetAll": "Nulstil alle serier til standard",
+    "restoreSeries": "Gendan standardserie",
+    "restoreSeriesNone": "Gendan standardserie (ingen)",
+    "series": "Standardserie",
+    "seriesHint": "Serien til rullelisten i inputtet (rørstørrelser) og knappen Standardserie i bæreevnetabellen.",
+    "sizeMm": "Størrelse [mm]",
+    "sizesAria": "Størrelsesserie pæletype [mm]",
+    "sizesFor": "Størrelser {{type}}",
+    "sourceAria": "Kilde til projektfaktorer",
+    "table": "Tabel",
+    "timberToe": "Træets spidsdiameter",
+    "useTableValues": "Brug tabelværdier"
+  },
+  "shape": {
+    "round": "Rund",
+    "square": "Kvadratisk"
+  },
+  "sizes": {
+    "apply": "Anvend størrelser",
+    "label": "Pælestørrelser [mm]",
+    "legend": "Pælestørrelser",
+    "standard": "Standardserie"
+  },
+  "skin": {
+    "dragHint": "Pælekoter og zoner for overflademodstand kan også trækkes i sonderingen.",
+    "ksMinAria": "K0·tan(δ) minimum",
+    "minimum": "minimum",
+    "negBottom": "Bund negativ overflademodstand",
+    "negBottomAria": "Bund negativ overflademodstand [m NAP]",
+    "posTop": "Top positiv overflademodstand",
+    "posTopAria": "Top positiv overflademodstand [m NAP]",
+    "title": "Zoner for overflademodstand"
+  },
+  "standard": {
+    "existingModel": "Eksisterende projektmodel — uændret",
+    "historicalHint": "Historisk trykberegning for en enkelt pæl ved en enkelt sondering. Positiv overflademodstand i sand, konstant tværsnit eller eksplicit trækonicitet; sætning og pælegrupper er ikke verificeret. Ændring af normen rydder projektfaktorer og nulstiller γm.",
+    "title": "Norm",
+    "version": "Normversion"
+  },
+  "table": {
+    "breadcrumb": "Brødkrummesti",
+    "cpt": "CPT {{id}}",
+    "cptMissing": "Sondering {{id}} mangler i projektet.",
+    "cptTableAria": "Rc;net;d sondering {{id}}",
+    "heading": "Bæreevne pr. sondering",
+    "intro": "Ét pælesystem i en række størrelser og spidskoter, beregnet for hver sondering. Angiv pæletype, norm og jordprofil til venstre.",
+    "selectCpt": "Vælg mindst én sondering.",
+    "title": "Bæreevnetabel",
+    "toe": "Spids [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "Trædiameteren aftager lineært fra hovedet; under den koniske del forbliver spidsdiameteren konstant. Friktionsomkredsen følger den valgte længde; sætning og fjederstivheder bestemmes ikke.",
+    "hintFromJoint": "Trædiameteren aftager lineært fra samlingen; under den koniske del forbliver spidsdiameteren konstant. Friktionsomkredsen følger den valgte længde; sætning og fjederstivheder bestemmes ikke.",
+    "lengthFromHead": "Konisk længde fra hoved",
+    "lengthFromHeadAria": "Konisk længde fra hoved [m]",
+    "lengthFromJoint": "Konisk længde fra samlingen",
+    "lengthFromJointAria": "Konisk længde fra samlingen [m]",
+    "title": "Konisk træpæl",
+    "toeDiameter": "Spidsdiameter",
+    "toeDiameterAria": "Træets spidsdiameter [mm]"
+  },
+  "target": {
+    "hint": "For hver størrelse finder valgtabellen den korteste pæl, der når den nedre grænse. Over den øvre grænse er størrelsen rigelig.",
+    "inverted": "Den øvre grænse skal ligge over den nedre grænse; tabellen bruger stadig det forrige bånd.",
+    "legend": "Krævet bæreevne Rc;net;d",
+    "lower": "Nedre grænse [kN]",
+    "notNumber": "Indtast nedre og øvre grænse som et tal i kN.",
+    "upper": "Øvre grænse [kN]"
+  },
+  "visual": {
+    "cptHeading": "Sondering: {{id}}",
+    "crossSection": "Tværsnit",
+    "crossSectionAria": "Pælens tværsnit",
+    "empty": {
+      "howTo": "Åbn en GEF-, BRO-XML- eller projektfil via <strong>Åbn</strong> øverst. Vælg derefter sonderingen under <strong>Sondering</strong> i inputpanelet.",
+      "noCpt": "Der er endnu ikke knyttet nogen sondering til denne beregning.",
+      "then": "Konusmodstanden, pælen og zonerne for overflademodstand vises derefter her.",
+      "title": "Sonderingsdiagram"
+    },
+    "extensionTitle": "Betonforlænger {{size}} mm ned til samlingen ved NAP {{joint}} m",
+    "material": "materiale",
+    "materials": {
+      "castInSitu": "Pladsstøbt beton",
+      "prefab": "Præfabrikeret beton",
+      "steelEA": "Stålpæl; projektspecifik EA",
+      "steelTube": "Stålrørspæl, betonfyldt",
+      "wood": "Træ, konstant tværsnit"
+    },
+    "noPoints": "Ingen målinger i denne sondering",
+    "notComputed": "Ikke beregnet: {{error}}. Træk i koterne eller justér inputtet.",
+    "rebarCage": "armeringskurv",
+    "taperLength": "konisk længde fra hoved",
+    "toeSize": "spidsstørrelse",
+    "wall": "væg"
+  }
+}

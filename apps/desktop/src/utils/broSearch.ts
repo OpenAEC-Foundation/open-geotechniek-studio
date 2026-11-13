@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 /** BRO CPT interface §6.2: at most 2000 dispatch documents per search.
  * No offset pagination is defined. Subdivide the spatial criteria and deduplicate
  * shared boundaries; stop with an explicit error instead of returning a partial set.
@@ -45,7 +47,7 @@ export function createBroSearch<T extends { id: string }>(
       box.min_lat >= box.max_lat ||
       box.min_lon >= box.max_lon
     )
-      throw new Error("Ongeldig BRO-zoekgebied.");
+      throw new Error(i18next.t("map:bro.invalidArea", "Ongeldig BRO-zoekgebied."));
     const key = [box.min_lat, box.min_lon, box.max_lat, box.max_lon].join(",");
     const cached = cache.get(key);
     if (cached && cached.until > now())
@@ -54,7 +56,7 @@ export function createBroSearch<T extends { id: string }>(
     const walk = async (area: SearchBBox, depth: number): Promise<T[]> => {
       if (++count > (options.maxRequests ?? 63))
         throw new Error(
-          "BRO-zoekgebied blijft te groot; zoom verder in. Geen gedeeltelijke resultaten weergegeven.",
+          i18next.t("map:bro.areaTooLarge", "BRO-zoekgebied blijft te groot; zoom verder in. Geen gedeeltelijke resultaten weergegeven."),
         );
       try {
         const values = await request(area);
@@ -68,7 +70,7 @@ export function createBroSearch<T extends { id: string }>(
           1e-7
       )
         throw new Error(
-          "BRO-limiet blijft bereikt op dezelfde locatie; verklein periode of gebied. Geen gedeeltelijke resultaten weergegeven.",
+          i18next.t("map:bro.limitReached", "BRO-limiet blijft bereikt op dezelfde locatie; verklein periode of gebied. Geen gedeeltelijke resultaten weergegeven."),
         );
       const [left, right] = splitSearchBox(area);
       // Sequential requests bound API load and keep the shared request budget exact.

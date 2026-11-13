@@ -1,0 +1,262 @@
+{
+  "bore": {
+    "belowGround": "m u. GOK",
+    "colour": "Farbe: {{colour}}",
+    "depth": "Tiefe",
+    "fallbackTitle": "Bohrung",
+    "layers": "Schichten",
+    "noLayers": "In dieser Bohrung wurden keine Schichten gefunden.",
+    "noLayersHint": "Das BHR-GT-XML enthielt keine <0>describedInterval</0>-Elemente.",
+    "zoomHint": "Strg + Scrollen zum Vergrößern/Verkleinern",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern",
+    "zoomReset": "Zoom zurücksetzen"
+  },
+  "chart": {
+    "depthAxis": "Tiefe (m)",
+    "fsHeader": "Mantelreibung (fs, MPa)",
+    "qcHeader": "Spitzendruck (qc, MPa)",
+    "removeAllMarkers": "Alle entfernen",
+    "removeMarker": "Entfernen",
+    "rfHeader": "Reibungsverhältnis (Rf, %)",
+    "u2Header": "Porenwasserdruck (u2, kN/m²)"
+  },
+  "gwp": {
+    "axisLevel": "Wasserstand (m NAP)",
+    "col": {
+      "material": "Material",
+      "screenBottom": "Filterunterkante",
+      "screenLength": "Filterlänge",
+      "screenTop": "Filteroberkante",
+      "status": "Status",
+      "tubeDiameter": "Rohrdurchmesser",
+      "tubeTop": "Rohroberkante"
+    },
+    "constructed": "Errichtet",
+    "csvFailed": "Laden der CSV fehlgeschlagen: {{error}}",
+    "deepestFilter": "Tiefster Filter",
+    "fetchFailed": "GLDs konnten nicht abgerufen werden: {{error}}",
+    "gldTitle": "Grundwasserstand im Zeitverlauf (GLD)",
+    "groundLevel": "Geländehöhe",
+    "loading": "Grundwasserstände werden abgerufen…",
+    "noCoords": "Die Messstelle hat keine WGS84-Koordinaten — Suche nach GLDs nicht möglich.",
+    "noSeries": "Keine GLD-Zeitreihen in der Nähe dieser Messstelle gefunden.",
+    "noValues": "GLDs gefunden ({{n}}), aber keine Messwerte erhalten.",
+    "observations": "{{n}} Messwerte",
+    "openBroloket": "In BROloket öffnen ↗",
+    "owner": "Eigentümer {{owner}}",
+    "seriesFound": "{{n}} Zeitreihen an dieser Messstelle gefunden. Scrollen = horizontal zoomen, Ziehen = verschieben, Doppelklick = zurücksetzen.",
+    "subtitle": "Grundwassermessstelle (BRO/GMW)",
+    "tubeCount": "Anzahl Rohre",
+    "tubesTitle": "Messrohre (Filter)"
+  },
+  "ifcView": {
+    "disabledText": "Der alte STEP-Export entspricht nicht dem IFC-Schema. Verwenden Sie die Projektdatei, um alle Daten zu erhalten. Der IFCX-Snapshot ist experimentell.",
+    "disabledTitle": "IFC4x3-Export deaktiviert"
+  },
+  "ifcxPreview": {
+    "close": "Schließen",
+    "copied": "Kopiert",
+    "copy": "JSON kopieren",
+    "failed": "Vorschau konnte nicht erstellt werden:",
+    "generating": "IFCX wird erzeugt…",
+    "hint": "Dies ist genau der Inhalt, der beim Speichern des Projekts in die <0>.ifcgis</0>-Datei geschrieben wird — JSON im Format IFC5-alpha (IFCX) mit den Entitäten IfcProject, IfcSite, IfcBorehole und IfcAnnotation sowie Querverweisen über <1>#id</1>.",
+    "noDoc": "Kein aktives Dokument — öffnen oder erstellen Sie ein Projekt, um eine IFCX-Vorschau zu sehen.",
+    "projectOnly": "Die IFCX-Vorschau funktioniert nur für Projektdokumente. Für einzelne Sondierungen oder Bohrungen verwenden Sie den Tab IFC.",
+    "size": "{{bytes}} Byte IFCX (IFC4X3_ADD2)",
+    "tip": "Tipp: Die IFCX-Konvertierung erfordert die Funktion <0>to_ifcx_json</0> auf der Rust-Seite (ifcgis-0.4+). Starten Sie die Tauri-Dev-App neu, wenn Sie gerade einen neuen cpt-core-Build erstellt haben.",
+    "title": "IFCX-Vorschau — was in die .ifcgis-Datei geschrieben wird"
+  },
+  "layerAnalysis": {
+    "invalidDepth": "Quellpunkt {{n}}: ungültige oder abnehmende Tiefe wird für die Schichteninterpretation nicht verwendet.",
+    "invalidRanges": "Schichten müssen eine positive Dicke haben, geordnet sein, sich nicht überlappen und innerhalb der gemessenen Tiefe liegen; wählen Sie Zone 1–9.",
+    "notList": "Die Schichteninterpretation muss eine Liste sein.",
+    "savedInvalid": "Gespeicherte Schichteninterpretation ist ungültig: {{error}}",
+    "settingsRange": "Mindestdicke und Hysterese müssen zwischen 0 und 50 m liegen.",
+    "thinIsolated": "Dünne isolierte Schicht beibehalten; über eine Messlücke hinweg wird keine Nachbarschicht angenommen.",
+    "unknownProvenance": "Unbekannte oder nicht passende Herkunft der gespeicherten Schichteninterpretation.",
+    "zeroThickness": "Isolierter Messpunkt ohne Dicke wird nicht als Schicht interpretiert."
+  },
+  "layers": {
+    "add": "Schicht hinzufügen",
+    "bottom": "Unterkante (m)",
+    "bottomAria": "Unterkante von Schicht {{n}}",
+    "cancel": "Abbrechen",
+    "colBottom": "Unterkante",
+    "colTop": "Oberkante",
+    "colZone": "Zone",
+    "edit": "Schichteninterpretation bearbeiten",
+    "export": "Schichten als JSON exportieren",
+    "fillSettings": "Geben Sie die Mindestdicke und die Hysterese ein.",
+    "footer": "Quelle: {{source}}. Die Hysterese bestätigt eine neue Zone mit zwei aufeinanderfolgenden Punkten. Grenzen werden separat gespeichert; Messpunkte bleiben erhalten. Die Messkurven zeigen die orientierende Punktklassifizierung.",
+    "hysteresis": "Hysterese (m)",
+    "jsonFilter": "Schichteninterpretation JSON",
+    "layerN": "Schicht {{n}}",
+    "minThickness": "Mindestdicke (m)",
+    "noCpt": "Keine Sondierung ausgewählt.",
+    "none": "Keine Schichteninterpretation verfügbar.",
+    "provenanceAuto": "Orientierende qc/Rf-Schichteninterpretation · Minimum {{min}} m · Hysterese {{hyst}} m",
+    "provenanceManual": "Manuelle Schichteninterpretation · Minimum {{min}} m · Hysterese {{hyst}} m",
+    "recalculate": "Automatisch neu berechnen",
+    "remove": "Schicht {{n}} entfernen",
+    "saveManual": "Manuelle Schichten speichern",
+    "splitLast": "Letzte Schicht teilen",
+    "top": "Oberkante (m)",
+    "topAria": "Oberkante von Schicht {{n}}",
+    "zone": "Orientierende Zone",
+    "zoneAria": "Zone von Schicht {{n}}"
+  },
+  "left": {
+    "bore": {
+      "accountableParty": "Quellenhalter",
+      "base": "Unterkante",
+      "boreData": "Bohrungsdaten",
+      "delivery": "Lieferung",
+      "descriptionDate": "Beschreibungsdatum",
+      "descriptionProcedure": "Beschreibungsverfahren",
+      "endDate": "Enddatum",
+      "fileMetadata": "Dateimetadaten",
+      "finalDepth": "Endtiefe",
+      "id": "Bohrungs-ID",
+      "layerCount": "Anzahl Schichten",
+      "layers": "Schichten",
+      "method": "Bohrverfahren",
+      "noExtras": "Keine weiteren Metadaten.",
+      "noLayers": "Keine Schichten.",
+      "project": "Projekt",
+      "projectNumber": "Projektnr.",
+      "soilType": "Bodenart",
+      "startDate": "Startdatum",
+      "top": "Oberkante"
+    },
+    "gwp": {
+      "constructed": "Errichtet",
+      "filterBottom": "Filterunterkante",
+      "filterTop": "Filteroberkante",
+      "initialFunction": "Ursprüngliche Funktion",
+      "manager": "Betreiber",
+      "noTubes": "Keine Rohre.",
+      "owner": "Eigentümer",
+      "status": "Status",
+      "subtitle": "Grundwassermessstelle (BRO/GMW)",
+      "tubeCount": "Anzahl Rohre",
+      "tubes": "Rohre (Filter)",
+      "wellCode": "Messstellencode",
+      "wellData": "Messstellendaten",
+      "wellHeadProtector": "Messstellenkopfschutz"
+    },
+    "measurements": {
+      "depth": "Tiefe",
+      "depthTitle": "Tiefe unter Geländeoberkante",
+      "napTitle": "Tiefe bezogen auf NAP"
+    },
+    "meta": {
+      "groundLevelNap": "Geländehöhe NAP",
+      "qualityRegime": "Qualitätsregime"
+    },
+    "photos": {
+      "hintBore": "BRO stellt Fotos dieser Bohrung (falls vorhanden) im BROloket bereit.",
+      "hintCpt": "BRO stellt Fotos dieser Sondierung (falls vorhanden) im BROloket bereit.",
+      "hintGwp": "BRO stellt Fotos dieser Grundwassermessstelle (falls vorhanden) im BROloket bereit.",
+      "link": "Fotos im BROloket ansehen ↗",
+      "onlyBro": "Fotos sind nur für BRO-Objekte verfügbar (BHR/CPT/GMW-ID erforderlich).",
+      "title": "Fotos & Inspektion"
+    },
+    "rawXml": {
+      "copied": "Kopiert",
+      "copy": "XML kopieren",
+      "none": "Keine Roh-XML verfügbar.",
+      "title": "Rohdaten (XML)"
+    }
+  },
+  "normalized": {
+    "error": {
+      "missing": "Geben Sie alle Messwerte und Spannungen ein.",
+      "notPositive": "Netto-Spitzendruck und effektive Vertikalspannung müssen positiv sein.",
+      "outOfRange": "Der Punkt liegt außerhalb des numerischen Bereichs.",
+      "range": "Erforderlich: qc und fs > 0, 0 < a ≤ 1 und Totalspannung ≥ 0."
+    },
+    "field": {
+      "areaRatio": "Flächenverhältnis der Spitze a",
+      "totalStress": "Totalspannung σv0 [kPa]",
+      "waterPressure": "Hydrostatischer Druck u0 [kPa]"
+    },
+    "icZone": "Ic / Zone",
+    "intro": "Punktanalyse von Qt / Fr / Bq / Ic mit den angegebenen Spannungen nach Robertson–Wride (fester Exponent n = 1).",
+    "note": "Sensitive und zementierte Böden (Zonen 1, 8, 9) lassen sich nicht allein aus Ic ableiten. Keine Umrechnung in eine NEN-Bodenbeschreibung.",
+    "reference": "Robertson & Cabal, 2022, Abbildung 16",
+    "title": "Normalisierte SBTn-Punktanalyse",
+    "zones": {
+      "z2": "Organischer Boden",
+      "z3": "Ton",
+      "z4": "Schluffgemisch",
+      "z5": "Sandgemisch",
+      "z6": "Sand",
+      "z7": "Kiesiger Sand"
+    }
+  },
+  "projectSettings": {
+    "boreMeta": "{{layers}} Schichten · {{depth}} m Tiefe",
+    "close": "Schließen",
+    "cptMeta": "{{points}} Punkte · {{depth}} m Tiefe",
+    "newProject": "Neues Projekt",
+    "noProject": "Kein aktives Projekt — öffnen oder erstellen Sie ein <0>.ifcgis</0>-Projekt.",
+    "noProjectHint": "Der aktive Tab ist eine einzelne Sondierung. Projektinfos (Titel, Auftraggeber, Standort, Sondierungsliste) gehören zu einem Projekt — erstellen Sie eines oder öffnen Sie eine vorhandene <0>.ifcgis</0>-Datei."
+  },
+  "reportPreview": {
+    "chartScale": "Diagrammmaßstab",
+    "coverTitle": "Titel des Deckblatts",
+    "onePagePerCpt": "Eine Seite pro Sondierung",
+    "openFailed": "Öffnen der PDF fehlgeschlagen: {{error}}"
+  },
+  "soil3d": {
+    "bearingRange": "NAP {{top}} bis {{bottom}} m ({{found}}/{{total}})",
+    "criterion": "qc ≥ {{qc}} MPa über ≥ {{thickness}} m",
+    "criterionFrom": "aus {{source}}",
+    "grid": "{{nx}} × {{ny}} × {{nz}} Zellen ({{dx}} × {{dy}} × {{dz}} m), IDW",
+    "warn": {
+      "bearingNone": "Tragfähige Schicht in keiner Sondierung gefunden.",
+      "bearingPartial": "Tragfähige Schicht in {{ids}} nicht gefunden; die Fläche wird dort interpoliert.",
+      "missingRd": "Ohne RD-Koordinaten (nicht im Modell): {{ids}}.",
+      "noLayers": "Sondierung {{id}} hat keine Schichteninterpretation.",
+      "noRd": "Keine RD-Koordinaten: Die Sondierungen werden in einer Reihe im Abstand von 10 m platziert."
+    },
+    "zoneN": "Zone {{n}}"
+  },
+  "validation": {
+    "column": "Spalte {{n}}",
+    "counts": "{{errors}} Fehler · {{warnings}} Warnungen",
+    "depth": "Tiefe: {{method}}",
+    "depthMethod": {
+      "corrected": "gemessene korrigierte Tiefe",
+      "inclination": "Neigungskorrektur aus der Eindringlänge",
+      "mixed": "gemischte Verfahren; pro Datensatz im JSON",
+      "penetration": "Eindringlänge als vertikale Näherung"
+    },
+    "diagnostics": "Diagnose ({{n}})",
+    "exportAll": "Bericht für alle Meldungen exportieren.",
+    "line": "Zeile {{n}}",
+    "measurements": "Messgrößen & Einheiten ({{n}})",
+    "noReport": "Diese Datei hat noch keinen Validierungsbericht. Importieren Sie sie erneut mit dem aktuellen Parser.",
+    "points": "{{points}} Messpunkte · {{voids}} Leerwerte · {{omitted}} ausgelassene Datensätze",
+    "preExcavated": "Vorgegraben: {{depth}} m",
+    "predrilled": "Vorgebohrt: {{depth}} m",
+    "record": "Datensatz {{n}}",
+    "regime": "Regime: {{regime}}",
+    "removedLayer": "Schicht bis {{depth}} m: {{description}}",
+    "report": "Diese Datei melden",
+    "showOutliers": "{{n}} Ausreißer anzeigen (Quelldatensätze {{records}})",
+    "variables": "Messvariablen & Nullablesungen"
+  },
+  "zones": {
+    "z1": "Sensitiv feinkörnig",
+    "z2": "Organisch / Torf",
+    "z3": "Ton",
+    "z4": "Schluffgemische",
+    "z5": "Sandgemische",
+    "z6": "Sand",
+    "z7": "Kiesiger Sand / Kies",
+    "z8": "Sehr steifer Sand/Ton",
+    "z9": "Sehr steif feinkörnig"
+  }
+}

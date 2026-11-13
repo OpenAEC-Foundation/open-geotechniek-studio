@@ -1,0 +1,145 @@
+{
+  "topo": {
+    "toggle": "Historiska kartor på/av",
+    "title": "Historiska kartor",
+    "off": "Av",
+    "year": "Årtal för historisk karta",
+    "latest": "Hoppa till senaste året",
+    "opacity": "Transparens",
+    "opacityAria": "Transparens för historisk karta"
+  },
+  "search": {
+    "placeholder": "Sök adress, ort eller koordinat (RD / WGS84)…",
+    "aria": "Sök adress eller koordinat",
+    "clear": "Rensa",
+    "flyTo": "Flyg till platsen",
+    "types": {
+      "adres": "adress",
+      "weg": "väg",
+      "postcode": "postnummer",
+      "woonplaats": "ort",
+      "gemeente": "kommun",
+      "provincie": "provins",
+      "waterschap": "vattenmyndighet",
+      "perceel": "fastighet",
+      "hectometerpaal": "hektometerstolpe",
+      "appartementsrecht": "bostadsrätt",
+      "buurt": "kvarter",
+      "wijk": "stadsdel"
+    }
+  },
+  "layers": {
+    "topography": "Topografi (BRT)",
+    "aerialCurrent": "Flygfoto (aktuellt)",
+    "aerialYear": "Flygfoto {{year}}",
+    "addresses": "Adresser + gator",
+    "elevation": "AHN höjdkarta",
+    "cadastral": "Fastighetsgränser",
+    "buildings": "BAG (byggnader)",
+    "bgt": "BGT topografi",
+    "zoning": "Detaljplan",
+    "geomorphology": "Geomorfologisk karta",
+    "soilMap": "Jordartskarta 1:50 000",
+    "cables": "Kablar och ledningar (KLIC)",
+    "broCpts": "BRO sonderingar",
+    "broBoreholes": "BRO borrhål",
+    "broWells": "BRO grundvattenrör",
+    "projectCpts": "Projektets sonderingar"
+  },
+  "layerPanel": {
+    "opacityTitle": "Transparens: {{pct}}% — reglaget styr synligheten",
+    "opacityAria": "Transparens {{layer}}",
+    "ahnLegend": "Höjd NAP"
+  },
+  "status": {
+    "initial": "Zooma in och klicka på 'Läs in område'",
+    "zoomIn": "Zooma in till nivå {{zoom}}+ för att läsa in arkivet",
+    "loading": "Läser in...",
+    "cptError": "Sonderingar: {{error}}",
+    "boreError": "Borrhål: {{error}}",
+    "incomplete": "BRO ofullständigt: {{errors}}",
+    "error": "Fel: {{error}}",
+    "cleared": "BRO-markörer rensade",
+    "addFailed": "Det gick inte att lägga till: {{error}}",
+    "cptCount": "{{n}} sondering(ar)",
+    "loadedBoth": "{{cpt}} sondering(ar) / {{bore}} borrhål inlästa",
+    "loadedCpt": "{{cpt}} sondering(ar) inlästa",
+    "loadedBore": "{{bore}} borrhål inlästa",
+    "loadedNone": "inläst"
+  },
+  "gwp": {
+    "type": "Typ: grundvattenrör (GMW)",
+    "manager": "Förvaltare: {{name}}",
+    "groundLevel": "Marknivå NAP: {{value}} m",
+    "tubes": "Antal filter: {{n}}"
+  },
+  "popup": {
+    "openViewer": "Öppna i visaren",
+    "openBroloket": "Öppna i BROloket",
+    "depthTo": "djup till {{depth}} m",
+    "kindCpt": "Sondering (BRO)",
+    "kindBore": "Borrhål (BHR-GT)",
+    "merge": "Skapa projekt + lägg till",
+    "addToProject": "Lägg till i projekt",
+    "toggleSelect": "Markera / avmarkera för att lägga till"
+  },
+  "klic": {
+    "alert": "Kablar och ledningar — inget offentligt WMS-lager tillgängligt.\n\nSedan den 10 december 2025 tillhandahåller PDOK inte längre någon nationell visare för kablar/ledningar (Liander-datasetet har tagits ur produktion). För en grävanmälan måste du göra en KLIC-förfrågan via:\n\n{{url}}\n\nFörfrågan är kostnadsfri och du får ritningarna inom 1–3 arbetsdagar."
+  },
+  "measure": {
+    "on": "Mätläge: klicka på en punkt eller sondering för att börja",
+    "off": "Mätläge av",
+    "from": "Mäter från {{id}} — klicka på en andra punkt",
+    "started": "Startpunkt angiven — klicka på en andra punkt",
+    "point": "punkt",
+    "distance": "Avstånd {{from}} ↔ {{to}}: {{dist}}",
+    "cancelled": "Mätläge avbrutet",
+    "otherCpt": "Välj en annan sondering"
+  },
+  "export": {
+    "fileName": "karta"
+  },
+  "bro": {
+    "docChangedKeep": "Det aktiva dokumentet har ändrats; återstående markering behålls.",
+    "docChanged": "Det aktiva dokumentet har ändrats.",
+    "added": "{{n}} BRO-sondering(ar) tillagda",
+    "addedPartial": "{{n}} tillagda. {{error}}",
+    "selected": "{{n}} BRO-sondering(ar) markerade",
+    "adding": "Lägger till…",
+    "addSelection": "Lägg till markering i projektet",
+    "clearSelection": "Rensa BRO-markering",
+    "invalidArea": "Ogiltigt BRO-sökområde.",
+    "areaTooLarge": "BRO-sökområdet är fortfarande för stort; zooma in mer. Inga delresultat visas.",
+    "limitReached": "BRO-gränsen nås fortfarande på samma plats; minska perioden eller området. Inga delresultat visas.",
+    "parseError": "Tolkningsfel i BRO-XML: {{detail}}",
+    "resultLimit": "BRO begränsar sökningen till {{max}} objekt."
+  },
+  "selection": {
+    "count": "{{n}} markerade",
+    "clearTitle": "Rensa markering (Esc)",
+    "clear": "Rensa"
+  },
+  "cursor": {
+    "aria": "Markörkoordinater"
+  },
+  "broField": {
+    "registered": "Registrerad",
+    "reportDate": "Rapportdatum",
+    "finalDepth": "Slutdjup (m)",
+    "finalDepthBore": "Borrhålets slutdjup (m)",
+    "predrilled": "Förborrat djup (m)",
+    "groundLevel": "Marknivå relativt NAP (m)",
+    "qualityRegime": "Kvalitetsregim",
+    "positionAccuracy": "Lägesosäkerhet (m)",
+    "positionMethod": "Lägesbestämningsmetod",
+    "qualityClass": "Kvalitetsklass",
+    "cptStandard": "CPT-standard",
+    "purpose": "Undersökningssyfte",
+    "discipline": "Disciplin",
+    "stopCriterion": "Stoppkriterium",
+    "sourceHolder": "Källinnehavare",
+    "rockReached": "Berg nått",
+    "verticalDatum": "Höjdreferens",
+    "deregistered": "Avregistrerad"
+  }
+}

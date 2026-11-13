@@ -1,9 +1,10 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/ui/ResultPanel.tsx
 import { useMemo, type ReactNode } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import type { PanelProps } from "../../../framework/types";
 import type { PileInput, PileResult, SettlementResult } from "../types";
-import { resolvePileType } from "../catalog";
-import { getStandard } from "../standards";
+import { pileTypeName, resolvePileType } from "../catalog";
+import { getStandard, standardLabel } from "../standards";
 import { pileGeometry } from "../parts/geometry";
 import "./styles.css";
 import { OaIcon } from "../../../../components/icons/oaIcon";
@@ -73,6 +74,7 @@ interface ZakkingsChartProps {
 }
 
 function ZakkingsChart({ settlement, rbCalMax, rsCalMax }: ZakkingsChartProps) {
+  const { t } = useTranslation("calcPile");
   const { curve, sls, uls } = settlement;
 
   // Snap x-as range op nette ronde-getallen op basis van max(Rs, Rb).
@@ -125,7 +127,7 @@ function ZakkingsChart({ settlement, rbCalMax, rsCalMax }: ZakkingsChartProps) {
       viewBox={`0 0 ${ZK_W} ${ZK_H}`}
       preserveAspectRatio="xMidYMid meet"
       role="img"
-      aria-label="Lastzakkingsdiagram"
+      aria-label={t("chart.loadSettlement", "Lastzakkingsdiagram")}
     >
       <rect
         x={ZK_M.left} y={ZK_M.top} width={ZK_PW} height={ZK_PH}
@@ -174,21 +176,21 @@ function ZakkingsChart({ settlement, rbCalMax, rsCalMax }: ZakkingsChartProps) {
         x={ZK_M.left + ZK_PW / 2} y={ZK_H - 2}
         className="pile-zakking-axis-title" textAnchor="middle"
       >
-        Belasting [kN]
+        {t("chart.loadAxis", "Belasting [kN]")}
       </text>
       <text
         x={xCenter - 60} y={ZK_M.top - 6}
         className="pile-zakking-axis-side-label" textAnchor="middle"
         fill="#16a34a"
       >
-        ← R_s schacht
+        {t("chart.shaftSide", "← R_s schacht")}
       </text>
       <text
         x={xCenter + 60} y={ZK_M.top - 6}
         className="pile-zakking-axis-side-label" textAnchor="middle"
         fill="#1e3a8a"
       >
-        R_b punt →
+        {t("chart.baseSide", "R_b punt →")}
       </text>
 
       {/* Mobilisatie-curves */}
@@ -270,15 +272,16 @@ function ZakkingsChart({ settlement, rbCalMax, rsCalMax }: ZakkingsChartProps) {
 // ─── ResultPanel ─────────────────────────────────────────────────
 
 export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>) {
+  const { t } = useTranslation("calcPile");
   if (!result.ok) {
     const missingEA = !!resolvePileType(input)?.requiresEA && !input.timberTaper && !input.concreteExtension && input.axialStiffnessKn === undefined;
     return (
       <div className="pile-result-pending" role="status">
-        <h2>{missingEA ? "Nog één gegeven nodig" : "Nog niet te berekenen"}</h2>
+        <h2>{missingEA ? t("result.pending.missingOne", "Nog één gegeven nodig") : t("result.pending.notYet", "Nog niet te berekenen")}</h2>
         {missingEA
-          ? <p>Vul bij <strong>Paal</strong> de axiale stijfheid <strong>EA</strong> in. Voor dit paaltype wordt EA niet uit de doorsnede afgeleid; de waarde volgt uit het gekozen paalsysteem.</p>
+          ? <p><Trans t={t} i18nKey="result.pending.missingEA" defaults="Vul bij <strong>Paal</strong> de axiale stijfheid <strong>EA</strong> in. Voor dit paaltype wordt EA niet uit de doorsnede afgeleid; de waarde volgt uit het gekozen paalsysteem." components={{ strong: <strong /> }} /></p>
           : <p>{result.error}</p>}
-        <p className="pile-result-pending-note">Zodra de invoer compleet is, verschijnt hier de uitgewerkte berekening.</p>
+        <p className="pile-result-pending-note">{t("result.pending.note", "Zodra de invoer compleet is, verschijnt hier de uitgewerkte berekening.")}</p>
       </div>
     );
   }
@@ -294,8 +297,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
   return (
     <div className="pile-result">
       <header className="pile-sheet-title">
-        <h2>Paaldraagvermogen{input.cptId ? <> — {input.cptId}</> : null}</h2>
-        <p>{getStandard(input.standard)?.label ?? "Bestaand projectmodel"} · {pileType?.name ?? input.pileTypeId}</p>
+        <h2>{t("result.title", "Paaldraagvermogen")}{input.cptId ? <> — {input.cptId}</> : null}</h2>
+        <p>{standardLabel(getStandard(input.standard)) ?? t("result.existingModel", "Bestaand projectmodel")} · {pileType ? pileTypeName(pileType) : input.pileTypeId}</p>
       </header>
 
       {result.warnings.length > 0 && (
@@ -306,87 +309,89 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
 
 
       <section>
-        <h3>Uitgangspunten</h3>
+        <h3>{t("result.facts.title", "Uitgangspunten")}</h3>
         <table className="pile-sheet-facts">
           <tbody>
-            <tr><th>Normversie</th><td colSpan={3}>{getStandard(input.standard)?.label ?? "Bestaand projectmodel"}</td></tr>
-            <tr><th>Sondering</th><td colSpan={3}>{input.cptId ?? "—"}</td></tr>
-            <tr><th>Paaltype</th><td colSpan={3}>{pileType?.name ?? input.pileTypeId}</td></tr>
-            {input.concreteExtension && <tr><th>Betonopzetter</th><td colSpan={3}>{input.concreteExtension.isCircular ? "Ø" : `${input.concreteExtension.sizeMm} × `}{input.concreteExtension.sizeMm} mm, van paalkop tot de las op NAP {fmtNap(input.concreteExtension.jointNap)} m</td></tr>}
-            <tr><th>{input.concreteExtension ? "Hout bij de las" : isCircular ? "Diameter D" : "Zijde a"}</th><td>{input.diameterMm} mm</td><th>Puntafmeting</th><td>{input.timberTaper ? `${input.timberTaper.toeDiameterMm} mm (taps)` : input.baseDiameterMm ? `${input.baseDiameterMm} mm` : "gelijk aan schacht"}</td></tr>
-            <tr><th>Paalkop</th><td>NAP {fmtNap(input.pileTopNap)} m</td><th>Paalpunt</th><td>NAP {fmtNap(input.pileToeNap)} m</td></tr>
-            <tr><th>Grondwater</th><td>NAP {fmtNap(input.waterNap)} m</td><th>Ontgraving</th><td>NAP {fmtNap(input.excavationNap)} m</td></tr>
+            <tr><th>{t("standard.version", "Normversie")}</th><td colSpan={3}>{standardLabel(getStandard(input.standard)) ?? t("result.existingModel", "Bestaand projectmodel")}</td></tr>
+            <tr><th>{t("cpt.title", "Sondering")}</th><td colSpan={3}>{input.cptId ?? "—"}</td></tr>
+            <tr><th>{t("pile.type", "Paaltype")}</th><td colSpan={3}>{pileType ? pileTypeName(pileType) : input.pileTypeId}</td></tr>
+            {input.concreteExtension && <tr><th>{t("extension.title", "Betonopzetter")}</th><td colSpan={3}>{t("result.facts.extensionValue", "{{size}} mm, van paalkop tot de las op NAP {{joint}} m", { size: `${input.concreteExtension.isCircular ? "Ø" : `${input.concreteExtension.sizeMm} × `}${input.concreteExtension.sizeMm}`, joint: fmtNap(input.concreteExtension.jointNap) })}</td></tr>}
+            <tr><th>{input.concreteExtension ? t("result.facts.woodAtJoint", "Hout bij de las") : isCircular ? t("result.facts.diameterD", "Diameter D") : t("result.facts.sideA", "Zijde a")}</th><td>{input.diameterMm} mm</td><th>{t("pile.baseSize", "Puntafmeting")}</th><td>{input.timberTaper ? t("result.facts.tapered", "{{size}} mm (taps)", { size: input.timberTaper.toeDiameterMm }) : input.baseDiameterMm ? `${input.baseDiameterMm} mm` : t("result.facts.equalToShaft", "gelijk aan schacht")}</td></tr>
+            <tr><th>{t("levels.pileTop", "Paalkop")}</th><td>NAP {fmtNap(input.pileTopNap)} m</td><th>{t("levels.pileToe", "Paalpunt")}</th><td>NAP {fmtNap(input.pileToeNap)} m</td></tr>
+            <tr><th>{t("levels.water", "Grondwater")}</th><td>NAP {fmtNap(input.waterNap)} m</td><th>{t("levels.excavation", "Ontgraving")}</th><td>NAP {fmtNap(input.excavationNap)} m</td></tr>
             <tr><th>N<sub>Ed</sub></th><td>{input.nEd.toFixed(0)} kN</td><th>N<sub>Ek</sub></th><td>{input.nEk.toFixed(0)} kN</td></tr>
             <tr><th>γ<sub>m</sub></th><td>{input.gammaM.toFixed(2)}</td><th>γ<sub>f,nk</sub></th><td>{input.gammaFnk.toFixed(2)}</td></tr>
-            <tr><th>Paalfactoren</th><td colSpan={3}>α<sub>p</sub> = {factors.alphaP} · α<sub>s</sub> = {factors.alphaS} · β = {factors.beta} · s = {factors.s}{input.projectFactors ? " (projectfactoren)" : ""}</td></tr>
+            <tr><th>{t("factors.title", "Paalfactoren")}</th><td colSpan={3}>α<sub>p</sub> = {factors.alphaP} · α<sub>s</sub> = {factors.alphaS} · β = {factors.beta} · s = {factors.s}{input.projectFactors ? ` (${t("result.facts.projectFactors", "projectfactoren")})` : ""}</td></tr>
           </tbody>
         </table>
       </section>
 
       <section>
-        <h3>Negatieve kleef</h3>
+        <h3>{t("result.negSkin.title", "Negatieve kleef")}</h3>
         <p className="pile-result-input">
-          Zone: paalkop NAP {input.pileTopNap.toFixed(2)} tot NAP {input.negKleefBottomNap.toFixed(2)} —
+          {t("result.negSkin.zone", "Zone: paalkop NAP {{top}} tot NAP {{bottom}} —", { top: input.pileTopNap.toFixed(2), bottom: input.negKleefBottomNap.toFixed(2) })}{" "}
           ΔL<sub>nk</sub> = {negKleef.deltaLnk.toFixed(2)} m
         </p>
         <Formula
           lhs={<>O<sub>s</sub></>}
-          symbolic={input.concreteExtension ? <>Σ (O<sub>s;i</sub> · h<sub>i</sub>) / ΔL<sub>nk</sub> <small>(opzetter en hout)</small></> : input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : <>4 · a</>}
+          symbolic={input.concreteExtension ? <>Σ (O<sub>s;i</sub> · h<sub>i</sub>) / ΔL<sub>nk</sub> <small>{t("result.negSkin.extensionAndWood", "(opzetter en hout)")}</small></> : input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : <>4 · a</>}
           filled={input.concreteExtension ? undefined : <>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
           result={<>{Os.toFixed(3)} m</>}
         />
-        <table className="pile-formula-table pile-formula-table--wide">
-          <thead>
-            <tr>
-              <th>Laag</th>
-              <th>h [m]</th>
-              <th>γ<sub>k</sub></th>
-              <th>γ<sub>w</sub></th>
-              <th>σ<sub>top</sub></th>
-              <th>σ<sub>bot</sub></th>
-              <th>σ<sub>gem</sub></th>
-              <th>K<sub>0</sub></th>
-              <th>tan(δ)</th>
-              <th>K<sub>0</sub>tanδ</th>
-              <th>F<sub>s;nk</sub> [kN]</th>
-            </tr>
-          </thead>
-          <tbody>
-            {negKleef.layers.map((l, i) => {
-              const tanDelta = Math.tan(l.delta);
-              return (
-                <tr key={i}>
-                  <td>{l.layer.kind}</td>
-                  <td>{l.thickness.toFixed(2)}</td>
-                  <td>{l.layer.gammaK}</td>
-                  <td>{l.layer.gammaW}</td>
-                  <td>{l.sigmaRepTop.toFixed(1)}</td>
-                  <td>{l.sigmaRepBottom.toFixed(1)}</td>
-                  <td>{(l.sigmaGemRep / l.thickness).toFixed(1)}</td>
-                  <td>{l.k0.toFixed(3)}</td>
-                  <td>{tanDelta.toFixed(3)}</td>
-                  <td>
-                    {l.k0TanDelta.toFixed(3)}
-                    {l.k0TanDelta === input.ksMinFactor && (
-                      <em title={`Gecapt op ksMin=${input.ksMinFactor}`}> *</em>
-                    )}
-                  </td>
-                  <td><strong>{l.fsNkRep.toFixed(1)}</strong></td>
-                </tr>
-              );
-            })}
-            {negKleef.layers.length > 1 && (
-              <tr className="pile-formula-table-sum">
-                <td colSpan={10}>Σ F<sub>s;nk</sub></td>
-                <td><strong>{negKleef.fnkRep.toFixed(1)} kN</strong></td>
+        <div className="pile-formula-scroll">
+          <table className="pile-formula-table pile-formula-table--wide">
+            <thead>
+              <tr>
+                <th>{t("result.negSkin.layer", "Laag")}</th>
+                <th>h [m]</th>
+                <th>γ<sub>k</sub></th>
+                <th>γ<sub>w</sub></th>
+                <th>σ<sub>top</sub></th>
+                <th>σ<sub>bot</sub></th>
+                <th>σ<sub>gem</sub></th>
+                <th>K<sub>0</sub></th>
+                <th>tan(δ)</th>
+                <th>K<sub>0</sub>tanδ</th>
+                <th>F<sub>s;nk</sub> [kN]</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {negKleef.layers.map((l, i) => {
+                const tanDelta = Math.tan(l.delta);
+                return (
+                  <tr key={i}>
+                    <td>{l.layer.kind}</td>
+                    <td>{l.thickness.toFixed(2)}</td>
+                    <td>{l.layer.gammaK}</td>
+                    <td>{l.layer.gammaW}</td>
+                    <td>{l.sigmaRepTop.toFixed(1)}</td>
+                    <td>{l.sigmaRepBottom.toFixed(1)}</td>
+                    <td>{(l.sigmaGemRep / l.thickness).toFixed(1)}</td>
+                    <td>{l.k0.toFixed(3)}</td>
+                    <td>{tanDelta.toFixed(3)}</td>
+                    <td>
+                      {l.k0TanDelta.toFixed(3)}
+                      {l.k0TanDelta === input.ksMinFactor && (
+                        <em title={t("result.negSkin.cappedTitle", "Gecapt op ksMin={{v}}", { v: input.ksMinFactor })}> *</em>
+                      )}
+                    </td>
+                    <td><strong>{l.fsNkRep.toFixed(1)}</strong></td>
+                  </tr>
+                );
+              })}
+              {negKleef.layers.length > 1 && (
+                <tr className="pile-formula-table-sum">
+                  <td colSpan={10}>Σ F<sub>s;nk</sub></td>
+                  <td><strong>{negKleef.fnkRep.toFixed(1)} kN</strong></td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
         <p className="pile-result-footnote">
           F<sub>s;nk;i</sub> = σ<sub>gem;i</sub> · O<sub>s</sub> · K<sub>0</sub>tan(δ)<sub>i</sub> · h<sub>i</sub>
           {negKleef.layers.some((l) => l.k0TanDelta === input.ksMinFactor) && (
-            <em> &nbsp;· * = K<sub>0</sub>tanδ gecapt op ksMin = {input.ksMinFactor}</em>
+            <em> &nbsp;· * = K<sub>0</sub>tanδ {t("result.negSkin.cappedNote", "gecapt op ksMin = {{v}}", { v: input.ksMinFactor })}</em>
           )}
         </p>
         <Formula
@@ -408,7 +413,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       </section>
 
       <section>
-        <h3>Puntdraagvermogen</h3>
+        <h3>{t("result.base.title", "Puntdraagvermogen")}</h3>
         <p className="pile-result-input">
           q<sub>c;I;gem</sub> = {base.qcIGemMpa.toFixed(2)} MPa, &nbsp;
           q<sub>c;II;gem</sub> = {base.qcIIGemMpa.toFixed(2)} MPa, &nbsp;
@@ -426,7 +431,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           result={
             <>
               {base.qbMaxMpa.toFixed(2)} MPa
-              {base.qbMaxMpaRaw > 15 && <em> &nbsp;(gecapt op 15 MPa)</em>}
+              {base.qbMaxMpaRaw > 15 && <em> &nbsp;{t("result.base.capped", "(gecapt op 15 MPa)")}</em>}
             </>
           }
         />
@@ -439,13 +444,13 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       </section>
 
       <section>
-        <h3>Maximumschachtwrijving</h3>
+        <h3>{t("result.shaft.title", "Maximumschachtwrijving")}</h3>
         <Formula
           lhs={<>R<sub>s;cal;max</sub></>}
           symbolic={<>Σ O<sub>s;gem;j</sub> · q<sub>s;j</sub> · Δh<sub>j</sub></>}
           filled={
             <>
-              {shaft.perLayer.length} laag/lagen — Σ van per-laag bijdragen
+              {t("result.shaft.layers", "{{n}} laag/lagen — Σ van per-laag bijdragen", { n: shaft.perLayer.length })}
             </>
           }
           result={<>{shaft.rsCalMax.toFixed(0)} kN</>}
@@ -453,7 +458,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       </section>
 
       <section>
-        <h3>Maximum gronddraagvermogen</h3>
+        <h3>{t("result.total.title", "Maximum gronddraagvermogen")}</h3>
         <Formula
           lhs={<>R<sub>c;cal</sub></>}
           symbolic={<>R<sub>b;cal;max</sub> + R<sub>s;cal;max</sub></>}
@@ -464,7 +469,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
 
       {settlement.available !== false && <>
       <section>
-        <h3>Zakking (art. 7.6.4.2, lastzakkingslijn 1)</h3>
+        <h3>{t("result.settlement.title", "Zakking (art. 7.6.4.2, lastzakkingslijn 1)")}</h3>
         {(() => {
           const wp = settlement.sls;
           const L = settlement.lM ?? input.pileTopNap - input.pileToeNap;
@@ -526,7 +531,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       </section>
 
       <section>
-        <h3>Veerwaarde</h3>
+        <h3>{t("result.spring.title", "Veerwaarde")}</h3>
         <Formula
           lhs={<>k<sub>1</sub></>}
           symbolic={<>F<sub>c;tot</sub> / s<sub>1</sub></>}
@@ -549,8 +554,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       </>}
 
       <section>
-        <h3>Samenvatting</h3>
-        <p>{getStandard(input.standard)?.label}</p>
+        <h3>{t("result.summary.title", "Samenvatting")}</h3>
+        <p>{standardLabel(getStandard(input.standard))}</p>
         <Formula lhs={<>R<sub>c;rep/k</sub></>}
           symbolic={summary.historicalXi === undefined ? <>R<sub>c;cal</sub> / ξ₃</> : <>ξ · R<sub>c;cal</sub></>}
           filled={summary.historicalXi === undefined ? <>{summary.rcCal.toFixed(1)} / {summary.xi3}</> : <>{summary.historicalXi} · {summary.rcCal.toFixed(1)}</>}
@@ -573,28 +578,28 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           filled={<>{input.nEd.toFixed(0)} / {summary.rcNetD.toFixed(0)}</>}
           result={
             <span className={summary.passes ? "pile-pass" : "pile-fail"}>
-              {summary.unityCheck.toFixed(2)} {" "}<OaIcon id={summary.passes ? "status.success" : "status.error"} />{summary.passes ? " voldoet" : " voldoet NIET"}
+              {summary.unityCheck.toFixed(2)} {" "}<OaIcon id={summary.passes ? "status.success" : "status.error"} />{summary.passes ? ` ${t("result.summary.passesShort", "voldoet")}` : ` ${t("result.summary.failsShort", "voldoet NIET")}`}
             </span>
           }
         />
         <table className="pile-sheet-checks">
-          <thead><tr><th>Toets</th><th>Grootheid</th><th>u.c.</th><th>Resultaat</th></tr></thead>
+          <thead><tr><th>{t("result.summary.check", "Toets")}</th><th>{t("result.summary.quantity", "Grootheid")}</th><th>u.c.</th><th>{t("result.summary.result", "Resultaat")}</th></tr></thead>
           <tbody>
             <tr>
-              <td>Draagvermogen op druk</td>
+              <td>{t("result.summary.compression", "Draagvermogen op druk")}</td>
               <td>N<sub>Ed</sub> ≤ R<sub>c;net;d</sub></td>
               <td className="num">{summary.unityCheck.toFixed(2)}</td>
-              <td className={summary.passes ? "pile-pass" : "pile-fail"}>{summary.passes ? "Voldoet" : "Voldoet niet"}</td>
+              <td className={summary.passes ? "pile-pass" : "pile-fail"}>{summary.passes ? t("result.summary.passes", "Voldoet") : t("result.summary.fails", "Voldoet niet")}</td>
             </tr>
           </tbody>
         </table>
         <p className="pile-sheet-conclusion">
-          <strong>Conclusie:</strong>{" "}
+          <strong>{t("result.summary.conclusion", "Conclusie:")}</strong>{" "}
           {input.nEd > 0
             ? summary.passes
-              ? <>de paal voldoet; N<sub>Ed</sub> = {input.nEd.toFixed(0)} kN is {Math.round(summary.unityCheck * 100)}% van R<sub>c;net;d</sub> = {summary.rcNetD.toFixed(0)} kN.</>
-              : <>de paal voldoet niet; N<sub>Ed</sub> = {input.nEd.toFixed(0)} kN overschrijdt R<sub>c;net;d</sub> = {summary.rcNetD.toFixed(0)} kN.</>
-            : <>geen ontwerpbelasting ingevoerd; het netto draagvermogen is R<sub>c;net;d</sub> = {summary.rcNetD.toFixed(0)} kN.</>}
+              ? <Trans t={t} i18nKey="result.summary.conclusionPass" defaults="de paal voldoet; N<sub>Ed</sub> = {{nEd}} kN is {{pct}}% van R<sub>c;net;d</sub> = {{rc}} kN." values={{ nEd: input.nEd.toFixed(0), pct: Math.round(summary.unityCheck * 100), rc: summary.rcNetD.toFixed(0) }} components={{ sub: <sub /> }} />
+              : <Trans t={t} i18nKey="result.summary.conclusionFail" defaults="de paal voldoet niet; N<sub>Ed</sub> = {{nEd}} kN overschrijdt R<sub>c;net;d</sub> = {{rc}} kN." values={{ nEd: input.nEd.toFixed(0), rc: summary.rcNetD.toFixed(0) }} components={{ sub: <sub /> }} />
+            : <Trans t={t} i18nKey="result.summary.conclusionNoLoad" defaults="geen ontwerpbelasting ingevoerd; het netto draagvermogen is R<sub>c;net;d</sub> = {{rc}} kN." values={{ rc: summary.rcNetD.toFixed(0) }} components={{ sub: <sub /> }} />}
         </p>
       </section>
     </div>

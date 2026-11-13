@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Dokument",
+    "reference": "Sygnatura",
+    "version": "Wersja",
+    "status": "Status",
+    "advisor": "Opracował",
+    "checker": "Sprawdził",
+    "projectHint": "Nazwa projektu, numer, zleceniodawca i lokalizacja są pobierane z danych projektu.",
+    "basis": "Założenia projektowe",
+    "consequenceClass": "Klasa konsekwencji",
+    "designLife": "Projektowy okres użytkowania",
+    "years": "lat",
+    "designLifeAria": "Projektowy okres użytkowania [lata]",
+    "floorLevel": "Poziom odniesienia (wierzch posadzki)",
+    "floorLevelAria": "Poziom odniesienia [m NAP]",
+    "groundwater": "Woda gruntowa",
+    "groundwaterAria": "Obliczeniowy poziom wody gruntowej [m NAP]",
+    "structure": "Obiekt i obciążenia",
+    "structurePlaceholder": "Na przykład: stalowa hala przemysłowa, 40 × 60 m, obciążenia słupów do 600 kN",
+    "bearingLayer": "Warstwa nośna (orientacyjnie)",
+    "qcMin": "Minimalne qc",
+    "qcMinAria": "qc warstwy nośnej [MPa]",
+    "overAtLeast": "Na co najmniej",
+    "minThicknessAria": "Minimalna miąższość [m]",
+    "include": "Uwzględnij",
+    "cptsInAdvice": "Sondowania w zaleceniu",
+    "cptItem": "CPT {{id}}",
+    "noCpts": "Brak sondowań w projekcie.",
+    "calcsInAdvice": "Obliczenia w zaleceniu",
+    "noCalcs": "Brak obliczeń pali w projekcie.",
+    "appendixCpts": "Załącznik: sondowania",
+    "appendixCalcs": "Załącznik: arkusze obliczeniowe",
+    "ownText": "Własny tekst",
+    "introNote": "Uzupełnienie wstępu",
+    "remarks": "Uwagi do wniosków"
+  },
+  "status": {
+    "concept": "Wersja robocza",
+    "definitief": "Wersja ostateczna",
+    "conceptLower": "wersja robocza",
+    "definitiefLower": "wersja ostateczna"
+  },
+  "visual": {
+    "aria": "Plan sytuacyjny z sondowaniami",
+    "bearingTop": "wn NAP {{value}}",
+    "missing": "Bez współrzędnych (nie narysowano): {{ids}}.",
+    "legend": "Trójkąt: sondowanie CPT; wn = strop warstwy nośnej (orientacyjnie). W skali, współrzędne w układzie RD."
+  },
+  "result": {
+    "title": "Zalecenie posadowienia",
+    "header": "{{reference}} · wersja {{version}} · {{status}}",
+    "noReference": "bez sygnatury",
+    "toc": {
+      "title": "Spis treści raportu",
+      "intro": "Wstęp: podstawa, cel i dane projektu",
+      "basis": "Założenia projektowe",
+      "investigation": "Badania podłoża: sondowania CPT ({{count}}) z planem sytuacyjnym",
+      "soil": "Budowa podłoża i warstwa nośna",
+      "vertical": "Pale wciskane: {{names}}",
+      "lateral": "Pale obciążone poprzecznie: {{names}}",
+      "execution": "Tarcie negatywne i wykonawstwo",
+      "conclusions": "Wnioski i zalecenia",
+      "appendixCpts": "Załącznik A: sondowania CPT",
+      "appendixCalcs": "Załącznik B: arkusze obliczeniowe"
+    },
+    "bearing": {
+      "title": "Warstwa nośna",
+      "text": "Jako warstwę nośną przyjęto orientacyjnie pierwszy przedział, w którym opór stożka pozostaje powyżej {{qc}} MPa na długości co najmniej {{thickness}} m. Jest to pomoc przy przeglądzie; poziom podstawy pala wynika z obliczenia nośności.",
+      "tableAria": "Warstwa nośna dla każdego sondowania",
+      "cpt": "CPT",
+      "ground": "Poziom terenu [m NAP]",
+      "end": "Koniec [m NAP]",
+      "top": "Wn [m NAP]",
+      "notFound": "nie znaleziono",
+      "conclusion": "Strop warstwy nośnej między NAP {{highest}} m a NAP {{lowest}} m; rozrzut {{spread}} m."
+    },
+    "calcs": {
+      "title": "Obliczenia w zaleceniu",
+      "none": "Nie uwzględniono jeszcze obliczeń pali.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, podstawa NAP {{toe}} m",
+      "notComputed": "(nie obliczono)",
+      "lateral": "{{name}}: spełnia {{passing}} z {{count}} pali"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} sondowanie",
+    "cptMany": "Sondowania: {{count}}",
+    "calcOne": "{{count}} obliczenie",
+    "calcMany": "Obliczenia: {{count}}"
+  }
+}

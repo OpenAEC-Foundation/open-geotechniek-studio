@@ -31,6 +31,19 @@
     "builtOn": "visuell identitet och kärnbibliotek",
     "sourceLink": "Källkod"
   },
+  "extensions": {
+    "title": "Tillägg",
+    "intro": "Valfria moduler — slå på det du använder. Ändringar gäller direkt (ingen omstart behövs).",
+    "comingSoon": "kommer snart",
+    "tekening": {
+      "title": "Situationsplan",
+      "description": "Lägger till fliken ”Situationsplan” — CAD-ark (A2/A3) med sonderingar på kartan, ram, skalstock, fästfunktion, överlägg och export till PDF."
+    },
+    "offertes": {
+      "title": "Begär offerter",
+      "description": "Lägger till knappen ”Begär offerter” i situationsplanens menyband (kräver tillägget Situationsplan). Öppnar en dialog med de närmaste sonderingsföretagen och en ifylld offertförfrågan via e-post."
+    }
+  },
   "brand": {
     "title": "Grafisk profil",
     "desktopOnly": "Den grafiska profilen från SuperCloud finns bara i skrivbordsappen.",

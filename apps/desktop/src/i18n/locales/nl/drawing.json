@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Luchtfoto © PDOK",
+    "mapData": "Kaartgegevens © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Lijnen tot het snijpunt verlengd tot een hoek",
+    "extendSecond": "Extend — klik nu de tweede lijn; beide worden tot het snijpunt verlengd tot een hoek",
+    "hintExtend": "Extend — klik eerst op de referentielijn (waar tot verlengd wordt)",
+    "hintMirror": "Mirror — selecteer eerst een lijn (klik er op), klik dan twee punten voor de spiegelas",
+    "hintOffset": "Offset — klik een lijn om de bron te kiezen (afstand wordt daarna gevraagd)",
+    "hintTrim": "Trim — klik eerst op de referentielijn (snij-rand)",
+    "mirrorDone": "Lijn gespiegeld over de as",
+    "mirrorNeedsLine": "Selecteer eerst een lijn (klik er op) voordat je Mirror gebruikt",
+    "mirrorSecond": "Mirror — klik nu het tweede punt van de spiegelas",
+    "offsetDone": "Parallel-lijn op {{dist}} m geplaatst",
+    "offsetPickFirst": "Offset — klik eerst op een lijn om de bron te kiezen",
+    "offsetPrompt": "Offset-afstand in meters? (positief getal)",
+    "offsetSide": "Offset {{dist}} m — klik aan de zijde waar de kopie moet komen",
+    "parallel": "Lijnen zijn parallel — geen snijpunt, geen hoek mogelijk",
+    "pickOtherLine": "Kies een andere lijn dan de eerste",
+    "trimDone": "Lijnen op het snijpunt tot een hoek geknipt",
+    "trimSecond": "Trim — klik nu de tweede lijn; beide worden op het snijpunt tot een hoek geknipt"
+  },
+  "coordTable": {
+    "more": "+ {{n}} niet getoond",
+    "nr": "Nr",
+    "title": "Nog uit te voeren sonderingen (RD)"
+  },
+  "crop": {
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "confirm": "Bijsnijden & toevoegen",
+    "cropPage": "Pagina {{page}} bijsnijden",
+    "imageTitle": "Afbeelding bijsnijden",
+    "loadingPdf": "PDF wordt ingelezen…",
+    "otherPage": "← Andere pagina",
+    "otherPageTitle": "Andere pagina kiezen",
+    "page": "Pagina {{page}}",
+    "pageCount": "{{n}} pagina's",
+    "pageCountOne": "1 pagina",
+    "pdfReadError": "PDF kan niet worden ingelezen",
+    "pickPage": "PDF — selecteer pagina",
+    "rendering": "Pagina wordt gerenderd…"
+  },
+  "dwg": {
+    "askRd": "Op RD-coördinaten exporteren (EPSG:28992)?\n\nJa = ware RD-coördinaten (georefereerd).\nNee = lokale oorsprong, tekening bij 0,0.",
+    "askTitle": "DWG/DXF-export",
+    "desktopOnly": "DWG-export werkt alleen in de desktop-app",
+    "exported": "Geëxporteerd ({{n}} objecten)",
+    "exportedWithImages": "Geëxporteerd ({{n}} objecten + {{images}} afb.)",
+    "exporting": "DWG exporteren…",
+    "failed": "DWG-export mislukt: {{error}}",
+    "filterDwg": "CAD-tekening (DWG)",
+    "filterDxf": "CAD-uitwisseling (DXF)",
+    "nothing": "Niets te exporteren"
+  },
+  "export": {
+    "defaultFileName": "situatietekening"
+  },
+  "handle": {
+    "moveRaster": "Sleep om het raster te verplaatsen",
+    "rotate": "Sleep om te roteren"
+  },
+  "move": {
+    "hint": "Beweeg de muis en klik om neer te zetten (Esc = annuleren)",
+    "notMovable": "Dit object kun je niet verplaatsen",
+    "pickObject": "Klik het object dat je wilt verplaatsen"
+  },
+  "northArrow": "Noordpijl",
+  "note": {
+    "prompt": "Opmerking:"
+  },
+  "paper": {
+    "dwgStub": "DWG/DXF parser komt eraan"
+  },
+  "pdf": {
+    "exported": "PDF geëxporteerd",
+    "exporting": "PDF exporteren…",
+    "failed": "PDF-export mislukt: {{error}}",
+    "timeout": "PDF-rasterisatie duurde langer dan 30 seconden"
+  },
+  "props": {
+    "a2Landscape": "A2 liggend",
+    "a3Landscape": "A3 liggend",
+    "areaHeader": "Vlak {{id}}",
+    "background": "Achtergrond",
+    "color": "Kleur",
+    "cols": "Kolommen",
+    "cptHeader": "Sondering {{id}}",
+    "cptNumber": "Sonderingsnr",
+    "deleteArea": "Verwijder vlak",
+    "deleteBackground": "Verwijder achtergrond",
+    "deleteCpt": "Verwijder sondering",
+    "deleteLine": "Verwijder lijn",
+    "deleteNote": "Verwijder opmerking",
+    "deleteRaster": "Verwijder raster",
+    "dimensionHeader": "Maatlijn {{id}}",
+    "dragMarkerHint": "Sleep de marker op de kaart om te verplaatsen.",
+    "emptyHint": "Klik op een sondering, raster of object op het papier om de eigenschappen te bewerken.",
+    "fillColor": "Vulkleur",
+    "frame": "Tekeningkader",
+    "freeze": "Freeze viewport",
+    "freezeTitle": "Bevries pan + zoom zodat de tekening exact blijft staan",
+    "friction": "Kleefmeting",
+    "frictionWithSymbol": "Kleefmeting (streepje onder symbool)",
+    "hideInExport": "Raster verbergen in PDF-/DWG-export",
+    "layer": "Laag",
+    "layerBackground": "Achtergrond (onder lijnen/markers)",
+    "layerForeground": "Voorgrond (boven alles)",
+    "lineHeader": "Lijn {{id}}",
+    "loading": "Eigenschappen laden…",
+    "noSelection": "Geen selectie",
+    "noteHeader": "Opmerking {{id}}",
+    "numbering": "Nummering",
+    "numberingPlaceholder": "bv. S",
+    "numberingTitle": "Prefix voor de celnummering, bv. 'S' geeft S1, S2, … Leeg = standaard R01-S01-notatie.",
+    "overlayTip": "Tip: druk <kbd>M</kbd> of <kbd>G</kbd> om te verplaatsen (cursor volgt; klik commit, Esc cancelt). Sleep aan een hoek-handle om te schalen.",
+    "paper": "Papier",
+    "paperScale": "Papier & schaal",
+    "rasterHeader": "Raster {{id}}",
+    "resetColor": "Reset naar standaard",
+    "rotation": "Rotatie (°)",
+    "rows": "Rijen",
+    "scaleField": "Schaal 1:",
+    "scaleFieldTitle": "Typ een schaal (bv. 1000 voor 1:1000) en Enter — de tekening past zich aan",
+    "scalePresets": "Schaal-presets",
+    "setScale": "Zet schaal op 1:{{scale}}",
+    "spacingX": "H.o.h. X (m)",
+    "spacingY": "H.o.h. Y (m)",
+    "startNumber": "Startnr",
+    "strokeColor": "Randkleur",
+    "text": "Tekst",
+    "titleBlock": {
+      "address": "Adres",
+      "checkedBy": "Gecontroleerd",
+      "date": "Datum",
+      "drawingNumber": "Tekening-nr",
+      "drawnBy": "Getekend",
+      "project": "Project",
+      "projectNumber": "Projectnr",
+      "scale": "Schaal",
+      "version": "Versie"
+    },
+    "width": "Breedte (m)"
+  },
+  "quotes": {
+    "cancel": "Annuleren",
+    "hint": "Gesorteerd op afstand tot het project. De 3 dichtstbijzijnde bedrijven zijn voorgevinkt. Pas de selectie aan en klik “Email openen” om Outlook te openen met een offerte-aanvraag voor alle geselecteerde bedrijven.",
+    "more": "+ {{hidden}} verdere bedrijven niet getoond. De catalogus ({{total}} bedrijven) staat in <code>{{path}}</code>.",
+    "openMail": "Email openen ({{n}})",
+    "openMailTitle": "Opent je standaard mail-app (Outlook) met een prefilled offerte-aanvraag",
+    "selected": "{{n}} bedrijven geselecteerd",
+    "selectedOne": "1 bedrijf geselecteerd",
+    "title": "Vraag 3 offertes aan bij sondeerbedrijven"
+  },
+  "rotate": {
+    "notRotatable": "Dit objecttype kun je niet roteren",
+    "prompt": "Roteer met hoeveel graden? (negatief = tegen de klok in)",
+    "selectFirst": "Selecteer eerst een object om te roteren"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Straatnaam, huisnummer, projectplaats",
+    "addressTitle": "Klik om het adres aan te passen",
+    "author": "Auteur",
+    "drawingType": "Situatietekening",
+    "firstDate": "1e Datum",
+    "format": "Formaat",
+    "logoAlt": "Bedrijfslogo",
+    "logoTitle": "Klik om je eigen logo te kiezen (PNG / JPG / SVG)",
+    "projectNumber": "Projectnr",
+    "projectPlaceholder": "Projectnaam",
+    "projectTitle": "Klik om de projectnaam aan te passen",
+    "reference": "Kenmerk",
+    "revision": "Wijz.",
+    "scale": "Schaal",
+    "scaleTitle": "Klik om de schaal aan te passen (bv. 1:850)",
+    "sheet": "Blad"
+  },
+  "toast": {
+    "areaHint": "Vlak — klik de hoekpunten; Enter of dubbelklik sluit, Esc annuleert",
+    "broIncomplete": "BRO onvolledig: {{error}}",
+    "dwgParserPending": "DWG/DXF parser komt eraan — bestand herkend maar nog niet weergegeven.",
+    "frameMustBeSvg": "Tekeningkader moet een SVG-bestand zijn",
+    "invalidScale": "Ongeldige schaal: gebruik bijvoorbeeld 1:850 (50–100.000).",
+    "logoReadFailed": "Kon logo niet lezen",
+    "noteHint": "Opmerking — klik waar de tekst moet komen",
+    "objectsDeleted": "{{n}} object(en) verwijderd",
+    "objectsSelected": "{{n}} object(en) geselecteerd — Delete om te verwijderen",
+    "rasterPlaced": "Raster {{id}} geplaatst — sleep een hoek om uit te rekken (er komen automatisch sonderingen bij op max {{spacing}} m h-o-h)",
+    "unsupportedFile": "Bestandstype .{{ext}} wordt nog niet ondersteund"
+  }
+}

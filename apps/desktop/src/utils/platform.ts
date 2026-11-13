@@ -2,6 +2,7 @@ import {createBroSearch} from "./broSearch";
 import type { Diagnostic } from "../validation/report";
 import { attachValidation, validationOf } from "../validation/report";
 import { readSourceFile } from "./sourceEncoding";
+import i18next from "i18next";
 /**
  * Eén centrale plek voor alle desktop-vs-web platform-checks.
  *
@@ -144,7 +145,10 @@ export const cpt = {
       return parsed;
     }
     throw new Error(
-      `Onbekend CPT-formaat (${filename}). Verwacht GEF of BRO CPT XML.`,
+      i18next.t("app:platform.unknownCptFormat", {
+        defaultValue: "Onbekend CPT-formaat ({{filename}}). Verwacht GEF of BRO CPT XML.",
+        filename,
+      }),
     );
   },
 };
@@ -206,6 +210,9 @@ export const files = {
   },
 };
 
+const popupBlockedMessage = () =>
+    i18next.t('app:platform.popupBlocked', { defaultValue: 'Sta pop-ups toe of gebruik Genereer PDF om te downloaden.' });
+
 export const reports = {
     async preview(cpts: Cpt[], project: ProjectMeta, sections?: import('../store/reportSectionsState').ReportSections): Promise<Uint8Array> {
         // Both interfaces render the supplied snapshots through the same engine.
@@ -233,12 +240,12 @@ export const reports = {
             return;
         }
         const opened = window.open('about:blank', '_blank');
-        if (!opened) throw new Error('Sta pop-ups toe of gebruik Genereer PDF om te downloaden.');
+        if (!opened) throw new Error(popupBlockedMessage());
         let url: string | undefined;
         try {
             opened.opener = null;
             const bytes = await reports.preview(cpts, project, sections);
-            if (opened.closed) throw new Error('Het PDF-venster is gesloten. Open het rapport opnieuw.');
+            if (opened.closed) throw new Error(i18next.t('app:platform.pdfWindowClosed', { defaultValue: 'Het PDF-venster is gesloten. Open het rapport opnieuw.' }));
             url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
             opened.location.href = url;
             const documentUrl = url;
@@ -256,7 +263,7 @@ export const reports = {
         const opened = window.open(url, '_blank');
         if (!opened) {
             URL.revokeObjectURL(url);
-            throw new Error('Sta pop-ups toe of gebruik Genereer PDF om te downloaden.');
+            throw new Error(popupBlockedMessage());
         }
         setTimeout(() => URL.revokeObjectURL(url), 60000);
     }

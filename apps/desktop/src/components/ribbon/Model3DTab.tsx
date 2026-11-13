@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
+import { exportActiveIfcx } from "../../ifcx/exportActive";
 import { openView, splitRight } from "../soil3d/layout";
 import { defaultSectionBox, useSoil3DStore } from "../soil3d/useSoil3DStore";
 
@@ -17,8 +18,12 @@ export default function Model3DTab() {
           <RibbonButton icon="workspace.split-right" label={t("model3d.split", "Naast elkaar")} title={t("model3d.splitRight", "Naast elkaar: actief tabblad in een nieuw venster rechts")} disabled={!s.layout.panes.length} onClick={() => s.updateLayout((l) => splitRight(l, l.focus))} />
         </RibbonGroup>
         <RibbonGroup label={t("model3d.viewGroup", "Beeld")}>
-          <RibbonButton icon="view.fit" label={t("model3d.fit", "Passend")} onClick={s.requestFit} />
+          <RibbonButton icon="view.fit" label={t("model3d.fit", "Passend")} onClick={() => s.requestFit()} />
           <RibbonButton icon="section.reset-box" label={t("model3d.resetBox", "Sectiebox herstellen")} disabled={!s.model} onClick={() => { if (s.model) s.set({ sectionBox: defaultSectionBox(s.model) }); }} />
+        </RibbonGroup>
+        <RibbonGroup label={t("model3d.exportGroup", "Exporteren")}>
+          <RibbonButton icon="map.export-image" label={t("model3d.png", "Afbeelding\n(PNG)")} title={t("model3d.pngHint", "Het actieve venster als afbeelding opslaan")} disabled={!s.layout.panes.length} onClick={s.requestExport} />
+          <RibbonButton icon="file.export" label={t("model3d.ifcx", "Model\n(IFCX)")} title={t("ifc.exportHint", "Sla het project op als IFC5-bestand (.ifcx) voor een openBIM-platform")} onClick={() => void exportActiveIfcx()} />
         </RibbonGroup>
       </div>
     </div>

@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Ortofoto © PDOK",
+    "mapData": "Datos cartográficos © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Líneas alargadas hasta formar una esquina en la intersección",
+    "extendSecond": "Alargar — haga clic ahora en la segunda línea; ambas se alargan hasta formar una esquina en la intersección",
+    "hintExtend": "Alargar — haga clic primero en la línea de referencia (el límite hasta el que se alarga)",
+    "hintMirror": "Simetría — seleccione primero una línea (haga clic en ella) y luego haga clic en dos puntos del eje de simetría",
+    "hintOffset": "Desfase — haga clic en una línea para elegir el origen (después se le pedirá la distancia)",
+    "hintTrim": "Recortar — haga clic primero en la línea de referencia (arista de corte)",
+    "mirrorDone": "Línea reflejada respecto al eje",
+    "mirrorNeedsLine": "Seleccione primero una línea (haga clic en ella) antes de usar Simetría",
+    "mirrorSecond": "Simetría — haga clic ahora en el segundo punto del eje de simetría",
+    "offsetDone": "Línea paralela colocada a {{dist}} m",
+    "offsetPickFirst": "Desfase — haga clic primero en una línea para elegir el origen",
+    "offsetPrompt": "¿Distancia de desfase en metros? (número positivo)",
+    "offsetSide": "Desfase {{dist}} m — haga clic en el lado donde debe ir la copia",
+    "parallel": "Las líneas son paralelas — sin intersección, no es posible formar una esquina",
+    "pickOtherLine": "Elija una línea distinta de la primera",
+    "trimDone": "Líneas recortadas hasta formar una esquina en la intersección",
+    "trimSecond": "Recortar — haga clic ahora en la segunda línea; ambas se recortan hasta formar una esquina en la intersección"
+  },
+  "coordTable": {
+    "more": "+ {{n}} no mostrados",
+    "nr": "N.º",
+    "title": "CPT pendientes de ejecutar (RD)"
+  },
+  "crop": {
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "confirm": "Recortar y añadir",
+    "cropPage": "Recortar página {{page}}",
+    "imageTitle": "Recortar imagen",
+    "loadingPdf": "Leyendo PDF…",
+    "otherPage": "← Otra página",
+    "otherPageTitle": "Elegir otra página",
+    "page": "Página {{page}}",
+    "pageCount": "{{n}} páginas",
+    "pageCountOne": "1 página",
+    "pdfReadError": "No se pudo leer el PDF",
+    "pickPage": "PDF — seleccione la página",
+    "rendering": "Renderizando la página…"
+  },
+  "dwg": {
+    "askRd": "¿Exportar en coordenadas RD (EPSG:28992)?\n\nSí = coordenadas RD reales (georreferenciadas).\nNo = origen local, dibujo en 0,0.",
+    "askTitle": "Exportación DWG/DXF",
+    "desktopOnly": "La exportación DWG solo funciona en la aplicación de escritorio",
+    "exported": "Exportado ({{n}} objetos)",
+    "exportedWithImages": "Exportado ({{n}} objetos + {{images}} img.)",
+    "exporting": "Exportando DWG…",
+    "failed": "Error en la exportación DWG: {{error}}",
+    "filterDwg": "Dibujo CAD (DWG)",
+    "filterDxf": "Intercambio CAD (DXF)",
+    "nothing": "Nada que exportar"
+  },
+  "export": {
+    "defaultFileName": "plano-de-situacion"
+  },
+  "handle": {
+    "moveRaster": "Arrastre para mover la retícula",
+    "rotate": "Arrastre para girar"
+  },
+  "move": {
+    "hint": "Mueva el ratón y haga clic para colocar (Esc = cancelar)",
+    "notMovable": "Este objeto no se puede mover",
+    "pickObject": "Haga clic en el objeto que desea mover"
+  },
+  "northArrow": "Flecha de norte",
+  "note": {
+    "prompt": "Nota:"
+  },
+  "paper": {
+    "dwgStub": "Lector de DWG/DXF disponible próximamente"
+  },
+  "pdf": {
+    "exported": "PDF exportado",
+    "exporting": "Exportando PDF…",
+    "failed": "Error en la exportación PDF: {{error}}",
+    "timeout": "La rasterización del PDF tardó más de 30 segundos"
+  },
+  "props": {
+    "a2Landscape": "A2 horizontal",
+    "a3Landscape": "A3 horizontal",
+    "areaHeader": "Área {{id}}",
+    "background": "Fondo",
+    "color": "Color",
+    "cols": "Columnas",
+    "cptHeader": "CPT {{id}}",
+    "cptNumber": "N.º de CPT",
+    "deleteArea": "Eliminar área",
+    "deleteBackground": "Eliminar fondo",
+    "deleteCpt": "Eliminar CPT",
+    "deleteLine": "Eliminar línea",
+    "deleteNote": "Eliminar nota",
+    "deleteRaster": "Eliminar retícula",
+    "dimensionHeader": "Cota {{id}}",
+    "dragMarkerHint": "Arrastre el marcador en el mapa para moverlo.",
+    "emptyHint": "Haga clic en un CPT, una retícula o un objeto del papel para editar sus propiedades.",
+    "fillColor": "Color de relleno",
+    "frame": "Marco del dibujo",
+    "freeze": "Fijar vista",
+    "freezeTitle": "Fijar desplazamiento + zoom para que el dibujo quede exactamente en su sitio",
+    "friction": "Medición de fricción",
+    "frictionWithSymbol": "Medición de fricción (guion bajo el símbolo)",
+    "hideInExport": "Ocultar la retícula en la exportación PDF/DWG",
+    "layer": "Capa",
+    "layerBackground": "Fondo (bajo líneas/marcadores)",
+    "layerForeground": "Primer plano (sobre todo)",
+    "lineHeader": "Línea {{id}}",
+    "loading": "Cargando propiedades…",
+    "noSelection": "Sin selección",
+    "noteHeader": "Nota {{id}}",
+    "numbering": "Numeración",
+    "numberingPlaceholder": "p. ej. S",
+    "numberingTitle": "Prefijo para la numeración de celdas, p. ej. 'S' da S1, S2, … Vacío = notación estándar R01-S01.",
+    "overlayTip": "Consejo: pulse <kbd>M</kbd> o <kbd>G</kbd> para mover (el cursor sigue; un clic confirma, Esc cancela). Arrastre un tirador de esquina para escalar.",
+    "paper": "Papel",
+    "paperScale": "Papel y escala",
+    "rasterHeader": "Retícula {{id}}",
+    "resetColor": "Restablecer predeterminado",
+    "rotation": "Rotación (°)",
+    "rows": "Filas",
+    "scaleField": "Escala 1:",
+    "scaleFieldTitle": "Escriba una escala (p. ej. 1000 para 1:1000) y pulse Intro — el dibujo se ajusta",
+    "scalePresets": "Escalas predefinidas",
+    "setScale": "Fijar escala en 1:{{scale}}",
+    "spacingX": "Separación X (m)",
+    "spacingY": "Separación Y (m)",
+    "startNumber": "N.º inicial",
+    "strokeColor": "Color del borde",
+    "text": "Texto",
+    "titleBlock": {
+      "address": "Dirección",
+      "checkedBy": "Revisado",
+      "date": "Fecha",
+      "drawingNumber": "N.º de plano",
+      "drawnBy": "Dibujado",
+      "project": "Proyecto",
+      "projectNumber": "N.º de proyecto",
+      "scale": "Escala",
+      "version": "Versión"
+    },
+    "width": "Ancho (m)"
+  },
+  "quotes": {
+    "cancel": "Cancelar",
+    "hint": "Ordenadas por distancia al proyecto. Las 3 empresas más cercanas están preseleccionadas. Ajuste la selección y haga clic en «Abrir correo» para abrir Outlook con una solicitud de presupuesto para todas las empresas seleccionadas.",
+    "more": "+ {{hidden}} empresas más no mostradas. El catálogo ({{total}} empresas) está en <code>{{path}}</code>.",
+    "openMail": "Abrir correo ({{n}})",
+    "openMailTitle": "Abre su aplicación de correo predeterminada (Outlook) con una solicitud de presupuesto ya rellenada",
+    "selected": "{{n}} empresas seleccionadas",
+    "selectedOne": "1 empresa seleccionada",
+    "title": "Solicitar 3 presupuestos a empresas de ensayos CPT"
+  },
+  "rotate": {
+    "notRotatable": "Este tipo de objeto no se puede girar",
+    "prompt": "¿Cuántos grados desea girar? (negativo = sentido antihorario)",
+    "selectFirst": "Seleccione primero un objeto para girarlo"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Calle, número, localidad del proyecto",
+    "addressTitle": "Haga clic para editar la dirección",
+    "author": "Autor",
+    "drawingType": "Plano de situación",
+    "firstDate": "1.ª fecha",
+    "format": "Formato",
+    "logoAlt": "Logotipo de la empresa",
+    "logoTitle": "Haga clic para elegir su propio logotipo (PNG / JPG / SVG)",
+    "projectNumber": "N.º de proyecto",
+    "projectPlaceholder": "Nombre del proyecto",
+    "projectTitle": "Haga clic para editar el nombre del proyecto",
+    "reference": "Referencia",
+    "revision": "Rev.",
+    "scale": "Escala",
+    "scaleTitle": "Haga clic para editar la escala (p. ej. 1:850)",
+    "sheet": "Hoja"
+  },
+  "toast": {
+    "areaHint": "Área — haga clic en los vértices; Intro o doble clic cierra, Esc cancela",
+    "broIncomplete": "BRO incompleto: {{error}}",
+    "dwgParserPending": "Lector de DWG/DXF disponible próximamente — archivo reconocido pero aún no mostrado.",
+    "frameMustBeSvg": "El marco del dibujo debe ser un archivo SVG",
+    "invalidScale": "Escala no válida: use por ejemplo 1:850 (50–100.000).",
+    "logoReadFailed": "No se pudo leer el logotipo",
+    "noteHint": "Nota — haga clic donde debe ir el texto",
+    "objectsDeleted": "{{n}} objeto(s) eliminado(s)",
+    "objectsSelected": "{{n}} objeto(s) seleccionado(s) — pulse Supr para eliminar",
+    "rasterPlaced": "Retícula {{id}} colocada — arrastre una esquina para estirarla (se añaden CPT automáticamente a un máximo de {{spacing}} m entre ejes)",
+    "unsupportedFile": "El tipo de archivo .{{ext}} aún no es compatible"
+  }
+}

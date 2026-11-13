@@ -31,5 +31,11 @@
   "remove": "Usuń",
   "hide": "Ukryj",
   "show": "Pokaż",
-  "noCptsHint": "Brak sondowań. Kliknij „Dodaj sondowanie” lub przeciągnij pliki GEF/BRO-XML do okna."
+  "noCptsHint": "Brak sondowań. Kliknij „Dodaj sondowanie” lub przeciągnij pliki GEF/BRO-XML do okna.",
+  "noTitle": "(bez tytułu)",
+  "fileMetadata": "Metadane pliku",
+  "noExtras": "Brak dodatkowych metadanych.",
+  "boresInProject": "Odwierty w tym projekcie",
+  "addBore": "Dodaj odwiert",
+  "noBoresHint": "Nie dodano jeszcze odwiertów. Kliknij „Dodaj odwiert”, aby zaimportować BHR-GT XML."
 }

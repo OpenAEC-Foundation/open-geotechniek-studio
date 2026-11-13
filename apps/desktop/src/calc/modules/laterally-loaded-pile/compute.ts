@@ -4,6 +4,7 @@ import {equivalentLayers} from './nonlinear-soil';
 import type {AnalysisMode,LayerCorrection,UltimateProfile,SpringState,ConvergenceInfo,EquivalentLayer} from './spring-types';
 import { sectionCapacity, sectionStiffness, type PileSection } from './section';
 import { springValue } from './soil';
+import { ct } from '../../i18n';
 export interface LateralLayer {
   topM:number; bottomM:number; springId:string; manualKhKnM3:number;
   frictionDeg:number; netPressureKpa:number;
@@ -48,25 +49,25 @@ export function computeLateral(input:LateralInput):LateralResult {
       ![input.nEdKn,input.springWidthM,input.surchargeKpa,input.surchargeWidthM,input.surchargeSign].every(Number.isFinite)||
       input.springWidthM<=0||input.surchargeKpa<0||input.surchargeWidthM<=0||![1,-1].includes(input.surchargeSign)||
       !['low','high'].includes(input.scenario)||!['unresolved','retaining'].includes(input.surchargeMode))
-      throw new Error('Ongeldige grond- of belastingsinvoer.');
+      throw new Error(ct('calcLateral', 'errors.invalidInput', 'Ongeldige grond- of belastingsinvoer.'));
     if(input.surchargeKpa>0&&input.surchargeMode!=='retaining')
-      throw new Error('Kies een onderbouwd belastingmodel voor de bovenbelasting; q is geen automatische netto paaldruk.');
+      throw new Error(ct('calcLateral', 'errors.surchargeModel', 'Kies een onderbouwd belastingmodel voor de bovenbelasting; q is geen automatische netto paaldruk.'));
     const section=sectionStiffness(input.section);
     const analysisMode=input.analysisMode??'linear',correction=input.layerCorrection??'none';
-    if(!['linear','nonlinear'].includes(analysisMode)||!['none','georgiadis'].includes(correction))throw new Error('Onbekende analyse of laagcorrectie.');
+    if(!['linear','nonlinear'].includes(analysisMode)||!['none','georgiadis'].includes(correction))throw new Error(ct('calcLateral', 'errors.unknownAnalysis', 'Onbekende analyse of laagcorrectie.'));
     const resolvedLayers=input.layers.map((layer,inputIndex)=>{
       if(![layer.manualKhKnM3,layer.frictionDeg,layer.netPressureKpa].every(Number.isFinite)||
         layer.manualKhKnM3<0||layer.frictionDeg<0||layer.frictionDeg>45)
-        throw new Error('Ongeldige laagparameters.');
+        throw new Error(ct('calcLateral', 'errors.invalidLayer', 'Ongeldige laagparameters.'));
       const own=input.springOverrides?.[layer.springId]?.[input.scenario];
-      if(own!==undefined&&!(Number.isFinite(own)&&own>0))throw new Error('Eigen beddingswaarden in de instellingen moeten positief zijn.');
+      if(own!==undefined&&!(Number.isFinite(own)&&own>0))throw new Error(ct('calcLateral', 'errors.ownSpringPositive', 'Eigen beddingswaarden in de instellingen moeten positief zijn.'));
       const khKnM3=layer.springId==='manual'?layer.manualKhKnM3:own??springValue(layer.springId,input.scenario);
       const ka=Math.tan((45-layer.frictionDeg/2)*Math.PI/180)**2;
       return {...layer,inputIndex,khKnM3,ka,lineSpringKnM2:khKnM3*input.springWidthM,
         lineLoadKnM:layer.netPressureKpa*input.springWidthM+input.surchargeSign*ka*input.surchargeKpa*input.surchargeWidthM};
     }).sort((a,b)=>a.topM-b.topM);
     const profiles=resolvedLayers.map(layer=>{
-      if(!layer.ultimate&&(analysisMode==='nonlinear'||correction==='georgiadis'))throw new Error(`Vul de grensweerstand in voor laag ${layer.inputIndex+1}.`);
+      if(!layer.ultimate&&(analysisMode==='nonlinear'||correction==='georgiadis'))throw new Error(ct('calcLateral', 'errors.missingUltimate', 'Vul de grensweerstand in voor laag {{layer}}.', {layer:layer.inputIndex+1}));
       return {topM:layer.topM,bottomM:layer.bottomM,initialKnM2:layer.lineSpringKnM2,
         ultimate:analysisMode==='linear'&&correction==='none'?{atSurfaceKnM:0,gradientKnM2:0,capKnM:1}:layer.ultimate??{atSurfaceKnM:0,gradientKnM2:0,capKnM:1}};
     });

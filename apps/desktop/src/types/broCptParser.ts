@@ -15,11 +15,15 @@
  *   - crates-warehouse/cpt-core/src/bro/mod.rs
  *   - crates-warehouse/cpt-core/src/bro/columns.rs
  */
+import i18next from "i18next";
 
 import { BRO_CHANNELS, maskPreExcavation } from "./bedrockCompatibility";
 import type { Cpt, MeasurementPoint } from "./cpt";
 import { attachValidation, type ValidationReport } from "../validation/report";
 import { excludeDepthOutliers } from "../validation/depthOutliers";
+
+const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
 
 /** BRO 25-koloms data-array — vaste volgorde per BRO IMBRO/A standaard. */
 const COLUMN_ORDER = [
@@ -71,15 +75,15 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
   const doc = new DOMParser().parseFromString(xml, "text/xml");
   const errs = doc.getElementsByTagName("parsererror");
   if (errs.length > 0) {
-    throw new Error(`BRO CPT XML parse-fout: ${errs[0].textContent ?? ""}`);
+    throw new Error(m("bro.xmlParseError", "BRO CPT XML parse-fout: {{detail}}", { detail: errs[0].textContent ?? "" }));
   }
 
   const objects = Array.from(doc.getElementsByTagName("*")).filter(el => ["CPT_O","CPT_O_DP"].includes(el.localName));
-  if(Array.from(doc.getElementsByTagName("*")).filter(el=>el.localName==="cptResult").length>1 && objects.length<=1)throw new Error("BRO XML bevat meerdere cptResult-blokken zonder eenduidige CPT-objecten; import gestopt.");
-  if(objects.length > 1) throw new Error("BRO XML bevat meerdere CPT-objecten. Splits het document per CPT om stil gegevensverlies te voorkomen.");
+  if(Array.from(doc.getElementsByTagName("*")).filter(el=>el.localName==="cptResult").length>1 && objects.length<=1)throw new Error(m("bro.multipleResults", "BRO XML bevat meerdere cptResult-blokken zonder eenduidige CPT-objecten; import gestopt."));
+  if(objects.length > 1) throw new Error(m("bro.multipleObjects", "BRO XML bevat meerdere CPT-objecten. Splits het document per CPT om stil gegevensverlies te voorkomen."));
   const report:ValidationReport={format:"BRO-CPT",diagnostics:[],records:0,points:0,voids:0,omittedRecords:0,depthMethods:[],depthMethod:"corrected-depth"};
   const broId = textByLocalName(doc.documentElement, "broId");
-  if (!broId) throw new Error("BRO CPT: ontbrekende broId");
+  if (!broId) throw new Error(m("bro.missingBroId", "BRO CPT: ontbrekende broId"));
 
   // ── RD-coordinaten ───────────────────────────────────────────
   // deliveredLocation/pos = RD (EPSG:28992). standardizedLocation
@@ -93,7 +97,7 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
       const posEl=findByLocalName(deliveredLoc,"pos");
       const srs=posEl?.getAttribute("srsName") || posEl?.parentElement?.getAttribute("srsName") || deliveredLoc.getAttribute("srsName") || "";
       const rd=/(?:EPSG(?::|\/|::)|\/EPSG\/0\/)28992$/i.test(srs);
-      if(!rd)report.diagnostics.push({severity:"warning",code:"UNKNOWN_XY_CRS",message:`Locatiestelsel '${srs || "ontbreekt"}' is niet expliciet RD/EPSG:28992; locatie niet op kaart gezet.`});
+      if(!rd)report.diagnostics.push({severity:"warning",code:"UNKNOWN_XY_CRS",message:srs?m("bro.unknownXyCrs", "Locatiestelsel '{{srs}}' is niet expliciet RD/EPSG:28992; locatie niet op kaart gezet.", { srs }):m("bro.unknownXyCrsMissing", "Locatiestelsel 'ontbreekt' is niet expliciet RD/EPSG:28992; locatie niet op kaart gezet.")});
       const parts = rd ? pos.trim().split(/\s+/).map(Number) : [];
       if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
         xRd = parts[0];
@@ -110,14 +114,14 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
     if (offset) {
       const el=findByLocalName(verticalPos,"offset"),unit=el?.getAttribute("uom")||"m",v=Number(offset);
       const factor:Record<string,number>={m:1,cm:0.01,mm:0.001};
-      if(Number.isFinite(v) && factor[unit]!=null){zNap=v*factor[unit];if(unit!=="m")report.diagnostics.push({severity:"warning",code:"UNIT_CONVERSION",message:`Verticale offset van ${unit} naar m omgerekend; broneenheid bewaard.`});}
-      else report.diagnostics.push({severity:"warning",code:"UNKNOWN_HEIGHT_UNIT",message:`Verticale offset '${offset}' met eenheid '${unit}' is niet als NAP-hoogte gebruikt.`});
+      if(Number.isFinite(v) && factor[unit]!=null){zNap=v*factor[unit];if(unit!=="m")report.diagnostics.push({severity:"warning",code:"UNIT_CONVERSION",message:m("bro.heightUnitConversion", "Verticale offset van {{unit}} naar m omgerekend; broneenheid bewaard.", { unit })});}
+      else report.diagnostics.push({severity:"warning",code:"UNKNOWN_HEIGHT_UNIT",message:m("bro.unknownHeightUnit", "Verticale offset '{{offset}}' met eenheid '{{unit}}' is niet als NAP-hoogte gebruikt.", { offset, unit })});
     }
   }
 
   const verticalDatum=textByLocalName(verticalPos??doc.documentElement,"verticalDatum");
   if(zNap!==undefined && verticalDatum?.toUpperCase()!=="NAP"){
-    report.diagnostics.push({severity:"warning",code:"UNKNOWN_Z_DATUM",message:`Verticaal datum '${verticalDatum??"ontbreekt"}' is niet expliciet NAP; offset blijft als brongrootheid bewaard.`});zNap=undefined;
+    report.diagnostics.push({severity:"warning",code:"UNKNOWN_Z_DATUM",message:verticalDatum!=null?m("bro.unknownZDatum", "Verticaal datum '{{datum}}' is niet expliciet NAP; offset blijft als brongrootheid bewaard.", { datum: verticalDatum }):m("bro.unknownZDatumMissing", "Verticaal datum 'ontbreekt' is niet expliciet NAP; offset blijft als brongrootheid bewaard.")});zNap=undefined;
   }
 
   // ── Rapportdatum ────────────────────────────────────────────
@@ -192,16 +196,16 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
   for(const layer of Array.from(doc.getElementsByTagName("*")).filter(el=>el.localName==='removedLayer')){
     const readDepth=(name:string):number|undefined=>{
       const element=findByLocalName(layer,name),raw=element?.textContent?.trim(),unit=element?.getAttribute('uom')??'m',factor=({m:1,cm:.01,mm:.001} as Record<string,number>)[unit],value=raw?Number(raw):NaN;
-      if(!Number.isFinite(value)||factor==null){report.diagnostics.push({severity:'warning',code:'REMOVED_LAYER_VALUE',message:`Verwijderde laag: ${name} '${raw??"ontbreekt"}' (${unit}) alleen in bron-XML bewaard.`});return undefined;}
+      if(!Number.isFinite(value)||factor==null){report.diagnostics.push({severity:'warning',code:'REMOVED_LAYER_VALUE',message:raw!=null?m("bro.removedLayerValue", "Verwijderde laag: {{name}} '{{raw}}' ({{unit}}) alleen in bron-XML bewaard.", { name, raw, unit }):m("bro.removedLayerValueMissing", "Verwijderde laag: {{name}} 'ontbreekt' ({{unit}}) alleen in bron-XML bewaard.", { name, unit })});return undefined;}
       return value*factor;
     };
     const top=readDepth('upperBoundary'),bottom=readDepth('lowerBoundary'),description=textByLocalName(layer,'description')??'',sequence=Number(textByLocalName(layer,'sequenceNumber'));
     if(bottom!=null && bottom>=0 && (top==null||top<=bottom))removedLayers.push({top_depth_m:top,bottom_depth_m:bottom,description,source_sequence:Number.isFinite(sequence)?sequence:undefined});
-    else report.diagnostics.push({severity:'warning',code:'REMOVED_LAYER_RANGE',message:'Ongeldige verwijderde laag alleen in oorspronkelijke BRO-XML bewaard.'});
+    else report.diagnostics.push({severity:'warning',code:'REMOVED_LAYER_RANGE',message:m("bro.removedLayerRange", "Ongeldige verwijderde laag alleen in oorspronkelijke BRO-XML bewaard.")});
   }
   const regime=extra.qualityRegime;
   for(const field of ["qualityClass","cptStandard","researchOperator"]){
-    if(!extra[field])report.diagnostics.push({severity:"info",code:"MISSING_REGIME_FIELD",message:`${field}: ${regime === "IMBRO/A" ? "ontbreekt volgens regime IMBRO/A" : "ontbreekt; controleer de bron"}.`});
+    if(!extra[field])report.diagnostics.push({severity:"info",code:"MISSING_REGIME_FIELD",message:regime === "IMBRO/A" ? m("bro.missingRegimeFieldImbroA", "{{field}}: ontbreekt volgens regime IMBRO/A.", { field }) : m("bro.missingRegimeField", "{{field}}: ontbreekt; controleer de bron.", { field })});
   }
 
   // ── Data-block uit cptResult/values ────────────────────────
@@ -211,21 +215,21 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
   const cptResult = findByLocalName(doc.documentElement, "cptResult");
   const dataBlock = cptResult ? textByLocalName(cptResult, "values") : undefined;
   if (!dataBlock) {
-    throw new Error("BRO CPT: ontbrekend cptResult/values data-block");
+    throw new Error(m("bro.missingValues", "BRO CPT: ontbrekend cptResult/values data-block"));
   }
 
   // ── Parse data-block ───────────────────────────────────────
   const encoding=findByLocalName(cptResult!,"TextEncoding");
   const tokenSeparator=encoding?.getAttribute("tokenSeparator")||",",blockSeparator=encoding?.getAttribute("blockSeparator")||";",decimalSeparator=encoding?.getAttribute("decimalSeparator")||".";
-  if(tokenSeparator===blockSeparator || tokenSeparator===decimalSeparator || decimalSeparator.length!==1)throw new Error("BRO TextEncoding bevat dubbelzinnige scheidingstekens.");
-  if(decimalSeparator!==".")report.diagnostics.push({severity:"warning",code:"DECIMAL_SEPARATOR",message:`BRO decimaalteken '${decimalSeparator}' wordt expliciet naar punt omgerekend.`});
+  if(tokenSeparator===blockSeparator || tokenSeparator===decimalSeparator || decimalSeparator.length!==1)throw new Error(m("bro.ambiguousSeparators", "BRO TextEncoding bevat dubbelzinnige scheidingstekens."));
+  if(decimalSeparator!==".")report.diagnostics.push({severity:"warning",code:"DECIMAL_SEPARATOR",message:m("bro.decimalSeparator", "BRO decimaalteken '{{separator}}' wordt expliciet naar punt omgerekend.", { separator: decimalSeparator })});
   const parameters=findByLocalName(doc.documentElement,"parameters");
   const flags=parameters?Array.from(parameters.children):[];
   const columns=flags.length?flags.map(el=>BRO_CHANNELS[el.localName]??el.localName):[...COLUMN_ORDER];
   const enabled=flags.length?flags.map((el,i)=>{
     const value=el.textContent?.trim().toLowerCase();
-    if(value!=="ja"&&value!=="nee")report.diagnostics.push({severity:"warning",code:"UNKNOWN_CHANNEL_FLAG",message:`Onbekende kanaalvlag '${value}' voor ${el.localName}; kanaal wordt niet geïnterpreteerd.`,column:i+1});
-    if(!BRO_CHANNELS[el.localName])report.diagnostics.push({severity:"warning",code:"UNKNOWN_BRO_COLUMN",message:`Kanaal ${el.localName} blijft als oorspronkelijke parameter bewaard.`,column:i+1});
+    if(value!=="ja"&&value!=="nee")report.diagnostics.push({severity:"warning",code:"UNKNOWN_CHANNEL_FLAG",message:m("bro.unknownChannelFlag", "Onbekende kanaalvlag '{{value}}' voor {{channel}}; kanaal wordt niet geïnterpreteerd.", { value, channel: el.localName }),column:i+1});
+    if(!BRO_CHANNELS[el.localName])report.diagnostics.push({severity:"warning",code:"UNKNOWN_BRO_COLUMN",message:m("bro.unknownChannel", "Kanaal {{channel}} blijft als oorspronkelijke parameter bewaard.", { channel: el.localName }),column:i+1});
     return value==="ja";
   }):columns.map(()=>true);
   const dataStart=/<(?:[\w.-]+:)?cptResult\b[\s\S]*?<(?:[\w.-]+:)?values\b[^>]*>/i.exec(xml);
@@ -234,14 +238,14 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
   const predrill=measurements.find(m=>m.name==='predrilledDepth');
   const predrillFactor:Record<string,number>={m:1,cm:0.01,mm:0.001};
   const predrilledDepth=predrill?predrill.value==null||predrillFactor[predrill.unit]==null?undefined:predrill.value*predrillFactor[predrill.unit]:extra.predrilledDepth!=null&&Number.isFinite(Number(extra.predrilledDepth))?Number(extra.predrilledDepth):undefined;
-  if(predrill&&predrilledDepth===undefined)report.diagnostics.push({severity:"warning",code:"UNKNOWN_PREDRILL_UNIT",message:`Voorgeboorde diepte met eenheid '${predrill.unit}' niet als meters gebruikt.`});
+  if(predrill&&predrilledDepth===undefined)report.diagnostics.push({severity:"warning",code:"UNKNOWN_PREDRILL_UNIT",message:m("bro.unknownPredrillUnit", "Voorgeboorde diepte met eenheid '{{unit}}' niet als meters gebruikt.", { unit: predrill.unit })});
   const masked=maskPreExcavation(rawParsed,predrilledDepth);
-  for(const record of masked.masked)report.diagnostics.push({severity:"info",code:"PRE_EXCAVATED",message:"Kanalen boven voorgeboorde diepte gemaskeerd; bronwaarden blijven bewaard.",record});
+  for(const record of masked.masked)report.diagnostics.push({severity:"info",code:"PRE_EXCAVATED",message:m("bro.preExcavated", "Kanalen boven voorgeboorde diepte gemaskeerd; bronwaarden blijven bewaard."),record});
   const parsed=masked.points;
   const {points,excluded}=excludeDepthOutliers(parsed);
   if(excluded.length){
     extra["ogs:bro-outliers"]=JSON.stringify({all:parsed,excluded,included:false});
-    report.diagnostics.push({severity:"warning",code:"DEPTH_OUTLIERS",message:`${excluded.length} records buiten de langste niet-afnemende dieptereeks standaard uitgesloten. Bronrecords: ${excluded.join(", ")}. Schakel ze desgewenst in bij Validatie.`});
+    report.diagnostics.push({severity:"warning",code:"DEPTH_OUTLIERS",message:m("bro.depthOutliers", "{{n}} records buiten de langste niet-afnemende dieptereeks standaard uitgesloten. Bronrecords: {{records}}. Schakel ze desgewenst in bij Validatie.", { n: excluded.length, records: excluded.join(", ") })});
   }
   const methods=[...new Set(report.depthMethods!.map(item=>item.method))];
   report.depthMethod=methods.length===1?methods[0]:methods.length?"mixed":undefined;
@@ -281,19 +285,19 @@ function parseDataBlock(block: string, zNap: number | undefined, report:Validati
     if(!rec.trim())continue;
     report.records++;const record=report.records;
     const tokens=rec.trim().split(options.tokenSeparator);
-    if(tokens.length!==options.columns.length)report.diagnostics.push({severity:"error",code:"COLUMN_COUNT",message:`Verwacht ${options.columns.length} kolommen, ontvangen ${tokens.length}.`,record,line:lineAt});
+    if(tokens.length!==options.columns.length)report.diagnostics.push({severity:"error",code:"COLUMN_COUNT",message:m("bro.columnCount", "Verwacht {{expected}} kolommen, ontvangen {{received}}.", { expected: options.columns.length, received: tokens.length }),record,line:lineAt});
     const nums=tokens.map((token,i)=>{
       const raw=token.trim().split(options.decimalSeparator).join("."),v=Number(raw);
       if(raw === "" || !/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?$/.test(raw) || !Number.isFinite(v)){
-        report.diagnostics.push({severity:"warning",code:"INVALID_NUMBER",message:`Ongeldig getal '${raw}' wordt void; kolom blijft behouden.`,record,line:lineAt,column:i+1});return undefined;
+        report.diagnostics.push({severity:"warning",code:"INVALID_NUMBER",message:m("bro.invalidNumber", "Ongeldig getal '{{raw}}' wordt void; kolom blijft behouden.", { raw }),record,line:lineAt,column:i+1});return undefined;
       }
       if(v===VOID_VALUE){report.voids++;return undefined;}return v;
     });
     const pt=buildPoint(nums,zNap,options.columns,options.enabled);
-    if(!pt || pt.depth<0){report.omittedRecords++;report.diagnostics.push({severity:"error",code:"MISSING_DEPTH",message:"Record zonder geldige niet-negatieve diepte weggelaten.",record,line:lineAt});continue;}
+    if(!pt || pt.depth<0){report.omittedRecords++;report.diagnostics.push({severity:"error",code:"MISSING_DEPTH",message:m("bro.missingDepth", "Record zonder geldige niet-negatieve diepte weggelaten."),record,line:lineAt});continue;}
     const depthColumn=options.columns.indexOf('depth'),corrected=depthColumn>=0&&options.enabled[depthColumn]&&nums[depthColumn]!==undefined;
     report.depthMethods!.push({record,method:corrected?'corrected-depth':'penetration-length'});
-    if(!corrected)report.diagnostics.push({severity:'warning',code:'DEPTH_FALLBACK',message:'BRO-diepte ontbreekt; sondeerlengte is gebruikt als verticale benadering.',record,line:lineAt,column:depthColumn>=0?depthColumn+1:undefined});
+    if(!corrected)report.diagnostics.push({severity:'warning',code:'DEPTH_FALLBACK',message:m("bro.depthFallback", "BRO-diepte ontbreekt; sondeerlengte is gebruikt als verticale benadering."),record,line:lineAt,column:depthColumn>=0?depthColumn+1:undefined});
     pt.parameters=Object.fromEntries(options.columns.map((key,i)=>[key,nums[i]??null]));
     // Source record is kept for the outlier report and persists through snapshots.
     pt.parameters["source_record"]=record;
@@ -381,7 +385,7 @@ function textByLocalName(root: Element, name: string): string | undefined {
 /** Open every CPT object explicitly; namespace declarations are retained by XMLSerializer. */
 export function parseBroCptXmlMany(xml:string,filename:string):Cpt[] {
  const doc=new DOMParser().parseFromString(xml,"text/xml");
- if(doc.getElementsByTagName("parsererror").length)throw new Error("BRO CPT XML parse-fout");
+ if(doc.getElementsByTagName("parsererror").length)throw new Error(m("bro.xmlParseErrorShort", "BRO CPT XML parse-fout"));
  const objects=Array.from(doc.getElementsByTagName("*")).filter(el=>["CPT_O","CPT_O_DP"].includes(el.localName));
  if(objects.length<=1)return [parseBroCptXml(xml,filename)];
  const envelope=doc.cloneNode(true) as XMLDocument;
@@ -390,8 +394,8 @@ export function parseBroCptXmlMany(xml:string,filename:string):Cpt[] {
  const cpts=objects.map(object=>{
   const value=parseBroCptXml(new XMLSerializer().serializeToString(object),filename),report=JSON.parse(value.metadata.extra!['ogs:validation']) as ValidationReport;
   value.metadata.extra!['ogs:bro-envelope']=envelopeXml;
-  return attachValidation(value,{...report,diagnostics:[...report.diagnostics,{severity:'info',code:'MULTI_CPT_OBJECT',message:`${objects.length} CPT-objecten apart geïmporteerd; envelopmetadata bewaard. Regelnummers betreffen het bewaarde CPT-fragment.`}]});
+  return attachValidation(value,{...report,diagnostics:[...report.diagnostics,{severity:'info',code:'MULTI_CPT_OBJECT',message:m("bro.multipleObjectsImported", "{{n}} CPT-objecten apart geïmporteerd; envelopmetadata bewaard. Regelnummers betreffen het bewaarde CPT-fragment.", { n: objects.length })}]});
  });
- if(new Set(cpts.map(c=>c.id)).size!==cpts.length)throw new Error("BRO document bevat dubbele CPT-identificaties; geen gegevens overschreven.");
+ if(new Set(cpts.map(c=>c.id)).size!==cpts.length)throw new Error(m("bro.duplicateIds", "BRO document bevat dubbele CPT-identificaties; geen gegevens overschreven."));
  return cpts;
 }

@@ -1,0 +1,145 @@
+{
+  "topo": {
+    "toggle": "Mapy historyczne wł./wył.",
+    "title": "Mapy historyczne",
+    "off": "Wył.",
+    "year": "Rok mapy historycznej",
+    "latest": "Przejdź do najnowszego roku",
+    "opacity": "Przezroczystość",
+    "opacityAria": "Przezroczystość mapy historycznej"
+  },
+  "search": {
+    "placeholder": "Szukaj adresu, miejscowości lub współrzędnej (RD / WGS84)…",
+    "aria": "Szukaj adresu lub współrzędnej",
+    "clear": "Wyczyść",
+    "flyTo": "Przejdź do lokalizacji",
+    "types": {
+      "adres": "adres",
+      "weg": "droga",
+      "postcode": "kod pocztowy",
+      "woonplaats": "miejscowość",
+      "gemeente": "gmina",
+      "provincie": "prowincja",
+      "waterschap": "zarząd wodny",
+      "perceel": "działka",
+      "hectometerpaal": "słupek hektometrowy",
+      "appartementsrecht": "prawo do lokalu",
+      "buurt": "osiedle",
+      "wijk": "dzielnica"
+    }
+  },
+  "layers": {
+    "topography": "Topografia (BRT)",
+    "aerialCurrent": "Ortofotomapa (aktualna)",
+    "aerialYear": "Ortofotomapa {{year}}",
+    "addresses": "Adresy + ulice",
+    "elevation": "Mapa wysokości AHN",
+    "cadastral": "Granice katastralne",
+    "buildings": "BAG (budynki)",
+    "bgt": "Topografia BGT",
+    "zoning": "Plan zagospodarowania",
+    "geomorphology": "Mapa geomorfologiczna",
+    "soilMap": "Mapa gleb 1:50 000",
+    "cables": "Kable i przewody (KLIC)",
+    "broCpts": "Sondowania BRO",
+    "broBoreholes": "Odwierty BRO",
+    "broWells": "Studnie wód gruntowych BRO",
+    "projectCpts": "Sondowania projektu"
+  },
+  "layerPanel": {
+    "opacityTitle": "Przezroczystość: {{pct}}% — suwak steruje widocznością",
+    "opacityAria": "Przezroczystość {{layer}}",
+    "ahnLegend": "Wysokość NAP"
+  },
+  "status": {
+    "initial": "Powiększ i kliknij „Wczytaj obszar”",
+    "zoomIn": "Powiększ do poziomu {{zoom}}+, aby wczytać archiwum",
+    "loading": "Wczytywanie...",
+    "cptError": "Sondowania: {{error}}",
+    "boreError": "Odwierty: {{error}}",
+    "incomplete": "BRO niekompletne: {{errors}}",
+    "error": "Błąd: {{error}}",
+    "cleared": "Wyczyszczono znaczniki BRO",
+    "addFailed": "Dodawanie nie powiodło się: {{error}}",
+    "cptCount": "Sondowania: {{n}}",
+    "loadedBoth": "Wczytano sondowania: {{cpt}} / odwierty: {{bore}}",
+    "loadedCpt": "Wczytano sondowania: {{cpt}}",
+    "loadedBore": "Wczytano odwierty: {{bore}}",
+    "loadedNone": "wczytano"
+  },
+  "gwp": {
+    "type": "Typ: studnia wód gruntowych (GMW)",
+    "manager": "Zarządca: {{name}}",
+    "groundLevel": "Rzędna terenu NAP: {{value}} m",
+    "tubes": "Liczba filtrów: {{n}}"
+  },
+  "popup": {
+    "openViewer": "Otwórz w przeglądarce",
+    "openBroloket": "Otwórz w BROloket",
+    "depthTo": "głębokość do {{depth}} m",
+    "kindCpt": "Sondowanie (BRO)",
+    "kindBore": "Odwiert (BHR-GT)",
+    "merge": "Utwórz projekt + dodaj",
+    "addToProject": "Dodaj do projektu",
+    "toggleSelect": "Zaznacz / odznacz do dodania"
+  },
+  "klic": {
+    "alert": "Kable i przewody — brak publicznej warstwy WMS.\n\nOd 10 grudnia 2025 PDOK nie udostępnia już krajowej przeglądarki kabli/przewodów (zbiór danych Liander wycofany z produkcji). Aby zgłosić roboty ziemne, należy złożyć wniosek KLIC przez:\n\n{{url}}\n\nWniosek jest bezpłatny, a rysunki otrzymasz w ciągu 1–3 dni roboczych."
+  },
+  "measure": {
+    "on": "Tryb pomiaru: kliknij punkt lub sondowanie, aby rozpocząć",
+    "off": "Tryb pomiaru wyłączony",
+    "from": "Pomiar od {{id}} — kliknij drugi punkt",
+    "started": "Ustawiono punkt początkowy — kliknij drugi punkt",
+    "point": "punkt",
+    "distance": "Odległość {{from}} ↔ {{to}}: {{dist}}",
+    "cancelled": "Anulowano tryb pomiaru",
+    "otherCpt": "Wybierz inne sondowanie"
+  },
+  "export": {
+    "fileName": "mapa"
+  },
+  "bro": {
+    "docChangedKeep": "Aktywny dokument się zmienił; pozostały wybór zachowano.",
+    "docChanged": "Aktywny dokument się zmienił.",
+    "added": "Dodane sondowania BRO: {{n}}",
+    "addedPartial": "Dodano: {{n}}. {{error}}",
+    "selected": "Zaznaczone sondowania BRO: {{n}}",
+    "adding": "Dodawanie…",
+    "addSelection": "Dodaj zaznaczenie do projektu",
+    "clearSelection": "Wyczyść zaznaczenie BRO",
+    "invalidArea": "Nieprawidłowy obszar wyszukiwania BRO.",
+    "areaTooLarge": "Obszar wyszukiwania BRO jest nadal zbyt duży; powiększ bardziej. Nie pokazano wyników częściowych.",
+    "limitReached": "Limit BRO jest nadal osiągany w tej samej lokalizacji; zmniejsz okres lub obszar. Nie pokazano wyników częściowych.",
+    "parseError": "Błąd parsowania BRO XML: {{detail}}",
+    "resultLimit": "BRO ogranicza wyszukiwanie do {{max}} obiektów."
+  },
+  "selection": {
+    "count": "Zaznaczono: {{n}}",
+    "clearTitle": "Wyczyść zaznaczenie (Esc)",
+    "clear": "Wyczyść"
+  },
+  "cursor": {
+    "aria": "Współrzędne kursora"
+  },
+  "broField": {
+    "registered": "Zarejestrowano",
+    "reportDate": "Data raportu",
+    "finalDepth": "Głębokość końcowa (m)",
+    "finalDepthBore": "Głębokość końcowa odwiertu (m)",
+    "predrilled": "Głębokość nawiertu wstępnego (m)",
+    "groundLevel": "Rzędna terenu względem NAP (m)",
+    "qualityRegime": "Reżim jakości",
+    "positionAccuracy": "Niepewność położenia (m)",
+    "positionMethod": "Metoda określenia położenia",
+    "qualityClass": "Klasa jakości",
+    "cptStandard": "Norma sondowania",
+    "purpose": "Cel badania",
+    "discipline": "Dziedzina",
+    "stopCriterion": "Kryterium zakończenia",
+    "sourceHolder": "Dysponent danych",
+    "rockReached": "Osiągnięto skałę podłoża",
+    "verticalDatum": "Układ wysokościowy",
+    "deregistered": "Wyrejestrowano"
+  }
+}

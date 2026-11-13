@@ -50,5 +50,14 @@
     "asImageDesc": "Save as PNG or JPEG image files",
     "asHtml": "Export as HTML",
     "asHtmlDesc": "Export the document as an HTML file"
+  },
+  "openPanel": {
+    "title": "Recent files",
+    "clearAll": "Clear all",
+    "justNow": "Just now",
+    "openTitle": "Open",
+    "openAnyHint": "CPT (GEF / BRO-XML) or project/CPT (.ifcgeo) — each file opens in its own tab",
+    "noRecent": "No recent files",
+    "remove": "Remove"
   }
 }

@@ -203,9 +203,13 @@ export interface SummaryResult {
   passes: boolean;
 }
 
+/** Taalonafhankelijke soort fout, voor de draagvermogentabel (de fouttekst zelf is vertaald). */
+export type PileErrorCode = "cptTooShort" | "kleefLevels" | "eaMissing";
+
 export interface PileResult {
   ok: boolean;
   error?: string;              // human-readable fout, b.v. "Sondering te ondiep"
+  errorCode?: PileErrorCode;
   warnings: string[];          // niet-kritieke meldingen
   negKleef: NegKleefResult;
   base: BaseResistanceResult;

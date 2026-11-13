@@ -1,4 +1,5 @@
 import type { PileInput, PileTypeSpec } from "./types";
+import { ct } from "../../i18n";
 
 export type PileStandard = NonNullable<PileInput["standard"]>;
 export const PILE_STANDARDS = [
@@ -11,6 +12,21 @@ export const PILE_STANDARDS = [
 export function getStandard(id: PileInput["standard"]) {
   return PILE_STANDARDS.find(s => s.id === (id ?? "nen-9997-2017"));
 }
+
+/** Weergavenaam van een normversie in de actieve taal; `label` blijft de Nederlandse bron (rapport). */
+export function standardLabel(standard: { id: string; label: string }): string;
+export function standardLabel(standard: { id: string; label: string } | undefined): string | undefined;
+export function standardLabel(standard: { id: string; label: string } | undefined): string | undefined {
+  return standard && ct("calcPileCore", `standards.${standard.id}`, standard.label);
+}
+
+/** Nederlandse brontekst van de historische profielen, met vertaalsleutel. */
+export const HISTORICAL_TEXT = {
+  source1991: { key: "historical.source1991", nl: "NEN 6743:1991 / NEN 6740:1991; openbare referentie 05290 p.31–32 (alleenstaande prefab paal)" },
+  source2006: { key: "historical.source2006", nl: "NEN 6743-1:2006 tabel 2; NEN 6740:2006 tabel 3" },
+  source2012: { key: "historical.source2012", nl: "NEN 9997-1:2011+C1:2012 tabel 7.c; oorspronkelijke factoren vóór verlaging" },
+  conditions: { key: "historical.conditions", nl: "Historisch drukpaalmodel: zand; geen paalgroep, OCR-, korrelgrootte- of ontgravingscorrectie. Schachtpieken conservatief begrensd op 12 MPa. Zakking niet geverifieerd." },
+} as const;
 
 export function isHistorical(id: PileInput["standard"]) {
   return id === "nen-6743-1991" || id === "nen-6743-2006";
@@ -49,9 +65,9 @@ export function applyStandard(type: PileTypeSpec, standard: PileInput["standard"
   return { ...type, name: type.name.replace(" (tabel 2017)", "").replace(" (bestaand projectmodel)", ""), alphaP: factors[0], alphaS: factors[1],
     alphaT: isHistorical(standard) ? 0 : type.alphaT,
     edition: spec.edition,
-    source: standard === "nen-6743-1991" ? "NEN 6743:1991 / NEN 6740:1991; openbare referentie 05290 p.31–32 (alleenstaande prefab paal)" :
-      standard === "nen-6743-2006" ? "NEN 6743-1:2006 tabel 2; NEN 6740:2006 tabel 3" : "NEN 9997-1:2011+C1:2012 tabel 7.c; oorspronkelijke factoren vóór verlaging",
-    conditions: "Historisch drukpaalmodel: zand; geen paalgroep, OCR-, korrelgrootte- of ontgravingscorrectie. Schachtpieken conservatief begrensd op 12 MPa. Zakking niet geverifieerd.",
+    source: standard === "nen-6743-1991" ? HISTORICAL_TEXT.source1991.nl :
+      standard === "nen-6743-2006" ? HISTORICAL_TEXT.source2006.nl : HISTORICAL_TEXT.source2012.nl,
+    conditions: HISTORICAL_TEXT.conditions.nl,
   };
 }
 

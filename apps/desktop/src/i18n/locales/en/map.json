@@ -1,0 +1,145 @@
+{
+  "topo": {
+    "toggle": "Historical maps on/off",
+    "title": "Historical maps",
+    "off": "Off",
+    "year": "Historical map year",
+    "latest": "Jump to most recent year",
+    "opacity": "Transparency",
+    "opacityAria": "Historical map transparency"
+  },
+  "search": {
+    "placeholder": "Search address, place or coordinate (RD / WGS84)…",
+    "aria": "Search address or coordinate",
+    "clear": "Clear",
+    "flyTo": "Fly to location",
+    "types": {
+      "adres": "address",
+      "weg": "road",
+      "postcode": "postcode",
+      "woonplaats": "town",
+      "gemeente": "municipality",
+      "provincie": "province",
+      "waterschap": "water authority",
+      "perceel": "parcel",
+      "hectometerpaal": "hectometre marker",
+      "appartementsrecht": "apartment right",
+      "buurt": "neighbourhood",
+      "wijk": "district"
+    }
+  },
+  "layers": {
+    "topography": "Topography (BRT)",
+    "aerialCurrent": "Aerial photo (current)",
+    "aerialYear": "Aerial photo {{year}}",
+    "addresses": "Addresses + streets",
+    "elevation": "AHN elevation map",
+    "cadastral": "Cadastral boundaries",
+    "buildings": "BAG (buildings)",
+    "bgt": "BGT topography",
+    "zoning": "Zoning plan",
+    "geomorphology": "Geomorphological map",
+    "soilMap": "Soil map 1:50,000",
+    "cables": "Cables & pipelines (KLIC)",
+    "broCpts": "BRO CPTs",
+    "broBoreholes": "BRO boreholes",
+    "broWells": "BRO groundwater wells",
+    "projectCpts": "Project CPTs"
+  },
+  "layerPanel": {
+    "opacityTitle": "Transparency: {{pct}}% — the slider controls visibility",
+    "opacityAria": "Transparency {{layer}}",
+    "ahnLegend": "Elevation NAP"
+  },
+  "status": {
+    "initial": "Zoom in and click 'Load area'",
+    "zoomIn": "Zoom in to level {{zoom}}+ to load the archive",
+    "loading": "Loading...",
+    "cptError": "CPTs: {{error}}",
+    "boreError": "Boreholes: {{error}}",
+    "incomplete": "BRO incomplete: {{errors}}",
+    "error": "Error: {{error}}",
+    "cleared": "BRO markers cleared",
+    "addFailed": "Adding failed: {{error}}",
+    "cptCount": "{{n}} CPT(s)",
+    "loadedBoth": "{{cpt}} CPT(s) / {{bore}} borehole(s) loaded",
+    "loadedCpt": "{{cpt}} CPT(s) loaded",
+    "loadedBore": "{{bore}} borehole(s) loaded",
+    "loadedNone": "loaded"
+  },
+  "gwp": {
+    "type": "Type: groundwater well (GMW)",
+    "manager": "Operator: {{name}}",
+    "groundLevel": "Ground level NAP: {{value}} m",
+    "tubes": "Number of screens: {{n}}"
+  },
+  "popup": {
+    "openViewer": "Open in viewer",
+    "openBroloket": "Open in BROloket",
+    "depthTo": "depth to {{depth}} m",
+    "kindCpt": "CPT (BRO)",
+    "kindBore": "Borehole (BHR-GT)",
+    "merge": "Create project + add",
+    "addToProject": "Add to project",
+    "toggleSelect": "Select / deselect for adding"
+  },
+  "klic": {
+    "alert": "Cables & pipelines — no public WMS layer available.\n\nSince 10 December 2025 PDOK no longer hosts a national cables/pipelines viewer (Liander dataset taken out of production). To notify an excavation you need to submit a KLIC request via:\n\n{{url}}\n\nThe request is free and you will receive the drawings within 1-3 working days."
+  },
+  "measure": {
+    "on": "Measure mode: click a point or CPT to start",
+    "off": "Measure mode off",
+    "from": "Measuring from {{id}} — click a second point",
+    "started": "Start point set — click a second point",
+    "point": "point",
+    "distance": "Distance {{from}} ↔ {{to}}: {{dist}}",
+    "cancelled": "Measure mode cancelled",
+    "otherCpt": "Choose another CPT"
+  },
+  "export": {
+    "fileName": "map"
+  },
+  "bro": {
+    "docChangedKeep": "The active document has changed; remaining selection kept.",
+    "docChanged": "The active document has changed.",
+    "added": "{{n}} BRO CPT(s) added",
+    "addedPartial": "{{n}} added. {{error}}",
+    "selected": "{{n}} BRO CPT(s) selected",
+    "adding": "Adding…",
+    "addSelection": "Add selection to project",
+    "clearSelection": "Clear BRO selection",
+    "invalidArea": "Invalid BRO search area.",
+    "areaTooLarge": "BRO search area is still too large; zoom in further. No partial results shown.",
+    "limitReached": "BRO limit is still reached at the same location; reduce the period or area. No partial results shown.",
+    "parseError": "BRO XML parse error: {{detail}}",
+    "resultLimit": "BRO limits the search to {{max}} objects."
+  },
+  "selection": {
+    "count": "{{n}} selected",
+    "clearTitle": "Clear selection (Esc)",
+    "clear": "Clear"
+  },
+  "cursor": {
+    "aria": "Cursor coordinates"
+  },
+  "broField": {
+    "registered": "Registered",
+    "reportDate": "Report date",
+    "finalDepth": "Final depth (m)",
+    "finalDepthBore": "Borehole final depth (m)",
+    "predrilled": "Predrilled depth (m)",
+    "groundLevel": "Ground level relative to NAP (m)",
+    "qualityRegime": "Quality regime",
+    "positionAccuracy": "Position uncertainty (m)",
+    "positionMethod": "Positioning method",
+    "qualityClass": "Quality class",
+    "cptStandard": "CPT standard",
+    "purpose": "Survey purpose",
+    "discipline": "Discipline",
+    "stopCriterion": "Stop criterion",
+    "sourceHolder": "Source holder",
+    "rockReached": "Bedrock reached",
+    "verticalDatum": "Vertical datum",
+    "deregistered": "Deregistered"
+  }
+}

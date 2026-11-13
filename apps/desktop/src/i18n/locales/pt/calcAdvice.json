@@ -1,0 +1,92 @@
+{
+  "input": {
+    "document": "Documento",
+    "reference": "Referência",
+    "version": "Versão",
+    "status": "Estado",
+    "advisor": "Consultor",
+    "checker": "Verificado por",
+    "projectHint": "O nome, número, cliente e localização do projeto são obtidos dos dados do projeto.",
+    "basis": "Bases de projeto",
+    "consequenceClass": "Classe de consequências",
+    "designLife": "Tempo de vida útil de projeto",
+    "years": "anos",
+    "designLifeAria": "Tempo de vida útil de projeto [anos]",
+    "floorLevel": "Cota de referência (topo do pavimento)",
+    "floorLevelAria": "Cota de referência [m NAP]",
+    "groundwater": "Nível freático",
+    "groundwaterAria": "Nível freático de cálculo [m NAP]",
+    "structure": "Estrutura e ações",
+    "structurePlaceholder": "Por exemplo: pavilhão industrial em aço, 40 × 60 m, cargas nos pilares até 600 kN",
+    "bearingLayer": "Estrato resistente (indicativo)",
+    "qcMin": "qc mínimo",
+    "qcMinAria": "qc do estrato resistente [MPa]",
+    "overAtLeast": "Em pelo menos",
+    "minThicknessAria": "Espessura mínima [m]",
+    "include": "Incluir",
+    "cptsInAdvice": "CPT na recomendação",
+    "cptItem": "CPT {{id}}",
+    "noCpts": "Ainda sem CPT no projeto.",
+    "calcsInAdvice": "Cálculos na recomendação",
+    "noCalcs": "Ainda sem cálculos de estacas no projeto.",
+    "appendixCpts": "Anexo CPT",
+    "appendixCalcs": "Anexo folhas de cálculo",
+    "ownText": "Texto próprio",
+    "introNote": "Introdução adicional",
+    "remarks": "Observações sobre a conclusão"
+  },
+  "status": {
+    "concept": "Rascunho",
+    "definitief": "Final",
+    "conceptLower": "rascunho",
+    "definitiefLower": "final"
+  },
+  "visual": {
+    "aria": "Planta de localização com CPT",
+    "bearingTop": "er NAP {{value}}",
+    "missing": "Sem coordenadas (não desenhados): {{ids}}.",
+    "legend": "Triângulo: CPT; er = topo do estrato resistente (indicativo). À escala, coordenadas em RD."
+  },
+  "result": {
+    "title": "Recomendação de fundação",
+    "header": "{{reference}} · versão {{version}} · {{status}}",
+    "noReference": "sem referência",
+    "toc": {
+      "title": "Conteúdo do relatório",
+      "intro": "Introdução: enquadramento, objetivo e dados do projeto",
+      "basis": "Bases de projeto",
+      "investigation": "Prospeção geotécnica: {{count}} CPT com planta de localização",
+      "soil": "Perfil geotécnico e estrato resistente",
+      "vertical": "Estacas à compressão: {{names}}",
+      "lateral": "Estacas com carga horizontal: {{names}}",
+      "execution": "Atrito negativo e execução",
+      "conclusions": "Conclusões e recomendações",
+      "appendixCpts": "Anexo A: CPT",
+      "appendixCalcs": "Anexo B: folhas de cálculo"
+    },
+    "bearing": {
+      "title": "Estrato resistente",
+      "text": "Considerou-se, de forma indicativa, como estrato resistente o primeiro intervalo em que a resistência de ponta do cone se mantém acima de {{qc}} MPa em pelo menos {{thickness}} m. Trata-se de um auxiliar para a visão geral; a cota da ponta da estaca resulta do cálculo da capacidade de carga.",
+      "tableAria": "Estrato resistente por CPT",
+      "cpt": "CPT",
+      "ground": "Cota do terreno [m NAP]",
+      "end": "Fim [m NAP]",
+      "top": "Er [m NAP]",
+      "notFound": "não encontrado",
+      "conclusion": "Topo do estrato resistente entre NAP {{highest}} m e NAP {{lowest}} m; dispersão {{spread}} m."
+    },
+    "calcs": {
+      "title": "Cálculos na recomendação",
+      "none": "Ainda sem cálculos de estacas incluídos.",
+      "vertical": "{{name}}: {{pileType}}, {{shape}}{{size}} mm, ponta NAP {{toe}} m",
+      "notComputed": "(não calculado)",
+      "lateral": "{{name}}: {{passing}} de {{count}} estacas verificam"
+    }
+  },
+  "statusLine": {
+    "cptOne": "{{count}} CPT",
+    "cptMany": "{{count}} CPT",
+    "calcOne": "{{count}} cálculo",
+    "calcMany": "{{count}} cálculos"
+  }
+}

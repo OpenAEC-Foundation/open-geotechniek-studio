@@ -31,6 +31,19 @@
     "builtOn": "identyfikacja wizualna i biblioteki podstawowe",
     "sourceLink": "Kod źródłowy"
   },
+  "extensions": {
+    "title": "Rozszerzenia",
+    "intro": "Moduły opcjonalne — włącz te, których używasz. Zmiany działają od razu (bez ponownego uruchamiania).",
+    "comingSoon": "wkrótce",
+    "tekening": {
+      "title": "Plan sytuacyjny",
+      "description": "Dodaje kartę „Plan sytuacyjny” — arkusz CAD (A2/A3) z sondowaniami na mapie, ramką, podziałką, przyciąganiem, nakładkami i eksportem do PDF."
+    },
+    "offertes": {
+      "title": "Poproś o oferty",
+      "description": "Dodaje przycisk „Poproś o oferty” do wstążki planu sytuacyjnego (wymaga rozszerzenia Plan sytuacyjny). Otwiera okno z najbliższymi firmami sondażowymi i wstępnie wypełnionym zapytaniem ofertowym e-mailem."
+    }
+  },
   "brand": {
     "title": "Identyfikacja wizualna",
     "desktopOnly": "Identyfikacja wizualna z SuperCloud jest dostępna tylko w aplikacji desktopowej.",

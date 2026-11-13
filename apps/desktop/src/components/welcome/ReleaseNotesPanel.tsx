@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./ReleaseNotesPanel.css";
 
 interface Release {
@@ -25,6 +26,7 @@ const FALLBACK_RELEASES: Release[] = [
 ];
 
 export function ReleaseNotesPanel() {
+  const { t, i18n } = useTranslation("app");
   const [releases, setReleases] = useState<Release[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,12 +83,12 @@ export function ReleaseNotesPanel() {
       </div>
 
       <div className="welcome-releases">
-        <h3>Wat is er nieuw</h3>
+        <h3>{t("releaseNotes.title", "Wat is er nieuw")}</h3>
         {error && !releases && (
-          <p className="welcome-error">Kan release notes niet laden ({error})</p>
+          <p className="welcome-error">{t("releaseNotes.loadFailed", "Kan release notes niet laden ({{error}})", { error })}</p>
         )}
-        {!releases && !error && <p className="welcome-loading">Laden…</p>}
-        {releases?.length === 0 && <p>Geen releases gevonden</p>}
+        {!releases && !error && <p className="welcome-loading">{t("releaseNotes.loading", "Laden…")}</p>}
+        {releases?.length === 0 && <p>{t("releaseNotes.none", "Geen releases gevonden")}</p>}
         {releases?.map((r) => (
           <article key={r.tag_name} className="welcome-release">
             <header>
@@ -99,7 +101,7 @@ export function ReleaseNotesPanel() {
                 {r.tag_name}
               </a>
               <time className="welcome-release-date">
-                {new Date(r.published_at).toLocaleDateString("nl-NL", {
+                {new Date(r.published_at).toLocaleDateString(i18n.resolvedLanguage || i18n.language || "nl", {
                   year: "numeric",
                   month: "short",
                   day: "numeric",

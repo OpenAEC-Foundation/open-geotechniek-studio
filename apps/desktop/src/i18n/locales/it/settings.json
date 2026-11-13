@@ -31,6 +31,19 @@
     "builtOn": "identità visiva e librerie di base",
     "sourceLink": "Codice sorgente"
   },
+  "extensions": {
+    "title": "Estensioni",
+    "intro": "Moduli opzionali: attiva quelli che usi. Le modifiche hanno effetto subito (nessun riavvio).",
+    "comingSoon": "in arrivo",
+    "tekening": {
+      "title": "Planimetria",
+      "description": "Aggiunge la scheda «Planimetria»: foglio CAD (A2/A3) con le prove sulla mappa, cornice, barra di scala, snap, sovrapposizioni ed esportazione PDF."
+    },
+    "offertes": {
+      "title": "Richiedi preventivi",
+      "description": "Aggiunge il pulsante «Richiedi preventivi» alla barra della planimetria (richiede l'estensione Planimetria). Apre una finestra con le imprese di prove più vicine e una richiesta di preventivo via e-mail precompilata."
+    }
+  },
   "brand": {
     "title": "Identità visiva",
     "desktopOnly": "L'identità visiva dalla SuperCloud è disponibile solo nell'app desktop.",

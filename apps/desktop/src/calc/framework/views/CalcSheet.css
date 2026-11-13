@@ -45,6 +45,18 @@
 .cs-param-visual .pile-visual { height: auto; min-height: 100%; }
 .cs-param-visual .pile-cpt-chart { flex: 0 0 auto; aspect-ratio: 720 / 800; min-height: 380px; }
 
+/* Smalle invoerkolom (kleiner scherm, uitdraai ernaast): naast het
+   formulier blijft voor de tekening maar een strook over en krimpt de
+   tekst tot onleesbaar. Dan komt de tekening onder het formulier, over
+   de volle breedte, en scrollt het geheel als één kolom. */
+.cs-pane-input { container: cs-input / inline-size; }
+@container cs-input (max-width: 760px) {
+  .cs-param-body { display: block; overflow: auto; }
+  .cs-param-form { overflow: visible; border-right: 0; border-bottom: 1px solid var(--oa-border); }
+  .cs-param-visual { overflow: visible; }
+  .cs-param-visual .pile-visual { min-height: 0; }
+}
+
 /* Kernuitkomsten onder het invoerscherm */
 .cs-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px; border-top: 1px solid var(--oa-border); background: var(--oa-panel); flex: 0 0 auto; }
 .cs-chip { padding: 3px 9px; border-radius: var(--oa-radius-full); background: var(--oa-hover); color: var(--oa-text); font: 500 11px var(--oa-font-numbers); white-space: nowrap; }

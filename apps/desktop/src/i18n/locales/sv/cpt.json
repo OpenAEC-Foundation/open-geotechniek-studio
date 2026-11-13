@@ -31,5 +31,11 @@
   "remove": "Ta bort",
   "hide": "Dölj",
   "show": "Visa",
-  "noCptsHint": "Inga sonderingar ännu. Klicka på ”Lägg till sondering” eller dra GEF/BRO-XML-filer till fönstret."
+  "noCptsHint": "Inga sonderingar ännu. Klicka på ”Lägg till sondering” eller dra GEF/BRO-XML-filer till fönstret.",
+  "noTitle": "(ingen titel)",
+  "fileMetadata": "Filmetadata",
+  "noExtras": "Ingen ytterligare metadata.",
+  "boresInProject": "Borrhål i detta projekt",
+  "addBore": "Lägg till borrhål",
+  "noBoresHint": "Inga borrhål tillagda ännu. Klicka på ”Lägg till borrhål” för att importera BHR-GT XML."
 }

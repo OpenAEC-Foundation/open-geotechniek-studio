@@ -26,6 +26,15 @@ it("maakt en hernoemt het echte geopende project via MCP", async () => {
   await executeStudioTool("studio_select_document", { id: original }, view);
   expect(useCptStore.getState().projectMeta.title).toBe("Kantoor");
 });
+it("opent een weergave via de ribbon en weigert onbekende weergaven", async () => {
+  const seen: string[] = [];
+  const listener = (e: Event) => seen.push((e as CustomEvent<{ tab: string }>).detail.tab);
+  window.addEventListener("ogs:ribbon-switch", listener);
+  await executeStudioTool("studio_show_view", { view: "model3d" }, view);
+  window.removeEventListener("ogs:ribbon-switch", listener);
+  expect(seen).toEqual(["model3d"]);
+  await expect(executeStudioTool("studio_show_view", { view: "onbekend" }, view)).rejects.toThrow("Onbekende weergave");
+});
 it("voegt een paalberekening toe, wijzigt invoer en selecteert het werkblad", async () => {
   newProjectDocument();
   const added = await executeStudioTool("studio_add_calculation", { name: "Paal A", input: { diameterMm: 250 } }, view) as { id: string };

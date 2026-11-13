@@ -31,5 +31,11 @@
   "remove": "Supprimer",
   "hide": "Masquer",
   "show": "Afficher",
-  "noCptsHint": "Aucun CPT pour l'instant. Cliquez sur « Ajouter un CPT » ou glissez des fichiers GEF/BRO-XML dans la fenêtre."
+  "noCptsHint": "Aucun CPT pour l'instant. Cliquez sur « Ajouter un CPT » ou glissez des fichiers GEF/BRO-XML dans la fenêtre.",
+  "noTitle": "(sans titre)",
+  "fileMetadata": "Métadonnées du fichier",
+  "noExtras": "Aucune métadonnée supplémentaire.",
+  "boresInProject": "Forages de ce projet",
+  "addBore": "Ajouter un forage",
+  "noBoresHint": "Aucun forage ajouté. Cliquez sur « Ajouter un forage » pour importer du BHR-GT XML."
 }

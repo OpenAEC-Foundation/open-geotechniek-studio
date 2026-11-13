@@ -1,4 +1,8 @@
+import i18next from "i18next";
 import type { Diagnostic } from "../validation/report";
+
+const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
 export interface DecodedSource {
   text: string;
   diagnostics: Diagnostic[];
@@ -11,7 +15,7 @@ export function decodeSource(bytes: Uint8Array): DecodedSource {
     (bytes[0] === 254 && bytes[1] === 255)
   )
     throw new Error(
-      "UTF-16 wordt niet ondersteund. Sla het bronbestand op als UTF-8.",
+      m("encoding.utf16Unsupported", "UTF-16 wordt niet ondersteund. Sla het bronbestand op als UTF-8."),
     );
   try {
     return {
@@ -26,7 +30,7 @@ export function decodeSource(bytes: Uint8Array): DecodedSource {
         severity: "warning",
         code: "SOURCE_ENCODING",
         message:
-          "Bron is geen geldige UTF-8; gedecodeerd als Windows-1252. Controleer de oorspronkelijke tekst.",
+          m("encoding.notUtf8", "Bron is geen geldige UTF-8; gedecodeerd als Windows-1252. Controleer de oorspronkelijke tekst."),
         line: 1,
         column: 1,
       },
@@ -38,7 +42,7 @@ export function decodeSource(bytes: Uint8Array): DecodedSource {
         diagnostics.push({
           severity: "warning",
           code: "ENCODING_CHARACTER",
-          message: `Windows-1252 byte 0x${value.toString(16)} omgezet naar Unicode (bytekolom).`,
+          message: m("encoding.byteConverted", "Windows-1252 byte 0x{{hex}} omgezet naar Unicode (bytekolom).", { hex: value.toString(16) }),
           line,
           column,
         });

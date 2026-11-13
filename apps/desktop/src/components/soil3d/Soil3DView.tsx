@@ -23,6 +23,7 @@ function cssVar(name: string, fallback: string) {
 /** Tab 3D-model: lagenpaneel links, één of twee vensters met views als tabbladen, eigenschappen van de selectie. */
 export default function Soil3DView() {
   const { t } = useTranslation("ribbon");
+  const { i18n } = useTranslation("panels");
   const cpts = useCptStore((s) => s.cpts);
   const activeCptId = useCptStore((s) => s.activeCptId);
   const setActive = useCptStore((s) => s.setActive);
@@ -35,12 +36,14 @@ export default function Soil3DView() {
   const calcs = useMemo(() => (activeDocId ? byDoc.get(activeDocId) : undefined) ?? [], [activeDocId, byDoc]);
   const criterion = useMemo(() => criterionFor(calcs), [calcs]);
   const toes = useMemo<PileToe[]>(() => pileToes(calcs), [calcs]);
-  const { model, error } = useMemo(() => projectSoilModel(cpts, criterion), [cpts, criterion]);
+  // De taal is een afhankelijkheid: de waarschuwingen in het model zijn vertaald.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const { model, error } = useMemo(() => projectSoilModel(cpts, criterion), [cpts, criterion, i18n.language]);
 
   // Alleen de weergave-instellingen; zo bouwt een venster niet opnieuw op bij elke statuswijziging.
-  const { showCpts, showQc, showModel, showGround, showBearing, showPileToes, showAquifers, showGeotop, showWater, showWells, exaggeration, opacity, cptDiameter, hiddenZones } = store;
-  const settings = useMemo<Soil3DSettings>(() => ({ showCpts, showQc, showModel, showGround, showBearing, showPileToes, showAquifers, showGeotop, showWater, showWells, exaggeration, opacity, cptDiameter, hiddenZones }),
-    [showCpts, showQc, showModel, showGround, showBearing, showPileToes, showAquifers, showGeotop, showWater, showWells, exaggeration, opacity, cptDiameter, hiddenZones]);
+  const { showCpts, showQc, showModel, showGround, showBearing, showPileToes, showAquifers, showGeotop, showWater, showWells, showLabels, exaggeration, opacity, cptDiameter, hiddenZones } = store;
+  const settings = useMemo<Soil3DSettings>(() => ({ showCpts, showQc, showModel, showGround, showBearing, showPileToes, showAquifers, showGeotop, showWater, showWells, showLabels, exaggeration, opacity, cptDiameter, hiddenZones }),
+    [showCpts, showQc, showModel, showGround, showBearing, showPileToes, showAquifers, showGeotop, showWater, showWells, showLabels, exaggeration, opacity, cptDiameter, hiddenZones]);
   const textColor = useMemo(() => cssVar("--theme-text", "#1f2933"), []);
 
   // Het lint werkt op het model dat hier getoond wordt; een nieuw model krijgt een nieuwe section box.
@@ -61,11 +64,11 @@ export default function Soil3DView() {
       <div className="soil3d-stage">
         {!model && <div className="soil3d-empty">{error ?? t("model3d.empty", "Voeg sonderingen toe om het grondmodel op te bouwen.")}</div>}
         {model && (
-          <Workspace render={(view) => (
+          <Workspace render={(view, _tabId, visible, focused) => (
             <Viewport3D
               model={model} settings={settings} toes={toes} activeCptId={activeCptId} subsurface={subsurface} textColor={textColor}
               mode={view} sectionBox={store.sectionBox} onSectionBox={(b) => store.set({ sectionBox: b })}
-              selection={selection} onSelect={select} fitRequest={store.fitRequest}
+              selection={selection} onSelect={select} active={visible && focused} cameraRequest={store.cameraRequest} exportRequest={store.exportRequest}
             />
           )} />
         )}

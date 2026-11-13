@@ -26,7 +26,7 @@ export const LANGUAGES = [
   { code: "da", name: "Dansk" },
 ];
 
-const ns = ["common", "ribbon", "backstage", "settings", "feedback", "cpt"];
+const ns = ["common", "ribbon", "backstage", "settings", "feedback", "cpt", "calc", "calcPile", "calcPileCore", "calcLateral", "calcAdvice", "import", "map", "drawing", "app", "panels"];
 
 i18next
   .use(LanguageDetector)
@@ -47,10 +47,13 @@ i18next.on("languageChanged", (lng) => {
   document.documentElement.setAttribute("lang", lng);
 });
 
-// Load saved language from Tauri store on startup
-getSetting("language", "auto").then((lang) => {
-  changeLanguage(lang);
-});
+// Load saved language from Tauri store on startup. Niet in tests: die
+// draaien vast in het Nederlands (zie test-setup.ts), de brontaal.
+if (import.meta.env.MODE !== "test") {
+  getSetting("language", "auto").then((lang) => {
+    changeLanguage(lang);
+  });
+}
 
 export function changeLanguage(lang: string) {
   if (lang === "auto") {

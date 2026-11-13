@@ -99,6 +99,8 @@ export function LayerBrowser({ model, docId, criterion, toeCount }: { model: Soi
       <LayerRow label={t("model3d.toes", "Paalpunten")} checked={s.showPileToes} onChange={toggle("showPileToes")}
         status={toeCount ? String(toeCount) : t("model3d.none", "geen")} />
 
+      <LayerRow label={t("model3d.labels", "Labels")} hint={t("model3d.labelsHint", "Namen, NAP-schaal en noordpijl in het model")} checked={s.showLabels} onChange={toggle("showLabels")} />
+
       <LayerRow label={t("model3d.waterLevels", "Grondwaterstanden")} checked={s.showWater} onChange={toggle("showWater")} defaultOpen={!!sub?.wells}>
         {docId && <GroundwaterLevels docId={docId} />}
       </LayerRow>

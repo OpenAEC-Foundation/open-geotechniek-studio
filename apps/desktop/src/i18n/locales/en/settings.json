@@ -31,6 +31,19 @@
     "builtOn": "visual identity and core libraries",
     "sourceLink": "Source code"
   },
+  "extensions": {
+    "title": "Extensions",
+    "intro": "Optional modules — turn on what you use. Changes take effect immediately (no restart needed).",
+    "comingSoon": "coming soon",
+    "tekening": {
+      "title": "Site plan",
+      "description": "Adds the 'Site plan' tab — CAD paper (A2/A3) with CPTs on a map, frame, scale bar, snapping, overlays and export to PDF."
+    },
+    "offertes": {
+      "title": "Request quotes",
+      "description": "Adds the 'Request quotes' button to the site plan ribbon (requires the site plan extension). Opens a dialog with the nearest CPT contractors and a pre-filled quote request by e-mail."
+    }
+  },
   "brand": {
     "title": "Brand",
     "desktopOnly": "The brand from the SuperCloud is only available in the desktop app.",

@@ -1,0 +1,145 @@
+{
+  "topo": {
+    "toggle": "Cartes historiques activées/désactivées",
+    "title": "Cartes historiques",
+    "off": "Désactivé",
+    "year": "Année de la carte historique",
+    "latest": "Aller à l'année la plus récente",
+    "opacity": "Transparence",
+    "opacityAria": "Transparence de la carte historique"
+  },
+  "search": {
+    "placeholder": "Rechercher une adresse, un lieu ou une coordonnée (RD / WGS84)…",
+    "aria": "Rechercher une adresse ou une coordonnée",
+    "clear": "Effacer",
+    "flyTo": "Aller à l'emplacement",
+    "types": {
+      "adres": "adresse",
+      "weg": "route",
+      "postcode": "code postal",
+      "woonplaats": "localité",
+      "gemeente": "commune",
+      "provincie": "province",
+      "waterschap": "office des eaux",
+      "perceel": "parcelle",
+      "hectometerpaal": "borne hectométrique",
+      "appartementsrecht": "lot de copropriété",
+      "buurt": "voisinage",
+      "wijk": "quartier"
+    }
+  },
+  "layers": {
+    "topography": "Topographie (BRT)",
+    "aerialCurrent": "Photo aérienne (actuelle)",
+    "aerialYear": "Photo aérienne {{year}}",
+    "addresses": "Adresses + rues",
+    "elevation": "Carte altimétrique AHN",
+    "cadastral": "Limites cadastrales",
+    "buildings": "BAG (bâtiments)",
+    "bgt": "Topographie BGT",
+    "zoning": "Plan d'urbanisme",
+    "geomorphology": "Carte géomorphologique",
+    "soilMap": "Carte pédologique 1:50 000",
+    "cables": "Câbles et conduites (KLIC)",
+    "broCpts": "CPT BRO",
+    "broBoreholes": "Forages BRO",
+    "broWells": "Piézomètres BRO",
+    "projectCpts": "CPT du projet"
+  },
+  "layerPanel": {
+    "opacityTitle": "Transparence : {{pct}} % — le curseur règle la visibilité",
+    "opacityAria": "Transparence {{layer}}",
+    "ahnLegend": "Altitude NAP"
+  },
+  "status": {
+    "initial": "Zoomez puis cliquez sur « Charger une zone »",
+    "zoomIn": "Zoomez au niveau {{zoom}}+ pour charger l'archive",
+    "loading": "Chargement...",
+    "cptError": "CPT : {{error}}",
+    "boreError": "Forages : {{error}}",
+    "incomplete": "BRO incomplet : {{errors}}",
+    "error": "Erreur : {{error}}",
+    "cleared": "Repères BRO effacés",
+    "addFailed": "Échec de l'ajout : {{error}}",
+    "cptCount": "{{n}} CPT",
+    "loadedBoth": "{{cpt}} CPT / {{bore}} forage(s) chargés",
+    "loadedCpt": "{{cpt}} CPT chargé(s)",
+    "loadedBore": "{{bore}} forage(s) chargé(s)",
+    "loadedNone": "chargé"
+  },
+  "gwp": {
+    "type": "Type : piézomètre (GMW)",
+    "manager": "Gestionnaire : {{name}}",
+    "groundLevel": "Niveau du terrain NAP : {{value}} m",
+    "tubes": "Nombre de crépines : {{n}}"
+  },
+  "popup": {
+    "openViewer": "Ouvrir dans la visionneuse",
+    "openBroloket": "Ouvrir dans BROloket",
+    "depthTo": "profondeur jusqu'à {{depth}} m",
+    "kindCpt": "CPT (BRO)",
+    "kindBore": "Forage (BHR-GT)",
+    "merge": "Créer un projet + ajouter",
+    "addToProject": "Ajouter au projet",
+    "toggleSelect": "Sélectionner / désélectionner pour l'ajout"
+  },
+  "klic": {
+    "alert": "Câbles et conduites — aucune couche WMS publique disponible.\n\nDepuis le 10 décembre 2025, PDOK n'héberge plus de visionneuse nationale des câbles et conduites (jeu de données Liander retiré de la production). Pour déclarer des travaux d'excavation, vous devez soumettre une demande KLIC via :\n\n{{url}}\n\nLa demande est gratuite et vous recevrez les plans sous 1 à 3 jours ouvrés."
+  },
+  "measure": {
+    "on": "Mode mesure : cliquez sur un point ou un CPT pour commencer",
+    "off": "Mode mesure désactivé",
+    "from": "Mesure depuis {{id}} — cliquez sur un deuxième point",
+    "started": "Point de départ défini — cliquez sur un deuxième point",
+    "point": "point",
+    "distance": "Distance {{from}} ↔ {{to}} : {{dist}}",
+    "cancelled": "Mode mesure annulé",
+    "otherCpt": "Choisissez un autre CPT"
+  },
+  "export": {
+    "fileName": "carte"
+  },
+  "bro": {
+    "docChangedKeep": "Le document actif a changé ; la sélection restante est conservée.",
+    "docChanged": "Le document actif a changé.",
+    "added": "{{n}} CPT BRO ajouté(s)",
+    "addedPartial": "{{n}} ajouté(s). {{error}}",
+    "selected": "{{n}} CPT BRO sélectionné(s)",
+    "adding": "Ajout…",
+    "addSelection": "Ajouter la sélection au projet",
+    "clearSelection": "Effacer la sélection BRO",
+    "invalidArea": "Zone de recherche BRO non valide.",
+    "areaTooLarge": "La zone de recherche BRO est encore trop grande ; zoomez davantage. Aucun résultat partiel affiché.",
+    "limitReached": "La limite BRO est toujours atteinte au même endroit ; réduisez la période ou la zone. Aucun résultat partiel affiché.",
+    "parseError": "Erreur d'analyse XML BRO : {{detail}}",
+    "resultLimit": "BRO limite la recherche à {{max}} objets."
+  },
+  "selection": {
+    "count": "{{n}} sélectionné(s)",
+    "clearTitle": "Effacer la sélection (Échap)",
+    "clear": "Effacer"
+  },
+  "cursor": {
+    "aria": "Coordonnées du curseur"
+  },
+  "broField": {
+    "registered": "Enregistré",
+    "reportDate": "Date du rapport",
+    "finalDepth": "Profondeur finale (m)",
+    "finalDepthBore": "Profondeur finale du forage (m)",
+    "predrilled": "Profondeur de préforage (m)",
+    "groundLevel": "Niveau du terrain par rapport au NAP (m)",
+    "qualityRegime": "Régime de qualité",
+    "positionAccuracy": "Incertitude de position (m)",
+    "positionMethod": "Méthode de positionnement",
+    "qualityClass": "Classe de qualité",
+    "cptStandard": "Norme CPT",
+    "purpose": "Objet de la reconnaissance",
+    "discipline": "Discipline",
+    "stopCriterion": "Critère d'arrêt",
+    "sourceHolder": "Détenteur de la source",
+    "rockReached": "Substratum rocheux atteint",
+    "verticalDatum": "Référence altimétrique",
+    "deregistered": "Radié"
+  }
+}

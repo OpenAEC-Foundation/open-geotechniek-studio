@@ -1,12 +1,16 @@
+import i18next from "i18next";
 import type { Cpt, MeasurementPoint } from '../types/cpt';
+
+const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
 export const REPORT_PLOT_HEIGHT_MM = 653 * 297 / 841;
 export function paginateCpt(cpt: Cpt, scale?: number | null): Array<{ cpt: Cpt; span?: number }> {
   if (scale == null) return [{cpt}];
-  if (!Number.isFinite(scale) || scale < 50 || scale > 5000) throw new Error('Rapportschaal moet tussen 1:50 en 1:5000 liggen.');
+  if (!Number.isFinite(scale) || scale < 50 || scale > 5000) throw new Error(m("report.scaleRange", "Rapportschaal moet tussen 1:50 en 1:5000 liggen."));
   const max=cpt.points.reduce((value,p)=>Math.max(value,p.depth),0);
   const span=REPORT_PLOT_HEIGHT_MM * scale / 1000;
   const count=Math.max(1,Math.ceil(max/span));
-  if (count > 1000) throw new Error('Deze combinatie van diepte en schaal maakt meer dan 1000 bladen.');
+  if (count > 1000) throw new Error(m("report.tooManySheets", "Deze combinatie van diepte en schaal maakt meer dan 1000 bladen."));
   const boundary=(depth:number):MeasurementPoint|undefined=>{
     const after=cpt.points.findIndex(p=>p.depth>=depth);
     if(after<0)return undefined;

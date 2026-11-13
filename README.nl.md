@@ -53,6 +53,7 @@ Er is nog geen ingebouwde updater: installeer een nieuwe versie over de oude hee
 |---|---|
 | ![Een sondering met qc, fs en Rf tegen de diepte en de indicatieve grondzones](docs/images/readme/hero.png) **Een sondering met indicatieve grondzones** | ![Een BRO-boring met grondlagen, bijmengingen en humusgehalte](docs/images/readme/borehole.png) **Een BRO-boring met grondlagen** |
 | ![Het PDF-rapport met voorblad, coördinatentabel en een pagina per sondering](docs/images/readme/report.png) **Het PDF-sonderingsrapport** | ![Een situatietekening op A3 met een sonderingsraster en de titelbalk](docs/images/readme/site-plan.png) **Een situatietekening met sonderingsraster** |
+| ![Een 3D-grondmodel, geïnterpoleerd tussen zeven sonderingen, met NAP-schaal](docs/images/readme/soil-model-3d.png) **Een 3D-grondmodel uit de sonderingen** | ![Het 3D-model opengesneden, met de sonderingen, de conusweerstand en de draagkrachtige laag](docs/images/readme/soil-model-3d-section.png) **Het 3D-model opengesneden bij de sonderingen** |
 
 ## Sonderingen en boringen
 
@@ -64,6 +65,22 @@ Er is nog geen ingebouwde updater: installeer een nieuwe versie over de oude hee
 
 - **Kaart.** PDOK-achtergrondkaarten, luchtfoto's 2016–2025, BAG-gebouwen, kadastrale percelen, bestemmingsplannen, BGT en hoogtes, met een meetlat. Laad de BRO-sonderingen en -boringen in het zichtbare gebied.
 - **Situatietekening.** Een vast A2- of A3-blad op ware schaal, met sonderingsmarkeringen, een sonderingsraster, maatlijnen, RD-coördinaten, onderleggers uit PDF of afbeeldingen, snappen op gebouwen en percelen, en een titelbalk.
+
+## 3D-grondmodel
+
+- **Opgebouwd uit de sonderingen.** Elke sondering met RD-coördinaten wordt een kolom in haar laagkleuren, met de conusweerstand ernaast. Tussen de sonderingen wordt de grondsoort per cel geïnterpoleerd met inverse-afstandsweging. Het model is indicatief: tussen sonderingen is de laagopbouw een aanname.
+- **Draagkrachtige laag en paalpunten.** De bovenkant van de draagkrachtige laag per sondering, als geïnterpoleerd vlak, en de paalpuntniveaus uit de paalberekeningen.
+- **Erin kijken.** Overhoogte, dekking, een doorsnede langs beide assen, afgraven van boven en grondsoorten aan en uit.
+- **Aanzichten en export.** 3D, boven, voor en zij, en het beeld als PNG.
+
+## IFC5-export (IFCX)
+
+- **Het hele grondonderzoek in één open bestand.** Via het IFC-tabblad of het 3D-model exporteer je het project als IFC5 (IFCX alpha), het JSON-formaat van de volgende IFC-generatie, volgens de geotechnische voorbeelden van buildingSMART.
+- **Sonderingen** als `IfcBorehole` met metadata, de volledige reeksen qc, fs, Rf en u2 en de laagindeling, elke laag in de kleur van de grondsoort.
+- **3D-grondmodel** als `IfcGeomodel` met per grondsoort een `IfcGeotechnicalStratum`, gekoppeld aan de lagen in de sonderingen waarop het rust, plus de bovenkant van de draagkrachtige laag en de palen uit de paalberekeningen.
+- **Gegeorefereerd** in RD (EPSG:28992), NAP (EPSG:5709) en WGS84, zodat een openBIM-platform het op de kaart zet.
+
+![De geëxporteerde IFCX in de IFC5-viewer van buildingSMART: sonderingen, grondlagen en modelboom](docs/images/readme/ifcx-viewer.png)
 
 ## Paalberekeningen
 

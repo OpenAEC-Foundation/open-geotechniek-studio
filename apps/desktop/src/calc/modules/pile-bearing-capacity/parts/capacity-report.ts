@@ -33,7 +33,7 @@ export function renderCapacityAppendix(c: Cursor, m: CapacityMatrix, choices: Si
     const cols = [{ label: "Punt [m NAP]", width: 16 }, ...m.sizesMm.map((s) => ({ label: sizeLabel(s), width: 14, align: "right" as const }))];
     const rows = m.toeNaps.map((t, li) => [nlNapShort(t), ...m.sizesMm.map((_, si) => {
       const r = cpt.cells[si][li].result;
-      if (!r.ok) return invalidReason(r.error);
+      if (!r.ok) return invalidReason(r.error, r.errorCode);
       return `${nl(r.summary.rcNetD, 0)}${chosen[si] === t ? "*" : ""}`;
     })]);
     table(c, cols, rows, { size: 7 });

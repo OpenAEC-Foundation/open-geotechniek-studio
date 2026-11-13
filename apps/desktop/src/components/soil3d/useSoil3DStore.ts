@@ -9,6 +9,9 @@ export interface SectionBox { e0: number; e1: number; n0: number; n1: number; z0
 export type ViewId = "model" | "section";
 export const VIEWS: ViewId[] = ["model", "section"];
 
+/** Standaardaanzichten van de camera. */
+export type CameraView = "iso" | "top" | "front" | "side";
+
 export interface Soil3DSettings {
   showCpts: boolean;
   showQc: boolean;
@@ -21,6 +24,8 @@ export interface Soil3DSettings {
   showGeotop: boolean;
   showWater: boolean;
   showWells: boolean;
+  /** Namen van de sonderingen en de NAP-schaal in het model. */
+  showLabels: boolean;
   exaggeration: number;
   opacity: number;
   /** Diameter van de sonderingskolommen in m; null = automatisch naar de modelgrootte. */
@@ -28,7 +33,7 @@ export interface Soil3DSettings {
   hiddenZones: number[];
 }
 
-export type ToggleKey = "showCpts" | "showQc" | "showModel" | "showGround" | "showBearing" | "showPileToes" | "showAquifers" | "showGeotop" | "showWater" | "showWells";
+export type ToggleKey = "showCpts" | "showQc" | "showModel" | "showGround" | "showBearing" | "showPileToes" | "showAquifers" | "showGeotop" | "showWater" | "showWells" | "showLabels";
 
 interface Soil3DState extends Soil3DSettings {
   set: (patch: Partial<Soil3DSettings & Pick<Soil3DState, "model" | "busy" | "message" | "sectionBox">>) => void;
@@ -38,9 +43,13 @@ interface Soil3DState extends Soil3DSettings {
   busy: string | null;
   message: { text: string; error: boolean } | null;
   toggleZone: (zone: number) => void;
-  /** Teller die de vensters laat terugzoomen naar het hele model. */
-  fitRequest: number;
-  requestFit: () => void;
+  /** Verzoek om de camera van het actieve venster naar een standaardaanzicht te zetten (passend in beeld). */
+  /** view null: passend in het huidige aanzicht van het venster. */
+  cameraRequest: { view: CameraView | null; seq: number };
+  requestFit: (view?: CameraView) => void;
+  /** Teller die het actieve venster als PNG laat exporteren. */
+  exportRequest: number;
+  requestExport: () => void;
   /** Section box; null = nog niet gezet (de viewer zet hem bij een nieuw model). */
   sectionBox: SectionBox | null;
   /** Vensters naast elkaar met tabbladen (zie layout.ts). */
@@ -50,7 +59,7 @@ interface Soil3DState extends Soil3DSettings {
 
 export const DEFAULT_SOIL3D: Soil3DSettings = {
   showCpts: true, showQc: true, showModel: true, showGround: false, showBearing: true, showPileToes: true,
-  showAquifers: true, showGeotop: true, showWater: true, showWells: true,
+  showAquifers: true, showGeotop: true, showWater: true, showWells: true, showLabels: true,
   exaggeration: 2, opacity: 1, cptDiameter: null, hiddenZones: [],
 };
 
@@ -63,7 +72,8 @@ export function defaultSectionBox(model: SoilModel): SectionBox {
 
 export const useSoil3DStore = create<Soil3DState>((set) => ({
   ...DEFAULT_SOIL3D,
-  fitRequest: 0,
+  cameraRequest: { view: null, seq: 0 },
+  exportRequest: 0,
   model: null,
   busy: null,
   message: null,
@@ -72,6 +82,7 @@ export const useSoil3DStore = create<Soil3DState>((set) => ({
   set: (patch) => set(patch),
   toggle: (key) => set((s) => ({ [key]: !s[key] }) as Partial<Soil3DState>),
   toggleZone: (zone) => set((s) => ({ hiddenZones: s.hiddenZones.includes(zone) ? s.hiddenZones.filter((z) => z !== zone) : [...s.hiddenZones, zone] })),
-  requestFit: () => set((s) => ({ fitRequest: s.fitRequest + 1 })),
+  requestFit: (view) => set((s) => ({ cameraRequest: { view: view ?? null, seq: s.cameraRequest.seq + 1 } })),
+  requestExport: () => set((s) => ({ exportRequest: s.exportRequest + 1 })),
   updateLayout: (fn) => set((s) => ({ layout: fn(s.layout) })),
 }));

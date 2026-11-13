@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Luftfoto © PDOK",
+    "mapData": "Kortdata © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Linjer forlænget til et hjørne i skæringspunktet",
+    "extendSecond": "Forlæng — klik nu på den anden linje; begge forlænges til et hjørne i skæringspunktet",
+    "hintExtend": "Forlæng — klik først på referencelinjen (grænsen, der forlænges til)",
+    "hintMirror": "Spejl — markér først en linje (klik på den), og klik derefter på to punkter for spejlaksen",
+    "hintOffset": "Forskyd — klik på en linje for at vælge kilden (afstanden angives bagefter)",
+    "hintTrim": "Trim — klik først på referencelinjen (skærekanten)",
+    "mirrorDone": "Linje spejlet om aksen",
+    "mirrorNeedsLine": "Markér først en linje (klik på den), før du bruger Spejl",
+    "mirrorSecond": "Spejl — klik nu på spejlaksens andet punkt",
+    "offsetDone": "Parallel linje placeret i {{dist}} m afstand",
+    "offsetPickFirst": "Forskyd — klik først på en linje for at vælge kilden",
+    "offsetPrompt": "Forskydningsafstand i meter? (positivt tal)",
+    "offsetSide": "Forskyd {{dist}} m — klik på den side, hvor kopien skal placeres",
+    "parallel": "Linjerne er parallelle — intet skæringspunkt, intet hjørne muligt",
+    "pickOtherLine": "Vælg en anden linje end den første",
+    "trimDone": "Linjer trimmet til et hjørne i skæringspunktet",
+    "trimSecond": "Trim — klik nu på den anden linje; begge trimmes til et hjørne i skæringspunktet"
+  },
+  "coordTable": {
+    "more": "+ {{n}} ikke vist",
+    "nr": "Nr.",
+    "title": "Sonderinger, der endnu skal udføres (RD)"
+  },
+  "crop": {
+    "cancel": "Annuller",
+    "close": "Luk",
+    "confirm": "Beskær og tilføj",
+    "cropPage": "Beskær side {{page}}",
+    "imageTitle": "Beskær billede",
+    "loadingPdf": "Læser PDF…",
+    "otherPage": "← Anden side",
+    "otherPageTitle": "Vælg en anden side",
+    "page": "Side {{page}}",
+    "pageCount": "{{n}} sider",
+    "pageCountOne": "1 side",
+    "pdfReadError": "PDF kunne ikke læses",
+    "pickPage": "PDF — vælg side",
+    "rendering": "Renderer side…"
+  },
+  "dwg": {
+    "askRd": "Eksportér i RD-koordinater (EPSG:28992)?\n\nJa = sande RD-koordinater (georefereret).\nNej = lokalt origo, tegning ved 0,0.",
+    "askTitle": "DWG/DXF-eksport",
+    "desktopOnly": "DWG-eksport virker kun i desktop-appen",
+    "exported": "Eksporteret ({{n}} objekter)",
+    "exportedWithImages": "Eksporteret ({{n}} objekter + {{images}} bill.)",
+    "exporting": "Eksporterer DWG…",
+    "failed": "DWG-eksport mislykkedes: {{error}}",
+    "filterDwg": "CAD-tegning (DWG)",
+    "filterDxf": "CAD-udveksling (DXF)",
+    "nothing": "Intet at eksportere"
+  },
+  "export": {
+    "defaultFileName": "situationsplan"
+  },
+  "handle": {
+    "moveRaster": "Træk for at flytte gitteret",
+    "rotate": "Træk for at rotere"
+  },
+  "move": {
+    "hint": "Flyt musen og klik for at placere (Esc = annuller)",
+    "notMovable": "Dette objekt kan ikke flyttes",
+    "pickObject": "Klik på det objekt, du vil flytte"
+  },
+  "northArrow": "Nordpil",
+  "note": {
+    "prompt": "Note:"
+  },
+  "paper": {
+    "dwgStub": "DWG/DXF-parser kommer snart"
+  },
+  "pdf": {
+    "exported": "PDF eksporteret",
+    "exporting": "Eksporterer PDF…",
+    "failed": "PDF-eksport mislykkedes: {{error}}",
+    "timeout": "PDF-rasterisering tog mere end 30 sekunder"
+  },
+  "props": {
+    "a2Landscape": "A2 liggende",
+    "a3Landscape": "A3 liggende",
+    "areaHeader": "Område {{id}}",
+    "background": "Baggrund",
+    "color": "Farve",
+    "cols": "Kolonner",
+    "cptHeader": "Sondering {{id}}",
+    "cptNumber": "Sonderingsnr.",
+    "deleteArea": "Slet område",
+    "deleteBackground": "Slet baggrund",
+    "deleteCpt": "Slet sondering",
+    "deleteLine": "Slet linje",
+    "deleteNote": "Slet note",
+    "deleteRaster": "Slet gitter",
+    "dimensionHeader": "Målelinje {{id}}",
+    "dragMarkerHint": "Træk markøren på kortet for at flytte den.",
+    "emptyHint": "Klik på en sondering, et gitter eller et objekt på papiret for at redigere egenskaberne.",
+    "fillColor": "Fyldfarve",
+    "frame": "Tegningsramme",
+    "freeze": "Frys visning",
+    "freezeTitle": "Frys panorering + zoom, så tegningen bliver præcis på plads",
+    "friction": "Friktionsmåling",
+    "frictionWithSymbol": "Friktionsmåling (streg under symbol)",
+    "hideInExport": "Skjul gitter i PDF-/DWG-eksport",
+    "layer": "Lag",
+    "layerBackground": "Baggrund (under linjer/markører)",
+    "layerForeground": "Forgrund (over alt)",
+    "lineHeader": "Linje {{id}}",
+    "loading": "Indlæser egenskaber…",
+    "noSelection": "Intet markeret",
+    "noteHeader": "Note {{id}}",
+    "numbering": "Nummerering",
+    "numberingPlaceholder": "f.eks. S",
+    "numberingTitle": "Præfiks for cellenummereringen, f.eks. 'S' giver S1, S2, … Tom = standard R01-S01-notation.",
+    "overlayTip": "Tip: tryk <kbd>M</kbd> eller <kbd>G</kbd> for at flytte (markøren følger med; klik bekræfter, Esc annullerer). Træk i et hjørnehåndtag for at skalere.",
+    "paper": "Papir",
+    "paperScale": "Papir og målestok",
+    "rasterHeader": "Gitter {{id}}",
+    "resetColor": "Nulstil til standard",
+    "rotation": "Rotation (°)",
+    "rows": "Rækker",
+    "scaleField": "Målestok 1:",
+    "scaleFieldTitle": "Skriv en målestok (f.eks. 1000 for 1:1000) og tryk Enter — tegningen tilpasses",
+    "scalePresets": "Forvalgte målestokke",
+    "setScale": "Sæt målestok til 1:{{scale}}",
+    "spacingX": "Afstand X (m)",
+    "spacingY": "Afstand Y (m)",
+    "startNumber": "Startnr.",
+    "strokeColor": "Kantfarve",
+    "text": "Tekst",
+    "titleBlock": {
+      "address": "Adresse",
+      "checkedBy": "Kontrolleret",
+      "date": "Dato",
+      "drawingNumber": "Tegningsnr.",
+      "drawnBy": "Tegnet",
+      "project": "Projekt",
+      "projectNumber": "Projektnr.",
+      "scale": "Målestok",
+      "version": "Version"
+    },
+    "width": "Bredde (m)"
+  },
+  "quotes": {
+    "cancel": "Annuller",
+    "hint": "Sorteret efter afstand til projektet. De 3 nærmeste firmaer er forvalgt. Tilpas udvalget, og klik på “Åbn e-mail” for at åbne Outlook med en tilbudsforespørgsel til alle valgte firmaer.",
+    "more": "+ {{hidden}} yderligere firmaer ikke vist. Kataloget ({{total}} firmaer) ligger i <code>{{path}}</code>.",
+    "openMail": "Åbn e-mail ({{n}})",
+    "openMailTitle": "Åbner dit standardmailprogram (Outlook) med en udfyldt tilbudsforespørgsel",
+    "selected": "{{n}} firmaer valgt",
+    "selectedOne": "1 firma valgt",
+    "title": "Indhent 3 tilbud fra sonderingsfirmaer"
+  },
+  "rotate": {
+    "notRotatable": "Denne objekttype kan ikke roteres",
+    "prompt": "Rotér hvor mange grader? (negativ = mod uret)",
+    "selectFirst": "Markér først et objekt, der skal roteres"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Gade, husnummer, projektsted",
+    "addressTitle": "Klik for at redigere adressen",
+    "author": "Forfatter",
+    "drawingType": "Situationsplan",
+    "firstDate": "1. dato",
+    "format": "Format",
+    "logoAlt": "Firmalogo",
+    "logoTitle": "Klik for at vælge dit eget logo (PNG / JPG / SVG)",
+    "projectNumber": "Projektnr.",
+    "projectPlaceholder": "Projektnavn",
+    "projectTitle": "Klik for at redigere projektnavnet",
+    "reference": "Reference",
+    "revision": "Rev.",
+    "scale": "Målestok",
+    "scaleTitle": "Klik for at redigere målestokken (f.eks. 1:850)",
+    "sheet": "Ark"
+  },
+  "toast": {
+    "areaHint": "Område — klik på hjørnepunkterne; Enter eller dobbeltklik lukker, Esc annullerer",
+    "broIncomplete": "BRO ufuldstændig: {{error}}",
+    "dwgParserPending": "DWG/DXF-parser kommer snart — filen er genkendt, men vises endnu ikke.",
+    "frameMustBeSvg": "Tegningsrammen skal være en SVG-fil",
+    "invalidScale": "Ugyldig målestok: brug for eksempel 1:850 (50–100.000).",
+    "logoReadFailed": "Kunne ikke læse logoet",
+    "noteHint": "Note — klik, hvor teksten skal stå",
+    "objectsDeleted": "{{n}} objekt(er) slettet",
+    "objectsSelected": "{{n}} objekt(er) markeret — tryk Delete for at slette",
+    "rasterPlaced": "Gitter {{id}} placeret — træk i et hjørne for at strække det (sonderinger tilføjes automatisk med maks. {{spacing}} m c/c)",
+    "unsupportedFile": "Filtypen .{{ext}} understøttes endnu ikke"
+  }
+}

@@ -164,6 +164,12 @@ export function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[
       for (const m of Array.isArray(mat) ? mat : mat ? [mat] : []) m.clippingPlanes = planes;
     });
   }
+  // Labels uit: alle teksten (namen, NAP-schaal, noordpijl, pakketten, peilbuizen) weg.
+  if (s.showLabels === false) {
+    const sprites: THREE.Object3D[] = [];
+    root.traverse((o) => { if ((o as THREE.Sprite).isSprite) sprites.push(o); });
+    for (const o of sprites) { o.removeFromParent(); disposeTree(o); }
+  }
   return root;
 }
 

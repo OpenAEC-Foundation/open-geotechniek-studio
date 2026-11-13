@@ -3,11 +3,12 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { SoilModel } from "./soilModel";
 import { addLights, buildContent, disposeTree, fitCamera, modelBounds, type PileToe, type ViewPreset } from "./scene";
-import type { SectionBox, Soil3DSettings } from "./useSoil3DStore";
+import type { CameraView, SectionBox, Soil3DSettings } from "./useSoil3DStore";
 import type { SubsurfaceData } from "./subsurface/store";
 import { aquifers } from "./subsurface/regis";
 import { selectionBox, selectionFromHit, type Selection } from "./selection";
 import { OaIcon } from "../icons/oaIcon";
+import { saveBlobAsFile } from "../../utils/browserSave";
 
 type Face = keyof SectionBox;
 /** Grepen van de section box: as in scènecoördinaten, naar buiten wijzend, kleur per as (CAD-gebruik). */
@@ -51,7 +52,12 @@ export interface Viewport3DProps {
   onSectionBox: (box: SectionBox) => void;
   selection: Selection | null;
   onSelect: (sel: Selection | null) => void;
-  fitRequest: number;
+  /** Het venster dat het lint aanstuurt: actief tabblad in het venster met de focus. */
+  active: boolean;
+  /** Aanzicht vanuit het lint; geldt alleen voor het actieve venster. */
+  cameraRequest: { view: CameraView | null; seq: number };
+  /** Teller: het actieve venster bewaart zijn beeld als PNG. */
+  exportRequest: number;
 }
 
 interface Rig {
@@ -93,7 +99,7 @@ export function Viewport3D(p: Viewport3DProps) {
     const el = mountRef.current;
     if (!el) return;
     let renderer: THREE.WebGLRenderer;
-    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); } catch { setUnavailable(true); return; }
+    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true }); } catch { setUnavailable(true); return; }
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.localClippingEnabled = true;
     el.appendChild(renderer.domElement);
@@ -208,7 +214,33 @@ export function Viewport3D(p: Viewport3DProps) {
   }, [p.sectionBox, p.mode, p.selection, p.model, p.subsurface, ex]);
 
   // Passend in beeld: bij een nieuw model, een andere overhoogte en op verzoek.
-  useEffect(() => { fit(preset); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [p.model, p.fitRequest, ex]);
+  useEffect(() => { fit(preset); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [p.model, ex]);
+
+  // Aanzicht vanuit het lint (Passend, Boven, Voor, Zij): alleen het actieve venster.
+  const lastCamera = useRef(p.cameraRequest.seq);
+  useEffect(() => {
+    if (p.cameraRequest.seq === lastCamera.current) return;
+    lastCamera.current = p.cameraRequest.seq;
+    if (!p.active) return;
+    const view = p.cameraRequest.view ?? preset;
+    setPreset(view);
+    fit(view);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [p.cameraRequest]);
+
+  // Beeld van het actieve venster als PNG.
+  const lastExport = useRef(p.exportRequest);
+  useEffect(() => {
+    if (p.exportRequest === lastExport.current) return;
+    lastExport.current = p.exportRequest;
+    const r = rig.current;
+    if (!p.active || !r) return;
+    r.renderer.render(r.scene, r.camera);
+    r.renderer.domElement.toBlob((blob) => {
+      if (blob) void saveBlobAsFile(blob, "grondmodel-3d.png", { "image/png": [".png"] });
+    }, "image/png");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [p.exportRequest]);
 
   // Muis: grepen slepen, klikken selecteert, dubbelklik draait om het punt, Esc heft de selectie op.
   useEffect(() => {

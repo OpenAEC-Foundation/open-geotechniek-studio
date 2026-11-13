@@ -1,0 +1,81 @@
+{
+  "detached": {
+    "view": "Vue détachée",
+    "dockBackTitle": "Ancrer à nouveau dans la fenêtre principale",
+    "dockBack": "Ancrer",
+    "untitled": "Sans titre"
+  },
+  "drop": {
+    "hint": "Relâchez pour ouvrir — GEF, BRO XML ou .ifcgeo",
+    "browserOpenFailed": "Impossible d'ouvrir {{name}} en mode navigateur :\n{{message}}\n\nAstuce : BHR-GT XML, GMW XML et GEF fonctionnent dans le navigateur. Pour BRO CPT XML et les fichiers de projet, il faut la version de bureau."
+  },
+  "errorBoundary": {
+    "title": "⚠ Plantage du rendu React — ErrorBoundary de premier niveau",
+    "intro": "Un composant de l'application a levé une erreur lors du rendu. La trace de pile ci-dessous aide à localiser la cause.",
+    "reload": "Recharger l'application",
+    "noStack": "(aucune trace de pile disponible)",
+    "componentStack": "Pile des composants"
+  },
+  "backstage": {
+    "noProject": "Aucun projet actif — ouvrez ou créez un projet .ifcgeo.",
+    "projectFilter": "Fichier Open Geotechniek Studio",
+    "saveFailed": "Échec de l'enregistrement : {{error}}",
+    "geoObjectFilter": "Objet géotechnique (.ifcgeo)",
+    "cptSnapshotFilter": "CPT avec données source",
+    "snapshotSaveFailed": "Échec de l'enregistrement de l'instantané : {{error}}",
+    "gefExportStopped": "Export GEF interrompu : {{error}}",
+    "broBrowserUnavailable": "La génération d'une nouvelle livraison BRO n'est disponible que via l'ancien export de bureau. Utilisez GEF ou un instantané JSON pour un export fidèle à la source.",
+    "browserOpenFailed": "Impossible d'ouvrir {{name}} en mode navigateur :\n{{message}}\n\nAstuce : BHR-GT XML, GMW XML, GEF et BRO CPT XML fonctionnent dans le navigateur. Pour les fichiers de projet .ifcgeo/.ifcgis, il faut la version de bureau.",
+    "openFailed": "Impossible d'ouvrir {{name}} : {{message}}",
+    "minutesAgo": "il y a {{n}} min",
+    "hoursAgo": "il y a {{n}} h",
+    "daysAgo": "il y a {{n}} j"
+  },
+  "extensions": {
+    "tekening": {
+      "name": "Plan de situation",
+      "description": "Feuille CAO (A2/A3/A4) avec CPT, accrochage, superpositions et export PDF."
+    },
+    "offertes": {
+      "name": "Demander des devis",
+      "description": "Demande des devis aux entreprises d'essais CPT les plus proches."
+    },
+    "category": {
+      "drawing": "Dessin",
+      "workflow": "Flux de travail",
+      "calculation": "Calcul"
+    },
+    "lockedLabel": "Pas encore prêt pour la production",
+    "inDevelopment": "En développement",
+    "lockedDescription": "Ce calcul est encore en développement — ses résultats n'ont pas encore été vérifiés pour un usage en production. Le commutateur est donc désactivé.",
+    "noCatalog": "Aucun catalogue d'extensions externe disponible.",
+    "builtInOnly": "Open Geotechniek Studio n'utilise actuellement que des extensions intégrées (voir l'onglet « {{tab}} »). Un catalogue communautaire suivra dans une version ultérieure."
+  },
+  "statusBar": {
+    "depth": "Profondeur"
+  },
+  "startSidebar": {
+    "title": "Accueil",
+    "collapse": "Réduire",
+    "expand": "Ouvrir le panneau d'accueil",
+    "exampleProject": "Projet d'exemple"
+  },
+  "releaseNotes": {
+    "title": "Nouveautés",
+    "loadFailed": "Impossible de charger les notes de version ({{error}})",
+    "loading": "Chargement…",
+    "none": "Aucune version trouvée"
+  },
+  "store": {
+    "noProject": "Aucun projet actif.",
+    "noProjectForBro": "Aucun projet actif — impossible d'ajouter le CPT BRO.",
+    "targetProjectClosed": "Le projet cible a été fermé pendant l'ajout.",
+    "gmwParseFailed": "{{filename}} : impossible d'analyser une livraison GMW (pas de racine <GMW_PO>/<GMW_O> ou aucun broId trouvé)",
+    "unsupportedBore": "{{filename}} : pas un forage BHR XML ou GEF pris en charge"
+  },
+  "platform": {
+    "unknownCptFormat": "Format de CPT inconnu ({{filename}}). GEF ou BRO CPT XML attendu.",
+    "pdfWindowClosed": "La fenêtre PDF a été fermée. Ouvrez à nouveau le rapport.",
+    "popupBlocked": "Autorisez les fenêtres contextuelles ou utilisez Générer le PDF pour télécharger."
+  }
+}

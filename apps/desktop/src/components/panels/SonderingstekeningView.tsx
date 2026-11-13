@@ -1,6 +1,7 @@
 import {bro as broPlatform} from "../../utils/platform";
 import { drawingViewport, parseDrawingScale } from "../../utils/drawingViewport";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import proj4 from "proj4";
@@ -650,6 +651,7 @@ function sideOfLineRd(p: RdPoint, a: RdPoint, b: RdPoint): 1 | -1 | 0 {
 }
 
 export default function SonderingstekeningView() {
+  const { t } = useTranslation("drawing");
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const paperRef = useRef<HTMLDivElement>(null);
@@ -1166,7 +1168,7 @@ export default function SonderingstekeningView() {
     if (moveArmedRef.current && selection) {
       moveArmedRef.current = false;
       if (startMove(selection)) {
-        setToast("Beweeg de muis en klik om neer te zetten (Esc = annuleren)");
+        setToast(t("move.hint", "Beweeg de muis en klik om neer te zetten (Esc = annuleren)"));
         setTimeout(() => setToast(null), 2600);
       }
     }
@@ -1189,15 +1191,15 @@ export default function SonderingstekeningView() {
     const onBeginMove = () => {
       if (selection) {
         if (startMove(selection)) {
-          setToast("Beweeg de muis en klik om neer te zetten (Esc = annuleren)");
+          setToast(t("move.hint", "Beweeg de muis en klik om neer te zetten (Esc = annuleren)"));
           setTimeout(() => setToast(null), 2600);
         } else {
-          setToast("Dit object kun je niet verplaatsen");
+          setToast(t("move.notMovable", "Dit object kun je niet verplaatsen"));
           setTimeout(() => setToast(null), 2200);
         }
       } else {
         moveArmedRef.current = true;
-        setToast("Klik het object dat je wilt verplaatsen");
+        setToast(t("move.pickObject", "Klik het object dat je wilt verplaatsen"));
         setTimeout(() => setToast(null), 3000);
       }
     };
@@ -1635,7 +1637,7 @@ export default function SonderingstekeningView() {
           // en bewaar in step-state; volgende klik op de kaart bepaalt
           // de zijde.
           const raw = window.prompt(
-            "Offset-afstand in meters? (positief getal)",
+            t("cad.offsetPrompt", "Offset-afstand in meters? (positief getal)"),
             "1",
           );
           if (raw === null) return;
@@ -1643,7 +1645,7 @@ export default function SonderingstekeningView() {
           if (!Number.isFinite(dist) || dist <= 0) return;
           cadStepRef.current = { kind: "offset-hint", lineId: ln.id, dist };
           setToast(
-            `Offset ${dist} m — klik aan de zijde waar de kopie moet komen`,
+            t("cad.offsetSide", "Offset {{dist}} m — klik aan de zijde waar de kopie moet komen", { dist }),
           );
           setTimeout(() => setToast(null), 3500);
           return;
@@ -1765,8 +1767,8 @@ export default function SonderingstekeningView() {
             : { kind: "extend-ref", refLineId: lineId };
         setToast(
           mode === "trim"
-            ? "Trim — klik nu de tweede lijn; beide worden op het snijpunt tot een hoek geknipt"
-            : "Extend — klik nu de tweede lijn; beide worden tot het snijpunt verlengd tot een hoek",
+            ? t("cad.trimSecond", "Trim — klik nu de tweede lijn; beide worden op het snijpunt tot een hoek geknipt")
+            : t("cad.extendSecond", "Extend — klik nu de tweede lijn; beide worden tot het snijpunt verlengd tot een hoek"),
         );
         setTimeout(() => setToast(null), 4500);
         return;
@@ -1775,7 +1777,7 @@ export default function SonderingstekeningView() {
       // eerste (een lijn snijdt niet zinvol met zichzelf).
       const firstId = step.refLineId;
       if (lineId === firstId) {
-        setToast("Kies een andere lijn dan de eerste");
+        setToast(t("cad.pickOtherLine", "Kies een andere lijn dan de eerste"));
         setTimeout(() => setToast(null), 2400);
         return;
       }
@@ -1792,7 +1794,7 @@ export default function SonderingstekeningView() {
       const b2 = llToRd(l2.lat2, l2.lon2);
       const inter = lineIntersectionRd(a1, b1, a2, b2);
       if (!inter) {
-        setToast("Lijnen zijn parallel — geen snijpunt, geen hoek mogelijk");
+        setToast(t("cad.parallel", "Lijnen zijn parallel — geen snijpunt, geen hoek mogelijk"));
         setTimeout(() => setToast(null), 2800);
         cadStepRef.current = null;
         setCadMode(null);
@@ -1826,8 +1828,8 @@ export default function SonderingstekeningView() {
       );
       setToast(
         mode === "trim"
-          ? "Lijnen op het snijpunt tot een hoek geknipt"
-          : "Lijnen tot het snijpunt verlengd tot een hoek",
+          ? t("cad.trimDone", "Lijnen op het snijpunt tot een hoek geknipt")
+          : t("cad.extendDone", "Lijnen tot het snijpunt verlengd tot een hoek"),
       );
       setTimeout(() => setToast(null), 2000);
       // Tool reset — voor een volgende hoek opnieuw de knop indrukken.
@@ -1852,7 +1854,7 @@ export default function SonderingstekeningView() {
         const sel = selectionRef.current;
         if (!sel || sel.kind !== "line") {
           setToast(
-            "Selecteer eerst een lijn (klik er op) voordat je Mirror gebruikt",
+            t("cad.mirrorNeedsLine", "Selecteer eerst een lijn (klik er op) voordat je Mirror gebruikt"),
           );
           setTimeout(() => setToast(null), 3500);
           return;
@@ -1861,7 +1863,7 @@ export default function SonderingstekeningView() {
         if (!step || step.kind !== "mirror-axis") {
           // Eerste klik — zet eerste-aspunt.
           cadStepRef.current = { kind: "mirror-axis", lat, lon };
-          setToast("Mirror — klik nu het tweede punt van de spiegelas");
+          setToast(t("cad.mirrorSecond", "Mirror — klik nu het tweede punt van de spiegelas"));
           setTimeout(() => setToast(null), 3000);
           return;
         }
@@ -1893,7 +1895,7 @@ export default function SonderingstekeningView() {
               : l,
           ),
         );
-        setToast("Lijn gespiegeld over de as");
+        setToast(t("cad.mirrorDone", "Lijn gespiegeld over de as"));
         setTimeout(() => setToast(null), 1800);
         cadStepRef.current = null;
         setCadMode(null);
@@ -1905,7 +1907,7 @@ export default function SonderingstekeningView() {
       if (mode === "offset") {
         const step = cadStepRef.current;
         if (!step || step.kind !== "offset-hint") {
-          setToast("Offset — klik eerst op een lijn om de bron te kiezen");
+          setToast(t("cad.offsetPickFirst", "Offset — klik eerst op een lijn om de bron te kiezen"));
           setTimeout(() => setToast(null), 3000);
           return;
         }
@@ -1940,7 +1942,7 @@ export default function SonderingstekeningView() {
             },
           ];
         });
-        setToast(`Parallel-lijn op ${step.dist} m geplaatst`);
+        setToast(t("cad.offsetDone", "Parallel-lijn op {{dist}} m geplaatst", { dist: step.dist }));
         setTimeout(() => setToast(null), 1800);
         cadStepRef.current = null;
         setCadMode(null);
@@ -2720,7 +2722,7 @@ export default function SonderingstekeningView() {
         return L.tileLayer(
           "https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/standaard/EPSG:3857/{z}/{x}/{y}.png",
           {
-            attribution: "Kaartgegevens © Kadaster | PDOK",
+            attribution: t("attribution.mapData", "Kaartgegevens © Kadaster | PDOK"),
             maxZoom: T_MAX_ZOOM,
             maxNativeZoom: T_NATIVE_MAX,
           },
@@ -2730,7 +2732,7 @@ export default function SonderingstekeningView() {
         return L.tileLayer(
           "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/Actueel_ortho25/EPSG:3857/{z}/{x}/{y}.jpeg",
           {
-            attribution: "Luchtfoto © PDOK",
+            attribution: t("attribution.aerial", "Luchtfoto © PDOK"),
             maxZoom: T_MAX_ZOOM,
             maxNativeZoom: T_NATIVE_MAX_LUCHT,
           },
@@ -2743,7 +2745,7 @@ export default function SonderingstekeningView() {
         return L.tileLayer(
           `https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/${layerId}/EPSG:3857/{z}/{x}/{y}.jpeg`,
           {
-            attribution: "Luchtfoto © PDOK",
+            attribution: t("attribution.aerial", "Luchtfoto © PDOK"),
             maxZoom: T_MAX_ZOOM,
             maxNativeZoom: T_NATIVE_MAX_LUCHT,
           },
@@ -3005,7 +3007,7 @@ export default function SonderingstekeningView() {
       if (noteModeRef.current) {
         noteModeRef.current = false;
         setNoteMode(false);
-        const txt = window.prompt("Opmerking:", "");
+        const txt = window.prompt(t("note.prompt", "Opmerking:"), "");
         if (txt && txt.trim()) {
           setNotes((prev) => [
             ...prev,
@@ -3597,7 +3599,7 @@ export default function SonderingstekeningView() {
       const grip = L.marker([raster.centerLat, raster.centerLon], {
         icon: L.divIcon({
           className: "tek-handle tek-handle-move",
-          html: `<button class="tek-handle-move-btn" type="button" title="Sleep om het raster te verplaatsen">
+          html: `<button class="tek-handle-move-btn" type="button" title="${xmlEscapeHtml(t("handle.moveRaster", "Sleep om het raster te verplaatsen"))}">
             <svg viewBox="0 0 24 24" width="16" height="16">
               <path d="M12 3v18M3 12h18" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" />
               <path d="M12 3l-2.5 2.5M12 3l2.5 2.5M12 21l-2.5-2.5M12 21l2.5-2.5M3 12l2.5-2.5M3 12l2.5 2.5M21 12l-2.5-2.5M21 12l-2.5 2.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
@@ -3650,7 +3652,7 @@ export default function SonderingstekeningView() {
     const rotHandle = L.marker([handleLL[1], handleLL[0]], {
       icon: L.divIcon({
         className: "tek-handle tek-handle-rotate",
-        html: `<button class="tek-handle-rot-btn" type="button" title="Sleep om te roteren">
+        html: `<button class="tek-handle-rot-btn" type="button" title="${xmlEscapeHtml(t("handle.rotate", "Sleep om te roteren"))}">
           <svg viewBox="0 0 16 16" width="14" height="14">
             <path d="M3 8a5 5 0 0 1 9-3M13 8a5 5 0 0 1-9 3" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" />
             <polyline points="12,2 12,5 9,5" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
@@ -3722,7 +3724,7 @@ export default function SonderingstekeningView() {
       }
     } catch (err) {
       console.warn("fetch_bro_area (tekening) failed", err);
-      if(epoch===broRequestEpoch.current){layer.clearLayers();setToast(`BRO onvolledig: ${String(err).slice(0,160)}`);window.dispatchEvent(new CustomEvent("ogs:bro-counts",{detail:{cpt:0,bore:0}}));}
+      if(epoch===broRequestEpoch.current){layer.clearLayers();setToast(t("toast.broIncomplete", "BRO onvolledig: {{error}}", { error: String(err).slice(0,160) }));window.dispatchEvent(new CustomEvent("ogs:bro-counts",{detail:{cpt:0,bore:0}}));}
     }
   }, [showBro,showBroBores]);
 
@@ -3764,17 +3766,17 @@ export default function SonderingstekeningView() {
       setOverlay({ id: `o-${Date.now()}`, kind: "svg", name: file.name, src });
     } else if (ext === "dwg" || ext === "dxf") {
       setOverlay({ id: `o-${Date.now()}`, kind: "dwg", name: file.name });
-      setToast("DWG/DXF parser komt eraan — bestand herkend maar nog niet weergegeven.");
+      setToast(t("toast.dwgParserPending", "DWG/DXF parser komt eraan — bestand herkend maar nog niet weergegeven."));
       setTimeout(() => setToast(null), 4000);
     } else {
-      setToast(`Bestandstype .${ext} wordt nog niet ondersteund`);
+      setToast(t("toast.unsupportedFile", "Bestandstype .{{ext}} wordt nog niet ondersteund", { ext }));
       setTimeout(() => setToast(null), 3000);
     }
   }, []);
 
   const handleFrameFile = useCallback(async (file: File) => {
     if (!file.name.toLowerCase().endsWith(".svg")) {
-      setToast("Tekeningkader moet een SVG-bestand zijn");
+      setToast(t("toast.frameMustBeSvg", "Tekeningkader moet een SVG-bestand zijn"));
       setTimeout(() => setToast(null), 3000);
       return;
     }
@@ -3808,7 +3810,7 @@ export default function SonderingstekeningView() {
     setRasters((prev) => [...prev, r]);
     setSelection({ kind: "raster", id: nextId });
     setToast(
-      `Raster ${nextId} geplaatst — sleep een hoek om uit te rekken (er komen automatisch sonderingen bij op max ${spacing} m h-o-h)`,
+      t("toast.rasterPlaced", "Raster {{id}} geplaatst — sleep een hoek om uit te rekken (er komen automatisch sonderingen bij op max {{spacing}} m h-o-h)", { id: nextId, spacing }),
     );
     setTimeout(() => setToast(null), 5000);
   }, [gridSpacing, rasters.length]);
@@ -3838,7 +3840,7 @@ export default function SonderingstekeningView() {
       if (overlayHit) setOverlay(null);
       setMultiSelection([]);
       setSelection(null);
-      setToast(`${multi.length} object(en) verwijderd`);
+      setToast(t("toast.objectsDeleted", "{{n}} object(en) verwijderd", { n: multi.length }));
       setTimeout(() => setToast(null), 1800);
       return;
     }
@@ -4194,7 +4196,7 @@ export default function SonderingstekeningView() {
       const isA2 = (snap?.paperSize ?? "A3") === "A2";
       const wMm = isA2 ? 594 : 420;
       const hMm = isA2 ? 420 : 297;
-      setToast("PDF exporteren…");
+      setToast(t("pdf.exporting", "PDF exporteren…"));
       // Verberg rasters met hideInExport vóór de capture; kort wachten
       // zodat de React-re-render + Leaflet-redraw eerst klaar zijn.
       setExportSuppress(true);
@@ -4216,14 +4218,14 @@ export default function SonderingstekeningView() {
               clone.style.left = "0"; clone.style.top = "0"; clone.style.margin = "0";
             },
           }),
-          new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("PDF-rasterisatie duurde langer dan 30 seconden")), 30000); }),
+          new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(t("pdf.timeout", "PDF-rasterisatie duurde langer dan 30 seconden"))), 30000); }),
         ]).finally(() => { if (timer) clearTimeout(timer); });
         const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
 
         const { jsPDF } = await import("jspdf");
         const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [wMm, hMm] });
         doc.addImage(dataUrl, "JPEG", 0, 0, wMm, hMm);
-        const fname = `${(snap?.titleBlock?.project || "situatietekening").replace(/[\\/:*?"<>|]/g, "_")}.pdf`;
+        const fname = `${(snap?.titleBlock?.project || t("export.defaultFileName", "situatietekening")).replace(/[\\/:*?"<>|]/g, "_")}.pdf`;
 
         const { IS_TAURI } = await import("../../utils/platform");
         if (IS_TAURI) {
@@ -4232,18 +4234,18 @@ export default function SonderingstekeningView() {
           if (dst) {
             const { writeFile } = await import("@tauri-apps/plugin-fs");
             await writeFile(dst, new Uint8Array(doc.output("arraybuffer")));
-            setToast("PDF geëxporteerd");
+            setToast(t("pdf.exported", "PDF geëxporteerd"));
           } else {
             setToast(null);
           }
         } else {
           // Web-fallback: gewone browser-download.
           doc.save(fname);
-          setToast("PDF geëxporteerd");
+          setToast(t("pdf.exported", "PDF geëxporteerd"));
         }
       } catch (err) {
         console.error("tekening-export-pdf failed", err);
-        setToast(`PDF-export mislukt: ${String(err).slice(0, 160)}`);
+        setToast(t("pdf.failed", "PDF-export mislukt: {{error}}", { error: String(err).slice(0, 160) }));
       } finally {
         exporting = false;
         setExportSuppress(false);
@@ -4276,7 +4278,7 @@ export default function SonderingstekeningView() {
       if (!deg) return;
       const sel = selectionRef.current;
       if (!sel) {
-        setToast("Selecteer eerst een object om te roteren");
+        setToast(t("rotate.selectFirst", "Selecteer eerst een object om te roteren"));
         setTimeout(() => setToast(null), 2200);
         return;
       }
@@ -4291,7 +4293,7 @@ export default function SonderingstekeningView() {
       } else if (sel.kind === "overlay" && overlayLayerRef.current) {
         setOverlayRotation((d) => ((d + deg) % 360 + 360) % 360);
       } else {
-        setToast("Dit objecttype kun je niet roteren");
+        setToast(t("rotate.notRotatable", "Dit objecttype kun je niet roteren"));
         setTimeout(() => setToast(null), 2200);
       }
     };
@@ -4300,7 +4302,7 @@ export default function SonderingstekeningView() {
       const ce = e as CustomEvent<{ field: keyof TitleBlockData; value: string }>;
       if (ce.detail.field === "scale") {
         const next = parseDrawingScale(ce.detail.value);
-        if (next == null) { setToast("Ongeldige schaal: gebruik bijvoorbeeld 1:850 (50–100.000)."); return; }
+        if (next == null) { setToast(t("toast.invalidScale", "Ongeldige schaal: gebruik bijvoorbeeld 1:850 (50–100.000).")); return; }
         setScale(next);
         setTitleBlock((tb) => ({ ...tb, scale: `1:${next}` }));
         return;
@@ -4329,10 +4331,10 @@ export default function SonderingstekeningView() {
       setCadMode(m); cadModeRef.current = m;
       // Korte hint per tool — vertelt wat de volgende klik doet.
       const hints: Record<typeof m, string> = {
-        trim: "Trim — klik eerst op de referentielijn (snij-rand)",
-        extend: "Extend — klik eerst op de referentielijn (waar tot verlengd wordt)",
-        mirror: "Mirror — selecteer eerst een lijn (klik er op), klik dan twee punten voor de spiegelas",
-        offset: "Offset — klik een lijn om de bron te kiezen (afstand wordt daarna gevraagd)",
+        trim: t("cad.hintTrim", "Trim — klik eerst op de referentielijn (snij-rand)"),
+        extend: t("cad.hintExtend", "Extend — klik eerst op de referentielijn (waar tot verlengd wordt)"),
+        mirror: t("cad.hintMirror", "Mirror — selecteer eerst een lijn (klik er op), klik dan twee punten voor de spiegelas"),
+        offset: t("cad.hintOffset", "Offset — klik een lijn om de bron te kiezen (afstand wordt daarna gevraagd)"),
       };
       setToast(hints[m]);
       setTimeout(() => setToast(null), 4500);
@@ -4351,7 +4353,7 @@ export default function SonderingstekeningView() {
       vlakDraftRef.current = [];
       vlakDraftLayerRef.current?.clearLayers();
       setVlakMode(true); vlakModeRef.current = true;
-      setToast("Vlak — klik de hoekpunten; Enter of dubbelklik sluit, Esc annuleert");
+      setToast(t("toast.areaHint", "Vlak — klik de hoekpunten; Enter of dubbelklik sluit, Esc annuleert"));
       setTimeout(() => setToast(null), 4500);
     };
     // Opmerking-tool: volgende klik plaatst een tekst-note.
@@ -4362,7 +4364,7 @@ export default function SonderingstekeningView() {
       setVlakMode(false); vlakModeRef.current = false;
       setCadMode(null); cadModeRef.current = null; cadStepRef.current = null;
       setNoteMode(true); noteModeRef.current = true;
-      setToast("Opmerking — klik waar de tekst moet komen");
+      setToast(t("toast.noteHint", "Opmerking — klik waar de tekst moet komen"));
       setTimeout(() => setToast(null), 3500);
     };
     const onUpdateVlak = (e: Event) => {
@@ -5022,7 +5024,7 @@ export default function SonderingstekeningView() {
         setMultiSelection(hits);
         setSelection(null);
         if (hits.length > 0) {
-          setToast(`${hits.length} object(en) geselecteerd — Delete om te verwijderen`);
+          setToast(t("toast.objectsSelected", "{{n}} object(en) geselecteerd — Delete om te verwijderen", { n: hits.length }));
           setTimeout(() => setToast(null), 2800);
         }
       }
@@ -5263,14 +5265,14 @@ export default function SonderingstekeningView() {
     const doExportDwg = async () => {
       const { IS_TAURI } = await import("../../utils/platform");
       if (!IS_TAURI) {
-        setToast("DWG-export werkt alleen in de desktop-app");
+        setToast(t("dwg.desktopOnly", "DWG-export werkt alleen in de desktop-app"));
         setTimeout(() => setToast(null), 3000);
         return;
       }
       const { ask, save } = await import("@tauri-apps/plugin-dialog");
       const rdCoords = await ask(
-        "Op RD-coördinaten exporteren (EPSG:28992)?\n\nJa = ware RD-coördinaten (georefereerd).\nNee = lokale oorsprong, tekening bij 0,0.",
-        { title: "DWG/DXF-export", kind: "info" },
+        t("dwg.askRd", "Op RD-coördinaten exporteren (EPSG:28992)?\n\nJa = ware RD-coördinaten (georefereerd).\nNee = lokale oorsprong, tekening bij 0,0."),
+        { title: t("dwg.askTitle", "DWG/DXF-export"), kind: "info" },
       );
       const { entities, layer_colors, origin } = buildDwgPayload(
         {
@@ -5338,24 +5340,24 @@ export default function SonderingstekeningView() {
         }
       }
       if (!entities.length && !images.length) {
-        setToast("Niets te exporteren");
+        setToast(t("dwg.nothing", "Niets te exporteren"));
         setTimeout(() => setToast(null), 2500);
         return;
       }
       const snap = getLatestTekening();
-      const base = (snap?.titleBlock?.project || "situatietekening").replace(
+      const base = (snap?.titleBlock?.project || t("export.defaultFileName", "situatietekening")).replace(
         /[\\/:*?"<>|]/g,
         "_",
       );
       const dst = await save({
         defaultPath: `${base}.dwg`,
         filters: [
-          { name: "CAD-tekening (DWG)", extensions: ["dwg"] },
-          { name: "CAD-uitwisseling (DXF)", extensions: ["dxf"] },
+          { name: t("dwg.filterDwg", "CAD-tekening (DWG)"), extensions: ["dwg"] },
+          { name: t("dwg.filterDxf", "CAD-uitwisseling (DXF)"), extensions: ["dxf"] },
         ],
       });
       if (!dst) return;
-      setToast("DWG exporteren…");
+      setToast(t("dwg.exporting", "DWG exporteren…"));
       try {
         const { invoke } = await import("@tauri-apps/api/core");
         await invoke("export_dwg", {
@@ -5363,11 +5365,13 @@ export default function SonderingstekeningView() {
           path: dst,
         });
         setToast(
-          `Geëxporteerd (${entities.length} objecten${images.length ? ` + ${images.length} afb.` : ""})`,
+          images.length
+            ? t("dwg.exportedWithImages", "Geëxporteerd ({{n}} objecten + {{images}} afb.)", { n: entities.length, images: images.length })
+            : t("dwg.exported", "Geëxporteerd ({{n}} objecten)", { n: entities.length }),
         );
       } catch (err) {
         console.error("export_dwg failed", err);
-        setToast(`DWG-export mislukt: ${String(err)}`);
+        setToast(t("dwg.failed", "DWG-export mislukt: {{error}}", { error: String(err) }));
       } finally {
         setTimeout(() => setToast(null), 4000);
       }
@@ -5442,7 +5446,7 @@ export default function SonderingstekeningView() {
             <div className="tek-overlay tek-overlay-stub">
               <div>
                 <strong>{overlay.name}</strong>
-                <p>DWG/DXF parser komt eraan</p>
+                <p>{t("paper.dwgStub", "DWG/DXF parser komt eraan")}</p>
               </div>
             </div>
           )}
@@ -5464,12 +5468,12 @@ export default function SonderingstekeningView() {
           {plannedCoordRows.length > 0 && (
             <div className="tek-coord-table">
               <div className="tek-coord-table-title">
-                Nog uit te voeren sonderingen (RD)
+                {t("coordTable.title", "Nog uit te voeren sonderingen (RD)")}
               </div>
               <table>
                 <thead>
                   <tr>
-                    <th>Nr</th>
+                    <th>{t("coordTable.nr", "Nr")}</th>
                     <th>X (m)</th>
                     <th>Y (m)</th>
                   </tr>
@@ -5486,7 +5490,7 @@ export default function SonderingstekeningView() {
               </table>
               {plannedCoordRows.length > 40 && (
                 <div className="tek-coord-table-more">
-                  + {plannedCoordRows.length - 40} niet getoond
+                  {t("coordTable.more", "+ {{n}} niet getoond", { n: plannedCoordRows.length - 40 })}
                 </div>
               )}
             </div>
@@ -5506,7 +5510,7 @@ export default function SonderingstekeningView() {
                 className="tek-dbp-title tek-dbp-edit"
                 type="text"
                 value={titleBlock.project}
-                placeholder="Projectnaam"
+                placeholder={t("titleBlock.projectPlaceholder", "Projectnaam")}
                 onChange={(e) =>
                   setTitleBlock((tb) => ({ ...tb, project: e.target.value }))
                 }
@@ -5516,13 +5520,13 @@ export default function SonderingstekeningView() {
                     e.currentTarget.blur();
                   }
                 }}
-                title="Klik om de projectnaam aan te passen"
+                title={t("titleBlock.projectTitle", "Klik om de projectnaam aan te passen")}
               />
               <input
                 className="tek-dbp-address tek-dbp-edit"
                 type="text"
                 value={titleBlock.address}
-                placeholder="Straatnaam, huisnummer, projectplaats"
+                placeholder={t("titleBlock.addressPlaceholder", "Straatnaam, huisnummer, projectplaats")}
                 onChange={(e) =>
                   setTitleBlock((tb) => ({ ...tb, address: e.target.value }))
                 }
@@ -5532,9 +5536,9 @@ export default function SonderingstekeningView() {
                     e.currentTarget.blur();
                   }
                 }}
-                title="Klik om het adres aan te passen"
+                title={t("titleBlock.addressTitle", "Klik om het adres aan te passen")}
               />
-              <span className="tek-dbp-type">Situatietekening</span>
+              <span className="tek-dbp-type">{t("titleBlock.drawingType", "Situatietekening")}</span>
             </div>
             {/* Body grid: logo | metadata cells | format corner */}
             <div className="tek-db-body">
@@ -5546,12 +5550,12 @@ export default function SonderingstekeningView() {
                 type="button"
                 className="tek-db-logo-cell tek-db-logo-clickable"
                 onClick={() => logoInputRef.current?.click()}
-                title="Klik om je eigen logo te kiezen (PNG / JPG / SVG)"
+                title={t("titleBlock.logoTitle", "Klik om je eigen logo te kiezen (PNG / JPG / SVG)")}
               >
                 {customLogo ? (
                   <img
                     src={customLogo}
-                    alt="Bedrijfslogo"
+                    alt={t("titleBlock.logoAlt", "Bedrijfslogo")}
                     className="tek-db-logo-custom"
                   />
                 ) : (
@@ -5570,15 +5574,15 @@ export default function SonderingstekeningView() {
               </button>
               <div className="tek-db-cells">
                 <div className="tek-db-cell">
-                  <div className="tek-db-cell-label">1e Datum</div>
+                  <div className="tek-db-cell-label">{t("titleBlock.firstDate", "1e Datum")}</div>
                   <div className="tek-db-cell-val mono">{titleBlock.date || "—"}</div>
                 </div>
                 <div className="tek-db-cell">
-                  <div className="tek-db-cell-label">Wijz.</div>
+                  <div className="tek-db-cell-label">{t("titleBlock.revision", "Wijz.")}</div>
                   <div className="tek-db-cell-val mono">{titleBlock.version || "—"}</div>
                 </div>
                 <div className="tek-db-cell">
-                  <div className="tek-db-cell-label">Schaal</div>
+                  <div className="tek-db-cell-label">{t("titleBlock.scale", "Schaal")}</div>
                   <ScaleCellEditor
                     liveScale={
                       mPerPx > 0
@@ -5591,28 +5595,28 @@ export default function SonderingstekeningView() {
                   />
                 </div>
                 <div className="tek-db-cell">
-                  <div className="tek-db-cell-label">Formaat</div>
+                  <div className="tek-db-cell-label">{t("titleBlock.format", "Formaat")}</div>
                   <div className="tek-db-cell-val mono">{paperSize}</div>
                 </div>
                 <div className="tek-db-cell">
-                  <div className="tek-db-cell-label">Projectnr</div>
+                  <div className="tek-db-cell-label">{t("titleBlock.projectNumber", "Projectnr")}</div>
                   <div className="tek-db-cell-val mono amber">{titleBlock.projectNumber || "—"}</div>
                 </div>
                 <div className="tek-db-cell">
-                  <div className="tek-db-cell-label">Auteur</div>
+                  <div className="tek-db-cell-label">{t("titleBlock.author", "Auteur")}</div>
                   <div className="tek-db-cell-val">{titleBlock.drawnBy || "—"}</div>
                 </div>
                 <div className="tek-db-cell">
-                  <div className="tek-db-cell-label">Kenmerk</div>
+                  <div className="tek-db-cell-label">{t("titleBlock.reference", "Kenmerk")}</div>
                   <div className="tek-db-cell-val mono amber">{titleBlock.drawingNumber || "—"}</div>
                 </div>
                 <div className="tek-db-cell">
-                  <div className="tek-db-cell-label">Blad</div>
+                  <div className="tek-db-cell-label">{t("titleBlock.sheet", "Blad")}</div>
                   <div className="tek-db-cell-val mono">1 / 1</div>
                 </div>
               </div>
               <div className="tek-db-geo">
-                <div className="tek-db-geo-label">Formaat</div>
+                <div className="tek-db-geo-label">{t("titleBlock.format", "Formaat")}</div>
                 <div className="tek-db-geo-format">{paperSize}</div>
               </div>
             </div>
@@ -5664,7 +5668,7 @@ export default function SonderingstekeningView() {
                 }
               };
               reader.onerror = () => {
-                setToast("Kon logo niet lezen");
+                setToast(t("toast.logoReadFailed", "Kon logo niet lezen"));
                 setTimeout(() => setToast(null), 2200);
               };
               reader.readAsDataURL(f);
@@ -5797,6 +5801,7 @@ function pickNiceScaleMeters(maxM: number): number {
  * werkelijk gemeten schaal, want die staat op papier.
  */
 function ScaleCellEditor({ liveScale, requested }: { liveScale: number; requested: number }) {
+  const { t } = useTranslation("drawing");
   const [draft, setDraft] = useState<string | null>(null);
   const shown = Math.abs(liveScale - requested) <= 2 ? requested : liveScale;
   const value = draft ?? `1:${shown}`;
@@ -5832,7 +5837,7 @@ function ScaleCellEditor({ liveScale, requested }: { liveScale: number; requeste
           e.currentTarget.blur();
         }
       }}
-      title="Klik om de schaal aan te passen (bv. 1:850)"
+      title={t("titleBlock.scaleTitle", "Klik om de schaal aan te passen (bv. 1:850)")}
     />
   );
 }
@@ -5844,11 +5849,12 @@ function ScaleCellEditor({ liveScale, requested }: { liveScale: number; requeste
  * Vaste mm-grootte op het papier (CSS px = 96/25.4 × mm).
  */
 function NorthArrow() {
+  const { t } = useTranslation("drawing");
   // 3x grotere noordpijl (was 40×60, nu 120×180). Zelfde viewBox
   // zodat de SVG-paths niet hoeven te schalen — alleen de
   // weergavegrootte verandert.
   return (
-    <div className="tek-north-arrow" aria-label="Noordpijl">
+    <div className="tek-north-arrow" aria-label={t("northArrow", "Noordpijl")}>
       <svg viewBox="0 0 40 60" width="120" height="180" xmlns="http://www.w3.org/2000/svg">
         {/* Witte ronde achtergrond zodat de pijl over luchtfoto leesbaar is */}
         <circle cx="20" cy="32" r="18" fill="white" stroke="#111" strokeWidth="0.8" />

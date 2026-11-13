@@ -1,0 +1,193 @@
+{
+  "attribution": {
+    "aerial": "Luftbild © PDOK",
+    "mapData": "Kartendaten © Kadaster | PDOK"
+  },
+  "cad": {
+    "extendDone": "Linien bis zur Ecke am Schnittpunkt verlängert",
+    "extendSecond": "Dehnen — klicken Sie nun auf die zweite Linie; beide werden bis zur Ecke am Schnittpunkt verlängert",
+    "hintExtend": "Dehnen — klicken Sie zuerst auf die Referenzlinie (die Grenze, bis zu der verlängert wird)",
+    "hintMirror": "Spiegeln — wählen Sie zuerst eine Linie aus (anklicken) und klicken Sie dann auf zwei Punkte der Spiegelachse",
+    "hintOffset": "Versatz — klicken Sie auf eine Linie, um die Quelle zu wählen (danach wird der Abstand abgefragt)",
+    "hintTrim": "Stutzen — klicken Sie zuerst auf die Referenzlinie (Schnittkante)",
+    "mirrorDone": "Linie an der Achse gespiegelt",
+    "mirrorNeedsLine": "Wählen Sie zuerst eine Linie aus (anklicken), bevor Sie Spiegeln verwenden",
+    "mirrorSecond": "Spiegeln — klicken Sie nun auf den zweiten Punkt der Spiegelachse",
+    "offsetDone": "Parallele Linie im Abstand {{dist}} m platziert",
+    "offsetPickFirst": "Versatz — klicken Sie zuerst auf eine Linie, um die Quelle zu wählen",
+    "offsetPrompt": "Versatzabstand in Metern? (positive Zahl)",
+    "offsetSide": "Versatz {{dist}} m — klicken Sie auf die Seite, auf der die Kopie entstehen soll",
+    "parallel": "Linien sind parallel — kein Schnittpunkt, keine Ecke möglich",
+    "pickOtherLine": "Wählen Sie eine andere Linie als die erste",
+    "trimDone": "Linien bis zur Ecke am Schnittpunkt gestutzt",
+    "trimSecond": "Stutzen — klicken Sie nun auf die zweite Linie; beide werden bis zur Ecke am Schnittpunkt gestutzt"
+  },
+  "coordTable": {
+    "more": "+ {{n}} nicht angezeigt",
+    "nr": "Nr.",
+    "title": "Noch auszuführende Sondierungen (RD)"
+  },
+  "crop": {
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": "Zuschneiden & hinzufügen",
+    "cropPage": "Seite {{page}} zuschneiden",
+    "imageTitle": "Bild zuschneiden",
+    "loadingPdf": "PDF wird gelesen…",
+    "otherPage": "← Andere Seite",
+    "otherPageTitle": "Eine andere Seite wählen",
+    "page": "Seite {{page}}",
+    "pageCount": "{{n}} Seiten",
+    "pageCountOne": "1 Seite",
+    "pdfReadError": "PDF konnte nicht gelesen werden",
+    "pickPage": "PDF — Seite auswählen",
+    "rendering": "Seite wird gerendert…"
+  },
+  "dwg": {
+    "askRd": "In RD-Koordinaten (EPSG:28992) exportieren?\n\nJa = echte RD-Koordinaten (georeferenziert).\nNein = lokaler Ursprung, Zeichnung bei 0,0.",
+    "askTitle": "DWG/DXF-Export",
+    "desktopOnly": "Der DWG-Export funktioniert nur in der Desktop-App",
+    "exported": "Exportiert ({{n}} Objekte)",
+    "exportedWithImages": "Exportiert ({{n}} Objekte + {{images}} Bild.)",
+    "exporting": "DWG wird exportiert…",
+    "failed": "DWG-Export fehlgeschlagen: {{error}}",
+    "filterDwg": "CAD-Zeichnung (DWG)",
+    "filterDxf": "CAD-Austausch (DXF)",
+    "nothing": "Nichts zu exportieren"
+  },
+  "export": {
+    "defaultFileName": "lageplan"
+  },
+  "handle": {
+    "moveRaster": "Ziehen, um das Raster zu verschieben",
+    "rotate": "Ziehen, um zu drehen"
+  },
+  "move": {
+    "hint": "Bewegen Sie die Maus und klicken Sie zum Absetzen (Esc = abbrechen)",
+    "notMovable": "Dieses Objekt kann nicht verschoben werden",
+    "pickObject": "Klicken Sie auf das Objekt, das Sie verschieben möchten"
+  },
+  "northArrow": "Nordpfeil",
+  "note": {
+    "prompt": "Notiz:"
+  },
+  "paper": {
+    "dwgStub": "DWG/DXF-Parser folgt in Kürze"
+  },
+  "pdf": {
+    "exported": "PDF exportiert",
+    "exporting": "PDF wird exportiert…",
+    "failed": "PDF-Export fehlgeschlagen: {{error}}",
+    "timeout": "Die PDF-Rasterung hat länger als 30 Sekunden gedauert"
+  },
+  "props": {
+    "a2Landscape": "A2 quer",
+    "a3Landscape": "A3 quer",
+    "areaHeader": "Fläche {{id}}",
+    "background": "Hintergrund",
+    "color": "Farbe",
+    "cols": "Spalten",
+    "cptHeader": "Sondierung {{id}}",
+    "cptNumber": "Sondierungsnr.",
+    "deleteArea": "Fläche löschen",
+    "deleteBackground": "Hintergrund löschen",
+    "deleteCpt": "Sondierung löschen",
+    "deleteLine": "Linie löschen",
+    "deleteNote": "Notiz löschen",
+    "deleteRaster": "Raster löschen",
+    "dimensionHeader": "Maßlinie {{id}}",
+    "dragMarkerHint": "Ziehen Sie den Marker auf der Karte, um ihn zu verschieben.",
+    "emptyHint": "Klicken Sie auf eine Sondierung, ein Raster oder ein Objekt auf dem Blatt, um dessen Eigenschaften zu bearbeiten.",
+    "fillColor": "Füllfarbe",
+    "frame": "Zeichnungsrahmen",
+    "freeze": "Ansicht fixieren",
+    "freezeTitle": "Verschieben + Zoom fixieren, damit die Zeichnung genau an ihrem Platz bleibt",
+    "friction": "Reibungsmessung",
+    "frictionWithSymbol": "Reibungsmessung (Strich unter dem Symbol)",
+    "hideInExport": "Raster im PDF/DWG-Export ausblenden",
+    "layer": "Ebene",
+    "layerBackground": "Hintergrund (unter Linien/Markern)",
+    "layerForeground": "Vordergrund (über allem)",
+    "lineHeader": "Linie {{id}}",
+    "loading": "Eigenschaften werden geladen…",
+    "noSelection": "Keine Auswahl",
+    "noteHeader": "Notiz {{id}}",
+    "numbering": "Nummerierung",
+    "numberingPlaceholder": "z. B. S",
+    "numberingTitle": "Präfix für die Zellennummerierung, z. B. „S“ ergibt S1, S2, … Leer = Standardschreibweise R01-S01.",
+    "overlayTip": "Tipp: Drücken Sie <kbd>M</kbd> oder <kbd>G</kbd> zum Verschieben (der Cursor folgt; Klick übernimmt, Esc bricht ab). Ziehen Sie einen Eckgriff zum Skalieren.",
+    "paper": "Papier",
+    "paperScale": "Papier & Maßstab",
+    "rasterHeader": "Raster {{id}}",
+    "resetColor": "Auf Standard zurücksetzen",
+    "rotation": "Drehung (°)",
+    "rows": "Zeilen",
+    "scaleField": "Maßstab 1:",
+    "scaleFieldTitle": "Geben Sie einen Maßstab ein (z. B. 1000 für 1:1000) und drücken Sie Enter — die Zeichnung passt sich an",
+    "scalePresets": "Maßstabsvorgaben",
+    "setScale": "Maßstab auf 1:{{scale}} setzen",
+    "spacingX": "Abstand X (m)",
+    "spacingY": "Abstand Y (m)",
+    "startNumber": "Startnr.",
+    "strokeColor": "Randfarbe",
+    "text": "Text",
+    "titleBlock": {
+      "address": "Adresse",
+      "checkedBy": "Geprüft von",
+      "date": "Datum",
+      "drawingNumber": "Zeichnungsnr.",
+      "drawnBy": "Gezeichnet von",
+      "project": "Projekt",
+      "projectNumber": "Projektnr.",
+      "scale": "Maßstab",
+      "version": "Version"
+    },
+    "width": "Breite (m)"
+  },
+  "quotes": {
+    "cancel": "Abbrechen",
+    "hint": "Nach Entfernung zum Projekt sortiert. Die 3 nächstgelegenen Firmen sind vorausgewählt. Passen Sie die Auswahl an und klicken Sie auf „E-Mail öffnen“, um Outlook mit einer Angebotsanfrage an alle ausgewählten Firmen zu öffnen.",
+    "more": "+ {{hidden}} weitere Firmen nicht angezeigt. Der Katalog ({{total}} Firmen) befindet sich in <code>{{path}}</code>.",
+    "openMail": "E-Mail öffnen ({{n}})",
+    "openMailTitle": "Öffnet Ihre Standard-Mail-App (Outlook) mit einer vorausgefüllten Angebotsanfrage",
+    "selected": "{{n}} Firmen ausgewählt",
+    "selectedOne": "1 Firma ausgewählt",
+    "title": "3 Angebote von Sondierfirmen anfordern"
+  },
+  "rotate": {
+    "notRotatable": "Dieser Objekttyp kann nicht gedreht werden",
+    "prompt": "Um wie viel Grad drehen? (negativ = gegen den Uhrzeigersinn)",
+    "selectFirst": "Wählen Sie zuerst ein Objekt zum Drehen aus"
+  },
+  "titleBlock": {
+    "addressPlaceholder": "Straße, Hausnummer, Projektstandort",
+    "addressTitle": "Klicken, um die Adresse zu bearbeiten",
+    "author": "Verfasser",
+    "drawingType": "Lageplan",
+    "firstDate": "Erstdatum",
+    "format": "Format",
+    "logoAlt": "Firmenlogo",
+    "logoTitle": "Klicken, um ein eigenes Logo zu wählen (PNG / JPG / SVG)",
+    "projectNumber": "Projektnr.",
+    "projectPlaceholder": "Projektname",
+    "projectTitle": "Klicken, um den Projektnamen zu bearbeiten",
+    "reference": "Referenz",
+    "revision": "Rev.",
+    "scale": "Maßstab",
+    "scaleTitle": "Klicken, um den Maßstab zu bearbeiten (z. B. 1:850)",
+    "sheet": "Blatt"
+  },
+  "toast": {
+    "areaHint": "Fläche — klicken Sie auf die Eckpunkte; Enter oder Doppelklick schließt, Esc bricht ab",
+    "broIncomplete": "BRO unvollständig: {{error}}",
+    "dwgParserPending": "DWG/DXF-Parser folgt in Kürze — Datei erkannt, aber noch nicht dargestellt.",
+    "frameMustBeSvg": "Der Zeichnungsrahmen muss eine SVG-Datei sein",
+    "invalidScale": "Ungültiger Maßstab: verwenden Sie z. B. 1:850 (50–100.000).",
+    "logoReadFailed": "Das Logo konnte nicht gelesen werden",
+    "noteHint": "Notiz — klicken Sie dorthin, wo der Text stehen soll",
+    "objectsDeleted": "{{n}} Objekt(e) gelöscht",
+    "objectsSelected": "{{n}} Objekt(e) ausgewählt — drücken Sie Entf zum Entfernen",
+    "rasterPlaced": "Raster {{id}} platziert — ziehen Sie eine Ecke, um es zu strecken (Sondierungen werden automatisch mit max. {{spacing}} m Achsabstand ergänzt)",
+    "unsupportedFile": "Dateityp .{{ext}} wird noch nicht unterstützt"
+  }
+}

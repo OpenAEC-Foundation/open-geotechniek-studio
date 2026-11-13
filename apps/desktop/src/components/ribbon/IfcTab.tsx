@@ -4,6 +4,7 @@ import RibbonButton from "./RibbonButton";
 import { exportSubsurfaceIfcx } from "../soil3d/subsurface/exportIfcx";
 import { activeSoilModel } from "../soil3d/projectModel";
 import { useSoil3DStore } from "../soil3d/useSoil3DStore";
+import { exportActiveIfcx } from "../../ifcx/exportActive";
 import { useCptStore } from "../../store/useCptStore";
 
 /**
@@ -27,7 +28,6 @@ export default function IfcTab() {
   const ifcCache = useCptStore((s) => s.ifcCache);
   const doc = activeDocId ? documents.find((d) => d.id === activeDocId) : undefined;
   const cached = doc ? ifcCache.get(doc.id) : undefined;
-  const ifc4x3Ready = Boolean(cached?.ifc4x3);
   const ifcxReady = Boolean(cached?.ifcx);
   const cptCount = !doc
     ? 0
@@ -47,8 +47,8 @@ export default function IfcTab() {
   let statusLabel: string;
   if (!hasContent) {
     statusLabel = t("ifc.autoNoCpt", "Geen sonderingen — voeg eerst toe");
-  } else if (ifc4x3Ready && ifcxReady) {
-    statusLabel = t("ifc.autoReady", "Live — experimentele IFCX-snapshot");
+  } else if (ifcxReady) {
+    statusLabel = t("ifc.ifc5Ready", "Live — IFC5 (IFCX)");
   } else {
     statusLabel = t("ifc.autoGenerating", "Bezig met genereren...");
   }
@@ -60,12 +60,18 @@ export default function IfcTab() {
           <div className="ribbon-info-block">
             <div className="ribbon-info-title">{statusLabel}</div>
             <div className="ribbon-info-sub">
-              {t(
-                "ifc.autoHint",
-                "Experimentele IFCX-snapshots worden bijgewerkt. IFC4x3-export is uitgeschakeld.",
-              )}
+              {t("ifc.ifc5Hint", "Sonderingen, laagindeling, grondmodel en palen; wordt automatisch bijgewerkt.")}
             </div>
           </div>
+        </RibbonGroup>
+        <RibbonGroup label={t("ifc.exportGroup", "Exporteren")}>
+          <RibbonButton
+            icon="file.export"
+            label={t("ifc.export", "IFCX\nexporteren")}
+            title={t("ifc.exportHint", "Sla het project op als IFC5-bestand (.ifcx) voor een openBIM-platform")}
+            disabled={!hasContent}
+            onClick={() => void exportActiveIfcx()}
+          />
         </RibbonGroup>
         <RibbonGroup label={t("ifc.subsurfaceGroup", "Ondergrond")}>
           <RibbonButton icon="file.export" label={t("ifc.subsurfaceExport", "Ondergrondmodel (IFCX)")}

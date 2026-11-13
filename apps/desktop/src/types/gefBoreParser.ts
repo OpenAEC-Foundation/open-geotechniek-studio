@@ -1,5 +1,9 @@
+import i18next from "i18next";
 import {decodeBoreCode,parseSoilCode} from "@bedrock-engineer/gef-parser/bore-codes";
 import type { Bore, BoreLayer } from "./bore";
+
+const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
+  i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
 
 // CUR GEF-BORE-Report 1.0.0, sections 2.2 / 2.3 and examples in section 3.
 // https://publicwiki.deltares.nl/download/attachments/102204318/GEF-Bore.pdf
@@ -19,9 +23,9 @@ const strictGefNumber=(raw:string|undefined):number=>{
 
 
 export function parseGefBore(content: string, filename: string): Bore {
-  if (!looksLikeGefBore(content)) throw new Error("Geen GEF-BORE-bestand.");
+  if (!looksLikeGefBore(content)) throw new Error(m("gefBore.notGefBore", "Geen GEF-BORE-bestand."));
   const end = /^\s*#EOH\s*=?[^\S\r\n]*$/im.exec(content);
-  if (!end) throw new Error("GEF-boring mist #EOH.");
+  if (!end) throw new Error(m("gefBore.missingEoh", "GEF-boring mist #EOH."));
   const header = new Map<string, string[]>();
   for (const line of content.slice(0, end.index).split(/\r?\n/)) {
     const match = /^\s*#(\w+)\s*=\s*(.*)$/.exec(line);
@@ -39,9 +43,9 @@ export function parseGefBore(content: string, filename: string): Bore {
   // Explicit labels resolve the inconsistent quantity-1 example in section 2.2.1.10.
   const top = columns.find(c => /bovenkant|top|upper/i.test(c.label)) ?? columns.find(c => c.quantity === 1);
   const base = columns.find(c => /onderkant|bottom|base|lower/i.test(c.label)) ?? columns.find(c => c.quantity === 2);
-  if (!top || !base || top.index === base.index) throw new Error("GEF-boring mist kolommen voor boven- en onderkant laag.");
+  if (!top || !base || top.index === base.index) throw new Error(m("gefBore.missingDepthColumns", "GEF-boring mist kolommen voor boven- en onderkant laag."));
   const factor = (unit: string) => unit === "m" ? 1 : unit === "cm" ? 0.01 : unit === "mm" ? 0.001 : NaN;
-  if (!Number.isFinite(factor(top.unit)) || !Number.isFinite(factor(base.unit))) throw new Error("Onbekende diepte-eenheid in GEF-boring.");
+  if (!Number.isFinite(factor(top.unit)) || !Number.isFinite(factor(base.unit))) throw new Error(m("gefBore.unknownDepthUnit", "Onbekende diepte-eenheid in GEF-boring."));
   const count = Number(first("COLUMN") ?? columns.length);
   const colSep = unquote(first("COLUMNSEPARATOR") ?? ";");
   const recSep = unquote(first("RECORDSEPARATOR") ?? "!");
@@ -59,20 +63,20 @@ export function parseGefBore(content: string, filename: string): Bore {
     if (!values[top.index]?.trim() || !values[base.index]?.trim() || !Number.isFinite(topDepth) || !Number.isFinite(baseDepth) ||
         topDepth < 0 || baseDepth <= topDepth || topDepth < (layers[layers.length - 1]?.base_depth ?? 0) ||
         voids.get(top.index) === topRaw || voids.get(base.index) === baseRaw || !description) {
-      throw new Error(`Ongeldige laag ${layers.length + 1} in GEF-boring: controleer diepten en grondbeschrijving.`);
+      throw new Error(m("gefBore.invalidLayer", "Ongeldige laag {{layer}} in GEF-boring: controleer diepten en grondbeschrijving.", { layer: layers.length + 1 }));
     }
     const code = description.split(";")[0].trim(),classification=parseSoilCode(code);
     layers.push({ top_depth: topDepth, base_depth: baseDepth, soil_name: decodeBoreCode(code), description, soil_code:code,
       classification:{system:"NEN5104",...classification} });
   }
-  if (!layers.length) throw new Error("GEF-boring bevat geen lagen.");
+  if (!layers.length) throw new Error(m("gefBore.noLayers", "GEF-boring bevat geen lagen."));
   const xy = parts(first("XYID")), z = parts(first("ZID")), project = parts(first("PROJECTID"));
   const position = xy[0] === "31000" && xy.length >= 3 && Number.isFinite(strictGefNumber(xy[1])) && Number.isFinite(strictGefNumber(xy[2]))
     ? { x_rd: strictGefNumber(xy[1]), y_rd: strictGefNumber(xy[2]), z_nap: z[0] === "31000" && z[1] && Number.isFinite(strictGefNumber(z[1])) ? strictGefNumber(z[1]) : undefined }
     : undefined;
   const checks:string[]=[];
-  if(xy.length && (!position || xy[0]!=='31000'))checks.push(`XYID ${xy[0]} niet als geldige RD-locatie gebruikt; bron bewaard.`);
-  if(z.length && (z[0]!=='31000'||!Number.isFinite(strictGefNumber(z[1]))))checks.push(`ZID ${z[0]} niet als geldige NAP-hoogte gebruikt; bron bewaard.`);
+  if(xy.length && (!position || xy[0]!=='31000'))checks.push(m("gefBore.xyNotRd", "XYID {{id}} niet als geldige RD-locatie gebruikt; bron bewaard.", { id: xy[0] }));
+  if(z.length && (z[0]!=='31000'||!Number.isFinite(strictGefNumber(z[1]))))checks.push(m("gefBore.zNotNap", "ZID {{id}} niet als geldige NAP-hoogte gebruikt; bron bewaard.", { id: z[0] }));
   return {
     id: first("TESTID") || filename.replace(/\.gef$/i, ""), position,
     final_depth: layers[layers.length - 1].base_depth, layers,

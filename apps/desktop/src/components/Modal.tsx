@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import "./Modal.css";
 
 interface ModalProps {
@@ -22,6 +23,7 @@ export default function Modal({
   children,
   footer,
 }: ModalProps) {
+  const { t } = useTranslation("common");
   const overlayRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
@@ -94,7 +96,7 @@ export default function Modal({
       >
         <div className="modal-header" onMouseDown={handleHeaderMouseDown}>
           <h2>{title}</h2>
-          <button className="modal-close-btn" onClick={onClose} aria-label="Close">
+          <button className="modal-close-btn" onClick={onClose} aria-label={t("close")}>
             &times;
           </button>
         </div>

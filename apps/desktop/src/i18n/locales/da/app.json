@@ -1,0 +1,81 @@
+{
+  "detached": {
+    "view": "Frakoblet visning",
+    "dockBackTitle": "Sæt tilbage i hovedvinduet",
+    "dockBack": "Sæt tilbage",
+    "untitled": "Unavngivet"
+  },
+  "drop": {
+    "hint": "Slip for at åbne — GEF, BRO XML eller .ifcgeo",
+    "browserOpenFailed": "Kunne ikke åbne {{name}} i browsertilstand:\n{{message}}\n\nTip: BHR-GT XML, GMW XML og GEF virker i browseren. Til BRO CPT XML og projektfiler skal du bruge desktopversionen."
+  },
+  "errorBoundary": {
+    "title": "⚠ React-renderingsnedbrud — ErrorBoundary på øverste niveau",
+    "intro": "En komponent i appen udløste en fejl under rendering. Stak-sporet nedenfor hjælper med at finde årsagen.",
+    "reload": "Genindlæs app",
+    "noStack": "(ingen stak tilgængelig)",
+    "componentStack": "Komponentstak"
+  },
+  "backstage": {
+    "noProject": "Intet aktivt projekt — åbn eller opret et .ifcgeo-projekt.",
+    "projectFilter": "Open Geotechniek Studio-fil",
+    "saveFailed": "Gem mislykkedes: {{error}}",
+    "geoObjectFilter": "Geoteknisk objekt (.ifcgeo)",
+    "cptSnapshotFilter": "Sondering med kildedata",
+    "snapshotSaveFailed": "Gem af øjebliksbillede mislykkedes: {{error}}",
+    "gefExportStopped": "GEF-eksport stoppet: {{error}}",
+    "broBrowserUnavailable": "Generering af en ny BRO-levering er kun tilgængelig via den ældre desktop-eksport. Brug GEF eller et JSON-øjebliksbillede for en kildetro eksport.",
+    "browserOpenFailed": "Kunne ikke åbne {{name}} i browsertilstand:\n{{message}}\n\nTip: BHR-GT XML, GMW XML, GEF og BRO CPT XML virker i browseren. Til .ifcgeo/.ifcgis-projektfiler skal du bruge desktopversionen.",
+    "openFailed": "Kunne ikke åbne {{name}}: {{message}}",
+    "minutesAgo": "for {{n}} min. siden",
+    "hoursAgo": "for {{n}} t siden",
+    "daysAgo": "for {{n}} d siden"
+  },
+  "extensions": {
+    "tekening": {
+      "name": "Situationsplan",
+      "description": "CAD-papir (A2/A3/A4) med sonderinger, snap, overlays og PDF-eksport."
+    },
+    "offertes": {
+      "name": "Indhent tilbud",
+      "description": "Indhenter tilbud fra de nærmeste sonderingsfirmaer."
+    },
+    "category": {
+      "drawing": "Tegning",
+      "workflow": "Arbejdsgang",
+      "calculation": "Beregning"
+    },
+    "lockedLabel": "Endnu ikke klar til produktion",
+    "inDevelopment": "Under udvikling",
+    "lockedDescription": "Denne beregning er stadig under udvikling — resultaterne er endnu ikke verificeret til produktionsbrug. Kontakten er derfor deaktiveret.",
+    "noCatalog": "Intet eksternt udvidelseskatalog tilgængeligt.",
+    "builtInOnly": "Open Geotechniek Studio bruger i øjeblikket kun indbyggede udvidelser (se fanen \"{{tab}}\"). Et fællesskabskatalog følger i en senere version."
+  },
+  "statusBar": {
+    "depth": "Dybde"
+  },
+  "startSidebar": {
+    "title": "Start",
+    "collapse": "Fold sammen",
+    "expand": "Åbn startpanel",
+    "exampleProject": "Eksempelprojekt"
+  },
+  "releaseNotes": {
+    "title": "Nyheder",
+    "loadFailed": "Kunne ikke indlæse udgivelsesnoter ({{error}})",
+    "loading": "Indlæser…",
+    "none": "Ingen udgivelser fundet"
+  },
+  "store": {
+    "noProject": "Intet aktivt projekt.",
+    "noProjectForBro": "Intet aktivt projekt — kan ikke tilføje BRO-sonderingen.",
+    "targetProjectClosed": "Målprojektet blev lukket under tilføjelsen.",
+    "gmwParseFailed": "{{filename}}: kunne ikke parse en GMW-forsendelse (ingen <GMW_PO>/<GMW_O>-rod eller intet broId fundet)",
+    "unsupportedBore": "{{filename}}: ikke en understøttet BHR XML- eller GEF-boring"
+  },
+  "platform": {
+    "unknownCptFormat": "Ukendt CPT-format ({{filename}}). Forventede GEF eller BRO CPT XML.",
+    "pdfWindowClosed": "PDF-vinduet blev lukket. Åbn rapporten igen.",
+    "popupBlocked": "Tillad pop op-vinduer, eller brug Generér PDF for at downloade."
+  }
+}

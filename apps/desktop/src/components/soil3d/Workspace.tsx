@@ -9,7 +9,7 @@ import { OaIcon } from "../icons/oaIcon";
  * actieve tabblad in een nieuw venster rechts. Tabbladen sleep je naar een ander venster, of naar de linker- of
  * rechterrand voor een nieuw venster. De scheiding tussen vensters is versleepbaar.
  */
-export function Workspace({ render }: { render: (view: ViewId, tabId: string, visible: boolean) => ReactNode }) {
+export function Workspace({ render }: { render: (view: ViewId, tabId: string, visible: boolean, focused: boolean) => ReactNode }) {
   const { t } = useTranslation("ribbon");
   const layout = useSoil3DStore((s) => s.layout);
   const update = useSoil3DStore((s) => s.updateLayout);
@@ -86,7 +86,7 @@ export function Workspace({ render }: { render: (view: ViewId, tabId: string, vi
       <div className="soil3d-pane-body">
         {pane.tabs.map((tab) => (
           <div key={tab.id} className="soil3d-pane-view" style={{ display: tab.id === pane.active ? "flex" : "none" }}>
-            {render(tab.view, tab.id, tab.id === pane.active)}
+            {render(tab.view, tab.id, tab.id === pane.active, pane.id === layout.focus)}
           </div>
         ))}
         {dragTab && (

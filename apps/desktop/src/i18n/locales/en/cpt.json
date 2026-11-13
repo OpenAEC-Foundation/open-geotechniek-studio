@@ -31,5 +31,11 @@
   "remove": "Remove",
   "hide": "Hide",
   "show": "Show",
-  "noCptsHint": "No CPTs added yet. Click 'Add CPT' or drag GEF/BRO-XML files onto the window."
+  "noCptsHint": "No CPTs added yet. Click 'Add CPT' or drag GEF/BRO-XML files onto the window.",
+  "noTitle": "(no title)",
+  "fileMetadata": "File metadata",
+  "noExtras": "No additional metadata.",
+  "boresInProject": "Boreholes in this project",
+  "addBore": "Add borehole",
+  "noBoresHint": "No boreholes added yet. Click 'Add borehole' to import BHR-GT XML."
 }

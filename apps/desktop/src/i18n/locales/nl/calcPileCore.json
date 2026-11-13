@@ -1,0 +1,161 @@
+{
+  "module": {
+    "cptItem": "Sondering {{id}}",
+    "notCalculated": "Niet berekend",
+    "checks": {
+      "capacity": "draagvermogen"
+    }
+  },
+  "notes": {
+    "negKleefClamped": "Onderkant negatieve kleef ({{given}}) ligt buiten de paal; gerekend met {{used}}.",
+    "posKleefClamped": "Bovenkant positieve kleef ({{given}}) ligt buiten het schachttraject; gerekend met {{used}}."
+  },
+  "errors": {
+    "noCpt": "Geen actieve sondering",
+    "unknownStandard": "Onbekende normversie",
+    "pileTypeNotSupported": "Paaltype niet ondersteund voor deze normversie: {{id}}",
+    "extensionInvalid": "Een betonopzetter vereist een houten paal, een positieve opzettermaat en een las tussen paalkop en paalpunt, zonder losse voetmaat",
+    "taperInvalidWithExtension": "Houttapsheid vereist een positieve puntdiameter ≤ houtdiameter bij de las en een tapse lengte binnen het houten deel onder de las",
+    "taperInvalid": "Houttapsheid vereist een positieve puntdiameter ≤ kopdiameter en een tapse lengte binnen de paallengte, zonder losse voetmaat",
+    "toeSizeInvalid": "Puntafmeting moet positief en eindig zijn",
+    "footPlateTooWide": "De voetplaat mag voor dit paaltype maximaal 10 mm per zijde uitsteken",
+    "groutScrewMinDiameter": "Deze groutschroefpreset vereist een schachtdiameter van ten minste 300 mm",
+    "timberConstantSection": "Dit houten paaltype vereist een constante doorsnede zonder oplanger",
+    "eaInvalid": "EA moet positief en eindig zijn",
+    "eaRequired": "Geef de projectspecifieke axiale stijfheid EA voor dit paaltype op",
+    "projectFactorsInvalid": "Projectfactoren vereisen geldige waarden, een bron en een editie die bij de gekozen norm past",
+    "nonFiniteInput": "Alle invoerwaarden moeten eindige getallen zijn",
+    "diameterNotPositive": "Diameter of zijlengte moet groter dan nul zijn",
+    "wallThicknessInvalid": "Wanddikte moet groter dan nul en kleiner dan de halve diameter zijn",
+    "toeAboveHead": "Paalpunt moet lager liggen dan de paalkop",
+    "factorsInvalid": "γm moet groter dan nul zijn; γf,nk en K0·tan(δ) minimum mogen niet negatief zijn",
+    "negativeLoads": "Drukbelastingen mogen niet negatief zijn",
+    "kleefLevels": "Kleefniveaus moeten tussen paalkop en paalpunt liggen; positieve kleef mag niet overlappen met negatieve kleef",
+    "soilLayerInvalid": "Grondlagen vereisen geldige niveaus, volumegewichten en een wrijvingshoek tussen 0 en 90 graden",
+    "soilLayerOrder": "Grondlagen moeten van boven naar beneden lopen zonder overlap",
+    "historicalCptData": "Historische berekening vereist oplopende diepten met volledige, niet-negatieve qc-waarden",
+    "historicalCptRange": "Historische berekening vereist het volledige traject van 8 Deq boven tot 4 Deq onder de paalpunt",
+    "historicalSandOnly": "Historische positieve schachtwrijving is alleen geverifieerd voor zand; pas het schachttraject en grondprofiel aan",
+    "historicalConstantSection": "Historisch profiel ondersteunt alleen een constante paaldoorsnede of expliciete houttapsheid",
+    "cptTooShallow": "Sondering te ondiep (reikt tot {{reach}} m, vereist ≥ {{required}} m)",
+    "pileSizeInvalid": "De paalafmeting moet eindig en groter dan nul zijn",
+    "historicalGroupAnalysis": "Historische paalgroepanalyse is nog niet geverifieerd; gebruik één sondering"
+  },
+  "warnings": {
+    "factors": "Factoren: {{edition}}; {{source}}.",
+    "existingModel": "bestaand model",
+    "existingCatalog": "bestaande catalogus",
+    "projectFactors2025": "Projectfactoren 2025 toegepast; dit is geen volledige omzetting van de rekenmethode naar NEN 9997:2025.",
+    "settlementExtension": "Houten paal met betonopzetter: zakking en veerwaarden met verschillende EA voor beton en hout zijn niet geverifieerd en worden niet bepaald.",
+    "settlementTaper": "Tapse houten paal: zakking en veerwaarden met variabele EA zijn niet geverifieerd en worden niet bepaald.",
+    "settlementHistorical": "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald.",
+    "settlementLineUnsupported": "Lastzakkingslijn {{line}} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.",
+    "extension": "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m: boven de las rekent de omtrek van de opzetter, eronder die van het hout; negatieve kleef met de gemiddelde omtrek over de kleefzone, positieve kleef per laag.",
+    "taperWithExtension": "Houttapsheid vanaf de las: positieve kleef met gemiddelde omtrek per laag. Geen verhoging van paalfactoren door coniciteit.",
+    "taper": "Houttapsheid: negatieve kleef met gemiddelde omtrek over de kleefzone; positieve kleef met gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit.",
+    "deviatingToeSize": "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering.",
+    "qbMaxCapped": "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)"
+  },
+  "table": {
+    "errors": {
+      "toeLevelsInvalid": "Geef eindige puntniveaus op, één per regel of gescheiden met puntkomma.",
+      "toeLevelsDuplicate": "Ieder puntniveau mag maar één keer voorkomen.",
+      "cptIdsInvalid": "Selecteer unieke sonderingnamen voor de tabel.",
+      "toeNapsInvalid": "De tabel vereist unieke, eindige puntniveaus.",
+      "sizesInvalid": "Geef positieve paalmaten in mm op, gescheiden met spatie, komma of puntkomma.",
+      "sizesDuplicate": "Iedere paalmaat mag maar één keer voorkomen.",
+      "levelRangeInvalid": "Geef een eindig bovenste en onderste niveau en een positieve stap op.",
+      "tooManyLevels": "Maximaal {{max}} puntniveaus; kies een grotere stap.",
+      "sizesNotPositive": "Paalmaten moeten positief zijn.",
+      "targetRangeInvalid": "De bovengrens van het gezochte draagvermogen moet boven de ondergrens liggen."
+    },
+    "notes": {
+      "profileAboveToe": "Grondprofiel eindigt boven de paalpunt. Controleer en verleng de grondlagen; ontbrekende schachtlagen dragen niet bij.",
+      "profileAboveDeepest": "Grondprofiel eindigt op {{level}} m NAP, boven het diepste puntniveau."
+    },
+    "reasons": {
+      "cptTooShort": "sondering buiten bereik",
+      "kleefLevels": "boven kleefzone",
+      "eaMissing": "EA ontbreekt",
+      "notComputable": "niet berekenbaar"
+    }
+  },
+  "report": {
+    "errors": {
+      "failed": "Berekening niet geslaagd",
+      "exampleFailed": "Voorbeeld {{cpt}}, {{size}} mm op {{level}} m NAP is niet berekenbaar: {{error}}"
+    }
+  },
+  "extensions": {
+    "round": "Rond Ø{{size}}",
+    "square": "Vierkant {{size}}×{{size}}"
+  },
+  "standards": {
+    "nen-6743-1991": "NEN 6743:1991 — historisch referentieprofiel",
+    "nen-6743-2006": "NEN 6743-1:2006 — historisch",
+    "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — oorspronkelijke factoren",
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — bestaand rekenmodel"
+  },
+  "historical": {
+    "source1991": "NEN 6743:1991 / NEN 6740:1991; openbare referentie 05290 p.31–32 (alleenstaande prefab paal)",
+    "source2006": "NEN 6743-1:2006 tabel 2; NEN 6740:2006 tabel 3",
+    "source2012": "NEN 9997-1:2011+C1:2012 tabel 7.c; oorspronkelijke factoren vóór verlaging",
+    "conditions": "Historisch drukpaalmodel: zand; geen paalgroep, OCR-, korrelgrootte- of ontgravingscorrectie. Schachtpieken conservatief begrensd op 12 MPa. Zakking niet geverifieerd."
+  },
+  "sources": {
+    "table2017": "NEN 9997-1:2016+C2:2017, tabel 7.c (zand/zand-grind)"
+  },
+  "pileTypes": {
+    "steel-pipe-driven-closed": {
+      "name": "Stalen buispaal — geheid (bestaand projectmodel)",
+      "shortName": "Stalen buispaal — geheid",
+      "conditions": "Bestaande factorenset behouden; wijkt af van tabel 7.c:2017 voor gesloten stalen buispalen.",
+      "source": "Bestaand rekenmodel en referentie-rapport 984.pdf",
+      "edition": "2017/2019 — bestaand projectmodel"
+    },
+    "concrete-prefab-prestressed-driven": {
+      "name": "Prefab voorgespannen betonpaal — geheid"
+    },
+    "concrete-prefab-round": {
+      "name": "Prefab betonpaal — rond, geheid"
+    },
+    "steel-pipe-driven-closed-2017": {
+      "name": "Stalen buispaal — gesloten punt (tabel 2017)",
+      "shortName": "Stalen buispaal — gesloten punt",
+      "conditions": "Voetplaat steekt maximaal 10 mm buiten de buis uit; betongevulde buis."
+    },
+    "concrete-driven-casing-hammered": {
+      "name": "Betonpaal — mantelbuis terugheiend getrokken",
+      "conditions": "Beton drukt direct tegen de grond; mantelbuis terugheiend en statisch getrokken."
+    },
+    "concrete-driven-casing-vibrated": {
+      "name": "Betonpaal — mantelbuis trillend getrokken",
+      "conditions": "Beton drukt direct tegen de grond; mantelbuis trillend en statisch getrokken."
+    },
+    "concrete-screw-displacement": {
+      "name": "Betonschroefpaal — verloren punt",
+      "conditions": "Gladde mantelbuis teruggetrokken; beton drukt direct tegen de grond."
+    },
+    "steel-screw-grout": {
+      "name": "Stalen schroefpaal — groutinjectie",
+      "conditions": "Groutschacht ≥ 300 mm; tijdens aanbrengen niet op en neer halen. EA betreft staal/kern, niet het grout-schachtoppervlak."
+    },
+    "concrete-auger": {
+      "name": "Avegaarpaal — beton",
+      "conditions": "Editie 2017: start qc;III begrensd op 2 MPa; geen vrijstelling op basis van nasonderingen toegepast."
+    },
+    "concrete-bored": {
+      "name": "Boorpaal — met steunvloeistof"
+    },
+    "timber-uniform": {
+      "name": "Houten heipaal — rond, met of zonder betonopzetter",
+      "conditions": "Ronde houten doorsnede, constant of lineair taps vanaf de bovenkant van het hout; optioneel met betonopzetter tot de las. Geen verhoging van paalfactoren wegens coniciteit."
+    }
+  },
+  "soil": {
+    "sand-dry": "Zand droog",
+    "sand-wet": "Zand nat",
+    "clay": "Klei nat",
+    "peat": "Veen nat"
+  }
+}

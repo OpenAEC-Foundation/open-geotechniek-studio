@@ -31,5 +31,11 @@
   "remove": "Verwijder",
   "hide": "Verbergen",
   "show": "Tonen",
-  "noCptsHint": "Nog geen sonderingen toegevoegd. Klik op 'Sondering toevoegen' of sleep GEF/BRO-XML bestanden in het venster."
+  "noCptsHint": "Nog geen sonderingen toegevoegd. Klik op 'Sondering toevoegen' of sleep GEF/BRO-XML bestanden in het venster.",
+  "noTitle": "(geen titel)",
+  "fileMetadata": "Bestandsmetadata",
+  "noExtras": "Geen aanvullende metadata.",
+  "boresInProject": "Boringen in dit project",
+  "addBore": "Boring toevoegen",
+  "noBoresHint": "Nog geen boringen toegevoegd. Klik op 'Boring toevoegen' om BHR-GT XML te importeren."
 }

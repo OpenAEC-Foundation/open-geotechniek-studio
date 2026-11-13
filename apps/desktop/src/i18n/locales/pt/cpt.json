@@ -31,5 +31,11 @@
   "remove": "Remover",
   "hide": "Ocultar",
   "show": "Mostrar",
-  "noCptsHint": "Ainda não há CPT. Clique em «Adicionar CPT» ou arraste ficheiros GEF/BRO-XML para a janela."
+  "noCptsHint": "Ainda não há CPT. Clique em «Adicionar CPT» ou arraste ficheiros GEF/BRO-XML para a janela.",
+  "noTitle": "(sem título)",
+  "fileMetadata": "Metadados do ficheiro",
+  "noExtras": "Sem metadados adicionais.",
+  "boresInProject": "Sondagens neste projeto",
+  "addBore": "Adicionar sondagem",
+  "noBoresHint": "Ainda não foram adicionadas sondagens. Clique em «Adicionar sondagem» para importar BHR-GT XML."
 }

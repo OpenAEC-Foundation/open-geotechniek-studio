@@ -5,6 +5,7 @@ import { LANGUAGES, changeLanguage } from "../../i18n/config";
 import { getSetting, setSetting } from "../../store";
 import { useAllExtensions, setExtension, type ExtensionId } from "../../hooks/useExtensions";
 import { CALC_REGISTRY } from "../../calc/framework/registry";
+import { moduleText } from "../../calc/framework/moduleText";
 import Modal from "../Modal";
 import ThemedSelect from "../ThemedSelect";
 import { BrandTabContent } from "./BrandTab";
@@ -301,6 +302,7 @@ function ThemeDropdown({
    ze willen. State zit in `preferences.json` via `useExtensions`.
    ─────────────────────────────────────────────────────────── */
 function ExtensionsTabContent() {
+  const { t } = useTranslation("settings");
   const exts = useAllExtensions();
 
   const items: Array<{
@@ -310,29 +312,32 @@ function ExtensionsTabContent() {
   }> = [
     {
       id: "tekening",
-      title: "Situatietekening",
-      description:
+      title: t("extensions.tekening.title", "Situatietekening"),
+      description: t(
+        "extensions.tekening.description",
         "Voegt de tab 'Situatietekening' toe — CAD-papier (A2/A3) met sonderingen op kaart, kader, schaalbalk, snap-systeem, overlays en export naar PDF.",
+      ),
     },
     {
       id: "offertes",
-      title: "Offertes opvragen",
-      description:
+      title: t("extensions.offertes.title", "Offertes opvragen"),
+      description: t(
+        "extensions.offertes.description",
         "Voegt de knop 'Offertes opvragen' toe aan de Situatietekening-ribbon (vereist de Situatietekening-extensie). Opent een dialog met de dichtsbijzijnde sondeerbedrijven + automatische mailto-offerte.",
+      ),
     },
     ...CALC_REGISTRY.map((m) => ({
       id: `calc.${m.id}` as ExtensionId,
-      title: m.name,
-      description: `${m.subtitle} (${m.norm})${m.status === "coming-soon" ? " — komt binnenkort" : ""}`,
+      title: moduleText(m, "name") ?? m.name,
+      description: `${moduleText(m, "subtitle") ?? m.subtitle} (${moduleText(m, "norm") ?? m.norm})${m.status === "coming-soon" ? ` — ${t("extensions.comingSoon", "komt binnenkort")}` : ""}`,
     })),
   ];
 
   return (
     <div className="settings-section">
-      <h3>Extensies</h3>
+      <h3>{t("extensions.title", "Extensies")}</h3>
       <p style={{ fontSize: 11, lineHeight: 1.5, color: "var(--theme-dialog-content-secondary)", marginBottom: 12 }}>
-        Optionele modules — schakel aan wat je gebruikt. Wijzigingen
-        zijn direct actief (geen herstart nodig).
+        {t("extensions.intro", "Optionele modules — schakel aan wat je gebruikt. Wijzigingen zijn direct actief (geen herstart nodig).")}
       </p>
       {items.map((item) => (
         <div

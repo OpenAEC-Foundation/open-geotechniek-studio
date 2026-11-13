@@ -1,0 +1,332 @@
+{
+  "cell": {
+    "openAria": "Open {{cpt}}, {{size}} mm at {{level}} m NAP"
+  },
+  "chart": {
+    "baseSide": "R_b base →",
+    "cptAria": "CPT chart with pile overlays",
+    "excavation": "Excavation {{nap}}",
+    "loadAxis": "Load [kN]",
+    "loadSettlement": "Load-settlement diagram",
+    "negSkinBottom": "Neg. skin friction limit {{nap}}",
+    "pileToe": "Pile toe {{nap}} (D_eq = {{deq}} mm)",
+    "pileTop": "Pile head {{nap}}",
+    "posSkinTop": "Pos. skin friction top {{nap}}",
+    "qcPosSkinAvg": "qc;pos.skin;avg = {{v}} MPa",
+    "shaftSide": "← R_s shaft",
+    "water": "Water {{nap}}",
+    "zoomIn": "Zoom in",
+    "zoomInTitle": "Zoom in (or scroll wheel up)",
+    "zoomOut": "Zoom out",
+    "zoomOutTitle": "Zoom out (or scroll wheel down)",
+    "zoomReset": "Reset zoom",
+    "zoomResetTitle": "Reset zoom (or double-click the chart)",
+    "zoomToe": "Zoom to pile toe",
+    "zoomToeTitle": "Zoom to pile toe (1 m padding around the pile)",
+    "zoomToolbar": "Chart zoom"
+  },
+  "choice": {
+    "aboveMaxTitle": "Even the shortest pile that complies is above the upper limit.",
+    "caption": "Highest toe level [m NAP] at which Rc;net;d ≥ {{min}} kN, per pile size and CPT. Click a level to open the calculation sheet.",
+    "cptOutOfRange": "CPT out of range",
+    "dropsDeeper": "check deeper",
+    "dropsDeeperTitle": "Deeper down, the bearing capacity drops below the lower limit again.",
+    "highest": "Highest",
+    "lowest": "Lowest",
+    "notReached": "not reached",
+    "notReachedAria": "{{cpt}}, {{size}} mm: not reached",
+    "reached": "Reached",
+    "size": "Size [mm]",
+    "smallestSpread": "smallest spread",
+    "spread": "Spread",
+    "tableAria": "Toe level per pile size and CPT",
+    "title": "Selection table"
+  },
+  "cpt": {
+    "choose": "— select CPT —",
+    "title": "CPT"
+  },
+  "cpts": {
+    "all": "All CPTs",
+    "legend": "CPTs",
+    "missingOption": "{{id}} (missing)"
+  },
+  "examples": {
+    "add": "Add example",
+    "cptAria": "Example: CPT",
+    "hint": "Fully worked out in the report, followed by the selection table and the tables per CPT. Without a selection, the current calculation sheet is included.",
+    "legend": "Printout",
+    "levelAria": "Example: toe level",
+    "listAria": "Example calculations",
+    "removeAria": "Remove example {{cpt}}, {{size}} mm at {{level}} m NAP",
+    "sizeAria": "Example: size"
+  },
+  "extension": {
+    "customJoint": "Custom joint",
+    "diameter": "Extension diameter",
+    "joint": "Joint (bottom of extension)",
+    "jointAria": "Joint [m NAP]",
+    "jointTooHigh": "The joint is less than 0.5 m below the groundwater level (NAP {{water}}): the timber will not stay permanently wet there. Choose a longer extension.",
+    "length": "Extension length",
+    "lengthAria": "Extension length [m]",
+    "perimeterHint": "Above the joint the perimeter of the extension is used, below it that of the timber.",
+    "shape": "Shape",
+    "shapeAria": "Extension shape",
+    "side": "Extension side",
+    "size": "Extension",
+    "sizeAria": "Extension size [mm]",
+    "title": "Concrete extension"
+  },
+  "factors": {
+    "alphaTLabel": "αt (no tension check)",
+    "basis": "Code basis: {{edition}}. {{source}}",
+    "edition": "Edition",
+    "edition2025": "2025 — project factors",
+    "source": "Source / declaration",
+    "sourceHint": "The source must match the pile system, installation method and dimensions. Factors from 2025 do not automatically make the complete calculation method compliant with 2025.",
+    "title": "Pile factors",
+    "useProject": "Use project factors / self-declaration"
+  },
+  "legend": {
+    "chosen": "selected level",
+    "over": "> {{max}} kN, ample",
+    "title": "Legend"
+  },
+  "levels": {
+    "applyList": "Apply levels",
+    "applyRange": "Apply range",
+    "count": "{{n}} levels",
+    "custom": "Custom levels",
+    "excavation": "Excavation",
+    "excavationAria": "Excavation [m NAP]",
+    "from": "From [m NAP]",
+    "legend": "Toe levels",
+    "listLabel": "Toe levels [m NAP]",
+    "pileToe": "Pile toe",
+    "pileToeAria": "Pile toe [m NAP]",
+    "pileTop": "Pile head",
+    "pileTopAria": "Pile head [m NAP]",
+    "step": "Step [m]",
+    "title": "Pile levels",
+    "to": "To [m NAP]",
+    "water": "Groundwater",
+    "waterAria": "Groundwater [m NAP]"
+  },
+  "load": {
+    "characteristic": "characteristic",
+    "design": "design load",
+    "materialFactor": "material factor",
+    "negativeSkinFriction": "negative skin friction",
+    "title": "Load"
+  },
+  "material": {
+    "concrete": "Concrete",
+    "steel": "Steel",
+    "wood": "Timber"
+  },
+  "pile": {
+    "axialStiffness": "Axial stiffness EA",
+    "baseSize": "Toe size",
+    "baseSizeAria": "Toe size [mm] (empty = shaft)",
+    "baseSizePlaceholder": "shaft",
+    "customSize": "Custom size",
+    "diameter": "Diameter",
+    "eaAriaOptional": "Axial stiffness EA [kN] (optional)",
+    "eaAriaRequired": "Axial stiffness EA [kN] (required)",
+    "eaMissing": "Required for this pile type — without EA no calculation is made.",
+    "headDiameter": "Head diameter",
+    "material": "Material",
+    "optional": "optional",
+    "required": "required",
+    "sideLength": "Side length",
+    "title": "Pile",
+    "tubeSize": "Tube size",
+    "type": "Pile type",
+    "wallThickness": "Wall thickness",
+    "wallThicknessAria": "Wall thickness [mm]",
+    "woodDiameterAtJoint": "Timber diameter at the joint"
+  },
+  "profile": {
+    "bottom": "Bottom",
+    "fieldAria": "{{field}} layer {{n}}",
+    "soilType": "Soil type",
+    "soilTypeAria": "Soil type layer {{n}}",
+    "title": "Soil profile",
+    "tooShallow": "The soil profile ends at NAP {{bottom}} m, above the pile toe at NAP {{toe}} m. No shaft friction is counted over that section; extend the bottom layer.",
+    "top": "Top"
+  },
+  "result": {
+    "base": {
+      "capped": "(capped at 15 MPa)",
+      "title": "Base resistance"
+    },
+    "existingModel": "Existing project model",
+    "facts": {
+      "diameterD": "Diameter D",
+      "equalToShaft": "equal to shaft",
+      "extensionValue": "{{size}} mm, from pile head to the joint at NAP {{joint}} m",
+      "projectFactors": "project factors",
+      "sideA": "Side a",
+      "tapered": "{{size}} mm (tapered)",
+      "title": "Basic assumptions",
+      "woodAtJoint": "Timber at the joint"
+    },
+    "negSkin": {
+      "cappedNote": "capped at ksMin = {{v}}",
+      "cappedTitle": "Capped at ksMin={{v}}",
+      "extensionAndWood": "(extension and timber)",
+      "layer": "Layer",
+      "title": "Negative skin friction",
+      "zone": "Zone: pile head NAP {{top}} to NAP {{bottom}} —"
+    },
+    "pending": {
+      "missingEA": "Enter the axial stiffness <strong>EA</strong> under <strong>Pile</strong>. For this pile type EA is not derived from the cross-section; the value follows from the selected pile system.",
+      "missingOne": "One more input needed",
+      "notYet": "Cannot be calculated yet",
+      "note": "As soon as the input is complete, the worked calculation appears here."
+    },
+    "settlement": {
+      "title": "Settlement (art. 7.6.4.2, load-settlement curve 1)"
+    },
+    "shaft": {
+      "layers": "{{n}} layer(s) — Σ of per-layer contributions",
+      "title": "Maximum shaft friction"
+    },
+    "spring": {
+      "title": "Spring stiffness"
+    },
+    "summary": {
+      "check": "Check",
+      "compression": "Compressive bearing capacity",
+      "conclusion": "Conclusion:",
+      "conclusionFail": "the pile does not comply; N<sub>Ed</sub> = {{nEd}} kN exceeds R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionNoLoad": "no design load entered; the net bearing capacity is R<sub>c;net;d</sub> = {{rc}} kN.",
+      "conclusionPass": "the pile complies; N<sub>Ed</sub> = {{nEd}} kN is {{pct}}% of R<sub>c;net;d</sub> = {{rc}} kN.",
+      "fails": "Does not comply",
+      "failsShort": "does NOT comply",
+      "passes": "Complies",
+      "passesShort": "complies",
+      "quantity": "Quantity",
+      "result": "Result",
+      "title": "Summary"
+    },
+    "title": "Pile bearing capacity",
+    "total": {
+      "title": "Maximum geotechnical bearing capacity"
+    }
+  },
+  "settings": {
+    "addExtension": "+ Extension",
+    "defaultSource": "Calculation settings",
+    "existingModel": "existing model",
+    "extensionLengths": "Extension lengths",
+    "extensionLengthsAria": "Extension lengths [m]",
+    "extensionRemoveAria": "Remove extension {{n}}",
+    "extensionShapeAria": "Extension shape {{n}}",
+    "extensionSizeAria": "Extension size {{n}} [mm]",
+    "extensionsAria": "Concrete extensions",
+    "extensionsTitle": "Concrete extensions on timber",
+    "factor": "Factor",
+    "factorsHint": "Empty = table value of the selected code ({{edition}}). A project value requires justification, for example a load test.",
+    "factorsTitle": "Pile factors · {{type}}",
+    "gammaFnk": "γf;nk negative skin friction",
+    "gammaM": "γm material factor",
+    "partialFactors": "Partial factors",
+    "project": "Project",
+    "projectValueAria": "{{factor}} project",
+    "resetAll": "Reset all series to default",
+    "restoreSeries": "Restore standard series",
+    "restoreSeriesNone": "Restore standard series (none)",
+    "series": "Standard series",
+    "seriesHint": "The series for the drop-down list in the input (tube sizes) and the Standard series button in the bearing capacity table.",
+    "sizeMm": "Size [mm]",
+    "sizesAria": "Size series pile type [mm]",
+    "sizesFor": "Sizes {{type}}",
+    "sourceAria": "Source of project factors",
+    "table": "Table",
+    "timberToe": "Timber toe diameter",
+    "useTableValues": "Use table values"
+  },
+  "shape": {
+    "round": "Round",
+    "square": "Square"
+  },
+  "sizes": {
+    "apply": "Apply sizes",
+    "label": "Pile sizes [mm]",
+    "legend": "Pile sizes",
+    "standard": "Standard series"
+  },
+  "skin": {
+    "dragHint": "Pile levels and skin friction zones can also be dragged in the CPT.",
+    "ksMinAria": "K0·tan(δ) minimum",
+    "minimum": "minimum",
+    "negBottom": "Bottom of negative skin friction",
+    "negBottomAria": "Bottom of negative skin friction [m NAP]",
+    "posTop": "Top of positive skin friction",
+    "posTopAria": "Top of positive skin friction [m NAP]",
+    "title": "Skin friction zones"
+  },
+  "standard": {
+    "existingModel": "Existing project model — unchanged",
+    "historicalHint": "Historical compression calculation for a single pile at a single CPT. Positive shaft friction in sand, constant cross-section or explicit timber taper; settlement and pile groups have not been verified. Changing the code clears project factors and resets γm.",
+    "title": "Design code",
+    "version": "Code version"
+  },
+  "table": {
+    "breadcrumb": "Breadcrumb",
+    "cpt": "CPT {{id}}",
+    "cptMissing": "CPT {{id}} is missing from the project.",
+    "cptTableAria": "Rc;net;d CPT {{id}}",
+    "heading": "Bearing capacity per CPT",
+    "intro": "One pile system in a range of sizes and toe levels, calculated for every CPT. Set the pile type, code and soil profile on the left.",
+    "selectCpt": "Select at least one CPT.",
+    "title": "Bearing capacity table",
+    "toe": "Toe [m NAP]"
+  },
+  "taper": {
+    "hintFromHead": "The timber diameter decreases linearly from the head; below the tapered part the toe diameter remains constant. The friction perimeter follows the selected length; settlement and spring stiffnesses are not determined.",
+    "hintFromJoint": "The timber diameter decreases linearly from the joint; below the tapered part the toe diameter remains constant. The friction perimeter follows the selected length; settlement and spring stiffnesses are not determined.",
+    "lengthFromHead": "Tapered length from head",
+    "lengthFromHeadAria": "Tapered length from head [m]",
+    "lengthFromJoint": "Tapered length from the joint",
+    "lengthFromJointAria": "Tapered length from the joint [m]",
+    "title": "Tapered timber pile",
+    "toeDiameter": "Toe diameter",
+    "toeDiameterAria": "Timber toe diameter [mm]"
+  },
+  "target": {
+    "hint": "For each size, the selection table finds the shortest pile that reaches the lower limit. Above the upper limit the size is ample.",
+    "inverted": "The upper limit must be above the lower limit; the table still uses the previous band.",
+    "legend": "Required bearing capacity Rc;net;d",
+    "lower": "Lower limit [kN]",
+    "notNumber": "Enter the lower and upper limit as a number in kN.",
+    "upper": "Upper limit [kN]"
+  },
+  "visual": {
+    "cptHeading": "CPT: {{id}}",
+    "crossSection": "Cross-section",
+    "crossSectionAria": "Pile cross-section",
+    "empty": {
+      "howTo": "Open a GEF, BRO-XML or project file via <strong>Open</strong> at the top. Then select the CPT under <strong>CPT</strong> in the input panel.",
+      "noCpt": "No CPT has been linked to this calculation yet.",
+      "then": "The cone resistance, the pile and the skin friction zones will then appear here.",
+      "title": "CPT chart"
+    },
+    "extensionTitle": "Concrete extension {{size}} mm down to the joint at NAP {{joint}} m",
+    "material": "material",
+    "materials": {
+      "castInSitu": "Cast-in-place concrete",
+      "prefab": "Precast concrete",
+      "steelEA": "Steel pile; project-specific EA",
+      "steelTube": "Steel tube pile, concrete-filled",
+      "wood": "Timber, constant cross-section"
+    },
+    "noPoints": "No measurements in this CPT",
+    "notComputed": "Not calculated: {{error}}. Drag the levels or adjust the input.",
+    "rebarCage": "reinforcement cage",
+    "taperLength": "tapered length from head",
+    "toeSize": "toe size",
+    "wall": "wall"
+  }
+}

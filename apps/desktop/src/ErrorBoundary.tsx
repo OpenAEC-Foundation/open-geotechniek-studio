@@ -15,6 +15,9 @@
 // zien welke component crashte en op welke regel.
 
 import { Component, type ReactNode, type ErrorInfo } from "react";
+import i18next from "i18next";
+
+const tr = (key: string, nl: string) => i18next.t(`app:errorBoundary.${key}`, { defaultValue: nl });
 
 interface Props {
   children: ReactNode;
@@ -60,11 +63,13 @@ export class ErrorBoundary extends Component<Props, State> {
         }}
       >
         <h1 style={{ font: "700 18px/1.3 'Inter', sans-serif", color: "#b91c1c", marginTop: 0 }}>
-          ⚠ React render-crash — toplevel ErrorBoundary
+          {tr("title", "⚠ React render-crash — toplevel ErrorBoundary")}
         </h1>
         <p style={{ font: "500 13px/1.5 'Inter', sans-serif", color: "#52525b", marginBottom: 16 }}>
-          Een component in de app heeft een fout gegooid tijdens render.
-          De stack-trace hieronder helpt om de oorzaak te lokaliseren.
+          {tr(
+            "intro",
+            "Een component in de app heeft een fout gegooid tijdens render. De stack-trace hieronder helpt om de oorzaak te lokaliseren.",
+          )}
         </p>
         <button
           onClick={this.handleReload}
@@ -79,7 +84,7 @@ export class ErrorBoundary extends Component<Props, State> {
             marginBottom: 16,
           }}
         >
-          App opnieuw laden
+          {tr("reload", "App opnieuw laden")}
         </button>
         <h2 style={{ font: "700 14px 'Inter', sans-serif", color: "#dc2626", marginBottom: 4 }}>
           {error.name}: {error.message}
@@ -95,12 +100,12 @@ export class ErrorBoundary extends Component<Props, State> {
             margin: "8px 0 16px",
           }}
         >
-          {error.stack ?? "(geen stack beschikbaar)"}
+          {error.stack ?? tr("noStack", "(geen stack beschikbaar)")}
         </pre>
         {info?.componentStack && (
           <>
             <h2 style={{ font: "700 14px 'Inter', sans-serif", color: "#52525b", marginBottom: 4 }}>
-              Component-stack
+              {tr("componentStack", "Component-stack")}
             </h2>
             <pre
               style={{
