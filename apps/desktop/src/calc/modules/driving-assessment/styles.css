@@ -45,3 +45,11 @@
 .drv-filled strong { color: var(--oa-text); }
 .drv-notes { margin: 0; padding-left: 18px; }
 .drv-notes li { margin-bottom: 4px; }
+.drv-band { fill: var(--oa-accent); opacity: .18; }
+.drv-qc { stroke: var(--oa-info, #2563EB); stroke-width: 1.8; }
+.drv-dot { fill: var(--oa-text); stroke: var(--oa-panel); stroke-width: 1.5; }
+.drv-dot.fail { fill: var(--oa-error); }
+.drv-legend i.drv-key-bar { height: 10px; background: var(--oa-accent); opacity: .75; }
+.drv-legend i.drv-key-band { height: 10px; background: var(--oa-accent); opacity: .25; }
+.drv-legend i.drv-key-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--oa-text); }
+.drv-legend i.drv-key-qc { background: var(--oa-info, #2563EB); }

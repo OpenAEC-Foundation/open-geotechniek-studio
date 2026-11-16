@@ -105,9 +105,9 @@
     },
     "driving-assessment": {
       "name": "Beurteilung des Rammprotokolls",
-      "subtitle": "Rammprotokoll mit Rammformeln prüfen",
-      "norm": "Holländisch · Engineering News · Hiley · Janbu · Dänisch · Gates",
-      "visualLabel": "Rammprotokoll"
+      "subtitle": "Erwartete Schlagzahl aus der Sondierung, neben der gezählten",
+      "norm": "Faustformel N = Intervall · D² · qc / E",
+      "visualLabel": "Schlagzahl"
     }
   }
 }

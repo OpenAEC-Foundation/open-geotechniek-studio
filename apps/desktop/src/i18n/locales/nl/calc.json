@@ -105,9 +105,9 @@
     },
     "driving-assessment": {
       "name": "Beoordeling kalendering",
-      "subtitle": "Kalenderstaat toetsen met heiformules",
-      "norm": "Hollands · Engineering News · Hiley · Janbu · Deens · Gates",
-      "visualLabel": "Kalenderstaat"
+      "subtitle": "Verwachte kalender uit de sondering, naast de getelde",
+      "norm": "Vuistregel N = tocht · D² · qc / E",
+      "visualLabel": "Kalender"
     }
   }
 }

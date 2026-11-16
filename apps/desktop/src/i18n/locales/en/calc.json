@@ -105,9 +105,9 @@
     },
     "driving-assessment": {
       "name": "Driving record assessment",
-      "subtitle": "Check a pile driving record with dynamic formulas",
-      "norm": "Dutch · Engineering News · Hiley · Janbu · Danish · Gates",
-      "visualLabel": "Driving record"
+      "subtitle": "Expected blow count from the CPT, next to the counted one",
+      "norm": "Rule of thumb N = interval · D² · qc / E",
+      "visualLabel": "Blow count"
     }
   }
 }

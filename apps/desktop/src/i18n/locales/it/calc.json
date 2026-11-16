@@ -105,9 +105,9 @@
     },
     "driving-assessment": {
       "name": "Valutazione dell'infissione",
-      "subtitle": "Verificare il rapporto di battitura con formule dinamiche",
-      "norm": "Olandese · Engineering News · Hiley · Janbu · Danese · Gates",
-      "visualLabel": "Rapporto di battitura"
+      "subtitle": "Colpi attesi dalla prova CPT, accanto a quelli contati",
+      "norm": "Regola empirica N = tratto · D² · qc / E",
+      "visualLabel": "Colpi"
     }
   }
 }
