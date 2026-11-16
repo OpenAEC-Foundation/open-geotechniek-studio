@@ -102,6 +102,12 @@
       "name": "Gründungsempfehlung",
       "subtitle": "Bericht mit Baugrunderkundung, Lageplan, Pfahlempfehlung und Anlagen",
       "visualLabel": "Lageplan"
+    },
+    "driving-assessment": {
+      "name": "Beurteilung des Rammprotokolls",
+      "subtitle": "Rammprotokoll mit Rammformeln prüfen",
+      "norm": "Holländisch · Engineering News · Hiley · Janbu · Dänisch · Gates",
+      "visualLabel": "Rammprotokoll"
     }
   }
 }

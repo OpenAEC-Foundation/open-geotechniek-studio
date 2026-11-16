@@ -102,6 +102,12 @@
       "name": "Recomendação de fundação",
       "subtitle": "Relatório com prospeção geotécnica, planta de localização, recomendação de estacas e anexos",
       "visualLabel": "Planta de localização"
+    },
+    "driving-assessment": {
+      "name": "Avaliação da cravação",
+      "subtitle": "Verificar o registo de cravação com fórmulas dinâmicas",
+      "norm": "Holandesa · Engineering News · Hiley · Janbu · Dinamarquesa · Gates",
+      "visualLabel": "Registo de cravação"
     }
   }
 }

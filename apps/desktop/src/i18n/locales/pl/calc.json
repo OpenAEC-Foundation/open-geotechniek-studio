@@ -102,6 +102,12 @@
       "name": "Zalecenie posadowienia",
       "subtitle": "Raport z badaniami podłoża, planem sytuacyjnym, zaleceniem palowym i załącznikami",
       "visualLabel": "Plan sytuacyjny"
+    },
+    "driving-assessment": {
+      "name": "Ocena wbijania pala",
+      "subtitle": "Sprawdzenie dziennika wbijania wzorami dynamicznymi",
+      "norm": "Holenderski · Engineering News · Hiley · Janbu · Duński · Gates",
+      "visualLabel": "Dziennik wbijania"
     }
   }
 }

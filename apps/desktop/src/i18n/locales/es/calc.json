@@ -102,6 +102,12 @@
       "name": "Recomendación de cimentación",
       "subtitle": "Informe con reconocimiento del terreno, plano de situación, recomendación de pilotes y anejos",
       "visualLabel": "Plano de situación"
+    },
+    "driving-assessment": {
+      "name": "Evaluación de la hinca",
+      "subtitle": "Comprobar el parte de hinca con fórmulas dinámicas",
+      "norm": "Holandesa · Engineering News · Hiley · Janbu · Danesa · Gates",
+      "visualLabel": "Parte de hinca"
     }
   }
 }
