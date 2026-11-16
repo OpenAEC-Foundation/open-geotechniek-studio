@@ -102,6 +102,12 @@
       "name": "Recommandation de fondation",
       "subtitle": "Rapport avec reconnaissance de sol, plan de situation, recommandation de pieux et annexes",
       "visualLabel": "Plan de situation"
+    },
+    "driving-assessment": {
+      "name": "Évaluation du battage",
+      "subtitle": "Vérifier le carnet de battage avec des formules de battage",
+      "norm": "Hollandaise · Engineering News · Hiley · Janbu · Danoise · Gates",
+      "visualLabel": "Carnet de battage"
     }
   }
 }

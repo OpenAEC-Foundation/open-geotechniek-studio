@@ -102,6 +102,12 @@
       "name": "Funderingsadvies",
       "subtitle": "Rapport met grondonderzoek, situatie, paaladvies en bijlagen",
       "visualLabel": "Situatie"
+    },
+    "driving-assessment": {
+      "name": "Beoordeling kalendering",
+      "subtitle": "Kalenderstaat toetsen met heiformules",
+      "norm": "Hollands · Engineering News · Hiley · Janbu · Deens · Gates",
+      "visualLabel": "Kalenderstaat"
     }
   }
 }

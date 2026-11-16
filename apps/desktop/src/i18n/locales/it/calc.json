@@ -102,6 +102,12 @@
       "name": "Raccomandazione per le fondazioni",
       "subtitle": "Relazione con indagine geotecnica, planimetria, raccomandazione sui pali e allegati",
       "visualLabel": "Planimetria"
+    },
+    "driving-assessment": {
+      "name": "Valutazione dell'infissione",
+      "subtitle": "Verificare il rapporto di battitura con formule dinamiche",
+      "norm": "Olandese · Engineering News · Hiley · Janbu · Danese · Gates",
+      "visualLabel": "Rapporto di battitura"
     }
   }
 }

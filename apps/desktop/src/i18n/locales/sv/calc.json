@@ -102,6 +102,12 @@
       "name": "Grundläggningsrekommendation",
       "subtitle": "Rapport med geoteknisk undersökning, situationsplan, pålrekommendation och bilagor",
       "visualLabel": "Situationsplan"
+    },
+    "driving-assessment": {
+      "name": "Bedömning av pålslagning",
+      "subtitle": "Kontrollera slagprotokollet med slagformler",
+      "norm": "Holländska · Engineering News · Hiley · Janbu · Danska · Gates",
+      "visualLabel": "Slagprotokoll"
     }
   }
 }

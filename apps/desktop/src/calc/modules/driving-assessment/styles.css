@@ -1,0 +1,47 @@
+/* Beoordeling kalendering */
+.drv-input { padding-bottom: 8px; }
+.drv-rows td input { text-align: right; }
+.drv-del { width: 22px; height: 22px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); background: none; color: var(--oa-text-secondary); cursor: pointer; line-height: 1; }
+.drv-del:hover { border-color: var(--oa-error); color: var(--oa-error); }
+.drv-add { margin: 6px 0 2px; padding: 4px 10px; border: 1px solid var(--oa-border-strong); border-radius: var(--oa-radius-small); background: var(--oa-raised); color: var(--oa-text); font: 12px var(--oa-font-body); cursor: pointer; }
+.drv-add:hover { border-color: var(--oa-accent); color: var(--oa-accent-text); }
+.drv-swatch { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: 2px; flex: none; }
+.drv-tag { margin-left: auto; padding: 0 6px; border-radius: var(--oa-radius-full); background: var(--oa-hover); color: var(--oa-text-secondary); font-size: 10px; }
+
+.drv-visual { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 380px; }
+.drv-visual svg { flex: 1 1 auto; min-height: 0; width: 100%; background: var(--oa-panel); border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); }
+.drv-title { fill: var(--oa-text); font: 600 12px var(--oa-font-body); }
+.drv-axis { fill: var(--oa-text-secondary); font: 11px var(--oa-font-numbers); }
+.drv-grid { stroke: var(--oa-border); stroke-width: 1; }
+.drv-bar { fill: var(--oa-accent); opacity: .75; }
+.drv-required { stroke: var(--oa-error); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.drv-required-label { fill: var(--oa-error); font: 11px var(--oa-font-numbers); }
+.drv-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11px; color: var(--oa-text-secondary); }
+.drv-legend i { display: inline-block; width: 14px; height: 3px; margin-right: 5px; vertical-align: middle; }
+
+.drv-sheet { font: 12px/1.5 var(--oa-font-body); color: var(--oa-text); }
+.drv-sheet h2 { margin: 0; font: 600 20px/1.3 var(--oa-font-heading); letter-spacing: -.01em; }
+.drv-sub { margin: 2px 0 12px; padding-bottom: 10px; border-bottom: 2px solid var(--oa-text); color: var(--oa-text-secondary); }
+.drv-sheet h3 { margin: 18px 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--oa-border); font: 600 14px var(--oa-font-heading); }
+.drv-sheet h4 { margin: 10px 0 2px; font: 600 12px var(--oa-font-body); }
+.drv-facts, .drv-table { width: 100%; border-collapse: collapse; }
+.drv-facts th { width: 44%; padding: 4px 8px 4px 0; text-align: left; font-weight: 400; color: var(--oa-text-secondary); border-bottom: 1px solid var(--oa-border); }
+.drv-facts td { padding: 4px 0; border-bottom: 1px solid var(--oa-border); font-family: var(--oa-font-numbers); }
+.drv-table th { padding: 4px 6px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--oa-border-strong); }
+.drv-table td { padding: 4px 6px; border-bottom: 1px solid var(--oa-border); }
+.drv-table .num { text-align: right; font-family: var(--oa-font-numbers); white-space: nowrap; }
+.drv-muted td { color: var(--oa-text-secondary); }
+.drv-ok { color: var(--oa-success); font-weight: 600; }
+.drv-fail { color: var(--oa-error); font-weight: 600; }
+.drv-note { margin: 4px 0 0; color: var(--oa-text-secondary); font-size: 11px; }
+.drv-verdict { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-left: 4px solid; }
+.drv-verdict.ok { background: var(--oa-success-tint); border-color: var(--oa-success); }
+.drv-verdict.fail { background: var(--oa-error-tint); border-color: var(--oa-error); }
+.drv-verdict strong { font-size: 14px; }
+.drv-warning { margin: 4px 0; padding: 6px 10px; background: var(--oa-warning-tint); border-left: 3px solid var(--oa-warning); }
+.drv-error { padding: 8px 10px; background: var(--oa-warning-tint); border-left: 3px solid var(--oa-warning); }
+.drv-formula { padding: 2px 0; font: 12px var(--oa-font-mono); overflow-wrap: anywhere; }
+.drv-filled { color: var(--oa-text-secondary); }
+.drv-filled strong { color: var(--oa-text); }
+.drv-notes { margin: 0; padding-left: 18px; }
+.drv-notes li { margin-bottom: 4px; }

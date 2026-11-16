@@ -102,6 +102,12 @@
       "name": "Foundation advice",
       "subtitle": "Report with site investigation, site plan, pile advice and appendices",
       "visualLabel": "Site plan"
+    },
+    "driving-assessment": {
+      "name": "Driving record assessment",
+      "subtitle": "Check a pile driving record with dynamic formulas",
+      "norm": "Dutch · Engineering News · Hiley · Janbu · Danish · Gates",
+      "visualLabel": "Driving record"
     }
   }
 }

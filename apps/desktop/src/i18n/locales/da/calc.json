@@ -102,6 +102,12 @@
       "name": "Funderingsanbefaling",
       "subtitle": "Rapport med jordbundsundersøgelse, situationsplan, pæleanbefaling og bilag",
       "visualLabel": "Situationsplan"
+    },
+    "driving-assessment": {
+      "name": "Vurdering af ramning",
+      "subtitle": "Kontrollér rammejournalen med rammeformler",
+      "norm": "Hollandsk · Engineering News · Hiley · Janbu · Dansk · Gates",
+      "visualLabel": "Rammejournal"
     }
   }
 }

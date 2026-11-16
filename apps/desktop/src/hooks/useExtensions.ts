@@ -30,6 +30,7 @@ export type ExtensionId =
   | "calc.pile-bearing-capacity"
   | "calc.settlement"
   | "calc.kalendering"
+  | "calc.driving-assessment"
   | "calc.spread-foundation-drained"
   | "calc.spread-foundation-undrained"
   | "calc.laterally-loaded-pile"
@@ -41,6 +42,7 @@ const SETTING_KEYS: Record<ExtensionId, string> = {
   offertes: "ext.offertes.enabled",
   "calc.pile-bearing-capacity": "ext.calc.pile-bearing-capacity.enabled",
   "calc.kalendering": "ext.calc.kalendering.enabled",
+  "calc.driving-assessment": "ext.calc.driving-assessment.enabled",
   "calc.settlement": "ext.calc.settlement.enabled",
   "calc.spread-foundation-drained": "ext.calc.spread-foundation-drained.enabled",
   "calc.spread-foundation-undrained": "ext.calc.spread-foundation-undrained.enabled",
@@ -67,6 +69,7 @@ const DEFAULTS: Record<ExtensionId, boolean> = {
   // 'experimental' op de module zelf zorgt voor de prominente tussenstand-
   // banner.
   "calc.kalendering": true,
+  "calc.driving-assessment": true,
   "calc.settlement": true,
   "calc.spread-foundation-drained": false,
   "calc.spread-foundation-undrained": false,
