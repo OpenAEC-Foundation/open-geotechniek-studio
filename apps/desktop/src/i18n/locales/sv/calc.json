@@ -105,9 +105,9 @@
     },
     "driving-assessment": {
       "name": "Bedömning av pålslagning",
-      "subtitle": "Kontrollera slagprotokollet med slagformler",
-      "norm": "Holländska · Engineering News · Hiley · Janbu · Danska · Gates",
-      "visualLabel": "Slagprotokoll"
+      "subtitle": "Förväntat antal slag från sonderingen, bredvid det räknade",
+      "norm": "Tumregel N = intervall · D² · qc / E",
+      "visualLabel": "Antal slag"
     }
   }
 }

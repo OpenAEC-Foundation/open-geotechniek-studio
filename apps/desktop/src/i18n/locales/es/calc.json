@@ -105,9 +105,9 @@
     },
     "driving-assessment": {
       "name": "Evaluación de la hinca",
-      "subtitle": "Comprobar el parte de hinca con fórmulas dinámicas",
-      "norm": "Holandesa · Engineering News · Hiley · Janbu · Danesa · Gates",
-      "visualLabel": "Parte de hinca"
+      "subtitle": "Golpes esperados según el ensayo CPT, junto a los contados",
+      "norm": "Regla empírica N = tramo · D² · qc / E",
+      "visualLabel": "Golpes"
     }
   }
 }

@@ -105,9 +105,9 @@
     },
     "driving-assessment": {
       "name": "Vurdering af ramning",
-      "subtitle": "Kontrollér rammejournalen med rammeformler",
-      "norm": "Hollandsk · Engineering News · Hiley · Janbu · Dansk · Gates",
-      "visualLabel": "Rammejournal"
+      "subtitle": "Forventet antal slag ud fra sonderingen, ved siden af det talte",
+      "norm": "Tommelfingerregel N = interval · D² · qc / E",
+      "visualLabel": "Antal slag"
     }
   }
 }

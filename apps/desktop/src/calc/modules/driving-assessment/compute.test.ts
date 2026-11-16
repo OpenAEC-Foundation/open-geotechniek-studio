@@ -1,77 +1,62 @@
 import { describe, expect, it } from "vitest";
-import { computeDriving, defaultSafety, drivingExample, ultimate, type FormulaId } from "./compute";
+import type { Cpt } from "../../../types/cpt";
+import { computeDriving, defaultDrivingInput, equivalentDiameterMm, expectedBlows, meanQc, type DrivingInput } from "./compute";
 
-// Handberekening bij het voorbeeld (slotkalender 40 slagen per 250 mm → s = 6,25 mm):
-//   W = 5000·9,81/1000 = 49,05 kN; P = (5290+500)·9,81/1000 = 56,80 kN
-//   η·W·h = 0,9·49,05·0,8 = 35,316 kNm; A·E = 0,1225·30e6 = 3,675e6 kN
-const HAND: Record<FormulaId, number> = {
-  dutch: 2618.42,   // 0,9·49,05²·0,8 / (0,00625·105,85)
-  enr: 4017.75,     // 35,316 / (0,00625 + 0,00254)
-  hiley: 1892.42,   // 35,316/(0,00625+0,004) · (49,05+0,16·56,80)/105,85
-  janbu: 1795.48,   // Cd 0,9237; λ 4,4282; ku 3,1471
-  danish: 2271.14,  // 35,316 / (0,00625 + 0,0093)
-  gates: 1681.27,   // 6,7·√39240·log10(40) − 445
-};
+/** Sondering tot 20 m: qc 2 MPa tot 15 m, daaronder 20 MPa; meetpunt elke 2 cm. */
+function cpt(): Cpt {
+  const points = [];
+  for (let i = 1; i <= 1000; i++) { const depth = i * 0.02; points.push({ depth, qc: depth > 15 + 1e-9 ? 20 : 2 }); }
+  return { id: "S1", metadata: { source_file: "S1.gef", ground_level_nap: 0.5 }, position: { x_rd: 100000, y_rd: 450000 }, points } as Cpt;
+}
+const ctx = { cpts: new Map([["S1", cpt()]]), activeCptId: "S1" };
+const base: DrivingInput = { cptId: "S1", ramMassKg: 5000, dropHeightM: 0.8, shape: "square", sizeMm: 350, sizeBMm: 350, tochtMm: 250, fromM: 14, toM: 16, rows: [], tolerancePct: 50 };
 
-describe("heiformules", () => {
-  const r = computeDriving(drivingExample());
-  it("rekent de slotkalender om naar zakking per slag", () => {
+describe("verwachte kalender", () => {
+  it("volgt de formule uit het rekenblad: N = ⌈tocht · D² · qc / E⌉", () => {
+    // E = 5000·9,81·0,8/1000 = 39,24 kNm; 250·0,35²·20/39,24 = 15,61 → 16
+    expect(expectedBlows(20, 0.35, 250, 39.24)).toBe(16);
+    // 400·0,35²·15/35,316 = 20,81 → 21
+    expect(expectedBlows(15, 0.35, 400, 35.316)).toBe(21);
+    expect(expectedBlows(0.01, 0.35, 250, 39.24)).toBe(1);
+  });
+  it("rekent per tocht met de gemiddelde conusweerstand van de sondering", () => {
+    const r = computeDriving(base, ctx);
     expect(r.ok).toBe(true);
-    expect(r.finalBlows).toBe(40);
-    expect(r.finalSetMm).toBeCloseTo(6.25, 6);
-    expect(r.wKn).toBeCloseTo(49.05, 6);
-    expect(r.pKn).toBeCloseTo(56.7999, 4);
-    expect(r.energyKnm).toBeCloseTo(35.316, 6);
+    expect(r.energyKnm).toBeCloseTo(39.24, 6);
+    expect(r.profile.map((t) => t.depthM)).toEqual([14.25, 14.5, 14.75, 15, 15.25, 15.5, 15.75, 16]);
+    expect(r.profile[0]).toMatchObject({ qcMpa: 2, expected: 2 }); // 250·0,1225·2/39,24 = 1,56 → 2
+    expect(r.profile[7]).toMatchObject({ qcMpa: 20, expected: 16 });
+    expect(meanQc(cpt(), 14.9, 15.1)).toBeCloseTo(11, 6); // half 2, half 20
   });
-  for (const id of Object.keys(HAND) as FormulaId[]) {
-    it(`${id}: grensweerstand volgens de handberekening`, () => {
-      const f = r.formulas.find((x) => x.id === id)!;
-      expect(f.ruKn).toBeCloseTo(HAND[id], 1);
-      expect(f.allowKn).toBeCloseTo(HAND[id] / defaultSafety(id, "hydraulic"), 1);
-    });
-  }
-  it("baseert het oordeel op de mediaan van Hiley, Janbu, Deens en Gates", () => {
-    // toelaatbaar: 630,81 · 598,49 · 757,05 · 480,36 → mediaan (598,49 + 630,81)/2
-    expect(r.consensusKn).toBeCloseTo(614.65, 1);
-    expect(r.consensusUc).toBeCloseTo(550 / 614.65, 3);
+  it("gebruikt √(a·b) voor een rechthoekige paal", () => {
+    expect(equivalentDiameterMm({ shape: "rect", sizeMm: 400, sizeBMm: 250 })).toBeCloseTo(316.23, 2);
+    expect(equivalentDiameterMm({ shape: "round", sizeMm: 400, sizeBMm: 0 })).toBe(400);
   });
-  it("geeft de vereiste kalender: met dat aantal slagen wordt de belasting net gehaald", () => {
-    const input = drivingExample();
-    for (const f of r.formulas) {
-      expect(f.requiredBlows).not.toBeNull();
-      const at = (blows: number) => computeDriving({ ...input, rows: [{ depthM: 17, blows }] }).formulas.find((x) => x.id === f.id)!.allowKn;
-      expect(at(f.requiredBlows!)).toBeGreaterThanOrEqual(550 - 1e-6);
-      if (f.requiredBlows! > 1) expect(at(f.requiredBlows! - 1)).toBeLessThan(550);
-    }
+  it("vergelijkt de getelde kalender met de verwachting", () => {
+    const r = computeDriving({ ...base, rows: [{ depthM: 15.5, blows: 20 }, { depthM: 15.75, blows: 12 }, { depthM: 16, blows: 30 }] }, ctx);
+    expect(r.comparisons.map((c) => c.expected)).toEqual([16, 16, 16]);
+    expect(r.comparisons[0].deviation).toBeCloseTo(0.25, 6);
+    expect(r.comparisons.map((c) => c.within)).toEqual([true, true, false]); // +25 %, −25 %, +88 %
+    expect(r.within).toBe(2);
+    expect(r.outside).toBe(1);
+    expect(r.meanDeviation).toBeCloseTo((0.25 - 0.25 + 0.875) / 3, 6);
+    expect(r.final).toMatchObject({ depthM: 16, blows: 30 });
   });
-  it("middelt de slotkalender over de laatste tochten", () => {
-    const avg = computeDriving({ ...drivingExample(), finalCount: 3 });
-    expect(avg.finalBlows).toBe(36); // (32 + 36 + 40) / 3
+  it("meldt een stelselmatige afwijking en een traject voorbij de sondering", () => {
+    const high = computeDriving({ ...base, rows: [15.5, 15.75, 16].map((depthM) => ({ depthM, blows: 40 })) }, ctx);
+    expect(high.warnings.some((w) => w.includes("meer geslagen"))).toBe(true);
+    const deep = computeDriving({ ...base, toM: 22 }, ctx);
+    expect(deep.warnings.some((w) => w.includes("20.0 m"))).toBe(true);
+    expect(deep.profile[deep.profile.length - 1].expected).toBeNull();
   });
-  it("gebruikt voor een valblok de zwaardere factoren", () => {
-    expect(defaultSafety("dutch", "drop")).toBe(10);
-    expect(defaultSafety("dutch", "diesel")).toBe(6);
-    const ctx = { w: 49.05, p: 56.8, h: 0.8, eta: 0.9, e: 0.4, l: 18, ae: 3.675e6, c: 0.008 };
-    expect(ultimate("enr", 0.00625, { ...ctx, hammer: "drop" }).terms.cMm).toBeCloseTo(25.4);
+  it("wacht op een sondering en weigert onvolledige invoer", () => {
+    expect(computeDriving({ ...base, cptId: null }, ctx)).toMatchObject({ ok: false, pending: true });
+    expect(computeDriving({ ...base, sizeMm: 0 }, ctx).ok).toBe(false);
+    expect(computeDriving({ ...base, toM: 10 }, ctx).ok).toBe(false);
+    expect(computeDriving({ ...base, rows: [{ depthM: 15, blows: 0 }] }, ctx).ok).toBe(false);
   });
-  it("meer slagen per tocht geeft bij elke formule meer weerstand", () => {
-    for (const f of r.formulas) {
-      const p = r.profile.map((t) => t.allowKn[f.id]!);
-      for (let i = 1; i < p.length; i++) expect(p[i]).toBeGreaterThan(p[i - 1]);
-    }
-  });
-  it("waarschuwt bij vrijwel vaststaan, een te licht blok en afnemende slagen", () => {
-    const stuck = computeDriving({ ...drivingExample(), rows: [{ depthM: 17, blows: 200 }] });
-    expect(stuck.warnings.some((w) => w.includes("< 2 mm"))).toBe(true);
-    const light = computeDriving({ ...drivingExample(), ramMassKg: 2000 });
-    expect(light.warnings.some((w) => w.includes("W/P"))).toBe(true);
-    const down = computeDriving({ ...drivingExample(), rows: [{ depthM: 16, blows: 40 }, { depthM: 16.25, blows: 30 }, { depthM: 16.5, blows: 20 }] });
-    expect(down.warnings.some((w) => w.includes("neemt"))).toBe(true);
-  });
-  it("weigert onvolledige invoer met een melding", () => {
-    expect(computeDriving({ ...drivingExample(), rows: [] }).ok).toBe(false);
-    expect(computeDriving({ ...drivingExample(), efficiency: 1.2 }).ok).toBe(false);
-    expect(computeDriving({ ...drivingExample(), enabled: [] }).ok).toBe(false);
-    expect(computeDriving({ ...drivingExample(), requiredKn: 0 }).error).toBeTruthy();
+  it("kiest standaard de actieve sondering en haar onderste meters", () => {
+    expect(defaultDrivingInput(ctx)).toMatchObject({ cptId: "S1", toM: 19, fromM: 14, tolerancePct: 50, rows: [] });
+    expect(defaultDrivingInput({ cpts: new Map(), activeCptId: null }).cptId).toBeNull();
   });
 });

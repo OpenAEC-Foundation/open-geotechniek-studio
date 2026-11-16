@@ -105,9 +105,9 @@
     },
     "driving-assessment": {
       "name": "Ocena wbijania pala",
-      "subtitle": "Sprawdzenie dziennika wbijania wzorami dynamicznymi",
-      "norm": "Holenderski · Engineering News · Hiley · Janbu · Duński · Gates",
-      "visualLabel": "Dziennik wbijania"
+      "subtitle": "Oczekiwana liczba uderzeń z sondowania obok policzonej",
+      "norm": "Wzór praktyczny N = odcinek · D² · qc / E",
+      "visualLabel": "Liczba uderzeń"
     }
   }
 }

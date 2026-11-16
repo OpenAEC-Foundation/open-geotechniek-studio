@@ -11,7 +11,7 @@ import type { SheetView } from '../calc/framework/store';
 import type { ProjectMeta } from "../types/cpt";
 import { computeLateral, lateralExample, type LateralInput } from '../calc/modules/laterally-loaded-pile/compute';
 import { DEFAULT_ADVICE } from '../calc/modules/foundation-advice/types';
-import { computeDriving, drivingExample, type DrivingInput } from '../calc/modules/driving-assessment/compute';
+import { computeDriving, defaultDrivingInput, type DrivingInput } from '../calc/modules/driving-assessment/compute';
 
 type ObjectValue = Record<string, unknown>;
 function object(value: unknown, label: string): ObjectValue {
@@ -206,14 +206,14 @@ function advicePatch(input:unknown,patch:unknown) {
   }
   return next;
 }
-/** Beoordeling kalendering: alleen bekende velden, en het resultaat moet doorrekenbaar zijn. */
+/** Beoordeling kalendering: alleen bekende velden; de sondering moet in het project zitten. */
 function drivingPatch(input: unknown, patch: unknown) {
   const base = input as DrivingInput, p = object(patch, "Invoer");
-  keys(p, Object.keys(drivingExample()).concat("safety"));
+  keys(p, Object.keys(defaultDrivingInput(context())));
   const next = { ...base, ...p } as DrivingInput;
-  if (!Array.isArray(next.rows) || !Array.isArray(next.enabled)) throw new Error("rows en enabled moeten lijsten zijn");
-  const result = computeDriving(next);
-  if (!result.ok) throw new Error(result.error ?? "Ongeldige invoer");
+  if (!Array.isArray(next.rows)) throw new Error("rows moet een lijst zijn");
+  const result = computeDriving(next, context());
+  if (!result.ok && !result.pending) throw new Error(result.error ?? "Ongeldige invoer");
   return next;
 }
 function calculationPatch(moduleId:string,input:unknown,patch:unknown) {
