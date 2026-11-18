@@ -87,7 +87,9 @@
 .cs-table-view-main { min-width: 0; overflow: auto; padding: 16px 20px; }
 
 /* ─── Afdrukvoorbeeld ──────────────────────────────────────── */
-.cs-print { flex: 1 1 auto; min-height: 0; display: flex; background: var(--oa-frame); }
+.cs-print { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; background: var(--oa-frame); }
+.cs-print-bar { flex: none; display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 6px 12px; border-bottom: 1px solid var(--oa-border); background: var(--oa-panel); }
+.cs-print-name { margin-right: auto; color: var(--oa-text-secondary); font: 11px var(--oa-font-numbers, var(--oa-font-body)); }
 .cs-print iframe { flex: 1; border: 0; }
 .cs-print-error { margin: auto; color: var(--oa-text-secondary); }
 

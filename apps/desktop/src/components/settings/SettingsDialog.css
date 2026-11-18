@@ -317,3 +317,28 @@
   font-size: 11px;
   margin: 0;
 }
+
+/* Huisstijl-tab */
+.brand-inline { display: flex; align-items: center; gap: 8px; }
+.brand-error { color: var(--theme-error, #b91c1c); margin-top: 6px; }
+.brand-preview { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 14px; margin: 6px 0; border-radius: 4px; }
+.brand-preview img { max-height: 30px; max-width: 120px; object-fit: contain; }
+.brand-preview span { font-weight: 700; font-size: 14px; }
+.brand-swatches { display: flex; gap: 4px; margin-left: auto; }
+.brand-swatches i { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgb(255 255 255 / .4); }
+.brand-modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.brand-mode { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border: 1px solid var(--theme-border-subtle); border-radius: 4px; cursor: pointer; font-size: 12px; }
+.brand-mode.active { border-color: var(--theme-accent, #d97706); box-shadow: inset 0 0 0 1px var(--theme-accent, #d97706); }
+.brand-mode span { display: flex; flex-direction: column; gap: 2px; }
+.brand-mode small { font-size: 10.5px; color: var(--theme-dialog-content-secondary); line-height: 1.35; }
+.brand-own, .brand-cloud { padding: 4px 0 8px; border-bottom: 1px solid var(--theme-border-subtle); }
+.brand-text { width: 260px; }
+.brand-color { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--theme-dialog-content-text); }
+.brand-color input { width: 26px; height: 20px; padding: 0; border: 1px solid var(--theme-dialog-input-border); background: none; }
+.brand-file .settings-label { display: flex; flex-direction: column; max-width: 230px; }
+.brand-file .settings-label small { font-size: 10px; }
+.brand-thumb { max-height: 24px; max-width: 80px; object-fit: contain; background: repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 0 0 / 8px 8px; }
+.brand-thumb.page { max-height: 42px; border: 1px solid var(--theme-border-subtle); }
+.brand-preview-row { display: flex; gap: 8px; align-items: flex-start; }
+.brand-preview-row .brand-preview { flex: 1; }
+.brand-cover-thumb { height: 120px; border: 1px solid var(--theme-border-subtle); box-shadow: 0 1px 4px rgb(0 0 0 / .12); }

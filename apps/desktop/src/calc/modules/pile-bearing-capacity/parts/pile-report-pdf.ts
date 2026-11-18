@@ -15,6 +15,7 @@
 // Onderdeel) en een footer met eigen branding. Output: jsPDF → Uint8Array.
 
 import { jsPDF } from "jspdf";
+import { currentBrand, DEFAULT_BRAND } from "../../../../report/reportBrand";
 import type { Cpt } from "../../../../types/cpt";
 import type { PileInput, PileResult } from "../types";
 import type { MultiCptSummary } from "./multi-cpt-summary";
@@ -136,10 +137,24 @@ export interface Cursor {
 export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1): Cursor {
   let pageNo = startPage;
   const printChrome = () => {
+    // Logo van de huisstijl linksboven (hoogte 6 mm), de opsteller erachter.
+    const brand = currentBrand();
+    // Briefpapier van de huisstijl als achtergrond; het logo staat daar dan al op.
+    if (brand.pageImage) {
+      try { doc.addImage(brand.pageImage, 0, 0, PAGE_W, 297, "huisstijl-briefpapier"); } catch { /* onleesbaar: zonder */ }
+    }
+    let authorX = M.left;
+    if (brand.logoDataUrl && !brand.pageImage) {
+      try {
+        const props = doc.getImageProperties(brand.logoDataUrl), h = 6, w = Math.min(30, (h * props.width) / props.height);
+        doc.addImage(brand.logoDataUrl, M.left, 4.2, w, h, "huisstijl-logo");
+        authorX = M.left + w + 3;
+      } catch { /* onleesbaar logo: alleen tekst */ }
+    }
     doc.setFont("helvetica", "bolditalic");
     doc.setFontSize(9.5);
     doc.setTextColor(0);
-    doc.text(doc.splitTextToSize(winAnsi(project.author), 130)[0] ?? "", M.left, 9);
+    doc.text(doc.splitTextToSize(winAnsi(project.author), 130 - (authorX - M.left))[0] ?? "", authorX, 9);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8);
     doc.setTextColor(180, 83, 9);
@@ -173,7 +188,8 @@ export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1
     doc.setFontSize(7.5);
     doc.setTextColor(110);
     doc.setFont("helvetica", "italic");
-    doc.text("Open Geotechniek Studio", PAGE_W - M.right, FOOTER_Y, { align: "right" });
+    const own = brand.organization !== DEFAULT_BRAND.organization && !brand.pageImage ? `${winAnsi(brand.organization)} · ` : "";
+    doc.text(`${own}Open Geotechniek Studio`, PAGE_W - M.right, FOOTER_Y, { align: "right" });
     doc.text("CONCEPT - Indicatieve berekening", M.left, FOOTER_Y);
     doc.setTextColor(0);
     doc.setFont("helvetica", "normal");

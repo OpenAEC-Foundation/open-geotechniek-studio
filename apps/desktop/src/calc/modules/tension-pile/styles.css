@@ -1,0 +1,34 @@
+/* Trekpalen: tekening en uitwerking. Het formulier gebruikt de gedeelde rekenblad-stijl. */
+.tp-input select { max-width: 100%; }
+.tp-visual { width: 100%; height: 100%; max-height: 720px; font: 10px var(--oa-font-numbers, monospace); }
+.tp-visual text { fill: var(--oa-text-secondary, #555); }
+.tp-axis-title { font-weight: 600; }
+.tp-grid line { stroke: var(--oa-border, #ddd); stroke-width: 0.5; }
+.tp-qc { fill: none; stroke: var(--oa-accent-text, #92400e); stroke-width: 1.2; }
+.tp-applied { fill: var(--oa-accent-text, #92400e); opacity: 0.22; }
+.tp-pile { fill: var(--oa-text-secondary, #666); }
+.tp-zone { fill: none; stroke: var(--oa-success, #166534); stroke-width: 1.4; stroke-dasharray: 4 2; }
+.tp-arrow { fill: none; stroke: var(--oa-error, #b91c1c); stroke-width: 1.6; }
+.tp-level line { stroke: var(--oa-text-secondary, #666); stroke-width: 0.7; stroke-dasharray: 5 3; }
+.tp-level-water line { stroke: #2563eb; }
+.tp-level-water text { fill: #2563eb; }
+.tp-level-exc line { stroke: var(--oa-error, #b91c1c); }
+.tp-legend line.tp-qc { stroke-width: 1.4; }
+
+.tp-result { padding: 12px 16px; font-size: 12px; }
+.tp-result h3 { margin: 14px 0 6px; font-size: 12px; font-weight: 600; color: var(--oa-accent-text); }
+.tp-result h3:first-child { margin-top: 0; }
+.tp-summary { margin: 0; display: grid; gap: 2px; }
+.tp-summary > div { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; border-bottom: 1px solid var(--oa-border); }
+.tp-summary dt { color: var(--oa-text-secondary); }
+.tp-summary dd { margin: 0; font-family: var(--oa-font-numbers); text-align: right; }
+.tp-total dd, .tp-total dt { font-weight: 700; color: var(--oa-text); }
+.tp-ok dd { color: var(--oa-success); font-weight: 600; }
+.tp-fail dd { color: var(--oa-error); font-weight: 600; }
+.tp-formula { margin: 4px 0; font-family: var(--oa-font-numbers); font-size: 11px; }
+.tp-layers { width: 100%; font-size: 11px; }
+.tp-layers td, .tp-layers th { text-align: right; padding: 2px 6px; white-space: nowrap; }
+.tp-layers td:nth-child(3), .tp-layers th:nth-child(3) { text-align: left; }
+.tp-units th { font-weight: 400; color: var(--oa-text-secondary); }
+.tp-zero td { color: var(--oa-text-secondary); }
+.tp-table small { color: var(--oa-text-secondary); font-weight: 400; }

@@ -11,6 +11,7 @@ import { SOIL_SPRINGS, soilKey, springValue } from './soil';
 import { SectionSketch } from './SectionSketch';
 import { STEEL_TUBE_OD, nearest, sizeText } from '../pile-bearing-capacity/standard-sizes';
 import './lateral-input.css';
+import { OaIcon } from '../../../components/icons/oaIcon';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
 
@@ -102,7 +103,7 @@ export function LateralInputPanel({ input: i, onChange }: Props) {
             <td><NumberInput label={t('input.layerTop', 'Bovenkant laag {{n}} [m NAP]', { n: k + 1 })} value={nap(l.topM)} onChange={(v) => setLayer(k, { topM: depth(v) })} /></td>
             <td><NumberInput label={t('input.layerBottom', 'Onderkant laag {{n}} [m NAP]', { n: k + 1 })} value={nap(l.bottomM)} onChange={(v) => setLayer(k, { bottomM: depth(v) })} /></td>
             <td colSpan={2}><select aria-label={t('input.layerSpring', 'Bedding laag {{n}}', { n: k + 1 })} value={l.springId} onChange={(e) => { const id = e.target.value, profile = i.puDefaults?.[id]; setLayer(k, { springId: id, ...(profile && Object.values(profile).every(Number.isFinite) ? { ultimate: { ...profile } } : {}) }); }}>{SOIL_SPRINGS.map((v) => <option key={v.id} value={v.id}>{t(soilKey(v.id), v.label).split(' (')[0]}</option>)}<option value="manual">{t('soils.manual', 'Eigen waarde')}</option></select></td>
-            <td><button type="button" className="lat-mini" aria-label={t('input.removeLayer', 'Laag {{n}} verwijderen', { n: k + 1 })} disabled={i.layers.length < 2} onClick={() => change({ layers: i.layers.filter((_, j) => j !== k) })}>×</button></td>
+            <td><button type="button" className="lat-mini" aria-label={t('input.removeLayer', 'Laag {{n}} verwijderen', { n: k + 1 })} disabled={i.layers.length < 2} onClick={() => change({ layers: i.layers.filter((_, j) => j !== k) })}><OaIcon id="edit.delete" /></button></td>
           </tr>
           <tr className="lat-layers-sub">
             <td>{l.springId === 'manual'

@@ -58,6 +58,10 @@ export default function ChartCanvas() {
     const current = visible.flatMap(markersFor);
     state.setChartMarkers(visible.map((cpt) => cpt.id), typeof update === 'function' ? update(current) : update);
   };
+  /** Peillijn: één klik zet een lijn op dat NAP-niveau door alle sonderingen, om ze te vergelijken. Niet bewaard. */
+  const [levelLine, setLevelLine] = useState<Marker | null>(null);
+  /** Alles wat getekend wordt: de bewaarde lijnen per sondering, met de peillijn als laatste. */
+  const drawnMarkers = useMemo(() => (levelLine ? [...markers, levelLine] : markers), [markers, levelLine]);
   /** Right-click context menu for marker (screen coords + which marker idx). */
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; markerIdx: number } | null>(null);
   /** Hover indicator — depth + which CPT is under the cursor. */
@@ -107,11 +111,11 @@ export default function ChartCanvas() {
       panY,
       columnRatios:
         columnRatios.length === cpts.length ? columnRatios : new Array(cpts.length).fill(1),
-      markers: markers.length > 0 ? markers : undefined,
+      markers: drawnMarkers.length > 0 ? drawnMarkers : undefined,
       hover: hoverIndicator ?? undefined,
       activeCptId: activeCptId ?? undefined,
     }),
-    [zoom, scaleColumns, panX, panY, columnRatios, cpts.length, markers, hoverIndicator, activeCptId],
+    [zoom, scaleColumns, panX, panY, columnRatios, cpts.length, drawnMarkers, hoverIndicator, activeCptId],
   );
 
   // ─── Render whenever inputs change or the canvas resizes ───
@@ -182,7 +186,7 @@ export default function ChartCanvas() {
   const updateCursor = useCallback(
     (x: number, y: number, rect: DOMRect) => {
       const opts = renderOpts(rect.width, rect.height);
-      if (markers.length > 0 && hitTestMarker(cpts, opts, x, y)) {
+      if (drawnMarkers.length > 0 && hitTestMarker(cpts, opts, x, y)) {
         setCursor("ns-resize");
         return;
       }
@@ -193,7 +197,7 @@ export default function ChartCanvas() {
         setCursor("crosshair");
       }
     },
-    [cpts, renderOpts, markers],
+    [cpts, renderOpts, drawnMarkers],
   );
 
   // ─── Splitter drag (resize columns) + pan drag ───
@@ -206,7 +210,7 @@ export default function ChartCanvas() {
       const opts = renderOpts(rect.width, rect.height);
 
       // 0. If we hit a marker line, drag THAT marker.
-      const hitIdx = markers.length > 0 ? hitTestMarkerIndex(cpts, opts, x0, y0) : null;
+      const hitIdx = drawnMarkers.length > 0 ? hitTestMarkerIndex(cpts, opts, x0, y0) : null;
       if (hitIdx !== null) {
         e.preventDefault();
         document.body.style.cursor = "ns-resize";
@@ -219,6 +223,11 @@ export default function ChartCanvas() {
           const x = ev.clientX - r.left;
           const y = ev.clientY - r.top;
           const o = renderOpts(r.width, r.height);
+          if (hitIdx >= markers.length) {
+            // De peillijn hoort bij geen enkele sondering: zonder cptId blijft hij door alle kolommen lopen.
+            setLevelLine((line) => { if (!line) return line; const { nap, depth } = moveMarkerTo(cpts, o, line, x, y); return { nap, depth }; });
+            return;
+          }
           setMarkers((curr) => {
             if (hitIdx >= curr.length) return curr;
             const next = curr.slice();
@@ -319,8 +328,11 @@ export default function ChartCanvas() {
       setCursor("grabbing");
       setHover(null);
 
+      let dragged = false;
       const onMove = (ev: MouseEvent) => {
         const dy = ev.clientY - rect.top - y0;
+        if (Math.abs(dy) > 3 || Math.abs(ev.clientX - rect.left - x0) > 3) dragged = true;
+        if (!dragged) return;
         // Drag DOWN slides the viewport UP through the data (exposes shallower
         // depths) — decrease panY. Vertical only by request; horizontal panning
         // would shift the qc/fs/Rf axes which the user wants pinned.
@@ -333,11 +345,16 @@ export default function ChartCanvas() {
         setCursor("crosshair");
         document.removeEventListener("mousemove", onMove);
         document.removeEventListener("mouseup", onUp);
+        // Klik zonder slepen: peillijn op dit niveau, door alle sonderingen.
+        if (!dragged && e.button === 0) {
+          const picked = pickMarkerAt(cpts, opts, x0, y0);
+          if (picked) setLevelLine({ nap: picked.nap, depth: picked.depth });
+        }
       };
       document.addEventListener("mousemove", onMove);
       document.addEventListener("mouseup", onUp);
     },
-    [cpts, columnRatios, renderOpts, panX, panY, zoom, setHover, markers],
+    [cpts, columnRatios, renderOpts, panX, panY, zoom, setHover, markers, drawnMarkers],
   );
 
   // ─── Double-click: ADD a new horizontal reference marker ───
@@ -347,12 +364,16 @@ export default function ChartCanvas() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const newMarker = pickMarkerAt(cpts, renderOpts(rect.width, rect.height), x, y);
-    if (newMarker) setMarkers((curr) => [...curr, newMarker]);
+    if (newMarker) {
+      // De twee klikken van de dubbelklik zetten ook de peillijn; die maakt plaats voor de vaste lijn.
+      setLevelLine(null);
+      setMarkers((curr) => [...curr, newMarker]);
+    }
   };
 
   // ─── Right-click on a marker → context menu (Verwijderen for that marker) ───
   const onContextMenu = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (markers.length === 0) return;
+    if (drawnMarkers.length === 0) return;
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
     const x = e.clientX - rect.left;
@@ -411,13 +432,16 @@ export default function ChartCanvas() {
 
   // ─── Escape clears ALL markers ───
   useEffect(() => {
-    if (markers.length === 0) return;
+    if (drawnMarkers.length === 0) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMarkers([]);
+      if (e.key !== "Escape") return;
+      // Eerst de peillijn; een tweede Esc haalt de vaste lijnen weg.
+      if (levelLine) setLevelLine(null);
+      else setMarkers([]);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [markers]);
+  }, [drawnMarkers, levelLine]);
 
   return (
     <div ref={scrollRef} style={{ position: "relative", width: "100%", height: "100%", overflowX: "auto", overflowY: "hidden" }}>
@@ -459,17 +483,18 @@ export default function ChartCanvas() {
             type="button"
             className="chart-context-item"
             onClick={() => {
-              setMarkers((curr) => curr.filter((_, i) => i !== contextMenu.markerIdx));
+              if (contextMenu.markerIdx >= markers.length) setLevelLine(null);
+              else setMarkers((curr) => curr.filter((_, i) => i !== contextMenu.markerIdx));
               setContextMenu(null);
             }}
           >
             {t("chart.removeMarker", "Verwijderen")}
           </button>
-          {markers.length > 1 && (
+          {drawnMarkers.length > 1 && (
             <button
               type="button"
               className="chart-context-item"
-              onClick={() => { setMarkers([]); setContextMenu(null); }}
+              onClick={() => { setMarkers([]); setLevelLine(null); setContextMenu(null); }}
             >
               {t("chart.removeAllMarkers", "Alles verwijderen")}
             </button>

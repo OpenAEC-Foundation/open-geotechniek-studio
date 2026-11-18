@@ -294,11 +294,24 @@
   shape-rendering: geometricPrecision;
 }
 
-.ribbon-btn:hover .ribbon-btn-icon svg {
+/* B2-iconen: grijs (de tekstkleur) met een oranje accent, ook bij hover en actief. Uitgeschakeld: één kleur. */
+.ribbon-btn-icon svg[data-icon] {
+  stroke: none;
+  color: var(--theme-text);
+}
+.ribbon-btn:hover .ribbon-btn-icon svg[data-icon],
+.ribbon-btn.active .ribbon-btn-icon svg[data-icon] {
+  color: var(--theme-text);
+}
+.ribbon-btn:disabled .ribbon-btn-icon svg[data-icon] {
+  --icon-accent: currentColor;
+}
+
+.ribbon-btn:hover .ribbon-btn-icon svg:not([data-icon]) {
   stroke: var(--theme-accent);
 }
 
-.ribbon-btn.active .ribbon-btn-icon svg {
+.ribbon-btn.active .ribbon-btn-icon svg:not([data-icon]) {
   stroke: var(--theme-ribbon-icon-active);
 }
 

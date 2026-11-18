@@ -11,6 +11,7 @@ import { moduleName, moduleText } from '../moduleText';
 import './CalculationsView.css';
 import './Worksheet.css';
 import './CalcSheet.css';
+import { OaIcon } from '../../../components/icons/oaIcon';
 
 /**
  * Werkbalk voor één berekening, opgezet als rekenblad: links het
@@ -119,7 +120,7 @@ function SheetPanes({ mod, name, input, result, ctx, onChange, showOutput }: Pan
           <h1>{name}</h1>
           <p className="cs-param-subtitle">{moduleText(mod, 'subtitle')}</p>
         </div>
-        {status && <span className={`cs-uc-badge ${status.pending ? 'pending' : status.ok ? 'ok' : 'fail'}`}>{status.text}</span>}
+        {status && <span className={`cs-uc-badge ${status.pending ? 'pending' : status.ok ? 'ok' : 'fail'}`}>{!status.pending && <OaIcon id={status.ok ? 'status.success' : 'status.error'} />}{status.text}</span>}
       </header>
       <div className="cs-param-notice" role="note">{t('sheet.notice', 'Indicatieve berekening. Controleer de grondparameters voor toepassing in een ontwerp.')}</div>
       <div className="cs-param-body">
@@ -161,7 +162,7 @@ function useReport({ mod, input, result, ctx }: PaneProps, enabled = true) {
     }
     // ctx is per render een nieuw object; de inhoud volgt uit de store-velden.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, mod, input, result, ctx.cpts, ctx.projectMeta]);
+  }, [enabled, mod, input, result, ctx.cpts, ctx.projectMeta, ctx.calculations]);
 }
 
 function ExportButton(props: PaneProps) {
@@ -200,7 +201,12 @@ function PrintPreview(props: PaneProps) {
     setUrl(blobUrl);
     return () => URL.revokeObjectURL(blobUrl);
   }, [bytes]);
+  const fileName = `${props.mod.reportFileName?.(props.input) ?? props.mod.id}.pdf`;
   return <section className="cs-print" aria-label={t('view.tabs.print', 'Afdrukvoorbeeld')}>
+    <div className="cs-print-bar">
+      <span className="cs-print-name">{fileName}</span>
+      {props.mod.buildReport && <ExportButton {...props} />}
+    </div>
     {error ? <p className="cs-print-error">{t('print.failed', 'Het rapport kan niet worden opgemaakt: {{error}}', { error })}</p>
       : url ? <iframe title={t('view.tabs.print', 'Afdrukvoorbeeld')} src={`${url}#toolbar=0&navpanes=0&view=FitH`} />
       : <p className="cs-print-error">{t('print.loading', 'Rapport opmaken…')}</p>}

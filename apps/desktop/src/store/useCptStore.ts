@@ -16,6 +16,7 @@ import {
   tekeningStateFromIfcgis,
   titleBlockFromIfcgis,
 } from "./tekeningState";
+import { useSubsurfaceStore } from "../components/soil3d/subsurface/store";
 import { useCalculationsStore } from "../calc/framework/store";
 import { fromIfcxArray } from "../calc/framework/persistence";
 
@@ -1098,6 +1099,8 @@ export async function openProjectFromContent(content: string, filename: string, 
       const docId: string = (createdDoc as ProjectDocument).id;
       useCalculationsStore.getState().loadFromIfcx(docId, fromIfcxArray(result.calculations));
     }
+    const subsurface = (result as { subsurface?: unknown }).subsurface;
+    if (subsurface) useSubsurfaceStore.getState().load((createdDoc as ProjectDocument).id, subsurface);
   }
   // Tekening + title-block in de singleton zetten zodat
   // SonderingstekeningView ze bij mount kan herstellen.

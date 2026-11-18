@@ -17,6 +17,9 @@ import { adviceSummary, type AdviceSummary, type CptSummary } from './analysis';
 import { GENERAL, fmt, systemTexts } from './texts';
 import { drawSituationPdf } from './situation';
 import type { AdviceInput } from './types';
+import { buildSoilModel, zoneInfo } from '../../../components/soil3d/soilModel';
+import { pileToes, renderSoilModelImage } from '../../../components/soil3d/scene';
+import { DEFAULT_SOIL3D, useSoil3DStore } from '../../../components/soil3d/useSoil3DStore';
 
 interface TocEntry { label: string; page: number; level: 1 | 2 }
 
@@ -79,6 +82,7 @@ export function buildAdviceReport(input: AdviceInput, ctx: ProjectContext): Uint
   paragraph(c, GENERAL.bearing(input));
   if (s.bearing) paragraph(c, `De bovenkant van de draagkrachtige laag ligt tussen NAP ${fmt(s.bearing.highest)} m en NAP ${fmt(s.bearing.lowest)} m (gemiddeld NAP ${fmt(s.bearing.mean)} m; gevonden in ${s.bearing.found} van ${s.cpts.length} sonderingen). Het verschil tussen hoogste en laagste niveau is ${fmt(s.bearing.highest - s.bearing.lowest)} m.`);
   else paragraph(c, 'In de sonderingen is met dit criterium geen draagkrachtige laag gevonden. Beoordeel de opbouw per sondering.');
+  if (input.soilModel3d !== false) soilModelSection(c, sub, input, ctx, s);
   for (const cpt of s.cpts) {
     sub(`Sondering ${cpt.id}`);
     if (cpt.groundNap === null) { paragraph(c, 'Maaiveldhoogte onbekend; niveaus niet in NAP te geven.'); continue; }
@@ -248,4 +252,55 @@ function hex(color: string): [number, number, number] {
   if (!m) return [200, 200, 200];
   const v = parseInt(m[1], 16);
   return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+}
+
+/** Het grondmodel in twee aanzichten: geheel en opengesneden tot het midden. */
+function soilModelSection(c: Cursor, sub: (t: string) => void, input: AdviceInput, ctx: ProjectContext, s: AdviceSummary) {
+  const images = soilModelImages(input, ctx, s);
+  if (!images) return;
+  const { doc } = c;
+  sub('Ruimtelijk grondmodel');
+  paragraph(c, `Uit de sonderingen is een ruimtelijk grondmodel afgeleid. Tussen de sonderingen is de grondsoort per cel van ${fmt(images.cell, 1)} m bepaald door inverse-afstandsweging: elke sondering die op dat niveau een laag heeft, telt mee met een gewicht dat kwadratisch afneemt met de afstand. Het model volgt alleen de sonderingen en is indicatief; tussen en buiten de sonderingen kan de opbouw afwijken. Verticale schaal ${images.exaggeration}× overdreven.`);
+  const w = CONTENT_W, h = w * 0.58;
+  for (const [img, caption] of [[images.whole, 'Figuur: grondmodel, gezien vanuit het zuidoosten.'], [images.cut, 'Figuur: grondmodel opengesneden tot het midden, met de sonderingen, de conusweerstand (rood) en de bovenkant van de draagkrachtige laag (oranje vlak).']] as const) {
+    c.reserve(h + 10);
+    doc.addImage(img, 'JPEG', M.left, c.y, w, h);
+    doc.setDrawColor(200); doc.setLineWidth(0.2); doc.rect(M.left, c.y, w, h);
+    c.y += h + 2;
+    paragraph(c, caption, { italic: true, size: 7.5 });
+  }
+  // Legenda met de grondsoorten in het model.
+  c.reserve(10);
+  doc.setFontSize(7.5); doc.setFont('helvetica', 'normal'); doc.setTextColor(0);
+  let x = M.left;
+  for (const z of images.zones) {
+    const info = zoneInfo(z); if (!info) continue;
+    const label = winAnsi(info.name), tw = doc.getTextWidth(label) + 9;
+    if (x + tw > M.left + CONTENT_W) { x = M.left; c.y += 5; c.reserve(6); }
+    doc.setFillColor(...hex(info.color)); doc.rect(x, c.y - 2.6, 3.2, 3.2, 'F');
+    doc.text(label, x + 4.4, c.y); x += tw;
+  }
+  c.y += 6;
+}
+
+let imageCache: { key: string; value: ReturnType<typeof renderImages> } | null = null;
+
+function soilModelImages(input: AdviceInput, ctx: ProjectContext, s: AdviceSummary) {
+  const cpts = s.cpts.map((x) => ctx.cpts.get(x.id)).filter((x): x is NonNullable<typeof x> => !!x);
+  if (!cpts.length) return null;
+  const view = useSoil3DStore.getState();
+  const toes = pileToes((ctx.calculations ?? []).filter((x) => !input.calcIds || input.calcIds.includes(x.id)));
+  const key = JSON.stringify([cpts.map((x) => [x.id, x.points.length, x.metadata.ground_level_nap]), input.bearingQcMpa, input.bearingMinThicknessM, view.exaggeration, view.hiddenZones, view.cptDiameter, toes]);
+  if (imageCache?.key !== key) imageCache = { key, value: renderImages(cpts, input, toes, view.exaggeration, view.hiddenZones, view.cptDiameter) };
+  return imageCache.value;
+}
+
+function renderImages(cpts: import('../../../types/cpt').Cpt[], input: AdviceInput, toes: ReturnType<typeof pileToes>, exaggeration: number, hiddenZones: number[], cptDiameter: number | null) {
+  const model = buildSoilModel(cpts, { bearingQcMpa: input.bearingQcMpa, bearingMinThicknessM: input.bearingMinThicknessM });
+  const base = { ...DEFAULT_SOIL3D, exaggeration, hiddenZones, cptDiameter, opacity: 1 };
+  const whole = renderSoilModelImage(model, { ...base, showQc: false, showBearing: false, showPileToes: false }, toes);
+  const g = model.grid, half = g.east0 + (g.nx * g.dx) / 2;
+  const cut = renderSoilModelImage(model, base, toes, 1600, 1000, { e0: -1e5, e1: half, n0: -1e5, n1: 1e5, z0: -1e4, z1: 1e4 });
+  if (!whole || !cut) return null;
+  return { whole, cut, exaggeration, cell: model.grid.dx, zones: model.zonesPresent.filter((z) => !hiddenZones.includes(z)) };
 }

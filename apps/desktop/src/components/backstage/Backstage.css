@@ -45,6 +45,8 @@
 
 .backstage-back svg {
   flex-shrink: 0;
+  /* Op het oranje vlak: het icoon in één kleur. */
+  --icon-accent: currentColor;
 }
 
 /* Menu items */
@@ -93,13 +95,9 @@
   flex-shrink: 0;
 }
 
-.backstage-item-icon svg {
-  stroke: var(--theme-text);
-}
-
-.backstage-item:hover .backstage-item-icon svg,
-.backstage-item.active .backstage-item-icon svg {
-  stroke: var(--theme-accent);
+/* B2-iconen: grijs met een oranje accent, ook bij hover en actief (dan kleurt het label). */
+.backstage-item-icon {
+  color: var(--theme-text);
 }
 
 .backstage-item-label {
@@ -275,8 +273,9 @@
 }
 
 .bs-about-link svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  color: var(--theme-text-secondary);
 }
 
 .bs-about-footer {
@@ -339,13 +338,9 @@
   justify-content: center;
 }
 
-.bs-export-card-icon svg {
-  stroke: var(--theme-text);
-}
-
-.bs-export-card:hover .bs-export-card-icon svg,
-.bs-export-card.active .bs-export-card-icon svg {
-  stroke: var(--theme-accent);
+.bs-export-card-icon,
+.bs-open-card-icon {
+  color: var(--theme-text);
 }
 
 .bs-export-card-info h3 {

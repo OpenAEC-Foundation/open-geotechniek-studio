@@ -1,0 +1,12 @@
+{
+  "repository": "OpenAEC-Foundation/OpenAEC-Blueprint",
+  "commit": "e6a73cf7d076cf3cf47fefb46b2ee68e3d058bc6",
+  "app": "geotechniek",
+  "bron": "web/icons/geotechniek.svg",
+  "b2_revisie": 107,
+  "iconen": 147,
+  "license": "nog niet besloten (OpenAEC-Blueprint #15); voorlopig LGPL-3.0-only",
+  "files": {
+    "geotechniek.svg": "23ecce736282aa8d99a22e698b0099e6ce1ec9e59fdf1ac2ab8e7df6bbf53d86"
+  }
+}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import proj4 from "proj4";
 import { useCptStore } from "../../store/useCptStore";
+import { OaIcon } from "../icons/oaIcon";
 
 /**
  * PDOK Locatieserver address-search box for the Kaart view.
@@ -263,11 +264,7 @@ export default function MapAddressSearch() {
   return (
     <div className="map-addrsearch" ref={containerRef}>
       <div className="map-addrsearch-input-wrap">
-        <svg className="map-addrsearch-icon" viewBox="0 0 24 24" width="14" height="14"
-             fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="11" cy="11" r="7" />
-          <line x1="21" y1="21" x2="16.5" y2="16.5" />
-        </svg>
+        <OaIcon id="view.search" className="map-addrsearch-icon" />
         <input
           className="map-addrsearch-input"
           type="text"

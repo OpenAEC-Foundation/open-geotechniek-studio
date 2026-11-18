@@ -7,6 +7,7 @@ import { pileTypeName, resolvePileType } from "../catalog";
 import { getStandard, standardLabel } from "../standards";
 import { pileGeometry } from "../parts/geometry";
 import "./styles.css";
+import { OaIcon } from "../../../../components/icons/oaIcon";
 
 // ─── Formula-helper component (Open Calculation Studio stijl) ────
 // Toont een berekening in 3 stappen:
@@ -302,7 +303,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
 
       {result.warnings.length > 0 && (
         <div className="pile-warnings">
-          {result.warnings.map((w, i) => <div key={i}>⚠️ {w}</div>)}
+          {result.warnings.map((w, i) => <div key={i} className="pile-warning"><OaIcon id="status.warning" /> {w}</div>)}
         </div>
       )}
 
@@ -577,7 +578,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           filled={<>{input.nEd.toFixed(0)} / {summary.rcNetD.toFixed(0)}</>}
           result={
             <span className={summary.passes ? "pile-pass" : "pile-fail"}>
-              {summary.unityCheck.toFixed(2)} {summary.passes ? ` ✓ ${t("result.summary.passesShort", "voldoet")}` : ` ✗ ${t("result.summary.failsShort", "voldoet NIET")}`}
+              {summary.unityCheck.toFixed(2)} {" "}<OaIcon id={summary.passes ? "status.success" : "status.error"} />{summary.passes ? ` ${t("result.summary.passesShort", "voldoet")}` : ` ${t("result.summary.failsShort", "voldoet NIET")}`}
             </span>
           }
         />

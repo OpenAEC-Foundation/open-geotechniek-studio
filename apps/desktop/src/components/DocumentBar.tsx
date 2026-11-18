@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useCptStore } from "../store/useCptStore";
 import "./DocumentBar.css";
+import { OaIcon } from "./icons/oaIcon";
 
 interface DocumentBarProps {
   /** Optional handler for the "+" button — wired by App.tsx to open Backstage. */
@@ -28,7 +29,7 @@ export default function DocumentBar({ onOpenClick }: DocumentBarProps) {
               title={doc.path ?? doc.title}
             >
               <span className="document-tab-icon">
-                {doc.kind === "project" ? <FolderIcon /> : <FileIcon />}
+                <OaIcon id={doc.kind === "project" ? "file.type-project" : "file.type-other"} />
               </span>
               <span className="document-tab-title">{doc.title}</span>
               <span
@@ -41,17 +42,7 @@ export default function DocumentBar({ onOpenClick }: DocumentBarProps) {
                   void closeDoc(doc.id);
                 }}
               >
-                <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                >
-                  <path d="M2.5 2.5l5 5M7.5 2.5l-5 5" />
-                </svg>
+                <OaIcon id="document.close" />
               </span>
             </button>
           );
@@ -64,57 +55,10 @@ export default function DocumentBar({ onOpenClick }: DocumentBarProps) {
             title={t("open")}
             aria-label={t("open")}
           >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
+            <OaIcon id="file.open" />
           </button>
         )}
       </div>
     </div>
-  );
-}
-
-function FileIcon() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-    </svg>
-  );
-}
-
-function FolderIcon() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
-    </svg>
   );
 }

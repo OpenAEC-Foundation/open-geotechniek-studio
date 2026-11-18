@@ -3411,7 +3411,7 @@ dependencies = [
 
 [[package]]
 name = "open-geo-studio"
-version = "2026.45.8"
+version = "2026.47.0"
 dependencies = [
  "acadrust",
  "axum",
@@ -3428,6 +3428,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml",
+ "sha2",
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",

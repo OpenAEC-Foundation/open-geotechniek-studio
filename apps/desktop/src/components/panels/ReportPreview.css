@@ -81,6 +81,7 @@
 
 .report-sidebar-action svg {
   flex-shrink: 0;
+  color: var(--theme-text-secondary);
 }
 
 .report-sidebar-footer {
@@ -117,7 +118,9 @@
 }
 
 .report-generate-btn-side svg {
-  stroke: var(--theme-btn-primary-text);
+  /* Op de oranje knop: het icoon in één kleur. */
+  color: var(--theme-btn-primary-text);
+  --icon-accent: currentColor;
 }
 
 .report-sidebar-header {

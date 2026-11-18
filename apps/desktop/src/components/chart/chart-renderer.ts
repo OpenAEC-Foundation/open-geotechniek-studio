@@ -145,6 +145,8 @@ interface CptLayout {
   cptLeft: number;   // left x of this CPT's column group
   cptWidth: number;
   hasU2: boolean;
+  /** Compacte indeling: alleen qc (breed) en Rf (smal). */
+  compact: boolean;
   depthW: number;
   soil: PanelRect;
   qc: PanelRect;
@@ -327,22 +329,39 @@ function layoutShared(opts: ChartRenderOptions, cptCount: number = 1): SharedLay
   };
 }
 
+/** Onder deze kolombreedte (px) schakelt een sondering naar de compacte indeling. */
+export const COMPACT_COLUMN_WIDTH = 240;
+/** Een paneel smaller dan dit wordt niet getekend. */
+const MIN_PANEL_WIDTH = 8;
+const shown = (panel: PanelRect) => panel.w >= MIN_PANEL_WIDTH;
+
 /** Per-CPT column layout inside its allocated horizontal slot. */
 function layoutCpt(
   cptLeft: number,
   cptWidth: number,
   hasU2: boolean,
   narrow: boolean,
+  showDepthAxis: boolean = true,
 ): CptLayout {
+  // Smalle kolom (veel sonderingen naast elkaar): de conusweerstand krijgt de
+  // ruimte. fs en u2 vervallen, Rf blijft smal ernaast, en de diepteas staat
+  // alleen in de eerste kolom als alle kolommen dezelfde NAP-schaal delen.
+  const compact = cptWidth < COMPACT_COLUMN_WIDTH;
+  if (compact) hasU2 = false;
   // Depth axis is wider when narrow=false to fit stacked depth/NAP labels.
-  const depthW = narrow ? 36 : 50;
-  const soilW = narrow ? 14 : 22;
+  const depthW = compact ? (showDepthAxis ? 40 : 6) : narrow ? 36 : 50;
+  const soilW = compact ? 12 : narrow ? 14 : 22;
   const gap = 1;
 
-  const avail = cptWidth - depthW - soilW - gap * (hasU2 ? 5 : 4);
+  const avail = Math.max(0, cptWidth - depthW - soilW - gap * (hasU2 ? 5 : 4));
 
   let qcW: number, fsW: number, rfW: number, u2W: number;
-  if (hasU2) {
+  if (compact) {
+    rfW = avail >= 70 ? Math.floor(avail * 0.28) : 0;
+    qcW = avail - rfW;
+    fsW = 0;
+    u2W = 0;
+  } else if (hasU2) {
     qcW = Math.floor(avail * 0.35);
     fsW = Math.floor(avail * 0.20);
     rfW = Math.floor(avail * 0.22);
@@ -369,6 +388,7 @@ function layoutCpt(
     cptLeft,
     cptWidth,
     hasU2,
+    compact,
     depthW,
     soil: { l: soilL, w: soilW },
     qc:   { l: qcL,   w: qcW },
@@ -457,7 +477,10 @@ function computeAll(cpts: Cpt[], opts: ChartRenderOptions, shared: SharedLayout)
   return cpts.map((cpt, i) => {
     const scales = scalesArr[i];
     const slotW = slotWidths[i];
-    const layout = layoutCpt(cursor, slotW, scales.hasU2, shared.narrow);
+    // Met een gedeelde NAP-schaal is de as in elke kolom gelijk: in de compacte
+    // indeling volstaat de as van de eerste kolom.
+    const sharesNapAxis = haveSharedNap && typeof cpt.metadata.ground_level_nap === "number";
+    const layout = layoutCpt(cursor, slotW, scales.hasU2, shared.narrow, i === 0 || !sharesNapAxis);
     cursor += slotW;
 
     // Depth view: prefer the shared-NAP window (mapped back into this
@@ -652,6 +675,7 @@ function drawGridV(
   maxVal: number,
   ladder: number[] = QC_LADDER,
 ) {
+  if (!shown(panel)) return;
   const { lo, hi, span, inverted } = rangeInfo(minVal, maxVal);
   if (span <= 0) return;
   const step = pickLadderStep(span, ladder);
@@ -697,6 +721,7 @@ function drawPanelHeader(
   // het data-model aan te passen. Default 1 = geen conversie.
   displayMultiplier: number = 1,
 ) {
+  if (!shown(panel)) return;
   const cx = panel.l + panel.w / 2;
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
@@ -777,6 +802,7 @@ function drawDepthAxis(
   const step = niceStep(range, 8);
   const groundNap = c.cpt.metadata.ground_level_nap;
   const hasNap = typeof groundNap === "number";
+  if (c.layout.depthW < 20) return;
   const labelRight = c.layout.cptLeft + c.layout.depthW - 4;
   const depthFont = `${shared.narrow ? 8 : 9}px "JetBrains Mono", monospace`;
 
@@ -862,6 +888,47 @@ function valueToX(v: number, panel: PanelRect, lo: number, hi: number, inverted:
   return panel.l + (inverted ? (1 - t) : t) * panel.w;
 }
 
+/** Vlak tussen de nullijn en de curve: maakt een stevige laag ook in een smalle kolom zichtbaar. */
+function fillUnderCurve(
+  ctx: CanvasRenderingContext2D,
+  shared: SharedLayout,
+  c: CptComputed,
+  panel: PanelRect,
+  key: "qc" | "fs" | "rf" | "u2",
+  lo: number,
+  hi: number,
+  inverted: boolean,
+  color: string,
+) {
+  const x0 = valueToX(lo, panel, lo, hi, inverted);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(panel.l, shared.plotT, panel.w, shared.plotH);
+  ctx.clip();
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.22;
+  let run: [number, number][] = [];
+  const flush = () => {
+    if (run.length > 1) {
+      ctx.beginPath();
+      ctx.moveTo(x0, run[0][1]);
+      for (const [x, y] of run) ctx.lineTo(x, y);
+      ctx.lineTo(x0, run[run.length - 1][1]);
+      ctx.closePath();
+      ctx.fill();
+    }
+    run = [];
+  };
+  for (let i = 0; i < c.cpt.points.length; i++) {
+    const d = c.depths[i];
+    const v = c.cpt.points[i][key];
+    if (d == null || v == null) { flush(); continue; }
+    run.push([valueToX(Math.max(lo, Math.min(hi, v)), panel, lo, hi, inverted), depthToY(d, shared, c.depthViewMin, c.depthViewMax)]);
+  }
+  flush();
+  ctx.restore();
+}
+
 function drawCurve(
   ctx: CanvasRenderingContext2D,
   shared: SharedLayout,
@@ -872,9 +939,12 @@ function drawCurve(
   maxVal: number,
   color: string,
   lineWidth: number,
+  fill: boolean = false,
 ) {
+  if (!shown(panel)) return;
   const { lo, hi, span, inverted } = rangeInfo(minVal, maxVal);
   if (span <= 0) return;
+  if (fill) fillUnderCurve(ctx, shared, c, panel, key, lo, hi, inverted, color);
   ctx.save();
   ctx.beginPath();
   ctx.rect(panel.l, shared.plotT, panel.w, shared.plotH);
@@ -912,6 +982,7 @@ function drawPanelBorder(
   shared: SharedLayout,
   panel: PanelRect,
 ) {
+  if (!shown(panel)) return;
   ctx.strokeStyle = colors.border;
   ctx.lineWidth = 1;
   ctx.strokeRect(panel.l + 0.5, shared.plotT + 0.5, panel.w - 1, shared.plotH - 1);
@@ -971,7 +1042,11 @@ function drawMarker(
   shared: SharedLayout,
   c: CptComputed,
   marker: ChartMarker,
+  /** Eerste kolom van het blad: daar staat het NAP-label van een peillijn. */
+  firstColumn: boolean = true,
 ) {
+  // Peillijn: een lijn zonder sondering loopt door alle kolommen, om ze op één niveau te vergelijken.
+  const levelLine = marker.cptId == null;
   const depth = markerDepthForCpt(c, marker);
   if (depth == null) return;
   if (depth < c.depthViewMin || depth > c.depthViewMax) return;
@@ -981,8 +1056,8 @@ function drawMarker(
   // so the right-edge reference is the soil panel, not the last data panel.
   const lastPanel = c.layout.soil;
   // Leftmost data panel is now qc (depth axis sits to its left, SBT to the right).
-  const xStart = c.layout.qc.l;
-  const xEnd = lastPanel.l + lastPanel.w;
+  const xStart = levelLine ? c.layout.cptLeft : c.layout.qc.l;
+  const xEnd = levelLine ? c.layout.cptLeft + c.layout.cptWidth : lastPanel.l + lastPanel.w;
 
   // Use OpenAEC info-blue for the reference marker (visually distinct
   // from the amber qc curve and the orange fs curve).
@@ -999,7 +1074,7 @@ function drawMarker(
 
   // Grip dots near the right edge — visual hint that you can drag.
   ctx.fillStyle = markerColor;
-  for (let i = -1; i <= 1; i++) {
+  for (let i = -1; !levelLine && i <= 1; i++) {
     ctx.fillRect(xEnd - 8 + i * 4, Math.round(y) - 1, 2, 2);
   }
 
@@ -1030,10 +1105,12 @@ function drawMarker(
       // ook zodat het overal in de UI consistent is.
       series.push({ panel: c.layout.u2, min: c.u2ViewMin, max: c.u2ViewMax, color: colors.u2, value: pt.u2, fmt: (v) => (v * 1000).toFixed(0) });
     }
+    // Smalle kolom: alleen de conusweerstand, met één decimaal en iets groter.
+    if (c.layout.compact) { series.length = 1; series[0].fmt = (v) => v.toFixed(1); }
 
-    ctx.font = '600 9px "JetBrains Mono", monospace';
+    ctx.font = c.layout.compact ? '700 10px "JetBrains Mono", monospace' : '600 9px "JetBrains Mono", monospace';
     for (const s of series) {
-      if (s.value == null) continue;
+      if (s.value == null || !shown(s.panel)) continue;
       const { lo, hi, span, inverted } = rangeInfo(s.min, s.max);
       if (span <= 0) continue;
       const clamped = Math.max(lo, Math.min(hi, s.value));
@@ -1072,6 +1149,8 @@ function drawMarker(
   } else {
     return;
   }
+  // Een peillijn toont zijn niveau één keer, links op het blad.
+  if (levelLine && !firstColumn) return;
   ctx.font = '600 9px "JetBrains Mono", monospace';
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
@@ -1084,7 +1163,7 @@ function drawMarker(
   ctx.lineWidth = 1;
   ctx.beginPath();
   // Rounded rect (manual)
-  const rx = xEnd + 2, ry = y - h / 2, rw = w, rh = h, rr = 3;
+  const rx = levelLine ? c.layout.cptLeft + 2 : xEnd + 2, ry = y - h / 2, rw = w, rh = h, rr = 3;
   ctx.moveTo(rx + rr, ry);
   ctx.lineTo(rx + rw - rr, ry);
   ctx.arcTo(rx + rw, ry, rx + rw, ry + rr, rr);
@@ -1182,7 +1261,7 @@ function drawHoverIndicator(
 
   ctx.font = '600 9px "JetBrains Mono", monospace';
   for (const s of series) {
-    if (s.value == null) continue;
+    if (s.value == null || !shown(s.panel)) continue;
     const { lo, hi, span, inverted } = rangeInfo(s.min, s.max);
     if (span <= 0) continue;
     const clamped = Math.max(lo, Math.min(hi, s.value));
@@ -1241,7 +1320,8 @@ export function hitTestMarkerIndex(
   let bestIdx: number | null = null;
   let bestDist = Infinity;
   for (const c of computed) {
-    if (x < c.layout.qc.l) continue;
+    if (x < c.layout.cptLeft || x >= c.layout.cptLeft + c.layout.cptWidth + 60) continue;
+    const outsidePanels = x < c.layout.qc.l;
     // SBT sits on the rightmost side of the chart since the layout change —
   // so the right-edge reference is the soil panel, not the last data panel.
   const lastPanel = c.layout.soil;
@@ -1249,6 +1329,7 @@ export function hitTestMarkerIndex(
     if (x > xEnd + 60) continue;   // include label area
     for (let mi = 0; mi < markers.length; mi++) {
       if (!markerBelongsToCpt(markers[mi], c)) continue;
+      if (markers[mi].cptId != null && outsidePanels) continue;
       const depth = markerDepthForCpt(c, markers[mi]);
       if (depth == null) continue;
       if (depth < c.depthViewMin || depth > c.depthViewMax) continue;
@@ -1437,7 +1518,7 @@ export function renderChart(
     drawPanelHeader(ctx, colors, shared, c.layout.rf,   pt("chart.rfHeader", "Wrijvingsgetal (Rf, %)"),   colors.rf, c.rfViewMax, c.rfViewMin, RF_LADDER);
     if (c.layout.u2) drawPanelHeader(ctx, colors, shared, c.layout.u2, pt("chart.u2Header", "Waterspanning (u2, kN/m²)"), colors.u2, c.u2ViewMin, c.u2ViewMax, U2_LADDER, 1000);
 
-    if (curves.qc) drawCurve(ctx, shared, c, c.layout.qc, "qc", c.qcViewMin, c.qcViewMax, colors.qc, 1.8);
+    if (curves.qc) drawCurve(ctx, shared, c, c.layout.qc, "qc", c.qcViewMin, c.qcViewMax, colors.qc, c.layout.compact ? 2.2 : 1.8, c.layout.compact);
     if (curves.fs) drawCurve(ctx, shared, c, c.layout.fs, "fs", c.fsViewMin, c.fsViewMax, colors.fs, 1.4);
     // Rf curve is mirrored: low Rf on the right, high Rf on the left.
     if (curves.rf) drawCurve(ctx, shared, c, c.layout.rf, "rf", c.rfViewMax, c.rfViewMin, colors.rf, 1.4);
@@ -1457,7 +1538,7 @@ export function renderChart(
     const allMarkers = collectMarkers(opts);
     for (const m of allMarkers) {
       if (!markerBelongsToCpt(m, c)) continue;
-      drawMarker(ctx, colors, shared, c, m);
+      drawMarker(ctx, colors, shared, c, m, c === computed[0]);
     }
 
     // Hover indicator — only for the CPT under the cursor.

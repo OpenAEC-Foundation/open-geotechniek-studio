@@ -55,6 +55,7 @@ function InputPanel({ input: i, onChange }: Props) {
     <Section title={t('input.include', 'Opnemen')}>
       <div className="advice-pick" aria-label={t('input.cptsInAdvice', 'Sonderingen in het advies')}>{cptIds.length ? cptIds.map((id) => <label key={id} className="cs-check"><input type="checkbox" checked={!i.cptIds || i.cptIds.includes(id)} onChange={(e) => set({ cptIds: toggle(i.cptIds, cptIds, id, e.target.checked) })} />{t('input.cptItem', 'Sondering {{id}}', { id })}</label>) : <Hint>{t('input.noCpts', 'Nog geen sonderingen in het project.')}</Hint>}</div>
       <div className="advice-pick" aria-label={t('input.calcsInAdvice', 'Berekeningen in het advies')}>{calcs.length ? calcs.map((c) => <label key={c.id} className="cs-check"><input type="checkbox" checked={!i.calcIds || i.calcIds.includes(c.id)} onChange={(e) => set({ calcIds: toggle(i.calcIds, calcIds, c.id, e.target.checked) })} />{c.name}</label>) : <Hint>{t('input.noCalcs', 'Nog geen paalberekeningen in het project.')}</Hint>}</div>
+      <label className="cs-check"><input type="checkbox" checked={i.soilModel3d !== false} onChange={(e) => set({ soilModel3d: e.target.checked })} /> {t('input.soilModel3d', '3D-grondmodel in de bodemopbouw')}</label>
       <label className="cs-check"><input type="checkbox" checked={i.appendixCpts} onChange={(e) => set({ appendixCpts: e.target.checked })} /> {t('input.appendixCpts', 'Bijlage sonderingen')}</label>
       <label className="cs-check"><input type="checkbox" checked={i.appendixCalcs} onChange={(e) => set({ appendixCalcs: e.target.checked })} /> {t('input.appendixCalcs', 'Bijlage rekenbladen')}</label>
     </Section>
@@ -98,7 +99,7 @@ function ResultPanel({ input: i, result: s }: Props) {
     <section><h3>{t('result.toc.title', 'Inhoud van het rapport')}</h3>
       <ol className="advice-toc">
         <li>{t('result.toc.intro', 'Inleiding: aanleiding, doel en projectgegevens')}</li><li>{t('result.toc.basis', 'Uitgangspunten')}</li>
-        <li>{t('result.toc.investigation', 'Grondonderzoek: {{count}} sonderingen met situatietekening', { count: s.cpts.length })}</li><li>{t('result.toc.soil', 'Bodemopbouw en draagkrachtige laag')}</li>
+        <li>{t('result.toc.investigation', 'Grondonderzoek: {{count}} sonderingen met situatietekening', { count: s.cpts.length })}</li><li>{i.soilModel3d !== false ? t('result.toc.soil3d', 'Bodemopbouw en draagkrachtige laag, met 3D-grondmodel') : t('result.toc.soil', 'Bodemopbouw en draagkrachtige laag')}</li>
         {s.vertical.length > 0 && <li>{t('result.toc.vertical', 'Palen op druk: {{names}}', { names: s.vertical.map((v) => v.name).join(', ') })}</li>}
         {s.lateral.length > 0 && <li>{t('result.toc.lateral', 'Horizontaal belaste palen: {{names}}', { names: s.lateral.map((l) => l.name).join(', ') })}</li>}
         <li>{t('result.toc.execution', 'Negatieve kleef en uitvoering')}</li><li>{t('result.toc.conclusions', 'Conclusies en aanbevelingen')}</li>

@@ -2,7 +2,7 @@
   "name": "open-geo-studio",
   "description": "Open Geotechniek Studio — desktop CPT viewer and report generator",
   "private": true,
-  "version": "2026.45.8",
+  "version": "2026.47.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:openaec-icons": "node src/assets/openaec-icons/check-openaec-icons.mjs"
   },
   "dependencies": {
     "@bedrock-engineer/gef-parser": "0.4.2",

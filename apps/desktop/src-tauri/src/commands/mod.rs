@@ -1,6 +1,7 @@
 //! Tauri commands exposed to the React frontend.
 
 pub mod bro_api;
+pub mod cloud;
 pub mod cpt;
 pub mod dwg_export;
 pub mod export;

@@ -127,6 +127,18 @@
   width: 24px;
   height: 24px;
 }
+/* Uitgeschakeld of op een vlak in een kleur: het icoon in één kleur. */
+:disabled > .oa-icon, :disabled .oa-icon, .oa-icon--mono {
+  --icon-accent: currentColor;
+}
+/* Statusiconen: het kader in de statuskleur, het teken in het accent. In een gekleurde badge één kleur. */
+.oa-icon[data-icon="status.success"] { color: var(--oa-success); }
+.oa-icon[data-icon="status.error"] { color: var(--oa-error); }
+.oa-icon[data-icon="status.warning"] { color: var(--oa-warning); }
+.cs-uc-badge { display: inline-flex; align-items: center; gap: 6px; }
+.cs-uc-badge .oa-icon { color: currentColor; --icon-accent: currentColor; }
+.pile-warning .oa-icon, .kalendering-result-warning .oa-icon, .kalendering-result-error .oa-icon,
+.settlement-example .oa-icon, .detached-dock-btn .oa-icon { vertical-align: -3px; }
 
 /* CPT palette follows the shared brand colours in every theme. */
 :root {

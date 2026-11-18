@@ -23,6 +23,8 @@ export interface AdviceInput {
   /** Bijlagen. */
   appendixCpts: boolean;
   appendixCalcs: boolean;
+  /** Twee aanzichten van het 3D-grondmodel in de bodemopbouw; ontbrekend = ja. */
+  soilModel3d?: boolean;
   /** Vrije teksten die het advies aanvullen. */
   introNote: string;
   remarks: string;
@@ -32,5 +34,5 @@ export const DEFAULT_ADVICE: AdviceInput = {
   reference: '', version: '1.0', status: 'concept', advisor: '', checker: '',
   structure: '', consequenceClass: 'CC2', designLifeYears: 50,
   bearingQcMpa: 10, bearingMinThicknessM: 1,
-  appendixCpts: true, appendixCalcs: true, introNote: '', remarks: '',
+  appendixCpts: true, appendixCalcs: true, soilModel3d: true, introNote: '', remarks: '',
 };

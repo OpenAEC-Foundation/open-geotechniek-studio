@@ -16,7 +16,7 @@ const lateralModuleTyped:CalcModule<LateralInput,LateralResult>={
   norm:'CUR166 initiële bedding · Georgiadis-laagcorrectie · projectveerwet',status:'experimental',
   defaultInput:()=>structuredClone(lateralExample),compute:(input)=>computeLateral(input),InputPanel:LateralInputPanel,VisualPanel:LateralExplorer,ResultPanel:LateralSheet,SettingsPanel:LateralSettingsPanel,
   table:{label:'Paaltabel',Panel:LateralTable,items:(input)=>(input.pileTable?.rows?.length?input.pileTable.rows:defaultRows(input)).map(r=>({id:r.id,label:r.name}))},
-  statusLine:r=>r.ok&&r.sectionUtilization!==null?{text:`u.c. ${f(r.sectionUtilization)} ${r.sectionUtilization<=1?'✓':'✗'}`,ok:r.sectionUtilization<=1}:{text:r.ok?ct('calcLateral','module.statusConcept','Concept · y {{y}} mm',{y:f(r.maxDisplacementMm)}):r.error,ok:false,pending:true},
+  statusLine:r=>r.ok&&r.sectionUtilization!==null?{text:`u.c. ${f(r.sectionUtilization)}`,ok:r.sectionUtilization<=1}:{text:r.ok?ct('calcLateral','module.statusConcept','Concept · y {{y}} mm',{y:f(r.maxDisplacementMm)}):r.error,ok:false,pending:true},
   buildReport:(input,r,ctx)=>buildLateralReport(input,r,ctx),reportFileName:()=>lateralReportFileName(),
   checks:(input,r)=>{if(!r.ok)return [];const s=lateralSummary(input,r);return [
     {label:ct('calcLateral','module.checks.yHead','y kop'),value:`${f(s.yHeadMm)} mm`},{label:'M max',value:`${f(s.mEd)} kNm`},{label:'V max',value:`${f(Math.max(Math.abs(s.V.max.v),Math.abs(s.V.min.v)))} kN`},

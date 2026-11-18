@@ -11,6 +11,7 @@ import type { KalenderingInput, KalenderingResult } from "../types";
 import { CUSTOM_VALBLOK_ID, G_M_S2 } from "../catalog";
 import { resolveValblok } from "../compute";
 import "./styles.css";
+import { OaIcon } from "../../../../components/icons/oaIcon";
 
 interface FormulaProps {
   lhs: ReactNode;
@@ -56,7 +57,7 @@ export function ResultPanel({ input, result }: Props) {
     return (
       <div className="kalendering-result">
         <div className="kalendering-result-error">
-          ⚠ {result.error ?? "Onbekende fout in berekening."}
+          <OaIcon id="status.error" /> {result.error ?? "Onbekende fout in berekening."}
         </div>
       </div>
     );
@@ -72,7 +73,7 @@ export function ResultPanel({ input, result }: Props) {
       {result.warnings.length > 0 && (
         <div>
           {result.warnings.map((w, i) => (
-            <p key={i} className="kalendering-result-warning">⚠ {w}</p>
+            <p key={i} className="kalendering-result-warning"><OaIcon id="status.warning" /> {w}</p>
           ))}
         </div>
       )}
