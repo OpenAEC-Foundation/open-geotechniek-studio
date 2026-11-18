@@ -31,7 +31,16 @@ interface RibbonProps {
 const ALL_TABS = ["start", "kaart", "rapport", "tekening", "berekeningen", "model3d", "ifc"] as const;
 type TabId = (typeof ALL_TABS)[number];
 
-export default function Ribbon({ onFileTabClick, onProjectSettingsClick, onViewChange }: RibbonProps) {
+/** Hoofdweergave per tabblad; de ene volgt altijd uit de andere. */
+const TAB_VIEWS: Record<TabId, string> = {
+  start: "default", kaart: "map", rapport: "report", tekening: "tekening",
+  berekeningen: "calculations", model3d: "soil3d", ifc: "ifc",
+};
+export function tabForView(view: string): TabId {
+  return (Object.keys(TAB_VIEWS) as TabId[]).find((tab) => TAB_VIEWS[tab] === view) ?? "start";
+}
+
+export default function Ribbon({ onFileTabClick, onProjectSettingsClick, activeView, onViewChange }: RibbonProps) {
   const { t, i18n } = useTranslation("ribbon");
   const [activeTab, setActiveTab] = useState<TabId>("start");
   const extTekening = useExtension("tekening");
@@ -118,6 +127,9 @@ export default function Ribbon({ onFileTabClick, onProjectSettingsClick, onViewC
   }, []);
 
   const switchTab = useCallback((newTab: TabId) => {
+    // Altijd de weergave van het tabblad tonen, ook als het tabblad al actief
+    // is: de weergave kan buiten het lint om gewisseld zijn.
+    onViewChange(TAB_VIEWS[newTab]);
     if (newTab === activeTab) return;
     // Gebruik ALL_TABS voor directie-bepaling: posities zijn vast,
     // ook al is de tab momenteel verborgen door een uitgeschakelde
@@ -129,16 +141,16 @@ export default function Ribbon({ onFileTabClick, onProjectSettingsClick, onViewC
     setPrevTab(activeTab);
     setActiveTab(newTab);
     setAnimating(true);
-
-    // Switch main content view based on tab.
-    if (newTab === "rapport") onViewChange("report");
-    else if (newTab === "kaart") onViewChange("map");
-    else if (newTab === "ifc") onViewChange("ifc");
-    else if (newTab === "tekening") onViewChange("tekening");
-    else if (newTab === "berekeningen") onViewChange("calculations");
-    else if (newTab === "model3d") onViewChange("soil3d");
-    else onViewChange("default");
   }, [activeTab, onViewChange]);
+
+  // De weergave is buiten het lint om gewisseld (bijvoorbeeld door een
+  // koppeling): het tabblad volgt, zodat lint en scherm bij elkaar horen.
+  useEffect(() => {
+    const tab = tabForView(activeView);
+    if (tab !== activeTab && TABS.includes(tab)) switchTabRef.current?.(tab);
+    // Alleen reageren op een andere weergave, niet op een ander tabblad.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeView]);
 
   // Keep the ref pointing at the latest switchTab so the global event
   // listener (registered once on mount) calls the up-to-date version.
