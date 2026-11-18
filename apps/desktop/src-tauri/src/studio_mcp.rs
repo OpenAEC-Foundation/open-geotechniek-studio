@@ -1098,8 +1098,8 @@ mod transport_tests {
             assert!(proxy.request(&json!({"jsonrpc":"2.0","method":"tools/call","params":{"name":"studio_new_project"}})).await.is_none());
             let response = proxy.request(&json!({"jsonrpc":"2.0","id":7,"method":"tools/list"})).await.unwrap();
             let tools = response["result"]["tools"].as_array().unwrap();
-            assert_eq!(tools.len(), 13);
-            for name in ["studio_get_capacity_table", "studio_export_report"] {
+            assert_eq!(tools.len(), 15);
+            for name in ["studio_get_capacity_table", "studio_export_report", "studio_show_view", "studio_export_ifcx"] {
                 assert!(tools.iter().any(|tool| tool["name"] == name), "{name} ontbreekt in de toolcatalogus");
             }
             assert!(tools.iter().all(|tool| tool["name"].as_str().unwrap().starts_with("studio_")));

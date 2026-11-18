@@ -316,7 +316,7 @@ mod tests {
     #[test]
     fn challenge_volgt_rfc7636() {
         // Voorbeeld uit RFC 7636, bijlage B.
-        assert_eq!(challenge("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"), "E9Melhoe2OwvBxC1_wAhXIhkQ6BUjhW6eMr8V2AgFIM");
+        assert_eq!(challenge("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"), "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM");
     }
 
     #[test]
