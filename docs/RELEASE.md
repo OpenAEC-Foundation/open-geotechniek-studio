@@ -20,3 +20,37 @@ gh run download RUN_ID -n signed-windows-x64 --dir signed-installers
 ```
 
 Vervang `BRANCH`, `vJJJJ.W.N` en `RUN_ID` door de gewenste branch, versie en workflowrun. De build gebruikt de vaste commit van die run en de signinggegevens van de organisatie. De artifacts doorlopen dezelfde handtekeningcontroles als een release. Een testbuild maakt geen releasetag en publiceert geen GitHub-release. Installeer voor distributie uitsluitend de gecontroleerde, ondertekende artifacts.
+
+## Snap
+
+De workflow **Build Snap Package** herverpakt de DEB uit een bestaande release.
+Na een geslaagde desktoprelease op een versietag start dit automatisch.
+Een desktop-kandidaatbuild of dispatch op een branch start geen Snap-publicatie;
+gebruik daarvoor een expliciete Snap-dispatch met de gewenste releasetag.
+Een Snap-dispatch met `publish=false` maakt alleen een workflow-artifact.
+
+Bij publicatie worden het `.snap`-bestand en het aparte manifest
+`SHA256SUMS-snap.txt` met dezelfde OpenAEC-OpenPGP-sleutel als de andere
+Linux-pakketten ondertekend en geverifieerd vóór upload. Ontbrekende of
+ongeldige signinggegevens stoppen de publicatie. Het desktopmanifest
+`SHA256SUMS.txt` en het ondertekende `SHA256SUMS-linux.txt` blijven behouden.
+Het Snap-manifest en beide `.asc`-handtekeningen staan naast de Snap in de
+GitHub-release. Dit vervangt de winkelassertions van de Snap Store niet.
+
+Voor een bestaande Snap-download zonder handtekening kan dezelfde workflow met
+`sign_existing=true` en `publish=false` draaien. Deze herstelroute downloadt de
+Snap uit de opgegeven release en voegt alleen de handtekening en het ondertekende
+Snap-manifest toe. Ze vervangt de binary niet, bouwt niets opnieuw en publiceert
+niets naar de Store. Ook deze route verifieert de opnieuw gedownloade bestanden.
+
+Controleer na downloaden de sleutel tegen de onafhankelijk bekende OpenAEC-
+fingerprint (niet alleen tegen een meegeleverd fingerprintbestand) en voer uit:
+
+```bash
+gpg --verify SHA256SUMS-snap.txt.asc SHA256SUMS-snap.txt
+sha256sum --check SHA256SUMS-snap.txt
+gpg --verify open-geotechniek-studio_JJJJ.W.N_amd64.snap.asc open-geotechniek-studio_JJJJ.W.N_amd64.snap
+```
+
+De openbare sleutel en fingerprint staan bij de desktoprelease als
+`linux-signing-public-key.asc` en `linux-signing-fingerprint.txt`.
