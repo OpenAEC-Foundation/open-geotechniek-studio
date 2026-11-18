@@ -11,6 +11,7 @@ import type { SheetView } from '../calc/framework/store';
 import type { ProjectMeta } from "../types/cpt";
 import { computeLateral, lateralExample, type LateralInput } from '../calc/modules/laterally-loaded-pile/compute';
 import { DEFAULT_ADVICE } from '../calc/modules/foundation-advice/types';
+import { computeDriving, defaultDrivingInput, type DrivingInput } from '../calc/modules/driving-assessment/compute';
 
 type ObjectValue = Record<string, unknown>;
 function object(value: unknown, label: string): ObjectValue {
@@ -205,10 +206,21 @@ function advicePatch(input:unknown,patch:unknown) {
   }
   return next;
 }
+/** Beoordeling kalendering: alleen bekende velden; de sondering moet in het project zitten. */
+function drivingPatch(input: unknown, patch: unknown) {
+  const base = input as DrivingInput, p = object(patch, "Invoer");
+  keys(p, Object.keys(defaultDrivingInput(context())));
+  const next = { ...base, ...p } as DrivingInput;
+  if (!Array.isArray(next.rows)) throw new Error("rows moet een lijst zijn");
+  const result = computeDriving(next, context());
+  if (!result.ok && !result.pending) throw new Error(result.error ?? "Ongeldige invoer");
+  return next;
+}
 function calculationPatch(moduleId:string,input:unknown,patch:unknown) {
   if(moduleId==='pile-bearing-capacity')return pilePatch(input,patch);
   if(moduleId==='laterally-loaded-pile')return lateralPatch(input,patch);
   if(moduleId==='foundation-advice')return advicePatch(input,patch);
+  if(moduleId==='driving-assessment')return drivingPatch(input,patch);
   throw new Error('Rekenmodule niet beschikbaar voor Studio MCP');
 }
 

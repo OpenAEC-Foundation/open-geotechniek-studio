@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Cuadrada",
+    "round": "Circular",
+    "rect": "Rectangular",
+    "cpt": "Ensayo CPT",
+    "cptMissing": "Elija un ensayo CPT del proyecto.",
+    "cptNone": "— elegir —",
+    "from": "Profundidad desde",
+    "to": "Profundidad hasta (punta del pilote)",
+    "pile": "Pilote",
+    "shape": "Sección",
+    "diameter": "Diámetro",
+    "side": "Lado",
+    "sideB": "Segundo lado",
+    "hammer": "Martillo de hinca",
+    "ramMass": "Masa de la maza",
+    "dropHeight": "Altura de caída",
+    "tocht": "Longitud del tramo",
+    "record": "Golpes contados",
+    "depth": "Profundidad de la punta",
+    "blows": "Golpes",
+    "perTocht": "por tramo",
+    "depthRow": "Profundidad tramo {{n}}",
+    "blowsRow": "Golpes tramo {{n}}",
+    "removeRow": "Eliminar tramo",
+    "addRow": "Añadir tramo",
+    "recordHint": "Puede dejarse vacío: entonces solo se muestran los golpes esperados. También se puede pegar desde una hoja de cálculo: dos columnas (profundidad, golpes), un tramo por fila.",
+    "tolerance": "Desviación admisible"
+  },
+  "visual": {
+    "empty": "Elija un ensayo CPT y un intervalo de profundidad para mostrar los golpes esperados.",
+    "aria": "Golpes esperados y contados por tramo frente a la profundidad, con la resistencia de cono",
+    "blows": "Golpes por tramo",
+    "depth": "Profundidad de la punta del pilote [m bajo el terreno]",
+    "expected": "esperado",
+    "band": "± {{pct}} %",
+    "counted": "contado"
+  },
+  "sheet": {
+    "title": "Evaluación de la hinca",
+    "sub": "Ensayo CPT {{cpt}} · golpes esperados por {{tocht}} mm",
+    "basis": "Datos de partida",
+    "energy": "Energía por golpe E = m·g·h",
+    "size": "Dimensión del pilote D",
+    "tocht": "Tramo",
+    "tochtWord": "tramo",
+    "atDepth": "a {{depth}} m",
+    "compare": "Esperado y contado",
+    "expectedOnly": "Golpes esperados",
+    "depth": "Profundidad [m bajo el terreno]",
+    "expected": "Esperado",
+    "counted": "Contado",
+    "deviation": "Desviación",
+    "verdict": "Valoración",
+    "pass": "El parte de hinca concuerda con el ensayo CPT",
+    "failText": "El parte de hinca se desvía del ensayo CPT",
+    "verdictLine": "{{within}} de {{total}} tramos dentro de ± {{tol}} %; desviación media {{mean}}.",
+    "method": "Método y limitaciones",
+    "m1": "La fórmula es una regla empírica de la práctica: el trabajo necesario para hincar la superficie D² a lo largo de un tramo contra la resistencia de cono, dividido por la energía por golpe. No es una fórmula normativa.",
+    "m2": "No es un cálculo de capacidad portante. La capacidad portante se obtiene de los ensayos CPT según NEN 9997-1.",
+    "m3": "Una diferencia de hasta aproximadamente el 50 % entre lo esperado y lo contado es habitual. Fíjese sobre todo en la evolución con la profundidad: los golpes deben aumentar donde aumenta la resistencia de cono.",
+    "m4": "qc es la media del ensayo CPT en el tramo. El rendimiento del martillo, el rozamiento por fuste y la distancia al ensayo CPT no están incluidos en la fórmula."
+  },
+  "status": {
+    "compared": "esperado {{expected}} · contado {{counted}} ({{dev}})",
+    "expected": "esperado {{expected}} golpes por tramo"
+  },
+  "checks": {
+    "expected": "esperado",
+    "counted": "contado",
+    "deviation": "desviación",
+    "energy": "energía por golpe"
+  },
+  "errors": {
+    "noCpt": "Elija un ensayo CPT; los golpes esperados se obtienen de la resistencia de cono.",
+    "hammer": "Introduzca la masa y la altura de caída del martillo de hinca.",
+    "pile": "Introduzca la dimensión del pilote.",
+    "tocht": "La longitud del tramo debe ser mayor que 0.",
+    "tolerance": "La desviación admisible debe ser mayor que 0.",
+    "range": "El intervalo debe ir de una profundidad menor a una mayor.",
+    "blows": "Cada tramo contado tiene al menos un golpe."
+  },
+  "warn": {
+    "beyondCpt": "El ensayo CPT llega hasta {{depth}} m; a mayor profundidad no hay valor esperado.",
+    "noQc": "Para parte de los tramos contados, el ensayo CPT no tiene valores medidos.",
+    "higher": "De media se han dado un {{pct}} % más de golpes de lo esperado: terreno más resistente que en el ensayo CPT, menor rendimiento del martillo u otra altura de caída.",
+    "lower": "De media se han dado un {{pct}} % menos de golpes de lo esperado: terreno más blando que en el ensayo CPT o un martillo más pesado que el introducido."
+  }
+}

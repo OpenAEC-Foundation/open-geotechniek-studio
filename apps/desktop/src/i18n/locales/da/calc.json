@@ -102,6 +102,12 @@
       "name": "Funderingsanbefaling",
       "subtitle": "Rapport med jordbundsundersøgelse, situationsplan, pæleanbefaling og bilag",
       "visualLabel": "Situationsplan"
+    },
+    "driving-assessment": {
+      "name": "Vurdering af ramning",
+      "subtitle": "Forventet antal slag ud fra sonderingen, ved siden af det talte",
+      "norm": "Tommelfingerregel N = interval · D² · qc / E",
+      "visualLabel": "Antal slag"
     }
   }
 }

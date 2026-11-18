@@ -102,6 +102,12 @@
       "name": "Recommandation de fondation",
       "subtitle": "Rapport avec reconnaissance de sol, plan de situation, recommandation de pieux et annexes",
       "visualLabel": "Plan de situation"
+    },
+    "driving-assessment": {
+      "name": "Évaluation du battage",
+      "subtitle": "Nombre de coups attendu d'après l'essai CPT, à côté du nombre compté",
+      "norm": "Règle empirique N = intervalle · D² · qc / E",
+      "visualLabel": "Nombre de coups"
     }
   }
 }

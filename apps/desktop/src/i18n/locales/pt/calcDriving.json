@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Quadrada",
+    "round": "Circular",
+    "rect": "Retangular",
+    "cpt": "Ensaio CPT",
+    "cptMissing": "Escolha um ensaio CPT do projeto.",
+    "cptNone": "— escolher —",
+    "from": "Profundidade desde",
+    "to": "Profundidade até (ponta da estaca)",
+    "pile": "Estaca",
+    "shape": "Secção",
+    "diameter": "Diâmetro",
+    "side": "Lado",
+    "sideB": "Segundo lado",
+    "hammer": "Martelo de cravação",
+    "ramMass": "Massa do pilão",
+    "dropHeight": "Altura de queda",
+    "tocht": "Comprimento do tramo",
+    "record": "Pancadas contadas",
+    "depth": "Profundidade da ponta",
+    "blows": "Pancadas",
+    "perTocht": "por tramo",
+    "depthRow": "Profundidade tramo {{n}}",
+    "blowsRow": "Pancadas tramo {{n}}",
+    "removeRow": "Remover tramo",
+    "addRow": "Adicionar tramo",
+    "recordHint": "Pode ficar vazio: nesse caso vê apenas as pancadas esperadas. Também é possível colar a partir de uma folha de cálculo: duas colunas (profundidade, pancadas), um tramo por linha.",
+    "tolerance": "Desvio admissível"
+  },
+  "visual": {
+    "empty": "Escolha um ensaio CPT e um intervalo de profundidade para mostrar as pancadas esperadas.",
+    "aria": "Pancadas esperadas e contadas por tramo em função da profundidade, com a resistência de ponta do cone",
+    "blows": "Pancadas por tramo",
+    "depth": "Profundidade da ponta da estaca [m abaixo do terreno]",
+    "expected": "esperado",
+    "band": "± {{pct}} %",
+    "counted": "contado"
+  },
+  "sheet": {
+    "title": "Avaliação da cravação",
+    "sub": "Ensaio CPT {{cpt}} · pancadas esperadas por {{tocht}} mm",
+    "basis": "Pressupostos de base",
+    "energy": "Energia por pancada E = m·g·h",
+    "size": "Dimensão da estaca D",
+    "tocht": "Tramo",
+    "tochtWord": "tramo",
+    "atDepth": "a {{depth}} m",
+    "compare": "Esperado e contado",
+    "expectedOnly": "Pancadas esperadas",
+    "depth": "Profundidade [m abaixo do terreno]",
+    "expected": "Esperado",
+    "counted": "Contado",
+    "deviation": "Desvio",
+    "verdict": "Apreciação",
+    "pass": "O registo de cravação condiz com o ensaio CPT",
+    "failText": "O registo de cravação desvia-se do ensaio CPT",
+    "verdictLine": "{{within}} de {{total}} tramos dentro de ± {{tol}} %; desvio médio {{mean}}.",
+    "method": "Método e limitações",
+    "m1": "A fórmula é uma regra empírica da prática: o trabalho necessário para cravar a área D² ao longo de um tramo contra a resistência de ponta do cone, dividido pela energia por pancada. Não é uma fórmula normativa.",
+    "m2": "Não é um cálculo da capacidade de carga. A capacidade de carga resulta dos ensaios CPT segundo a NEN 9997-1.",
+    "m3": "Uma diferença até cerca de 50 % entre o esperado e o contado é normal. Observe sobretudo a evolução com a profundidade: as pancadas devem aumentar onde a resistência de ponta do cone aumenta.",
+    "m4": "qc é a média do ensaio CPT ao longo do tramo. O rendimento do martelo, o atrito lateral ao longo do fuste e a distância ao ensaio CPT não entram na fórmula."
+  },
+  "status": {
+    "compared": "esperado {{expected}} · contado {{counted}} ({{dev}})",
+    "expected": "esperadas {{expected}} pancadas por tramo"
+  },
+  "checks": {
+    "expected": "esperado",
+    "counted": "contado",
+    "deviation": "desvio",
+    "energy": "energia por pancada"
+  },
+  "errors": {
+    "noCpt": "Escolha um ensaio CPT; as pancadas esperadas resultam da resistência de ponta do cone.",
+    "hammer": "Introduza a massa e a altura de queda do martelo de cravação.",
+    "pile": "Introduza a dimensão da estaca.",
+    "tocht": "O comprimento do tramo tem de ser superior a 0.",
+    "tolerance": "O desvio admissível tem de ser superior a 0.",
+    "range": "O intervalo tem de ir de uma profundidade menor para uma maior.",
+    "blows": "Cada tramo contado tem pelo menos uma pancada."
+  },
+  "warn": {
+    "beyondCpt": "O ensaio CPT chega aos {{depth}} m; abaixo disso não há valor esperado.",
+    "noQc": "Para parte dos tramos contados, o ensaio CPT não tem valores medidos.",
+    "higher": "Em média foram dadas {{pct}} % mais pancadas do que o esperado: solo mais resistente do que no ensaio CPT, menor rendimento do martelo ou outra altura de queda.",
+    "lower": "Em média foram dadas {{pct}} % menos pancadas do que o esperado: solo mais mole do que no ensaio CPT ou um martelo mais pesado do que o introduzido."
+  }
+}

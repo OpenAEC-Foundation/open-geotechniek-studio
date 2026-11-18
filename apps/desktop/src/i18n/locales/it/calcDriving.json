@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Quadrata",
+    "round": "Circolare",
+    "rect": "Rettangolare",
+    "cpt": "Prova CPT",
+    "cptMissing": "Scegliere una prova CPT dal progetto.",
+    "cptNone": "— scegliere —",
+    "from": "Profondità da",
+    "to": "Profondità fino a (punta del palo)",
+    "pile": "Palo",
+    "shape": "Sezione",
+    "diameter": "Diametro",
+    "side": "Lato",
+    "sideB": "Secondo lato",
+    "hammer": "Battipalo",
+    "ramMass": "Massa della mazza",
+    "dropHeight": "Altezza di caduta",
+    "tocht": "Lunghezza del tratto",
+    "record": "Colpi contati",
+    "depth": "Profondità della punta",
+    "blows": "Colpi",
+    "perTocht": "per tratto",
+    "depthRow": "Profondità tratto {{n}}",
+    "blowsRow": "Colpi tratto {{n}}",
+    "removeRow": "Rimuovi tratto",
+    "addRow": "Aggiungi tratto",
+    "recordHint": "Può restare vuoto: in tal caso si vedono solo i colpi attesi. È anche possibile incollare da un foglio di calcolo: due colonne (profondità, colpi), un tratto per riga.",
+    "tolerance": "Scostamento ammesso"
+  },
+  "visual": {
+    "empty": "Scegliere una prova CPT e un intervallo di profondità per mostrare i colpi attesi.",
+    "aria": "Colpi attesi e contati per tratto in funzione della profondità, con la resistenza alla punta",
+    "blows": "Colpi per tratto",
+    "depth": "Profondità della punta del palo [m dal p.c.]",
+    "expected": "atteso",
+    "band": "± {{pct}} %",
+    "counted": "contato"
+  },
+  "sheet": {
+    "title": "Valutazione dell'infissione",
+    "sub": "Prova CPT {{cpt}} · colpi attesi per {{tocht}} mm",
+    "basis": "Dati di base",
+    "energy": "Energia per colpo E = m·g·h",
+    "size": "Dimensione del palo D",
+    "tocht": "Tratto",
+    "tochtWord": "tratto",
+    "atDepth": "a {{depth}} m",
+    "compare": "Atteso e contato",
+    "expectedOnly": "Colpi attesi",
+    "depth": "Profondità [m dal p.c.]",
+    "expected": "Atteso",
+    "counted": "Contato",
+    "deviation": "Scostamento",
+    "verdict": "Giudizio",
+    "pass": "Il rapporto di battitura è coerente con la prova CPT",
+    "failText": "Il rapporto di battitura si discosta dalla prova CPT",
+    "verdictLine": "{{within}} tratti su {{total}} entro ± {{tol}} %; scostamento medio {{mean}}.",
+    "method": "Metodo e limiti",
+    "m1": "La formula è una regola empirica della pratica: il lavoro necessario per infiggere la superficie D² lungo un tratto contro la resistenza alla punta, diviso per l'energia per colpo. Non è una formula normativa.",
+    "m2": "Non è un calcolo della capacità portante. La capacità portante si ricava dalle prove CPT secondo NEN 9997-1.",
+    "m3": "Una differenza fino a circa il 50 % tra atteso e contato è normale. Osservare soprattutto l'andamento con la profondità: i colpi devono aumentare dove aumenta la resistenza alla punta.",
+    "m4": "qc è la media della prova CPT lungo il tratto. Il rendimento del battipalo, l'attrito laterale lungo il fusto e la distanza dalla prova CPT non sono compresi nella formula."
+  },
+  "status": {
+    "compared": "atteso {{expected}} · contato {{counted}} ({{dev}})",
+    "expected": "attesi {{expected}} colpi per tratto"
+  },
+  "checks": {
+    "expected": "atteso",
+    "counted": "contato",
+    "deviation": "scostamento",
+    "energy": "energia per colpo"
+  },
+  "errors": {
+    "noCpt": "Scegliere una prova CPT; i colpi attesi si ricavano dalla resistenza alla punta.",
+    "hammer": "Inserire la massa e l'altezza di caduta del battipalo.",
+    "pile": "Inserire la dimensione del palo.",
+    "tocht": "La lunghezza del tratto deve essere maggiore di 0.",
+    "tolerance": "Lo scostamento ammesso deve essere maggiore di 0.",
+    "range": "L'intervallo deve andare da una profondità minore a una maggiore.",
+    "blows": "Ogni tratto contato ha almeno un colpo."
+  },
+  "warn": {
+    "beyondCpt": "La prova CPT arriva a {{depth}} m; più in profondità non c'è un valore atteso.",
+    "noQc": "Per una parte dei tratti contati la prova CPT non ha valori misurati.",
+    "higher": "In media sono stati dati il {{pct}} % di colpi in più rispetto all'atteso: terreno più resistente che nella prova CPT, rendimento del battipalo inferiore o altezza di caduta diversa.",
+    "lower": "In media sono stati dati il {{pct}} % di colpi in meno rispetto all'atteso: terreno più tenero che nella prova CPT o un battipalo più pesante di quello inserito."
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Vierkant",
+    "round": "Rond",
+    "rect": "Rechthoekig",
+    "cpt": "Sondering",
+    "cptMissing": "Kies een sondering uit het project.",
+    "cptNone": "— kies —",
+    "from": "Traject vanaf",
+    "to": "Traject tot (paalpunt)",
+    "pile": "Paal",
+    "shape": "Doorsnede",
+    "diameter": "Diameter",
+    "side": "Zijde",
+    "sideB": "Tweede zijde",
+    "hammer": "Heiblok",
+    "ramMass": "Massa valgewicht",
+    "dropHeight": "Valhoogte",
+    "tocht": "Tochtlengte",
+    "record": "Getelde kalender",
+    "depth": "Diepte punt",
+    "blows": "Slagen",
+    "perTocht": "per tocht",
+    "depthRow": "Diepte tocht {{n}}",
+    "blowsRow": "Slagen tocht {{n}}",
+    "removeRow": "Tocht verwijderen",
+    "addRow": "Tocht toevoegen",
+    "recordHint": "Leeg laten kan: dan zie je alleen de verwachte kalender. Plakken uit een spreadsheet kan ook: twee kolommen (diepte, slagen), één tocht per regel.",
+    "tolerance": "Toegestane afwijking"
+  },
+  "visual": {
+    "empty": "Kies een sondering en een traject om de verwachte kalender te tonen.",
+    "aria": "Verwachte en getelde slagen per tocht tegen de diepte, met de conusweerstand",
+    "blows": "Slagen per tocht",
+    "depth": "Diepte paalpunt [m − mv]",
+    "expected": "verwacht",
+    "band": "± {{pct}} %",
+    "counted": "geteld"
+  },
+  "sheet": {
+    "title": "Beoordeling kalendering",
+    "sub": "Sondering {{cpt}} · verwachte slagen per {{tocht}} mm",
+    "basis": "Uitgangspunten",
+    "energy": "Slagenergie E = m·g·h",
+    "size": "Paalmaat D",
+    "tocht": "Tocht",
+    "tochtWord": "tocht",
+    "atDepth": "op {{depth}} m",
+    "compare": "Verwacht en geteld",
+    "expectedOnly": "Verwachte kalender",
+    "depth": "Diepte [m − mv]",
+    "expected": "Verwacht",
+    "counted": "Geteld",
+    "deviation": "Afwijking",
+    "verdict": "Oordeel",
+    "pass": "De kalender past bij de sondering",
+    "failText": "De kalender wijkt af van de sondering",
+    "verdictLine": "{{within}} van {{total}} tochten binnen ± {{tol}} %; gemiddelde afwijking {{mean}}.",
+    "method": "Methode en beperkingen",
+    "m1": "De formule is een vuistregel uit de praktijk: de arbeid om het vlak D² over één tocht tegen de conusweerstand in te drukken, gedeeld door de energie per slag. Het is geen normformule.",
+    "m2": "Het is geen draagvermogensberekening. Het draagvermogen volgt uit de sonderingen volgens NEN 9997-1.",
+    "m3": "Een verschil tot ongeveer 50 % tussen verwacht en geteld is gewoon. Kijk vooral naar het verloop met de diepte: de kalender hoort op te lopen waar de conusweerstand oploopt.",
+    "m4": "qc is het gemiddelde van de sondering over de tocht. Rendement van het blok, kleef langs de schacht en de afstand tot de sondering zitten niet in de formule."
+  },
+  "status": {
+    "compared": "verwacht {{expected}} · geteld {{counted}} ({{dev}})",
+    "expected": "verwacht {{expected}} slagen per tocht"
+  },
+  "checks": {
+    "expected": "verwacht",
+    "counted": "geteld",
+    "deviation": "afwijking",
+    "energy": "slagenergie"
+  },
+  "errors": {
+    "noCpt": "Kies een sondering; de verwachte kalender volgt uit de conusweerstand.",
+    "hammer": "Vul de massa en de valhoogte van het heiblok in.",
+    "pile": "Vul de maat van de paal in.",
+    "tocht": "De tochtlengte moet groter dan 0 zijn.",
+    "tolerance": "De toegestane afwijking moet groter dan 0 zijn.",
+    "range": "Het traject loopt van een kleinere naar een grotere diepte.",
+    "blows": "Elke getelde tocht heeft minstens één slag."
+  },
+  "warn": {
+    "beyondCpt": "De sondering reikt tot {{depth}} m; dieper is er geen verwachting.",
+    "noQc": "Voor een deel van de getelde tochten heeft de sondering geen meetwaarden.",
+    "higher": "Er is gemiddeld {{pct}} % meer geslagen dan verwacht: zwaardere grond dan de sondering, een lager rendement van het blok of een andere valhoogte.",
+    "lower": "Er is gemiddeld {{pct}} % minder geslagen dan verwacht: slappere grond dan de sondering of een zwaarder blok dan ingevuld."
+  }
+}

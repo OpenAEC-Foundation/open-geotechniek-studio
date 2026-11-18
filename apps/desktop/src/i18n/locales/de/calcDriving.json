@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Quadratisch",
+    "round": "Rund",
+    "rect": "Rechteckig",
+    "cpt": "Sondierung",
+    "cptMissing": "Wählen Sie eine Sondierung aus dem Projekt.",
+    "cptNone": "— wählen —",
+    "from": "Bereich ab",
+    "to": "Bereich bis (Pfahlfuß)",
+    "pile": "Pfahl",
+    "shape": "Querschnitt",
+    "diameter": "Durchmesser",
+    "side": "Seite",
+    "sideB": "Zweite Seite",
+    "hammer": "Rammbär",
+    "ramMass": "Masse des Fallgewichts",
+    "dropHeight": "Fallhöhe",
+    "tocht": "Intervalllänge",
+    "record": "Gezählte Schlagzahl",
+    "depth": "Tiefe Pfahlfuß",
+    "blows": "Schläge",
+    "perTocht": "je Intervall",
+    "depthRow": "Tiefe Intervall {{n}}",
+    "blowsRow": "Schläge Intervall {{n}}",
+    "removeRow": "Intervall entfernen",
+    "addRow": "Intervall hinzufügen",
+    "recordHint": "Kann leer bleiben: dann sehen Sie nur die erwartete Schlagzahl. Einfügen aus einer Tabellenkalkulation ist ebenfalls möglich: zwei Spalten (Tiefe, Schläge), ein Intervall je Zeile.",
+    "tolerance": "Zulässige Abweichung"
+  },
+  "visual": {
+    "empty": "Wählen Sie eine Sondierung und einen Tiefenbereich, um die erwartete Schlagzahl anzuzeigen.",
+    "aria": "Erwartete und gezählte Schläge je Intervall über die Tiefe, mit dem Spitzenwiderstand",
+    "blows": "Schläge je Intervall",
+    "depth": "Tiefe Pfahlfuß [m u. GOK]",
+    "expected": "erwartet",
+    "band": "± {{pct}} %",
+    "counted": "gezählt"
+  },
+  "sheet": {
+    "title": "Beurteilung des Rammprotokolls",
+    "sub": "Sondierung {{cpt}} · erwartete Schläge je {{tocht}} mm",
+    "basis": "Grundlagen",
+    "energy": "Schlagenergie E = m·g·h",
+    "size": "Pfahlmaß D",
+    "tocht": "Intervall",
+    "tochtWord": "Intervall",
+    "atDepth": "in {{depth}} m",
+    "compare": "Erwartet und gezählt",
+    "expectedOnly": "Erwartete Schlagzahl",
+    "depth": "Tiefe [m u. GOK]",
+    "expected": "Erwartet",
+    "counted": "Gezählt",
+    "deviation": "Abweichung",
+    "verdict": "Beurteilung",
+    "pass": "Das Rammprotokoll passt zur Sondierung",
+    "failText": "Das Rammprotokoll weicht von der Sondierung ab",
+    "verdictLine": "{{within}} von {{total}} Intervallen innerhalb von ± {{tol}} %; mittlere Abweichung {{mean}}.",
+    "method": "Verfahren und Grenzen",
+    "m1": "Die Formel ist eine Faustregel aus der Praxis: die Arbeit, um die Fläche D² über ein Intervall gegen den Spitzenwiderstand einzudrücken, geteilt durch die Energie je Schlag. Sie ist keine Normformel.",
+    "m2": "Dies ist keine Tragfähigkeitsberechnung. Die Tragfähigkeit ergibt sich aus den Sondierungen nach NEN 9997-1.",
+    "m3": "Ein Unterschied bis etwa 50 % zwischen erwartet und gezählt ist üblich. Achten Sie vor allem auf den Verlauf über die Tiefe: Die Schlagzahl sollte dort zunehmen, wo der Spitzenwiderstand zunimmt.",
+    "m4": "qc ist der Mittelwert der Sondierung über das Intervall. Wirkungsgrad des Rammbären, Mantelreibung am Schaft und der Abstand zur Sondierung sind in der Formel nicht enthalten."
+  },
+  "status": {
+    "compared": "erwartet {{expected}} · gezählt {{counted}} ({{dev}})",
+    "expected": "erwartet {{expected}} Schläge je Intervall"
+  },
+  "checks": {
+    "expected": "erwartet",
+    "counted": "gezählt",
+    "deviation": "Abweichung",
+    "energy": "Schlagenergie"
+  },
+  "errors": {
+    "noCpt": "Wählen Sie eine Sondierung; die erwartete Schlagzahl ergibt sich aus dem Spitzenwiderstand.",
+    "hammer": "Geben Sie die Masse und die Fallhöhe des Rammbären ein.",
+    "pile": "Geben Sie das Maß des Pfahls ein.",
+    "tocht": "Die Intervalllänge muss größer als 0 sein.",
+    "tolerance": "Die zulässige Abweichung muss größer als 0 sein.",
+    "range": "Der Bereich muss von einer kleineren zu einer größeren Tiefe verlaufen.",
+    "blows": "Jedes gezählte Intervall hat mindestens einen Schlag."
+  },
+  "warn": {
+    "beyondCpt": "Die Sondierung reicht bis {{depth}} m; tiefer gibt es keine Erwartung.",
+    "noQc": "Für einen Teil der gezählten Intervalle hat die Sondierung keine Messwerte.",
+    "higher": "Im Mittel wurden {{pct}} % mehr Schläge gezählt als erwartet: festerer Boden als in der Sondierung, ein geringerer Wirkungsgrad des Rammbären oder eine andere Fallhöhe.",
+    "lower": "Im Mittel wurden {{pct}} % weniger Schläge gezählt als erwartet: weicherer Boden als in der Sondierung oder ein schwererer Rammbär als eingegeben."
+  }
+}

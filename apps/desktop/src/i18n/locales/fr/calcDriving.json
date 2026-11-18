@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Carré",
+    "round": "Rond",
+    "rect": "Rectangulaire",
+    "cpt": "Essai CPT",
+    "cptMissing": "Choisissez un essai CPT du projet.",
+    "cptNone": "— choisir —",
+    "from": "Profondeur de début",
+    "to": "Profondeur de fin (pointe du pieu)",
+    "pile": "Pieu",
+    "shape": "Section",
+    "diameter": "Diamètre",
+    "side": "Côté",
+    "sideB": "Second côté",
+    "hammer": "Marteau de battage",
+    "ramMass": "Masse du mouton",
+    "dropHeight": "Hauteur de chute",
+    "tocht": "Longueur d'intervalle",
+    "record": "Nombre de coups compté",
+    "depth": "Profondeur de la pointe",
+    "blows": "Coups",
+    "perTocht": "par intervalle",
+    "depthRow": "Profondeur intervalle {{n}}",
+    "blowsRow": "Coups intervalle {{n}}",
+    "removeRow": "Supprimer l'intervalle",
+    "addRow": "Ajouter un intervalle",
+    "recordHint": "Peut rester vide : seul le nombre de coups attendu est alors affiché. Le collage depuis un tableur est également possible : deux colonnes (profondeur, coups), un intervalle par ligne.",
+    "tolerance": "Écart admissible"
+  },
+  "visual": {
+    "empty": "Choisissez un essai CPT et une plage de profondeur pour afficher le nombre de coups attendu.",
+    "aria": "Coups attendus et comptés par intervalle en fonction de la profondeur, avec la résistance au cône",
+    "blows": "Coups par intervalle",
+    "depth": "Profondeur de la pointe du pieu [m sous TN]",
+    "expected": "attendu",
+    "band": "± {{pct}} %",
+    "counted": "compté"
+  },
+  "sheet": {
+    "title": "Évaluation du battage",
+    "sub": "Essai CPT {{cpt}} · coups attendus par {{tocht}} mm",
+    "basis": "Hypothèses",
+    "energy": "Énergie par coup E = m·g·h",
+    "size": "Dimension du pieu D",
+    "tocht": "Intervalle",
+    "tochtWord": "intervalle",
+    "atDepth": "à {{depth}} m",
+    "compare": "Attendu et compté",
+    "expectedOnly": "Nombre de coups attendu",
+    "depth": "Profondeur [m sous TN]",
+    "expected": "Attendu",
+    "counted": "Compté",
+    "deviation": "Écart",
+    "verdict": "Appréciation",
+    "pass": "Le carnet de battage concorde avec l'essai CPT",
+    "failText": "Le carnet de battage s'écarte de l'essai CPT",
+    "verdictLine": "{{within}} intervalles sur {{total}} dans ± {{tol}} % ; écart moyen {{mean}}.",
+    "method": "Méthode et limites",
+    "m1": "La formule est une règle empirique issue de la pratique : le travail nécessaire pour enfoncer la surface D² sur un intervalle contre la résistance au cône, divisé par l'énergie par coup. Ce n'est pas une formule normative.",
+    "m2": "Il ne s'agit pas d'un calcul de capacité portante. La capacité portante se déduit des essais CPT selon NEN 9997-1.",
+    "m3": "Un écart allant jusqu'à environ 50 % entre attendu et compté est courant. Observez surtout l'évolution avec la profondeur : le nombre de coups doit augmenter là où la résistance au cône augmente.",
+    "m4": "qc est la moyenne de l'essai CPT sur l'intervalle. Le rendement du marteau, le frottement latéral le long du fût et la distance à l'essai CPT ne figurent pas dans la formule."
+  },
+  "status": {
+    "compared": "attendu {{expected}} · compté {{counted}} ({{dev}})",
+    "expected": "attendu {{expected}} coups par intervalle"
+  },
+  "checks": {
+    "expected": "attendu",
+    "counted": "compté",
+    "deviation": "écart",
+    "energy": "énergie par coup"
+  },
+  "errors": {
+    "noCpt": "Choisissez un essai CPT ; le nombre de coups attendu se déduit de la résistance au cône.",
+    "hammer": "Saisissez la masse et la hauteur de chute du marteau de battage.",
+    "pile": "Saisissez la dimension du pieu.",
+    "tocht": "La longueur d'intervalle doit être supérieure à 0.",
+    "tolerance": "L'écart admissible doit être supérieur à 0.",
+    "range": "La plage doit aller d'une profondeur plus faible à une profondeur plus grande.",
+    "blows": "Chaque intervalle compté comporte au moins un coup."
+  },
+  "warn": {
+    "beyondCpt": "L'essai CPT atteint {{depth}} m ; au-delà, il n'y a pas de valeur attendue.",
+    "noQc": "Pour une partie des intervalles comptés, l'essai CPT ne comporte pas de mesures.",
+    "higher": "En moyenne, {{pct}} % de coups en plus que prévu ont été comptés : sol plus résistant qu'à l'essai CPT, rendement du marteau plus faible ou hauteur de chute différente.",
+    "lower": "En moyenne, {{pct}} % de coups en moins que prévu ont été comptés : sol plus mou qu'à l'essai CPT ou marteau plus lourd que celui saisi."
+  }
+}

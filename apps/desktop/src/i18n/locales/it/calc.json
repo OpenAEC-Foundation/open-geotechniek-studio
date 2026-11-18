@@ -102,6 +102,12 @@
       "name": "Raccomandazione per le fondazioni",
       "subtitle": "Relazione con indagine geotecnica, planimetria, raccomandazione sui pali e allegati",
       "visualLabel": "Planimetria"
+    },
+    "driving-assessment": {
+      "name": "Valutazione dell'infissione",
+      "subtitle": "Colpi attesi dalla prova CPT, accanto a quelli contati",
+      "norm": "Regola empirica N = tratto · D² · qc / E",
+      "visualLabel": "Colpi"
     }
   }
 }

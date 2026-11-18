@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Square",
+    "round": "Round",
+    "rect": "Rectangular",
+    "cpt": "CPT",
+    "cptMissing": "Select a CPT from the project.",
+    "cptNone": "— select —",
+    "from": "Range from",
+    "to": "Range to (pile toe)",
+    "pile": "Pile",
+    "shape": "Cross-section",
+    "diameter": "Diameter",
+    "side": "Side",
+    "sideB": "Second side",
+    "hammer": "Pile hammer",
+    "ramMass": "Ram mass",
+    "dropHeight": "Drop height",
+    "tocht": "Interval length",
+    "record": "Counted blow count",
+    "depth": "Toe depth",
+    "blows": "Blows",
+    "perTocht": "per interval",
+    "depthRow": "Depth interval {{n}}",
+    "blowsRow": "Blows interval {{n}}",
+    "removeRow": "Remove interval",
+    "addRow": "Add interval",
+    "recordHint": "Can be left empty: you then see only the expected blow count. Pasting from a spreadsheet also works: two columns (depth, blows), one interval per row.",
+    "tolerance": "Allowed deviation"
+  },
+  "visual": {
+    "empty": "Select a CPT and a depth range to show the expected blow count.",
+    "aria": "Expected and counted blows per interval against depth, with the cone resistance",
+    "blows": "Blows per interval",
+    "depth": "Pile toe depth [m below GL]",
+    "expected": "expected",
+    "band": "± {{pct}} %",
+    "counted": "counted"
+  },
+  "sheet": {
+    "title": "Driving record assessment",
+    "sub": "CPT {{cpt}} · expected blows per {{tocht}} mm",
+    "basis": "Basis",
+    "energy": "Energy per blow E = m·g·h",
+    "size": "Pile size D",
+    "tocht": "Interval",
+    "tochtWord": "interval",
+    "atDepth": "at {{depth}} m",
+    "compare": "Expected and counted",
+    "expectedOnly": "Expected blow count",
+    "depth": "Depth [m below GL]",
+    "expected": "Expected",
+    "counted": "Counted",
+    "deviation": "Deviation",
+    "verdict": "Verdict",
+    "pass": "The driving record matches the CPT",
+    "failText": "The driving record deviates from the CPT",
+    "verdictLine": "{{within}} of {{total}} intervals within ± {{tol}} %; mean deviation {{mean}}.",
+    "method": "Method and limitations",
+    "m1": "The formula is a rule of thumb from practice: the work needed to push the area D² over one interval against the cone resistance, divided by the energy per blow. It is not a formula from a standard.",
+    "m2": "This is not a bearing capacity calculation. The bearing capacity follows from the CPTs in accordance with NEN 9997-1.",
+    "m3": "A difference of up to about 50 % between expected and counted is normal. Look mainly at the trend with depth: the blow count should rise where the cone resistance rises.",
+    "m4": "qc is the average of the CPT over the interval. Hammer efficiency, shaft friction and the distance to the CPT are not included in the formula."
+  },
+  "status": {
+    "compared": "expected {{expected}} · counted {{counted}} ({{dev}})",
+    "expected": "expected {{expected}} blows per interval"
+  },
+  "checks": {
+    "expected": "expected",
+    "counted": "counted",
+    "deviation": "deviation",
+    "energy": "energy per blow"
+  },
+  "errors": {
+    "noCpt": "Select a CPT; the expected blow count follows from the cone resistance.",
+    "hammer": "Enter the ram mass and the drop height of the pile hammer.",
+    "pile": "Enter the size of the pile.",
+    "tocht": "The interval length must be greater than 0.",
+    "tolerance": "The allowed deviation must be greater than 0.",
+    "range": "The range must run from a smaller to a larger depth.",
+    "blows": "Every counted interval has at least one blow."
+  },
+  "warn": {
+    "beyondCpt": "The CPT reaches {{depth}} m; there is no expectation below that.",
+    "noQc": "The CPT has no readings for part of the counted intervals.",
+    "higher": "On average {{pct}} % more blows were counted than expected: harder ground than at the CPT, a lower hammer efficiency or a different drop height.",
+    "lower": "On average {{pct}} % fewer blows were counted than expected: softer ground than at the CPT or a heavier hammer than entered."
+  }
+}

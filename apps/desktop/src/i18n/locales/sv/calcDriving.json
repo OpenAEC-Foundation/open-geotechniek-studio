@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Kvadratisk",
+    "round": "Rund",
+    "rect": "Rektangulär",
+    "cpt": "Sondering",
+    "cptMissing": "Välj en sondering från projektet.",
+    "cptNone": "— välj —",
+    "from": "Sträcka från",
+    "to": "Sträcka till (pålspets)",
+    "pile": "Påle",
+    "shape": "Tvärsnitt",
+    "diameter": "Diameter",
+    "side": "Sida",
+    "sideB": "Andra sidan",
+    "hammer": "Hejare",
+    "ramMass": "Fallviktens massa",
+    "dropHeight": "Fallhöjd",
+    "tocht": "Intervallängd",
+    "record": "Räknat antal slag",
+    "depth": "Spetsens djup",
+    "blows": "Slag",
+    "perTocht": "per intervall",
+    "depthRow": "Djup intervall {{n}}",
+    "blowsRow": "Slag intervall {{n}}",
+    "removeRow": "Ta bort intervall",
+    "addRow": "Lägg till intervall",
+    "recordHint": "Kan lämnas tomt: då visas bara det förväntade antalet slag. Det går också att klistra in från ett kalkylblad: två kolumner (djup, slag), ett intervall per rad.",
+    "tolerance": "Tillåten avvikelse"
+  },
+  "visual": {
+    "empty": "Välj en sondering och en sträcka för att visa det förväntade antalet slag.",
+    "aria": "Förväntade och räknade slag per intervall mot djupet, med spetstrycket",
+    "blows": "Slag per intervall",
+    "depth": "Pålspetsens djup [m u. my]",
+    "expected": "förväntat",
+    "band": "± {{pct}} %",
+    "counted": "räknat"
+  },
+  "sheet": {
+    "title": "Bedömning av pålslagning",
+    "sub": "Sondering {{cpt}} · förväntade slag per {{tocht}} mm",
+    "basis": "Förutsättningar",
+    "energy": "Slagenergi E = m·g·h",
+    "size": "Pålmått D",
+    "tocht": "Intervall",
+    "tochtWord": "intervall",
+    "atDepth": "på {{depth}} m",
+    "compare": "Förväntat och räknat",
+    "expectedOnly": "Förväntat antal slag",
+    "depth": "Djup [m u. my]",
+    "expected": "Förväntat",
+    "counted": "Räknat",
+    "deviation": "Avvikelse",
+    "verdict": "Bedömning",
+    "pass": "Slagprotokollet stämmer med sonderingen",
+    "failText": "Slagprotokollet avviker från sonderingen",
+    "verdictLine": "{{within}} av {{total}} intervall inom ± {{tol}} %; medelavvikelse {{mean}}.",
+    "method": "Metod och begränsningar",
+    "m1": "Formeln är en tumregel från praktiken: arbetet som krävs för att trycka ned ytan D² över ett intervall mot spetstrycket, dividerat med energin per slag. Den är ingen normformel.",
+    "m2": "Detta är ingen bärförmågeberäkning. Bärförmågan följer av sonderingarna enligt NEN 9997-1.",
+    "m3": "En skillnad på upp till cirka 50 % mellan förväntat och räknat är vanlig. Titta framför allt på förloppet med djupet: antalet slag bör öka där spetstrycket ökar.",
+    "m4": "qc är sonderingens medelvärde över intervallet. Hejarens verkningsgrad, mantelfriktionen längs skaftet och avståndet till sonderingen ingår inte i formeln."
+  },
+  "status": {
+    "compared": "förväntat {{expected}} · räknat {{counted}} ({{dev}})",
+    "expected": "förväntat {{expected}} slag per intervall"
+  },
+  "checks": {
+    "expected": "förväntat",
+    "counted": "räknat",
+    "deviation": "avvikelse",
+    "energy": "slagenergi"
+  },
+  "errors": {
+    "noCpt": "Välj en sondering; det förväntade antalet slag följer av spetstrycket.",
+    "hammer": "Ange hejarens massa och fallhöjd.",
+    "pile": "Ange pålens mått.",
+    "tocht": "Intervallängden måste vara större än 0.",
+    "tolerance": "Den tillåtna avvikelsen måste vara större än 0.",
+    "range": "Sträckan ska gå från ett mindre till ett större djup.",
+    "blows": "Varje räknat intervall har minst ett slag."
+  },
+  "warn": {
+    "beyondCpt": "Sonderingen når till {{depth}} m; djupare finns ingen förväntan.",
+    "noQc": "För en del av de räknade intervallen saknar sonderingen mätvärden.",
+    "higher": "I genomsnitt har {{pct}} % fler slag slagits än förväntat: fastare jord än i sonderingen, lägre verkningsgrad hos hejaren eller en annan fallhöjd.",
+    "lower": "I genomsnitt har {{pct}} % färre slag slagits än förväntat: lösare jord än i sonderingen eller en tyngre hejare än den angivna."
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Kwadratowy",
+    "round": "Okrągły",
+    "rect": "Prostokątny",
+    "cpt": "Sondowanie",
+    "cptMissing": "Wybierz sondowanie z projektu.",
+    "cptNone": "— wybierz —",
+    "from": "Zakres od",
+    "to": "Zakres do (podstawa pala)",
+    "pile": "Pal",
+    "shape": "Przekrój",
+    "diameter": "Średnica",
+    "side": "Bok",
+    "sideB": "Drugi bok",
+    "hammer": "Młot kafara",
+    "ramMass": "Masa bijaka",
+    "dropHeight": "Wysokość spadu",
+    "tocht": "Długość odcinka",
+    "record": "Policzona liczba uderzeń",
+    "depth": "Głębokość podstawy",
+    "blows": "Uderzenia",
+    "perTocht": "na odcinek",
+    "depthRow": "Głębokość, odcinek {{n}}",
+    "blowsRow": "Uderzenia, odcinek {{n}}",
+    "removeRow": "Usuń odcinek",
+    "addRow": "Dodaj odcinek",
+    "recordHint": "Można pozostawić puste: wtedy widoczna jest tylko oczekiwana liczba uderzeń. Można też wkleić dane z arkusza kalkulacyjnego: dwie kolumny (głębokość, uderzenia), jeden odcinek w wierszu.",
+    "tolerance": "Dopuszczalne odchylenie"
+  },
+  "visual": {
+    "empty": "Wybierz sondowanie i zakres głębokości, aby wyświetlić oczekiwaną liczbę uderzeń.",
+    "aria": "Oczekiwane i policzone uderzenia na odcinek w funkcji głębokości, z oporem stożka",
+    "blows": "Uderzenia na odcinek",
+    "depth": "Głębokość podstawy pala [m p.p.t.]",
+    "expected": "oczekiwane",
+    "band": "± {{pct}} %",
+    "counted": "policzone"
+  },
+  "sheet": {
+    "title": "Ocena wbijania pala",
+    "sub": "Sondowanie {{cpt}} · oczekiwane uderzenia na {{tocht}} mm",
+    "basis": "Założenia",
+    "energy": "Energia uderzenia E = m·g·h",
+    "size": "Wymiar pala D",
+    "tocht": "Odcinek",
+    "tochtWord": "odcinek",
+    "atDepth": "na {{depth}} m",
+    "compare": "Oczekiwane i policzone",
+    "expectedOnly": "Oczekiwana liczba uderzeń",
+    "depth": "Głębokość [m p.p.t.]",
+    "expected": "Oczekiwane",
+    "counted": "Policzone",
+    "deviation": "Odchylenie",
+    "verdict": "Ocena",
+    "pass": "Dziennik wbijania jest zgodny z sondowaniem",
+    "failText": "Dziennik wbijania odbiega od sondowania",
+    "verdictLine": "{{within}} z {{total}} odcinków w granicach ± {{tol}} %; średnie odchylenie {{mean}}.",
+    "method": "Metoda i ograniczenia",
+    "m1": "Wzór jest regułą praktyczną: praca potrzebna do wciśnięcia powierzchni D² na długości jednego odcinka wbrew oporowi stożka, podzielona przez energię jednego uderzenia. Nie jest to wzór normowy.",
+    "m2": "To nie jest obliczenie nośności. Nośność wynika z sondowań zgodnie z NEN 9997-1.",
+    "m3": "Różnica do około 50 % między wartością oczekiwaną a policzoną jest zwyczajna. Należy zwracać uwagę przede wszystkim na przebieg z głębokością: liczba uderzeń powinna rosnąć tam, gdzie rośnie opór stożka.",
+    "m4": "qc jest średnią z sondowania na długości odcinka. Sprawność młota, tarcie na pobocznicy i odległość od sondowania nie są uwzględnione we wzorze."
+  },
+  "status": {
+    "compared": "oczekiwane {{expected}} · policzone {{counted}} ({{dev}})",
+    "expected": "oczekiwane {{expected}} uderzeń na odcinek"
+  },
+  "checks": {
+    "expected": "oczekiwane",
+    "counted": "policzone",
+    "deviation": "odchylenie",
+    "energy": "energia uderzenia"
+  },
+  "errors": {
+    "noCpt": "Wybierz sondowanie; oczekiwana liczba uderzeń wynika z oporu stożka.",
+    "hammer": "Podaj masę bijaka i wysokość spadu młota.",
+    "pile": "Podaj wymiar pala.",
+    "tocht": "Długość odcinka musi być większa od 0.",
+    "tolerance": "Dopuszczalne odchylenie musi być większe od 0.",
+    "range": "Zakres musi przebiegać od mniejszej do większej głębokości.",
+    "blows": "Każdy policzony odcinek ma co najmniej jedno uderzenie."
+  },
+  "warn": {
+    "beyondCpt": "Sondowanie sięga do {{depth}} m; głębiej nie ma wartości oczekiwanej.",
+    "noQc": "Dla części policzonych odcinków sondowanie nie zawiera wartości pomiarowych.",
+    "higher": "Średnio wykonano o {{pct}} % więcej uderzeń niż oczekiwano: grunt mocniejszy niż w sondowaniu, niższa sprawność młota lub inna wysokość spadu.",
+    "lower": "Średnio wykonano o {{pct}} % mniej uderzeń niż oczekiwano: grunt słabszy niż w sondowaniu lub młot cięższy niż podany."
+  }
+}

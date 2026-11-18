@@ -3,10 +3,11 @@ import { pileBearingCapacityModule } from '../modules/pile-bearing-capacity/modu
 import { laterallyLoadedPileModule } from '../modules/laterally-loaded-pile/module';
 import { foundationAdviceModule } from '../modules/foundation-advice/module';
 import { tensionPileModule } from '../modules/tension-pile/module';
+import { drivingAssessmentModule } from '../modules/driving-assessment/module';
 
 // The public website and desktop expose the same calculation module.
 // Other module sources remain available for existing project data.
-export const CALC_REGISTRY: CalcModule[] = [pileBearingCapacityModule, tensionPileModule, laterallyLoadedPileModule, foundationAdviceModule];
+export const CALC_REGISTRY: CalcModule[] = [pileBearingCapacityModule, tensionPileModule, laterallyLoadedPileModule, drivingAssessmentModule, foundationAdviceModule];
 
 export function getCalcModule(id: string): CalcModule | undefined {
   return CALC_REGISTRY.find((module) => module.id === id);

@@ -102,6 +102,12 @@
       "name": "Gründungsempfehlung",
       "subtitle": "Bericht mit Baugrunderkundung, Lageplan, Pfahlempfehlung und Anlagen",
       "visualLabel": "Lageplan"
+    },
+    "driving-assessment": {
+      "name": "Beurteilung des Rammprotokolls",
+      "subtitle": "Erwartete Schlagzahl aus der Sondierung, neben der gezählten",
+      "norm": "Faustformel N = Intervall · D² · qc / E",
+      "visualLabel": "Schlagzahl"
     }
   }
 }

@@ -102,6 +102,12 @@
       "name": "Foundation advice",
       "subtitle": "Report with site investigation, site plan, pile advice and appendices",
       "visualLabel": "Site plan"
+    },
+    "driving-assessment": {
+      "name": "Driving record assessment",
+      "subtitle": "Expected blow count from the CPT, next to the counted one",
+      "norm": "Rule of thumb N = interval · D² · qc / E",
+      "visualLabel": "Blow count"
     }
   }
 }

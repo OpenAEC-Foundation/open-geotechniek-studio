@@ -1,0 +1,90 @@
+{
+  "input": {
+    "square": "Kvadratisk",
+    "round": "Rund",
+    "rect": "Rektangulær",
+    "cpt": "Sondering",
+    "cptMissing": "Vælg en sondering fra projektet.",
+    "cptNone": "— vælg —",
+    "from": "Strækning fra",
+    "to": "Strækning til (pælespids)",
+    "pile": "Pæl",
+    "shape": "Tværsnit",
+    "diameter": "Diameter",
+    "side": "Side",
+    "sideB": "Anden side",
+    "hammer": "Ramhammer",
+    "ramMass": "Faldloddets masse",
+    "dropHeight": "Faldhøjde",
+    "tocht": "Intervallængde",
+    "record": "Talt antal slag",
+    "depth": "Spidsens dybde",
+    "blows": "Slag",
+    "perTocht": "pr. interval",
+    "depthRow": "Dybde interval {{n}}",
+    "blowsRow": "Slag interval {{n}}",
+    "removeRow": "Fjern interval",
+    "addRow": "Tilføj interval",
+    "recordHint": "Kan stå tomt: så vises kun det forventede antal slag. Der kan også indsættes fra et regneark: to kolonner (dybde, slag), ét interval pr. linje.",
+    "tolerance": "Tilladt afvigelse"
+  },
+  "visual": {
+    "empty": "Vælg en sondering og en strækning for at vise det forventede antal slag.",
+    "aria": "Forventede og talte slag pr. interval mod dybden, med spidsmodstanden",
+    "blows": "Slag pr. interval",
+    "depth": "Pælespidsens dybde [m u.t.]",
+    "expected": "forventet",
+    "band": "± {{pct}} %",
+    "counted": "talt"
+  },
+  "sheet": {
+    "title": "Vurdering af ramning",
+    "sub": "Sondering {{cpt}} · forventede slag pr. {{tocht}} mm",
+    "basis": "Forudsætninger",
+    "energy": "Slagenergi E = m·g·h",
+    "size": "Pælemål D",
+    "tocht": "Interval",
+    "tochtWord": "interval",
+    "atDepth": "i {{depth}} m",
+    "compare": "Forventet og talt",
+    "expectedOnly": "Forventet antal slag",
+    "depth": "Dybde [m u.t.]",
+    "expected": "Forventet",
+    "counted": "Talt",
+    "deviation": "Afvigelse",
+    "verdict": "Vurdering",
+    "pass": "Rammejournalen stemmer med sonderingen",
+    "failText": "Rammejournalen afviger fra sonderingen",
+    "verdictLine": "{{within}} af {{total}} intervaller inden for ± {{tol}} %; gennemsnitlig afvigelse {{mean}}.",
+    "method": "Metode og begrænsninger",
+    "m1": "Formlen er en tommelfingerregel fra praksis: arbejdet ved at presse arealet D² ned over ét interval mod spidsmodstanden, divideret med energien pr. slag. Den er ikke en normformel.",
+    "m2": "Dette er ikke en bæreevneberegning. Bæreevnen følger af sonderingerne i henhold til NEN 9997-1.",
+    "m3": "En forskel på op til ca. 50 % mellem forventet og talt er almindelig. Se især på forløbet med dybden: antallet af slag bør stige, hvor spidsmodstanden stiger.",
+    "m4": "qc er sonderingens gennemsnit over intervallet. Hammerens virkningsgrad, overflademodstanden langs skaftet og afstanden til sonderingen indgår ikke i formlen."
+  },
+  "status": {
+    "compared": "forventet {{expected}} · talt {{counted}} ({{dev}})",
+    "expected": "forventet {{expected}} slag pr. interval"
+  },
+  "checks": {
+    "expected": "forventet",
+    "counted": "talt",
+    "deviation": "afvigelse",
+    "energy": "slagenergi"
+  },
+  "errors": {
+    "noCpt": "Vælg en sondering; det forventede antal slag følger af spidsmodstanden.",
+    "hammer": "Angiv faldloddets masse og ramhammerens faldhøjde.",
+    "pile": "Angiv pælens mål.",
+    "tocht": "Intervallængden skal være større end 0.",
+    "tolerance": "Den tilladte afvigelse skal være større end 0.",
+    "range": "Strækningen skal gå fra en mindre til en større dybde.",
+    "blows": "Hvert talt interval har mindst ét slag."
+  },
+  "warn": {
+    "beyondCpt": "Sonderingen når til {{depth}} m; dybere er der ingen forventning.",
+    "noQc": "For en del af de talte intervaller har sonderingen ingen måleværdier.",
+    "higher": "Der er i gennemsnit slået {{pct}} % flere slag end forventet: fastere jord end i sonderingen, en lavere virkningsgrad for hammeren eller en anden faldhøjde.",
+    "lower": "Der er i gennemsnit slået {{pct}} % færre slag end forventet: blødere jord end i sonderingen eller en tungere hammer end angivet."
+  }
+}

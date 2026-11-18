@@ -102,6 +102,12 @@
       "name": "Funderingsadvies",
       "subtitle": "Rapport met grondonderzoek, situatie, paaladvies en bijlagen",
       "visualLabel": "Situatie"
+    },
+    "driving-assessment": {
+      "name": "Beoordeling kalendering",
+      "subtitle": "Verwachte kalender uit de sondering, naast de getelde",
+      "norm": "Vuistregel N = tocht · D² · qc / E",
+      "visualLabel": "Kalender"
     }
   }
 }

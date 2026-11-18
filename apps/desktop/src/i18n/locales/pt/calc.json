@@ -102,6 +102,12 @@
       "name": "Recomendação de fundação",
       "subtitle": "Relatório com prospeção geotécnica, planta de localização, recomendação de estacas e anexos",
       "visualLabel": "Planta de localização"
+    },
+    "driving-assessment": {
+      "name": "Avaliação da cravação",
+      "subtitle": "Pancadas esperadas a partir do ensaio CPT, ao lado das contadas",
+      "norm": "Regra empírica N = tramo · D² · qc / E",
+      "visualLabel": "Pancadas"
     }
   }
 }

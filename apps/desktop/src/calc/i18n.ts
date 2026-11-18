@@ -1,7 +1,7 @@
 import i18next from "i18next";
 
 /** Vertaal-namespaces van het rekenkader en de rekenmodules. */
-export type CalcNs = "calc" | "calcPile" | "calcPileCore" | "calcLateral" | "calcAdvice";
+export type CalcNs = "calcDriving" | "calc" | "calcPile" | "calcPileCore" | "calcLateral" | "calcAdvice";
 
 /**
  * Vertaling voor code buiten React (rekenkern, catalogi, meldingen).

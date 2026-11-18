@@ -102,6 +102,12 @@
       "name": "Grundläggningsrekommendation",
       "subtitle": "Rapport med geoteknisk undersökning, situationsplan, pålrekommendation och bilagor",
       "visualLabel": "Situationsplan"
+    },
+    "driving-assessment": {
+      "name": "Bedömning av pålslagning",
+      "subtitle": "Förväntat antal slag från sonderingen, bredvid det räknade",
+      "norm": "Tumregel N = intervall · D² · qc / E",
+      "visualLabel": "Antal slag"
     }
   }
 }
