@@ -8,6 +8,7 @@ import { useReportBrand } from "../report/reportBrand";
 import { COMPANY_CHANGED_EVENT, openCompanyProfile } from "./CompanyDialog";
 import { matchCoordinates, parseCoordinates, withPosition } from "./coordinates";
 import { CPT_REPORT_SECTIONS, loadProfile } from "./profile";
+import BroExportDialog from "../broExport/BroExportDialog";
 
 export default function SondeerbedrijfTab() {
   const cptsMap = useCptStore((s) => s.cpts);
@@ -19,6 +20,7 @@ export default function SondeerbedrijfTab() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null);
   const [company, setCompany] = useState("");
+  const [broOpen, setBroOpen] = useState(false);
   useEffect(() => {
     const refresh = () => void loadProfile().then((p) => setCompany(p.name));
     refresh();
@@ -79,7 +81,13 @@ export default function SondeerbedrijfTab() {
             onClick={() => void run(() => reports.generateAndOpen(cpts, meta, CPT_REPORT_SECTIONS), "Sondeerrapport geopend.")} />
           {message && <div className={`ribbon-info-sub${message.error ? " ribbon-info-error" : ""}`} style={{ maxWidth: 320 }} role={message.error ? "alert" : "status"}>{message.text}</div>}
         </RibbonGroup>
+        <RibbonGroup label="Basisregistratie Ondergrond">
+          <RibbonButton icon="file.export" label="BRO-XML" size="large" disabled={!cpts.length}
+            title="Sonderingen als registratieverzoek voor de Basisregistratie Ondergrond opslaan (één XML-bestand per sondering)"
+            onClick={() => setBroOpen(true)} />
+        </RibbonGroup>
       </div>
+      <BroExportDialog open={broOpen} onClose={() => setBroOpen(false)} />
     </div>
   );
 }
