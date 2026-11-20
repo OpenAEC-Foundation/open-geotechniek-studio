@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} har ingen egen rad i tabell 7.c i denna utgåva och kan därför inte väljas med tabellvärden. Räkna med projektfaktorer från pålsystemets egendeklaration eller från en provbelastning.",
     "noTableBadge": "inget tabellvärde",
     "useProjectFactors": "Välj med projektfaktorer"
+  },
+  "interp": {
+    "add": "Justera ett djupintervall",
+    "bottom": "Underkant",
+    "bottomAria": "Djupintervallets underkant [m NAP]",
+    "cancel": "Avbryt",
+    "captureTitle": "Dra uppifrån och ned för att välja djupintervallet",
+    "change": {
+      "noLayer": "inget lager",
+      "qcFixed": "{{qc}}: uppmätt {{min}}–{{max}} MPa (medel {{mean}}) → fast värde {{top}} MPa",
+      "qcLinear": "{{qc}}: uppmätt {{min}}–{{max}} MPa (medel {{mean}}) → linjärt från {{top}} till {{bottom}} MPa",
+      "soil": "Jordart: {{before}} → {{after}}"
+    },
+    "colChange": "Ändring (före → efter)",
+    "colRange": "Djupintervall",
+    "comment": "Kommentar",
+    "commentAria": "Kommentar till justeringen",
+    "commentPlaceholder": "Varför denna justering?",
+    "delete": "Ta bort",
+    "deleteAria": "Ta bort justering A{{n}}",
+    "edit": "Redigera",
+    "editAria": "Redigera justering A{{n}}",
+    "editTitle": "Redigera justering",
+    "listAria": "Justeringar av denna CPT-sondering",
+    "markTitle": "Justerat djupintervall A{{n}}; klicka för att redigera",
+    "newTitle": "Ny justering",
+    "notApplied": {
+      "invalid": "Inte tillämpad: ogiltigt djupintervall eller ingen ändring angiven.",
+      "outsideRange": "Inte tillämpad: djupintervallet ligger utanför CPT-sonderingen."
+    },
+    "problem": {
+      "nothing": "Välj en ändring av spetstrycket eller av jordarten.",
+      "order": "Överkanten måste ligga högre än underkanten.",
+      "range": "Välj ett djupintervall: dra i diagrammet uppifrån och ned, eller skriv båda nivåerna.",
+      "value": "Ange ett fast spetstryck på noll eller mer."
+    },
+    "qc": "Spetstryck",
+    "qcFixed": "fast värde",
+    "qcLinear": "linjärt mellan kanterna",
+    "qcNone": "oförändrad",
+    "range": "NAP {{top}} till {{bottom}} m",
+    "report": {
+      "colChange": "Ändring (före → efter)",
+      "colComment": "Kommentar",
+      "colCpt": "CPT-sondering",
+      "colNr": "Nr",
+      "colRange": "Djupintervall [m NAP]",
+      "intro": "I denna beräkning avviker djupintervallen nedan från den uppmätta CPT-sonderingen. Själva sonderingen har inte ändrats; en justering gäller bara för denna beräkning och för den angivna sonderingen. I sonderingens diagram är mätningen ritad tunt och det justerade intervallet markerat.",
+      "title": "Justeringar av lagertolkningen"
+    },
+    "resetAll": "Återställ allt",
+    "resetAllTitle": "Tar bort alla justeringar av denna CPT-sondering i denna beräkning; mätningen gäller igen.",
+    "resultNote": "För CPT-sondering {{cpt}} avviker denna beräkning från den uppmätta tolkningen. Själva sonderingen är oförändrad.",
+    "resultTitle": "Justeringar av lagertolkningen",
+    "save": "Spara",
+    "selectHint": "Dra i diagrammet uppifrån och ned för att välja djupintervallet, eller skriv nivåerna. Den uppmätta linjen förblir synlig i grått.",
+    "soilAria": "Jordart i djupintervallet",
+    "stateChanged": "{{n}} justering(ar) för denna CPT-sondering",
+    "stateMeasured": "som uppmätt",
+    "tableNote": "Lagertolkningen är justerad för denna CPT-sondering: {{n}} djupintervall. Värdena nedan är beräknade med den.",
+    "title": "Lagertolkning",
+    "top": "Överkant",
+    "topAria": "Djupintervallets överkant [m NAP]",
+    "value": "Värde",
+    "valueAria": "Fast spetstryck [MPa]",
+    "warning": {
+      "applied": "Lagertolkningen är justerad: {{n}} djupintervall i CPT-sondering {{cpt}} avviker från mätningen.",
+      "skipped": "{{n}} justering(ar) av lagertolkningen har inte tillämpats: djupintervallet ligger utanför CPT-sonderingen eller är ogiltigt."
+    }
   }
 }

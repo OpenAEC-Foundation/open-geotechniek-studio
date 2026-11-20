@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} has no row of its own in table 7.c of this edition and therefore cannot be chosen with table values. Calculate with project factors from the pile system's self-declaration or from a load test.",
     "noTableBadge": "no table value",
     "useProjectFactors": "Choose with project factors"
+  },
+  "interp": {
+    "add": "Adjust a depth range",
+    "bottom": "Bottom",
+    "bottomAria": "Bottom of the depth range [m NAP]",
+    "cancel": "Cancel",
+    "captureTitle": "Drag from top to bottom to choose the depth range",
+    "change": {
+      "noLayer": "no layer",
+      "qcFixed": "{{qc}}: measured {{min}}–{{max}} MPa (mean {{mean}}) → fixed value {{top}} MPa",
+      "qcLinear": "{{qc}}: measured {{min}}–{{max}} MPa (mean {{mean}}) → linear from {{top}} to {{bottom}} MPa",
+      "soil": "Soil type: {{before}} → {{after}}"
+    },
+    "colChange": "Change (old → new)",
+    "colRange": "Depth range",
+    "comment": "Comment",
+    "commentAria": "Comment on the adjustment",
+    "commentPlaceholder": "Why this adjustment?",
+    "delete": "Delete",
+    "deleteAria": "Delete adjustment A{{n}}",
+    "edit": "Edit",
+    "editAria": "Edit adjustment A{{n}}",
+    "editTitle": "Edit adjustment",
+    "listAria": "Adjustments for this CPT",
+    "markTitle": "Adjusted depth range A{{n}}; click to edit",
+    "newTitle": "New adjustment",
+    "notApplied": {
+      "invalid": "Not applied: invalid depth range or no change specified.",
+      "outsideRange": "Not applied: the depth range lies outside the CPT."
+    },
+    "problem": {
+      "nothing": "Choose a change to the cone resistance or to the soil type.",
+      "order": "The top must be higher than the bottom.",
+      "range": "Choose a depth range: drag in the chart from top to bottom, or type both levels.",
+      "value": "Enter a fixed cone resistance of zero or more."
+    },
+    "qc": "Cone resistance",
+    "qcFixed": "fixed value",
+    "qcLinear": "linear between the edges",
+    "qcNone": "unchanged",
+    "range": "NAP {{top}} to {{bottom}} m",
+    "report": {
+      "colChange": "Change (old → new)",
+      "colComment": "Comment",
+      "colCpt": "CPT",
+      "colNr": "No.",
+      "colRange": "Depth range [m NAP]",
+      "intro": "In this calculation the depth ranges below differ from the measured CPT. The CPT itself has not been changed; an adjustment applies only to this calculation and to the CPT named. In the CPT chart the measurement is drawn thin and the adjusted range is marked.",
+      "title": "Adjustments to the soil layer interpretation"
+    },
+    "resetAll": "Reset all",
+    "resetAllTitle": "Removes all adjustments of this CPT in this calculation; the measurement applies again.",
+    "resultNote": "For CPT {{cpt}} this calculation differs from the measured interpretation. The CPT itself is unchanged.",
+    "resultTitle": "Adjustments to the soil layer interpretation",
+    "save": "Save",
+    "selectHint": "Drag in the chart from top to bottom to choose the depth range, or type the levels. The measured line stays visible in grey.",
+    "soilAria": "Soil type of the depth range",
+    "stateChanged": "{{n}} adjustment(s) for this CPT",
+    "stateMeasured": "as measured",
+    "tableNote": "Soil layer interpretation adjusted for this CPT: {{n}} depth range(s). The values below are calculated with it.",
+    "title": "Soil layer interpretation",
+    "top": "Top",
+    "topAria": "Top of the depth range [m NAP]",
+    "value": "Value",
+    "valueAria": "Fixed cone resistance [MPa]",
+    "warning": {
+      "applied": "Soil layer interpretation adjusted: {{n}} depth range(s) of CPT {{cpt}} differ from the measurement.",
+      "skipped": "{{n}} adjustment(s) of the soil layer interpretation were not applied: the depth range lies outside the CPT or is invalid."
+    }
   }
 }

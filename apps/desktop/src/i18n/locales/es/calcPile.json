@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} no tiene fila propia en la tabla 7.c de esta edición y por eso no se puede elegir con valores de tabla. Calcule con factores de proyecto de la autodeclaración del sistema de pilotes o de un ensayo de carga.",
     "noTableBadge": "sin valor de tabla",
     "useProjectFactors": "Elegir con factores de proyecto"
+  },
+  "interp": {
+    "add": "Ajustar un tramo",
+    "bottom": "Parte inferior",
+    "bottomAria": "Parte inferior del tramo [m NAP]",
+    "cancel": "Cancelar",
+    "captureTitle": "Arrastre de arriba abajo para elegir el tramo",
+    "change": {
+      "noLayer": "sin capa",
+      "qcFixed": "{{qc}}: medido {{min}}–{{max}} MPa (media {{mean}}) → valor fijo {{top}} MPa",
+      "qcLinear": "{{qc}}: medido {{min}}–{{max}} MPa (media {{mean}}) → lineal de {{top}} a {{bottom}} MPa",
+      "soil": "Tipo de suelo: {{before}} → {{after}}"
+    },
+    "colChange": "Cambio (antes → después)",
+    "colRange": "Tramo",
+    "comment": "Comentario",
+    "commentAria": "Comentario sobre el ajuste",
+    "commentPlaceholder": "¿Por qué este ajuste?",
+    "delete": "Eliminar",
+    "deleteAria": "Eliminar el ajuste A{{n}}",
+    "edit": "Editar",
+    "editAria": "Editar el ajuste A{{n}}",
+    "editTitle": "Editar ajuste",
+    "listAria": "Ajustes de este CPT",
+    "markTitle": "Tramo ajustado A{{n}}; haga clic para editar",
+    "newTitle": "Nuevo ajuste",
+    "notApplied": {
+      "invalid": "No aplicado: tramo no válido o sin cambio indicado.",
+      "outsideRange": "No aplicado: el tramo queda fuera del CPT."
+    },
+    "problem": {
+      "nothing": "Elija un cambio de la resistencia de cono o del tipo de suelo.",
+      "order": "La parte superior debe estar por encima de la inferior.",
+      "range": "Elija un tramo: arrastre en el gráfico de arriba abajo o escriba ambos niveles.",
+      "value": "Indique una resistencia de cono fija igual o mayor que cero."
+    },
+    "qc": "Resistencia de cono",
+    "qcFixed": "valor fijo",
+    "qcLinear": "lineal entre los bordes",
+    "qcNone": "sin cambios",
+    "range": "NAP {{top}} a {{bottom}} m",
+    "report": {
+      "colChange": "Cambio (antes → después)",
+      "colComment": "Comentario",
+      "colCpt": "CPT",
+      "colNr": "N.º",
+      "colRange": "Tramo [m NAP]",
+      "intro": "En este cálculo, los tramos siguientes difieren del CPT medido. El CPT en sí no se ha modificado; un ajuste solo vale para este cálculo y para el CPT indicado. En el gráfico del CPT, la medición aparece en trazo fino y el tramo ajustado está marcado.",
+      "title": "Ajustes de la interpretación de capas"
+    },
+    "resetAll": "Restablecer todo",
+    "resetAllTitle": "Elimina todos los ajustes de este CPT en este cálculo; vuelve a valer la medición.",
+    "resultNote": "Para el CPT {{cpt}}, este cálculo difiere de la interpretación medida. El CPT en sí no ha cambiado.",
+    "resultTitle": "Ajustes de la interpretación de capas",
+    "save": "Guardar",
+    "selectHint": "Arrastre en el gráfico de arriba abajo para elegir el tramo, o escriba los niveles. La línea medida sigue visible en gris.",
+    "soilAria": "Tipo de suelo del tramo",
+    "stateChanged": "{{n}} ajuste(s) para este CPT",
+    "stateMeasured": "tal como se midió",
+    "tableNote": "Interpretación de capas ajustada para este CPT: {{n}} tramo(s). Los valores siguientes se han calculado con ella.",
+    "title": "Interpretación de capas",
+    "top": "Parte superior",
+    "topAria": "Parte superior del tramo [m NAP]",
+    "value": "Valor",
+    "valueAria": "Resistencia de cono fija [MPa]",
+    "warning": {
+      "applied": "Interpretación de capas ajustada: {{n}} tramo(s) del CPT {{cpt}} difieren de la medición.",
+      "skipped": "{{n}} ajuste(s) de la interpretación de capas no se han aplicado: el tramo queda fuera del CPT o no es válido."
+    }
   }
 }

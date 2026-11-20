@@ -11,6 +11,7 @@ import { computeSpringStiffness } from "./parts/spring-stiffness";
 import { computeSummary } from "./parts/summary";
 import { pileGeometry, woodTopNap } from "./parts/geometry";
 import { getStandard, usesHistoricalProcedure } from "./standards";
+import { applyOverrides } from "./parts/interpretation-overrides";
 
 // E-moduli [N/mm²] voor de axiale paalstijfheid EA.
 //  - Staal: 210 000 (EN 1993-1-1)
@@ -72,6 +73,19 @@ const napText = (v: number) => `NAP ${fmtNumber(v, 2)} m`;
  * resultaat zien, zonder eerst de kleefgrenzen te verleggen.
  */
 export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
+  // Aanpassingen van de grondlaaginterpretatie gaan er als eerste in: alles
+  // hierna rekent met de aangepaste qc-reeks en lagen van deze sondering.
+  const eff = applyOverrides(cpt, input.soilProfile, input.interpretationOverrides);
+  if (!eff.applied.length) return computePileClamped(input, cpt);
+  const r = computePileClamped({ ...input, soilProfile: eff.layers }, eff.cpt);
+  const used = eff.applied.filter((a) => a.status === "applied").length, skipped = eff.applied.length - used;
+  const notes: string[] = [];
+  if (used) notes.push(ct("calcPile", "interp.warning.applied", "Grondlaaginterpretatie aangepast: {{n}} traject(en) van sondering {{cpt}} wijken af van de meting.", { n: used, cpt: cpt?.id }));
+  if (skipped) notes.push(ct("calcPile", "interp.warning.skipped", "{{n}} aanpassing(en) van de grondlaaginterpretatie zijn niet toegepast: het traject valt buiten de sondering of is ongeldig.", { n: skipped }));
+  return { ...r, interpretation: eff.applied, warnings: [...notes, ...r.warnings] };
+}
+
+function computePileClamped(input: PileInput, cpt: Cpt | null): PileResult {
   const top = input.pileTopNap, toe = input.pileToeNap;
   if ([top, toe, input.negKleefBottomNap].every(Number.isFinite) && top > toe) {
     const neg = Math.min(top, Math.max(toe, input.negKleefBottomNap));

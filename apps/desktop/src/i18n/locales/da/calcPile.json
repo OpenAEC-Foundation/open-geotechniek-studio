@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} har ingen egen række i tabel 7.c i denne udgave og kan derfor ikke vælges med tabelværdier. Regn med projektfaktorer fra pælesystemets egenerklæring eller fra en prøvebelastning.",
     "noTableBadge": "ingen tabelværdi",
     "useProjectFactors": "Vælg med projektfaktorer"
+  },
+  "interp": {
+    "add": "Tilpas et dybdeinterval",
+    "bottom": "Underkant",
+    "bottomAria": "Underkant af dybdeintervallet [m NAP]",
+    "cancel": "Annuller",
+    "captureTitle": "Træk oppefra og ned for at vælge dybdeintervallet",
+    "change": {
+      "noLayer": "intet lag",
+      "qcFixed": "{{qc}}: målt {{min}}–{{max}} MPa (middel {{mean}}) → fast værdi {{top}} MPa",
+      "qcLinear": "{{qc}}: målt {{min}}–{{max}} MPa (middel {{mean}}) → lineært fra {{top}} til {{bottom}} MPa",
+      "soil": "Jordart: {{before}} → {{after}}"
+    },
+    "colChange": "Ændring (før → efter)",
+    "colRange": "Dybdeinterval",
+    "comment": "Kommentar",
+    "commentAria": "Kommentar til tilpasningen",
+    "commentPlaceholder": "Hvorfor denne tilpasning?",
+    "delete": "Slet",
+    "deleteAria": "Slet tilpasning A{{n}}",
+    "edit": "Rediger",
+    "editAria": "Rediger tilpasning A{{n}}",
+    "editTitle": "Rediger tilpasning",
+    "listAria": "Tilpasninger af denne sondering",
+    "markTitle": "Tilpasset dybdeinterval A{{n}}; klik for at redigere",
+    "newTitle": "Ny tilpasning",
+    "notApplied": {
+      "invalid": "Ikke anvendt: ugyldigt dybdeinterval eller ingen ændring angivet.",
+      "outsideRange": "Ikke anvendt: dybdeintervallet ligger uden for sonderingen."
+    },
+    "problem": {
+      "nothing": "Vælg en ændring af konusmodstanden eller af jordarten.",
+      "order": "Overkanten skal ligge højere end underkanten.",
+      "range": "Vælg et dybdeinterval: træk i grafen oppefra og ned, eller skriv begge niveauer.",
+      "value": "Angiv en fast konusmodstand på nul eller mere."
+    },
+    "qc": "Konusmodstand",
+    "qcFixed": "fast værdi",
+    "qcLinear": "lineært mellem kanterne",
+    "qcNone": "uændret",
+    "range": "NAP {{top}} til {{bottom}} m",
+    "report": {
+      "colChange": "Ændring (før → efter)",
+      "colComment": "Kommentar",
+      "colCpt": "Sondering",
+      "colNr": "Nr.",
+      "colRange": "Dybdeinterval [m NAP]",
+      "intro": "I denne beregning afviger dybdeintervallerne nedenfor fra den målte sondering. Selve sonderingen er ikke ændret; en tilpasning gælder kun for denne beregning og for den nævnte sondering. I grafen for sonderingen er målingen tegnet tyndt, og det tilpassede interval er markeret.",
+      "title": "Tilpasninger af laginterpretationen"
+    },
+    "resetAll": "Nulstil alt",
+    "resetAllTitle": "Fjerner alle tilpasninger af denne sondering i denne beregning; målingen gælder igen.",
+    "resultNote": "For sondering {{cpt}} afviger denne beregning fra den målte interpretation. Selve sonderingen er uændret.",
+    "resultTitle": "Tilpasninger af laginterpretationen",
+    "save": "Gem",
+    "selectHint": "Træk i grafen oppefra og ned for at vælge dybdeintervallet, eller skriv niveauerne. Den målte linje forbliver synlig i gråt.",
+    "soilAria": "Jordart i dybdeintervallet",
+    "stateChanged": "{{n}} tilpasning(er) for denne sondering",
+    "stateMeasured": "som målt",
+    "tableNote": "Laginterpretationen er tilpasset for denne sondering: {{n}} dybdeinterval(ler). Værdierne nedenfor er beregnet med den.",
+    "title": "Laginterpretation",
+    "top": "Overkant",
+    "topAria": "Overkant af dybdeintervallet [m NAP]",
+    "value": "Værdi",
+    "valueAria": "Fast konusmodstand [MPa]",
+    "warning": {
+      "applied": "Laginterpretationen er tilpasset: {{n}} dybdeinterval(ler) i sondering {{cpt}} afviger fra målingen.",
+      "skipped": "{{n}} tilpasning(er) af laginterpretationen er ikke anvendt: dybdeintervallet ligger uden for sonderingen eller er ugyldigt."
+    }
   }
 }

@@ -6,6 +6,7 @@ import type { PileInput, PileResult, SettlementResult } from "../types";
 import { pileTypeName, resolvePileType } from "../catalog";
 import { getStandard, standardLabel } from "../standards";
 import { pileGeometry } from "../parts/geometry";
+import { overrideChanges, overrideRange } from "../parts/interpretation-text";
 import "./styles.css";
 import { OaIcon } from "../../../../components/icons/oaIcon";
 
@@ -304,6 +305,26 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       {result.warnings.length > 0 && (
         <div className="pile-warnings">
           {result.warnings.map((w, i) => <div key={i} className="pile-warning"><OaIcon id="status.warning" /> {w}</div>)}
+        </div>
+      )}
+
+      {result.interpretation && result.interpretation.length > 0 && (
+        <div className="pile-interp-result" role="note" aria-label={t("interp.resultTitle", "Aanpassingen aan de grondlaaginterpretatie")}>
+          <strong className="pile-interp-result-title"><OaIcon id="status.warning" /> {t("interp.resultTitle", "Aanpassingen aan de grondlaaginterpretatie")}</strong>
+          <p>{t("interp.resultNote", "Deze berekening wijkt voor sondering {{cpt}} af van de gemeten interpretatie. De sondering zelf is ongewijzigd.", { cpt: input.cptId ?? "" })}</p>
+          <table>
+            <thead><tr><th>#</th><th>{t("interp.colRange", "Traject")}</th><th>{t("interp.colChange", "Wijziging (oud → nieuw)")}</th><th>{t("interp.comment", "Toelichting")}</th></tr></thead>
+            <tbody>
+              {result.interpretation.map((a, i) => (
+                <tr key={a.override.id}>
+                  <td>A{i + 1}</td>
+                  <td>{overrideRange(a.status === "applied" ? a : a.override)}</td>
+                  <td>{overrideChanges(a).map((line) => <span key={line}>{line}</span>)}</td>
+                  <td>{a.override.comment || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 

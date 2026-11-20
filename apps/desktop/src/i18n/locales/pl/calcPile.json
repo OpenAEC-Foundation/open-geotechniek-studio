@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} nie ma własnego wiersza w tabeli 7.c tego wydania i dlatego nie można go wybrać z wartościami tabelarycznymi. Licz ze współczynnikami projektowymi z deklaracji własnej systemu palowego lub z próbnego obciążenia.",
     "noTableBadge": "brak wartości w tabeli",
     "useProjectFactors": "Wybierz ze współczynnikami projektowymi"
+  },
+  "interp": {
+    "add": "Zmień przedział",
+    "bottom": "Dół",
+    "bottomAria": "Dół przedziału [m NAP]",
+    "cancel": "Anuluj",
+    "captureTitle": "Przeciągnij z góry na dół, aby wybrać przedział",
+    "change": {
+      "noLayer": "brak warstwy",
+      "qcFixed": "{{qc}}: pomiar {{min}}–{{max}} MPa (średnio {{mean}}) → stała wartość {{top}} MPa",
+      "qcLinear": "{{qc}}: pomiar {{min}}–{{max}} MPa (średnio {{mean}}) → liniowo od {{top}} do {{bottom}} MPa",
+      "soil": "Rodzaj gruntu: {{before}} → {{after}}"
+    },
+    "colChange": "Zmiana (stare → nowe)",
+    "colRange": "Przedział",
+    "comment": "Uzasadnienie",
+    "commentAria": "Uzasadnienie zmiany",
+    "commentPlaceholder": "Dlaczego ta zmiana?",
+    "delete": "Usuń",
+    "deleteAria": "Usuń zmianę A{{n}}",
+    "edit": "Edytuj",
+    "editAria": "Edytuj zmianę A{{n}}",
+    "editTitle": "Edytuj zmianę",
+    "listAria": "Zmiany dla tego sondowania CPT",
+    "markTitle": "Zmieniony przedział A{{n}}; kliknij, aby edytować",
+    "newTitle": "Nowa zmiana",
+    "notApplied": {
+      "invalid": "Nie zastosowano: nieprawidłowy przedział lub nie podano zmiany.",
+      "outsideRange": "Nie zastosowano: przedział leży poza sondowaniem CPT."
+    },
+    "problem": {
+      "nothing": "Wybierz zmianę oporu stożka lub rodzaju gruntu.",
+      "order": "Góra musi leżeć wyżej niż dół.",
+      "range": "Wybierz przedział: przeciągnij na wykresie z góry na dół albo wpisz oba poziomy.",
+      "value": "Podaj stały opór stożka równy zero lub większy."
+    },
+    "qc": "Opór stożka",
+    "qcFixed": "stała wartość",
+    "qcLinear": "liniowo między krawędziami",
+    "qcNone": "bez zmian",
+    "range": "NAP od {{top}} do {{bottom}} m",
+    "report": {
+      "colChange": "Zmiana (stare → nowe)",
+      "colComment": "Uzasadnienie",
+      "colCpt": "CPT",
+      "colNr": "Nr",
+      "colRange": "Przedział [m NAP]",
+      "intro": "W tym obliczeniu poniższe przedziały różnią się od pomiaru sondowania CPT. Samo sondowanie nie zostało zmienione; zmiana obowiązuje tylko w tym obliczeniu i dla wskazanego sondowania. Na wykresie sondowania pomiar narysowano cienką linią, a zmieniony przedział jest oznaczony.",
+      "title": "Zmiany interpretacji warstw"
+    },
+    "resetAll": "Przywróć wszystko",
+    "resetAllTitle": "Usuwa wszystkie zmiany tego sondowania CPT w tym obliczeniu; znów obowiązuje pomiar.",
+    "resultNote": "Dla sondowania CPT {{cpt}} to obliczenie różni się od interpretacji z pomiaru. Samo sondowanie pozostaje bez zmian.",
+    "resultTitle": "Zmiany interpretacji warstw",
+    "save": "Zapisz",
+    "selectHint": "Przeciągnij na wykresie z góry na dół, aby wybrać przedział, albo wpisz poziomy. Linia pomiaru pozostaje widoczna na szaro.",
+    "soilAria": "Rodzaj gruntu w przedziale",
+    "stateChanged": "{{n}} zmian(y) dla tego sondowania CPT",
+    "stateMeasured": "zgodnie z pomiarem",
+    "tableNote": "Zmieniono interpretację warstw dla tego sondowania CPT: {{n}} przedział(y). Poniższe wartości obliczono z jej uwzględnieniem.",
+    "title": "Interpretacja warstw",
+    "top": "Góra",
+    "topAria": "Góra przedziału [m NAP]",
+    "value": "Wartość",
+    "valueAria": "Stały opór stożka [MPa]",
+    "warning": {
+      "applied": "Zmieniono interpretację warstw: {{n}} przedział(y) sondowania CPT {{cpt}} różnią się od pomiaru.",
+      "skipped": "Nie zastosowano {{n}} zmian(y) interpretacji warstw: przedział leży poza sondowaniem CPT lub jest nieprawidłowy."
+    }
   }
 }
