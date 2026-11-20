@@ -35,10 +35,41 @@ export interface SpreadScene {
   foundationNap: number;
   /** Invloedsdiepte onder het funderingsvlak [m]. */
   zeM: number;
-  /** Omtrek van het bezwijkvlak per kant, in de doorsnede: x [m] en diepte onder het funderingsvlak [m]. */
-  slip: { x: number; depth: number }[][];
+  /** Het gedraineerde bezwijkvlak per kant, in de doorsnede: x [m] en diepte onder het aanlegniveau [m]. */
+  slip: SceneSlip[];
+  /** Tangens van de maaiveldhelling β (aflopend vanaf x = B/2) en van de helling α van de onderkant (oplopend naar +x). */
+  slopeTan: number;
+  baseTan: number;
+  /** Doorsnede van de voet: onderkant onder de hoek α, bovenkant horizontaal. x en z [m] ten opzichte van het aanlegniveau. */
+  footingProfile: ScenePoint[];
   /** Het bezwijkmechanisme zelf, gedraineerd en (als er ongedraineerd is getoetst) ongedraineerd; x vanaf het midden van b'. */
   mechanism: SpreadSlip;
+}
+
+export interface ScenePoint { x: number; z: number }
+export interface SceneSlip {
+  /** +1: de kant waarheen Hd wijst en waar het maaiveld afloopt; −1: de andere kant. */
+  dir: 1 | -1;
+  /** Het maatgevende mechanisme; bij een symmetrisch geval beide kanten. */
+  governing: boolean;
+  /** Gesloten omtrek: rand, punt van de wig, overgangszone, uittredepunt, rand. */
+  outline: { x: number; depth: number }[];
+  /** Verlengde van de glijlijn door de dekking: van het uittredepunt tot het maaiveld. */
+  daylight: [{ x: number; depth: number }, { x: number; depth: number }];
+}
+
+/** Hoogte van het maaiveld boven het aanlegniveau op afstand x van het midden van de voet: horizontaal tot de rand, daarna aflopend onder β. */
+export const groundHeight = (s: Pick<SpreadScene, "groundZ" | "slopeTan" | "footing">, x: number): number => s.groundZ - Math.max(0, x - s.footing.size[0] / 2) * s.slopeTan;
+
+/** Doorsnede van een grondlaag in het blok: horizontale laaggrenzen, aan de bovenkant afgesneden door het hellende maaiveld. */
+export function layerPolygon(s: Pick<SpreadScene, "groundZ" | "slopeTan" | "footing" | "halfWidthM">, layer: SceneLayer): ScenePoint[] {
+  const hw = s.halfWidthM, crest = s.footing.size[0] / 2, g = (x: number) => groundHeight(s, x);
+  const out: ScenePoint[] = [{ x: -hw, z: layer.bottomZ }], xAt = (z: number) => crest + (s.groundZ - z) / s.slopeTan;
+  if (g(hw) >= layer.topZ - 1e-9) out.push({ x: hw, z: layer.bottomZ }, { x: hw, z: layer.topZ });
+  else if (g(hw) > layer.bottomZ) out.push({ x: hw, z: layer.bottomZ }, { x: hw, z: g(hw) }, { x: Math.max(crest, xAt(layer.topZ)), z: layer.topZ });
+  else out.push({ x: xAt(layer.bottomZ), z: layer.bottomZ }, { x: Math.max(crest, xAt(layer.topZ)), z: layer.topZ });
+  out.push({ x: -hw, z: layer.topZ });
+  return out;
 }
 
 export interface SpreadSlip {
@@ -53,20 +84,32 @@ export interface SpreadSlip {
 }
 
 /**
- * Het bezwijkmechanisme in de doorsnede over de breedte. Een horizontale belasting in de breedterichting
- * maakt het eenzijdig, met de hoeken uit slip.ts; een excentriciteit of een maaiveldhelling alleen eenzijdig.
+ * Het bezwijkmechanisme in de doorsnede over de breedte, aan beide kanten. Een horizontale belasting in de
+ * breedterichting, een maaiveldhelling of een hellende onderkant maakt de kant +1 maatgevend (slip.ts).
  */
 export function spreadSlip(input: SpreadInput, r: SpreadOk): SpreadSlip {
   const d = r.dims, c = r.drained, inSection = r.strip || input.hDirection === "B", h = inSection ? input.hDKn : 0;
-  const oneSided = input.hDKn > 0 || input.slopeDeg > 0 || d.eccBM > 1e-6;
+  // De hellende onderkant draait om het midden van de voet; het vlak rekent vanaf het midden van b'.
+  const shape = { bEffM: d.bRawM, slopeDeg: input.slopeDeg, baseTiltDeg: input.baseTiltDeg, coverM: Math.max(0, r.coverM - d.eccBM * Math.tan((input.baseTiltDeg * Math.PI) / 180)) };
   const tanPhi = Math.tan((c.phiD * Math.PI) / 180);
   const obliquity = h <= 0 ? 0 : c.phiRepDeg < 1e-6 || tanPhi < 1e-9 ? (c.cD > 0 ? h / (d.areaM2 * c.cD) : 0) : h / (c.vKn + (d.areaM2 * c.cD) / tanPhi);
   const u = r.undrained, undrainedRatio = u && h > 0 && u.cuD > 0 ? h / (u.dims.areaM2 * u.cuD) : 0;
   return {
     phiDeg: c.phiRepDeg, obliquity, undrainedRatio,
-    drained: slipSurface({ bEffM: d.bRawM, phiDeg: c.phiRepDeg, obliquity, oneSided }),
-    undrained: u ? slipSurface({ bEffM: d.bRawM, phiDeg: 0, obliquity: undrainedRatio, oneSided }) : null,
+    drained: slipSurface({ ...shape, phiDeg: c.phiRepDeg, obliquity }),
+    undrained: u ? slipSurface({ ...shape, phiDeg: 0, obliquity: undrainedRatio }) : null,
   };
+}
+
+/** Korte toelichting bij de twee kanten van het vlak: welke maatgevend is en waarom. */
+export function slipExplanation(input: Pick<SpreadInput, "slopeDeg" | "baseTiltDeg">, m: SlipSurface): string {
+  const f = (v: number, dec: number) => v.toFixed(dec).replace(".", ","), [near, far] = m.sides;
+  if (m.symmetric) return `Het bezwijkvlak is aan beide kanten gelijk: openingshoek ${f(near.fanDeg, 1)}°, ${f(near.maxDepthM, 2)} m diep en ${f(near.reachM, 2)} m naast b'.`;
+  const why = [m.rotationDeg > 0 ? "Hd daarheen wijst" : "", input.slopeDeg > 0 ? "het maaiveld daar afloopt" : "", input.baseTiltDeg > 0 ? "de onderkant daarheen oploopt" : ""].filter(Boolean);
+  const reason = why.length > 1 ? `${why.slice(0, -1).join(", ")} en ${why[why.length - 1]}` : why[0];
+  return `Doorgetrokken: het maatgevende vlak, in de doorsnede rechts: openingshoek ${f(near.fanDeg, 1)}°, ${f(near.maxDepthM, 2)} m diep en ${f(near.reachM, 2)} m naast b'. ` +
+    `Gestreept: het vlak naar de andere kant bij dezelfde belasting (openingshoek ${f(far.fanDeg, 1)}°, ${f(far.maxDepthM, 2)} m diep). ` +
+    `Het eerste is maatgevend omdat ${reason}: de hoofdspanning hoeft naar die kant minder ver te draaien, en naar de andere kant bezwijkt de grond pas bij een ${m.otherSideFactor > 100 ? "meer dan 100" : f(m.otherSideFactor, 2)} keer zo grote belasting.`;
 }
 
 /** Dikte van de getekende voet: de invoer kent geen dikte, dus een kwart van B, binnen de dekking als die er is. */
@@ -96,17 +139,23 @@ export function spreadScene(input: SpreadInput, r: SpreadOk): SpreadScene {
   const tan = input.hDKn / input.vDKn, rLen = len * 1.15, run = (rLen * tan) / Math.sqrt(1 + tan * tan), rise = rLen / Math.sqrt(1 + tan * tan);
   arrows.push({ kind: "R", from: alongL ? [resultantAt[0], resultantAt[1] - run, rise] : [resultantAt[0] - run, resultantAt[1], rise], to: resultantAt, label: "Rd" });
   // Diepte van de tekening: de invloedsdiepte ruim in beeld; een fictief funderingsvlak alleen als het daar dichtbij ligt.
-  const near = 3 * Math.max(r.drained.zeM, 1.5 * B);
-  const depthM = Math.max(1.25 * r.drained.zeM, 2 * B, ...r.punch.filter((p) => p.thicknessM <= near).map((p) => p.thicknessM + 0.3 * B));
+  const near = 3 * Math.max(r.drained.zeM, 1.5 * B), mechanism = spreadSlip(input, r);
+  const slopeTan = Math.tan((input.slopeDeg * Math.PI) / 180), baseTan = Math.tan((input.baseTiltDeg * Math.PI) / 180);
+  // Ook het niet-maatgevende vlak blijft in beeld, tot hooguit 4·B diep.
+  const depthM = Math.max(1.25 * r.drained.zeM, 2 * B, Math.min(4 * B, 1.1 * Math.max(...mechanism.drained.sides.map((x) => x.maxDepthM))), ...r.punch.filter((p) => p.thicknessM <= near).map((p) => p.thicknessM + 0.3 * B));
   const groundZ = input.groundNap - input.foundationNap;
   const layers: SceneLayer[] = r.layers.map((l, i) => ({
     topZ: Math.min(groundZ, i === 0 ? groundZ : l.topNap - input.foundationNap), bottomZ: Math.max(-depthM, (r.layers[i + 1]?.topNap ?? -Infinity) - input.foundationNap), name: l.name, color: layerColor(l),
   })).filter((l) => l.topZ - l.bottomZ > 1e-6);
-  const mechanism = spreadSlip(input, r);
-  const slip = mechanism.drained.sides
-    .map((side) => [...side.wedge.slice(0, 2), ...side.transition, side.passive[1], side.passive[2]].map((q) => ({ x: d.eccBM + q.x, depth: q.z })));
+  // Van het stelsel van het vlak (oorsprong in het midden van b', op de onderkant) naar dat van de voet.
+  const place = (q: { x: number; z: number }) => ({ x: d.eccBM + q.x, depth: q.z - d.eccBM * baseTan });
+  const slip: SceneSlip[] = mechanism.drained.sides.map((side) => ({
+    dir: side.dir, governing: side.governing, outline: [...side.wedge.slice(0, 2), ...side.transition, side.passive[1], side.passive[2]].map(place), daylight: [place(side.passive[1]), place(side.daylight)],
+  }));
+  const topZ = Math.max(thicknessM, (B / 2) * baseTan + 0.1);
+  const footingProfile: ScenePoint[] = [{ x: -B / 2, z: (-B / 2) * baseTan }, { x: B / 2, z: (B / 2) * baseTan }, { x: B / 2, z: topZ }, { x: -B / 2, z: topZ }];
   return {
     strip, lengthM, thicknessM, footing: { center: [0, 0, thicknessM / 2], size: [B, lengthM, thicknessM] }, effective, resultantAt, resultantAngleDeg: (Math.atan(tan) * 180) / Math.PI, arrows, layers,
-    halfWidthM: Math.max(2 * B, B / 2 + Math.min(r.drained.aeM, 4 * B) + 0.4 * B), halfLengthM: strip ? lengthM / 2 : Math.max(lengthM, lengthM / 2 + B), depthM, groundZ, waterZ: input.waterNap - input.foundationNap, foundationNap: input.foundationNap, zeM: r.drained.zeM, slip, mechanism,
+    halfWidthM: Math.max(2 * B, B / 2 + Math.min(r.drained.aeM, 4 * B) + 0.4 * B), halfLengthM: strip ? lengthM / 2 : Math.max(lengthM, lengthM / 2 + B), depthM, groundZ, waterZ: input.waterNap - input.foundationNap, foundationNap: input.foundationNap, zeM: r.drained.zeM, slip, mechanism, slopeTan, baseTan, footingProfile,
   };
 }
