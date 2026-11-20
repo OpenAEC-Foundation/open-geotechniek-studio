@@ -888,7 +888,13 @@ function valueToX(v: number, panel: PanelRect, lo: number, hi: number, inverted:
   return panel.l + (inverted ? (1 - t) : t) * panel.w;
 }
 
-/** Vlak tussen de nullijn en de curve: maakt een stevige laag ook in een smalle kolom zichtbaar. */
+/** Conusweerstand vanaf waar een laag als draagkrachtig geldt: dat deel van de grafiek krijgt een arcering. */
+export const QC_BEARING_MPA = 10;
+
+/**
+ * Vlak tussen de nullijn en de curve, zodat een stevige laag in één oogopslag opvalt. Met `hatchFrom` krijgen de
+ * trajecten waar de waarde daarboven ligt een schuine arcering: daar zit de weerstand.
+ */
 function fillUnderCurve(
   ctx: CanvasRenderingContext2D,
   shared: SharedLayout,
@@ -899,33 +905,59 @@ function fillUnderCurve(
   hi: number,
   inverted: boolean,
   color: string,
+  alpha = 0.22,
+  hatchFrom?: number,
 ) {
   const x0 = valueToX(lo, panel, lo, hi, inverted);
+  const point = (i: number): [number, number] | null => {
+    const d = c.depths[i], v = c.cpt.points[i][key];
+    if (d == null || v == null) return null;
+    return [valueToX(Math.max(lo, Math.min(hi, v)), panel, lo, hi, inverted), depthToY(d, shared, c.depthViewMin, c.depthViewMax)];
+  };
+  const trace = (run: [number, number][]) => {
+    ctx.beginPath();
+    ctx.moveTo(x0, run[0][1]);
+    for (const [x, y] of run) ctx.lineTo(x, y);
+    ctx.lineTo(x0, run[run.length - 1][1]);
+    ctx.closePath();
+  };
+  /** Aaneengesloten stukken van de curve die aan `keep` voldoen. */
+  const runs = (keep: (i: number) => boolean) => {
+    const out: [number, number][][] = [];
+    let run: [number, number][] = [];
+    for (let i = 0; i < c.cpt.points.length; i++) {
+      const pt = keep(i) ? point(i) : null;
+      if (pt) run.push(pt);
+      else { if (run.length > 1) out.push(run); run = []; }
+    }
+    if (run.length > 1) out.push(run);
+    return out;
+  };
   ctx.save();
   ctx.beginPath();
   ctx.rect(panel.l, shared.plotT, panel.w, shared.plotH);
   ctx.clip();
   ctx.fillStyle = color;
-  ctx.globalAlpha = 0.22;
-  let run: [number, number][] = [];
-  const flush = () => {
-    if (run.length > 1) {
-      ctx.beginPath();
-      ctx.moveTo(x0, run[0][1]);
-      for (const [x, y] of run) ctx.lineTo(x, y);
-      ctx.lineTo(x0, run[run.length - 1][1]);
-      ctx.closePath();
+  ctx.globalAlpha = alpha;
+  for (const run of runs(() => true)) { trace(run); ctx.fill(); }
+  if (hatchFrom !== undefined) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    for (const run of runs((i) => (c.cpt.points[i][key] ?? -Infinity) >= hatchFrom)) {
+      const top = run[0][1], bottom = run[run.length - 1][1];
+      ctx.save();
+      trace(run);
+      ctx.clip();
+      ctx.globalAlpha = 0.16;
       ctx.fill();
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      // Schuine lijnen om de 5 px, over de hele breedte van het paneel; de clip houdt ze binnen het vlak.
+      for (let y = Math.min(top, bottom) - panel.w; y < Math.max(top, bottom) + 5; y += 5) { ctx.moveTo(panel.l, y + panel.w); ctx.lineTo(panel.l + panel.w, y); }
+      ctx.stroke();
+      ctx.restore();
     }
-    run = [];
-  };
-  for (let i = 0; i < c.cpt.points.length; i++) {
-    const d = c.depths[i];
-    const v = c.cpt.points[i][key];
-    if (d == null || v == null) { flush(); continue; }
-    run.push([valueToX(Math.max(lo, Math.min(hi, v)), panel, lo, hi, inverted), depthToY(d, shared, c.depthViewMin, c.depthViewMax)]);
   }
-  flush();
   ctx.restore();
 }
 
@@ -940,11 +972,13 @@ function drawCurve(
   color: string,
   lineWidth: number,
   fill: boolean = false,
+  fillAlpha?: number,
+  hatchFrom?: number,
 ) {
   if (!shown(panel)) return;
   const { lo, hi, span, inverted } = rangeInfo(minVal, maxVal);
   if (span <= 0) return;
-  if (fill) fillUnderCurve(ctx, shared, c, panel, key, lo, hi, inverted, color);
+  if (fill) fillUnderCurve(ctx, shared, c, panel, key, lo, hi, inverted, color, fillAlpha, hatchFrom);
   ctx.save();
   ctx.beginPath();
   ctx.rect(panel.l, shared.plotT, panel.w, shared.plotH);
@@ -1518,7 +1552,7 @@ export function renderChart(
     drawPanelHeader(ctx, colors, shared, c.layout.rf,   pt("chart.rfHeader", "Wrijvingsgetal (Rf, %)"),   colors.rf, c.rfViewMax, c.rfViewMin, RF_LADDER);
     if (c.layout.u2) drawPanelHeader(ctx, colors, shared, c.layout.u2, pt("chart.u2Header", "Waterspanning (u2, kN/m²)"), colors.u2, c.u2ViewMin, c.u2ViewMax, U2_LADDER, 1000);
 
-    if (curves.qc) drawCurve(ctx, shared, c, c.layout.qc, "qc", c.qcViewMin, c.qcViewMax, colors.qc, c.layout.compact ? 2.2 : 1.8, c.layout.compact);
+    if (curves.qc) drawCurve(ctx, shared, c, c.layout.qc, "qc", c.qcViewMin, c.qcViewMax, colors.qc, c.layout.compact ? 2.2 : 1.8, true, c.layout.compact ? 0.22 : 0.1, QC_BEARING_MPA);
     if (curves.fs) drawCurve(ctx, shared, c, c.layout.fs, "fs", c.fsViewMin, c.fsViewMax, colors.fs, 1.4);
     // Rf curve is mirrored: low Rf on the right, high Rf on the left.
     if (curves.rf) drawCurve(ctx, shared, c, c.layout.rf, "rf", c.rfViewMax, c.rfViewMin, colors.rf, 1.4);
