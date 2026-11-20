@@ -1,0 +1,96 @@
+{
+  "ribbon": {
+    "group": "Dissipation",
+    "open": "Essais de\ndissipation",
+    "openCount": "Essais de\ndissipation ({{n}})",
+    "openHint": "Graphique, t50 et coefficient de consolidation des essais de dissipation de {{cpt}}",
+    "none": "Aucun essai de dissipation pour {{cpt}} ; ajoutez un fichier GEF de dissipation.",
+    "noCpt": "Ouvrez d'abord un sondage.",
+    "add": "Ajouter\nGEF",
+    "addHint": "Ajouter un fichier GEF de dissipation (temps dans la première colonne) au sondage actif"
+  },
+  "dialog": {
+    "title": "Essais de dissipation - {{cpt}}",
+    "titleEmpty": "Essais de dissipation",
+    "noCpt": "Ouvrez ou choisissez d'abord un sondage.",
+    "empty": "Ce sondage n'a pas d'essais de dissipation. Un fichier BRO XML qui en contient les apporte ; ajoutez ici un fichier GEF de dissipation séparé.",
+    "tests": "Essais",
+    "add": "Ajouter un fichier GEF de dissipation",
+    "remove": "Supprimer l'essai",
+    "removeHint": "Retirer cet essai du sondage",
+    "close": "Fermer",
+    "axis": "Axe du temps",
+    "axisLog": "Logarithmique",
+    "axisSqrt": "Racine du temps"
+  },
+  "input": {
+    "title": "Données",
+    "depth": "Profondeur de l'essai",
+    "channel": "Position du filtre",
+    "u0Mode": "Valeur d'équilibre u₀",
+    "u0": "u₀",
+    "groundwater": "Niveau de la nappe sous le terrain",
+    "groundwaterHint": "u₀ = 9,81 kN/m³ × (profondeur − niveau de la nappe)",
+    "rigidity": "Indice de rigidité Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. Pour l'argile, en général entre 50 et 500 ; sans saisie, 100 s'applique.",
+    "coneArea": "Surface de la pointe",
+    "coneAreaFromFile": "Sans saisie, la valeur du fichier de sondage s'applique.",
+    "coneAreaDefault": "Absent du fichier de sondage ; sans saisie, 1000 mm² s'applique."
+  },
+  "u0Mode": {
+    "last": "dernière mesure",
+    "manual": "saisie",
+    "groundwater": "d'après la nappe et la profondeur"
+  },
+  "result": {
+    "title": "Résultat",
+    "indicative": "Estimation indicative : la théorie vaut pour une argile normalement à légèrement surconsolidée et l'indice de rigidité Iᵣ est une estimation. N'utilisez pas cₕ sans votre propre appréciation."
+  },
+  "row": {
+    "depth": "Profondeur (longueur de pénétration)",
+    "channel": "Position du filtre",
+    "duration": "Durée de la mesure",
+    "ui": "Valeur initiale uᵢ",
+    "uiPeak": "Valeur initiale uᵢ (pic)",
+    "tPeak": "Instant du pic",
+    "u0": "Valeur d'équilibre u₀",
+    "u0Mode": "Origine de u₀",
+    "u50": "Pression interstitielle à U = 0,5",
+    "minU": "Plus petit U mesuré",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (depuis le pic)",
+    "t50Star": "Facteur temps T*₅₀",
+    "coneArea": "Surface de la pointe",
+    "radius": "Rayon du cône r",
+    "ir": "Indice de rigidité Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/an]"
+  },
+  "warning": {
+    "noData": "Trop peu de mesures pour une analyse.",
+    "nonMonotonic": "La pression interstitielle augmente d'abord (comportement dilatant). Le pic sert de valeur initiale et le temps compte à partir du pic (Sully et al., 1999).",
+    "u0FromLast": "u₀ est la dernière mesure. Ce n'est correct que si l'essai a atteint l'équilibre ; sinon saisissez u₀ ou le niveau de la nappe.",
+    "noExcess": "Aucune surpression mesurable ; t₅₀ ne peut pas être déterminé.",
+    "negativeExcess": "La valeur initiale est inférieure à u₀ (dépression). La théorie de cₕ ne s'applique pas ici ; le résultat est au mieux un ordre de grandeur.",
+    "t50NotReached": "La moitié de la surpression ne s'est pas dissipée pendant la mesure ; t₅₀ ne peut pas être déterminé.",
+    "noT50Factor": "Pour un filtre à cet endroit (u3), la publication ne donne pas de T*₅₀ ; cₕ n'a pas été calculé.",
+    "groundwaterMissing": "Le niveau de la nappe n'est pas saisi.",
+    "manualMissing": "u₀ n'est pas saisi."
+  },
+  "chart": {
+    "time": "Temps t [s] (logarithmique)",
+    "rootTime": "Racine du temps √t [√s]",
+    "pressure": "Pression interstitielle u [kPa]",
+    "noData": "Trop peu de mesures pour un graphique."
+  },
+  "message": {
+    "added": "Essai de dissipation à {{depth}} m ajouté.",
+    "depthMissing": "La profondeur n'est pas dans le fichier ; saisissez-la.",
+    "otherCpt": "Le fichier mentionne le sondage {{parent}} ; vérifiez qu'il appartient à {{cpt}}.",
+    "notDissipation": "Pas un fichier GEF de dissipation : la première colonne doit être le temps."
+  },
+  "report": {
+    "section": "Essais de dissipation",
+    "sectionHint": "Une page par essai de dissipation avec le graphique et les valeurs clés"
+  }
+}

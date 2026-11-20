@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Zelfgemaakt testbestand in de opbouw van een BRO-uitgifte van een sondering (dscpt 1.1); geen projectgegevens. -->
+<dispatchDataResponse xmlns="http://www.broservices.nl/xsd/dscpt/1.1" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0" xmlns:cptcommon="http://www.broservices.nl/xsd/cptcommon/1.1" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:om="http://www.opengis.net/om/2.0">
+  <dispatchDocument>
+    <CPT_O gml:id="T_0001">
+      <brocom:broId>CPT-TEST-DISSIPATIE</brocom:broId>
+      <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
+      <researchReportDate><brocom:date>2024-03-12</brocom:date></researchReportDate>
+      <deliveredLocation>
+        <brocom:location><gml:pos srsName="urn:ogc:def:crs:EPSG::28992">120000.00 450000.00</gml:pos></brocom:location>
+      </deliveredLocation>
+      <deliveredVerticalPosition>
+        <cptcommon:offset uom="m">-1.20</cptcommon:offset>
+        <cptcommon:verticalDatum codeSpace="urn:bro:cpt:VerticalDatum">NAP</cptcommon:verticalDatum>
+      </deliveredVerticalPosition>
+      <conePenetrometerSurvey gml:id="T_0002">
+        <cptcommon:dissipationTestPerformed>ja</cptcommon:dissipationTestPerformed>
+        <cptcommon:conePenetrometer>
+          <cptcommon:conePenetrometerType>testconus</cptcommon:conePenetrometerType>
+          <cptcommon:coneSurfaceArea uom="mm2">1500</cptcommon:coneSurfaceArea>
+        </cptcommon:conePenetrometer>
+        <cptcommon:conePenetrationTest gml:id="T_0003">
+          <cptcommon:cptResult>
+            <swe:encoding><swe:TextEncoding decimalSeparator="." tokenSeparator="," blockSeparator=";"/></swe:encoding>
+            <cptcommon:values>1.000,1.000,-999999,0.80,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,0.020,-999999,-999999,-999999,0.010,-999999,1.0;5.340,5.340,-999999,0.45,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,0.020,-999999,-999999,-999999,0.210,-999999,1.0;9.800,9.800,-999999,0.60,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,0.020,-999999,-999999,-999999,0.150,-999999,1.0;12.000,12.000,-999999,9.50,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,-999999,0.020,-999999,-999999,-999999,0.110,-999999,1.0</cptcommon:values>
+          </cptcommon:cptResult>
+        </cptcommon:conePenetrationTest>
+        <cptcommon:dissipationTest gml:id="T_0004">
+          <om:phenomenonTime><gml:TimeInstant gml:id="T_0005"><gml:timePosition>2024-03-11T11:40:00+01:00</gml:timePosition></gml:TimeInstant></om:phenomenonTime>
+          <cptcommon:disResult>
+            <swe:encoding><swe:TextEncoding decimalSeparator="." tokenSeparator="," blockSeparator=";"/></swe:encoding>
+            <cptcommon:values>0,0.600,-999999,0.1500,-999999;5,0.598,-999999,0.1700,-999999;20,0.596,-999999,0.1900,-999999;60,0.595,-999999,0.1800,-999999;200,0.594,-999999,0.1500,-999999;600,0.593,-999999,0.1200,-999999;2000,0.592,-999999,0.0950,-999999;5000,0.592,-999999,0.0900,-999999</cptcommon:values>
+          </cptcommon:disResult>
+          <cptcommon:penetrationLength uom="m">9.800</cptcommon:penetrationLength>
+        </cptcommon:dissipationTest>
+        <cptcommon:dissipationTest gml:id="T_0006">
+          <om:phenomenonTime><gml:TimeInstant gml:id="T_0007"><gml:timePosition>2024-03-11T10:15:00+01:00</gml:timePosition></gml:TimeInstant></om:phenomenonTime>
+          <cptcommon:disResult>
+            <swe:encoding><swe:TextEncoding decimalSeparator="." tokenSeparator="," blockSeparator=";"/></swe:encoding>
+            <cptcommon:values>0,0.450,-999999,0.2100,-999999;1,0.445,-999999,0.2080,-999999;10,0.440,-999999,0.1900,-999999;30,0.436,-999999,0.1650,-999999;100,0.430,-999999,0.1300,-999999;300,0.428,-999999,0.0900,-999999;1000,0.426,-999999,0.0600,-999999;3000,0.425,-999999,0.0520,-999999;6000,0.425,-999999,0.0500,-999999</cptcommon:values>
+          </cptcommon:disResult>
+          <cptcommon:penetrationLength uom="m">5.340</cptcommon:penetrationLength>
+        </cptcommon:dissipationTest>
+      </conePenetrometerSurvey>
+    </CPT_O>
+  </dispatchDocument>
+</dispatchDataResponse>

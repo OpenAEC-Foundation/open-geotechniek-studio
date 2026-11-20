@@ -1,0 +1,96 @@
+{
+  "ribbon": {
+    "group": "Dissipazione",
+    "open": "Prove di\ndissipazione",
+    "openCount": "Prove di\ndissipazione ({{n}})",
+    "openHint": "Grafico, t50 e coefficiente di consolidazione delle prove di dissipazione di {{cpt}}",
+    "none": "Nessuna prova di dissipazione per {{cpt}}; aggiungi un file GEF di dissipazione.",
+    "noCpt": "Apri prima una prova.",
+    "add": "Aggiungi\nGEF",
+    "addHint": "Aggiungi un file GEF di dissipazione (tempo nella prima colonna) alla prova attiva"
+  },
+  "dialog": {
+    "title": "Prove di dissipazione - {{cpt}}",
+    "titleEmpty": "Prove di dissipazione",
+    "noCpt": "Apri o scegli prima una prova.",
+    "empty": "Questa prova non ha prove di dissipazione. Un BRO XML che le contiene le porta con sé; aggiungi qui un file GEF di dissipazione separato.",
+    "tests": "Prove",
+    "add": "Aggiungi file GEF di dissipazione",
+    "remove": "Rimuovi prova",
+    "removeHint": "Rimuovi questa prova dalla prova penetrometrica",
+    "close": "Chiudi",
+    "axis": "Asse del tempo",
+    "axisLog": "Logaritmico",
+    "axisSqrt": "Radice del tempo"
+  },
+  "input": {
+    "title": "Dati",
+    "depth": "Profondità della prova",
+    "channel": "Posizione del filtro",
+    "u0Mode": "Valore di equilibrio u₀",
+    "u0": "u₀",
+    "groundwater": "Livello di falda sotto il piano campagna",
+    "groundwaterHint": "u₀ = 9,81 kN/m³ × (profondità − livello di falda)",
+    "rigidity": "Indice di rigidezza Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. Per l'argilla di solito tra 50 e 500; senza valore si applica 100.",
+    "coneArea": "Area della punta",
+    "coneAreaFromFile": "Senza valore si applica quello del file della prova.",
+    "coneAreaDefault": "Non presente nel file della prova; senza valore si applica 1000 mm²."
+  },
+  "u0Mode": {
+    "last": "ultima lettura",
+    "manual": "inserito",
+    "groundwater": "da falda e profondità"
+  },
+  "result": {
+    "title": "Risultato",
+    "indicative": "Stima indicativa: la teoria vale per argilla normalmente o leggermente sovraconsolidata e l'indice di rigidezza Iᵣ è una stima. Non usare cₕ senza una propria valutazione."
+  },
+  "row": {
+    "depth": "Profondità (lunghezza di penetrazione)",
+    "channel": "Posizione del filtro",
+    "duration": "Durata della misura",
+    "ui": "Valore iniziale uᵢ",
+    "uiPeak": "Valore iniziale uᵢ (picco)",
+    "tPeak": "Istante del picco",
+    "u0": "Valore di equilibrio u₀",
+    "u0Mode": "Origine di u₀",
+    "u50": "Pressione interstiziale a U = 0,5",
+    "minU": "U minimo nella misura",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (dal picco)",
+    "t50Star": "Fattore tempo T*₅₀",
+    "coneArea": "Area della punta",
+    "radius": "Raggio del cono r",
+    "ir": "Indice di rigidezza Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/anno]"
+  },
+  "warning": {
+    "noData": "Troppo poche letture per un'analisi.",
+    "nonMonotonic": "La pressione interstiziale dapprima aumenta (comportamento dilatante). Il picco vale come valore iniziale e il tempo si conta dal picco (Sully et al., 1999).",
+    "u0FromLast": "u₀ è l'ultima lettura. È corretto solo se la prova è arrivata all'equilibrio; altrimenti inserisci u₀ o il livello di falda.",
+    "noExcess": "Nessuna sovrappressione misurabile; t₅₀ non è determinabile.",
+    "negativeExcess": "Il valore iniziale è inferiore a u₀ (depressione). La teoria per cₕ qui non vale; il risultato è al massimo un ordine di grandezza.",
+    "t50NotReached": "Metà della sovrappressione non si è dissipata durante la misura; t₅₀ non è determinabile.",
+    "noT50Factor": "Per un filtro in questa posizione (u3) la pubblicazione non fornisce T*₅₀; cₕ non è stato calcolato.",
+    "groundwaterMissing": "Il livello di falda non è inserito.",
+    "manualMissing": "u₀ non è inserito."
+  },
+  "chart": {
+    "time": "Tempo t [s] (logaritmico)",
+    "rootTime": "Radice del tempo √t [√s]",
+    "pressure": "Pressione interstiziale u [kPa]",
+    "noData": "Troppo poche letture per un grafico."
+  },
+  "message": {
+    "added": "Prova di dissipazione a {{depth}} m aggiunta.",
+    "depthMissing": "La profondità non è nel file; inseriscila.",
+    "otherCpt": "Il file indica la prova {{parent}}; verifica che appartenga a {{cpt}}.",
+    "notDissipation": "Non è un file GEF di dissipazione: la prima colonna deve essere il tempo."
+  },
+  "report": {
+    "section": "Prove di dissipazione",
+    "sectionHint": "Una pagina per prova di dissipazione con il grafico e i valori principali"
+  }
+}

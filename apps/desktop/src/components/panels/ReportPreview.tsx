@@ -10,6 +10,7 @@ import {
   type ReportSections,
 } from "../../store/reportSectionsState";
 import { REPORT_TEXT_KEYS, sampleReportText, type ReportTextKey } from "../../utils/reportTexts";
+import { dissipationTestCount } from "../../dissipatie/cptDissipation";
 import "./ReportPreview.css";
 import { OaIcon } from "../icons/oaIcon";
 
@@ -207,6 +208,12 @@ export default function ReportPreview() {
               checked={sections.testReport === true}
               onChange={(v) => setSections((s) => ({ ...s, testReport: v }))}
               hint={t("report.section.testReportHint", "Per sondering een pagina met de gegevens volgens NEN-EN-ISO 22476-1")} />
+            {dissipationTestCount(cpts) > 0 && (
+              <SectionToggle label={t("dissipatie:report.section", "Dissipatietests")}
+                checked={sections.dissipation === true}
+                onChange={(v) => setSections((s) => ({ ...s, dissipation: v }))}
+                hint={t("dissipatie:report.sectionHint", "Per dissipatietest een pagina met de grafiek en de kerngetallen")} />
+            )}
             <SectionToggle label={t("report.section.sbtLegend", "Indicatieve qc/Rf-legenda")}
               checked={sections.sbtLegend}
               onChange={(v) => setSections((s) => ({ ...s, sbtLegend: v }))}

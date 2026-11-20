@@ -1,0 +1,96 @@
+{
+  "ribbon": {
+    "group": "Dissipation",
+    "open": "Dissipations-\nförsök",
+    "openCount": "Dissipations-\nförsök ({{n}})",
+    "openHint": "Diagram, t50 och konsolideringskoefficient för dissipationsförsöken vid {{cpt}}",
+    "none": "Inga dissipationsförsök vid {{cpt}}; lägg till en GEF-dissipationsfil.",
+    "noCpt": "Öppna först en sondering.",
+    "add": "Lägg till\nGEF",
+    "addHint": "Lägg till en GEF-dissipationsfil (tid i första kolumnen) till den aktiva sonderingen"
+  },
+  "dialog": {
+    "title": "Dissipationsförsök - {{cpt}}",
+    "titleEmpty": "Dissipationsförsök",
+    "noCpt": "Öppna eller välj först en sondering.",
+    "empty": "Den här sonderingen har inga dissipationsförsök. En BRO-XML med dissipationsförsök har dem med sig; en separat GEF-dissipationsfil lägger du till här.",
+    "tests": "Försök",
+    "add": "Lägg till GEF-dissipationsfil",
+    "remove": "Ta bort försök",
+    "removeHint": "Ta bort det här försöket från sonderingen",
+    "close": "Stäng",
+    "axis": "Tidsaxel",
+    "axisLog": "Logaritmisk",
+    "axisSqrt": "Rot-tid"
+  },
+  "input": {
+    "title": "Indata",
+    "depth": "Försökets djup",
+    "channel": "Filterposition",
+    "u0Mode": "Jämviktsvärde u₀",
+    "u0": "u₀",
+    "groundwater": "Grundvattennivå under markytan",
+    "groundwaterHint": "u₀ = 9,81 kN/m³ × (djup − grundvattennivå)",
+    "rigidity": "Styvhetsindex Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. För lera oftast mellan 50 och 500; utan värde gäller 100.",
+    "coneArea": "Spetsens area",
+    "coneAreaFromFile": "Utan värde gäller värdet från sonderingsfilen.",
+    "coneAreaDefault": "Finns inte i sonderingsfilen; utan värde gäller 1000 mm²."
+  },
+  "u0Mode": {
+    "last": "sista mätningen",
+    "manual": "angivet",
+    "groundwater": "från grundvattennivå och djup"
+  },
+  "result": {
+    "title": "Resultat",
+    "indicative": "Vägledande härledning: teorin gäller för normalt till lätt överkonsoliderad lera och styvhetsindex Iᵣ är en uppskattning. Använd inte cₕ utan egen bedömning."
+  },
+  "row": {
+    "depth": "Djup (sonderingslängd)",
+    "channel": "Filterposition",
+    "duration": "Mätningens längd",
+    "ui": "Startvärde uᵢ",
+    "uiPeak": "Startvärde uᵢ (topp)",
+    "tPeak": "Tidpunkt för toppen",
+    "u0": "Jämviktsvärde u₀",
+    "u0Mode": "Källa till u₀",
+    "u50": "Portryck vid U = 0,5",
+    "minU": "Minsta U i mätningen",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (från toppen)",
+    "t50Star": "Tidsfaktor T*₅₀",
+    "coneArea": "Spetsens area",
+    "radius": "Spetsens radie r",
+    "ir": "Styvhetsindex Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/år]"
+  },
+  "warning": {
+    "noData": "För få mätvärden för en analys.",
+    "nonMonotonic": "Portrycket stiger först (dilatant beteende). Toppen gäller som startvärde och tiden räknas från toppen (Sully et al., 1999).",
+    "u0FromLast": "u₀ är den sista mätningen. Det stämmer bara om försöket drevs till jämvikt; ange annars u₀ eller grundvattennivån.",
+    "noExcess": "Det finns inget mätbart övertryck; t₅₀ kan inte bestämmas.",
+    "negativeExcess": "Startvärdet ligger under u₀ (undertryck). Teorin för cₕ gäller inte här; resultatet är på sin höjd en storleksordning.",
+    "t50NotReached": "Hälften av övertrycket har inte utjämnats under mätningen; t₅₀ kan inte bestämmas.",
+    "noT50Factor": "För ett filter på den här platsen (u3) anger publikationen ingen T*₅₀; cₕ har inte beräknats.",
+    "groundwaterMissing": "Grundvattennivån är inte angiven.",
+    "manualMissing": "u₀ är inte angivet."
+  },
+  "chart": {
+    "time": "Tid t [s] (logaritmisk)",
+    "rootTime": "Roten ur tiden √t [√s]",
+    "pressure": "Portryck u [kPa]",
+    "noData": "För få mätvärden för ett diagram."
+  },
+  "message": {
+    "added": "Dissipationsförsök på {{depth}} m tillagt.",
+    "depthMissing": "Djupet finns inte i filen; ange det.",
+    "otherCpt": "Filen anger sondering {{parent}}; kontrollera att den hör till {{cpt}}.",
+    "notDissipation": "Inte en GEF-dissipationsfil: första kolumnen måste vara tiden."
+  },
+  "report": {
+    "section": "Dissipationsförsök",
+    "sectionHint": "En sida per dissipationsförsök med diagram och nyckeltal"
+  }
+}

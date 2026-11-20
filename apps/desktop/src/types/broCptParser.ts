@@ -21,6 +21,7 @@ import { BRO_CHANNELS, maskPreExcavation } from "./bedrockCompatibility";
 import type { Cpt, MeasurementPoint } from "./cpt";
 import { attachValidation, type ValidationReport } from "../validation/report";
 import { excludeDepthOutliers } from "../validation/depthOutliers";
+import { parseBroDissipationTests } from "../dissipatie/broDissipation";
 
 const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
   i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
@@ -252,8 +253,10 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
   const methods=[...new Set(report.depthMethods!.map(item=>item.method))];
   report.depthMethod=methods.length===1?methods[0]:methods.length?"mixed":undefined;
   report.points=points.length;
+  const dissipationTests=parseBroDissipationTests(doc.documentElement,filename);
 
   return attachValidation({
+    ...(dissipationTests.length?{dissipation_tests:dissipationTests}:{}),
     id: broId,
     metadata: {
       measurements,

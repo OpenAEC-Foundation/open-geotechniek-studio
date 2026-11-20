@@ -5,6 +5,8 @@ export interface Cpt {
   metadata: Metadata;
   position?: Position;
   points: MeasurementPoint[];
+  /** Dissipatietests bij deze sondering (zie src/dissipatie). */
+  dissipation_tests?: import("../dissipatie/types").DissipationTest[];
 }
 
 export interface Metadata {

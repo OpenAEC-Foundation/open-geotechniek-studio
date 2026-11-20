@@ -1,0 +1,96 @@
+{
+  "ribbon": {
+    "group": "Dyssypacja",
+    "open": "Badania\ndyssypacji",
+    "openCount": "Badania\ndyssypacji ({{n}})",
+    "openHint": "Wykres, t50 i współczynnik konsolidacji badań dyssypacji dla {{cpt}}",
+    "none": "Brak badań dyssypacji dla {{cpt}}; dodaj plik GEF z badaniem dyssypacji.",
+    "noCpt": "Najpierw otwórz sondowanie.",
+    "add": "Dodaj\nGEF",
+    "addHint": "Dodaj plik GEF z badaniem dyssypacji (czas w pierwszej kolumnie) do aktywnego sondowania"
+  },
+  "dialog": {
+    "title": "Badania dyssypacji - {{cpt}}",
+    "titleEmpty": "Badania dyssypacji",
+    "noCpt": "Najpierw otwórz lub wybierz sondowanie.",
+    "empty": "To sondowanie nie ma badań dyssypacji. Plik BRO XML z badaniami dyssypacji zawiera je od razu; osobny plik GEF dodasz tutaj.",
+    "tests": "Badania",
+    "add": "Dodaj plik GEF z dyssypacją",
+    "remove": "Usuń badanie",
+    "removeHint": "Usuń to badanie z sondowania",
+    "close": "Zamknij",
+    "axis": "Oś czasu",
+    "axisLog": "Logarytmiczna",
+    "axisSqrt": "Pierwiastek z czasu"
+  },
+  "input": {
+    "title": "Dane",
+    "depth": "Głębokość badania",
+    "channel": "Położenie filtra",
+    "u0Mode": "Wartość równowagi u₀",
+    "u0": "u₀",
+    "groundwater": "Zwierciadło wody pod terenem",
+    "groundwaterHint": "u₀ = 9,81 kN/m³ × (głębokość − zwierciadło wody)",
+    "rigidity": "Wskaźnik sztywności Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. Dla iłów zwykle od 50 do 500; bez wartości przyjmuje się 100.",
+    "coneArea": "Powierzchnia stożka",
+    "coneAreaFromFile": "Bez wartości obowiązuje wartość z pliku sondowania.",
+    "coneAreaDefault": "Brak w pliku sondowania; bez wartości przyjmuje się 1000 mm²."
+  },
+  "u0Mode": {
+    "last": "ostatni pomiar",
+    "manual": "wpisana",
+    "groundwater": "z poziomu wody i głębokości"
+  },
+  "result": {
+    "title": "Wynik",
+    "indicative": "Oszacowanie orientacyjne: teoria dotyczy iłów normalnie i lekko prekonsolidowanych, a wskaźnik sztywności Iᵣ jest szacunkiem. Nie stosuj cₕ bez własnej oceny."
+  },
+  "row": {
+    "depth": "Głębokość (długość sondowania)",
+    "channel": "Położenie filtra",
+    "duration": "Czas trwania pomiaru",
+    "ui": "Wartość początkowa uᵢ",
+    "uiPeak": "Wartość początkowa uᵢ (szczyt)",
+    "tPeak": "Czas szczytu",
+    "u0": "Wartość równowagi u₀",
+    "u0Mode": "Źródło u₀",
+    "u50": "Ciśnienie porowe przy U = 0,5",
+    "minU": "Najmniejsze U w pomiarze",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (od szczytu)",
+    "t50Star": "Czynnik czasu T*₅₀",
+    "coneArea": "Powierzchnia stożka",
+    "radius": "Promień stożka r",
+    "ir": "Wskaźnik sztywności Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/rok]"
+  },
+  "warning": {
+    "noData": "Za mało pomiarów do analizy.",
+    "nonMonotonic": "Ciśnienie porowe najpierw rośnie (zachowanie dylatancyjne). Szczyt przyjęto jako wartość początkową, a czas liczy się od szczytu (Sully et al., 1999).",
+    "u0FromLast": "u₀ to ostatni pomiar. Jest to poprawne tylko wtedy, gdy badanie doprowadzono do równowagi; w przeciwnym razie wpisz u₀ lub poziom wody.",
+    "noExcess": "Brak mierzalnej nadwyżki ciśnienia; nie można wyznaczyć t₅₀.",
+    "negativeExcess": "Wartość początkowa leży poniżej u₀ (podciśnienie). Teoria dla cₕ tu nie obowiązuje; wynik to co najwyżej rząd wielkości.",
+    "t50NotReached": "Połowa nadwyżki ciśnienia nie rozproszyła się w czasie pomiaru; nie można wyznaczyć t₅₀.",
+    "noT50Factor": "Dla filtra w tym położeniu (u3) publikacja nie podaje T*₅₀; nie obliczono cₕ.",
+    "groundwaterMissing": "Nie wpisano poziomu wody gruntowej.",
+    "manualMissing": "Nie wpisano u₀."
+  },
+  "chart": {
+    "time": "Czas t [s] (logarytmicznie)",
+    "rootTime": "Pierwiastek z czasu √t [√s]",
+    "pressure": "Ciśnienie porowe u [kPa]",
+    "noData": "Za mało pomiarów na wykres."
+  },
+  "message": {
+    "added": "Dodano badanie dyssypacji na {{depth}} m.",
+    "depthMissing": "W pliku nie ma głębokości; wpisz ją.",
+    "otherCpt": "Plik wskazuje sondowanie {{parent}}; sprawdź, czy należy do {{cpt}}.",
+    "notDissipation": "To nie jest plik GEF z dyssypacją: pierwsza kolumna musi zawierać czas."
+  },
+  "report": {
+    "section": "Badania dyssypacji",
+    "sectionHint": "Jedna strona na badanie dyssypacji z wykresem i głównymi wartościami"
+  }
+}
