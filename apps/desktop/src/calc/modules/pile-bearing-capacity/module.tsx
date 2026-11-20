@@ -16,6 +16,7 @@ import { buildPileReport, pileReportFileName } from "./parts/build-report";
 import { SettingsPanel } from "./ui/SettingsPanel";
 import { CapacityTable } from "./ui/CapacityTable";
 import { ct } from "../../i18n";
+import { defaultStandard } from "./standards";
 
 function defaultInput(ctx: ProjectContext): PileInput {
   const cpt = ctx.activeCptId ? ctx.cpts.get(ctx.activeCptId) : null;
@@ -28,7 +29,8 @@ function defaultInput(ctx: ProjectContext): PileInput {
   const water = groundNap - 0.5;
   return {
     cptId: ctx.activeCptId,
-    standard: "nen-9997-2017",
+    // 2025 zodra de tabel voor de gangbare typen volledig is; tot dan 2017.
+    standard: defaultStandard(),
     pileTypeId: "steel-pipe-driven-closed-2017",
     diameterMm: 219,
     wallThicknessMm: 8.0,

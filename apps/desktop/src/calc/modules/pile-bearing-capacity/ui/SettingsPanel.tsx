@@ -47,7 +47,7 @@ export function SettingsPanel({ input, onChange }: PanelProps<PileInput, PileRes
     <Section title={t("settings.factorsTitle", "Paalfactoren · {{type}}", { type: type?.name ?? input.pileTypeId })}>
       <table className="cs-layer-table cs-settings-table" aria-label={t("factors.title", "Paalfactoren")}>
         <thead><tr><th>{t("settings.factor", "Factor")}</th><th>{t("settings.table", "Tabel")}</th><th>{t("settings.project", "Project")}</th></tr></thead>
-        <tbody>{FACTORS.map(([key, label]) => <tr key={key}><td>{label}</td><td className="cs-settings-default">{type?.[key] === undefined ? "—" : sizeText(type[key])}</td>
+        <tbody>{FACTORS.map(([key, label]) => <tr key={key}><td>{label}</td><td className="cs-settings-default">{type?.[key] === undefined || (type.factorsMissing && key !== "beta" && key !== "s") ? "—" : sizeText(type[key])}</td>
           <td><NumberInput label={t("settings.projectValueAria", "{{factor}} project", { factor: label })} value={own?.[key]} onChange={(v) => setFactor(key, v)} /></td></tr>)}</tbody>
       </table>
       {own && <>

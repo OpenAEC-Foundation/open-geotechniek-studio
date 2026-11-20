@@ -144,7 +144,9 @@
     "type": "Tipo di palo",
     "wallThickness": "Spessore della parete",
     "wallThicknessAria": "Spessore della parete [mm]",
-    "woodDiameterAtJoint": "Diametro del legno al giunto"
+    "woodDiameterAtJoint": "Diametro del legno al giunto",
+    "system": "Sistema di pali",
+    "standardSize": "Misura standard"
   },
   "profile": {
     "bottom": "Base",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(prolunga e legno)",
       "layer": "Strato",
       "title": "Attrito negativo",
-      "zone": "Zona: testa del palo NAP {{top}} fino a NAP {{bottom}} —"
+      "zone": "Zona: testa del palo NAP {{top}} fino a NAP {{bottom}} —",
+      "perimeterTitle": "Perimetro del fusto in questo strato",
+      "perimeterNote": "Os;i è il perimetro medio del fusto nello strato: la prolunga in calcestruzzo sopra il giunto, il legno sotto."
     },
     "pending": {
       "missingEA": "Inserisci la rigidezza assiale <strong>EA</strong> in <strong>Palo</strong>. Per questo tipo di palo EA non è ricavata dalla sezione; il valore deriva dal sistema di palo selezionato.",
@@ -361,5 +365,11 @@
     "taperLength": "lunghezza rastremata dalla testa",
     "toeSize": "dimensione della punta",
     "wall": "parete"
+  },
+  "system": {
+    "noTable2025": "Per {{system}} i fattori di classe del palo della NEN 9997-1:2025 non sono ancora nella tabella di questo programma; nulla viene stimato. Il sistema non è quindi selezionabile per questa edizione. Scegliere l'edizione 2017 o calcolare con fattori di progetto da un'autodichiarazione o una prova di carico.",
+    "noTableRow": "{{system}} non ha una riga propria nella tabella 7.c di questa edizione e quindi non è selezionabile con valori di tabella. Calcolare con fattori di progetto dell'autodichiarazione del sistema di pali o di una prova di carico.",
+    "noTableBadge": "nessun valore di tabella",
+    "useProjectFactors": "Scegli con fattori di progetto"
   }
 }

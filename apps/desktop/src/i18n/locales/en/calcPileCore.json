@@ -39,7 +39,9 @@
     "historicalConstantSection": "The historical profile only supports a constant pile cross-section or an explicit timber taper",
     "cptTooShallow": "CPT too shallow (reaches {{reach}} m, requires ≥ {{required}} m)",
     "pileSizeInvalid": "The pile size must be finite and greater than zero",
-    "historicalGroupAnalysis": "Historical multi-CPT analysis is not yet verified; use a single CPT"
+    "historicalGroupAnalysis": "Historical multi-CPT analysis is not yet verified; use a single CPT",
+    "factorsMissing2025": "The pile class factors of NEN 9997-1:2025 for this pile type are not yet in the table. Choose the 2017 edition or enter project factors (self-declaration or load test).",
+    "factorsMissingNoRow": "This pile system has no row of its own in table 7.c of this edition. Enter project factors (self-declaration or load test)."
   },
   "warnings": {
     "factors": "Factors: {{edition}}; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Tapered timber pile: settlement and spring values with variable EA are not verified and are not determined.",
     "settlementHistorical": "Historical settlement and spring values are not verified and are not determined.",
     "settlementLineUnsupported": "Load-settlement curve {{line}} not yet supported: settlement and spring values are not determined.",
-    "extension": "Concrete extension {{size}} mm down to the joint at NAP {{joint}} m: above the joint the perimeter of the extension is used, below it that of the timber; negative skin friction with the mean perimeter over the friction zone, positive shaft friction per layer.",
+    "extension": "Concrete extension {{size}} mm down to the joint at NAP {{joint}} m: above the joint the perimeter of the extension is used, below it that of the timber; negative and positive skin friction are calculated per layer with the perimeter of that layer.",
     "taperWithExtension": "Timber taper from the joint: positive shaft friction with mean perimeter per layer. No increase of pile factors for taper.",
-    "taper": "Timber taper: negative skin friction with mean perimeter over the friction zone; positive shaft friction with mean perimeter per layer. Without concrete extension or increase for taper.",
+    "taper": "Timber taper: negative and positive skin friction with the mean perimeter per layer. Without concrete extension or increase for taper.",
     "deviatingToeSize": "Deviating toe size: check the pile base shape factor β and the permitted shaft friction range for this installation method.",
-    "qbMaxCapped": "qb;max capped at 15 MPa (raw value {{raw}} MPa)"
+    "qbMaxCapped": "qb;max capped at 15 MPa (raw value {{raw}} MPa)",
+    "settlementLineUnknown": "No load-settlement curve from the table is known for this pile type: settlement and spring values are not determined."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "CPT out of range",
       "kleefLevels": "above friction zone",
       "eaMissing": "EA missing",
-      "notComputable": "not calculable"
+      "notComputable": "not calculable",
+      "factorsMissing": "no pile factors"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — historical reference profile",
     "nen-6743-2006": "NEN 6743-1:2006 — historical",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — original factors",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — existing calculation model"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — existing calculation model",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — pile class factors 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; public reference 05290 pp. 31–32 (single precast pile)",
@@ -103,7 +108,10 @@
     "conditions": "Historical compression pile model: sand; no pile group, OCR, grain size or excavation correction. Shaft peaks conservatively capped at 12 MPa. Settlement not verified."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, table 7.c (sand/sandy gravel)"
+    "table2017": "NEN 9997-1:2016+C2:2017, table 7.c (sand/sandy gravel)",
+    "table2025": "NEN 9997-1:2025+C1:2025, table 7.c",
+    "noTableRow2017": "No row in NEN 9997-1:2016+C2:2017, table 7.c",
+    "noTableRowConditions": "No row of its own in table 7.c of the 2017 edition: calculate with the pile class factors from the pile system's self-declaration or from a load test."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Timber driven pile — round, with or without concrete extension",
       "conditions": "Round timber cross-section, constant or linearly tapered from the top of the timber; optionally with a concrete extension down to the joint. No increase of pile factors for taper."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Screw pile — lost tip, permanent steel casing",
+      "conditions": "Table row steel pile, screwed, with constant cross-section above the screw tip (without grout injection). The tube size determines the shaft perimeter; enter the screw tip as toe size. Concrete-filled tube."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Soil-displacing screw pile — cast in situ"
+    },
+    "concrete-auger-cased": {
+      "name": "DPA pile — cased auger pile"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Sand, saturated",
     "clay": "Clay, saturated",
     "peat": "Peat, saturated"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Precast concrete pile",
+    "steel-tube-closed": "Steel tube pile, closed end",
+    "screw-injection": "Screw injection pile",
+    "screw-permanent-casing": "Screw pile, permanent casing",
+    "screw-lost-tip": "Screw pile, withdrawn casing",
+    "screw-soil-displacing": "Soil-displacing screw pile",
+    "vibro": "Vibro pile",
+    "auger": "Auger pile (CFA)",
+    "auger-cased": "DPA pile (cased auger)",
+    "bored": "Bored pile",
+    "timber": "Timber pile",
+    "timber-extension": "Timber pile with concrete extension"
   }
 }

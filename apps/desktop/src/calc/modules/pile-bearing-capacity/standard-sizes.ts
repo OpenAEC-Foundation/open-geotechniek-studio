@@ -5,6 +5,9 @@ import { ct } from "../../i18n";
 /** Buitendiameters van stalen buispalen [mm], volgens de gangbare buisreeks. */
 export const STEEL_TUBE_OD = [168.3, 193.7, 219.1, 244.5, 273, 323.9, 355.6, 406.4, 457, 508, 559, 610];
 
+/** Mantelbuizen voor in de grond gevormde palen [mm]: dezelfde buisreeks, vanaf Ø323,9. */
+export const CASING_OD = STEEL_TUBE_OD.filter((d) => d > 300);
+
 /** Prefab betonpalen, vierkant [mm]. */
 export const PREFAB_SQUARE = [180, 220, 250, 290, 320, 350, 400, 450];
 
@@ -17,6 +20,7 @@ export const EXTENSION_PRESETS = [
   { id: "rond-280", label: "Rond Ø280", sizeMm: 280, isCircular: true },
   { id: "rond-180", label: "Rond Ø180", sizeMm: 180, isCircular: true },
   { id: "vierkant-250", label: "Vierkant 250×250", sizeMm: 250, isCircular: false },
+  { id: "vierkant-320", label: "Vierkant 320×320", sizeMm: 320, isCircular: false },
 ] as const;
 export const EXTENSION_LENGTHS_M = [1.5, 2, 2.5, 4];
 
@@ -32,6 +36,12 @@ export const DEFAULT_SIZES: Record<string, number[]> = {
   "timber-uniform": TIMBER_HEAD,
   "steel-pipe-driven-closed": STEEL_TUBE_OD,
   "steel-pipe-driven-closed-2017": STEEL_TUBE_OD,
+  "steel-screw-permanent-casing": STEEL_TUBE_OD,
+  // In de grond gevormd met een stalen mantelbuis: de buisreeks vanaf Ø323,9.
+  "concrete-driven-casing-hammered": CASING_OD,
+  "concrete-driven-casing-vibrated": CASING_OD,
+  "concrete-screw-displacement": CASING_OD,
+  "concrete-screw-soil-displacing": CASING_OD,
 };
 
 export interface Presets {

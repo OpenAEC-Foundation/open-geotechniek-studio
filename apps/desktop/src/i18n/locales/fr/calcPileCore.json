@@ -39,7 +39,9 @@
     "historicalConstantSection": "Le profil historique ne prend en charge qu'une section de pieu constante ou une conicité explicite du bois",
     "cptTooShallow": "CPT trop peu profond (atteint {{reach}} m, nécessite ≥ {{required}} m)",
     "pileSizeInvalid": "La dimension du pieu doit être finie et supérieure à zéro",
-    "historicalGroupAnalysis": "L'analyse historique sur plusieurs CPT n'est pas encore vérifiée ; utilisez un seul CPT"
+    "historicalGroupAnalysis": "L'analyse historique sur plusieurs CPT n'est pas encore vérifiée ; utilisez un seul CPT",
+    "factorsMissing2025": "Les facteurs de classe de pieu de la NEN 9997-1:2025 pour ce type de pieu ne figurent pas encore dans le tableau. Choisissez l'édition 2017 ou saisissez des facteurs de projet (autodéclaration ou essai de chargement).",
+    "factorsMissingNoRow": "Ce système de pieux n'a pas de ligne propre dans le tableau 7.c de cette édition. Saisissez des facteurs de projet (autodéclaration ou essai de chargement)."
   },
   "warnings": {
     "factors": "Facteurs : {{edition}} ; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Pieu bois conique : les valeurs de tassement et de ressort avec un EA variable ne sont pas vérifiées et ne sont pas déterminées.",
     "settlementHistorical": "Les valeurs historiques de tassement et de ressort ne sont pas vérifiées et ne sont pas déterminées.",
     "settlementLineUnsupported": "Courbe charge-tassement {{line}} pas encore prise en charge : les valeurs de tassement et de ressort ne sont pas déterminées.",
-    "extension": "Rehausse en béton {{size}} mm jusqu'à la jonction à NAP {{joint}} m : au-dessus de la jonction, le périmètre de la rehausse est utilisé, en dessous celui du bois ; frottement négatif avec le périmètre moyen sur la zone de frottement, frottement latéral positif par couche.",
+    "extension": "Rehausse en béton {{size}} mm jusqu'à la jonction à NAP {{joint}} m : au-dessus de la jonction, le périmètre de la rehausse est utilisé, en dessous celui du bois ; les frottements négatif et positif sont calculés par couche avec le périmètre de cette couche.",
     "taperWithExtension": "Conicité du bois depuis la jonction : frottement latéral positif avec le périmètre moyen par couche. Pas de majoration des facteurs de pieu pour la conicité.",
-    "taper": "Conicité du bois : frottement négatif avec le périmètre moyen sur la zone de frottement ; frottement latéral positif avec le périmètre moyen par couche. Sans rehausse en béton ni majoration pour la conicité.",
+    "taper": "Conicité du bois : frottements négatif et positif avec le périmètre moyen par couche. Sans rehausse en béton ni majoration pour la conicité.",
     "deviatingToeSize": "Dimension de pointe différente : vérifiez le facteur de forme de pointe β et la plage de frottement latéral admise pour cette méthode de mise en œuvre.",
-    "qbMaxCapped": "qb;max plafonné à 15 MPa (valeur brute {{raw}} MPa)"
+    "qbMaxCapped": "qb;max plafonné à 15 MPa (valeur brute {{raw}} MPa)",
+    "settlementLineUnknown": "Aucune courbe charge-tassement du tableau n'est connue pour ce type de pieu : le tassement et les raideurs ne sont pas déterminés."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "CPT trop court",
       "kleefLevels": "au-dessus de la zone de frottement",
       "eaMissing": "EA manquant",
-      "notComputable": "non calculable"
+      "notComputable": "non calculable",
+      "factorsMissing": "pas de facteurs de pieu"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — profil de référence historique",
     "nen-6743-2006": "NEN 6743-1:2006 — historique",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — facteurs d'origine",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modèle de calcul existant"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modèle de calcul existant",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — facteurs de classe de pieu 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991 ; référence publique 05290 p. 31–32 (pieu préfabriqué isolé)",
@@ -103,7 +108,10 @@
     "conditions": "Modèle historique de pieu en compression : sable ; pas de correction pour groupe de pieux, OCR, granulométrie ou excavation. Pics le long du fût plafonnés de manière prudente à 12 MPa. Tassement non vérifié."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, tableau 7.c (sable/gravier sableux)"
+    "table2017": "NEN 9997-1:2016+C2:2017, tableau 7.c (sable/gravier sableux)",
+    "table2025": "NEN 9997-1:2025+C1:2025, tableau 7.c",
+    "noTableRow2017": "Aucune ligne dans NEN 9997-1:2016+C2:2017, tableau 7.c",
+    "noTableRowConditions": "Pas de ligne propre dans le tableau 7.c de l'édition 2017 : calculez avec les facteurs de classe de pieu issus de l'autodéclaration du système de pieux ou d'un essai de chargement."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Pieu bois battu — circulaire, avec ou sans rehausse en béton",
       "conditions": "Section de bois circulaire, constante ou à conicité linéaire depuis le haut du bois ; éventuellement avec une rehausse en béton jusqu'à la jonction. Pas de majoration des facteurs de pieu pour la conicité."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Pieu vissé — pointe perdue, tube acier permanent",
+      "conditions": "Ligne du tableau pieu en acier, vissé, de section constante au-dessus de la pointe vissée (sans injection de coulis). Le diamètre du tube détermine le périmètre du fût ; saisissez la pointe vissée comme dimension de pointe. Tube rempli de béton."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Pieu vissé refoulant — moulé en place"
+    },
+    "concrete-auger-cased": {
+      "name": "Pieu DPA — pieu à la tarière tubée"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Sable, saturé",
     "clay": "Argile, saturée",
     "peat": "Tourbe, saturée"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Pieu préfabriqué en béton",
+    "steel-tube-closed": "Pieu tubulaire en acier, pointe fermée",
+    "screw-injection": "Pieu vissé injecté",
+    "screw-permanent-casing": "Pieu vissé, tube permanent",
+    "screw-lost-tip": "Pieu vissé, tube retiré",
+    "screw-soil-displacing": "Pieu vissé refoulant",
+    "vibro": "Pieu vibro",
+    "auger": "Pieu à la tarière continue",
+    "auger-cased": "Pieu DPA (tarière tubée)",
+    "bored": "Pieu foré",
+    "timber": "Pieu en bois",
+    "timber-extension": "Pieu en bois avec rehausse en béton"
   }
 }

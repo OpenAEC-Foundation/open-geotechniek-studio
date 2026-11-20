@@ -93,6 +93,7 @@ const INVALID_REASON:Record<InvalidKind,string>={
  cptTooShort:'sondering buiten bereik',
  kleefLevels:'boven kleefzone',
  eaMissing:'EA ontbreekt',
+ factorsMissing:'geen paalfactoren',
  notComputable:'niet berekenbaar',
 };
 /** Korte reden voor een cel die niet te berekenen is, in de actieve taal. */

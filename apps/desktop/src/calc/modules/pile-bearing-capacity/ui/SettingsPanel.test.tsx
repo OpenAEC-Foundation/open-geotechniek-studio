@@ -37,7 +37,7 @@ describe("instellingen paaldraagvermogen", () => {
     const onChange = vi.fn();
     render(<SettingsPanel input={input} result={result} onChange={onChange} />);
     fireEvent.click(screen.getByRole("button", { name: "+ Opzetter" }));
-    expect(onChange.mock.lastCall![0].presets.extensions).toEqual([{ sizeMm: 280, isCircular: true }, { sizeMm: 180, isCircular: true }, { sizeMm: 250, isCircular: false }, { sizeMm: 220, isCircular: true }]);
+    expect(onChange.mock.lastCall![0].presets.extensions).toEqual([{ sizeMm: 280, isCircular: true }, { sizeMm: 180, isCircular: true }, { sizeMm: 250, isCircular: false }, { sizeMm: 320, isCircular: false }, { sizeMm: 220, isCircular: true }]);
     const lengths = screen.getByLabelText("Lengtes opzetter [m]");
     fireEvent.change(lengths, { target: { value: "1 3" } });
     fireEvent.keyDown(lengths, { key: "Enter" });

@@ -144,7 +144,9 @@
     "type": "Pæletype",
     "wallThickness": "Godstykkelse",
     "wallThicknessAria": "Godstykkelse [mm]",
-    "woodDiameterAtJoint": "Trædiameter ved samlingen"
+    "woodDiameterAtJoint": "Trædiameter ved samlingen",
+    "system": "Pælesystem",
+    "standardSize": "Standardmål"
   },
   "profile": {
     "bottom": "Bund",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(forlænger og træ)",
       "layer": "Lag",
       "title": "Negativ overflademodstand",
-      "zone": "Zone: pælehoved NAP {{top}} til NAP {{bottom}} —"
+      "zone": "Zone: pælehoved NAP {{top}} til NAP {{bottom}} —",
+      "perimeterTitle": "Skaftets omkreds i dette lag",
+      "perimeterNote": "Os;i er skaftets middelomkreds i laget: betonforlængeren over samlingen, træet under."
     },
     "pending": {
       "missingEA": "Indtast den aksiale stivhed <strong>EA</strong> under <strong>Pæl</strong>. For denne pæletype udledes EA ikke af tværsnittet; værdien følger af det valgte pælesystem.",
@@ -361,5 +365,11 @@
     "taperLength": "konisk længde fra hoved",
     "toeSize": "spidsstørrelse",
     "wall": "væg"
+  },
+  "system": {
+    "noTable2025": "For {{system}} er pæleklassefaktorerne i NEN 9997-1:2025 endnu ikke med i programmets tabel; intet skønnes. Systemet kan derfor ikke vælges for denne udgave. Vælg 2017-udgaven, eller regn med projektfaktorer fra en egenerklæring eller prøvebelastning.",
+    "noTableRow": "{{system}} har ingen egen række i tabel 7.c i denne udgave og kan derfor ikke vælges med tabelværdier. Regn med projektfaktorer fra pælesystemets egenerklæring eller fra en prøvebelastning.",
+    "noTableBadge": "ingen tabelværdi",
+    "useProjectFactors": "Vælg med projektfaktorer"
   }
 }

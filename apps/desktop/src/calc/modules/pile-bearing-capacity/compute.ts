@@ -94,6 +94,10 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   const historical = usesHistoricalProcedure(input.standard);
   const pileType = resolvePileType(input);
   if (!pileType) return emptyResult(msg("errors.pileTypeNotSupported", "Paaltype niet ondersteund voor deze normversie: {{id}}", { id: input.pileTypeId }));
+  // Zonder tabelwaarden wordt er niet gerekend: geen geschatte of geleende factoren.
+  if (pileType.factorsMissing) return emptyResult(input.standard === "nen-9997-2025"
+    ? msg("errors.factorsMissing2025", "Voor dit paaltype zijn de paalklassefactoren van NEN 9997-1:2025 nog niet in de tabel opgenomen. Kies de editie 2017 of vul projectfactoren in (zelfverklaring of proefbelasting).")
+    : msg("errors.factorsMissingNoRow", "Dit paalsysteem heeft geen eigen rij in tabel 7.c van deze editie. Vul projectfactoren in (zelfverklaring of proefbelasting)."), "factorsMissing");
   const taper = input.timberTaper;
   const ext = input.concreteExtension;
   if (ext && (pileType.material !== "wood" || ![ext.jointNap, ext.sizeMm].every(Number.isFinite) || ext.sizeMm <= 0 ||
@@ -118,7 +122,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     const f = input.projectFactors;
     if (![f.alphaP, f.alphaS, f.alphaT, f.beta, f.s].every(Number.isFinite) ||
         f.alphaP <= 0 || f.alphaS < 0 || f.alphaT < 0 || f.beta <= 0 || f.beta > 1 || f.s <= 0 ||
-        !f.source?.trim() || !(historical ? [getStandard(input.standard)!.edition] : ["2017", "2025"]).includes(f.edition)) {
+        !f.source?.trim() || !(historical ? [getStandard(input.standard)!.edition] : input.standard === "nen-9997-2025" ? ["2025"] : ["2017", "2025"]).includes(f.edition)) {
       return emptyResult(msg("errors.projectFactorsInvalid", "Projectfactoren vereisen geldige waarden, een bron en een editie die bij de gekozen norm past"));
     }
   }
@@ -235,7 +239,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
 
   // Taps hout en een betonopzetter geven elk een paal met wisselende EA; de
   // zakkingsformules gaan uit van één EA en zijn daarvoor niet geverifieerd.
-  settlement.available = !taper && !ext && !historical && (pileType.settlementLine ?? 1) === 1;
+  settlement.available = !taper && !ext && !historical && !pileType.settlementLineUnknown && (pileType.settlementLine ?? 1) === 1;
   if (!settlement.available) {
     settlement.sls = anyZero();
     settlement.uls = anyZero();
@@ -260,13 +264,13 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   }));
   if (pileType.conditions) warnings.push(catalogText(pileType.conditions));
   if (input.projectFactors?.edition === "2025") warnings.push(msg("warnings.projectFactors2025", "Projectfactoren 2025 toegepast; dit is geen volledige omzetting van de rekenmethode naar NEN 9997:2025."));
-  if (!settlement.available) warnings.push(ext ? msg("warnings.settlementExtension", "Houten paal met betonopzetter: zakking en veerwaarden met verschillende EA voor beton en hout zijn niet geverifieerd en worden niet bepaald.") : taper ? msg("warnings.settlementTaper", "Tapse houten paal: zakking en veerwaarden met variabele EA zijn niet geverifieerd en worden niet bepaald.") : historical ? msg("warnings.settlementHistorical", "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald.") : msg("warnings.settlementLineUnsupported", "Lastzakkingslijn {{line}} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.", { line: pileType.settlementLine }));
-  if (ext) warnings.push(msg("warnings.extension", "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m: boven de las rekent de omtrek van de opzetter, eronder die van het hout; negatieve kleef met de gemiddelde omtrek over de kleefzone, positieve kleef per laag.", {
+  if (!settlement.available) warnings.push(ext ? msg("warnings.settlementExtension", "Houten paal met betonopzetter: zakking en veerwaarden met verschillende EA voor beton en hout zijn niet geverifieerd en worden niet bepaald.") : taper ? msg("warnings.settlementTaper", "Tapse houten paal: zakking en veerwaarden met variabele EA zijn niet geverifieerd en worden niet bepaald.") : historical ? msg("warnings.settlementHistorical", "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald.") : pileType.settlementLineUnknown ? msg("warnings.settlementLineUnknown", "Voor dit paaltype is geen lastzakkingslijn uit de tabel bekend: zakking en veerwaarden worden niet bepaald.") : msg("warnings.settlementLineUnsupported", "Lastzakkingslijn {{line}} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.", { line: pileType.settlementLine }));
+  if (ext) warnings.push(msg("warnings.extension", "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m: boven de las rekent de omtrek van de opzetter, eronder die van het hout; negatieve en positieve kleef rekenen per laag met de omtrek van die laag.", {
     size: `${ext.isCircular ? "Ø" : `${ext.sizeMm}×`}${ext.sizeMm}`, joint: ext.jointNap.toFixed(2),
   }));
   if (taper) warnings.push(ext
     ? msg("warnings.taperWithExtension", "Houttapsheid vanaf de las: positieve kleef met gemiddelde omtrek per laag. Geen verhoging van paalfactoren door coniciteit.")
-    : msg("warnings.taper", "Houttapsheid: negatieve kleef met gemiddelde omtrek over de kleefzone; positieve kleef met gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit."));
+    : msg("warnings.taper", "Houttapsheid: negatieve en positieve kleef met de gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit."));
   if (!taper && baseDiameterMm !== input.diameterMm) warnings.push(msg("warnings.deviatingToeSize", "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering."));
   if (base.qbMaxMpaRaw > 15) {
     warnings.push(msg("warnings.qbMaxCapped", "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)", { raw: base.qbMaxMpaRaw.toFixed(2) }));

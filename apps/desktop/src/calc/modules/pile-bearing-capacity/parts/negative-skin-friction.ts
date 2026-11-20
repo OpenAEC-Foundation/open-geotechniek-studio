@@ -8,8 +8,13 @@ const PI = Math.PI;
 const toRad = (deg: number) => (deg * PI) / 180;
 
 export function computeNegKleef(input: PileInput): NegKleefResult {
-  const Os = meanShaftPerimeter(input, getPileType(input.pileTypeId)?.isCircular ?? true, input.pileTopNap, input.negKleefBottomNap);
   const type = getPileType(input.pileTypeId);
+  const isCircular = type?.isCircular ?? true;
+  // Gemiddelde over het hele kleeftraject: alleen ter informatie. De kleef
+  // zelf rekent per laag met de omtrek van die laag, zodat een bredere
+  // betonopzetter of een tapse kop telt waar hij zit (bovenin, bij lage
+  // korrelspanning) en niet wordt uitgesmeerd over de diepere lagen.
+  const Os = meanShaftPerimeter(input, isCircular, input.pileTopNap, input.negKleefBottomNap);
   const deltaFactor = usesHistoricalProcedure(input.standard) && type?.material === "concrete" && type.requiresEA ? 1 : .75;
 
   // Filter lagen die in de neg.kleef-zone vallen (boven negKleefBottomNap)
@@ -66,7 +71,9 @@ export function computeNegKleef(input: PileInput): NegKleefResult {
     const k0TanDeltaRaw = k0 * tanDelta;
     const k0TanDelta = Math.max(k0TanDeltaRaw, input.ksMinFactor);
 
-    const fsNkRep = sigmaGemRep * Os * k0TanDelta; // kN
+    // Bij een constante doorsnede is dit exact de ene schachtomtrek.
+    const perimeterM = thickness > 0 ? meanShaftPerimeter(input, isCircular, layerTop, layerBot) : Os;
+    const fsNkRep = sigmaGemRep * perimeterM * k0TanDelta; // kN
 
     sigmaCum = sigmaBot;
 
@@ -79,6 +86,7 @@ export function computeNegKleef(input: PileInput): NegKleefResult {
       k0,
       delta,
       k0TanDelta,
+      perimeterM,
       fsNkRep,
     };
   });

@@ -144,7 +144,9 @@
     "type": "Pfahltyp",
     "wallThickness": "Wanddicke",
     "wallThicknessAria": "Wanddicke [mm]",
-    "woodDiameterAtJoint": "Holzdurchmesser am Stoß"
+    "woodDiameterAtJoint": "Holzdurchmesser am Stoß",
+    "system": "Pfahlsystem",
+    "standardSize": "Standardmaß"
   },
   "profile": {
     "bottom": "Unten",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(Aufsatz und Holz)",
       "layer": "Schicht",
       "title": "Negative Mantelreibung",
-      "zone": "Zone: Pfahlkopf NAP {{top}} bis NAP {{bottom}} —"
+      "zone": "Zone: Pfahlkopf NAP {{top}} bis NAP {{bottom}} —",
+      "perimeterTitle": "Schaftumfang in dieser Schicht",
+      "perimeterNote": "Os;i ist der mittlere Schaftumfang innerhalb der Schicht: der Betonaufsatz oberhalb des Stoßes, das Holz darunter."
     },
     "pending": {
       "missingEA": "Geben Sie unter <strong>Pfahl</strong> die Axialsteifigkeit <strong>EA</strong> ein. Für diesen Pfahltyp wird EA nicht aus dem Querschnitt abgeleitet; der Wert ergibt sich aus dem gewählten Pfahlsystem.",
@@ -361,5 +365,11 @@
     "taperLength": "konische Länge ab Kopf",
     "toeSize": "Fußabmessung",
     "wall": "Wand"
+  },
+  "system": {
+    "noTable2025": "Für {{system}} stehen die Pfahlklassenfaktoren der NEN 9997-1:2025 noch nicht in der Tabelle dieses Programms; es wird nichts geschätzt. Das System ist daher bei dieser Ausgabe nicht wählbar. Wählen Sie die Ausgabe 2017 oder rechnen Sie mit Projektfaktoren aus einer Selbsterklärung oder Probebelastung.",
+    "noTableRow": "{{system}} hat keine eigene Zeile in Tabelle 7.c dieser Ausgabe und ist daher nicht mit Tabellenwerten wählbar. Rechnen Sie mit Projektfaktoren aus der Selbsterklärung des Pfahlsystems oder aus einer Probebelastung.",
+    "noTableBadge": "kein Tabellenwert",
+    "useProjectFactors": "Mit Projektfaktoren wählen"
   }
 }

@@ -733,3 +733,11 @@
 .pile-fail { color: #DC2626; }
 
 .pile-visual-error { margin: 0 0 8px; padding: 6px 10px; border-left: 3px solid var(--oa-error); background: var(--oa-error-tint); color: var(--oa-text); font-size: 12px; }
+
+/* Paalsysteem kiezen: tegels met een schetsje van de paalvorm. */
+.pile-system-tiles { grid-template-columns: repeat(3, 1fr); }
+.pile-system-tiles .cs-tile { line-height: 1.2; text-align: center; }
+.pile-system-tiles .cs-tile svg.pile-sketch { width: 28px; height: 35px; }
+.pile-system-tiles .cs-tile small { font: 400 9px var(--oa-font-body); color: var(--oa-text-secondary); }
+.pile-system-tile--no-table { opacity: .55; border-style: dashed; }
+.pile-system-blocked { margin: 0 0 6px; }

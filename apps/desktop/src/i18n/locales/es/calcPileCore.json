@@ -39,7 +39,9 @@
     "historicalConstantSection": "El perfil histórico solo admite una sección de pilote constante o una conicidad explícita de la madera",
     "cptTooShallow": "CPT demasiado somero (alcanza {{reach}} m, se requiere ≥ {{required}} m)",
     "pileSizeInvalid": "La dimensión del pilote debe ser finita y mayor que cero",
-    "historicalGroupAnalysis": "El análisis histórico con varios CPT aún no está verificado; utilice un único CPT"
+    "historicalGroupAnalysis": "El análisis histórico con varios CPT aún no está verificado; utilice un único CPT",
+    "factorsMissing2025": "Los factores de clase de pilote de la NEN 9997-1:2025 para este tipo de pilote aún no están en la tabla. Elija la edición 2017 o introduzca factores de proyecto (autodeclaración o ensayo de carga).",
+    "factorsMissingNoRow": "Este sistema de pilotes no tiene fila propia en la tabla 7.c de esta edición. Introduzca factores de proyecto (autodeclaración o ensayo de carga)."
   },
   "warnings": {
     "factors": "Coeficientes: {{edition}}; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Pilote de madera cónico: el asiento y los valores de muelle con EA variable no están verificados y no se determinan.",
     "settlementHistorical": "El asiento histórico y los valores de muelle no están verificados y no se determinan.",
     "settlementLineUnsupported": "Curva carga-asiento {{line}} aún no admitida: el asiento y los valores de muelle no se determinan.",
-    "extension": "Recrecido de hormigón de {{size}} mm hasta la junta a NAP {{joint}} m: por encima de la junta se usa el perímetro del recrecido y por debajo el de la madera; rozamiento negativo con el perímetro medio en la zona de rozamiento, rozamiento positivo por fuste por capa.",
+    "extension": "Recrecido de hormigón de {{size}} mm hasta la junta a NAP {{joint}} m: por encima de la junta se usa el perímetro del recrecido y por debajo el de la madera; el rozamiento negativo y el positivo se calculan por capa con el perímetro de esa capa.",
     "taperWithExtension": "Conicidad de la madera desde la junta: rozamiento positivo por fuste con el perímetro medio por capa. Sin aumento de los coeficientes del pilote por conicidad.",
-    "taper": "Conicidad de la madera: rozamiento negativo con el perímetro medio en la zona de rozamiento; rozamiento positivo por fuste con el perímetro medio por capa. Sin recrecido de hormigón ni aumento por conicidad.",
+    "taper": "Conicidad de la madera: rozamiento negativo y positivo con el perímetro medio por capa. Sin recrecido de hormigón ni aumento por conicidad.",
     "deviatingToeSize": "Dimensión de punta distinta: compruebe el factor de forma de la base del pilote β y el tramo admisible de rozamiento por fuste para este método de ejecución.",
-    "qbMaxCapped": "qb;max limitado a 15 MPa (valor bruto {{raw}} MPa)"
+    "qbMaxCapped": "qb;max limitado a 15 MPa (valor bruto {{raw}} MPa)",
+    "settlementLineUnknown": "No se conoce ninguna curva carga-asiento de la tabla para este tipo de pilote: no se determinan el asiento ni las rigideces."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "CPT fuera de alcance",
       "kleefLevels": "sobre la zona de rozamiento",
       "eaMissing": "falta EA",
-      "notComputable": "no calculable"
+      "notComputable": "no calculable",
+      "factorsMissing": "sin factores de pilote"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — perfil de referencia histórico",
     "nen-6743-2006": "NEN 6743-1:2006 — histórica",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — coeficientes originales",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modelo de cálculo existente"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modelo de cálculo existente",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — factores de clase de pilote 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; referencia pública 05290 pp. 31–32 (pilote prefabricado aislado)",
@@ -103,7 +108,10 @@
     "conditions": "Modelo histórico de pilote a compresión: arena; sin corrección por grupo de pilotes, OCR, tamaño de grano ni excavación. Picos de fuste limitados de forma conservadora a 12 MPa. Asiento no verificado."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, tabla 7.c (arena/arena con grava)"
+    "table2017": "NEN 9997-1:2016+C2:2017, tabla 7.c (arena/arena con grava)",
+    "table2025": "NEN 9997-1:2025+C1:2025, tabla 7.c",
+    "noTableRow2017": "Sin fila en NEN 9997-1:2016+C2:2017, tabla 7.c",
+    "noTableRowConditions": "Sin fila propia en la tabla 7.c de la edición 2017: calcule con los factores de clase de pilote de la autodeclaración del sistema de pilotes o de un ensayo de carga."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Pilote hincado de madera — circular, con o sin recrecido de hormigón",
       "conditions": "Sección de madera circular, constante o con conicidad lineal desde la parte superior de la madera; opcionalmente con recrecido de hormigón hasta la junta. Sin aumento de los coeficientes del pilote por conicidad."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Pilote de rosca — punta perdida, tubo de acero permanente",
+      "conditions": "Fila de la tabla pilote de acero, roscado, de sección constante por encima de la punta de rosca (sin inyección de lechada). El tamaño del tubo determina el perímetro del fuste; introduzca la punta de rosca como dimensión de punta. Tubo relleno de hormigón."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Pilote de rosca con desplazamiento — hormigonado in situ"
+    },
+    "concrete-auger-cased": {
+      "name": "Pilote DPA — pilote de barrena entubada"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Arena, saturada",
     "clay": "Arcilla, saturada",
     "peat": "Turba, saturada"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Pilote prefabricado de hormigón",
+    "steel-tube-closed": "Pilote tubular de acero, punta cerrada",
+    "screw-injection": "Pilote de rosca con inyección",
+    "screw-permanent-casing": "Pilote de rosca, tubo permanente",
+    "screw-lost-tip": "Pilote de rosca, tubo recuperado",
+    "screw-soil-displacing": "Pilote de rosca con desplazamiento",
+    "vibro": "Pilote vibro",
+    "auger": "Pilote de barrena continua",
+    "auger-cased": "Pilote DPA (barrena entubada)",
+    "bored": "Pilote perforado",
+    "timber": "Pilote de madera",
+    "timber-extension": "Pilote de madera con recrecido de hormigón"
   }
 }

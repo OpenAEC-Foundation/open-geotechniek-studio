@@ -1,6 +1,27 @@
 # Paalsoorten in de draagvermogenmodule
 
-De catalogus bevat elf varianten: het behouden stalen-buisprojectmodel, vierkante en ronde prefab betonpalen, een gesloten stalen buispaal volgens tabel 2017, twee typen betonpalen met teruggewonnen mantelbuis, een betonschroefpaal, een stalen schroefpaal met groutinjectie, een avegaarpaal, een boorpaal met steunvloeistof en een houten paal met constante of taps verlopende ronde doorsnede.
+De invoer begint bij het paalsysteem (`pile-systems.ts`): prefab betonpaal, stalen buispaal met gesloten punt, schroefinjectiepaal, schroefpaal met verloren punt met blijvende of met getrokken buis, grondverdringende schroefpaal, vibropaal, avegaarpaal, DPA-paal (verbuisde avegaarpaal), boorpaal en de houten paal met of zonder betonopzetter. Een systeem verwijst naar een of meer tabelrijen uit de catalogus en bepaalt de vorm: de doorsnede, of de schachtmaat constant is of verloopt, de standaardmaten en de velden in het invoerscherm.
+
+| Paalsysteem | Tabelrijen (`pileTypeId`) | Schachtomtrek per niveau |
+|---|---|---|
+| Prefab betonpaal | `concrete-prefab-prestressed-driven`, `concrete-prefab-round` | constant: 4 × zijde, of π × diameter |
+| Stalen buispaal, gesloten punt | `steel-pipe-driven-closed-2017`, `steel-pipe-driven-closed` | constant: π × buisdiameter |
+| Schroefinjectiepaal | `steel-screw-grout` | constant: π × groutschacht |
+| Schroefpaal, blijvende buis | `steel-screw-permanent-casing` | constant: π × buisdiameter; de schroefpunt telt alleen voor de punt |
+| Schroefpaal, getrokken buis | `concrete-screw-displacement` | constant: π × schachtdiameter |
+| Grondverdringende schroefpaal | `concrete-screw-soil-displacing` | constant: π × schachtdiameter |
+| Vibropaal | `concrete-driven-casing-hammered`, `concrete-driven-casing-vibrated` | constant: π × schachtdiameter; de voetplaat telt alleen voor de punt |
+| Avegaarpaal | `concrete-auger` | constant: π × diameter |
+| DPA-paal | `concrete-auger-cased` | constant: π × diameter |
+| Boorpaal | `concrete-bored` | constant: π × diameter |
+| Houten paal | `timber-uniform` | taps: lineair van kop naar punt |
+| Houten paal met betonopzetter | `timber-uniform` met `concreteExtension` | boven de las de opzetter (vierkant of rond), eronder het tapse hout |
+
+Opgeslagen invoer houdt de bestaande `pileTypeId`-waarden; het systeem wordt daaruit afgeleid (`pileSystemIdOf`). Bestaande projecten openen en rekenen daardoor ongewijzigd. De grondverdringende schroefpaal en de DPA-paal hebben geen eigen rij in tabel 7.c:2017 en rekenen alleen met projectfactoren. De editie 2025 staat in [PAALFACTOREN-2025.md](PAALFACTOREN-2025.md).
+
+Negatieve kleef en positieve schachtwrijving rekenen per grondlaag met de lengtegemiddelde omtrek binnen die laag; resultaat en uitdraai tonen die omtrek per laag. Bij een constante doorsnede is dat de ene schachtomtrek en verandert er niets. Bij taps hout of een betonopzetter over meerdere grondlagen wijkt de negatieve kleef af van eerdere versies, die één gemiddelde omtrek over de hele kleefzone gebruikten.
+
+De catalogus bevat veertien varianten: het behouden stalen-buisprojectmodel, vierkante en ronde prefab betonpalen, een gesloten stalen buispaal volgens tabel 2017, twee typen betonpalen met teruggewonnen mantelbuis, een betonschroefpaal, een stalen schroefpaal met groutinjectie, een avegaarpaal, een boorpaal met steunvloeistof en een houten paal met constante of taps verlopende ronde doorsnede.
 
 ## Bronbasis
 
@@ -28,7 +49,7 @@ Een typewissel verwijdert projectspecifieke factoren, puntmaat en EA. Deze mogen
 - De bestaande lastzakkingslijn 1 is beschikbaar. Voor avegaarpalen (lijn 2) en boorpalen (lijn 3) worden draagkrachtcomponenten bepaald, maar geen zakking of veerwaarden getoond of gerapporteerd.
 - De avegaarvariant uit 2017 begrenst de start van qc;III op 2 MPa; er is geen vrijstelling voor nasonderingen ingevoerd. Bij expliciete projectfactoren 2025 vervalt deze oude begrenzing volgens de toelichting van NEN.
 - De gesloten buispreset uit 2017 accepteert maximaal 10 mm uitsteken van de voetplaat per zijde. De groutschroefpreset vereist minimaal 300 mm schachtdiameter.
-- Hout ondersteunt een constante of lineair taps verlopende ronde doorsnede, optioneel met een betonopzetter (vierkant of rond) van paalkop tot de las. Boven de las geldt de omtrek van de opzetter, eronder die van het hout; de tapsheid telt vanaf de bovenkant van het hout. Negatieve kleef rekent met de lengtegemiddelde omtrek over de kleefzone, positieve kleef per laag. Zakking en veerwaarden voor taps hout en voor hout met opzetter (verschillende EA) zijn niet geverifieerd en worden niet bepaald.
+- Hout ondersteunt een constante of lineair taps verlopende ronde doorsnede, optioneel met een betonopzetter (vierkant of rond) van paalkop tot de las. Boven de las geldt de omtrek van de opzetter, eronder die van het hout; de tapsheid telt vanaf de bovenkant van het hout. Negatieve en positieve kleef rekenen per laag met de lengtegemiddelde omtrek binnen die laag. Zakking en veerwaarden voor taps hout en voor hout met opzetter (verschillende EA) zijn niet geverifieerd en worden niet bepaald.
 - Open stalen buizen, profielen, micropalen, trek, horizontale belasting en wapening zijn niet toegevoegd. De daarvoor vereiste aanvullende rekenmodellen zijn niet uitwisselbaar met de huidige drukpaalberekening.
 - Bij afwijkende voetmaten blijven de projectspecifieke beta-factor en het toegestane schachtwrijvingstraject te controleren. De app leidt beta niet automatisch af uit voethoogte.
 
@@ -41,8 +62,8 @@ De lengte moet positief zijn en binnen de totale paallengte liggen; de
 puntdiameter moet positief en niet groter dan de kopdiameter zijn.
 Een onafhankelijke voetmaat is hierbij uitgesloten.
 
-Negatieve kleef gebruikt de lengtegemiddelde omtrek over het negatieve
-kleeftraject; de overgang naar het constante deel wordt exact meegenomen.
+Negatieve kleef gebruikt per grondlaag de lengtegemiddelde omtrek binnen
+die laag; de overgang naar het constante deel wordt exact meegenomen.
 Voor hout blijft δ = 0,75φ. Positieve kleef gebruikt de gemiddelde omtrek
 per beschouwde grondlaag. Puntoppervlak en Deq volgen de puntdiameter.
 Bronbasis: NEN 9997-1:2011+C1:2012 §7.3.2.2(d) en §7.6.2.3;

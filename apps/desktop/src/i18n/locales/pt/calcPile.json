@@ -144,7 +144,9 @@
     "type": "Tipo de estaca",
     "wallThickness": "Espessura da parede",
     "wallThicknessAria": "Espessura da parede [mm]",
-    "woodDiameterAtJoint": "Diâmetro da madeira na junta"
+    "woodDiameterAtJoint": "Diâmetro da madeira na junta",
+    "system": "Sistema de estacas",
+    "standardSize": "Dimensão padrão"
   },
   "profile": {
     "bottom": "Base",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(prolongamento e madeira)",
       "layer": "Camada",
       "title": "Atrito negativo",
-      "zone": "Zona: cabeça da estaca NAP {{top}} até NAP {{bottom}} —"
+      "zone": "Zona: cabeça da estaca NAP {{top}} até NAP {{bottom}} —",
+      "perimeterTitle": "Perímetro do fuste nesta camada",
+      "perimeterNote": "Os;i é o perímetro médio do fuste dentro da camada: o prolongamento em betão acima da junta, a madeira abaixo."
     },
     "pending": {
       "missingEA": "Introduza a rigidez axial <strong>EA</strong> em <strong>Estaca</strong>. Para este tipo de estaca, EA não é derivado da secção; o valor resulta do sistema de estaca selecionado.",
@@ -361,5 +365,11 @@
     "taperLength": "comprimento cónico a partir da cabeça",
     "toeSize": "dimensão da ponta",
     "wall": "parede"
+  },
+  "system": {
+    "noTable2025": "Para {{system}}, os fatores de classe de estaca da NEN 9997-1:2025 ainda não constam da tabela deste programa; nada é estimado. Por isso o sistema não pode ser escolhido nesta edição. Escolha a edição de 2017 ou calcule com fatores de projeto de uma autodeclaração ou de um ensaio de carga.",
+    "noTableRow": "{{system}} não tem linha própria na tabela 7.c desta edição e por isso não pode ser escolhido com valores da tabela. Calcule com fatores de projeto da autodeclaração do sistema de estacas ou de um ensaio de carga.",
+    "noTableBadge": "sem valor de tabela",
+    "useProjectFactors": "Escolher com fatores de projeto"
   }
 }

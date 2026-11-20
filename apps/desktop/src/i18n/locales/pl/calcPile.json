@@ -144,7 +144,9 @@
     "type": "Typ pala",
     "wallThickness": "Grubość ścianki",
     "wallThicknessAria": "Grubość ścianki [mm]",
-    "woodDiameterAtJoint": "Średnica drewna na styku"
+    "woodDiameterAtJoint": "Średnica drewna na styku",
+    "system": "System palowy",
+    "standardSize": "Wymiar standardowy"
   },
   "profile": {
     "bottom": "Spód",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(nadstawka i drewno)",
       "layer": "Warstwa",
       "title": "Tarcie negatywne",
-      "zone": "Strefa: głowica pala NAP {{top}} do NAP {{bottom}} —"
+      "zone": "Strefa: głowica pala NAP {{top}} do NAP {{bottom}} —",
+      "perimeterTitle": "Obwód pobocznicy w tej warstwie",
+      "perimeterNote": "Os;i to średni obwód pobocznicy w warstwie: nadstawka betonowa powyżej styku, drewno poniżej."
     },
     "pending": {
       "missingEA": "Podaj sztywność osiową <strong>EA</strong> w sekcji <strong>Pal</strong>. Dla tego typu pala EA nie wynika z przekroju; wartość zależy od wybranego systemu pali.",
@@ -361,5 +365,11 @@
     "taperLength": "długość zbieżna od głowicy",
     "toeSize": "wymiar podstawy",
     "wall": "ścianka"
+  },
+  "system": {
+    "noTable2025": "Dla systemu {{system}} współczynniki klasy pala z NEN 9997-1:2025 nie są jeszcze ujęte w tabeli tego programu; niczego się nie szacuje. Dlatego systemu nie można wybrać dla tego wydania. Wybierz wydanie 2017 lub licz ze współczynnikami projektowymi z deklaracji własnej lub próbnego obciążenia.",
+    "noTableRow": "{{system}} nie ma własnego wiersza w tabeli 7.c tego wydania i dlatego nie można go wybrać z wartościami tabelarycznymi. Licz ze współczynnikami projektowymi z deklaracji własnej systemu palowego lub z próbnego obciążenia.",
+    "noTableBadge": "brak wartości w tabeli",
+    "useProjectFactors": "Wybierz ze współczynnikami projektowymi"
   }
 }

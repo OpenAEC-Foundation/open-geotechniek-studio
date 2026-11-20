@@ -57,7 +57,7 @@ export function computeShaftFriction(
     const qsCap = args.useSoilStressCap === false ? Infinity : QS_MAX_PER_SOIL[l.kind];
     const qsMpa = Math.min(qsRaw, qsCap);
     const rsLayer = layerOs * qsMpa * thickness * 1000; // kN: m × MPa × m × 1000 = kN
-    return { layer: l, qcGemMpa, qsMpa, rsLayer };
+    return { layer: l, qcGemMpa, qsMpa, rsLayer, perimeterM: layerOs };
   });
 
   const rsCalMax = perLayer.reduce((s, l) => s + l.rsLayer, 0);

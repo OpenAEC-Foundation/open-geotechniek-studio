@@ -144,7 +144,9 @@
     "type": "Paaltype",
     "wallThickness": "Wanddikte",
     "wallThicknessAria": "Wanddikte [mm]",
-    "woodDiameterAtJoint": "Houtdiameter bij de las"
+    "woodDiameterAtJoint": "Houtdiameter bij de las",
+    "system": "Paalsysteem",
+    "standardSize": "Standaardmaat"
   },
   "profile": {
     "bottom": "Onder",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(opzetter en hout)",
       "layer": "Laag",
       "title": "Negatieve kleef",
-      "zone": "Zone: paalkop NAP {{top}} tot NAP {{bottom}} —"
+      "zone": "Zone: paalkop NAP {{top}} tot NAP {{bottom}} —",
+      "perimeterTitle": "Schachtomtrek in deze laag",
+      "perimeterNote": "Os;i is de gemiddelde schachtomtrek binnen de laag: de betonopzetter boven de las, het hout eronder."
     },
     "pending": {
       "missingEA": "Vul bij <strong>Paal</strong> de axiale stijfheid <strong>EA</strong> in. Voor dit paaltype wordt EA niet uit de doorsnede afgeleid; de waarde volgt uit het gekozen paalsysteem.",
@@ -361,5 +365,11 @@
     "taperLength": "tapse lengte vanaf kop",
     "toeSize": "puntmaat",
     "wall": "wand"
+  },
+  "system": {
+    "noTable2025": "Voor {{system}} staan de paalklassefactoren van NEN 9997-1:2025 nog niet in de tabel van dit programma; er wordt niets geschat. Het systeem is daarom bij deze editie niet te kiezen. Kies de editie 2017, of reken met projectfactoren uit een zelfverklaring of proefbelasting.",
+    "noTableRow": "{{system}} heeft geen eigen rij in tabel 7.c van deze editie en is daarom niet met tabelwaarden te kiezen. Reken met projectfactoren uit de zelfverklaring van het paalsysteem of uit een proefbelasting.",
+    "noTableBadge": "geen tabelwaarde",
+    "useProjectFactors": "Kiezen met projectfactoren"
   }
 }

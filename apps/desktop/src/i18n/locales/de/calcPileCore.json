@@ -39,7 +39,9 @@
     "historicalConstantSection": "Das historische Profil unterstützt nur einen konstanten Pfahlquerschnitt oder eine explizite Holzkonizität",
     "cptTooShallow": "Sondierung zu flach (reicht bis {{reach}} m, erforderlich ≥ {{required}} m)",
     "pileSizeInvalid": "Die Pfahlabmessung muss endlich und größer als null sein",
-    "historicalGroupAnalysis": "Die historische Analyse mit mehreren Sondierungen ist noch nicht verifiziert; verwenden Sie eine einzelne Sondierung"
+    "historicalGroupAnalysis": "Die historische Analyse mit mehreren Sondierungen ist noch nicht verifiziert; verwenden Sie eine einzelne Sondierung",
+    "factorsMissing2025": "Für diesen Pfahltyp sind die Pfahlklassenfaktoren der NEN 9997-1:2025 noch nicht in der Tabelle enthalten. Wählen Sie die Ausgabe 2017 oder geben Sie Projektfaktoren ein (Selbsterklärung oder Probebelastung).",
+    "factorsMissingNoRow": "Dieses Pfahlsystem hat keine eigene Zeile in Tabelle 7.c dieser Ausgabe. Geben Sie Projektfaktoren ein (Selbsterklärung oder Probebelastung)."
   },
   "warnings": {
     "factors": "Faktoren: {{edition}}; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Konischer Holzpfahl: Setzung und Federsteifigkeiten mit veränderlicher EA sind nicht verifiziert und werden nicht ermittelt.",
     "settlementHistorical": "Historische Setzung und Federsteifigkeiten sind nicht verifiziert und werden nicht ermittelt.",
     "settlementLineUnsupported": "Last-Setzungs-Linie {{line}} noch nicht unterstützt: Setzung und Federsteifigkeiten werden nicht ermittelt.",
-    "extension": "Betonaufsatz {{size}} mm bis zum Stoß bei NAP {{joint}} m: Oberhalb des Stoßes wird der Umfang des Aufsatzes angesetzt, darunter der des Holzes; negative Mantelreibung mit dem mittleren Umfang über die Reibungszone, positive Mantelreibung je Schicht.",
+    "extension": "Betonaufsatz {{size}} mm bis zum Stoß bei NAP {{joint}} m: Oberhalb des Stoßes wird der Umfang des Aufsatzes angesetzt, darunter der des Holzes; negative und positive Mantelreibung werden je Schicht mit dem Umfang dieser Schicht berechnet.",
     "taperWithExtension": "Holzkonizität ab dem Stoß: positive Mantelreibung mit mittlerem Umfang je Schicht. Keine Erhöhung der Pfahlfaktoren infolge Konizität.",
-    "taper": "Holzkonizität: negative Mantelreibung mit mittlerem Umfang über die Reibungszone; positive Mantelreibung mit mittlerem Umfang je Schicht. Ohne Betonaufsatz oder Erhöhung infolge Konizität.",
+    "taper": "Holzkonizität: negative und positive Mantelreibung mit dem mittleren Umfang je Schicht. Ohne Betonaufsatz oder Erhöhung infolge Konizität.",
     "deviatingToeSize": "Abweichende Fußabmessung: Prüfen Sie den Pfahlfußformbeiwert β und den zulässigen Mantelreibungsbereich für dieses Herstellverfahren.",
-    "qbMaxCapped": "qb;max auf 15 MPa begrenzt (Rohwert {{raw}} MPa)"
+    "qbMaxCapped": "qb;max auf 15 MPa begrenzt (Rohwert {{raw}} MPa)",
+    "settlementLineUnknown": "Für diesen Pfahltyp ist keine Last-Setzungs-Linie aus der Tabelle bekannt: Setzung und Federwerte werden nicht bestimmt."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "Sondierung außerhalb des Bereichs",
       "kleefLevels": "über Reibungszone",
       "eaMissing": "EA fehlt",
-      "notComputable": "nicht berechenbar"
+      "notComputable": "nicht berechenbar",
+      "factorsMissing": "keine Pfahlfaktoren"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — historisches Referenzprofil",
     "nen-6743-2006": "NEN 6743-1:2006 — historisch",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — ursprüngliche Faktoren",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — bestehendes Rechenmodell"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — bestehendes Rechenmodell",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — Pfahlklassenfaktoren 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; öffentliche Referenz 05290 S. 31–32 (einzelner Fertigteilpfahl)",
@@ -103,7 +108,10 @@
     "conditions": "Historisches Druckpfahlmodell: Sand; keine Pfahlgruppen-, OCR-, Korngrößen- oder Aushubkorrektur. Mantelspitzen konservativ auf 12 MPa begrenzt. Setzung nicht verifiziert."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, Tabelle 7.c (Sand/sandiger Kies)"
+    "table2017": "NEN 9997-1:2016+C2:2017, Tabelle 7.c (Sand/sandiger Kies)",
+    "table2025": "NEN 9997-1:2025+C1:2025, Tabelle 7.c",
+    "noTableRow2017": "Keine Zeile in NEN 9997-1:2016+C2:2017, Tabelle 7.c",
+    "noTableRowConditions": "Keine eigene Zeile in Tabelle 7.c der Ausgabe 2017: mit den Pfahlklassenfaktoren aus der Selbsterklärung des Pfahlsystems oder aus einer Probebelastung rechnen."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Holzrammpfahl — rund, mit oder ohne Betonaufsatz",
       "conditions": "Runder Holzquerschnitt, konstant oder linear konisch ab der Oberkante des Holzes; optional mit Betonaufsatz bis zum Stoß. Keine Erhöhung der Pfahlfaktoren infolge Konizität."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Schraubpfahl — verlorene Spitze, bleibendes Stahlrohr",
+      "conditions": "Tabellenzeile Stahlpfahl, geschraubt, mit konstantem Querschnitt oberhalb der Schraubspitze (ohne Mörtelinjektion). Das Rohrmaß bestimmt den Schaftumfang; die Schraubspitze als Spitzenmaß eingeben. Betongefülltes Rohr."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Verdrängungsschraubpfahl — Ortbeton"
+    },
+    "concrete-auger-cased": {
+      "name": "DPA-Pfahl — verrohrter Schneckenbohrpfahl"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Sand, gesättigt",
     "clay": "Ton, gesättigt",
     "peat": "Torf, gesättigt"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Fertigbetonpfahl",
+    "steel-tube-closed": "Stahlrohrpfahl, geschlossene Spitze",
+    "screw-injection": "Schraubinjektionspfahl",
+    "screw-permanent-casing": "Schraubpfahl, bleibendes Rohr",
+    "screw-lost-tip": "Schraubpfahl, gezogenes Rohr",
+    "screw-soil-displacing": "Verdrängungsschraubpfahl",
+    "vibro": "Vibropfahl",
+    "auger": "Schneckenbohrpfahl",
+    "auger-cased": "DPA-Pfahl (verrohrte Schnecke)",
+    "bored": "Bohrpfahl",
+    "timber": "Holzpfahl",
+    "timber-extension": "Holzpfahl mit Betonaufsatz"
   }
 }
