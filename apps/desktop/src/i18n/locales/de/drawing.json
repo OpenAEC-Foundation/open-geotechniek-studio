@@ -62,6 +62,18 @@
     "moveRaster": "Ziehen, um das Raster zu verschieben",
     "rotate": "Ziehen, um zu drehen"
   },
+  "legend": {
+    "bore": "Bohrung",
+    "done": "ausgeführt",
+    "planned": "geplant",
+    "soort": {
+      "conus": "Drucksondierung",
+      "kleef": "Drucksondierung mit Mantelreibung",
+      "water": "Drucksondierung mit Porenwasserdruck",
+      "kleef-water": "Drucksondierung mit Mantelreibung und Porenwasserdruck"
+    },
+    "title": "Legende"
+  },
   "move": {
     "hint": "Bewegen Sie die Maus und klicken Sie zum Absetzen (Esc = abbrechen)",
     "notMovable": "Dieses Objekt kann nicht verschoben werden",
@@ -80,6 +92,10 @@
     "failed": "PDF-Export fehlgeschlagen: {{error}}",
     "timeout": "Die PDF-Rasterung hat länger als 30 Sekunden gedauert"
   },
+  "place": {
+    "kind": "Art der Sondierung",
+    "kindTitle": "Art der Sondierung oder des Rasters, das Sie als Nächstes platzieren; später in den Eigenschaften änderbar."
+  },
   "props": {
     "a2Landscape": "A2 quer",
     "a3Landscape": "A3 quer",
@@ -88,6 +104,7 @@
     "color": "Farbe",
     "cols": "Spalten",
     "cptHeader": "Sondierung {{id}}",
+    "cptKind": "Art der Sondierung",
     "cptNumber": "Sondierungsnr.",
     "deleteArea": "Fläche löschen",
     "deleteBackground": "Hintergrund löschen",
@@ -158,6 +175,12 @@
     "notRotatable": "Dieser Objekttyp kann nicht gedreht werden",
     "prompt": "Um wie viel Grad drehen? (negativ = gegen den Uhrzeigersinn)",
     "selectFirst": "Wählen Sie zuerst ein Objekt zum Drehen aus"
+  },
+  "soort": {
+    "conus": "Ohne Mantelreibung",
+    "kleef": "Mit Mantelreibung",
+    "water": "Mit Porenwasserdruck",
+    "kleef-water": "Mit Mantelreibung und Porenwasserdruck"
   },
   "titleBlock": {
     "addressPlaceholder": "Straße, Hausnummer, Projektstandort",

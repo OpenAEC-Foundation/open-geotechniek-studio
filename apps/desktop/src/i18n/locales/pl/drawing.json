@@ -62,6 +62,18 @@
     "moveRaster": "Przeciągnij, aby przesunąć siatkę",
     "rotate": "Przeciągnij, aby obrócić"
   },
+  "legend": {
+    "bore": "Wiercenie",
+    "done": "wykonane",
+    "planned": "planowane",
+    "soort": {
+      "conus": "Sondowanie statyczne",
+      "kleef": "Sondowanie CPT z pomiarem tarcia na tulei",
+      "water": "Sondowanie CPT z pomiarem ciśnienia porowego",
+      "kleef-water": "Sondowanie CPT z pomiarem tarcia na tulei i ciśnienia porowego"
+    },
+    "title": "Legenda"
+  },
   "move": {
     "hint": "Przesuń mysz i kliknij, aby umieścić (Esc = anuluj)",
     "notMovable": "Tego obiektu nie można przesunąć",
@@ -80,6 +92,10 @@
     "failed": "Eksport PDF nie powiódł się: {{error}}",
     "timeout": "Rasteryzacja PDF trwała dłużej niż 30 sekund"
   },
+  "place": {
+    "kind": "Rodzaj sondowania",
+    "kindTitle": "Rodzaj sondowania lub siatki, którą umieścisz jako następną; można go później zmienić we właściwościach."
+  },
   "props": {
     "a2Landscape": "A2 poziomo",
     "a3Landscape": "A3 poziomo",
@@ -88,6 +104,7 @@
     "color": "Kolor",
     "cols": "Kolumny",
     "cptHeader": "Sondowanie {{id}}",
+    "cptKind": "Rodzaj sondowania",
     "cptNumber": "Nr sondowania",
     "deleteArea": "Usuń obszar",
     "deleteBackground": "Usuń tło",
@@ -158,6 +175,12 @@
     "notRotatable": "Tego typu obiektu nie można obrócić",
     "prompt": "O ile stopni obrócić? (ujemny = przeciwnie do ruchu wskazówek zegara)",
     "selectFirst": "Najpierw zaznacz obiekt do obrócenia"
+  },
+  "soort": {
+    "conus": "Bez pomiaru tarcia na tulei",
+    "kleef": "Z pomiarem tarcia na tulei",
+    "water": "Z pomiarem ciśnienia porowego",
+    "kleef-water": "Z pomiarem tarcia na tulei i ciśnienia porowego"
   },
   "titleBlock": {
     "addressPlaceholder": "Ulica, numer domu, lokalizacja projektu",

@@ -62,6 +62,18 @@
     "moveRaster": "Dra för att flytta rastret",
     "rotate": "Dra för att rotera"
   },
+  "legend": {
+    "bore": "Borrning",
+    "done": "utförd",
+    "planned": "planerad",
+    "soort": {
+      "conus": "CPT-sondering",
+      "kleef": "CPT-sondering med mantelfriktion",
+      "water": "CPT-sondering med portryck",
+      "kleef-water": "CPT-sondering med mantelfriktion och portryck"
+    },
+    "title": "Teckenförklaring"
+  },
   "move": {
     "hint": "Flytta musen och klicka för att placera (Esc = avbryt)",
     "notMovable": "Det här objektet kan inte flyttas",
@@ -80,6 +92,10 @@
     "failed": "PDF-exporten misslyckades: {{error}}",
     "timeout": "Rastreringen av PDF:en tog längre än 30 sekunder"
   },
+  "place": {
+    "kind": "Sonderingstyp",
+    "kindTitle": "Typ för den sondering eller det rutnät du placerar härnäst; kan ändras senare under egenskaper."
+  },
   "props": {
     "a2Landscape": "A2 liggande",
     "a3Landscape": "A3 liggande",
@@ -88,6 +104,7 @@
     "color": "Färg",
     "cols": "Kolumner",
     "cptHeader": "Sondering {{id}}",
+    "cptKind": "Sonderingstyp",
     "cptNumber": "Sonderingsnr",
     "deleteArea": "Ta bort yta",
     "deleteBackground": "Ta bort bakgrund",
@@ -158,6 +175,12 @@
     "notRotatable": "Den här objekttypen kan inte roteras",
     "prompt": "Rotera hur många grader? (negativ = moturs)",
     "selectFirst": "Markera först ett objekt att rotera"
+  },
+  "soort": {
+    "conus": "Utan mantelfriktion",
+    "kleef": "Med mantelfriktion",
+    "water": "Med portryck",
+    "kleef-water": "Med mantelfriktion och portryck"
   },
   "titleBlock": {
     "addressPlaceholder": "Gata, husnummer, projektort",

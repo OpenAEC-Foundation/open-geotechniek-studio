@@ -458,3 +458,23 @@
   text-overflow: ellipsis;
 }
 
+/* Keuzelijst "soort sondering" in de groep Plaatsen van de tekening-tab. */
+.ribbon-drawing-soort {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 6px;
+  font-size: 10px;
+  color: var(--theme-text);
+}
+.ribbon-drawing-soort select {
+  font: inherit;
+  font-size: 11px;
+  height: 22px;
+  max-width: 190px;
+  color: var(--theme-text);
+  background: var(--theme-bg, #fff);
+  border: 1px solid var(--theme-border, #e7e5e4);
+  border-radius: 2px;
+}

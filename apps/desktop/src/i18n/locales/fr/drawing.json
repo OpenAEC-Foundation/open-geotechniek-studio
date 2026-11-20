@@ -62,6 +62,18 @@
     "moveRaster": "Faites glisser pour déplacer la grille",
     "rotate": "Faites glisser pour pivoter"
   },
+  "legend": {
+    "bore": "Forage",
+    "done": "réalisé",
+    "planned": "prévu",
+    "soort": {
+      "conus": "Essai de pénétration au cône",
+      "kleef": "Essai CPT avec frottement latéral",
+      "water": "Essai CPT avec pression interstitielle",
+      "kleef-water": "Essai CPT avec frottement latéral et pression interstitielle"
+    },
+    "title": "Légende"
+  },
   "move": {
     "hint": "Déplacez la souris et cliquez pour placer (Échap = annuler)",
     "notMovable": "Cet objet ne peut pas être déplacé",
@@ -80,6 +92,10 @@
     "failed": "Échec de l'export PDF : {{error}}",
     "timeout": "La rastérisation du PDF a pris plus de 30 secondes"
   },
+  "place": {
+    "kind": "Type d'essai",
+    "kindTitle": "Type de l'essai ou de la grille que vous placez ensuite ; modifiable plus tard dans les propriétés."
+  },
   "props": {
     "a2Landscape": "A2 paysage",
     "a3Landscape": "A3 paysage",
@@ -88,6 +104,7 @@
     "color": "Couleur",
     "cols": "Colonnes",
     "cptHeader": "CPT {{id}}",
+    "cptKind": "Type d'essai",
     "cptNumber": "N° CPT",
     "deleteArea": "Supprimer la zone",
     "deleteBackground": "Supprimer l'arrière-plan",
@@ -158,6 +175,12 @@
     "notRotatable": "Ce type d'objet ne peut pas être pivoté",
     "prompt": "Pivoter de combien de degrés ? (négatif = sens antihoraire)",
     "selectFirst": "Sélectionnez d'abord un objet à pivoter"
+  },
+  "soort": {
+    "conus": "Sans frottement latéral",
+    "kleef": "Avec frottement latéral",
+    "water": "Avec pression interstitielle",
+    "kleef-water": "Avec frottement latéral et pression interstitielle"
   },
   "titleBlock": {
     "addressPlaceholder": "Rue, numéro, emplacement du projet",

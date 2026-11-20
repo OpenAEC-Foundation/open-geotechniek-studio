@@ -62,6 +62,18 @@
     "moveRaster": "Arrastre para mover la retícula",
     "rotate": "Arrastre para girar"
   },
+  "legend": {
+    "bore": "Sondeo",
+    "done": "realizado",
+    "planned": "previsto",
+    "soort": {
+      "conus": "Ensayo de penetración con cono",
+      "kleef": "Ensayo CPT con fricción lateral",
+      "water": "Ensayo CPT con presión intersticial",
+      "kleef-water": "Ensayo CPT con fricción lateral y presión intersticial"
+    },
+    "title": "Leyenda"
+  },
   "move": {
     "hint": "Mueva el ratón y haga clic para colocar (Esc = cancelar)",
     "notMovable": "Este objeto no se puede mover",
@@ -80,6 +92,10 @@
     "failed": "Error en la exportación PDF: {{error}}",
     "timeout": "La rasterización del PDF tardó más de 30 segundos"
   },
+  "place": {
+    "kind": "Tipo de ensayo",
+    "kindTitle": "Tipo del ensayo o de la malla que coloque a continuación; puede cambiarlo después en las propiedades."
+  },
   "props": {
     "a2Landscape": "A2 horizontal",
     "a3Landscape": "A3 horizontal",
@@ -88,6 +104,7 @@
     "color": "Color",
     "cols": "Columnas",
     "cptHeader": "CPT {{id}}",
+    "cptKind": "Tipo de ensayo",
     "cptNumber": "N.º de CPT",
     "deleteArea": "Eliminar área",
     "deleteBackground": "Eliminar fondo",
@@ -158,6 +175,12 @@
     "notRotatable": "Este tipo de objeto no se puede girar",
     "prompt": "¿Cuántos grados desea girar? (negativo = sentido antihorario)",
     "selectFirst": "Seleccione primero un objeto para girarlo"
+  },
+  "soort": {
+    "conus": "Sin fricción lateral",
+    "kleef": "Con fricción lateral",
+    "water": "Con presión intersticial",
+    "kleef-water": "Con fricción lateral y presión intersticial"
   },
   "titleBlock": {
     "addressPlaceholder": "Calle, número, localidad del proyecto",

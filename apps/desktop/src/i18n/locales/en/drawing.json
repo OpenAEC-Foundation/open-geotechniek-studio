@@ -62,6 +62,18 @@
     "moveRaster": "Drag to move the grid",
     "rotate": "Drag to rotate"
   },
+  "legend": {
+    "bore": "Borehole",
+    "done": "carried out",
+    "planned": "planned",
+    "soort": {
+      "conus": "Cone penetration test",
+      "kleef": "CPT with sleeve friction",
+      "water": "CPT with pore pressure",
+      "kleef-water": "CPT with sleeve friction and pore pressure"
+    },
+    "title": "Legend"
+  },
   "move": {
     "hint": "Move the mouse and click to place (Esc = cancel)",
     "notMovable": "This object cannot be moved",
@@ -80,6 +92,10 @@
     "failed": "PDF export failed: {{error}}",
     "timeout": "PDF rasterisation took longer than 30 seconds"
   },
+  "place": {
+    "kind": "CPT type",
+    "kindTitle": "Type of the CPT or grid you place next; you can change it later in the properties."
+  },
   "props": {
     "a2Landscape": "A2 landscape",
     "a3Landscape": "A3 landscape",
@@ -88,6 +104,7 @@
     "color": "Colour",
     "cols": "Columns",
     "cptHeader": "CPT {{id}}",
+    "cptKind": "CPT type",
     "cptNumber": "CPT no.",
     "deleteArea": "Delete area",
     "deleteBackground": "Delete background",
@@ -158,6 +175,12 @@
     "notRotatable": "This object type cannot be rotated",
     "prompt": "Rotate by how many degrees? (negative = counter-clockwise)",
     "selectFirst": "Select an object to rotate first"
+  },
+  "soort": {
+    "conus": "Without sleeve friction",
+    "kleef": "With sleeve friction",
+    "water": "With pore pressure",
+    "kleef-water": "With sleeve friction and pore pressure"
   },
   "titleBlock": {
     "addressPlaceholder": "Street, house number, project location",

@@ -62,6 +62,18 @@
     "moveRaster": "Arraste para mover a grelha",
     "rotate": "Arraste para rodar"
   },
+  "legend": {
+    "bore": "Sondagem",
+    "done": "realizado",
+    "planned": "previsto",
+    "soort": {
+      "conus": "Ensaio de penetração de cone",
+      "kleef": "Ensaio CPT com atrito lateral",
+      "water": "Ensaio CPT com pressão intersticial",
+      "kleef-water": "Ensaio CPT com atrito lateral e pressão intersticial"
+    },
+    "title": "Legenda"
+  },
   "move": {
     "hint": "Mova o rato e clique para colocar (Esc = cancelar)",
     "notMovable": "Este objeto não pode ser movido",
@@ -80,6 +92,10 @@
     "failed": "A exportação PDF falhou: {{error}}",
     "timeout": "A rasterização do PDF demorou mais de 30 segundos"
   },
+  "place": {
+    "kind": "Tipo de ensaio",
+    "kindTitle": "Tipo do ensaio ou da malha que colocar a seguir; pode alterá-lo depois nas propriedades."
+  },
   "props": {
     "a2Landscape": "A2 horizontal",
     "a3Landscape": "A3 horizontal",
@@ -88,6 +104,7 @@
     "color": "Cor",
     "cols": "Colunas",
     "cptHeader": "CPT {{id}}",
+    "cptKind": "Tipo de ensaio",
     "cptNumber": "N.º do CPT",
     "deleteArea": "Eliminar área",
     "deleteBackground": "Eliminar fundo",
@@ -158,6 +175,12 @@
     "notRotatable": "Este tipo de objeto não pode ser rodado",
     "prompt": "Rodar quantos graus? (negativo = sentido anti-horário)",
     "selectFirst": "Selecione primeiro um objeto para rodar"
+  },
+  "soort": {
+    "conus": "Sem atrito lateral",
+    "kleef": "Com atrito lateral",
+    "water": "Com pressão intersticial",
+    "kleef-water": "Com atrito lateral e pressão intersticial"
   },
   "titleBlock": {
     "addressPlaceholder": "Rua, número de porta, localidade do projeto",

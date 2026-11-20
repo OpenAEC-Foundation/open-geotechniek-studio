@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import "./TekeningProperties.css";
+import { SONDERING_SOORTEN, type SonderingSoort } from "./tekening/sonderingSoort";
+
+/** Nederlandse brontekst per soort sondering (`soort.<key>`). */
+const SOORT_LABEL: Record<SonderingSoort, string> = {
+  conus: "Zonder kleefmeting",
+  kleef: "Met kleefmeting",
+  water: "Met waterspanningsmeting",
+  "kleef-water": "Met kleef- en waterspanningsmeting",
+};
 
 /**
  * Right-panel Properties view for the Sonderingstekening tab.
@@ -40,8 +49,8 @@ interface RasterSnapshot {
   spacingX: number;
   spacingY: number;
   rotation: number;
-  /** Kleefmeting-streepje onder elke rastercel (NEN-symbool). */
-  kleefmeting?: boolean;
+  /** Soort sondering voor alle cellen van het raster. */
+  soort?: SonderingSoort;
   /** Verberg dit raster in de PDF-/DWG-export (blijft wél op scherm). */
   hideInExport?: boolean;
   /** Nummering-prefix voor de cellen (bv. "S" → S1, S2, …). */
@@ -75,7 +84,7 @@ interface Snapshot {
   selectionKind: "raster" | "marker" | "overlay" | "line" | "vlak" | "note" | null;
   selectionId: string | null;
   selectedRaster?: RasterSnapshot | null;
-  selectedMarker?: { id: string; kleefmeting: boolean } | null;
+  selectedMarker?: { id: string; kind?: "sondering" | "bore"; soort?: SonderingSoort } | null;
   selectedVlak?: { id: string; fillColor: string; strokeColor: string } | null;
   selectedNote?: { id: string; text: string } | null;
   selectedOverlay?: OverlaySnapshot | null;
@@ -342,13 +351,16 @@ export default function TekeningProperties() {
                 />
               </label>
             </div>
-            <label className="tekprops-field tekprops-field-wide tekprops-checkbox">
-              <input
-                type="checkbox"
-                checked={!!snap.selectedRaster.kleefmeting}
-                onChange={(e) => updateRaster({ kleefmeting: e.target.checked })}
-              />
-              <span>{t("props.frictionWithSymbol", "Kleefmeting (streepje onder symbool)")}</span>
+            <label className="tekprops-field tekprops-field-wide">
+              <span>{t("props.cptKind", "Soort sondering")}</span>
+              <select
+                value={snap.selectedRaster.soort ?? "conus"}
+                onChange={(e) => updateRaster({ soort: e.target.value as SonderingSoort })}
+              >
+                {SONDERING_SOORTEN.map((soort) => (
+                  <option key={soort} value={soort}>{t(`soort.${soort}`, SOORT_LABEL[soort])}</option>
+                ))}
+              </select>
             </label>
             <label className="tekprops-field tekprops-field-wide tekprops-checkbox">
               <input
@@ -386,23 +398,25 @@ export default function TekeningProperties() {
                 }}
               />
             </label>
-            <label className="tekprops-field tekprops-field-wide">
-              <span>{t("props.friction", "Kleefmeting")}</span>
-              <input
-                type="checkbox"
-                checked={!!snap.selectedMarker?.kleefmeting}
-                onChange={(e) =>
-                  window.dispatchEvent(
-                    new CustomEvent("ogs:tekening-set-kleefmeting", {
-                      detail: {
-                        id: snap.selectionId!,
-                        kleefmeting: e.target.checked,
-                      },
-                    }),
-                  )
-                }
-              />
-            </label>
+            {snap.selectedMarker?.kind !== "bore" && (
+              <label className="tekprops-field tekprops-field-wide">
+                <span>{t("props.cptKind", "Soort sondering")}</span>
+                <select
+                  value={snap.selectedMarker?.soort ?? "conus"}
+                  onChange={(e) =>
+                    window.dispatchEvent(
+                      new CustomEvent("ogs:tekening-set-soort", {
+                        detail: { id: snap.selectionId!, soort: e.target.value },
+                      }),
+                    )
+                  }
+                >
+                  {SONDERING_SOORTEN.map((soort) => (
+                    <option key={soort} value={soort}>{t(`soort.${soort}`, SOORT_LABEL[soort])}</option>
+                  ))}
+                </select>
+              </label>
+            )}
             <p className="tekprops-hint">
               {t("props.dragMarkerHint", "Sleep de marker op de kaart om te verplaatsen.")}
             </p>
