@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "Sem valores medidos no troço do fundo.",
+    "value": "Campo de fundo (mediana de {{count}} valores): {{value}} nT"
+  },
+  "depthAxis": "Profundidade abaixo do terreno (m)",
+  "disclaimer": "Apresentação de dados de medição. As zonas marcadas resultam apenas dos limiares definidos; não é uma avaliação e não substitui a libertação ou a avaliação por um especialista.",
+  "line": {
+    "declination": "declinação",
+    "inclination": "inclinação"
+  },
+  "noTotal": "Sem intensidade total: o ficheiro não tem canal total nem as três componentes.",
+  "none": "Nenhuma das sondagens abertas tem canais de magnetómetro.",
+  "readout": {
+    "depth": "{{depth}} m abaixo do terreno",
+    "hint": "Passe sobre o gráfico para ver os valores a uma profundidade.",
+    "title": "Valores"
+  },
+  "report": {
+    "section": "Magnetómetro",
+    "sectionHint": "Uma página por sondagem com magnetómetro com gráficos, zonas e definições"
+  },
+  "ribbon": {
+    "group": "Magnetómetro",
+    "show": "Magnetó-\nmetro",
+    "showHint": "Mostra os canais do magnetómetro da sondagem em função da profundidade, ao lado de qc."
+  },
+  "settings": {
+    "analysisFrom": "Zonas a partir de",
+    "anomaly": "Limiar de desvio",
+    "backgroundFrom": "Fundo desde",
+    "backgroundTo": "Fundo até",
+    "end": "fim",
+    "gradient": "Limiar de gradiente",
+    "mergeGap": "Unir dentro de",
+    "note": "Os limiares são definições próprias, não valores normativos.",
+    "start": "início",
+    "title": "Definições"
+  },
+  "side": {
+    "cpt": "Sondagem",
+    "title": "Magnetómetro"
+  },
+  "totalComputed": "Intensidade total calculada a partir das três componentes: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Componentes − mediana",
+    "declination": "Declinação",
+    "gradient": "Gradiente d|B|/dz",
+    "inclination": "Inclinação",
+    "qc": "qc",
+    "total": "Campo total |B|"
+  },
+  "unknownUnit": "Canal {{channel}} não mostrado: a unidade '{{unit}}' é desconhecida.",
+  "zones": {
+    "bottom": "Base (m)",
+    "none": "Nenhum troço acima dos limiares definidos.",
+    "note": "Pico = maior desvio em relação ao campo de fundo na zona. Profundidades em m abaixo do terreno.",
+    "peak": "Pico (nT)",
+    "peakDepth": "a (m)",
+    "peakGradient": "Gradiente (nT/m)",
+    "title": "Zonas acima do limiar",
+    "top": "Topo (m)",
+    "zoomHint": "Clique para ampliar esta zona"
+  }
+}

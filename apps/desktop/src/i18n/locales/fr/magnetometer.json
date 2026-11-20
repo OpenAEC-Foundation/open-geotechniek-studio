@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "Aucune valeur mesurée dans l'intervalle du fond.",
+    "value": "Champ de fond (médiane de {{count}} valeurs) : {{value}} nT"
+  },
+  "depthAxis": "Profondeur sous le terrain (m)",
+  "disclaimer": "Présentation de données de mesure. Les zones marquées résultent uniquement des seuils réglés ; ce n'est pas une évaluation et cela ne remplace pas une libération ou une évaluation par un spécialiste.",
+  "line": {
+    "declination": "déclinaison",
+    "inclination": "inclinaison"
+  },
+  "noTotal": "Pas d'intensité totale : le fichier n'a pas de canal total ni les trois composantes.",
+  "none": "Aucun des sondages ouverts n'a de canaux de magnétomètre.",
+  "readout": {
+    "depth": "{{depth}} m sous le terrain",
+    "hint": "Survolez le graphique pour les valeurs à une profondeur.",
+    "title": "Valeurs"
+  },
+  "report": {
+    "section": "Magnétomètre",
+    "sectionHint": "Une page par sondage magnétométrique avec graphiques, zones et réglages"
+  },
+  "ribbon": {
+    "group": "Magnétomètre",
+    "show": "Magnéto-\nmètre",
+    "showHint": "Affiche les canaux du magnétomètre du sondage en fonction de la profondeur, à côté de qc."
+  },
+  "settings": {
+    "analysisFrom": "Zones à partir de",
+    "anomaly": "Seuil d'écart",
+    "backgroundFrom": "Fond à partir de",
+    "backgroundTo": "Fond jusqu'à",
+    "end": "fin",
+    "gradient": "Seuil de gradient",
+    "mergeGap": "Fusionner en deçà de",
+    "note": "Les seuils sont vos propres réglages, pas des valeurs normatives.",
+    "start": "début",
+    "title": "Réglages"
+  },
+  "side": {
+    "cpt": "Sondage",
+    "title": "Magnétomètre"
+  },
+  "totalComputed": "Intensité totale calculée à partir des trois composantes : |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Composantes − médiane",
+    "declination": "Déclinaison",
+    "gradient": "Gradient d|B|/dz",
+    "inclination": "Inclinaison",
+    "qc": "qc",
+    "total": "Champ total |B|"
+  },
+  "unknownUnit": "Canal {{channel}} non affiché : l'unité '{{unit}}' est inconnue.",
+  "zones": {
+    "bottom": "Bas (m)",
+    "none": "Aucun intervalle au-dessus des seuils réglés.",
+    "note": "Pic = plus grand écart par rapport au champ de fond dans la zone. Profondeurs en m sous le terrain.",
+    "peak": "Pic (nT)",
+    "peakDepth": "à (m)",
+    "peakGradient": "Gradient (nT/m)",
+    "title": "Zones au-dessus du seuil",
+    "top": "Haut (m)",
+    "zoomHint": "Cliquez pour zoomer sur cette zone"
+  }
+}

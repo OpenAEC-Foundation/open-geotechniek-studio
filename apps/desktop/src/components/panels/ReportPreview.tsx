@@ -214,6 +214,10 @@ export default function ReportPreview() {
                 onChange={(v) => setSections((s) => ({ ...s, dissipation: v }))}
                 hint={t("dissipatie:report.sectionHint", "Per dissipatietest een pagina met de grafiek en de kerngetallen")} />
             )}
+            <SectionToggle label={t("magnetometer:report.section", "Magnetometer")}
+              checked={sections.magnetometer === true}
+              onChange={(v) => setSections((s) => ({ ...s, magnetometer: v }))}
+              hint={t("magnetometer:report.sectionHint", "Per magnetometersondering een pagina met grafieken, zones en instellingen")} />
             <SectionToggle label={t("report.section.sbtLegend", "Indicatieve qc/Rf-legenda")}
               checked={sections.sbtLegend}
               onChange={(v) => setSections((s) => ({ ...s, sbtLegend: v }))}

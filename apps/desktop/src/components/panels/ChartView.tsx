@@ -6,6 +6,9 @@ import ChartCanvas from "../chart/ChartCanvas";
 import OverlayChart from "../chart/OverlayChart";
 import BoreView from "./BoreView";
 import GwpView from "./GwpView";
+import MagnetometerView from "../../magnetometer/MagnetometerView";
+import { hasMagnetometer } from "../../magnetometer/channels";
+import { useMagnetometerStore } from "../../magnetometer/useMagnetometerStore";
 
 /**
  * Main chart panel. Routes between four states:
@@ -27,6 +30,7 @@ export default function ChartView() {
   const documents = useCptStore((s) => s.documents);
   const activeDoc = activeDocId ? documents.find((d) => d.id === activeDocId) : undefined;
   const overlay = useChartZoomStore((s) => s.overlay);
+  const magnetometer = useMagnetometerStore((s) => s.show);
   useEffect(() => { void loadChartZoomPreference(); }, []);
 
   if (activeDoc?.kind === "bore") {
@@ -46,5 +50,6 @@ export default function ChartView() {
       </div>
     );
   }
+  if (magnetometer && Array.from(cpts.values()).some(hasMagnetometer)) return <MagnetometerView />;
   return overlay ? <OverlayChart /> : <ChartCanvas />;
 }

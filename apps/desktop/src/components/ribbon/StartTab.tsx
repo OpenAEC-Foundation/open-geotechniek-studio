@@ -4,6 +4,7 @@ import { loadChartZoomPreference, useChartZoomStore } from "../../store/useChart
 import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
 import DissipationRibbonGroup from "../../dissipatie/DissipationRibbonGroup";
+import MagnetometerRibbonGroup from "../../magnetometer/MagnetometerRibbonGroup";
 
 
 interface StartTabProps {
@@ -77,6 +78,7 @@ export default function StartTab(props: StartTabProps = {}) {
           </div>
         </RibbonGroup>
         <DissipationRibbonGroup />
+        <MagnetometerRibbonGroup />
       </div>
     </div>
   );

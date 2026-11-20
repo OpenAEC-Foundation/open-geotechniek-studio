@@ -25,6 +25,8 @@ export interface ReportSections {
   testReport?: boolean;
   /** Per dissipatietest een pagina met grafiek en kerngetallen (zie src/dissipatie). */
   dissipation?: boolean;
+  /** Pagina per magnetometersondering: grafieken, zones en instellingen. */
+  magnetometer?: boolean;
   /** Teksten voor een document zonder project; anders gelden de teksten van het project. */
   reportTexts?: ReportTexts;
 }
@@ -39,6 +41,7 @@ export const DEFAULT_SECTIONS: ReportSections = {
   texts: true,
   testReport: false,
   dissipation: false,
+  magnetometer: false,
 };
 
 export function sectionsAreDefault(s: ReportSections): boolean {

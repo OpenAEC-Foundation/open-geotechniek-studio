@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "Inga mätvärden i bakgrundens intervall.",
+    "value": "Bakgrundsfält (median av {{count}} värden): {{value}} nT"
+  },
+  "depthAxis": "Djup under markytan (m)",
+  "disclaimer": "Presentation av mätdata. De markerade zonerna följer enbart av de inställda tröskelvärdena; detta är ingen bedömning och ersätter inte friklassning eller bedömning av en sakkunnig.",
+  "line": {
+    "declination": "deklination",
+    "inclination": "inklination"
+  },
+  "noTotal": "Ingen total fältstyrka: filen har ingen totalkanal och inte alla tre komponenter.",
+  "none": "Ingen av de öppna sonderingarna har magnetometerkanaler.",
+  "readout": {
+    "depth": "{{depth}} m under markytan",
+    "hint": "För pekaren över diagrammet för värdena på ett djup.",
+    "title": "Värden"
+  },
+  "report": {
+    "section": "Magnetometer",
+    "sectionHint": "En sida per magnetometersondering med diagram, zoner och inställningar"
+  },
+  "ribbon": {
+    "group": "Magnetometer",
+    "show": "Magneto-\nmeter",
+    "showHint": "Visa sonderingens magnetometerkanaler mot djupet, bredvid qc."
+  },
+  "settings": {
+    "analysisFrom": "Zoner från",
+    "anomaly": "Tröskel avvikelse",
+    "backgroundFrom": "Bakgrund från",
+    "backgroundTo": "Bakgrund till",
+    "end": "slut",
+    "gradient": "Tröskel gradient",
+    "mergeGap": "Slå ihop inom",
+    "note": "Tröskelvärdena är egna inställningar, inga normvärden.",
+    "start": "start",
+    "title": "Inställningar"
+  },
+  "side": {
+    "cpt": "Sondering",
+    "title": "Magnetometer"
+  },
+  "totalComputed": "Total fältstyrka beräknad ur de tre komponenterna: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Komponenter − median",
+    "declination": "Deklination",
+    "gradient": "Gradient d|B|/dz",
+    "inclination": "Inklination",
+    "qc": "qc",
+    "total": "Totalfält |B|"
+  },
+  "unknownUnit": "Kanal {{channel}} visas inte: enheten '{{unit}}' är okänd.",
+  "zones": {
+    "bottom": "Underkant (m)",
+    "none": "Inget intervall över de inställda tröskelvärdena.",
+    "note": "Topp = största avvikelse från bakgrundsfältet i zonen. Djup i m under markytan.",
+    "peak": "Topp (nT)",
+    "peakDepth": "vid (m)",
+    "peakGradient": "Gradient (nT/m)",
+    "title": "Zoner över tröskeln",
+    "top": "Överkant (m)",
+    "zoomHint": "Klicka för att zooma in på zonen"
+  }
+}
