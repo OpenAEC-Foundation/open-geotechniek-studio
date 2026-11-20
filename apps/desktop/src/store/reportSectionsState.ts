@@ -8,6 +8,8 @@
 // deelt de actuele selectie zonder store-verbouwing; ReportPreview
 // blijft eigenaar (schrijft), de ribbon leest op klik-moment.
 
+import type { ReportTexts } from "../types/cpt";
+
 export interface ReportSections {
   chartScale?: number | null;
   coverTitle?: string;
@@ -17,6 +19,12 @@ export interface ReportSections {
   perCpt: boolean;
   sbtLegend: boolean;
   metadata: boolean;
+  /** Vrije teksten na het voorblad; alleen `false` zet ze uit. */
+  texts?: boolean;
+  /** Testrapport per sondering volgens NEN-EN-ISO 22476-1. */
+  testReport?: boolean;
+  /** Teksten voor een document zonder project; anders gelden de teksten van het project. */
+  reportTexts?: ReportTexts;
 }
 
 export const DEFAULT_SECTIONS: ReportSections = {
@@ -26,11 +34,14 @@ export const DEFAULT_SECTIONS: ReportSections = {
   perCpt: true,
   sbtLegend: false,
   metadata: false,
+  texts: true,
+  testReport: false,
 };
 
 export function sectionsAreDefault(s: ReportSections): boolean {
-  return s.chartScale == null && !s.coverTitle && (Object.keys(DEFAULT_SECTIONS) as Array<keyof ReportSections>).every(
-    (k) => s[k] === DEFAULT_SECTIONS[k],
+  const noOwnTexts = !Object.values(s.reportTexts ?? {}).some((text) => text?.trim());
+  return s.chartScale == null && !s.coverTitle && noOwnTexts && (Object.keys(DEFAULT_SECTIONS) as Array<keyof ReportSections>).every(
+    (k) => (s[k] ?? DEFAULT_SECTIONS[k]) === DEFAULT_SECTIONS[k],
   );
 }
 

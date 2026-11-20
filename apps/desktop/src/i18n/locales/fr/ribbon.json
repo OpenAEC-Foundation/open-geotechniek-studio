@@ -144,12 +144,27 @@
       "sbtLegend": "Légende indicative qc/Rf",
       "sbtHint": "Page séparée avec les 9 zones de sol",
       "metadata": "Récapitulatif des métadonnées",
-      "metaHint": "#COMPANYID / #PROJECTID / étalonnage complets, etc."
+      "metaHint": "#COMPANYID / #PROJECTID / étalonnage complets, etc.",
+      "texts": "Textes",
+      "textsHint": "Introduction, nivellement et niveau de la nappe juste après la page de garde",
+      "testReport": "Rapport d'essai",
+      "testReportHint": "Une page par sondage avec les données exigées par la norme EN ISO 22476-1"
     },
     "cptCount": "Essais",
     "openProjectInfo": "Modifier les données du projet",
     "openInNewWindow": "Ouvrir le PDF dans la visionneuse du système",
-    "openPdf": "Ouvrir le PDF"
+    "openPdf": "Ouvrir le PDF",
+    "text": {
+      "title": "Textes",
+      "introduction": "Introduction",
+      "levelling": "Nivellement",
+      "groundwater": "Niveau de la nappe",
+      "sample": "Texte type",
+      "sampleHint": "Insérer un texte standard avec les données du projet, puis l'adapter",
+      "sampleBlocked": "Videz d'abord la zone de texte pour insérer le texte type",
+      "hint": "Un texte vide n'apparaît pas dans le rapport. Les textes sont enregistrés avec le projet.",
+      "hintNoProject": "Un texte vide n'apparaît pas dans le rapport. Sans projet, les textes ne sont pas conservés."
+    }
   },
   "model3dTab": "Modèle 3D",
   "model3d": {

@@ -90,6 +90,13 @@ export function parseProjectFile(content: string): ProjectFile {
       throw new Error(m("project.invalidField", "Ongeldig projectveld: {{field}}.", { field: key }));
     }
   }
+  // Vrije rapportteksten: alleen tekstvelden blijven staan; oudere bestanden hebben ze niet.
+  if (data.project.report_texts !== undefined) {
+    const texts: Record<string, unknown> = object(data.project.report_texts) ? data.project.report_texts : {};
+    const kept = Object.fromEntries(["introduction", "levelling", "groundwater"]
+      .filter(key => typeof texts[key] === "string" && (texts[key] as string).trim()).map(key => [key, texts[key]]));
+    if (Object.keys(kept).length) data.project.report_texts = kept; else delete data.project.report_texts;
+  }
   if (data.cpts !== undefined && !Array.isArray(data.cpts)) throw new Error(m("project.invalidCptList", "Ongeldige sonderingenlijst."));
   for (const cpt of (data.cpts ?? []) as unknown[]) validateCpt(cpt);
   if (data.bores !== undefined && (!Array.isArray(data.bores) || data.bores.some(b =>

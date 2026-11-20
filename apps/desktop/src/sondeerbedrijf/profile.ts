@@ -58,7 +58,8 @@ export async function saveProfile(p: CompanyProfile): Promise<void> {
   await setBrandMode("eigen");
 }
 
-/** Vaste opbouw van het sondeerrapport: voorblad, coördinaten, kaart, sondeerstaten met legenda en bestandsgegevens. */
+/** Vaste opbouw van het sondeerrapport: voorblad, teksten, coördinaten, kaart, sondeerstaten, testrapporten, legenda en bestandsgegevens. */
 export const CPT_REPORT_SECTIONS: ReportSections = {
   coverTitle: "Sondeerrapport", cover: true, coordTable: true, map: true, perCpt: true, sbtLegend: true, metadata: true,
+  texts: true, testReport: true,
 };

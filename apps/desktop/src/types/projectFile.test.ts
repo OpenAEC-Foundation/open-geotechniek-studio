@@ -43,6 +43,24 @@ describe("projectbestanden", () => {
     expect(useCptStore.getState().documents).toHaveLength(2);
     expect([...useCptStore.getState().cpts.values()]).toEqual([cpt]);
   });
+  it("bewaart de vrije rapportteksten bij opslaan en weer openen", async () => {
+    newProjectDocument();
+    const report_texts = { introduction: "In opdracht van de klant zijn 3 sonderingen uitgevoerd.\nTweede alinea.", groundwater: "Grondwater op 1,20 m beneden maaiveld." };
+    useCptStore.getState().setProjectMeta({ report_texts });
+    const serialized = await serializeActiveProject();
+    expect(JSON.parse(serialized).project.report_texts).toEqual(report_texts);
+    await openContentByFilename(serialized, "teksten.ifcgeo");
+    const state = useCptStore.getState();
+    expect(state.documents).toHaveLength(2);
+    expect(state.projectMeta.report_texts).toEqual(report_texts);
+  });
+  it("opent een ouder projectbestand zonder rapportteksten en negeert lege of ongeldige teksten", async () => {
+    await openContentByFilename(JSON.stringify(payload), "oud.ifcgeo");
+    expect(useCptStore.getState().projectMeta.report_texts).toBeUndefined();
+    expect(parseProjectFile(JSON.stringify({ ...payload, project: { ...project, report_texts: { introduction: "  ", levelling: 7 } } })).project.report_texts).toBeUndefined();
+    expect(parseProjectFile(JSON.stringify({ ...payload, project: { ...project, report_texts: { levelling: "GPS", onbekend: "x" } } })).project.report_texts).toEqual({ levelling: "GPS" });
+    expect(parseProjectFile(JSON.stringify({ ...payload, project: { ...project, report_texts: "tekst" } })).project.report_texts).toBeUndefined();
+  });
   it('bewaart de sonderingselectie en puntniveaus van een draagvermogentabel',async()=>{
     newProjectDocument();
     const capacityTable={cptIds:['S1','S2'],toeNaps:[-14,-15.5]};

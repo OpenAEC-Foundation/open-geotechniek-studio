@@ -144,12 +144,27 @@
       "sbtLegend": "Vejledende qc/Rf-forklaring",
       "sbtHint": "Separat side med de 9 jordartszoner",
       "metadata": "Metadataoversigt",
-      "metaHint": "Fuld #COMPANYID / #PROJECTID / kalibrering m.m."
+      "metaHint": "Fuld #COMPANYID / #PROJECTID / kalibrering m.m.",
+      "texts": "Tekster",
+      "textsHint": "Indledning, nivellement og grundvandsstand lige efter forsiden",
+      "testReport": "Prøvningsrapport",
+      "testReportHint": "Én side pr. sondering med de oplysninger, som EN ISO 22476-1 kræver"
     },
     "cptCount": "Sonderinger",
     "openProjectInfo": "Rediger projektoplysninger",
     "openInNewWindow": "Åbn PDF'en i systemets fremviser",
-    "openPdf": "Åbn PDF"
+    "openPdf": "Åbn PDF",
+    "text": {
+      "title": "Tekster",
+      "introduction": "Indledning",
+      "levelling": "Nivellement",
+      "groundwater": "Grundvandsstand",
+      "sample": "Eksempeltekst",
+      "sampleHint": "Indsæt en standardtekst med projektets oplysninger, og tilpas den bagefter",
+      "sampleBlocked": "Tøm først tekstfeltet for at indsætte eksempelteksten",
+      "hint": "En tom tekst kommer ikke med i rapporten. Teksterne gemmes sammen med projektet.",
+      "hintNoProject": "En tom tekst kommer ikke med i rapporten. Uden et projekt gemmes teksterne ikke."
+    }
   },
   "model3dTab": "3D-model",
   "model3d": {

@@ -144,12 +144,27 @@
       "sbtLegend": "Indicatieve qc/Rf-legenda",
       "sbtHint": "Aparte pagina met de 9 grondsoort-zones",
       "metadata": "Metadata-overzicht",
-      "metaHint": "Volledige #COMPANYID / #PROJECTID / kalibratie etc."
+      "metaHint": "Volledige #COMPANYID / #PROJECTID / kalibratie etc.",
+      "texts": "Teksten",
+      "textsHint": "Inleiding, waterpassing en grondwaterstand direct na het voorblad",
+      "testReport": "Testrapport",
+      "testReportHint": "Per sondering een pagina met de gegevens volgens NEN-EN-ISO 22476-1"
     },
     "cptCount": "Sonderingen",
     "openProjectInfo": "Projectgegevens bewerken",
     "openInNewWindow": "PDF openen in de systeem-viewer",
-    "openPdf": "PDF openen"
+    "openPdf": "PDF openen",
+    "text": {
+      "title": "Teksten",
+      "introduction": "Inleiding",
+      "levelling": "Waterpassing",
+      "groundwater": "Grondwaterstand",
+      "sample": "Voorbeeldtekst",
+      "sampleHint": "Vul een standaardtekst in met de gegevens van het project en pas die daarna aan",
+      "sampleBlocked": "Maak het tekstvak eerst leeg om de voorbeeldtekst in te vullen",
+      "hint": "Een lege tekst komt niet in het rapport. De teksten worden met het project opgeslagen.",
+      "hintNoProject": "Een lege tekst komt niet in het rapport. Zonder project worden de teksten niet bewaard."
+    }
   },
   "model3dTab": "3D-model",
   "model3d": {

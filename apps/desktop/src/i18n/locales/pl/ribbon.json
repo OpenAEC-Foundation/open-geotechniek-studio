@@ -144,12 +144,27 @@
       "sbtLegend": "Orientacyjna legenda qc/Rf",
       "sbtHint": "Osobna strona z 9 strefami gruntu",
       "metadata": "Przegląd metadanych",
-      "metaHint": "Pełne #COMPANYID / #PROJECTID / kalibracja itp."
+      "metaHint": "Pełne #COMPANYID / #PROJECTID / kalibracja itp.",
+      "texts": "Teksty",
+      "textsHint": "Wstęp, niwelacja i poziom wody gruntowej zaraz po stronie tytułowej",
+      "testReport": "Raport z badania",
+      "testReportHint": "Jedna strona na sondowanie z danymi wymaganymi przez normę EN ISO 22476-1"
     },
     "cptCount": "Sondowania",
     "openProjectInfo": "Edytuj dane projektu",
     "openInNewWindow": "Otwórz PDF w przeglądarce systemowej",
-    "openPdf": "Otwórz PDF"
+    "openPdf": "Otwórz PDF",
+    "text": {
+      "title": "Teksty",
+      "introduction": "Wstęp",
+      "levelling": "Niwelacja",
+      "groundwater": "Poziom wody gruntowej",
+      "sample": "Tekst przykładowy",
+      "sampleHint": "Wstawia standardowy tekst z danymi projektu, który można potem dostosować",
+      "sampleBlocked": "Najpierw wyczyść pole tekstowe, aby wstawić tekst przykładowy",
+      "hint": "Pusty tekst nie trafia do raportu. Teksty są zapisywane razem z projektem.",
+      "hintNoProject": "Pusty tekst nie trafia do raportu. Bez projektu teksty nie są zapisywane."
+    }
   },
   "model3dTab": "Model 3D",
   "model3d": {
