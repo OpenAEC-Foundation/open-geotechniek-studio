@@ -327,6 +327,7 @@
       "negative": "Negatieve kleef langs de schacht; Fnk;d = {{force}} kN",
       "positive": "Positieve schachtwrijving langs de schacht; Rs;cal;max = {{force}} kN",
       "qc": "Conusweerstand qc naast de paal; dikke strepen zijn de trajectgemiddelden.",
+      "slip": "Bezwijklichaam: de grond schuift af langs een logaritmische spiraal, van de kritieke diepte onder de paalpunt naar buiten en omhoog tot 8 Deq boven de punt. Een kwart is weggelaten zodat je erin kijkt; de pijlen wijzen in de schuifrichting. De vorm is schematisch.",
       "zone": "Traject {{zone}}",
       "zoneI": "van de paalpunt omlaag tot de kritieke diepte",
       "zoneII": "van de kritieke diepte terug omhoog naar de paalpunt",

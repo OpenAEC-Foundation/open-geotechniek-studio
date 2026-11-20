@@ -327,6 +327,7 @@
       "negative": "Rozamiento negativo a lo largo del fuste; Fnk;d = {{force}} kN",
       "positive": "Rozamiento positivo a lo largo del fuste; Rs;cal;max = {{force}} kN",
       "qc": "Resistencia de punta qc junto al pilote; los trazos gruesos son las medias de cada tramo.",
+      "slip": "Cuerpo de rotura: el suelo desliza a lo largo de una espiral logarítmica, desde la profundidad crítica bajo la punta del pilote hacia fuera y hacia arriba hasta 8 Deq por encima de la punta. Se ha omitido un cuarto para ver el interior; las flechas indican el sentido del deslizamiento. La forma es esquemática.",
       "zone": "Tramo {{zone}}",
       "zoneI": "desde la punta del pilote hacia abajo hasta la profundidad crítica",
       "zoneII": "desde la profundidad crítica de vuelta hacia arriba hasta la punta del pilote",

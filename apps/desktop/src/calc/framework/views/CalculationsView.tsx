@@ -76,7 +76,7 @@ export function CalculationsView() {
             {mod.buildReport && <button role="tab" aria-selected={shownView === 'print'} className={shownView === 'print' ? 'active' : ''} onClick={() => setView('print')}>{t('view.tabs.print', 'Afdrukvoorbeeld')}</button>}
             {mod.SettingsPanel && <button role="tab" aria-selected={shownView === 'settings'} className={shownView === 'settings' ? 'active' : ''} onClick={() => setView('settings')}>{t('view.tabs.settings', 'Instellingen')}</button>}
           </div>
-          <span className="cs-viewbar-status"><span className="cs-dot" aria-hidden="true" />{t('view.draft', 'Concept')}</span>
+          <span className="cs-viewbar-status"><span className="cs-dot" aria-hidden="true" />{t('view.draft', 'Concept alpha')}</span>
         </div>
         {(shownView === 'sheet' || shownView === 'model') && <SheetPanes mod={mod} name={active.name} input={input} result={result} ctx={ctx} onChange={onChange} showOutput={shownView === 'sheet'} />}
         {shownView === 'table' && <div className="cs-table-view">

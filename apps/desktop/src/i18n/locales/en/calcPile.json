@@ -327,6 +327,7 @@
       "negative": "Negative skin friction along the shaft; Fnk;d = {{force}} kN",
       "positive": "Positive shaft friction along the shaft; Rs;cal;max = {{force}} kN",
       "qc": "Cone resistance qc next to the pile; thick bars are the trajectory averages.",
+      "slip": "Failure body: the soil shears along a logarithmic spiral, from the critical depth below the pile toe outwards and up to 8 Deq above the toe. A quarter is left out so you can look inside; the arrows point in the direction of shearing. The shape is schematic.",
       "zone": "Trajectory {{zone}}",
       "zoneI": "from the pile toe down to the critical depth",
       "zoneII": "from the critical depth back up to the pile toe",

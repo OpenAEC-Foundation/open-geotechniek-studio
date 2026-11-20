@@ -327,6 +327,7 @@
       "negative": "Negative Mantelreibung entlang des Schafts; Fnk;d = {{force}} kN",
       "positive": "Positive Mantelreibung entlang des Schafts; Rs;cal;max = {{force}} kN",
       "qc": "Spitzenwiderstand qc neben dem Pfahl; dicke Striche sind die Bereichsmittelwerte.",
+      "slip": "Bruchkörper: Der Boden schert entlang einer logarithmischen Spirale ab, von der kritischen Tiefe unter dem Pfahlfuß nach außen und nach oben bis 8 Deq über dem Fuß. Ein Viertel ist weggelassen, damit man hineinsieht; die Pfeile zeigen die Scherrichtung. Die Form ist schematisch.",
       "zone": "Bereich {{zone}}",
       "zoneI": "vom Pfahlfuß abwärts bis zur kritischen Tiefe",
       "zoneII": "von der kritischen Tiefe zurück nach oben zum Pfahlfuß",

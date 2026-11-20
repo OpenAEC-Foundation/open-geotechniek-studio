@@ -11,7 +11,7 @@
       "settings": "Impostazioni"
     },
     "defaultVisual": "CPT",
-    "draft": "Bozza",
+    "draft": "Bozza alpha",
     "input": "Dati di input",
     "settings": {
       "title": "Impostazioni · {{name}}",
@@ -48,7 +48,7 @@
     "name": "Nome",
     "namePlaceholder": "Ad esempio: cedimento del rilevato",
     "alphaTitle": "Alpha — ancora in sviluppo, non pronto per la produzione",
-    "alpha": "BOZZA — in sviluppo",
+    "alpha": "BOZZA ALPHA — in sviluppo",
     "cancel": "Annulla",
     "add": "Aggiungi"
   },
@@ -82,7 +82,7 @@
     "explanation": "Spiegazione",
     "contextTitle": "Calcoli geotecnici",
     "contextModules": "Cedimento · Fondazione superficiale",
-    "draftCalculation": "Calcolo in bozza"
+    "draftCalculation": "Calcolo in bozza (alpha)"
   },
   "modules": {
     "pile-bearing-capacity": {

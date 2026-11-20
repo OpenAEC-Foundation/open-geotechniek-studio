@@ -11,7 +11,7 @@
       "settings": "Instellingen"
     },
     "defaultVisual": "Sondering",
-    "draft": "Concept",
+    "draft": "Concept alpha",
     "input": "Invoer",
     "settings": {
       "title": "Instellingen · {{name}}",
@@ -48,7 +48,7 @@
     "name": "Naam",
     "namePlaceholder": "Bijvoorbeeld: Zetting ophoging",
     "alphaTitle": "Alpha — nog in ontwikkeling, niet productie-gereed",
-    "alpha": "CONCEPT — in ontwikkeling",
+    "alpha": "CONCEPT ALPHA — in ontwikkeling",
     "cancel": "Annuleren",
     "add": "Toevoegen"
   },
@@ -82,7 +82,7 @@
     "explanation": "Toelichting",
     "contextTitle": "Geotechnische berekeningen",
     "contextModules": "Zetting · Poer op staal",
-    "draftCalculation": "Conceptberekening"
+    "draftCalculation": "Conceptberekening (alpha)"
   },
   "modules": {
     "pile-bearing-capacity": {

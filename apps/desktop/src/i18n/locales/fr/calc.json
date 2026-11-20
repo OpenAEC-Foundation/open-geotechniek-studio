@@ -11,7 +11,7 @@
       "settings": "Paramètres"
     },
     "defaultVisual": "CPT",
-    "draft": "Brouillon",
+    "draft": "Brouillon alpha",
     "input": "Saisie",
     "settings": {
       "title": "Paramètres · {{name}}",
@@ -48,7 +48,7 @@
     "name": "Nom",
     "namePlaceholder": "Par exemple : Tassement du remblai",
     "alphaTitle": "Alpha — encore en développement, pas prêt pour la production",
-    "alpha": "BROUILLON — en développement",
+    "alpha": "BROUILLON ALPHA — en développement",
     "cancel": "Annuler",
     "add": "Ajouter"
   },
@@ -82,7 +82,7 @@
     "explanation": "Explication",
     "contextTitle": "Calculs géotechniques",
     "contextModules": "Tassement · Semelle superficielle",
-    "draftCalculation": "Calcul provisoire"
+    "draftCalculation": "Calcul provisoire (alpha)"
   },
   "modules": {
     "pile-bearing-capacity": {

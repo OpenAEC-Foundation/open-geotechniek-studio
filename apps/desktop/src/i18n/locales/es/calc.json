@@ -11,7 +11,7 @@
       "settings": "Configuración"
     },
     "defaultVisual": "CPT",
-    "draft": "Borrador",
+    "draft": "Borrador alfa",
     "input": "Entrada",
     "settings": {
       "title": "Configuración · {{name}}",
@@ -48,7 +48,7 @@
     "name": "Nombre",
     "namePlaceholder": "Por ejemplo: Asiento del relleno",
     "alphaTitle": "Alfa — aún en desarrollo, no apto para producción",
-    "alpha": "BORRADOR — en desarrollo",
+    "alpha": "BORRADOR ALFA — en desarrollo",
     "cancel": "Cancelar",
     "add": "Añadir"
   },
@@ -82,7 +82,7 @@
     "explanation": "Explicación",
     "contextTitle": "Cálculos geotécnicos",
     "contextModules": "Asiento · Zapata superficial",
-    "draftCalculation": "Cálculo en borrador"
+    "draftCalculation": "Cálculo en borrador (alfa)"
   },
   "modules": {
     "pile-bearing-capacity": {

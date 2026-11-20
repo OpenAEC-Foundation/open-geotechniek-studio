@@ -327,6 +327,7 @@
       "negative": "Negativ mantelfriktion längs skaftet; Fnk;d = {{force}} kN",
       "positive": "Positiv mantelfriktion längs skaftet; Rs;cal;max = {{force}} kN",
       "qc": "Spetsmotstånd qc bredvid pålen; tjocka streck är medelvärdena för sträckorna.",
+      "slip": "Brottkropp: jorden skjuvas längs en logaritmisk spiral, från det kritiska djupet under pålspetsen utåt och uppåt till 8 Deq över spetsen. En fjärdedel är utelämnad så att man ser in; pilarna visar skjuvriktningen. Formen är schematisk.",
       "zone": "Sträcka {{zone}}",
       "zoneI": "från pålspetsen nedåt till det kritiska djupet",
       "zoneII": "från det kritiska djupet tillbaka upp till pålspetsen",

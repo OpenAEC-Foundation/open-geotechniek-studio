@@ -7,6 +7,7 @@ import type { KoppejanScene, KoppejanZoneId, SceneLabel } from "../parts/koppeja
 export const ZONE_COLORS: Record<KoppejanZoneId, string> = { I: "#e8890c", II: "#7c3aed", III: "#2563eb" };
 export const SHAFT_COLORS = { negative: "#dc2626", positive: "#16a34a" } as const;
 export const CLIPPED_COLOR = "#0d9488";
+export const SLIP_COLOR = "#9a3412";
 const GROUND_COLOR = "#7c8f4e";
 
 export interface SceneColors { text: string; muted: string; background: string }
@@ -120,6 +121,47 @@ export function buildKoppejanObjects(model: KoppejanScene, colors: SceneColors):
       length, new THREE.Color(color).getHex(), Math.min(0.45 * deq, length * 0.4), Math.min(0.22 * deq, length * 0.2));
     arrow.name = `direction-${zone.id}`;
     root.add(arrow);
+  }
+
+  // Bezwijklichaam: het glijvlak rondgedraaid om de paalas, met een kwart weggelaten zodat
+  // je erin kijkt. Op de twee snijvlakken staat het glijvlak als lijn, met pijlen in de
+  // richting waarin de grond afschuift.
+  if (model.slip) {
+    const slip = model.slip;
+    const body = new THREE.Mesh(
+      new THREE.LatheGeometry(slip.profile.map(([r, y]) => new THREE.Vector2(r, y)), 72, Math.PI / 2, 1.5 * Math.PI),
+      new THREE.MeshStandardMaterial({ color: SLIP_COLOR, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.DoubleSide, roughness: 0.9 }),
+    );
+    body.name = "slip-body";
+    body.renderOrder = 1;
+    root.add(body);
+    // Snijvlakken: +x (z = 0) en +z (x = 0).
+    const faces: Array<(r: number, y: number) => [number, number, number]> = [(r, y) => [r, y, 0], (r, y) => [0, y, r]];
+    for (const place of faces) {
+      const outline = slip.profile.map(([r, y]) => place(r, y));
+      root.add(line(outline, SLIP_COLOR, 1));
+      const fill = new THREE.Shape(slip.profile.map(([r, y]) => new THREE.Vector2(r, y)));
+      const face = new THREE.Mesh(new THREE.ShapeGeometry(fill), translucent(SLIP_COLOR, 0.12));
+      if (place(1, 0)[2] === 1) face.rotation.y = -Math.PI / 2;
+      face.name = "slip-face";
+      face.renderOrder = 1;
+      root.add(face);
+      for (const at of [0.2, 0.5, 0.8]) {
+        const i = Math.round(at * (slip.profile.length - 1));
+        const [r0, y0] = slip.profile[i - 1], [r1, y1] = slip.profile[i + 1];
+        const from = new THREE.Vector3(...place(slip.profile[i][0], slip.profile[i][1]));
+        const dir = new THREE.Vector3(...place(r1 - r0, y1 - y0)).normalize();
+        const arrow = new THREE.ArrowHelper(dir, from.addScaledVector(dir, -0.6 * deq), 1.2 * deq, new THREE.Color(SLIP_COLOR).getHex(), 0.5 * deq, 0.28 * deq);
+        arrow.name = "slip-direction";
+        root.add(arrow);
+      }
+    }
+    // Omtrek op het breedste niveau, over de driekwart die er staat.
+    const arc = Array.from({ length: 49 }, (_, i): [number, number, number] => {
+      const a = Math.PI / 2 + (i / 48) * 1.5 * Math.PI;
+      return [slip.maxRadiusM * Math.sin(a), slip.widestNap, slip.maxRadiusM * Math.cos(a)];
+    });
+    root.add(line(arc, SLIP_COLOR, 0.6));
   }
 
   // Zoekgebied van de kritieke diepte (0,7 en 4 Deq) gestippeld, de gekozen diepte als ring.

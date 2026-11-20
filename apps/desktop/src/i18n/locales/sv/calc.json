@@ -11,7 +11,7 @@
       "settings": "Inställningar"
     },
     "defaultVisual": "CPT-sondering",
-    "draft": "Utkast",
+    "draft": "Utkast alfa",
     "input": "Indata",
     "settings": {
       "title": "Inställningar · {{name}}",
@@ -48,7 +48,7 @@
     "name": "Namn",
     "namePlaceholder": "Till exempel: Sättning av utfyllnad",
     "alphaTitle": "Alfa — fortfarande under utveckling, inte produktionsklar",
-    "alpha": "UTKAST — under utveckling",
+    "alpha": "UTKAST ALFA — under utveckling",
     "cancel": "Avbryt",
     "add": "Lägg till"
   },
@@ -82,7 +82,7 @@
     "explanation": "Förklaring",
     "contextTitle": "Geotekniska beräkningar",
     "contextModules": "Sättning · Platta på mark",
-    "draftCalculation": "Utkastberäkning"
+    "draftCalculation": "Utkastberäkning (alfa)"
   },
   "modules": {
     "pile-bearing-capacity": {

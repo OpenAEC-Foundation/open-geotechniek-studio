@@ -11,7 +11,7 @@
       "settings": "Definições"
     },
     "defaultVisual": "CPT",
-    "draft": "Rascunho",
+    "draft": "Rascunho alfa",
     "input": "Dados",
     "settings": {
       "title": "Definições · {{name}}",
@@ -48,7 +48,7 @@
     "name": "Nome",
     "namePlaceholder": "Por exemplo: Assentamento do aterro",
     "alphaTitle": "Alfa — ainda em desenvolvimento, não pronto para produção",
-    "alpha": "RASCUNHO — em desenvolvimento",
+    "alpha": "RASCUNHO ALFA — em desenvolvimento",
     "cancel": "Cancelar",
     "add": "Adicionar"
   },
@@ -82,7 +82,7 @@
     "explanation": "Explicação",
     "contextTitle": "Cálculos geotécnicos",
     "contextModules": "Assentamento · Sapata",
-    "draftCalculation": "Cálculo em rascunho"
+    "draftCalculation": "Cálculo em rascunho (alfa)"
   },
   "modules": {
     "pile-bearing-capacity": {

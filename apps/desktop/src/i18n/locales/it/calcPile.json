@@ -327,6 +327,7 @@
       "negative": "Attrito negativo lungo il fusto; Fnk;d = {{force}} kN",
       "positive": "Attrito laterale positivo lungo il fusto; Rs;cal;max = {{force}} kN",
       "qc": "Resistenza alla punta qc accanto al palo; i tratti spessi sono le medie dei tratti.",
+      "slip": "Corpo di rottura: il terreno scorre lungo una spirale logaritmica, dalla profondità critica sotto la punta del palo verso l’esterno e verso l’alto fino a 8 Deq sopra la punta. Un quarto è omesso per vedere all’interno; le frecce indicano il verso dello scorrimento. La forma è schematica.",
       "zone": "Tratto {{zone}}",
       "zoneI": "dalla punta del palo verso il basso fino alla profondità critica",
       "zoneII": "dalla profondità critica di nuovo verso l'alto fino alla punta del palo",

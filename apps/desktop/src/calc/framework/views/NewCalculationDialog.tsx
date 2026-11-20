@@ -94,12 +94,12 @@ export function NewCalculationDialog({ open, onClose }: Props) {
                         <strong>{moduleName(m)}</strong>
                         {m.status === "coming-soon" && (
                           <span className="calc-modal-alpha" title={t("dialog.alphaTitle", "Alpha — nog in ontwikkeling, niet productie-gereed")}>
-                            {" "}{t("dialog.alpha", "CONCEPT — in ontwikkeling")}
+                            {" "}{t("dialog.alpha", "CONCEPT ALPHA — in ontwikkeling")}
                           </span>
                         )}
                         {m.status === "experimental" && (
                           <span className="calc-modal-alpha" title={t("dialog.alphaTitle", "Alpha — nog in ontwikkeling, niet productie-gereed")}>
-                            {" "}{t("dialog.alpha", "CONCEPT — in ontwikkeling")}
+                            {" "}{t("dialog.alpha", "CONCEPT ALPHA — in ontwikkeling")}
                           </span>
                         )}
                       </div>

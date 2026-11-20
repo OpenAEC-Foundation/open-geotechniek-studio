@@ -11,7 +11,7 @@
       "settings": "Ustawienia"
     },
     "defaultVisual": "CPT",
-    "draft": "Wersja robocza",
+    "draft": "Wersja robocza alfa",
     "input": "Dane wejściowe",
     "settings": {
       "title": "Ustawienia · {{name}}",
@@ -48,7 +48,7 @@
     "name": "Nazwa",
     "namePlaceholder": "Na przykład: Osiadanie nasypu",
     "alphaTitle": "Alfa — wciąż w rozwoju, niegotowe do użytku produkcyjnego",
-    "alpha": "WERSJA ROBOCZA — w rozwoju",
+    "alpha": "WERSJA ROBOCZA ALFA — w rozwoju",
     "cancel": "Anuluj",
     "add": "Dodaj"
   },
@@ -82,7 +82,7 @@
     "explanation": "Objaśnienie",
     "contextTitle": "Obliczenia geotechniczne",
     "contextModules": "Osiadanie · Stopa fundamentowa",
-    "draftCalculation": "Obliczenie robocze"
+    "draftCalculation": "Obliczenie robocze (alfa)"
   },
   "modules": {
     "pile-bearing-capacity": {

@@ -63,6 +63,8 @@ export interface KoppejanScene {
   searchRange: { topNap: number; bottomNap: number; radiusM: number };
   critical: { nap: number; depthM: number; deqRatio: number };
   shaftZones: ShaftZone[];
+  /** Bezwijklichaam rond de paalpunt als omwentelingslichaam; null als traject III ontbreekt. */
+  slip: SlipBody | null;
   qc: {
     /** x van qc = 0 en breedte van de as tot axisMaxMpa [m]. */
     originX: number;
@@ -79,6 +81,38 @@ export interface KoppejanScene {
   labelGapM: number;
   /** Uitsnedes voor "passend in beeld" [m]: x van het labelanker links tot rechts van de qc-as, NAP van onder naar boven. */
   focus: Record<"tip" | "pile", { x0: number; x1: number; bottomNap: number; topNap: number }>;
+}
+
+/** Bezwijklichaam volgens het glijvlak waarop de 4D-8D-methode berust: een logaritmische
+ *  spiraal die onder de paalpunt begint op de kritieke diepte, naar buiten draait en
+ *  boven de punt weer bij de schacht uitkomt. */
+export interface SlipBody {
+  /** Doorsnede van het glijvlak van onder naar boven: [straal vanaf de paalas, NAP]. */
+  profile: Array<[number, number]>;
+  /** Groei van de spiraal: r = r0·exp(θ·tanSpiral). */
+  tanSpiral: number;
+  maxRadiusM: number;
+  /** Niveau waarop het lichaam het breedst is. */
+  widestNap: number;
+  bottomNap: number;
+  topNap: number;
+}
+
+/** Logaritmische spiraal met de pool in het hart van de paalpunt: bij θ = 0 recht omlaag
+ *  met straal `depthM`, bij θ = π recht omhoog met straal `heightM`. */
+export function slipBody(toeNap: number, depthM: number, heightM: number, steps = 48): SlipBody | null {
+  if (!(depthM > 0) || !(heightM > 0)) return null;
+  const tanSpiral = Math.log(heightM / depthM) / Math.PI;
+  const profile: Array<[number, number]> = [];
+  let maxRadiusM = 0, widestNap = toeNap;
+  for (let i = 0; i <= steps; i++) {
+    const theta = (i / steps) * Math.PI;
+    const r = depthM * Math.exp(theta * tanSpiral);
+    const x = i === 0 || i === steps ? 0 : r * Math.sin(theta), level = toeNap - r * Math.cos(theta);
+    profile.push([x, level]);
+    if (x > maxRadiusM) { maxRadiusM = x; widestNap = level; }
+  }
+  return { profile, tanSpiral, maxRadiusM, widestNap, bottomNap: toeNap - depthM, topNap: toeNap + heightM };
 }
 
 /** Schematische stralen, in Deq. */
@@ -191,11 +225,14 @@ export function buildKoppejanScene(
     .sort((a, b) => b.nap - a.nap);
   const qcMax = Math.max(0, ...raw.map((p) => p.qcMpa), base.qcIGemMpa, base.qcIIGemMpa, base.qcIIIGemMpa);
   const axisMaxMpa = Math.max(5, Math.ceil(qcMax * 1.05 / 5) * 5);
-  const originX = outerR + deqM;
+  // Het bezwijklichaam is breder dan de schematische trajecten: de qc-as en de labels staan erbuiten.
+  const slip = zoneIIITop > toe ? slipBody(toe, base.criticalDepthM, zoneIIITop - toe) : null;
+  const reach = Math.max(outerR, slip?.maxRadiusM ?? 0);
+  const originX = reach + deqM;
   const widthM = Math.max(5 * deqM, 0.1 * (top - toe));
 
   // Labels links van de paal, van boven naar beneden; rond de punt uit elkaar geschoven.
-  const labelX = -(outerR + deqM);
+  const labelX = -(reach + deqM);
   const zoneIII = zones.find((z) => z.id === "III");
   const tipWanted: Array<{ id: SceneLabel["id"]; text: string; target: [number, number] }> = [
     ...(zoneIII ? [{ id: "III" as const, text: ct("calcPile", "view3d.label.zone", "{{symbol}} = {{value}}", { symbol: "qc;III;gem", value: mpa(base.qcIIIGemMpa) }), target: [-(toeRadiusM + outerR) / 2, (zoneIII.topNap + toe) / 2] as [number, number] }] : []),
@@ -226,6 +263,7 @@ export function buildKoppejanScene(
     searchRange: { topNap: toe - 0.7 * deqM, bottomNap: toe - 4 * deqM, radiusM: outerR },
     critical: { nap: criticalNap, depthM: base.criticalDepthM, deqRatio: base.criticalDepthM / deqM },
     shaftZones,
+    slip,
     qc: {
       originX, widthM, axisMaxMpa, raw, clipped,
       averages: zones.map((z) => ({ zone: z.id, topNap: z.topNap, bottomNap: z.bottomNap, qcMpa: z.qcGemMpa })),

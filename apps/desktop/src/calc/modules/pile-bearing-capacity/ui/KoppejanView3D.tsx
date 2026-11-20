@@ -11,7 +11,7 @@ import { fmtNumber } from "../../../i18n";
 import { getPileType } from "../catalog";
 import { buildKoppejanScene } from "../parts/koppejan-scene";
 import type { PileInput, PileResult } from "../types";
-import { buildKoppejanObjects, CLIPPED_COLOR, disposeObjects, fitPose, SHAFT_COLORS, ZONE_COLORS, type LabelSprite } from "./koppejan-three";
+import { buildKoppejanObjects, CLIPPED_COLOR, disposeObjects, fitPose, SHAFT_COLORS, SLIP_COLOR, ZONE_COLORS, type LabelSprite } from "./koppejan-three";
 import "./koppejan-3d.css";
 
 type Focus = "tip" | "pile";
@@ -173,6 +173,12 @@ export function KoppejanView3D({ input, result }: { input: PileInput; result: Pi
             <span><strong>{t("view3d.legend.zone", "Traject {{zone}}", { zone: zone.id })}</strong>: {zoneText[zone.id]}; q<sub>c;{zone.id};gem</sub> = {fmtNumber(zone.qcGemMpa, 2)} MPa</span>
           </li>
         ))}
+        {model.slip && (
+          <li>
+            <span className="pile-3d-swatch" style={{ background: SLIP_COLOR, opacity: 0.6 }} />
+            <span>{t("view3d.legend.slip", "Bezwijklichaam: de grond schuift af langs een logaritmische spiraal, van de kritieke diepte onder de paalpunt naar buiten en omhoog tot 8 Deq boven de punt. Een kwart is weggelaten zodat je erin kijkt; de pijlen wijzen in de schuifrichting. De vorm is schematisch.")}</span>
+          </li>
+        )}
         <li>
           <span className="pile-3d-swatch pile-3d-swatch-ring" />
           <span>{t("view3d.legend.critical", "Kritieke diepte: {{depth}} m onder de paalpunt ({{ratio}} Deq, Deq = {{deq}} mm). Stippellijnen: zoekgebied 0,7 tot 4 Deq.", { depth: fmtNumber(model.critical.depthM, 2), ratio: fmtNumber(model.critical.deqRatio, 2), deq: fmtNumber(model.deqM * 1000, 0) })}</span>

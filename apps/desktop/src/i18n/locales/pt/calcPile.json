@@ -327,6 +327,7 @@
       "negative": "Atrito negativo ao longo do fuste; Fnk;d = {{force}} kN",
       "positive": "Atrito lateral positivo ao longo do fuste; Rs;cal;max = {{force}} kN",
       "qc": "Resistência de ponta qc ao lado da estaca; os traços grossos são as médias dos troços.",
+      "slip": "Corpo de rotura: o solo desliza ao longo de uma espiral logarítmica, desde a profundidade crítica abaixo da ponta da estaca para fora e para cima até 8 Deq acima da ponta. Um quarto foi omitido para se ver o interior; as setas indicam o sentido do deslizamento. A forma é esquemática.",
       "zone": "Troço {{zone}}",
       "zoneI": "da ponta da estaca para baixo até à profundidade crítica",
       "zoneII": "da profundidade crítica de volta para cima até à ponta da estaca",

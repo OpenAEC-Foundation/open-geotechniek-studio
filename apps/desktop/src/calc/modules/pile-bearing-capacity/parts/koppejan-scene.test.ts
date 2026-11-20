@@ -155,3 +155,29 @@ it("spreadDown houdt de volgorde en de kleinste afstand aan", () => {
   expect(spreadDown([5, 4.9, 4.8, 1], 0.5)).toEqual([5, 4.5, 4, 1]);
   expect(spreadDown([], 1)).toEqual([]);
 });
+
+describe("bezwijklichaam rond de paalpunt", () => {
+  it("loopt van de kritieke diepte onder de punt tot 8 Deq erboven", async () => {
+    const { slipBody } = await import("./koppejan-scene");
+    // Deq 0,25 m: kritieke diepte 4 Deq = 1,0 m, bovenkant 8 Deq = 2,0 m. tan = ln(2)/π.
+    const body = slipBody(-10, 1.0, 2.0)!;
+    expect(body.tanSpiral).toBeCloseTo(Math.log(2) / Math.PI, 12);
+    expect(body.profile[0]).toEqual([0, -11]);
+    expect(body.profile[body.profile.length - 1][0]).toBe(0);
+    expect(body.profile[body.profile.length - 1][1]).toBeCloseTo(-8, 12);
+    // Halverwege (θ = π/2) ligt het vlak op paalpuntniveau, op r = 1,0·√2 van de as.
+    const mid = body.profile[(body.profile.length - 1) / 2];
+    expect(mid[1]).toBeCloseTo(-10, 12);
+    expect(mid[0]).toBeCloseTo(Math.SQRT2, 12);
+    expect(body.maxRadiusM).toBeGreaterThan(mid[0]);
+    expect(body.widestNap).toBeGreaterThan(-10);
+  });
+  it("wordt breder en hoger ten opzichte van de diepte naarmate de kritieke diepte kleiner is", async () => {
+    const { slipBody } = await import("./koppejan-scene");
+    const diep = slipBody(0, 1.0, 2.0)!, ondiep = slipBody(0, 0.175, 2.0)!;
+    expect(ondiep.tanSpiral).toBeGreaterThan(diep.tanSpiral);
+    expect(ondiep.bottomNap).toBeGreaterThan(diep.bottomNap);
+    expect(slipBody(0, 0, 2)).toBeNull();
+    expect(slipBody(0, 1, 0)).toBeNull();
+  });
+});

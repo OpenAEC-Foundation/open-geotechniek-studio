@@ -327,6 +327,7 @@
       "negative": "Negativ overflademodstand langs skaftet; Fnk;d = {{force}} kN",
       "positive": "Positiv overflademodstand langs skaftet; Rs;cal;max = {{force}} kN",
       "qc": "Spidsmodstand qc ved siden af pælen; tykke streger er gennemsnittene for strækningerne.",
+      "slip": "Brudlegeme: jorden forskydes langs en logaritmisk spiral, fra den kritiske dybde under pælespidsen udad og opad til 8 Deq over spidsen. En fjerdedel er udeladt, så man kan se ind; pilene viser forskydningsretningen. Formen er skematisk.",
       "zone": "Strækning {{zone}}",
       "zoneI": "fra pælespidsen nedad til den kritiske dybde",
       "zoneII": "fra den kritiske dybde tilbage op til pælespidsen",

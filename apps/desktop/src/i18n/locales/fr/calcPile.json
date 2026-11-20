@@ -327,6 +327,7 @@
       "negative": "Frottement négatif le long du fût ; Fnk;d = {{force}} kN",
       "positive": "Frottement latéral positif le long du fût ; Rs;cal;max = {{force}} kN",
       "qc": "Résistance de pointe qc à côté du pieu ; les traits épais sont les moyennes par trajet.",
+      "slip": "Corps de rupture : le sol cisaille le long d’une spirale logarithmique, de la profondeur critique sous la pointe du pieu vers l’extérieur et vers le haut jusqu’à 8 Deq au-dessus de la pointe. Un quart est retiré pour voir l’intérieur ; les flèches indiquent le sens du cisaillement. La forme est schématique.",
       "zone": "Trajet {{zone}}",
       "zoneI": "de la pointe du pieu vers le bas jusqu'à la profondeur critique",
       "zoneII": "de la profondeur critique vers le haut jusqu'à la pointe du pieu",
