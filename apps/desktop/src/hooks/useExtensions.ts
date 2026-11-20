@@ -31,6 +31,7 @@ export type ExtensionId =
   | "calc.settlement"
   | "calc.kalendering"
   | "calc.driving-assessment"
+  | "calc.spread-foundation"
   | "calc.spread-foundation-drained"
   | "calc.spread-foundation-undrained"
   | "calc.laterally-loaded-pile"
@@ -44,6 +45,7 @@ const SETTING_KEYS: Record<ExtensionId, string> = {
   "calc.kalendering": "ext.calc.kalendering.enabled",
   "calc.driving-assessment": "ext.calc.driving-assessment.enabled",
   "calc.settlement": "ext.calc.settlement.enabled",
+  "calc.spread-foundation": "ext.calc.spread-foundation.enabled",
   "calc.spread-foundation-drained": "ext.calc.spread-foundation-drained.enabled",
   "calc.spread-foundation-undrained": "ext.calc.spread-foundation-undrained.enabled",
   "calc.laterally-loaded-pile": "ext.calc.laterally-loaded-pile.enabled",
@@ -71,6 +73,7 @@ const DEFAULTS: Record<ExtensionId, boolean> = {
   "calc.kalendering": true,
   "calc.driving-assessment": true,
   "calc.settlement": true,
+  "calc.spread-foundation": true,
   "calc.spread-foundation-drained": false,
   "calc.spread-foundation-undrained": false,
   "calc.laterally-loaded-pile": true,
@@ -171,6 +174,7 @@ export function useAllExtensions(): Record<ExtensionId, boolean> {
       "calc.pile-bearing-capacity",
       "calc.kalendering",
       "calc.settlement",
+      "calc.spread-foundation",
       "calc.spread-foundation-drained",
       "calc.spread-foundation-undrained",
       "calc.laterally-loaded-pile",
