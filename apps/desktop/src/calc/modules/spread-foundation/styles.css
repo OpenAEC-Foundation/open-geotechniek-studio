@@ -1,0 +1,53 @@
+/* Fundering op staal: doorsnede, 3D en uitwerking. Het formulier gebruikt de gedeelde rekenblad-stijl. */
+.sf-input select { max-width: 100%; }
+.sf-buttons { display: flex; gap: 6px; margin: 4px 0 6px; }
+.sf-buttons button, .sf-tabs button { padding: 3px 10px; border: 1px solid var(--oa-border-strong, #bbb); border-radius: var(--oa-radius-small, 3px); background: var(--oa-raised, #fff); color: var(--oa-text, #111); font: 12px var(--oa-font-body, sans-serif); cursor: pointer; }
+.sf-buttons button:disabled { opacity: .45; cursor: not-allowed; }
+.sf-remove { width: 22px; height: 22px; border: 0; background: none; color: var(--oa-text-secondary, #666); cursor: pointer; font-size: 14px; }
+.sf-remove:disabled { opacity: .3; cursor: not-allowed; }
+.sf-layers td:nth-child(2) select { min-width: 110px; }
+
+.sf-visual { display: flex; flex-direction: column; gap: 6px; padding: 8px; height: 100%; }
+.sf-tabs { display: flex; gap: 4px; }
+.sf-tabs button.active { border-color: var(--oa-accent, #d97706); background: var(--oa-selected, #fff7ed); color: var(--oa-accent-text, #92400e); }
+.sf-scene { width: 100%; height: 440px; min-height: 280px; }
+.sf-section { width: 100%; max-height: 720px; font: 10px var(--oa-font-numbers, monospace); }
+.sf-section text { fill: var(--oa-text-secondary, #555); }
+.sf-layer-line { stroke: var(--oa-text-secondary, #666); stroke-width: .5; opacity: .6; }
+.sf-layer-name { font-size: 9px; }
+.sf-ground { fill: none; stroke: var(--oa-text, #222); stroke-width: 1.4; }
+.sf-level line { stroke: var(--oa-text-secondary, #666); stroke-width: .6; stroke-dasharray: 5 3; }
+.sf-level text { font-size: 8.5px; }
+.sf-level-water line { stroke: #2563eb; }
+.sf-level-water text { fill: #2563eb; }
+.sf-level-ze line { stroke: var(--oa-error, #b91c1c); stroke-dasharray: 2 3; }
+.sf-level-ze text { fill: var(--oa-error, #b91c1c); }
+.sf-footing { fill: #b8bcc4; stroke: #4b5563; stroke-width: 1; }
+.sf-axis { stroke: var(--oa-text-secondary, #666); stroke-width: .6; stroke-dasharray: 8 2 2 2; }
+.sf-pressure { fill: var(--oa-accent, #d97706); opacity: .55; }
+.sf-slip polyline { fill: none; stroke: var(--oa-error, #b91c1c); stroke-width: 1.5; }
+.sf-slip-fill { fill: var(--oa-error, #b91c1c); opacity: .07; stroke: none; }
+.sf-slip-undrained polyline { stroke: #7c3aed; stroke-dasharray: 6 3; stroke-width: 1.2; }
+.sf-punch line { stroke: var(--oa-text, #222); stroke-width: .8; stroke-dasharray: 1.5 2.5; }
+.sf-load line { stroke-width: 1.8; }
+.sf-load-v line { stroke: #1d4ed8; } .sf-load-v text, .sf-head-v { fill: #1d4ed8; }
+.sf-load-h line { stroke: #b91c1c; } .sf-load-h text, .sf-head-h { fill: #b91c1c; }
+.sf-load-r line { stroke: var(--oa-text, #111827); stroke-dasharray: 5 2; } .sf-load-r text, .sf-head-r { fill: var(--oa-text, #111827); }
+.sf-note-strong { font-weight: 700; fill: var(--oa-accent-text, #92400e); }
+
+.sf-result { padding: 12px 16px; font-size: 12px; }
+.sf-result h3 { margin: 14px 0 6px; font-size: 12px; font-weight: 600; color: var(--oa-accent-text); }
+.sf-result h3:first-child { margin-top: 0; }
+.sf-summary td, .sf-summary th, .sf-rows td, .sf-rows th { padding: 2px 6px; text-align: right; white-space: nowrap; }
+.sf-summary td:first-child, .sf-summary th:first-child { text-align: left; white-space: normal; }
+.sf-rows td:nth-child(3), .sf-rows th:nth-child(3) { text-align: left; }
+.sf-ok { color: var(--oa-success, #166534); font-weight: 600; }
+.sf-fail { color: var(--oa-error, #b91c1c); font-weight: 600; }
+.sf-formula { margin: 4px 0; font-family: var(--oa-font-numbers); font-size: 11px; }
+.sf-check { border-bottom: 1px solid var(--oa-border, #ddd); padding: 4px 0; }
+.sf-check summary { display: flex; justify-content: space-between; gap: 12px; cursor: pointer; font-weight: 500; }
+.sf-article { margin: 4px 0; color: var(--oa-text-secondary); font-size: 11px; }
+.sf-steps { margin: 6px 0; display: grid; gap: 6px; font-family: var(--oa-font-numbers); font-size: 11px; }
+.sf-steps > div { display: grid; grid-template-columns: 78px 1fr; gap: 6px; }
+.sf-steps dt { color: var(--oa-text-secondary); overflow-wrap: anywhere; }
+.sf-steps dd { margin: 0; overflow-wrap: anywhere; }
