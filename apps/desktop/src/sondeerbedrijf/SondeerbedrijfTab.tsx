@@ -98,7 +98,7 @@ export default function SondeerbedrijfTab() {
             onClick={() => void run(() => reports.generateAndOpen(cpts, meta, CPT_REPORT_SECTIONS), "Sondeerrapport geopend.")} />
           {message && <div className={`ribbon-info-sub${message.error ? " ribbon-info-error" : ""}`} style={{ maxWidth: 320 }} role={message.error ? "alert" : "status"}>{message.text}</div>}
         </RibbonGroup>
-        <RibbonGroup label="Basisregistratie Ondergrond">
+        <RibbonGroup label="BRO">
           <RibbonButton icon="file.export" label="BRO-XML" size="large" disabled={!cpts.length}
             title="Sonderingen als registratieverzoek voor de Basisregistratie Ondergrond opslaan (één XML-bestand per sondering)"
             onClick={() => setBroOpen(true)} />
