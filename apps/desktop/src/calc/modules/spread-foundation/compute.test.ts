@@ -276,6 +276,54 @@ describe("V11 constructieberekening: strook als rechthoek 1,30 × 5,00 m op gela
     const narrow = drainedBearing({ bEffM: 1.0, lEffM: 5, ratio: 0.2, vKn: 68, hKn: 0, hAlongWidth: true, phiD: 22.18, cD: 2.12, gammaD: 8.33, qKpa: 7.2, slopeDeg: 0, baseTiltDeg: 0 });
     within(narrow.sigmaMaxKpa, 123.23, 0.3);
   });
+  // De lagen van de bron vanaf het ontgravingsniveau; aanleg NAP +11,90 m, ontgraving tot +12,30 m, grondwater +11,80 m.
+  const layers = [L(12.66, "zand, sterk siltig", 18, 20, 25), L(11.61, "leem, zwak zandig", 21, 21, 27.5, 5, 200), L(11.51, "klei, zwak zandig", 20, 20, 22.5, 25, 120), L(11.46, "klei, schoon", 19, 19, 17.5, 25, 100),
+    L(11.41, "leem, zwak zandig", 21, 21, 27.5, 5, 200), L(11.36, "zand, sterk siltig", 18, 20, 25), L(11.06, "zand, zwak siltig", 18, 20, 27), L(10.91, "zand, schoon", 19, 21, 35), L(10.61, "grind, zwak siltig", 19, 21, 37.5), L(10.41, "zand, schoon", 19, 21, 35)];
+  const zf = 11.9, water = 11.8, toRad = Math.PI / 180;
+  /** De rekenketen met de hand, met per stap de keuze van de bron of die van de module. */
+  const chain = (b: number, rule: { phiOnAngle: boolean; zeOnePassDesign: boolean; saturatedAboveWater: boolean; coverRepresentative: boolean }) => {
+    const phiD = (l: SpreadLayer) => (rule.phiOnAngle ? l.phi / 1.15 : Math.atan(Math.tan(l.phi * toRad) / 1.15) / toRad);
+    const gammaD = (l: SpreadLayer, wet: boolean) => (wet || rule.saturatedAboveWater ? l.gammaSat / 1.1 - 10 : l.gamma / 1.1);
+    const mean = (ze: number, pick: (l: SpreadLayer, wet: boolean) => number) => {
+      const floor = zf - ze; let num = 0, den = 0;
+      layers.forEach((l, k) => {
+        const bottom = Math.max(floor, layers[k + 1]?.topNap ?? -Infinity);
+        for (const [top, bot, wet] of [[Math.min(zf, l.topNap), Math.max(bottom, water), false], [Math.min(zf, l.topNap, water), bottom, true]] as Array<[number, number, boolean]>) {
+          if (top - bot <= 1e-9) continue;
+          const w = (top - bot) * ((top + bot) / 2 - floor); num += pick(l, wet) * w; den += w;
+        }
+      });
+      return num / den;
+    };
+    let ze = 1.5 * b;
+    if (rule.zeOnePassDesign) ze = b * influenceRatios(mean(ze, phiD), 0).ze;
+    else for (let k = 0; k < 60; k++) ze = b * influenceRatios(mean(ze, (l) => l.phi), 0).ze;
+    const q = 0.4 * 18 / (rule.coverRepresentative ? 1 : 1.1);
+    const p = { phiD: mean(ze, phiD), cD: mean(ze, (l) => l.c / 1.6), gammaD: mean(ze, gammaD) };
+    return { ze, q, ...p, sigma: drainedBearing({ bEffM: b, lEffM: 5, ratio: b / 5, vKn: 1, hKn: 0, hAlongWidth: true, ...p, qKpa: q, slopeDeg: 0, baseTiltDeg: 0 }).sigmaMaxKpa };
+  };
+  const source = { phiOnAngle: true, zeOnePassDesign: true, saturatedAboveWater: true, coverRepresentative: true };
+  const own = { phiOnAngle: false, zeOnePassDesign: false, saturatedAboveWater: false, coverRepresentative: false };
+
+  it.each([[1.3, 1.71, 23.43, 1.78, 8.43, 144.07], [1.0, 1.27, 22.18, 2.12, 8.33, 123.23]])("met de rekenregels van de bron volgen uit de lagen haar tussenwaarden en σ'max;d (b = %s m)", (b, ze, phi, c, gamma, sigma) => {
+    const s = chain(b, source);
+    // Eén stap vanaf 1,5·b', afgelezen met de rekenwaarde van φ': NAP +10,19 en +10,63 m in de bron.
+    expect(s.ze).toBeCloseTo(ze, 2); expect(s.phiD).toBeCloseTo(phi, 2); expect(s.cD).toBeCloseTo(c, 2); expect(s.gammaD).toBeCloseTo(gamma, 2);
+    expect(s.q).toBeCloseTo(7.2, 9);
+    within(s.sigma, sigma, 0.1);
+  });
+  it.each([[1.3, 155.5], [1.0, 128.5]])("met de rekenregels van de module volgt uit dezelfde lagen een hogere waarde, gelijk aan de handberekening (b = %s m)", (b, sigma) => {
+    const r = run({ shape: "pad", widthM: b, lengthM: 5, foundationNap: zf, groundNap: 12.3, waterNap: water, vDKn: 101 * 5, layers }), d = r.drained, hand = chain(b, own);
+    // De module stopt de iteratie bij een verschil van 1 mm; vandaar twee decimalen.
+    expect(d.zeM).toBeCloseTo(hand.ze, 2); expect(d.phiD).toBeCloseTo(hand.phiD, 2); expect(d.cD).toBeCloseTo(hand.cD, 2); expect(d.gammaD).toBeCloseTo(hand.gammaD, 2); expect(r.qKpa).toBeCloseTo(hand.q, 9);
+    within(d.bearing.sigmaMaxKpa, hand.sigma, 0.05);
+    expect(d.bearing.sigmaMaxKpa).toBeCloseTo(sigma, 1);
+  });
+  it("het verschil per rekenregel, van de bron naar de module (b = 1,30 m)", () => {
+    // Achtereenvolgens: dekking met γ/1,1; droog gewicht boven het grondwater; γφ' op tan φ'; ze geïtereerd met φ'gem;rep.
+    const steps = [source, { ...source, coverRepresentative: false }, { ...source, coverRepresentative: false, saturatedAboveWater: false }, { ...own, zeOnePassDesign: true }, own].map((rule) => chain(1.3, rule).sigma);
+    [144.07, 137.54, 141.43, 149.65, 155.47].forEach((sigma, k) => expect(steps[k]).toBeCloseTo(sigma, 1));
+  });
   it("ongedraineerd op het fictieve vlak: 814,03 kPa met sc = 1,05", () => {
     const u = undrainedBearing({ bEffM: 1.38, lEffM: 5.08, ratio: 1.38 / 5.08, hKn: 0, cuD: 200 / 1.35, qKpa: 10.9, slopeDeg: 0, baseTiltDeg: 0 });
     expect(u.sc).toBeCloseTo(1.05, 2); within(u.sigmaMaxKpa, 814.03, 0.1);
