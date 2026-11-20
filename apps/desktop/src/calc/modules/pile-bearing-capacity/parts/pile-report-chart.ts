@@ -19,7 +19,7 @@
 
 import type { jsPDF } from "jspdf";
 import type { Cpt } from "../../../../types/cpt";
-import type { PileInput, PileResult, SoilKind } from "../types";
+import type { AppliedOverride, PileInput, PileResult, SoilKind } from "../types";
 import { getPileType } from "../catalog";
 import { MATERIAL_COLORS, materialColor } from "./material-colors";
 import { reportPalette } from "../../../../report/reportPalette";
@@ -45,7 +45,12 @@ export interface ChartPageArgs {
   name: string;
   input: PileInput;
   result: PileResult;
+  /** De sondering zoals gemeten. */
   cpt: Cpt;
+  /** De sondering waarmee is gerekend, als de conusweerstand is aangepast. */
+  adjustedCpt?: Cpt;
+  /** Aanpassingen van de grondlaaginterpretatie; de toegepaste krijgen een markering. */
+  adjustments?: AppliedOverride[];
 }
 
 function fmtNap(v: number): string {
@@ -54,7 +59,7 @@ function fmtNap(v: number): string {
 
 /** Render het visual-blad. Gaat uit van een verse pagina met chrome. */
 export function renderSonderingChart(args: ChartPageArgs): void {
-  const { doc, startY, name, input, result, cpt } = args;
+  const { doc, startY, name, input, result, cpt, adjustedCpt, adjustments } = args;
   const D_m = result.base.deqMm / 1000;
 
   // ─── Kleuren ───────────────────────────────────────────────────
@@ -176,6 +181,42 @@ export function renderSonderingChart(args: ChartPageArgs): void {
     prev = pt;
   }
 
+  // ─── Aangepaste trajecten: de meting hierboven blijft dun staan, de
+  //     lijn waarmee is gerekend komt er dikker overheen. ──────────
+  const marks = (adjustments ?? []).map((a, i) => ({ a, nr: `A${i + 1}` })).filter((m) => m.a.status === "applied");
+  for (const { a } of marks) {
+    const yT = yOf(Math.min(a.topNap, topNap)), yB = yOf(Math.max(a.bottomNap, bottomNap));
+    if (yB <= yT) continue;
+    doc.setFillColor(...pal.errorTint);
+    doc.rect(plotL, yT, plotR - plotL, yB - yT, "F");
+    if (!a.qc || !adjustedCpt) continue;
+    doc.setDrawColor(...COL_NEG);
+    doc.setLineWidth(0.5);
+    let pa: { x: number; y: number } | null = null;
+    for (const p of adjustedCpt.points) {
+      const nap = groundNap - p.depth;
+      if (nap > a.topNap + 1e-6 || nap < a.bottomNap - 1e-6 || nap > topNap || nap < bottomNap) { pa = null; continue; }
+      const pt = { x: xOfQc(p.qc ?? 0), y: yOf(nap) };
+      if (pa) doc.line(pa.x, pa.y, pt.x, pt.y);
+      pa = pt;
+    }
+  }
+  // De meting opnieuw over de band, zodat hij binnen het traject zichtbaar blijft.
+  if (marks.length) {
+    doc.setDrawColor(...COL_QC);
+    doc.setLineWidth(0.2);
+    for (const { a } of marks) {
+      let pm: { x: number; y: number } | null = null;
+      for (const p of cpt.points) {
+        const nap = groundNap - p.depth;
+        if (nap > a.topNap || nap < a.bottomNap || nap > topNap || nap < bottomNap) { pm = null; continue; }
+        const pt = { x: xOfQc(p.qc ?? 0), y: yOf(nap) };
+        if (pm) doc.line(pm.x, pm.y, pt.x, pt.y);
+        pm = pt;
+      }
+    }
+  }
+
   // ─── Afgeknotte qc-curve (running-min, donker accent) ──────────
   if (result.base.clippedQcCurve && result.base.clippedQcCurve.length > 1) {
     doc.setDrawColor(...COL_CLIP);
@@ -225,6 +266,15 @@ export function renderSonderingChart(args: ChartPageArgs): void {
       doc.text(SOIL_SHORT[l.kind], (soilL + soilR) / 2, (yT + yB) / 2 + 1, { align: "center" });
     }
   }
+
+  // Nummer van elk aangepast traject, rechts in de grafiek.
+  doc.setFontSize(6.5);
+  doc.setTextColor(...COL_NEG);
+  for (const { a, nr } of marks) {
+    const yT = yOf(Math.min(a.topNap, topNap)), yB = yOf(Math.max(a.bottomNap, bottomNap));
+    if (yB > yT) doc.text(nr, plotR - 1, Math.min(yB - 0.6, yT + 2.6), { align: "right" });
+  }
+  doc.setTextColor(0);
 
   // ─── NAP-niveaulijnen + labels ─────────────────────────────────
   interface Level { nap: number; label: string; color: [number, number, number]; dash?: boolean }

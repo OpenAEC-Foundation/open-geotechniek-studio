@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} hat keine eigene Zeile in Tabelle 7.c dieser Ausgabe und ist daher nicht mit Tabellenwerten wählbar. Rechnen Sie mit Projektfaktoren aus der Selbsterklärung des Pfahlsystems oder aus einer Probebelastung.",
     "noTableBadge": "kein Tabellenwert",
     "useProjectFactors": "Mit Projektfaktoren wählen"
+  },
+  "interp": {
+    "add": "Tiefenbereich anpassen",
+    "bottom": "Unterkante",
+    "bottomAria": "Unterkante des Tiefenbereichs [m NAP]",
+    "cancel": "Abbrechen",
+    "captureTitle": "Von oben nach unten ziehen, um den Tiefenbereich zu wählen",
+    "change": {
+      "noLayer": "keine Schicht",
+      "qcFixed": "{{qc}}: gemessen {{min}}–{{max}} MPa (Mittel {{mean}}) → fester Wert {{top}} MPa",
+      "qcLinear": "{{qc}}: gemessen {{min}}–{{max}} MPa (Mittel {{mean}}) → linear von {{top}} auf {{bottom}} MPa",
+      "soil": "Bodenart: {{before}} → {{after}}"
+    },
+    "colChange": "Änderung (alt → neu)",
+    "colRange": "Tiefenbereich",
+    "comment": "Erläuterung",
+    "commentAria": "Erläuterung zur Anpassung",
+    "commentPlaceholder": "Warum diese Anpassung?",
+    "delete": "Löschen",
+    "deleteAria": "Anpassung A{{n}} löschen",
+    "edit": "Bearbeiten",
+    "editAria": "Anpassung A{{n}} bearbeiten",
+    "editTitle": "Anpassung bearbeiten",
+    "listAria": "Anpassungen dieser Sondierung",
+    "markTitle": "Angepasster Tiefenbereich A{{n}}; zum Bearbeiten klicken",
+    "newTitle": "Neue Anpassung",
+    "notApplied": {
+      "invalid": "Nicht angewendet: ungültiger Tiefenbereich oder keine Änderung angegeben.",
+      "outsideRange": "Nicht angewendet: Der Tiefenbereich liegt außerhalb der Sondierung."
+    },
+    "problem": {
+      "nothing": "Wählen Sie eine Änderung des Spitzenwiderstands oder der Bodenart.",
+      "order": "Die Oberkante muss höher liegen als die Unterkante.",
+      "range": "Wählen Sie einen Tiefenbereich: im Diagramm von oben nach unten ziehen oder beide Höhen eingeben.",
+      "value": "Geben Sie einen festen Spitzenwiderstand von null oder mehr an."
+    },
+    "qc": "Spitzenwiderstand",
+    "qcFixed": "fester Wert",
+    "qcLinear": "linear zwischen den Rändern",
+    "qcNone": "unverändert",
+    "range": "NAP {{top}} bis {{bottom}} m",
+    "report": {
+      "colChange": "Änderung (alt → neu)",
+      "colComment": "Erläuterung",
+      "colCpt": "Sondierung",
+      "colNr": "Nr.",
+      "colRange": "Tiefenbereich [m NAP]",
+      "intro": "In dieser Berechnung weichen die folgenden Tiefenbereiche von der gemessenen Sondierung ab. Die Sondierung selbst wurde nicht geändert; eine Anpassung gilt nur für diese Berechnung und für die genannte Sondierung. Im Diagramm der Sondierung ist die Messung dünn gezeichnet und der angepasste Bereich markiert.",
+      "title": "Anpassungen der Schichtinterpretation"
+    },
+    "resetAll": "Alles zurücksetzen",
+    "resetAllTitle": "Entfernt alle Anpassungen dieser Sondierung in dieser Berechnung; die Messung gilt wieder.",
+    "resultNote": "Diese Berechnung weicht für Sondierung {{cpt}} von der gemessenen Interpretation ab. Die Sondierung selbst ist unverändert.",
+    "resultTitle": "Anpassungen der Schichtinterpretation",
+    "save": "Speichern",
+    "selectHint": "Ziehen Sie im Diagramm von oben nach unten, um den Tiefenbereich zu wählen, oder geben Sie die Höhen ein. Die gemessene Linie bleibt grau sichtbar.",
+    "soilAria": "Bodenart des Tiefenbereichs",
+    "stateChanged": "{{n}} Anpassung(en) für diese Sondierung",
+    "stateMeasured": "wie gemessen",
+    "tableNote": "Schichtinterpretation für diese Sondierung angepasst: {{n}} Tiefenbereich(e). Die Werte unten sind damit berechnet.",
+    "title": "Schichtinterpretation",
+    "top": "Oberkante",
+    "topAria": "Oberkante des Tiefenbereichs [m NAP]",
+    "value": "Wert",
+    "valueAria": "Fester Spitzenwiderstand [MPa]",
+    "warning": {
+      "applied": "Schichtinterpretation angepasst: {{n}} Tiefenbereich(e) der Sondierung {{cpt}} weichen von der Messung ab.",
+      "skipped": "{{n}} Anpassung(en) der Schichtinterpretation wurden nicht angewendet: Der Tiefenbereich liegt außerhalb der Sondierung oder ist ungültig."
+    }
   }
 }

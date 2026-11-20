@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} non ha una riga propria nella tabella 7.c di questa edizione e quindi non è selezionabile con valori di tabella. Calcolare con fattori di progetto dell'autodichiarazione del sistema di pali o di una prova di carico.",
     "noTableBadge": "nessun valore di tabella",
     "useProjectFactors": "Scegli con fattori di progetto"
+  },
+  "interp": {
+    "add": "Modifica un tratto",
+    "bottom": "Limite inferiore",
+    "bottomAria": "Limite inferiore del tratto [m NAP]",
+    "cancel": "Annulla",
+    "captureTitle": "Trascinare dall'alto verso il basso per scegliere il tratto",
+    "change": {
+      "noLayer": "nessuno strato",
+      "qcFixed": "{{qc}}: misurato {{min}}–{{max}} MPa (media {{mean}}) → valore fisso {{top}} MPa",
+      "qcLinear": "{{qc}}: misurato {{min}}–{{max}} MPa (media {{mean}}) → lineare da {{top}} a {{bottom}} MPa",
+      "soil": "Tipo di terreno: {{before}} → {{after}}"
+    },
+    "colChange": "Modifica (prima → dopo)",
+    "colRange": "Tratto",
+    "comment": "Commento",
+    "commentAria": "Commento all'adattamento",
+    "commentPlaceholder": "Perché questa modifica?",
+    "delete": "Elimina",
+    "deleteAria": "Elimina l'adattamento A{{n}}",
+    "edit": "Modifica",
+    "editAria": "Modifica l'adattamento A{{n}}",
+    "editTitle": "Modifica dell'adattamento",
+    "listAria": "Modifiche di questo CPT",
+    "markTitle": "Tratto modificato A{{n}}; fare clic per modificare",
+    "newTitle": "Nuovo adattamento",
+    "notApplied": {
+      "invalid": "Non applicato: tratto non valido o nessuna modifica indicata.",
+      "outsideRange": "Non applicato: il tratto è fuori dal CPT."
+    },
+    "problem": {
+      "nothing": "Scegliere una modifica della resistenza alla punta o del tipo di terreno.",
+      "order": "Il limite superiore deve essere più alto di quello inferiore.",
+      "range": "Scegliere un tratto: trascinare nel grafico dall'alto verso il basso oppure digitare entrambe le quote.",
+      "value": "Indicare una resistenza alla punta fissa pari o superiore a zero."
+    },
+    "qc": "Resistenza alla punta",
+    "qcFixed": "valore fisso",
+    "qcLinear": "lineare tra i bordi",
+    "qcNone": "invariato",
+    "range": "NAP da {{top}} a {{bottom}} m",
+    "report": {
+      "colChange": "Modifica (prima → dopo)",
+      "colComment": "Commento",
+      "colCpt": "CPT",
+      "colNr": "N.",
+      "colRange": "Tratto [m NAP]",
+      "intro": "In questo calcolo i tratti seguenti differiscono dal CPT misurato. Il CPT stesso non è stato modificato; una modifica vale solo per questo calcolo e per il CPT indicato. Nel grafico del CPT la misura è tracciata sottile e il tratto modificato è evidenziato.",
+      "title": "Modifiche all'interpretazione degli strati"
+    },
+    "resetAll": "Ripristina tutto",
+    "resetAllTitle": "Rimuove tutte le modifiche di questo CPT in questo calcolo; torna a valere la misura.",
+    "resultNote": "Per il CPT {{cpt}} questo calcolo differisce dall'interpretazione misurata. Il CPT stesso è invariato.",
+    "resultTitle": "Modifiche all'interpretazione degli strati",
+    "save": "Salva",
+    "selectHint": "Trascinare nel grafico dall'alto verso il basso per scegliere il tratto, oppure digitare le quote. La linea misurata resta visibile in grigio.",
+    "soilAria": "Tipo di terreno del tratto",
+    "stateChanged": "{{n}} modifica/che per questo CPT",
+    "stateMeasured": "come misurato",
+    "tableNote": "Interpretazione degli strati modificata per questo CPT: {{n}} tratto/i. I valori seguenti sono calcolati di conseguenza.",
+    "title": "Interpretazione degli strati",
+    "top": "Limite superiore",
+    "topAria": "Limite superiore del tratto [m NAP]",
+    "value": "Valore",
+    "valueAria": "Resistenza alla punta fissa [MPa]",
+    "warning": {
+      "applied": "Interpretazione degli strati modificata: {{n}} tratto/i del CPT {{cpt}} differiscono dalla misura.",
+      "skipped": "{{n}} modifica/che dell'interpretazione degli strati non sono state applicate: il tratto è fuori dal CPT o non è valido."
+    }
   }
 }

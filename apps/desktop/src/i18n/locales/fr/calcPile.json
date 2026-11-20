@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} n'a pas de ligne propre dans le tableau 7.c de cette édition et ne peut donc pas être choisi avec des valeurs du tableau. Calculez avec des facteurs de projet issus de l'autodéclaration du système de pieux ou d'un essai de chargement.",
     "noTableBadge": "pas de valeur tabulée",
     "useProjectFactors": "Choisir avec des facteurs de projet"
+  },
+  "interp": {
+    "add": "Modifier un intervalle",
+    "bottom": "Bas",
+    "bottomAria": "Bas de l'intervalle [m NAP]",
+    "cancel": "Annuler",
+    "captureTitle": "Faites glisser de haut en bas pour choisir l'intervalle",
+    "change": {
+      "noLayer": "aucune couche",
+      "qcFixed": "{{qc}} : mesuré {{min}}–{{max}} MPa (moyenne {{mean}}) → valeur fixe {{top}} MPa",
+      "qcLinear": "{{qc}} : mesuré {{min}}–{{max}} MPa (moyenne {{mean}}) → linéaire de {{top}} à {{bottom}} MPa",
+      "soil": "Type de sol : {{before}} → {{after}}"
+    },
+    "colChange": "Modification (ancien → nouveau)",
+    "colRange": "Intervalle",
+    "comment": "Commentaire",
+    "commentAria": "Commentaire sur l'ajustement",
+    "commentPlaceholder": "Pourquoi cet ajustement ?",
+    "delete": "Supprimer",
+    "deleteAria": "Supprimer l'ajustement A{{n}}",
+    "edit": "Modifier",
+    "editAria": "Modifier l'ajustement A{{n}}",
+    "editTitle": "Modifier l'ajustement",
+    "listAria": "Ajustements de ce CPT",
+    "markTitle": "Intervalle modifié A{{n}} ; cliquez pour modifier",
+    "newTitle": "Nouvel ajustement",
+    "notApplied": {
+      "invalid": "Non appliqué : intervalle invalide ou aucune modification indiquée.",
+      "outsideRange": "Non appliqué : l'intervalle est hors du CPT."
+    },
+    "problem": {
+      "nothing": "Choisissez une modification de la résistance de cône ou du type de sol.",
+      "order": "Le haut doit être plus haut que le bas.",
+      "range": "Choisissez un intervalle : faites glisser dans le graphique de haut en bas, ou saisissez les deux niveaux.",
+      "value": "Indiquez une résistance de cône fixe supérieure ou égale à zéro."
+    },
+    "qc": "Résistance de cône",
+    "qcFixed": "valeur fixe",
+    "qcLinear": "linéaire entre les bords",
+    "qcNone": "inchangé",
+    "range": "NAP {{top}} à {{bottom}} m",
+    "report": {
+      "colChange": "Modification (ancien → nouveau)",
+      "colComment": "Commentaire",
+      "colCpt": "CPT",
+      "colNr": "N°",
+      "colRange": "Intervalle [m NAP]",
+      "intro": "Dans ce calcul, les intervalles ci-dessous diffèrent du CPT mesuré. Le CPT lui-même n'a pas été modifié ; un ajustement ne vaut que pour ce calcul et pour le CPT indiqué. Dans le graphique du CPT, la mesure est tracée en trait fin et l'intervalle modifié est marqué.",
+      "title": "Ajustements de l'interprétation des couches"
+    },
+    "resetAll": "Tout rétablir",
+    "resetAllTitle": "Supprime toutes les modifications de ce CPT dans ce calcul ; la mesure s'applique à nouveau.",
+    "resultNote": "Pour le CPT {{cpt}}, ce calcul diffère de l'interprétation mesurée. Le CPT lui-même est inchangé.",
+    "resultTitle": "Ajustements de l'interprétation des couches",
+    "save": "Enregistrer",
+    "selectHint": "Faites glisser dans le graphique de haut en bas pour choisir l'intervalle, ou saisissez les niveaux. La courbe mesurée reste visible en gris.",
+    "soilAria": "Type de sol de l'intervalle",
+    "stateChanged": "{{n}} modification(s) pour ce CPT",
+    "stateMeasured": "telle que mesurée",
+    "tableNote": "Interprétation des couches modifiée pour ce CPT : {{n}} intervalle(s). Les valeurs ci-dessous en tiennent compte.",
+    "title": "Interprétation des couches",
+    "top": "Haut",
+    "topAria": "Haut de l'intervalle [m NAP]",
+    "value": "Valeur",
+    "valueAria": "Résistance de cône fixe [MPa]",
+    "warning": {
+      "applied": "Interprétation des couches modifiée : {{n}} intervalle(s) du CPT {{cpt}} diffèrent de la mesure.",
+      "skipped": "{{n}} modification(s) de l'interprétation des couches n'ont pas été appliquées : l'intervalle est hors du CPT ou invalide."
+    }
   }
 }

@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} não tem linha própria na tabela 7.c desta edição e por isso não pode ser escolhido com valores da tabela. Calcule com fatores de projeto da autodeclaração do sistema de estacas ou de um ensaio de carga.",
     "noTableBadge": "sem valor de tabela",
     "useProjectFactors": "Escolher com fatores de projeto"
+  },
+  "interp": {
+    "add": "Ajustar um troço",
+    "bottom": "Base",
+    "bottomAria": "Base do troço [m NAP]",
+    "cancel": "Cancelar",
+    "captureTitle": "Arraste de cima para baixo para escolher o troço",
+    "change": {
+      "noLayer": "sem camada",
+      "qcFixed": "{{qc}}: medido {{min}}–{{max}} MPa (média {{mean}}) → valor fixo {{top}} MPa",
+      "qcLinear": "{{qc}}: medido {{min}}–{{max}} MPa (média {{mean}}) → linear de {{top}} a {{bottom}} MPa",
+      "soil": "Tipo de solo: {{before}} → {{after}}"
+    },
+    "colChange": "Alteração (antes → depois)",
+    "colRange": "Troço",
+    "comment": "Comentário",
+    "commentAria": "Comentário sobre o ajuste",
+    "commentPlaceholder": "Porquê este ajuste?",
+    "delete": "Eliminar",
+    "deleteAria": "Eliminar o ajuste A{{n}}",
+    "edit": "Editar",
+    "editAria": "Editar o ajuste A{{n}}",
+    "editTitle": "Editar ajuste",
+    "listAria": "Ajustes deste CPT",
+    "markTitle": "Troço ajustado A{{n}}; clique para editar",
+    "newTitle": "Novo ajuste",
+    "notApplied": {
+      "invalid": "Não aplicado: troço inválido ou nenhuma alteração indicada.",
+      "outsideRange": "Não aplicado: o troço fica fora do CPT."
+    },
+    "problem": {
+      "nothing": "Escolha uma alteração da resistência de ponta ou do tipo de solo.",
+      "order": "O topo tem de ficar acima da base.",
+      "range": "Escolha um troço: arraste no gráfico de cima para baixo ou escreva ambos os níveis.",
+      "value": "Indique uma resistência de ponta fixa igual ou superior a zero."
+    },
+    "qc": "Resistência de ponta",
+    "qcFixed": "valor fixo",
+    "qcLinear": "linear entre os limites",
+    "qcNone": "inalterado",
+    "range": "NAP {{top}} a {{bottom}} m",
+    "report": {
+      "colChange": "Alteração (antes → depois)",
+      "colComment": "Comentário",
+      "colCpt": "CPT",
+      "colNr": "N.º",
+      "colRange": "Troço [m NAP]",
+      "intro": "Neste cálculo, os troços abaixo diferem do CPT medido. O CPT em si não foi alterado; um ajuste vale apenas para este cálculo e para o CPT indicado. No gráfico do CPT, a medição aparece em traço fino e o troço ajustado está marcado.",
+      "title": "Ajustes à interpretação das camadas"
+    },
+    "resetAll": "Repor tudo",
+    "resetAllTitle": "Remove todos os ajustes deste CPT neste cálculo; volta a valer a medição.",
+    "resultNote": "Para o CPT {{cpt}}, este cálculo difere da interpretação medida. O CPT em si não foi alterado.",
+    "resultTitle": "Ajustes à interpretação das camadas",
+    "save": "Guardar",
+    "selectHint": "Arraste no gráfico de cima para baixo para escolher o troço, ou escreva os níveis. A linha medida continua visível a cinzento.",
+    "soilAria": "Tipo de solo do troço",
+    "stateChanged": "{{n}} ajuste(s) para este CPT",
+    "stateMeasured": "tal como medido",
+    "tableNote": "Interpretação das camadas ajustada para este CPT: {{n}} troço(s). Os valores abaixo foram calculados com ela.",
+    "title": "Interpretação das camadas",
+    "top": "Topo",
+    "topAria": "Topo do troço [m NAP]",
+    "value": "Valor",
+    "valueAria": "Resistência de ponta fixa [MPa]",
+    "warning": {
+      "applied": "Interpretação das camadas ajustada: {{n}} troço(s) do CPT {{cpt}} diferem da medição.",
+      "skipped": "{{n}} ajuste(s) da interpretação das camadas não foram aplicados: o troço fica fora do CPT ou é inválido."
+    }
   }
 }

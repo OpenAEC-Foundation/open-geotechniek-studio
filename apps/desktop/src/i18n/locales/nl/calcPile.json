@@ -371,5 +371,74 @@
     "noTableRow": "{{system}} heeft geen eigen rij in tabel 7.c van deze editie en is daarom niet met tabelwaarden te kiezen. Reken met projectfactoren uit de zelfverklaring van het paalsysteem of uit een proefbelasting.",
     "noTableBadge": "geen tabelwaarde",
     "useProjectFactors": "Kiezen met projectfactoren"
+  },
+  "interp": {
+    "add": "Traject aanpassen",
+    "bottom": "Onderkant",
+    "bottomAria": "Onderkant traject [m NAP]",
+    "cancel": "Annuleren",
+    "captureTitle": "Sleep van boven naar onder om het traject te kiezen",
+    "change": {
+      "noLayer": "geen laag",
+      "qcFixed": "{{qc}}: gemeten {{min}}–{{max}} MPa (gemiddeld {{mean}}) → vaste waarde {{top}} MPa",
+      "qcLinear": "{{qc}}: gemeten {{min}}–{{max}} MPa (gemiddeld {{mean}}) → lineair van {{top}} naar {{bottom}} MPa",
+      "soil": "Grondsoort: {{before}} → {{after}}"
+    },
+    "colChange": "Wijziging (oud → nieuw)",
+    "colRange": "Traject",
+    "comment": "Toelichting",
+    "commentAria": "Toelichting bij de aanpassing",
+    "commentPlaceholder": "Waarom deze aanpassing?",
+    "delete": "Verwijderen",
+    "deleteAria": "Aanpassing A{{n}} verwijderen",
+    "edit": "Bewerken",
+    "editAria": "Aanpassing A{{n}} bewerken",
+    "editTitle": "Aanpassing bewerken",
+    "listAria": "Aanpassingen van deze sondering",
+    "markTitle": "Aangepast traject A{{n}}; klik om te bewerken",
+    "newTitle": "Nieuwe aanpassing",
+    "notApplied": {
+      "invalid": "Niet toegepast: ongeldig traject of geen wijziging opgegeven.",
+      "outsideRange": "Niet toegepast: het traject valt buiten de sondering."
+    },
+    "problem": {
+      "nothing": "Kies een wijziging van de conusweerstand of van de grondsoort.",
+      "order": "De bovenkant moet hoger liggen dan de onderkant.",
+      "range": "Kies een traject: sleep in de grafiek van boven naar onder, of typ beide niveaus.",
+      "value": "Geef een vaste conusweerstand van nul of meer op."
+    },
+    "qc": "Conusweerstand",
+    "qcFixed": "vaste waarde",
+    "qcLinear": "lineair tussen de randen",
+    "qcNone": "ongewijzigd",
+    "range": "NAP {{top}} tot {{bottom}} m",
+    "report": {
+      "colChange": "Wijziging (oud → nieuw)",
+      "colComment": "Toelichting",
+      "colCpt": "Sondering",
+      "colNr": "Nr.",
+      "colRange": "Traject [m NAP]",
+      "intro": "In deze berekening wijken de onderstaande trajecten af van de gemeten sondering. De sondering zelf is niet gewijzigd; een aanpassing geldt alleen voor deze berekening en voor de genoemde sondering. In de grafiek van de sondering staat de meting dun en het aangepaste traject gemarkeerd.",
+      "title": "Aanpassingen aan de grondlaaginterpretatie"
+    },
+    "resetAll": "Alles terugzetten",
+    "resetAllTitle": "Verwijdert alle aanpassingen van deze sondering in deze berekening; de meting geldt weer.",
+    "resultNote": "Deze berekening wijkt voor sondering {{cpt}} af van de gemeten interpretatie. De sondering zelf is ongewijzigd.",
+    "resultTitle": "Aanpassingen aan de grondlaaginterpretatie",
+    "save": "Opslaan",
+    "selectHint": "Sleep in de grafiek van boven naar onder om het traject te kiezen, of typ de niveaus. De gemeten lijn blijft grijs zichtbaar.",
+    "soilAria": "Grondsoort van het traject",
+    "stateChanged": "{{n}} aanpassing(en) voor deze sondering",
+    "stateMeasured": "zoals gemeten",
+    "tableNote": "Grondlaaginterpretatie aangepast voor deze sondering: {{n}} traject(en). De waarden hieronder zijn daarmee berekend.",
+    "title": "Grondlaaginterpretatie",
+    "top": "Bovenkant",
+    "topAria": "Bovenkant traject [m NAP]",
+    "value": "Waarde",
+    "valueAria": "Vaste conusweerstand [MPa]",
+    "warning": {
+      "applied": "Grondlaaginterpretatie aangepast: {{n}} traject(en) van sondering {{cpt}} wijken af van de meting.",
+      "skipped": "{{n}} aanpassing(en) van de grondlaaginterpretatie zijn niet toegepast: het traject valt buiten de sondering of is ongeldig."
+    }
   }
 }

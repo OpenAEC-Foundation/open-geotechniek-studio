@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { OaIcon } from "../../../../components/icons/oaIcon";
 import { useCptStore } from "../../../../store/useCptStore";
+import { applyOverrides } from "../parts/interpretation-overrides";
 import { fmtNumber } from "../../../i18n";
 import { getPileType } from "../catalog";
 import { buildKoppejanScene } from "../parts/koppejan-scene";
@@ -23,7 +24,9 @@ interface Pose { offset: THREE.Vector3; target: THREE.Vector3 }
 
 export function KoppejanView3D({ input, result }: { input: PileInput; result: PileResult }) {
   const { t } = useTranslation("calcPile");
-  const cpt = useCptStore((s) => (input.cptId ? s.cpts.get(input.cptId) : null));
+  const measured = useCptStore((s) => (input.cptId ? s.cpts.get(input.cptId) : null));
+  // Dezelfde qc-lijn als waarmee is gerekend, dus met de aanpassingen van de interpretatie.
+  const cpt = useMemo(() => applyOverrides(measured, input.soilProfile, input.interpretationOverrides).cpt, [measured, input.soilProfile, input.interpretationOverrides]);
   const model = useMemo(() => buildKoppejanScene(input, result, cpt, getPileType(input.pileTypeId)), [input, result, cpt]);
   const host = useRef<HTMLDivElement>(null);
   const rig = useRef<Rig | null>(null);

@@ -20,8 +20,10 @@ import { reportPalette } from "../../../../report/reportPalette";
 import { richText, richWidth, richWrap } from "../../../../report/reportText";
 import { drawSheetTitle } from "../../../../report/reportTitle";
 import type { Cpt } from "../../../../types/cpt";
-import type { PileInput, PileResult } from "../types";
+import type { AppliedOverride, PileInput, PileResult } from "../types";
 import type { MultiCptSummary } from "./multi-cpt-summary";
+import { overrideChanges } from "./interpretation-text";
+import { ct } from "../../../i18n";
 import { renderSonderingChart } from "./pile-report-chart";
 import { renderZakkingDiagram } from "./pile-report-zakking";
 import { resolvePileType } from "../catalog";
@@ -60,6 +62,10 @@ export interface PileReportSondering {
   result: PileResult;
   /** CPT-data voor het visual-blad. Zonder cpt wordt dat blad overgeslagen. */
   cpt?: Cpt;
+  /** De sondering waarmee is gerekend, als de conusweerstand is aangepast. */
+  adjustedCpt?: Cpt;
+  /** Aanpassingen van de grondlaaginterpretatie voor deze sondering. */
+  adjustments?: AppliedOverride[];
 }
 
 export interface PileReportInputs {
@@ -67,6 +73,8 @@ export interface PileReportInputs {
   sonderingen: PileReportSondering[];
   /** Multi-CPT statistische eindanalyse. */
   summary: MultiCptSummary;
+  /** Aanpassingen van de grondlaaginterpretatie, met hun nummer per sondering (A1, A2, ...). */
+  interpretation?: Array<{ nr: string; applied: AppliedOverride }>;
   /** Paaltype-naam voor het projectblad. */
   pileTypeName: string;
   /** Factoren αp, αs, αt uit de pile-catalog. */
@@ -524,6 +532,8 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
       }),
     );
 
+    if (inputs.interpretation?.length) renderInterpretation(c, inputs.interpretation);
+
     c.y += 2;
     sectionTitle(c, "Berekening");
     paragraph(c, `D_eq = ${nl(first.result.base.deqMm, 1)} mm`);
@@ -532,6 +542,33 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
       `Aantal sonderingen in deze analyse: ${inputs.sonderingen.length} (${inputs.sonderingen.map((s) => s.name).join(", ")})`,
     );
   }
+}
+
+// ─── Aanpassingen aan de grondlaaginterpretatie ──────────────────
+
+/** Per aanpassing: sondering, traject, oude → nieuwe waarde en de toelichting. */
+export function renderInterpretation(c: Cursor, items: NonNullable<PileReportInputs["interpretation"]>): void {
+  const tr = (key: string, text: string) => ct("calcPile", `interp.report.${key}`, text);
+  // Kop, inleiding en de eerste regels van de tabel blijven bij elkaar.
+  c.reserve(48);
+  c.y += 2;
+  sectionTitle(c, tr("title", "Aanpassingen aan de grondlaaginterpretatie"));
+  paragraph(c, tr("intro", "In deze berekening wijken de onderstaande trajecten af van de gemeten sondering. De sondering zelf is niet gewijzigd; een aanpassing geldt alleen voor deze berekening en voor de genoemde sondering. In de grafiek van de sondering staat de meting dun en het aangepaste traject gemarkeerd."), { size: 8 });
+  const level = (v: number) => (Number.isFinite(v) ? nl(v, 2) : "-");
+  table(
+    c,
+    [
+      { label: tr("colNr", "Nr."), width: 11 },
+      { label: tr("colCpt", "Sondering"), width: 28 },
+      { label: tr("colRange", "Traject [m NAP]"), width: 32 },
+      { label: tr("colChange", "Wijziging (oud → nieuw)"), width: 72 },
+      { label: tr("colComment", "Toelichting"), width: 47 },
+    ],
+    items.map(({ nr, applied: a }) => {
+      const range = a.status === "applied" ? a : a.override;
+      return [nr, a.override.cptId, `${level(Math.max(range.topNap, range.bottomNap))} / ${level(Math.min(range.topNap, range.bottomNap))}`, overrideChanges(a, "q_c").join("; "), a.override.comment || "-"];
+    }),
+  );
 }
 
 // ─── Berekening-blad per sondering ───────────────────────────────
@@ -879,6 +916,8 @@ export function generatePileReport(inputs: PileReportInputs): Uint8Array {
         input: s.input,
         result: s.result,
         cpt: s.cpt,
+        adjustedCpt: s.adjustedCpt,
+        adjustments: s.adjustments,
       });
     }
     renderBerekeningBlad(c, s, inputs.factors);

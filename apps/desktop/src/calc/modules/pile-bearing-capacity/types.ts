@@ -67,7 +67,45 @@ export interface PilePresets {
   timberToeMm?: number;
 }
 
+/**
+ * Aanpassing van de grondlaaginterpretatie voor één dieptetraject van één
+ * sondering. Hoort bij de berekening: de sondering zelf blijft ongewijzigd.
+ */
+export interface InterpretationOverride {
+  id: string;
+  /** Sondering waarvoor de aanpassing geldt. */
+  cptId: string;
+  /** Boven- en onderkant van het traject [m NAP]. */
+  topNap: number;
+  bottomNap: number;
+  /** Conusweerstand in het traject: lineair tussen de randwaarden, of een vaste waarde. */
+  qc?: { mode: "interpolate" } | { mode: "fixed"; valueMpa: number };
+  /** Grondsoort van het traject; verlegt een laaggrens of voegt een laag toe. */
+  soilKind?: SoilKind;
+  /** Waarom de aanpassing is gedaan. */
+  comment?: string;
+}
+
+/** Een aanpassing zoals hij in de berekening is verwerkt, voor scherm en uitdraai. */
+export interface AppliedOverride {
+  override: InterpretationOverride;
+  /** `outsideRange`: het traject valt buiten de sondering; `invalid`: geen geldig traject of geen wijziging. */
+  status: "applied" | "outsideRange" | "invalid";
+  /** Traject na begrenzing op het bereik van de sondering [m NAP]. */
+  topNap: number;
+  bottomNap: number;
+  qc?: {
+    /** Gemeten waarden in het traject [MPa]. */
+    measuredMinMpa: number; measuredMaxMpa: number; measuredMeanMpa: number;
+    /** Nieuwe waarde aan boven- en onderrand [MPa]. */
+    topMpa: number; bottomMpa: number;
+  };
+  soil?: { before: SoilKind[]; after: SoilKind };
+}
+
 export interface PileInput {
+  /** Aanpassingen van de grondlaaginterpretatie, per sondering. Ontbrekend = gemeten interpretatie. */
+  interpretationOverrides?: InterpretationOverride[];
   /** Gedeelde invoer met afzonderlijke resultaten per sondering en puntniveau. */
   /** Instellingen van deze berekening: eigen standaardreeksen. Ontbrekend = standaard. */
   presets?: PilePresets;
@@ -218,6 +256,8 @@ export interface PileResult {
   error?: string;              // human-readable fout, b.v. "Sondering te ondiep"
   errorCode?: PileErrorCode;
   warnings: string[];          // niet-kritieke meldingen
+  /** Aanpassingen van de grondlaaginterpretatie voor de gebruikte sondering. Ontbreekt zonder aanpassingen. */
+  interpretation?: AppliedOverride[];
   negKleef: NegKleefResult;
   base: BaseResistanceResult;
   shaft: ShaftFrictionResult;
