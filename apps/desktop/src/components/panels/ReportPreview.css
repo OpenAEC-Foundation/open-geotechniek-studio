@@ -402,3 +402,13 @@
 .report-layout-options { display: grid; gap: 10px; padding: 12px; border-top: 1px solid var(--oa-border); }
 .report-layout-options label { display: grid; gap: 5px; font-size: 11px; color: var(--oa-text-secondary); }
 .report-layout-options input, .report-layout-options select { width: 100%; padding: 6px; background: var(--oa-panel); color: var(--oa-text); border: 1px solid var(--oa-border-strong); border-radius: 3px; }
+
+/* Vrije rapportteksten: tekstvak met de knop Voorbeeldtekst erboven. */
+.report-text-field { display: grid; gap: 4px; margin-bottom: 10px; }
+.report-text-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.report-text-label { font-size: 12px; color: var(--theme-text); }
+.report-text-sample { padding: 2px 8px; background: transparent; border: 1px solid var(--theme-border); border-radius: 3px; color: var(--theme-text-secondary); font-size: 10px; font-family: inherit; cursor: pointer; }
+.report-text-sample:hover:not(:disabled) { border-color: var(--theme-accent); color: var(--theme-accent); background: var(--theme-hover); }
+.report-text-sample:disabled { opacity: 0.45; cursor: not-allowed; }
+.report-text-field textarea { width: 100%; min-height: 64px; padding: 6px; resize: vertical; background: var(--oa-panel); color: var(--oa-text); border: 1px solid var(--oa-border-strong); border-radius: 3px; font-family: inherit; font-size: 11px; line-height: 1.4; }
+.report-text-field textarea:disabled { opacity: 0.55; }

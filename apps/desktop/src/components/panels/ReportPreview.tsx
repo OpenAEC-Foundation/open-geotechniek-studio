@@ -9,6 +9,7 @@ import {
   setCurrentReportSections,
   type ReportSections,
 } from "../../store/reportSectionsState";
+import { REPORT_TEXT_KEYS, sampleReportText, type ReportTextKey } from "../../utils/reportTexts";
 import "./ReportPreview.css";
 import { OaIcon } from "../icons/oaIcon";
 
@@ -32,11 +33,18 @@ export default function ReportPreview() {
   const activeDocId = useCptStore((s) => s.activeDocId);
   const cachedPdf = useCptStore((s) => (activeDocId ? s.pdfCache.get(activeDocId) : undefined));
   const setPdfCacheStore = useCptStore((s) => s.setPdfCache);
+  const setProjectMeta = useCptStore((s) => s.setProjectMeta);
+  const inProject = useCptStore((s) => s.documents.find((d) => d.id === s.activeDocId)?.kind === "project");
 
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [sections, setSections] = useState<ReportSections>(DEFAULT_SECTIONS);
+  const [chosenSections, setSections] = useState<ReportSections>(DEFAULT_SECTIONS);
+  // Losse teksten (document zonder project) gelden niet meer zodra er een project actief is.
+  const sections = useMemo<ReportSections>(
+    () => (inProject && chosenSections.reportTexts ? { ...chosenSections, reportTexts: undefined } : chosenSections),
+    [chosenSections, inProject],
+  );
   // Spiegel elke wijziging naar de module-singleton zodat de ribbon-knoppen
   // (Genereer/Open PDF) altijd met de actuele vinkjes genereren.
   useEffect(() => {
@@ -121,6 +129,20 @@ export default function ReportPreview() {
     };
   }, []);
 
+  // De teksten horen bij het project en gaan mee in het projectbestand. Zonder project (een losse
+  // sondering) gelden ze alleen voor het rapport van deze sessie.
+  const reportTexts = (inProject ? projectMeta.report_texts : sections.reportTexts) ?? {};
+  const setReportText = (key: ReportTextKey, value: string) => {
+    const next = { ...reportTexts, [key]: value };
+    if (inProject) setProjectMeta({ report_texts: next });
+    else setSections((s) => ({ ...s, reportTexts: next }));
+  };
+  const textLabels: Record<ReportTextKey, string> = {
+    introduction: t("report.text.introduction", "Inleiding"),
+    levelling: t("report.text.levelling", "Waterpassing"),
+    groundwater: t("report.text.groundwater", "Grondwaterstand"),
+  };
+
   const openProjectInfo = () => {
     window.dispatchEvent(new CustomEvent("ogs:open-project-settings"));
   };
@@ -167,6 +189,10 @@ export default function ReportPreview() {
             <SectionToggle label={t("report.section.cover", "Voor- en achterblad")}
               checked={sections.cover}
               onChange={(v) => setSections((s) => ({ ...s, cover: v }))} />
+            <SectionToggle label={t("report.section.texts", "Teksten")}
+              checked={sections.texts !== false}
+              onChange={(v) => setSections((s) => ({ ...s, texts: v }))}
+              hint={t("report.section.textsHint", "Inleiding, waterpassing en grondwaterstand direct na het voorblad")} />
             <SectionToggle label={t("report.section.coordTable", "Coördinatentabel")}
               checked={sections.coordTable}
               onChange={(v) => setSections((s) => ({ ...s, coordTable: v }))} />
@@ -177,6 +203,10 @@ export default function ReportPreview() {
             <SectionToggle label={t("report.section.perCpt", "Per-sondering pagina's")}
               checked={sections.perCpt}
               onChange={(v) => setSections((s) => ({ ...s, perCpt: v }))} />
+            <SectionToggle label={t("report.section.testReport", "Testrapport")}
+              checked={sections.testReport === true}
+              onChange={(v) => setSections((s) => ({ ...s, testReport: v }))}
+              hint={t("report.section.testReportHint", "Per sondering een pagina met de gegevens volgens NEN-EN-ISO 22476-1")} />
             <SectionToggle label={t("report.section.sbtLegend", "Indicatieve qc/Rf-legenda")}
               checked={sections.sbtLegend}
               onChange={(v) => setSections((s) => ({ ...s, sbtLegend: v }))}
@@ -188,6 +218,29 @@ export default function ReportPreview() {
           </div>
           <p className="report-sidebar-hint">
             {t("report.sectionsHint", "Vink onderdelen aan/uit — het rapport wordt direct opnieuw opgebouwd.")}
+          </p>
+        </div>
+
+        {/* Vrije teksten: hoofdstuk direct na het voorblad */}
+        <div className="report-sidebar-section">
+          <div className="report-sidebar-section-title">{t("report.text.title", "Teksten")}</div>
+          {REPORT_TEXT_KEYS.map((key) => (
+            <ReportTextField
+              key={key}
+              label={textLabels[key]}
+              value={reportTexts[key] ?? ""}
+              disabled={sections.texts === false}
+              sampleLabel={t("report.text.sample", "Voorbeeldtekst")}
+              sampleHint={t("report.text.sampleHint", "Vul een standaardtekst in met de gegevens van het project en pas die daarna aan")}
+              sampleBlockedHint={t("report.text.sampleBlocked", "Maak het tekstvak eerst leeg om de voorbeeldtekst in te vullen")}
+              onCommit={(value) => setReportText(key, value)}
+              onSample={() => setReportText(key, sampleReportText(key, projectMeta, cpts))}
+            />
+          ))}
+          <p className="report-sidebar-hint">
+            {inProject
+              ? t("report.text.hint", "Een lege tekst komt niet in het rapport. De teksten worden met het project opgeslagen.")
+              : t("report.text.hintNoProject", "Een lege tekst komt niet in het rapport. Zonder project worden de teksten niet bewaard.")}
           </p>
         </div>
 
@@ -296,6 +349,51 @@ export default function ReportPreview() {
       <div className="report-main">
         {previewArea}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Tekstvak voor één rapporttekst. Tijdens het typen blijft de tekst lokaal; pas bij het verlaten van
+ * het vak gaat hij naar het project, zodat het rapport niet bij elke toetsaanslag opnieuw wordt opgebouwd.
+ */
+function ReportTextField({
+  label, value, disabled, sampleLabel, sampleHint, sampleBlockedHint, onCommit, onSample,
+}: {
+  label: string;
+  value: string;
+  disabled: boolean;
+  sampleLabel: string;
+  sampleHint: string;
+  sampleBlockedHint: string;
+  onCommit: (value: string) => void;
+  onSample: () => void;
+}) {
+  const [draft, setDraft] = useState(value);
+  useEffect(() => { setDraft(value); }, [value]);
+  const hasText = draft.trim().length > 0;
+  return (
+    <div className="report-text-field">
+      <div className="report-text-head">
+        <span className="report-text-label">{label}</span>
+        <button
+          type="button"
+          className="report-text-sample"
+          disabled={disabled || hasText}
+          title={hasText ? sampleBlockedHint : sampleHint}
+          onClick={onSample}
+        >
+          {sampleLabel}
+        </button>
+      </div>
+      <textarea
+        aria-label={label}
+        rows={4}
+        value={draft}
+        disabled={disabled}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={() => { if (draft !== value) onCommit(draft); }}
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EMPTY_PROFILE, brandFromProfile, contactLine, profileProblems } from "./profile";
+import { CPT_REPORT_SECTIONS, EMPTY_PROFILE, brandFromProfile, contactLine, profileProblems } from "./profile";
 
 const profile = { ...EMPTY_PROFILE, name: "Voorbeeld Sonderingen B.V.", address: "Dorpsstraat 1", postalCity: "1234 AB Ergens", phone: "010 1234567", email: "info@voorbeeld.test", website: "voorbeeld.test", kvk: "12345678" };
 
@@ -13,6 +13,9 @@ describe("bedrijfsprofiel sondeerbedrijf", () => {
     expect(profileProblems({ ...profile, name: " " })).toHaveLength(1);
     expect(profileProblems({ ...profile, kvk: "1234" })).toHaveLength(1);
     expect(profileProblems({ ...profile, email: "geen-adres" })).toHaveLength(1);
+  });
+  it("zet in het sondeerrapport de teksten en het testrapport aan", () => {
+    expect(CPT_REPORT_SECTIONS).toMatchObject({ cover: true, perCpt: true, texts: true, testReport: true });
   });
   it("zet het profiel om naar de huisstijl en behoudt voorblad en briefpapier", () => {
     const brand = brandFromProfile(profile, { coverImage: "data:x", pageImage: "data:y", secondary: [1, 2, 3] });

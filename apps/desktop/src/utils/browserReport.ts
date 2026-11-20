@@ -8,11 +8,15 @@ import { jsPDF } from "jspdf";
 import type { Cpt, ProjectMeta } from "../types/cpt";
 import { DEFAULT_SECTIONS, type ReportSections } from "../store/reportSectionsState";
 import { zones } from "./browserCore";
+import { drawTestReport, drawTextChapters, type ReportFlow } from "./browserReportSections";
+import { reportTextChapters } from "./reportTexts";
 /** Local vector report. Includes native axis geometry and an RD grid fallback when map services are unavailable. */
 export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, sections: ReportSections = DEFAULT_SECTIONS): Promise<Uint8Array> {
     if (!cpts.length)
         throw new Error("Geen sonderingen geopend.");
-    if (!Object.keys(DEFAULT_SECTIONS).some((key) => sections[key as keyof ReportSections] === true))
+    // Teksten staan standaard aan, maar tellen pas als onderdeel wanneer er ook tekst is.
+    const textChapters = sections.texts === false ? [] : reportTextChapters(sections.reportTexts ?? project.report_texts);
+    if (!textChapters.length && !Object.keys(DEFAULT_SECTIONS).some((key) => key !== "texts" && sections[key as keyof ReportSections] === true))
         throw new Error("Selecteer ten minste één rapportonderdeel.");
     const doc = new jsPDF({ unit: "mm", format: "a4", compress: false });
     doc.setProperties({ title: project.title, author: project.author });
@@ -36,11 +40,13 @@ export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, s
             y += 5;
         }
     }
+    const flow: ReportFlow = { doc, page, get y() { return y; }, set y(value: number) { y = value; } };
     const num = (v?: number) => v != null && Number.isFinite(v) ? v.toFixed(2) : "—";
     if (sections.cover) {
         page("");
         drawCover(doc, cpts[0], sections.coverTitle ? { ...project, title: sections.coverTitle } : project);
     }
+    drawTextChapters(flow, textChapters);
     if (sections.coordTable) {
         page("Coördinatentabel");
         const widths = [38, 29, 29, 25, 25, 34];
@@ -73,6 +79,8 @@ export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, s
                 drawReportChart(doc, part.cpt, project, part.span);
             }
         }
+    if (sections.testReport)
+        for (const c of cpts) drawTestReport(flow, c, project);
     if (sections.sbtLegend) {
         page("Indicatieve qc/Rf-legenda");
         for (const z of zones) {

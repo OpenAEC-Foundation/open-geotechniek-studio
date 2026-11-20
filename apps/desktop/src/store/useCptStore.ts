@@ -1062,6 +1062,7 @@ export async function openProjectFromContent(content: string, filename: string, 
     project_number: result.project.project_number ?? "",
     author: result.project.author ?? "",
     date: result.project.date ?? "",
+    ...(result.project.report_texts ? { report_texts: result.project.report_texts } : {}),
   };
   const cptList: Cpt[] = Array.isArray(result.cpts) ? result.cpts : [];
   const boreList: Bore[] = result.bores ?? [];
