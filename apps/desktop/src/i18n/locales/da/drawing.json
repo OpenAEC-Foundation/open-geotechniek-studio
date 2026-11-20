@@ -62,6 +62,18 @@
     "moveRaster": "Træk for at flytte gitteret",
     "rotate": "Træk for at rotere"
   },
+  "legend": {
+    "bore": "Boring",
+    "done": "udført",
+    "planned": "planlagt",
+    "soort": {
+      "conus": "CPT-sondering",
+      "kleef": "CPT-sondering med kappefriktion",
+      "water": "CPT-sondering med poretryk",
+      "kleef-water": "CPT-sondering med kappefriktion og poretryk"
+    },
+    "title": "Signaturforklaring"
+  },
   "move": {
     "hint": "Flyt musen og klik for at placere (Esc = annuller)",
     "notMovable": "Dette objekt kan ikke flyttes",
@@ -80,6 +92,10 @@
     "failed": "PDF-eksport mislykkedes: {{error}}",
     "timeout": "PDF-rasterisering tog mere end 30 sekunder"
   },
+  "place": {
+    "kind": "Sonderingstype",
+    "kindTitle": "Type for den sondering eller det net, du placerer næste gang; kan ændres senere under egenskaber."
+  },
   "props": {
     "a2Landscape": "A2 liggende",
     "a3Landscape": "A3 liggende",
@@ -88,6 +104,7 @@
     "color": "Farve",
     "cols": "Kolonner",
     "cptHeader": "Sondering {{id}}",
+    "cptKind": "Sonderingstype",
     "cptNumber": "Sonderingsnr.",
     "deleteArea": "Slet område",
     "deleteBackground": "Slet baggrund",
@@ -158,6 +175,12 @@
     "notRotatable": "Denne objekttype kan ikke roteres",
     "prompt": "Rotér hvor mange grader? (negativ = mod uret)",
     "selectFirst": "Markér først et objekt, der skal roteres"
+  },
+  "soort": {
+    "conus": "Uden kappefriktion",
+    "kleef": "Med kappefriktion",
+    "water": "Med poretryk",
+    "kleef-water": "Med kappefriktion og poretryk"
   },
   "titleBlock": {
     "addressPlaceholder": "Gade, husnummer, projektsted",

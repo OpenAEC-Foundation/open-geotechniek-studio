@@ -62,6 +62,18 @@
     "moveRaster": "Trascina per spostare la griglia",
     "rotate": "Trascina per ruotare"
   },
+  "legend": {
+    "bore": "Sondaggio",
+    "done": "eseguita",
+    "planned": "prevista",
+    "soort": {
+      "conus": "Prova penetrometrica statica",
+      "kleef": "Prova CPT con attrito laterale",
+      "water": "Prova CPT con pressione interstiziale",
+      "kleef-water": "Prova CPT con attrito laterale e pressione interstiziale"
+    },
+    "title": "Legenda"
+  },
   "move": {
     "hint": "Muovi il mouse e fai clic per posizionare (Esc = annulla)",
     "notMovable": "Questo oggetto non può essere spostato",
@@ -80,6 +92,10 @@
     "failed": "Esportazione PDF non riuscita: {{error}}",
     "timeout": "La rasterizzazione del PDF ha richiesto più di 30 secondi"
   },
+  "place": {
+    "kind": "Tipo di prova",
+    "kindTitle": "Tipo della prova o della griglia che si posiziona dopo; modificabile in seguito nelle proprietà."
+  },
   "props": {
     "a2Landscape": "A2 orizzontale",
     "a3Landscape": "A3 orizzontale",
@@ -88,6 +104,7 @@
     "color": "Colore",
     "cols": "Colonne",
     "cptHeader": "CPT {{id}}",
+    "cptKind": "Tipo di prova",
     "cptNumber": "N. CPT",
     "deleteArea": "Elimina area",
     "deleteBackground": "Elimina sfondo",
@@ -158,6 +175,12 @@
     "notRotatable": "Questo tipo di oggetto non può essere ruotato",
     "prompt": "Di quanti gradi ruotare? (negativo = senso antiorario)",
     "selectFirst": "Seleziona prima un oggetto da ruotare"
+  },
+  "soort": {
+    "conus": "Senza attrito laterale",
+    "kleef": "Con attrito laterale",
+    "water": "Con pressione interstiziale",
+    "kleef-water": "Con attrito laterale e pressione interstiziale"
   },
   "titleBlock": {
     "addressPlaceholder": "Via, numero civico, località del progetto",

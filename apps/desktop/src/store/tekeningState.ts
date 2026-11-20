@@ -28,11 +28,16 @@
  * expliciet in lat/lon.
  */
 
+import { resolveSoort, soortHasFriction, type SonderingSoort } from "../components/panels/tekening/sonderingSoort";
+
 export interface TekeningMarker {
   id: string;
   kind: "sondering" | "bore";
   lat: number;
   lon: number;
+  /** Kind of test; absent for boreholes and in drawings saved before it existed. */
+  soort?: SonderingSoort;
+  /** Kept in step with `soort` so older versions still read the drawing. */
   kleefmeting?: boolean;
 }
 
@@ -47,7 +52,9 @@ export interface TekeningRaster {
   rotation: number;
   /** Verberg dit raster in de PDF- en DWG-export (blijft wél op scherm). */
   hideInExport?: boolean;
-  /** Kleefmeting-streepje onder elke rastercel (NEN-symbool). */
+  /** Kind of test for every cell of the grid. */
+  soort?: SonderingSoort;
+  /** Kept in step with `soort` so older versions still read the drawing. */
   kleefmeting?: boolean;
   /** Nummering-prefix voor de cellen (bv. "S" → S1, S2, …). Leeg =
    *  default "R01-S01"-notatie. */
@@ -178,7 +185,8 @@ export function tekeningStateToIfcgis(s: TekeningFullState): unknown {
       kind: m.kind,
       lat: m.lat,
       lon: m.lon,
-      ...(m.kleefmeting ? { kleefmeting: true } : {}),
+      ...(m.kind !== "bore" && m.soort ? { soort: m.soort } : {}),
+      ...((m.soort ? soortHasFriction(m.soort) : m.kleefmeting) ? { kleefmeting: true } : {}),
     })),
     rasters: s.rasters.map((r) => ({
       id: r.id,
@@ -190,7 +198,8 @@ export function tekeningStateToIfcgis(s: TekeningFullState): unknown {
       spacing_y: r.spacingY,
       rotation: r.rotation,
       ...(r.hideInExport ? { hide_in_export: true } : {}),
-      ...(r.kleefmeting ? { kleefmeting: true } : {}),
+      ...(r.soort ? { soort: r.soort } : {}),
+      ...((r.soort ? soortHasFriction(r.soort) : r.kleefmeting) ? { kleefmeting: true } : {}),
       ...(r.labelPrefix ? { label_prefix: r.labelPrefix } : {}),
       ...(r.labelStart != null ? { label_start: r.labelStart } : {}),
       ...(r.maxSpacing != null ? { max_spacing: r.maxSpacing } : {}),
@@ -242,6 +251,7 @@ export function tekeningStateFromIfcgis(j: unknown): TekeningFullState | null {
       kind: (m.kind === "bore" ? "bore" : "sondering") as "sondering" | "bore",
       lat: Number(m.lat),
       lon: Number(m.lon),
+      soort: m.kind === "bore" ? undefined : resolveSoort(m.soort, Boolean(m.kleefmeting)),
       kleefmeting: Boolean(m.kleefmeting),
     }),
   );
@@ -256,6 +266,7 @@ export function tekeningStateFromIfcgis(j: unknown): TekeningFullState | null {
       spacingY: Number(r.spacing_y),
       rotation: Number(r.rotation),
       hideInExport: Boolean(r.hide_in_export),
+      soort: resolveSoort(r.soort, Boolean(r.kleefmeting)),
       kleefmeting: Boolean(r.kleefmeting),
       labelPrefix: typeof r.label_prefix === "string" ? r.label_prefix : undefined,
       labelStart: Number.isFinite(Number(r.label_start))

@@ -62,6 +62,18 @@
     "moveRaster": "Sleep om het raster te verplaatsen",
     "rotate": "Sleep om te roteren"
   },
+  "legend": {
+    "bore": "Boring",
+    "done": "uitgevoerd",
+    "planned": "gepland",
+    "soort": {
+      "conus": "Sondering",
+      "kleef": "Sondering met kleefmeting",
+      "water": "Sondering met waterspanningsmeting",
+      "kleef-water": "Sondering met kleef- en waterspanningsmeting"
+    },
+    "title": "Legenda"
+  },
   "move": {
     "hint": "Beweeg de muis en klik om neer te zetten (Esc = annuleren)",
     "notMovable": "Dit object kun je niet verplaatsen",
@@ -80,6 +92,10 @@
     "failed": "PDF-export mislukt: {{error}}",
     "timeout": "PDF-rasterisatie duurde langer dan 30 seconden"
   },
+  "place": {
+    "kind": "Soort sondering",
+    "kindTitle": "Soort van de sondering of het raster dat je hierna plaatst; later te wijzigen bij de eigenschappen."
+  },
   "props": {
     "a2Landscape": "A2 liggend",
     "a3Landscape": "A3 liggend",
@@ -88,6 +104,7 @@
     "color": "Kleur",
     "cols": "Kolommen",
     "cptHeader": "Sondering {{id}}",
+    "cptKind": "Soort sondering",
     "cptNumber": "Sonderingsnr",
     "deleteArea": "Verwijder vlak",
     "deleteBackground": "Verwijder achtergrond",
@@ -158,6 +175,12 @@
     "notRotatable": "Dit objecttype kun je niet roteren",
     "prompt": "Roteer met hoeveel graden? (negatief = tegen de klok in)",
     "selectFirst": "Selecteer eerst een object om te roteren"
+  },
+  "soort": {
+    "conus": "Zonder kleefmeting",
+    "kleef": "Met kleefmeting",
+    "water": "Met waterspanningsmeting",
+    "kleef-water": "Met kleef- en waterspanningsmeting"
   },
   "titleBlock": {
     "addressPlaceholder": "Straatnaam, huisnummer, projectplaats",

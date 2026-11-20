@@ -21,6 +21,23 @@ import PdfCropDialog from "./PdfCropDialog";
 import OffertesDialog from "./OffertesDialog";
 import IfcxPreviewDialog from "./IfcxPreviewDialog";
 import "./SonderingstekeningView.css";
+import { useReportBrand } from "../../report/reportBrand";
+import {
+  getPlaceSoort,
+  resolveSoort,
+  soortFromPoints,
+  soortHasFriction,
+  type SonderingSoort,
+} from "./tekening/sonderingSoort";
+import {
+  markerIconHtml,
+  symbolSvg,
+  type SymbolColors,
+  type SymbolSpec,
+} from "./tekening/symbols";
+import { estimateLabelSize, placeLabels, type LabelItem, type LabelPlacement } from "./tekening/labelPlacement";
+import { formatScaleTick, pickScaleBar } from "./tekening/scaleBar";
+import { legendEntries } from "./tekening/legend";
 
 /**
  * SonderingstekeningView — drawing-board view for a project sondering plan.
@@ -104,6 +121,9 @@ interface PlacedSondering {
    *  "bore" tekent het open-ring boringssymbool (zelfde icon-conventie
    *  als de BRO-laag op de Kaart-tab). */
   kind?: "sondering" | "bore";
+  /** Soort sondering (bepaalt het symbool); ontbreekt bij boringen en bij
+   *  markers uit oudere tekeningen, zie `resolveSoort`. */
+  soort?: SonderingSoort;
   /**
    * Optional flag — when true the marker renders an extra horizontal
    * line under the triangle apex, indicating that the sondering has
@@ -139,6 +159,8 @@ interface PlacedRaster {
    *  bijgemaakt zodat de werkelijke spacing nooit boven dit getal komt.
    *  Standaard 20 m (Dutch NEN-praktijk: 15/20/25 m grid). */
   maxSpacing?: number;
+  /** Soort sondering voor alle cellen van het raster. */
+  soort?: SonderingSoort;
   /** Kleefmeting-streepje onder elke rastercel-driehoek (NEN-symbool
    *  voor sondering met plaatselijke wrijving). Per raster togglebaar
    *  in het Eigenschappen-paneel. */
@@ -649,6 +671,21 @@ function sideOfLineRd(p: RdPoint, a: RdPoint, b: RdPoint): 1 | -1 | 0 {
   if (Math.abs(cross) < 1e-9) return 0;
   return cross > 0 ? 1 : -1;
 }
+
+/** Lettergrootte van de labels bij de symbolen, in CSS-px op het papier. */
+const LABEL_FONT_PX = 13;
+
+/** Leest een huisstijl-token van de app; valt terug als het ontbreekt. */
+function readDrawingToken(name: string, fallback: string): string {
+  if (typeof document === "undefined") return fallback;
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || fallback;
+}
+
+const plannedSpec = (kind: "sondering" | "bore" | undefined, soort: unknown, kleef?: boolean): SymbolSpec =>
+  kind === "bore"
+    ? { type: "boring", status: "gepland" }
+    : { type: "sondering", soort: resolveSoort(soort, kleef), status: "gepland" };
 
 export default function SonderingstekeningView() {
   const { t } = useTranslation("drawing");
@@ -3044,10 +3081,8 @@ export default function SonderingstekeningView() {
             (p) => (p.kind ?? "sondering") === kind,
           ).length;
           const nextId = `${prefix}${String(sameKindCount + 1).padStart(2, "0")}`;
-          // Sonderingen krijgen standaard het kleefmeting-streepje onder de
-          // driehoek (NEN-symbool: vrijwel elke moderne elektrische conus
-          // meet plaatselijke wrijving). Uit te zetten per marker in het
-          // Eigenschappen-paneel.
+          // Een sondering krijgt de soort die in het lint gekozen is; later
+          // te wijzigen in het Eigenschappen-paneel.
           return [
             ...prev,
             {
@@ -3055,7 +3090,9 @@ export default function SonderingstekeningView() {
               lat: effLat,
               lon: effLon,
               kind,
-              ...(kind === "sondering" ? { kleefmeting: true } : {}),
+              ...(kind === "sondering"
+                ? { soort: getPlaceSoort(), kleefmeting: soortHasFriction(getPlaceSoort()) }
+                : {}),
             },
           ];
         });
@@ -3221,6 +3258,81 @@ export default function SonderingstekeningView() {
     // blijven staan.
   }, [paperSize, scale, mapReady]);
 
+  // ── Kleuren, symbolen en labels van de tekening ─────────────────
+  // Zwart-wit met één accent: inkt uit de huisstijl-tokens van de app,
+  // accent uit de ingestelde huisstijl. Als waarden (niet als CSS-var)
+  // omdat de PDF-export inline SVG zonder stylesheet rastert.
+  const brand = useReportBrand((s) => s.brand);
+  const symbolColors = useMemo<SymbolColors>(
+    () => ({
+      ink: readDrawingToken("--oa-brand-night-build", "#2A2A32"),
+      paper: "#FFFFFF",
+      accent: `rgb(${brand.accent.join(", ")})`,
+    }),
+    [brand.accent],
+  );
+
+  // Alle symbolen op het blad, in één lijst: basis voor de legenda en voor
+  // het plaatsen van de labels.
+  const drawingSymbols = useMemo(() => {
+    const list: { key: string; lat: number; lon: number; label: string; spec: SymbolSpec }[] = [];
+    for (const cpt of project?.cpts ?? []) {
+      if (!cpt.position) continue;
+      const ll = WGS84_TO_RD.inverse([cpt.position.x_rd, cpt.position.y_rd]);
+      list.push({
+        key: `p:${cpt.id}`,
+        lat: ll[1],
+        lon: ll[0],
+        label: cpt.id,
+        spec: { type: "sondering", soort: soortFromPoints(cpt.points), status: "uitgevoerd" },
+      });
+    }
+    for (const p of placed)
+      list.push({ key: `m:${p.id}`, lat: p.lat, lon: p.lon, label: p.id, spec: plannedSpec(p.kind, p.soort, p.kleefmeting) });
+    for (const r of rasters) {
+      if (exportSuppress && r.hideInExport) continue;
+      const spec = plannedSpec("sondering", r.soort, r.kleefmeting);
+      for (const pt of rasterPoints(r)) {
+        const cellIdx = pt.rIdx * r.cols + pt.cIdx;
+        list.push({ key: `r:${r.id}:${cellIdx}`, lat: pt.lat, lon: pt.lon, label: rasterCellLabel(r, cellIdx), spec });
+      }
+    }
+    return list;
+  }, [project, placed, rasters, exportSuppress]);
+
+  const legend = useMemo(() => legendEntries(drawingSymbols.map((s) => s.spec)), [drawingSymbols]);
+
+  // Labels naast de symbolen zonder overlap. De onderlinge pixelafstanden
+  // hangen alleen van de zoom af (niet van pannen), dus mPerPx als trigger.
+  const labelLayout = useMemo<Map<string, LabelPlacement>>(() => {
+    const map = mapRef.current;
+    if (!map || mPerPx <= 0) return new Map();
+    try {
+      const zoom = map.getZoom();
+      const items: LabelItem[] = drawingSymbols.map((s) => {
+        const pt = map.project([s.lat, s.lon], zoom);
+        return {
+          key: s.key,
+          x: pt.x,
+          y: pt.y,
+          symbol: symbolSvg(s.spec).box,
+          ...estimateLabelSize(s.label, LABEL_FONT_PX),
+        };
+      });
+      // Het naamplaatje in het midden van elk raster (120 × 18 px) vrijhouden.
+      const pills = rasters
+        .filter((r) => !(exportSuppress && r.hideInExport))
+        .map((r) => {
+          const c = map.project([r.centerLat, r.centerLon], zoom);
+          return { left: c.x - 60, top: c.y - 9, right: c.x + 60, bottom: c.y + 9 };
+        });
+      return placeLabels(items, pills);
+    } catch {
+      return new Map();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawingSymbols, rasters, exportSuppress, mPerPx, mapReady]);
+
   // ── Render project sondering markers ───────────────────────────
   useEffect(() => {
     const layer = projectLayerRef.current;
@@ -3230,32 +3342,28 @@ export default function SonderingstekeningView() {
       if (!cpt.position) continue;
       // Convert RD to lat/lon.
       const ll = WGS84_TO_RD.inverse([cpt.position.x_rd, cpt.position.y_rd]);
-      // NEN-symbool: sondering mét kleefmeting = driehoek met horizontaal
-      // streepje onder de punt. Echte CPT's met fs-data krijgen het
-      // streepje automatisch (vrijwel elke moderne elektrische conus).
-      const hasKleef = cpt.points.some((pt) => pt.fs != null);
+      // Soort uit de data: fs en/of u2 gemeten. Uitgevoerd = gevuld symbool.
+      const sym = symbolSvg(
+        { type: "sondering", soort: soortFromPoints(cpt.points), status: "uitgevoerd" },
+        { colors: symbolColors },
+      );
       const marker = L.marker([ll[1], ll[0]], {
         icon: L.divIcon({
           className: "tek-project-marker",
-          html: `<div class="tek-marker tek-marker-project" title="${cpt.id}">
-                   <svg viewBox="0 0 12 14" overflow="visible"><polygon points="1,1 11,1 6,11"
-                     fill="#d97706" stroke="#7c2d12" stroke-width="1" />${
-                       hasKleef
-                         ? `<line x1="1" y1="13" x2="11" y2="13" stroke="#7c2d12" stroke-width="1.3" stroke-linecap="round" />`
-                         : ""
-                     }</svg>
-                 </div>`,
-          /* 4× origineel — gebruiker-verzoek nogmaals 2x. Hoogte 56 zodat de
-             12×14-viewBox met streepje dezelfde driehoek-grootte houdt;
-             anchor blijft op de driehoekspunt (y=11 × schaal 4 = 44). */
-          iconSize: [48, 56],
-          iconAnchor: [24, 44],
+          html: markerIconHtml(sym, {
+            label: xmlEscapeHtml(cpt.id),
+            placement: labelLayout.get(`p:${cpt.id}`),
+            className: "tek-marker-project",
+            ink: symbolColors.ink,
+          }),
+          iconSize: [sym.width, sym.height],
+          iconAnchor: [sym.anchorX, sym.anchorY],
         }),
       });
       marker.bindTooltip(cpt.metadata.source_file || cpt.id, { permanent: false });
       layer.addLayer(marker);
     }
-  }, [project]);
+  }, [project, labelLayout, symbolColors]);
 
   // ── Render placed-by-user sondering markers ────────────────────
   // Click on a marker → select it (so the user can delete with Del key
@@ -3269,43 +3377,22 @@ export default function SonderingstekeningView() {
       const isSelected =
         selection?.kind === "marker" && selection.id === p.id;
       const isBore = (p.kind ?? "sondering") === "bore";
-      const fill = isSelected
-        ? "rgba(245,158,11,0.45)"
-        : isBore
-          ? "#FECACA"
-          : "none";
-      const stroke = isSelected ? "#92400e" : isBore ? "#7F1D1D" : "#1e3a8a";
-      const strokeWidth = isSelected ? 1.6 : 1.2;
-      // Boring = open cirkel met midden-dot (zelfde conventie als de
-      // BRO-laag op de Kaart). Sondering = driehoek (Dutch CPT symbol).
-      const symbolSvg = isBore
-        ? `<svg viewBox="0 0 14 14" overflow="visible">
-             <circle cx="7" cy="7" r="5.5" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />
-             <circle cx="7" cy="7" r="1.3" fill="${stroke}" />
-           </svg>`
-        : `<svg viewBox="0 0 12 14" overflow="visible">
-             <polygon points="1,1 11,1 6,11"
-               fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />
-             ${
-               p.kleefmeting
-                 ? `<line x1="1" y1="13" x2="11" y2="13" stroke="${stroke}" stroke-width="${strokeWidth + 0.3}" stroke-linecap="round" />`
-                 : ""
-             }
-           </svg>`;
-      /* 4× origineel — gebruiker wil markers nog 2x groter dan vorige fix */
-      const iconSize: [number, number] = isBore ? [56, 56] : [48, 56];
-      const iconAnchor: [number, number] = isBore
-        ? [28, 28]
-        : [24, p.kleefmeting ? 48 : 44];
+      // Gepland = open symbool; een boring houdt zijn eigen ring met stip.
+      const sym = symbolSvg(plannedSpec(p.kind, p.soort, p.kleefmeting), {
+        colors: symbolColors,
+        selected: isSelected,
+      });
       const m = L.marker([p.lat, p.lon], {
         icon: L.divIcon({
           className: isBore ? "tek-placed-bore-marker" : "tek-placed-marker",
-          html: `<div class="tek-marker ${isBore ? "tek-marker-bore" : "tek-marker-placed"}${isSelected ? " selected" : ""}">
-                   ${symbolSvg}
-                   <span class="tek-marker-label">${p.id}</span>
-                 </div>`,
-          iconSize,
-          iconAnchor,
+          html: markerIconHtml(sym, {
+            label: xmlEscapeHtml(p.id),
+            placement: labelLayout.get(`m:${p.id}`),
+            className: `${isBore ? "tek-marker-bore" : "tek-marker-placed"}${isSelected ? " selected" : ""}`,
+            ink: isSelected ? symbolColors.accent : symbolColors.ink,
+          }),
+          iconSize: [sym.width, sym.height],
+          iconAnchor: [sym.anchorX, sym.anchorY],
         }),
       });
       m.on("click", (ev) => {
@@ -3314,7 +3401,7 @@ export default function SonderingstekeningView() {
       });
       layer.addLayer(m);
     }
-  }, [placed, selection]);
+  }, [placed, selection, labelLayout, symbolColors]);
 
   // ── Render raster sonderingen (single object per raster) ───────
   // Each raster expands into a grid of markers around its center, rotated
@@ -3330,10 +3417,11 @@ export default function SonderingstekeningView() {
       if (exportSuppress && r.hideInExport) continue;
       const isSelected =
         selection?.kind === "raster" && selection.id === r.id;
-      // Nog uit te voeren sonderingen = OPEN driehoekjes (niet gevuld),
-      // conform de tekening-conventie: gevuld = uitgevoerd, open = gepland.
-      const fill = "none";
-      const stroke = isSelected ? "#92400e" : "#1e3a8a";
+      // Nog uit te voeren sonderingen = open symbolen (gevuld = uitgevoerd).
+      const sym = symbolSvg(plannedSpec("sondering", r.soort, r.kleefmeting), {
+        colors: symbolColors,
+        selected: isSelected,
+      });
       // Derived sondering markers — nu WEL klikbaar zodat je het raster
       // ook door op een sondering-symbool te klikken selecteert (niet
       // alleen via het dunne kader). Per cel krijgt elke sondering een
@@ -3345,20 +3433,18 @@ export default function SonderingstekeningView() {
       };
       for (const pt of rasterPoints(r)) {
         const cellLabel = rasterCellLabel(r, pt.rIdx * r.cols + pt.cIdx);
+        const cellIdx = pt.rIdx * r.cols + pt.cIdx;
         const m = L.marker([pt.lat, pt.lon], {
           icon: L.divIcon({
             className: "tek-raster-marker",
-            html: `<div class="tek-marker tek-marker-raster${isSelected ? " selected" : ""}">
-                     <svg viewBox="0 0 10 12" overflow="visible"><polygon points="1,1 9,1 5,9"
-                       fill="${fill}" stroke="${stroke}" stroke-width="1.1" stroke-linejoin="round" />${
-                         r.kleefmeting
-                           ? `<line x1="1" y1="10.8" x2="9" y2="10.8" stroke="${stroke}" stroke-width="1" stroke-linecap="round" />`
-                           : ""
-                       }</svg>
-                     <span class="tek-marker-label tek-raster-cell-label">${cellLabel}</span>
-                   </div>`,
-            iconSize: [40, 40], /* 4× origineel */
-            iconAnchor: [20, 36],
+            html: markerIconHtml(sym, {
+              label: xmlEscapeHtml(cellLabel),
+              placement: labelLayout.get(`r:${r.id}:${cellIdx}`),
+              className: `tek-marker-raster${isSelected ? " selected" : ""}`,
+              ink: isSelected ? symbolColors.accent : symbolColors.ink,
+            }),
+            iconSize: [sym.width, sym.height],
+            iconAnchor: [sym.anchorX, sym.anchorY],
           }),
           interactive: true,
         });
@@ -3371,11 +3457,12 @@ export default function SonderingstekeningView() {
       // praktijk niet te selecteren was.
       const corners = rasterCornersLatLng(r);
       const rect = L.polygon(corners, {
-        color: isSelected ? "#d97706" : "#3b82f6",
-        weight: isSelected ? 2.5 : 1.2,
+        color: isSelected ? symbolColors.accent : symbolColors.ink,
+        weight: isSelected ? 1.5 : 0.75,
+        opacity: isSelected ? 1 : 0.55,
         fill: true,
-        fillColor: isSelected ? "#f59e0b" : "#3b82f6",
-        fillOpacity: isSelected ? 0.1 : 0.04,
+        fillColor: isSelected ? symbolColors.accent : symbolColors.ink,
+        fillOpacity: isSelected ? 0.08 : 0.02,
         dashArray: isSelected ? undefined : "4 4",
         interactive: true,
       });
@@ -3432,7 +3519,7 @@ export default function SonderingstekeningView() {
       layer.addLayer(rect);
       layer.addLayer(lbl);
     }
-  }, [rasters, selection, exportSuppress]);
+  }, [rasters, selection, exportSuppress, labelLayout, symbolColors]);
 
   // ── Render edit handles for the selected raster ─────────────────
   // We draw 4 corner handles (anisotropic resize), 4 edge midpoint
@@ -3806,6 +3893,8 @@ export default function SonderingstekeningView() {
       spacingY: spacing,
       rotation: 0,
       maxSpacing: spacing, // standaard = initiële h-o-h (NEN 15/20/25 m)
+      soort: getPlaceSoort(),
+      kleefmeting: soortHasFriction(getPlaceSoort()),
     };
     setRasters((prev) => [...prev, r]);
     setSelection({ kind: "raster", id: nextId });
@@ -4415,12 +4504,14 @@ export default function SonderingstekeningView() {
       if (!Number.isFinite(w) || w <= 0) return;
       setOverlay((ov) => (ov ? { ...ov, widthMeters: w } : ov));
     };
-    // Toggle kleefmeting flag for the selected placed marker.
-    const onSetKleefmeting = (e: Event) => {
-      const ce = e as CustomEvent<{ id: string; kleefmeting: boolean }>;
+    // Wijzig de soort van de geselecteerde sondering. De kleefvlag loopt
+    // mee zodat oudere versies de tekening nog goed lezen.
+    const onSetSoort = (e: Event) => {
+      const ce = e as CustomEvent<{ id: string; soort: SonderingSoort }>;
+      const soort = resolveSoort(ce.detail.soort);
       setPlaced((prev) =>
         prev.map((p) =>
-          p.id === ce.detail.id ? { ...p, kleefmeting: ce.detail.kleefmeting } : p,
+          p.id === ce.detail.id ? { ...p, soort, kleefmeting: soortHasFriction(soort) } : p,
         ),
       );
     };
@@ -4479,7 +4570,7 @@ export default function SonderingstekeningView() {
     window.addEventListener("ogs:tekening-cad-mirror", onCadMirror);
     window.addEventListener("ogs:tekening-cad-offset", onCadOffset);
     window.addEventListener("ogs:tekening-select-mode", onSelectMode);
-    window.addEventListener("ogs:tekening-set-kleefmeting", onSetKleefmeting as EventListener);
+    window.addEventListener("ogs:tekening-set-soort", onSetSoort as EventListener);
     window.addEventListener("ogs:tekening-set-line-color", onSetLineColor as EventListener);
     window.addEventListener("ogs:tekening-set-overlay-layer", onSetOverlayLayer as EventListener);
     window.addEventListener("ogs:tekening-toggle-freeze", onToggleFreeze);
@@ -4539,7 +4630,7 @@ export default function SonderingstekeningView() {
       window.removeEventListener("ogs:tekening-cad-mirror", onCadMirror);
       window.removeEventListener("ogs:tekening-cad-offset", onCadOffset);
       window.removeEventListener("ogs:tekening-select-mode", onSelectMode);
-      window.removeEventListener("ogs:tekening-set-kleefmeting", onSetKleefmeting as EventListener);
+      window.removeEventListener("ogs:tekening-set-soort", onSetSoort as EventListener);
       window.removeEventListener("ogs:tekening-set-line-color", onSetLineColor as EventListener);
       window.removeEventListener("ogs:tekening-set-overlay-layer", onSetOverlayLayer as EventListener);
       window.removeEventListener("ogs:tekening-toggle-freeze", onToggleFreeze);
@@ -4600,7 +4691,12 @@ export default function SonderingstekeningView() {
       selectionKind: selection?.kind ?? null,
       selectionId: selection?.id ?? null,
       selectedMarker: selectedMarker
-        ? { id: selectedMarker.id, kleefmeting: !!selectedMarker.kleefmeting }
+        ? {
+            id: selectedMarker.id,
+            kind: selectedMarker.kind ?? "sondering",
+            soort: resolveSoort(selectedMarker.soort, selectedMarker.kleefmeting),
+            kleefmeting: !!selectedMarker.kleefmeting,
+          }
         : null,
       selectedRaster: selectedRaster
         ? {
@@ -4610,6 +4706,7 @@ export default function SonderingstekeningView() {
             spacingX: selectedRaster.spacingX,
             spacingY: selectedRaster.spacingY,
             rotation: selectedRaster.rotation,
+            soort: resolveSoort(selectedRaster.soort, selectedRaster.kleefmeting),
             kleefmeting: !!selectedRaster.kleefmeting,
             hideInExport: !!selectedRaster.hideInExport,
             labelPrefix: selectedRaster.labelPrefix ?? "",
@@ -4670,7 +4767,8 @@ export default function SonderingstekeningView() {
         kind: p.kind === "bore" ? "bore" : "sondering",
         lat: p.lat,
         lon: p.lon,
-        kleefmeting: !!p.kleefmeting,
+        ...(p.kind === "bore" ? {} : { soort: resolveSoort(p.soort, p.kleefmeting) }),
+        kleefmeting: p.kind !== "bore" && soortHasFriction(resolveSoort(p.soort, p.kleefmeting)),
       })),
       rasters: rasters.map((r) => ({
         id: r.id,
@@ -4682,7 +4780,8 @@ export default function SonderingstekeningView() {
         spacingY: r.spacingY,
         rotation: r.rotation,
         hideInExport: r.hideInExport,
-        kleefmeting: r.kleefmeting,
+        soort: resolveSoort(r.soort, r.kleefmeting),
+        kleefmeting: soortHasFriction(resolveSoort(r.soort, r.kleefmeting)),
         labelPrefix: r.labelPrefix,
         labelStart: r.labelStart,
         maxSpacing: r.maxSpacing,
@@ -4772,6 +4871,7 @@ export default function SonderingstekeningView() {
         kind: m.kind,
         lat: m.lat,
         lon: m.lon,
+        ...(m.kind === "bore" ? {} : { soort: resolveSoort(m.soort, m.kleefmeting) }),
         kleefmeting: !!m.kleefmeting,
       })),
     );
@@ -4786,6 +4886,7 @@ export default function SonderingstekeningView() {
         spacingY: r.spacingY,
         rotation: r.rotation,
         hideInExport: r.hideInExport,
+        soort: resolveSoort(r.soort, r.kleefmeting),
         kleefmeting: r.kleefmeting,
         labelPrefix: r.labelPrefix,
         labelStart: r.labelStart,
@@ -5165,8 +5266,10 @@ export default function SonderingstekeningView() {
       position: "absolute",
       left: 0,
       top: 0,
+      // Inkt en accent van de tekening, voor de opmaak in de stylesheet.
+      ...({ "--tek-ink": symbolColors.ink, "--tek-accent": symbolColors.accent } as React.CSSProperties),
     }),
-    [paperLayout.pxW, paperLayout.pxH, effectiveScale],
+    [paperLayout.pxW, paperLayout.pxH, effectiveScale, symbolColors],
   );
   // Stage-wrapper: heeft de zichtbare (gescaled) afmetingen, zodat de
   // canvas-flex-layout de paper netjes kan centreren. Zonder deze
@@ -5455,12 +5558,44 @@ export default function SonderingstekeningView() {
               ACTUELE Leaflet meters-per-pixel (mPerPx), zodat hij
               zowel het print-scale als de extra zoom van de gebruiker
               correct weergeeft. */}
-          <ScaleBar mPerPx={mPerPx} paperPxW={paperLayout.pxW} />
+          <ScaleBar mPerPx={mPerPx} paperPxW={paperLayout.pxW} ink={symbolColors.ink} />
           {/* Noordpijl — rechtsboven, vaste mm-grootte op papier
               (~22mm hoog). Rotatie 0 = noord boven (Web Mercator
               heeft geen rotatie). Bedrukt op het papier zoals een
               traditionele tekening; bedoeld vooral voor de PDF-print. */}
-          <NorthArrow />
+          <NorthArrow ink={symbolColors.ink} />
+          {/* Legenda — alleen de symbolen die op dit blad voorkomen, met
+              het aantal per soort. Zelfde SVG als de markers op de kaart. */}
+          {legend.length > 0 && (
+            <div className="tek-legend">
+              <div className="tek-legend-title">{t("legend.title", "Legenda")}</div>
+              <table>
+                <tbody>
+                  {legend.map((entry) => {
+                    const sym = symbolSvg(entry.spec, { colors: symbolColors, size: 20 });
+                    const text =
+                      entry.spec.type === "boring"
+                        ? t("legend.bore", "Boring")
+                        : t(`legend.soort.${entry.spec.soort}`, SOORT_LABEL_NL[entry.spec.soort]);
+                    const status =
+                      entry.spec.status === "uitgevoerd"
+                        ? t("legend.done", "uitgevoerd")
+                        : t("legend.planned", "gepland");
+                    return (
+                      <tr key={`${entry.spec.type}-${entry.spec.type === "sondering" ? entry.spec.soort : ""}-${entry.spec.status}`}>
+                        <td className="tek-legend-symbol" dangerouslySetInnerHTML={{ __html: sym.svg }} />
+                        <td className="tek-legend-text">
+                          {text}
+                          <span className="tek-legend-status">{status}</span>
+                        </td>
+                        <td className="tek-legend-count">{entry.count}×</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
           {/* Automatische RD-coördinatentabel — linksboven op het papier,
               met de nog uit te voeren sonderingen (raster-cellen + los
               geplaatste). pointer-events uit zodat teken-kliks eronder
@@ -5552,23 +5687,16 @@ export default function SonderingstekeningView() {
                 onClick={() => logoInputRef.current?.click()}
                 title={t("titleBlock.logoTitle", "Klik om je eigen logo te kiezen (PNG / JPG / SVG)")}
               >
-                {customLogo ? (
+                {customLogo || brand.logoDataUrl ? (
                   <img
-                    src={customLogo}
+                    src={customLogo ?? brand.logoDataUrl}
                     alt={t("titleBlock.logoAlt", "Bedrijfslogo")}
                     className="tek-db-logo-custom"
                   />
                 ) : (
                   <>
-                    <svg width="34" height="38" viewBox="0 0 80 88" fill="none" aria-hidden>
-                      <g transform="translate(40, 12)">
-                        <polygon points="0,0 -30,17 0,34 30,17" fill="none" stroke="#D97706" strokeWidth="2.5" strokeLinejoin="round" />
-                        <polygon points="-30,17 -30,56 0,73 0,34" fill="none" stroke="#D97706" strokeWidth="2" strokeLinejoin="round" />
-                        <polygon points="30,17 30,56 0,73 0,34" fill="none" stroke="#A1A1AA" strokeWidth="1.5" strokeLinejoin="round" opacity="0.5" />
-                      </g>
-                    </svg>
-                    <div className="tek-db-logo-text">Open<span>AEC</span></div>
-                    <div className="tek-db-logo-sub">Geotechniek</div>
+                    <div className="tek-db-logo-text">{brand.organization}</div>
+                    {brand.website && <div className="tek-db-logo-sub">{brand.website}</div>}
                   </>
                 )}
               </button>
@@ -5760,30 +5888,14 @@ export default function SonderingstekeningView() {
   );
 }
 
-/**
- * Schaalbar / scale-bar — een papier-print-stijl meetlat in de hoek
- * van de tekening. Werkt op basis van de ACTUELE meters-per-pixel
- * van Leaflet (mPerPx), niet de print-schaal: zo blijft hij correct
- * wanneer de gebruiker met de muiswiel in/uit zoomt, en wanneer
- * Leaflet's Web Mercator-projectie + container-aspect zorgen dat de
- * echte schaal afwijkt van het 1:N getal in de TekeningProperties.
- *
- * De bar streeft naar ≈ 25% van de paper-breedte; daarbinnen wordt
- * een 'nette' rond meter-aantal uit een ladder gekozen, en de bar
- * krijgt 4 (10/20/40/...) of 5 (50/100/500/...) segmenten zodat de
- * onderschriften altijd hele meters zijn.
- */
-const SCALE_BAR_LADDER = [
-  1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000,
-];
-function pickNiceScaleMeters(maxM: number): number {
-  let best = SCALE_BAR_LADDER[0];
-  for (const v of SCALE_BAR_LADDER) {
-    if (v <= maxM) best = v;
-    else break;
-  }
-  return best;
-}
+/** Nederlandse brontekst per soort, voor de legenda en de keuzelijsten. */
+const SOORT_LABEL_NL: Record<SonderingSoort, string> = {
+  conus: "Sondering",
+  kleef: "Sondering met kleefmeting",
+  water: "Sondering met waterspanningsmeting",
+  "kleef-water": "Sondering met kleef- en waterspanningsmeting",
+};
+
 /**
  * Inline-editable Schaal-cel voor het titleblock. Toont de live-
  * berekende schaal als "1:N"; klikken/focussen schakelt naar bewerken,
@@ -5843,165 +5955,72 @@ function ScaleCellEditor({ liveScale, requested }: { liveScale: number; requeste
 }
 
 /**
- * Noordpijl rechtsboven op het papier. Traditionele bouwkundige
- * vorm: een pijl met "N" boven. Zwart gevuld met witte achtergrond
- * + dunne border zodat hij over elke base-layer leesbaar blijft.
- * Vaste mm-grootte op het papier (CSS px = 96/25.4 × mm).
+ * Noordpijl rechtsboven op het papier: een slanke pijl met de helft
+ * gevuld en een N erboven. Noord is altijd boven (de kaart draait niet).
+ * Kleur en lettertype als attribuut, zodat de PDF hetzelfde toont.
  */
-function NorthArrow() {
+function NorthArrow({ ink }: { ink: string }) {
   const { t } = useTranslation("drawing");
-  // 3x grotere noordpijl (was 40×60, nu 120×180). Zelfde viewBox
-  // zodat de SVG-paths niet hoeven te schalen — alleen de
-  // weergavegrootte verandert.
+  const font = readDrawingToken("--oa-font-heading", "Space Grotesk, sans-serif");
   return (
     <div className="tek-north-arrow" aria-label={t("northArrow", "Noordpijl")}>
-      <svg viewBox="0 0 40 60" width="120" height="180" xmlns="http://www.w3.org/2000/svg">
-        {/* Witte ronde achtergrond zodat de pijl over luchtfoto leesbaar is */}
-        <circle cx="20" cy="32" r="18" fill="white" stroke="#111" strokeWidth="0.8" />
-        {/* N letter boven de pijl */}
-        <text
-          x="20"
-          y="14"
-          textAnchor="middle"
-          fontFamily="Inter, sans-serif"
-          fontSize="11"
-          fontWeight="700"
-          fill="#111"
-        >
+      <svg viewBox="0 0 32 56" width="48" height="84" xmlns="http://www.w3.org/2000/svg">
+        <text x="16" y="11" textAnchor="middle" fontFamily={font} fontSize="12" fontWeight="600" fill={ink}>
           N
         </text>
-        {/* Pijl: zwarte halve = noordpunt, witte halve = zuidpunt.
-            Klassieke kompas-stijl. */}
-        <polygon points="20,18 14,46 20,40" fill="#111" stroke="#111" strokeWidth="0.4" />
-        <polygon points="20,18 26,46 20,40" fill="white" stroke="#111" strokeWidth="0.4" />
-        {/* Center punt */}
-        <circle cx="20" cy="40" r="1.2" fill="#111" />
+        <polygon points="16,16 8,50 16,43" fill={ink} stroke={ink} strokeWidth="1" strokeLinejoin="round" />
+        <polygon points="16,16 24,50 16,43" fill="#FFFFFF" stroke={ink} strokeWidth="1" strokeLinejoin="round" />
       </svg>
     </div>
   );
 }
 
-function ScaleBar({
-  mPerPx,
-  paperPxW,
-}: {
-  mPerPx: number;
-  paperPxW: number;
-}) {
-  // Tot Leaflet klaar is met initialiseren is mPerPx 0 — nog niets
-  // te tonen, anders division-by-zero.
-  if (!mPerPx || !Number.isFinite(mPerPx) || mPerPx <= 0) return null;
-
-  // Schaalbalk "moet meebewegen met de schaal": kies een vaste meter-
-  // waarde per scale-range, en laat de visuele breedte VARIËREN met
-  // de huidige print-schaal. Dat is hoe een traditionele bouwkundig-
-  // schaalbalk werkt: bij 1:500 is een 25 m bar 50mm breed op papier,
-  // bij 1:1000 is dezelfde 25m maar 25mm breed.
-  //
-  // Print-schaal afleiden uit de actuele mPerPx + paper-grootte:
-  //   scale_N = mPerPx × paperPxW / paperMmW × 1000
-  //           = mPerPx × MM_TO_PX × 1000   (paperPxW/paperMmW = MM_TO_PX)
-  // Bij 1:500 en MM_TO_PX = 3.78 → N ≈ 500.
+/**
+ * Schaalstok linksonder op het papier, op basis van de ACTUELE meters per
+ * pixel van de kaart: hij blijft kloppen als de gebruiker in- of uitzoomt.
+ * Lengte rond 50 mm, met ronde waarden (zie `pickScaleBar`).
+ */
+function ScaleBar({ mPerPx, paperPxW, ink }: { mPerPx: number; paperPxW: number; ink: string }) {
   const MM_TO_PX = 96 / 25.4;
-  const printN = mPerPx * MM_TO_PX * 1000;
-
-  // Gebruiker-verzoek: schaalbalk ALTIJD in stappen van 5 meter met
-  // labels 0 / 5 / 10 / 15 / ... De count varieert per print-schaal
-  // zodat de bar een redelijke papier-lengte heeft (~50mm target):
-  //
-  //   1:500  →  5 stappen ×5m = 25m bar = 50mm op papier
-  //   1:1000 → 10 stappen ×5m = 50m bar = 50mm op papier
-  //   1:2000 → cap op 12 → 60m bar = 30mm
-  //   1:5000 → cap op 12 → 60m bar = 12mm (klein maar leesbaar)
-  //
-  // Cap op 12 segmenten zodat de label-rij niet ondoorzienlijk wordt
-  // bij hele zoom-out-scales. Safety-net pakt extreme zoom-IN scenarios
-  // (1:100 en kleiner) waar 5m al > 60% papier zou worden.
-  const TARGET_BAR_PX = 50 * MM_TO_PX;
-  let segM = 5;
-  let count = Math.round(TARGET_BAR_PX / (segM / mPerPx));
-  count = Math.max(4, Math.min(12, count));
-  let totalM = segM * count;
-  // Safety-net: als de bar buitenproportioneel breed wordt (b.v.
-  // extreme zoom-in zoals 1:100 waar 5m al > 60% paper is), val
-  // terug op een nice-round value zodat de bar nog binnen het papier
-  // past — labels dan dynamisch gegenereerd uit pickNiceScaleMeters.
-  const proposedPx = totalM / mPerPx;
-  if (proposedPx > paperPxW * 0.6) {
-    const targetPx = Math.max(80, paperPxW * 0.25);
-    totalM = pickNiceScaleMeters(targetPx * mPerPx);
-    const fd = parseInt(String(totalM).charAt(0), 10);
-    count = fd === 5 || fd === 1 ? 5 : 4;
-    segM = totalM / count;
-  }
-  void printN;
-  const barPx = totalM / mPerPx;
-  const segPx = barPx / count;
-
-  // Tick-onderschriften.
-  const ticks: number[] = [];
-  for (let i = 0; i <= count; i++) ticks.push(+(i * segM).toFixed(2));
-
-  /* Padding + label-ruimte 2× (gebruiker-verzoek: schaalstok-teksten
-     groter). svgH groeit van 24 → 40 zodat de 14pt labels eronder
-     passen, "m"-eenheid offset mee-geschaald. */
-  const padding = 8;
-  const svgW = Math.round(barPx + padding * 2 + 24);
-  const svgH = 40;
-  const barY = 4;
-  const barH = 10;
-
+  const bar = pickScaleBar(mPerPx, 50 * MM_TO_PX, paperPxW * 0.4);
+  if (!bar) return null;
+  const font = readDrawingToken("--oa-font-body", "Inter, sans-serif");
+  const padX = 10;
+  const barY = 3;
+  const barH = 5;
+  const segPx = bar.lengthPx / bar.segments;
+  const svgW = Math.round(bar.lengthPx + padX * 2 + 14);
+  const svgH = 26;
   return (
     <div className="tek-scale-bar">
-      <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`}>
-        {/* Bar buitenkader */}
-        <rect
-          x={padding}
-          y={barY}
-          width={barPx}
-          height={barH}
-          fill="none"
-          stroke="#111"
-          strokeWidth="0.8"
-        />
-        {/* Alternerende zwart/wit segmenten */}
-        {Array.from({ length: count }).map((_, i) => (
+      <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} xmlns="http://www.w3.org/2000/svg">
+        {Array.from({ length: bar.segments }).map((_, i) => (
           <rect
             key={i}
-            x={padding + i * segPx}
+            x={padX + i * segPx}
             y={barY}
             width={segPx}
             height={barH}
-            fill={i % 2 === 0 ? "#111" : "#fff"}
-            stroke="#111"
-            strokeWidth="0.5"
+            fill={i % 2 === 0 ? ink : "#FFFFFF"}
+            stroke={ink}
+            strokeWidth="0.75"
           />
         ))}
-        {/* Tick-labels onder de bar — fontSize 7 → 14 (gebruiker-verzoek
-            "schaalstof teksten 2x zo groot"). */}
-        {ticks.map((t, i) => (
+        {bar.ticks.map((m, i) => (
           <text
             key={i}
-            x={padding + i * segPx}
-            y={barY + barH + 16}
-            fontFamily="Inter, system-ui, sans-serif"
-            fontSize="14"
-            fontWeight="600"
+            x={padX + i * segPx}
+            y={barY + barH + 13}
+            fontFamily={font}
+            fontSize="10"
+            fontWeight="500"
             textAnchor="middle"
-            fill="#111"
+            fill={ink}
           >
-            {Number.isInteger(t) ? t : t.toFixed(1)}
+            {formatScaleTick(m)}
           </text>
         ))}
-        {/* "m" eenheid achter de laatste tick */}
-        <text
-          x={padding + barPx + 6}
-          y={barY + barH + 16}
-          fontFamily="Inter, system-ui, sans-serif"
-          fontSize="14"
-          fontWeight="600"
-          fill="#111"
-        >
+        <text x={padX + bar.lengthPx + 8} y={barY + barH + 13} fontFamily={font} fontSize="10" fontWeight="500" fill={ink}>
           m
         </text>
       </svg>

@@ -228,62 +228,84 @@
   box-shadow: 0 0 10px rgba(217, 119, 6, 0.55);
 }
 
-/* Raster-cell sondering-label — compact zodat dichte rasters niet
-   in een wolk van overlappende labels veranderen. Iets kleiner +
-   transparanter dan het reguliere marker-label, geen achtergrond. */
-.tek-raster-cell-label {
-  font-size: 8px;
-  font-weight: 600;
-  color: #1e3a8a;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  box-shadow: none;
-  text-shadow: 0 0 2px white, 0 0 1px white;
-  left: 6px;
-  top: -1px;
-}
-
-/* Noordpijl — rechtsboven op het papier, vaste mm-grootte. Boven
-   de map-tile-layer maar onder het titleblock. Witte cirkel achter
-   de pijl zodat hij ook over luchtfoto leesbaar is. */
+/* Noordpijl — rechtsboven binnen het kader, vaste grootte op papier.
+   Witte gloed zodat hij ook over een luchtfoto leesbaar blijft. */
 .tek-north-arrow {
-  /* Binnen de 10mm-zwarte-rand, in de rechter-bovenhoek van de
-     tekening-zone. 14mm vanaf paper-edge = 4mm vanaf de zwarte
-     rand, vergelijkbaar met een traditioneel CAD-blad. */
   position: absolute;
   top: 14mm;
   right: 14mm;
   z-index: 50;
   pointer-events: none;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 2px #fff);
 }
 .tek-north-arrow svg {
   display: block;
 }
 
-/* Schaalbalk — vaste positie linksonder boven het titleblock, op het
-   papier. z-index hoger dan de kaart-tegels (1) en frame (3) zodat
-   de bar altijd boven de map zichtbaar is, lager dan het titleblock
-   (1100) zodat die er overheen kan rangschikken. */
+/* Schaalstok — linksonder binnen het kader, net boven het titelblok
+   (bottom 64mm = 60mm kaartrand + 4mm). */
 .tek-scale-bar {
-  /* Linksonder binnen de tekening-zone, net boven het titleblock.
-     bottom 64mm = 60mm map-bottom + 4mm gap. */
   position: absolute;
   left: 14mm;
   bottom: 64mm;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(17, 17, 17, 0.25);
-  border-radius: 3px;
-  padding: 2px 4px;
-  font: 600 9px 'JetBrains Mono', monospace;
-  color: #111;
+  background: #fff;
+  border: 0.75px solid var(--tek-ink, #2a2a32);
+  padding: 3px 2px 0;
   pointer-events: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 }
 .tek-scale-bar svg {
   display: block;
+}
+
+/* Legenda — linksboven binnen het kader. Toont alleen de symbolen die op
+   het blad voorkomen; de symbolen zijn dezelfde SVG als op de kaart. */
+.tek-legend {
+  position: absolute;
+  left: 14mm;
+  top: 14mm;
+  z-index: 900;
+  pointer-events: none;
+  background: #fff;
+  border: 0.75px solid var(--tek-ink, #2a2a32);
+  color: var(--tek-ink, #2a2a32);
+  font-family: var(--oa-font-body, 'Inter', sans-serif);
+  padding: 6px 10px 6px 8px;
+}
+.tek-legend-title {
+  font: 600 10px var(--oa-font-heading, 'Space Grotesk', sans-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tek-accent, #d97706);
+  margin-bottom: 4px;
+}
+.tek-legend table {
+  border-collapse: collapse;
+}
+.tek-legend td {
+  padding: 2px 0;
+  font-size: 11px;
+  line-height: 1.25;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.tek-legend-symbol {
+  width: 26px;
+}
+.tek-legend-symbol svg {
+  display: block;
+}
+.tek-legend-status {
+  margin-left: 6px;
+  font-size: 10px;
+  opacity: 0.65;
+}
+.tek-legend td.tek-legend-count {
+  padding-left: 14px;
+  text-align: right;
+  font-family: var(--oa-font-numbers, 'Inter', sans-serif);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 .tek-overlay-pdf {
   border: none;
@@ -349,29 +371,27 @@
 
 /* ── Markers rendered inside the map ────────────────────────── */
 
+/* Symbool + label + eventueel aanhaallijntje. Afmetingen en posities
+   staan inline (zie markerIconHtml); het label is één lettergrootte voor
+   alle soorten markers, met een witte gloed tegen de ondergrond. */
 .tek-marker {
-  display: flex;
-  align-items: center;
   position: relative;
 }
-.tek-marker svg {
-  width: 48px; /* 2× nogmaals — gebruiker-verzoek: sondering/boring symbolen nog 2x groter */
-  height: 48px;
+.tek-marker > svg {
+  display: block;
   overflow: visible;
-  /* Anti-aliasing op de driehoek-polygon zodat hij niet gekarteld
-     overkomt bij grotere zoom-niveaus van het papier. */
   shape-rendering: geometricPrecision;
+}
+.tek-marker > svg.tek-marker-leader {
+  position: absolute;
+  pointer-events: none;
 }
 .tek-marker-label {
   position: absolute;
-  left: 52px; /* mee-geschaald (was 26px voor 24px icon) */
-  top: -4px;
-  /* 13px → 17px: sondeernummer moet op afdruk-schaal leesbaar zijn
-     (gebruiker-verzoek: "dat sondeernummer mag wat groter"). */
-  font: 700 17px 'Inter', sans-serif;
-  color: #1e3a8a;
-  text-shadow: 0 0 2px white, 0 0 3px white;
+  font: 600 13px/1.2 var(--oa-font-body, 'Inter', sans-serif);
+  text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 3px #fff;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 /* ── Toolbox (right side) ────────────────────────────────────── */
@@ -476,18 +496,10 @@
 
 /* ── Raster object: derived markers, label pill, edit handles ── */
 
-.tek-marker-raster {
-  width: 40px; /* 2× nogmaals (was 20px) */
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.tek-marker-raster.selected {
-  filter: drop-shadow(0 0 3px rgba(217, 119, 6, 0.7));
-}
-
 /* The leaflet divIcon wrapper inherits a default white background — strip it. */
+.tek-project-marker,
+.tek-placed-marker,
+.tek-placed-bore-marker,
 .tek-raster-marker,
 .tek-raster-label,
 .tek-handle {
@@ -1041,4 +1053,152 @@
   border-width: 2px;
   border-color: #92400e;
   box-shadow: 0 0 8px rgba(217, 119, 6, 0.6);
+}
+
+/* ── Rustige tekenstijl: inkt + één accent ───────────────────────
+   Eén inktkleur (--tek-ink) en één accent (--tek-accent, uit de
+   huisstijl), dunne lijnen van gelijke dikte. Deze regels staan na de
+   oudere titelblok-regels en gaan daar bewust overheen. */
+.tek-paper {
+  color: var(--tek-ink, #2a2a32);
+}
+.tek-paper::after {
+  border: 1px solid var(--tek-ink, #2a2a32);
+}
+.tek-raster-label-pill {
+  background: #fff;
+  color: var(--tek-ink, #2a2a32);
+  border: 0.75px solid var(--tek-ink, #2a2a32);
+  border-radius: 2px;
+  font: 500 10px var(--oa-font-body, 'Inter', sans-serif);
+  padding: 1px 5px;
+}
+.tek-coord-table {
+  border: 0.75px solid var(--tek-ink, #2a2a32);
+  box-shadow: none;
+  font-family: var(--oa-font-body, 'Inter', sans-serif);
+}
+.tek-coord-table-title {
+  background: #fff;
+  color: var(--tek-accent, #d97706);
+  font: 600 10px var(--oa-font-heading, 'Space Grotesk', sans-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 8px 3px;
+}
+.tek-coord-table th,
+.tek-coord-table td {
+  color: var(--tek-ink, #2a2a32);
+  border-bottom: 0.5px solid #d6d3d1;
+}
+.tek-coord-table th {
+  background: #fff;
+  border-bottom: 0.75px solid var(--tek-ink, #2a2a32);
+}
+.tek-coord-table td:nth-child(2),
+.tek-coord-table td:nth-child(3) {
+  font-family: var(--oa-font-numbers, 'Inter', sans-serif);
+  font-variant-numeric: tabular-nums;
+}
+
+.tek-titleblock-db {
+  border: 1px solid var(--tek-ink, #2a2a32);
+  color: var(--tek-ink, #2a2a32);
+  font-family: var(--oa-font-body, 'Inter', sans-serif);
+}
+.tek-db-project-bar {
+  background: #fff;
+  color: var(--tek-ink, #2a2a32);
+  border-bottom: 1px solid var(--tek-ink, #2a2a32);
+  padding: 8px 12px;
+}
+.tek-dbp-title {
+  font-family: var(--oa-font-heading, 'Space Grotesk', sans-serif);
+  font-weight: 600;
+}
+.tek-dbp-address {
+  font-family: var(--oa-font-body, 'Inter', sans-serif);
+  color: var(--tek-ink, #2a2a32);
+  opacity: 0.75;
+}
+.tek-dbp-type {
+  font: 600 1.2rem var(--oa-font-heading, 'Space Grotesk', sans-serif);
+  letter-spacing: 0.08em;
+  color: var(--tek-accent, #d97706);
+}
+.tek-dbp-edit::placeholder {
+  color: #a1a1aa;
+}
+.tek-dbp-edit:hover:not(:focus) {
+  background: rgba(42, 42, 50, 0.05);
+  border-color: rgba(42, 42, 50, 0.2);
+}
+.tek-dbp-edit:focus {
+  background: #fff;
+  color: var(--tek-ink, #2a2a32);
+  border-color: var(--tek-accent, #d97706);
+}
+.tek-db-logo-cell {
+  border-right: 1px solid var(--tek-ink, #2a2a32);
+  padding: 8px 12px;
+}
+.tek-db-logo-clickable:hover {
+  border-color: var(--tek-accent, #d97706);
+  background: transparent;
+}
+.tek-db-logo-custom {
+  max-width: 190px;
+  max-height: 100px;
+}
+.tek-db-logo-text {
+  font: 600 1.7rem var(--oa-font-heading, 'Space Grotesk', sans-serif);
+  color: var(--tek-accent, #d97706);
+  text-align: center;
+}
+.tek-db-logo-sub {
+  font: 500 1.1rem var(--oa-font-body, 'Inter', sans-serif);
+  color: var(--tek-ink, #2a2a32);
+  opacity: 0.65;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.tek-db-cell {
+  padding: 5px 10px;
+  border-right: 0.5px solid var(--tek-ink, #2a2a32);
+  border-bottom: 0.5px solid var(--tek-ink, #2a2a32);
+}
+.tek-db-cell:nth-child(4n) {
+  border-right: 1px solid var(--tek-ink, #2a2a32);
+}
+.tek-db-cell-label {
+  font: 500 1.05rem var(--oa-font-body, 'Inter', sans-serif);
+  letter-spacing: 0.08em;
+  color: var(--tek-ink, #2a2a32);
+  opacity: 0.6;
+}
+.tek-db-cell-val {
+  font: 500 1.5rem var(--oa-font-body, 'Inter', sans-serif);
+  color: var(--tek-ink, #2a2a32);
+}
+.tek-db-cell-val.mono {
+  font-family: var(--oa-font-numbers, 'Inter', sans-serif);
+  font-variant-numeric: tabular-nums;
+}
+.tek-db-cell-val.amber {
+  color: var(--tek-ink, #2a2a32);
+  font-weight: 600;
+}
+.tek-db-geo {
+  border-left: none;
+  background: #fff;
+}
+.tek-db-geo-label {
+  font-family: var(--oa-font-body, 'Inter', sans-serif);
+  letter-spacing: 0.08em;
+  color: var(--tek-ink, #2a2a32);
+  opacity: 0.6;
+}
+.tek-db-geo-format {
+  font: 600 2.8rem var(--oa-font-heading, 'Space Grotesk', sans-serif);
+  color: var(--tek-accent, #d97706);
 }
