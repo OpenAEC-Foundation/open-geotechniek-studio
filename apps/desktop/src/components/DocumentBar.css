@@ -10,12 +10,18 @@
   gap: 1px;
   overflow-x: auto;
   overflow-y: hidden;
+  /* Geen schuifbalk: die viel over de tabbladen heen. Schuiven gaat met het muiswiel. */
+  scrollbar-width: none;
 }
+.document-bar::-webkit-scrollbar { display: none; }
 
 .document-tabs {
   display: flex;
   align-items: flex-end;
   gap: 1px;
+  /* Tabbladen krimpen eerst, zoals in een browser; pas daarna schuift de balk. */
+  flex: 1 1 auto;
+  min-width: min-content;
 }
 
 .document-tab {
@@ -35,7 +41,10 @@
   transition: background 0.1s, color 0.1s, border-color 0.1s;
   white-space: nowrap;
   position: relative;
+  flex: 0 1 auto;
+  min-width: 64px;
 }
+.document-tab-add { flex: none; min-width: 0; }
 
 .document-tab:hover {
   background: var(--theme-hover);
@@ -58,6 +67,7 @@
 
 .document-tab-title {
   max-width: 160px;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
