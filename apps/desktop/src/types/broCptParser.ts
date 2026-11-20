@@ -82,7 +82,9 @@ export function parseBroCptXml(xml: string, filename: string): Cpt {
   if(Array.from(doc.getElementsByTagName("*")).filter(el=>el.localName==="cptResult").length>1 && objects.length<=1)throw new Error(m("bro.multipleResults", "BRO XML bevat meerdere cptResult-blokken zonder eenduidige CPT-objecten; import gestopt."));
   if(objects.length > 1) throw new Error(m("bro.multipleObjects", "BRO XML bevat meerdere CPT-objecten. Splits het document per CPT om stil gegevensverlies te voorkomen."));
   const report:ValidationReport={format:"BRO-CPT",diagnostics:[],records:0,points:0,voids:0,omittedRecords:0,depthMethods:[],depthMethod:"corrected-depth"};
-  const broId = textByLocalName(doc.documentElement, "broId");
+  // Een registratieverzoek (isCPT) heeft nog geen BRO-ID; dan geldt het object-ID van de bronhouder.
+  const broId = textByLocalName(doc.documentElement, "broId")
+    ?? (Array.from(doc.getElementsByTagName("*")).some(el => el.localName === "registrationRequest") ? textByLocalName(doc.documentElement, "objectIdAccountableParty") : undefined);
   if (!broId) throw new Error(m("bro.missingBroId", "BRO CPT: ontbrekende broId"));
 
   // ── RD-coordinaten ───────────────────────────────────────────
