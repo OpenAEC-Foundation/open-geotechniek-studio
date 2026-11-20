@@ -1,0 +1,18 @@
+/* Bedrijfsgegevens van het sondeerbedrijf. */
+.sb-dialog { display: grid; gap: 10px; font-size: 12px; }
+.sb-intro, .sb-note { margin: 0; color: var(--theme-text-secondary); }
+.sb-note { font-size: 11px; }
+.sb-logo-row { display: flex; gap: 14px; align-items: center; }
+.sb-logo-box { width: 180px; height: 72px; flex: none; display: grid; place-items: center; border: 1px dashed var(--theme-border); border-radius: 4px; background: #fff; color: #888; }
+.sb-logo-box img { max-width: 164px; max-height: 60px; }
+.sb-logo-actions { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.sb-logo-actions small { flex-basis: 100%; color: var(--theme-text-secondary); }
+.sb-color { display: inline-flex; align-items: center; gap: 6px; }
+.sb-color input { width: 28px; height: 22px; padding: 0; border: 1px solid var(--theme-border); background: none; }
+.sb-field { display: grid; gap: 3px; min-width: 0; }
+.sb-field span { color: var(--theme-text-secondary); font-size: 11px; }
+.sb-field input { height: 26px; padding: 0 8px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-input-bg, var(--theme-bg)); color: var(--theme-text); font: inherit; min-width: 0; }
+.sb-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sb-preview { margin: 0; padding: 6px 8px; border-radius: 3px; background: var(--theme-hover); }
+.sb-preview span { color: var(--theme-text-secondary); }
+.sb-problem { margin: 0; color: var(--oa-error, #b91c1c); }

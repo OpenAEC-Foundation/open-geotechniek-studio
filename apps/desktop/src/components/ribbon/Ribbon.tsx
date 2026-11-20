@@ -8,6 +8,7 @@ import RapportTab from "./RapportTab";
 import SonderingstekeningTab from "./SonderingstekeningTab";
 import { BerekeningenTab } from "./BerekeningenTab";
 import Model3DTab from "./Model3DTab";
+import SondeerbedrijfTab from "../../sondeerbedrijf/SondeerbedrijfTab";
 import { useExtension, useAllExtensions } from "../../hooks/useExtensions";
 import "./Ribbon.css";
 
@@ -28,12 +29,13 @@ interface RibbonProps {
 // UIT) — gebruiker zet ze aan via Instellingen → Extensies. Berekeningen
 // verschijnt zodra ÉÉN van de `calc.*` modules geactiveerd is. Rapport,
 // Home, Kaart en IFC zijn kern-tabs en blijven altijd zichtbaar.
-const ALL_TABS = ["start", "kaart", "rapport", "tekening", "berekeningen", "model3d", "ifc"] as const;
+const ALL_TABS = ["start", "kaart", "rapport", "sondeerbedrijf", "tekening", "berekeningen", "model3d", "ifc"] as const;
 type TabId = (typeof ALL_TABS)[number];
 
 /** Hoofdweergave per tabblad; de ene volgt altijd uit de andere. */
 const TAB_VIEWS: Record<TabId, string> = {
-  start: "default", kaart: "map", rapport: "report", tekening: "tekening",
+  // Het tabblad Sondeerbedrijf toont het rapportvoorbeeld, net als Rapport.
+  start: "default", kaart: "map", rapport: "report", sondeerbedrijf: "report", tekening: "tekening",
   berekeningen: "calculations", model3d: "soil3d", ifc: "ifc",
 };
 export function tabForView(view: string): TabId {
@@ -44,6 +46,7 @@ export default function Ribbon({ onFileTabClick, onProjectSettingsClick, activeV
   const { t, i18n } = useTranslation("ribbon");
   const [activeTab, setActiveTab] = useState<TabId>("start");
   const extTekening = useExtension("tekening");
+  const extSondeerbedrijf = useExtension("sondeerbedrijf");
   const exts = useAllExtensions();
   // Berekeningen-tab verschijnt zodra ÉÉN calc-module-extensie aan
   // staat. De ID-prefix `calc.` is conventie zodra Task 12 ze toevoegt
@@ -57,10 +60,11 @@ export default function Ribbon({ onFileTabClick, onProjectSettingsClick, activeV
   const TABS = useMemo<readonly TabId[]>(() => {
     return ALL_TABS.filter((t) => {
       if (t === "tekening") return extTekening;
+      if (t === "sondeerbedrijf") return extSondeerbedrijf;
       if (t === "berekeningen") return anyCalcEnabled;
       return true;
     });
-  }, [extTekening, anyCalcEnabled]);
+  }, [extTekening, extSondeerbedrijf, anyCalcEnabled]);
 
   // Als de huidig actieve tab door een extension-toggle uit de
   // zichtbare lijst valt, schakel naar Start (default-tab).
@@ -147,7 +151,8 @@ export default function Ribbon({ onFileTabClick, onProjectSettingsClick, activeV
   // koppeling): het tabblad volgt, zodat lint en scherm bij elkaar horen.
   useEffect(() => {
     const tab = tabForView(activeView);
-    if (tab !== activeTab && TABS.includes(tab)) switchTabRef.current?.(tab);
+    // Twee tabbladen kunnen dezelfde weergave tonen: alleen wisselen als het actieve tabblad er niet bij hoort.
+    if (TAB_VIEWS[activeTab] !== activeView && TABS.includes(tab)) switchTabRef.current?.(tab);
     // Alleen reageren op een andere weergave, niet op een ander tabblad.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeView]);
@@ -186,6 +191,7 @@ export default function Ribbon({ onFileTabClick, onProjectSettingsClick, activeV
       case "tekening":      return <SonderingstekeningTab />;
       case "berekeningen":  return <BerekeningenTab />;
       case "model3d":       return <Model3DTab />;
+      case "sondeerbedrijf": return <SondeerbedrijfTab />;
     }
   };
 

@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Relatório",
   "tekeningTab": "Planta de localização",
+  "sondeerbedrijfTab": "Empresa de sondagens",
   "berekeningenTab": "Cálculos",
   "tekening": {
     "info": "Desenho",

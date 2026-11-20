@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Report",
   "tekeningTab": "Site plan",
+  "sondeerbedrijfTab": "CPT contractor",
   "berekeningenTab": "Calculations",
   "tekening": {
     "info": "Drawing",

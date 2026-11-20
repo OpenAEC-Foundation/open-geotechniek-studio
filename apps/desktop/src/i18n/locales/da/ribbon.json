@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Rapport",
   "tekeningTab": "Situationsplan",
+  "sondeerbedrijfTab": "Sonderingsfirma",
   "berekeningenTab": "Beregninger",
   "tekening": {
     "info": "Tegning",

@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Report",
   "tekeningTab": "Planimetria",
+  "sondeerbedrijfTab": "Impresa di sondaggi",
   "berekeningenTab": "Calcoli",
   "tekening": {
     "info": "Disegno",
