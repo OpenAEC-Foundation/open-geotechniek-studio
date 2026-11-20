@@ -1,0 +1,104 @@
+{
+  "title": "Edit measurements",
+  "close": "Close",
+  "noCpt": "Open a sounding first.",
+  "cpt": "Sounding",
+  "editedShort": "edited",
+  "chart": {
+    "badge": "edited ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Remove depth range",
+    "invalidate-range": "Invalidate depth range",
+    "trim-top": "Trim top",
+    "trim-bottom": "Trim bottom",
+    "zero-shift": "Zero shift",
+    "depth-shift": "Depth shift",
+    "set-value": "Correct a value",
+    "remove-outliers": "Remove outliers"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "inclination",
+    "all": "All channels"
+  },
+  "op": {
+    "removeRange": "Range {{from}} to {{to}} m removed",
+    "invalidateRange": "{{channels}} invalidated from {{from}} to {{to}} m",
+    "trimTop": "Top trimmed: everything above {{depth}} m is dropped",
+    "trimBottom": "Bottom trimmed: everything below {{depth}} m is dropped",
+    "zeroShift": "Zero shift {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Zero shift {{channel}} {{offset}} {{unit}} from {{from}} to {{to}} m",
+    "depthShift": "Depth shift {{offset}} m",
+    "setValue": "{{channel}} at {{depth}} m corrected",
+    "removeOutliers": "Outliers in {{channel}} invalidated from {{from}} to {{to}} m (window ±{{window}}, threshold {{threshold}})"
+  },
+  "result": {
+    "noValue": "no value",
+    "points": "points affected: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} points after editing, {{original}} in the source file. Depth {{range}}.",
+    "untouched": "{{now}} points, not edited. Depth {{range}}.",
+    "kept": "The original measurements are kept."
+  },
+  "log": {
+    "title": "Edit log",
+    "empty": "No edits on this sounding yet.",
+    "time": "Time",
+    "by": "Who",
+    "what": "Edit",
+    "result": "Result",
+    "reason": "Reason",
+    "undoOne": "Undo",
+    "undoOneHint": "This edit is dropped; the later ones are applied again",
+    "undoLast": "Undo last",
+    "reset": "Restore all",
+    "resetConfirm": "Are you sure? The log is discarded"
+  },
+  "form": {
+    "title": "New edit",
+    "kind": "Type",
+    "channel": "Channel",
+    "from": "From depth (m)",
+    "to": "To depth (m)",
+    "optional": "whole series",
+    "keepFrom": "Keep from depth (m)",
+    "keepTo": "Keep to depth (m)",
+    "offsetValue": "Shift ({{unit}})",
+    "offsetDepth": "Shift (m, positive = deeper)",
+    "depth": "Depth (m)",
+    "newValue": "New value ({{unit}})",
+    "emptyIsVoid": "empty = no value",
+    "halfWindow": "Window (points per side)",
+    "threshold": "Threshold (× spread)",
+    "outlierHint": "A value is an outlier when it deviates from the median of its window by more than the threshold times the spread (1.4826 × MAD). The value becomes invalid; the point stays.",
+    "removeHint": "The points in the range are dropped entirely. Choose 'invalidate' to keep the points and clear only values.",
+    "by": "Who",
+    "byPlaceholder": "Name",
+    "reason": "Reason (required)",
+    "reasonPlaceholder": "Why is this edit needed?",
+    "apply": "Apply"
+  },
+  "problem": {
+    "number": "Enter valid numbers.",
+    "range": "The end of the range lies above its start.",
+    "noOffset": "A shift of zero changes nothing.",
+    "window": "The window is at least 1 point and the threshold greater than zero.",
+    "negativeDepth": "With this shift, points end up above ground level."
+  },
+  "preview": {
+    "incomplete": "Fill in the fields to see what the edit affects.",
+    "point": "Point at {{depth}} m, current value: {{value}}.",
+    "noPoint": "No point at this depth; the nearest is at {{depth}} m.",
+    "label": "Preview",
+    "points": "affects {{n}} of {{total}} points.",
+    "none": "This edit affects no points.",
+    "unchanged": "The value is already set like this; nothing changes.",
+    "needBy": "Enter who makes the edit.",
+    "needReason": "Give a reason to apply the edit."
+  }
+}

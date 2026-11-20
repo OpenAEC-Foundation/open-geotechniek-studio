@@ -1,0 +1,104 @@
+{
+  "title": "Editar mediciones",
+  "close": "Cerrar",
+  "noCpt": "Abra primero un sondeo.",
+  "cpt": "Sondeo",
+  "editedShort": "editado",
+  "chart": {
+    "badge": "editado ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Eliminar tramo",
+    "invalidate-range": "Invalidar tramo",
+    "trim-top": "Recortar parte superior",
+    "trim-bottom": "Recortar parte inferior",
+    "zero-shift": "Desplazamiento del cero",
+    "depth-shift": "Desplazamiento de profundidad",
+    "set-value": "Corregir un valor",
+    "remove-outliers": "Eliminar valores atípicos"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "inclinación",
+    "all": "Todos los canales"
+  },
+  "op": {
+    "removeRange": "Tramo de {{from}} a {{to}} m eliminado",
+    "invalidateRange": "{{channels}} invalidado de {{from}} a {{to}} m",
+    "trimTop": "Parte superior recortada: se descarta todo por encima de {{depth}} m",
+    "trimBottom": "Parte inferior recortada: se descarta todo por debajo de {{depth}} m",
+    "zeroShift": "Desplazamiento del cero {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Desplazamiento del cero {{channel}} {{offset}} {{unit}} de {{from}} a {{to}} m",
+    "depthShift": "Desplazamiento de profundidad {{offset}} m",
+    "setValue": "{{channel}} a {{depth}} m corregido",
+    "removeOutliers": "Valores atípicos de {{channel}} invalidados de {{from}} a {{to}} m (ventana ±{{window}}, umbral {{threshold}})"
+  },
+  "result": {
+    "noValue": "sin valor",
+    "points": "puntos afectados: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} puntos tras la edición, {{original}} en el archivo de origen. Profundidad {{range}}.",
+    "untouched": "{{now}} puntos, sin editar. Profundidad {{range}}.",
+    "kept": "Las mediciones originales se conservan."
+  },
+  "log": {
+    "title": "Registro",
+    "empty": "Aún no hay ediciones en este sondeo.",
+    "time": "Fecha y hora",
+    "by": "Quién",
+    "what": "Edición",
+    "result": "Resultado",
+    "reason": "Motivo",
+    "undoOne": "Deshacer",
+    "undoOneHint": "Esta edición se descarta; las posteriores se aplican de nuevo",
+    "undoLast": "Deshacer la última",
+    "reset": "Restaurar todo",
+    "resetConfirm": "¿Seguro? El registro se descarta"
+  },
+  "form": {
+    "title": "Nueva edición",
+    "kind": "Tipo",
+    "channel": "Canal",
+    "from": "Desde profundidad (m)",
+    "to": "Hasta profundidad (m)",
+    "optional": "toda la serie",
+    "keepFrom": "Conservar desde profundidad (m)",
+    "keepTo": "Conservar hasta profundidad (m)",
+    "offsetValue": "Desplazamiento ({{unit}})",
+    "offsetDepth": "Desplazamiento (m, positivo = más profundo)",
+    "depth": "Profundidad (m)",
+    "newValue": "Nuevo valor ({{unit}})",
+    "emptyIsVoid": "vacío = sin valor",
+    "halfWindow": "Ventana (puntos por lado)",
+    "threshold": "Umbral (× dispersión)",
+    "outlierHint": "Un valor es atípico si se desvía de la mediana de su ventana más que el umbral por la dispersión (1,4826 × MAD). El valor queda invalidado; el punto se mantiene.",
+    "removeHint": "Los puntos del tramo se eliminan por completo. Elija 'invalidar' para conservar los puntos y borrar solo valores.",
+    "by": "Quién",
+    "byPlaceholder": "Nombre",
+    "reason": "Motivo (obligatorio)",
+    "reasonPlaceholder": "¿Por qué es necesaria esta edición?",
+    "apply": "Aplicar"
+  },
+  "problem": {
+    "number": "Introduzca números válidos.",
+    "range": "El final del tramo está por encima del inicio.",
+    "noOffset": "Un desplazamiento de cero no cambia nada.",
+    "window": "La ventana tiene al menos 1 punto y el umbral es mayor que cero.",
+    "negativeDepth": "Con este desplazamiento hay puntos por encima del terreno."
+  },
+  "preview": {
+    "incomplete": "Rellene los campos para ver qué afecta la edición.",
+    "point": "Punto a {{depth}} m, valor actual: {{value}}.",
+    "noPoint": "No hay punto a esta profundidad; el más cercano está a {{depth}} m.",
+    "label": "Vista previa",
+    "points": "afecta a {{n}} de {{total}} puntos.",
+    "none": "Esta edición no afecta a ningún punto.",
+    "unchanged": "El valor ya es ese; no cambia nada.",
+    "needBy": "Indique quién hace la edición.",
+    "needReason": "Indique un motivo para aplicar la edición."
+  }
+}

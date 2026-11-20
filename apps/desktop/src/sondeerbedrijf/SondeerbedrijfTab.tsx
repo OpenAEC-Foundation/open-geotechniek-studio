@@ -1,5 +1,6 @@
 // Lint voor sondeerbedrijven: bedrijfsgegevens instellen, coördinaten aanvullen en het sondeerrapport maken.
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import RibbonGroup from "../components/ribbon/RibbonGroup";
 import RibbonButton from "../components/ribbon/RibbonButton";
 import { useCptStore } from "../store/useCptStore";
@@ -8,6 +9,8 @@ import { useReportBrand } from "../report/reportBrand";
 import { COMPANY_CHANGED_EVENT, openCompanyProfile } from "./CompanyDialog";
 import { matchCoordinates, parseCoordinates, withPosition } from "./coordinates";
 import { CPT_REPORT_SECTIONS, loadProfile } from "./profile";
+import MeetwaardenDialog from "../meetwaarden/MeetwaardenDialog";
+import { editLogOf } from "../meetwaarden/state";
 
 export default function SondeerbedrijfTab() {
   const cptsMap = useCptStore((s) => s.cpts);
@@ -19,6 +22,8 @@ export default function SondeerbedrijfTab() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null);
   const [company, setCompany] = useState("");
+  const [editing, setEditing] = useState(false);
+  const editCount = cpts.reduce((n, c) => n + editLogOf(c).edits.length, 0), editedCpts = cpts.filter((c) => editLogOf(c).edits.length).length;
   useEffect(() => {
     const refresh = () => void loadProfile().then((p) => setCompany(p.name));
     refresh();
@@ -71,6 +76,14 @@ export default function SondeerbedrijfTab() {
             <div className="ribbon-info-sub">{!cpts.length ? "Open eerst sonderingen." : withoutPosition ? `${withoutPosition} zonder coördinaten` : "Alle met coördinaten"}</div>
           </div>
         </RibbonGroup>
+        <RibbonGroup label="Meetwaarden">
+          <RibbonButton icon="transform.trim" label={"Meet-\nwaarden"} disabled={!cpts.length}
+            title="Traject verwijderen of ongeldig maken, afkappen, nulpunt of diepte verschuiven, een waarde corrigeren of uitschieters verwijderen; elke bewerking komt in het logboek" onClick={() => setEditing(true)} />
+          <div className="ribbon-info-block">
+            <div className="ribbon-info-title">{editCount ? `${editCount} bewerking${editCount === 1 ? "" : "en"}` : "Niet bewerkt"}</div>
+            <div className="ribbon-info-sub">{editCount ? `in ${editedCpts} sondering${editedCpts === 1 ? "" : "en"}; staat in het rapport` : "Het origineel blijft bewaard."}</div>
+          </div>
+        </RibbonGroup>
         <RibbonGroup label="Sondeerrapport">
           <RibbonButton icon="report.generate" label={"Rapport\nopslaan"} size="large" disabled={!cpts.length || busy}
             title="Sondeerrapport als PDF: voorblad, coördinaten, kaart en per sondering de sondeerstaat"
@@ -80,6 +93,8 @@ export default function SondeerbedrijfTab() {
           {message && <div className={`ribbon-info-sub${message.error ? " ribbon-info-error" : ""}`} style={{ maxWidth: 320 }} role={message.error ? "alert" : "status"}>{message.text}</div>}
         </RibbonGroup>
       </div>
+      {/* Buiten het lint getekend: het lint knipt alles af wat erbuiten valt. */}
+      {createPortal(<MeetwaardenDialog open={editing} onClose={() => setEditing(false)} />, document.body)}
     </div>
   );
 }

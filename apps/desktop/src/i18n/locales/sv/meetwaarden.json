@@ -1,0 +1,104 @@
+{
+  "title": "Redigera mätvärden",
+  "close": "Stäng",
+  "noCpt": "Öppna först en sondering.",
+  "cpt": "Sondering",
+  "editedShort": "redigerad",
+  "chart": {
+    "badge": "redigerad ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Ta bort intervall",
+    "invalidate-range": "Ogiltigförklara intervall",
+    "trim-top": "Kapa toppen",
+    "trim-bottom": "Kapa botten",
+    "zero-shift": "Nollpunktsförskjutning",
+    "depth-shift": "Djupförskjutning",
+    "set-value": "Korrigera ett mätvärde",
+    "remove-outliers": "Ta bort avvikare"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "lutning",
+    "all": "Alla kanaler"
+  },
+  "op": {
+    "removeRange": "Intervall {{from}} till {{to}} m borttaget",
+    "invalidateRange": "{{channels}} ogiltigförklarat från {{from}} till {{to}} m",
+    "trimTop": "Toppen kapad: allt ovanför {{depth}} m utgår",
+    "trimBottom": "Botten kapad: allt nedanför {{depth}} m utgår",
+    "zeroShift": "Nollpunktsförskjutning {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Nollpunktsförskjutning {{channel}} {{offset}} {{unit}} från {{from}} till {{to}} m",
+    "depthShift": "Djupförskjutning {{offset}} m",
+    "setValue": "{{channel}} vid {{depth}} m korrigerat",
+    "removeOutliers": "Avvikare i {{channel}} ogiltigförklarade från {{from}} till {{to}} m (fönster ±{{window}}, tröskel {{threshold}})"
+  },
+  "result": {
+    "noValue": "inget värde",
+    "points": "berörda mätpunkter: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} mätpunkter efter redigering, {{original}} i källfilen. Djup {{range}}.",
+    "untouched": "{{now}} mätpunkter, inte redigerade. Djup {{range}}.",
+    "kept": "De ursprungliga mätvärdena bevaras."
+  },
+  "log": {
+    "title": "Loggbok",
+    "empty": "Inga redigeringar av denna sondering ännu.",
+    "time": "Tidpunkt",
+    "by": "Vem",
+    "what": "Redigering",
+    "result": "Resultat",
+    "reason": "Orsak",
+    "undoOne": "Ångra",
+    "undoOneHint": "Denna redigering utgår; de senare tillämpas igen",
+    "undoLast": "Ångra senaste",
+    "reset": "Återställ allt",
+    "resetConfirm": "Är du säker? Loggboken tas bort"
+  },
+  "form": {
+    "title": "Ny redigering",
+    "kind": "Typ",
+    "channel": "Kanal",
+    "from": "Från djup (m)",
+    "to": "Till djup (m)",
+    "optional": "hela serien",
+    "keepFrom": "Behåll från djup (m)",
+    "keepTo": "Behåll till djup (m)",
+    "offsetValue": "Förskjutning ({{unit}})",
+    "offsetDepth": "Förskjutning (m, positiv = djupare)",
+    "depth": "Djup (m)",
+    "newValue": "Nytt värde ({{unit}})",
+    "emptyIsVoid": "tomt = inget värde",
+    "halfWindow": "Fönster (punkter per sida)",
+    "threshold": "Tröskel (× spridning)",
+    "outlierHint": "Ett värde är en avvikare när det avviker från medianen i sitt fönster med mer än tröskeln gånger spridningen (1,4826 × MAD). Värdet blir ogiltigt; mätpunkten finns kvar.",
+    "removeHint": "Mätpunkterna i intervallet utgår helt. Välj 'ogiltigförklara' för att behålla punkterna och bara ta bort värden.",
+    "by": "Vem",
+    "byPlaceholder": "Namn",
+    "reason": "Orsak (obligatorisk)",
+    "reasonPlaceholder": "Varför behövs denna redigering?",
+    "apply": "Tillämpa"
+  },
+  "problem": {
+    "number": "Ange giltiga tal.",
+    "range": "Intervallets slut ligger ovanför dess början.",
+    "noOffset": "En förskjutning på noll ändrar ingenting.",
+    "window": "Fönstret är minst 1 punkt och tröskeln större än noll.",
+    "negativeDepth": "Med denna förskjutning hamnar mätpunkter ovanför markytan."
+  },
+  "preview": {
+    "incomplete": "Fyll i fälten för att se vad redigeringen berör.",
+    "point": "Mätpunkt vid {{depth}} m, nuvarande värde: {{value}}.",
+    "noPoint": "Ingen mätpunkt på detta djup; den närmaste ligger vid {{depth}} m.",
+    "label": "Förhandsvisning",
+    "points": "berör {{n}} av {{total}} mätpunkter.",
+    "none": "Denna redigering berör inga mätpunkter.",
+    "unchanged": "Mätvärdet är redan så; inget ändras.",
+    "needBy": "Ange vem som gör redigeringen.",
+    "needReason": "Ange en orsak för att tillämpa redigeringen."
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "title": "Modifica misure",
+  "close": "Chiudi",
+  "noCpt": "Apri prima un sondaggio.",
+  "cpt": "Sondaggio",
+  "editedShort": "modificato",
+  "chart": {
+    "badge": "modificato ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Rimuovi tratto",
+    "invalidate-range": "Invalida tratto",
+    "trim-top": "Taglia la parte superiore",
+    "trim-bottom": "Taglia la parte inferiore",
+    "zero-shift": "Spostamento dello zero",
+    "depth-shift": "Spostamento di profondità",
+    "set-value": "Correggi un valore",
+    "remove-outliers": "Rimuovi valori anomali"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "inclinazione",
+    "all": "Tutti i canali"
+  },
+  "op": {
+    "removeRange": "Tratto da {{from}} a {{to}} m rimosso",
+    "invalidateRange": "{{channels}} invalidato da {{from}} a {{to}} m",
+    "trimTop": "Parte superiore tagliata: tutto ciò che è sopra {{depth}} m decade",
+    "trimBottom": "Parte inferiore tagliata: tutto ciò che è sotto {{depth}} m decade",
+    "zeroShift": "Spostamento dello zero {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Spostamento dello zero {{channel}} {{offset}} {{unit}} da {{from}} a {{to}} m",
+    "depthShift": "Spostamento di profondità {{offset}} m",
+    "setValue": "{{channel}} a {{depth}} m corretto",
+    "removeOutliers": "Valori anomali di {{channel}} invalidati da {{from}} a {{to}} m (finestra ±{{window}}, soglia {{threshold}})"
+  },
+  "result": {
+    "noValue": "nessun valore",
+    "points": "punti interessati: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} punti dopo la modifica, {{original}} nel file sorgente. Profondità {{range}}.",
+    "untouched": "{{now}} punti, non modificati. Profondità {{range}}.",
+    "kept": "Le misure originali vengono conservate."
+  },
+  "log": {
+    "title": "Registro",
+    "empty": "Ancora nessuna modifica su questo sondaggio.",
+    "time": "Data e ora",
+    "by": "Chi",
+    "what": "Modifica",
+    "result": "Risultato",
+    "reason": "Motivo",
+    "undoOne": "Annulla",
+    "undoOneHint": "Questa modifica decade; le successive vengono riapplicate",
+    "undoLast": "Annulla l'ultima",
+    "reset": "Ripristina tutto",
+    "resetConfirm": "Sicuro? Il registro viene eliminato"
+  },
+  "form": {
+    "title": "Nuova modifica",
+    "kind": "Tipo",
+    "channel": "Canale",
+    "from": "Da profondità (m)",
+    "to": "A profondità (m)",
+    "optional": "tutta la serie",
+    "keepFrom": "Mantieni da profondità (m)",
+    "keepTo": "Mantieni fino a profondità (m)",
+    "offsetValue": "Spostamento ({{unit}})",
+    "offsetDepth": "Spostamento (m, positivo = più profondo)",
+    "depth": "Profondità (m)",
+    "newValue": "Nuovo valore ({{unit}})",
+    "emptyIsVoid": "vuoto = nessun valore",
+    "halfWindow": "Finestra (punti per lato)",
+    "threshold": "Soglia (× dispersione)",
+    "outlierHint": "Un valore è anomalo se si discosta dalla mediana della sua finestra più della soglia per la dispersione (1,4826 × MAD). Il valore diventa non valido; il punto resta.",
+    "removeHint": "I punti del tratto vengono eliminati del tutto. Scegli 'invalida' per mantenere i punti e cancellare solo i valori.",
+    "by": "Chi",
+    "byPlaceholder": "Nome",
+    "reason": "Motivo (obbligatorio)",
+    "reasonPlaceholder": "Perché serve questa modifica?",
+    "apply": "Applica"
+  },
+  "problem": {
+    "number": "Inserisci numeri validi.",
+    "range": "La fine del tratto è sopra l'inizio.",
+    "noOffset": "Uno spostamento pari a zero non cambia nulla.",
+    "window": "La finestra è di almeno 1 punto e la soglia maggiore di zero.",
+    "negativeDepth": "Con questo spostamento alcuni punti finiscono sopra il piano campagna."
+  },
+  "preview": {
+    "incomplete": "Compila i campi per vedere cosa tocca la modifica.",
+    "point": "Punto a {{depth}} m, valore attuale: {{value}}.",
+    "noPoint": "Nessun punto a questa profondità; il più vicino è a {{depth}} m.",
+    "label": "Anteprima",
+    "points": "tocca {{n}} di {{total}} punti.",
+    "none": "Questa modifica non tocca alcun punto.",
+    "unchanged": "Il valore è già questo; non cambia nulla.",
+    "needBy": "Indica chi esegue la modifica.",
+    "needReason": "Indica un motivo per applicare la modifica."
+  }
+}
