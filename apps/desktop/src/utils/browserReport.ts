@@ -10,13 +10,17 @@ import { DEFAULT_SECTIONS, type ReportSections } from "../store/reportSectionsSt
 import { zones } from "./browserCore";
 import { drawTestReport, drawTextChapters, type ReportFlow } from "./browserReportSections";
 import { reportTextChapters } from "./reportTexts";
+import { activeBores } from "../boorstaat/boreStore";
+import { drawBoorstaatPage } from "../boorstaat/boorstaatPdf";
 /** Local vector report. Includes native axis geometry and an RD grid fallback when map services are unavailable. */
 export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, sections: ReportSections = DEFAULT_SECTIONS): Promise<Uint8Array> {
-    if (!cpts.length)
+    // Boorstaten: de boringen van het actieve document, tenzij de aanroeper ze meegeeft.
+    const bores = sections.boreLogs === false ? [] : sections.bores ?? activeBores();
+    if (!cpts.length && !bores.length)
         throw new Error("Geen sonderingen geopend.");
     // Teksten staan standaard aan, maar tellen pas als onderdeel wanneer er ook tekst is.
     const textChapters = sections.texts === false ? [] : reportTextChapters(sections.reportTexts ?? project.report_texts);
-    if (!textChapters.length && !Object.keys(DEFAULT_SECTIONS).some((key) => key !== "texts" && sections[key as keyof ReportSections] === true))
+    if (!textChapters.length && !bores.length && !Object.keys(DEFAULT_SECTIONS).some((key) => key !== "texts" && key !== "boreLogs" && sections[key as keyof ReportSections] === true))
         throw new Error("Selecteer ten minste één rapportonderdeel.");
     const doc = new jsPDF({ unit: "mm", format: "a4", compress: false });
     doc.setProperties({ title: project.title, author: project.author });
@@ -44,10 +48,10 @@ export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, s
     const num = (v?: number) => v != null && Number.isFinite(v) ? v.toFixed(2) : "—";
     if (sections.cover) {
         page("");
-        drawCover(doc, cpts[0], sections.coverTitle ? { ...project, title: sections.coverTitle } : project);
+        drawCover(doc, cpts[0] ?? null, sections.coverTitle ? { ...project, title: sections.coverTitle } : project);
     }
     drawTextChapters(flow, textChapters);
-    if (sections.coordTable) {
+    if (sections.coordTable && cpts.length) {
         page("Coördinatentabel");
         const widths = [38, 29, 29, 25, 25, 34];
         const headers = ["Sondering", "X-RD [m]", "Y-RD [m]", "Z-NAP [m]", "Diepte [m]", "Datum"];
@@ -67,7 +71,7 @@ export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, s
         row(headers, true);
         for (const c of cpts) row([c.id, num(c.position?.x_rd), num(c.position?.y_rd), num(c.position?.z_nap ?? c.metadata.ground_level_nap), num(c.points.reduce((a, p) => Math.max(a, p.depth), 0)), c.metadata.date?.split("-").reverse().join("-") ?? "—"]);
     }
-    if (sections.map) {
+    if (sections.map && cpts.length) {
         page("Overzichtskaart");
         await drawOverviewMap(doc, cpts);
     }
@@ -79,6 +83,7 @@ export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, s
                 drawReportChart(doc, part.cpt, project, part.span);
             }
         }
+    for (const bore of bores) drawBoorstaatPage(flow, bore);
     if (sections.testReport)
         for (const c of cpts) drawTestReport(flow, c, project);
     if (sections.sbtLegend) {

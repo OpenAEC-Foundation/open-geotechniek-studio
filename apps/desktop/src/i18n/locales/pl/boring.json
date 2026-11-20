@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Dodaj warstwę",
+    "cancel": "Anuluj",
+    "layers": "Warstwy",
+    "noLayers": "Brak warstw. Dodaj pierwszą warstwę.",
+    "noProject": "Nie otwarto projektu: otwór otworzy się w osobnej karcie. Otwórz lub utwórz projekt, aby go zachować.",
+    "save": "Zapisz",
+    "savedWithProject": "Otwór jest zapisywany z projektem i trafia do raportu jako karta otworu.",
+    "titleEdit": "Edytuj otwór {{id}}",
+    "titleNew": "Dodaj otwór"
+  },
+  "field": {
+    "date": "Data",
+    "finalDepth": "Głębokość końcowa (m p.p.t.)",
+    "finalDepthAuto": "spąg najgłębszej warstwy",
+    "groundLevel": "Poziom terenu (m NAP)",
+    "groundwater": "Zwierciadło wody (m p.p.t.)",
+    "id": "Numer otworu",
+    "method": "Metoda wiercenia",
+    "notMeasured": "nie mierzono",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Domieszka",
+    "base": "Spąg",
+    "colour": "Barwa",
+    "grade": "Stopień",
+    "name": "Nazwa",
+    "namePlaceholder": "np. gruz, nasyp",
+    "none": "brak",
+    "remark": "Uwaga",
+    "remove": "Usuń warstwę",
+    "soil": "Rodzaj gruntu",
+    "top": "Strop"
+  },
+  "problem": {
+    "duplicate": "Numer otworu {{id}} już istnieje.",
+    "finalDepth": "Głębokość końcowa jest mniejsza niż najgłębsza warstwa ({{depth}} m).",
+    "id": "Podaj numer otworu.",
+    "layerAbove": "Warstwa {{n}}: strop leży powyżej terenu.",
+    "layerNumbers": "Warstwa {{n}}: podaj strop i spąg jako liczby.",
+    "layerOrder": "Warstwa {{n}}: spąg musi leżeć głębiej niż strop.",
+    "layerOverlap": "Warstwa {{n}}: nakłada się na warstwę powyżej (która kończy się na {{depth}} m).",
+    "notNumber": "{{field}}: to nie liczba.",
+    "waterNegative": "Zwierciadło wody to głębokość poniżej terenu i nie może być ujemne.",
+    "xy": "Podaj X i Y jako liczby albo pozostaw oba pola puste.",
+    "zNeedsXy": "Przy poziomie terenu podaj również X i Y."
+  },
+  "report": {
+    "boreLogs": "Karty otworów",
+    "boreLogsHint": "Jedna strona na otwór z kartą otworu"
+  },
+  "ribbon": {
+    "add": "Dodaj\notwór",
+    "addTitle": "Wprowadź otwór ręcznie: dane nagłówka, warstwy i zwierciadło wody",
+    "choose": "Wybierz otwór",
+    "count": "Otwory: {{count}}",
+    "edit": "Edytuj\nkartę otworu",
+    "editTitle": "Wyświetl i edytuj kartę wybranego otworu",
+    "group": "Otwory",
+    "none": "Dodaj otwór lub otwórz plik otworu."
+  },
+  "sheet": {
+    "admixtureNote": "Wąski pasek po prawej stronie kolumny: domieszka, tym szerszy, im jest silniejsza.",
+    "belowGround": "m p.p.t.",
+    "bore": "Otwór",
+    "colour": "barwa",
+    "date": "Data",
+    "depthGround": "m p.p.t.",
+    "depthNap": "m NAP",
+    "description": "Opis",
+    "finalDepth": "Głębokość końcowa",
+    "groundLevel": "Poziom terenu",
+    "groundwater": "Zwierciadło wody",
+    "legend": "Legenda",
+    "method": "Metoda wiercenia",
+    "noLayers": "Ten otwór nie ma jeszcze warstw.",
+    "scale": "Skala",
+    "title": "Karta otworu {{id}}",
+    "unknown": "nieznane",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Edytuj"
+  }
+}

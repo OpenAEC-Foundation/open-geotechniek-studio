@@ -23,6 +23,10 @@ export interface ReportSections {
   texts?: boolean;
   /** Testrapport per sondering volgens NEN-EN-ISO 22476-1. */
   testReport?: boolean;
+  /** Boorstaat per boring; alleen `false` zet ze uit. */
+  boreLogs?: boolean;
+  /** Boringen voor de boorstaten; zonder deze lijst gelden de boringen van het actieve document. */
+  bores?: import("../types/bore").Bore[];
   /** Teksten voor een document zonder project; anders gelden de teksten van het project. */
   reportTexts?: ReportTexts;
 }
@@ -36,6 +40,7 @@ export const DEFAULT_SECTIONS: ReportSections = {
   metadata: false,
   texts: true,
   testReport: false,
+  boreLogs: true,
 };
 
 export function sectionsAreDefault(s: ReportSections): boolean {

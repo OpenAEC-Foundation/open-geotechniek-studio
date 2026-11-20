@@ -45,6 +45,8 @@ export interface Bore {
   position?: BorePosition;
   /** Final depth below ground level (m). */
   final_depth?: number;
+  /** Grondwaterstand tijdens het boren (m onder maaiveld), als die is gemeten. */
+  groundwater_depth?: number;
   layers: BoreLayer[];
   metadata: {
     project_name?: string;
@@ -177,6 +179,8 @@ export function parseBhrgtXml(xml: string, sourceFile: string): Bore {
     const soil =
       firstText(interval, [
         "standardSoilName",
+        // BHR-GT 2.x: benaming volgens NEN-EN-ISO 14688 onder <soil>.
+        "geotechnicalSoilName",
         "soilNameNEN1997",
         "soilNameNEN5104",
         "soilName",
