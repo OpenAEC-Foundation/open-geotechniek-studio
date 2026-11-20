@@ -17,6 +17,7 @@ import { adviceSummary, type AdviceSummary, type CptSummary } from './analysis';
 import { GENERAL, fmt, systemTexts } from './texts';
 import { drawSituationPdf } from './situation';
 import type { AdviceInput } from './types';
+import { reportPalette } from '../../../report/reportPalette';
 import { buildSoilModel, zoneInfo } from '../../../components/soil3d/soilModel';
 import { pileToes, renderSoilModelImage } from '../../../components/soil3d/scene';
 import { DEFAULT_SOIL3D, useSoil3DStore } from '../../../components/soil3d/useSoil3DStore';
@@ -235,14 +236,15 @@ function drawCptPage(c: Cursor, cpt: import('../../../types/cpt').Cpt, sum: CptS
   doc.text('qc [MPa]', x0 + wQc / 2, top + H + 7.5, { align: 'center' }); doc.text('Rf [%]', x0 + wQc + gap + wRf / 2, top + H + 7.5, { align: 'center' }); doc.text('m NAP', M.left, top - 1.5);
   doc.setTextColor(0);
   const pts = cpt.points.filter((p) => Number.isFinite(p.depth)).sort((a, b) => a.depth - b.depth);
-  doc.setDrawColor(200, 90, 20); doc.setLineWidth(0.3);
+  const pal = reportPalette();
+  doc.setDrawColor(...pal.secondary); doc.setLineWidth(0.3);
   for (let k = 1; k < pts.length; k++) { const a = pts[k - 1], b = pts[k]; if (a.qc === undefined || b.qc === undefined) continue; doc.line(x0 + wQc * Math.min(a.qc, 30) / 30, y(a.depth), x0 + wQc * Math.min(b.qc, 30) / 30, y(b.depth)); }
-  doc.setDrawColor(40, 90, 200);
+  doc.setDrawColor(...pal.accentStrong);
   for (let k = 1; k < pts.length; k++) { const a = pts[k - 1], b = pts[k]; if (a.rf === undefined || b.rf === undefined) continue; doc.line(x0 + wQc + gap + wRf * Math.min(a.rf, 10) / 10, y(a.depth), x0 + wQc + gap + wRf * Math.min(b.rf, 10) / 10, y(b.depth)); }
   if (sum.bearingTopNap !== null) {
-    const d = ground - sum.bearingTopNap; doc.setDrawColor(21, 128, 61); doc.setLineWidth(0.5); doc.setLineDashPattern([2, 1], 0);
+    const d = ground - sum.bearingTopNap; doc.setDrawColor(...pal.success); doc.setLineWidth(0.5); doc.setLineDashPattern([2, 1], 0);
     doc.line(x0, y(d), x0 + wQc, y(d)); doc.setLineDashPattern([], 0);
-    doc.setFontSize(7); doc.setTextColor(21, 128, 61); doc.text(winAnsi(`draagkrachtige laag NAP ${fmt(sum.bearingTopNap)} m (qc >= ${fmt(input.bearingQcMpa, 0)} MPa over ${fmt(input.bearingMinThicknessM, 1)} m)`), x0 + 2, y(d) - 1); doc.setTextColor(0);
+    doc.setFontSize(7); doc.setTextColor(...pal.success); doc.text(winAnsi(`draagkrachtige laag NAP ${fmt(sum.bearingTopNap)} m (qc >= ${fmt(input.bearingQcMpa, 0)} MPa over ${fmt(input.bearingMinThicknessM, 1)} m)`), x0 + 2, y(d) - 1); doc.setTextColor(0);
   }
   c.y = top + H + 12;
 }

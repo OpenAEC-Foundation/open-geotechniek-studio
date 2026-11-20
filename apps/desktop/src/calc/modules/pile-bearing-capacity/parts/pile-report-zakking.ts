@@ -4,15 +4,14 @@
 // referentierapport: bidirectionele x-as met schachtwrijving Rs naar
 // LINKS en puntweerstand Rb naar RECHTS vanaf 0 kN in het midden;
 // y-as = paalpunt-zakking s_b omlaag. Mobilisatiecurves (Figuur 7.n/7.o)
-// als blauwe lijnen, rode verticalen op Rs;cal;max en Rb;cal;max, en het
-// SLS-werkpunt met horizontale verbindingslijn + labels.
+// als donkere lijnen, verticalen in de accentkleur op Rs;cal;max en
+// Rb;cal;max, en het SLS-werkpunt met horizontale verbindingslijn + labels.
+// Kleuren uit report/reportPalette.
 
 import type { jsPDF } from "jspdf";
 import type { PileInput, PileResult } from "../types";
-
-const COL_CURVE: [number, number, number] = [40, 60, 160];
-const COL_MAX: [number, number, number] = [220, 50, 50];
-const COL_GRID: [number, number, number] = [205, 205, 215];
+import { reportPalette } from "../../../../report/reportPalette";
+import { drawSheetTitle } from "../../../../report/reportTitle";
 
 export interface ZakkingPageArgs {
   doc: jsPDF;
@@ -32,6 +31,8 @@ export function renderZakkingDiagram(args: ZakkingPageArgs): void {
   const rsMax = result.shaft.rsCalMax;
   const rbMax = result.base.rbCalMax;
   const wp = settlement.sls;
+  const pal = reportPalette();
+  const COL_CURVE = pal.secondary, COL_MAX = pal.accentStrong, COL_GRID = pal.rule;
 
   // ─── Layout ────────────────────────────────────────────────────
   const plotL = 24;
@@ -51,10 +52,7 @@ export function renderZakkingDiagram(args: ZakkingPageArgs): void {
   const yOf = (mm: number): number => plotT + (mm / sMax) * (plotB - plotT);
 
   // ─── Titel ─────────────────────────────────────────────────────
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(0);
-  doc.text(`Lastzakkingsdiagram — ${name}`, 14, startY + 6);
+  drawSheetTitle(doc, `Lastzakkingsdiagram — ${name}`, 14, startY + 6, 182);
 
   // ─── Grid + as-labels ──────────────────────────────────────────
   doc.setFont("helvetica", "normal");
@@ -82,7 +80,7 @@ export function renderZakkingDiagram(args: ZakkingPageArgs): void {
   doc.line(xOf(0), plotT, xOf(0), plotB);
   doc.rect(plotL, plotT, plotR - plotL, plotB - plotT);
 
-  // ─── Rode verticalen op Rs;cal;max (links) en Rb;cal;max (rechts) ──
+  // ─── Verticalen op Rs;cal;max (links) en Rb;cal;max (rechts) ───
   doc.setDrawColor(...COL_MAX);
   doc.setLineWidth(0.35);
   doc.line(xOf(-rsMax), plotT, xOf(-rsMax), plotB);
