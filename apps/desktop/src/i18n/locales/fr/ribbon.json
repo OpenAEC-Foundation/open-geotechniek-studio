@@ -227,5 +227,10 @@
   "exportImage": "Exporter\nen image",
   "openPdf": "Ouvrir le PDF",
   "scaleCptColumns": "Ajuster les colonnes d'essais",
-  "scaleCptColumnsHint": "Après Ajuster, élargit aussi les colonnes ; faites défiler horizontalement pour les autres essais."
+  "scaleCptColumnsHint": "Après Ajuster, élargit aussi les colonnes ; faites défiler horizontalement pour les autres essais.",
+  "cptLayout": "Afficher les essais",
+  "cptSideBySide": "Côte à côte",
+  "cptSideBySideHint": "Affiche les essais côte à côte, chacun dans sa propre colonne.",
+  "cptOverlay": "Superposés",
+  "cptOverlayHint": "Trace tous les essais visibles les uns sur les autres : un graphique de qc et un de fs en fonction du NAP."
 }

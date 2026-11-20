@@ -227,5 +227,10 @@
   "exportImage": "Export\nas image",
   "openPdf": "Open PDF",
   "scaleCptColumns": "Scale CPT columns",
-  "scaleCptColumnsHint": "After Fit, also widen the columns; scroll horizontally for the other CPTs."
+  "scaleCptColumnsHint": "After Fit, also widen the columns; scroll horizontally for the other CPTs.",
+  "cptLayout": "Show CPTs",
+  "cptSideBySide": "Side by side",
+  "cptSideBySideHint": "Show the CPTs side by side, each in its own column.",
+  "cptOverlay": "Overlaid",
+  "cptOverlayHint": "Draw all visible CPTs over each other: one chart of qc and one of fs against NAP."
 }

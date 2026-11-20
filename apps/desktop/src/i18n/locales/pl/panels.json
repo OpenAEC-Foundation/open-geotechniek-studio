@@ -195,6 +195,16 @@
       "z7": "Piasek żwirowy"
     }
   },
+  "overlay": {
+    "hoverHint": "Przesuń kursor nad wykresem, aby odczytać wartości na jednym poziomie.",
+    "legendTitle": "Sondowania",
+    "levelDepth": "{{level}} m poniżej terenu",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Bez rzędnej terenu w NAP, narysowane według głębokości poniżej terenu, a więc nie w NAP: {{names}}",
+    "noNapTag": "brak NAP",
+    "noVisible": "Brak widocznych sondowań.",
+    "units": "qc i fs w MPa"
+  },
   "projectSettings": {
     "boreMeta": "warstwy: {{layers}} · głębokość {{depth}} m",
     "close": "Zamknij",

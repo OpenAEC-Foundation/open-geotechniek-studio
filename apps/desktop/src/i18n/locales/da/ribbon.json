@@ -227,5 +227,10 @@
   "exportImage": "Eksportér\nsom billede",
   "openPdf": "Åbn PDF",
   "scaleCptColumns": "Skalér sonderingskolonner",
-  "scaleCptColumnsHint": "Efter Tilpas gøres kolonnerne også bredere; rul vandret for de øvrige sonderinger."
+  "scaleCptColumnsHint": "Efter Tilpas gøres kolonnerne også bredere; rul vandret for de øvrige sonderinger.",
+  "cptLayout": "Vis sonderinger",
+  "cptSideBySide": "Side om side",
+  "cptSideBySideHint": "Vis sonderingerne side om side, hver i sin egen kolonne.",
+  "cptOverlay": "Oven på hinanden",
+  "cptOverlayHint": "Tegn alle synlige sonderinger oven på hinanden: ét diagram for qc og ét for fs mod NAP."
 }

@@ -227,5 +227,10 @@
   "exportImage": "Eksportuj\njako obraz",
   "openPdf": "Otwórz PDF",
   "scaleCptColumns": "Skaluj kolumny sondowań",
-  "scaleCptColumnsHint": "Po Dopasuj poszerza także kolumny; przewiń w poziomie, aby zobaczyć pozostałe sondowania."
+  "scaleCptColumnsHint": "Po Dopasuj poszerza także kolumny; przewiń w poziomie, aby zobaczyć pozostałe sondowania.",
+  "cptLayout": "Pokaż sondowania",
+  "cptSideBySide": "Obok siebie",
+  "cptSideBySideHint": "Pokazuje sondowania obok siebie, każde we własnej kolumnie.",
+  "cptOverlay": "Nałożone",
+  "cptOverlayHint": "Rysuje wszystkie widoczne sondowania jedno na drugim: jeden wykres qc i jeden wykres fs względem NAP."
 }

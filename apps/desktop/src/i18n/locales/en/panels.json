@@ -195,6 +195,16 @@
       "z7": "Gravelly sand"
     }
   },
+  "overlay": {
+    "hoverHint": "Move over the chart for the values at one level.",
+    "legendTitle": "CPTs",
+    "levelDepth": "{{level}} m below ground level",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "No NAP ground level, drawn at depth below ground level and therefore not at NAP: {{names}}",
+    "noNapTag": "no NAP",
+    "noVisible": "No visible CPTs.",
+    "units": "qc and fs in MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} layers · {{depth}} m depth",
     "close": "Close",

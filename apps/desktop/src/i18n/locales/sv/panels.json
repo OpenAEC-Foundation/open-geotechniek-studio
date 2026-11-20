@@ -195,6 +195,16 @@
       "z7": "Grusig sand"
     }
   },
+  "overlay": {
+    "hoverHint": "För musen över diagrammet för att se värdena på en nivå.",
+    "legendTitle": "Sonderingar",
+    "levelDepth": "{{level}} m under markytan",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Utan marknivå i NAP, ritad på djup under markytan och därför inte i NAP: {{names}}",
+    "noNapTag": "ingen NAP",
+    "noVisible": "Inga synliga sonderingar.",
+    "units": "qc och fs i MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} lager · {{depth}} m djup",
     "close": "Stäng",

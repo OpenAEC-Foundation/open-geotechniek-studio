@@ -195,6 +195,16 @@
       "z7": "Kiesiger Sand"
     }
   },
+  "overlay": {
+    "hoverHint": "Bewegen Sie die Maus über das Diagramm, um die Werte auf einer Höhe zu sehen.",
+    "legendTitle": "Sondierungen",
+    "levelDepth": "{{level}} m unter Gelände",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Ohne NAP-Geländehöhe, in Tiefe unter Gelände gezeichnet und daher nicht auf NAP: {{names}}",
+    "noNapTag": "kein NAP",
+    "noVisible": "Keine sichtbaren Sondierungen.",
+    "units": "qc und fs in MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} Schichten · {{depth}} m Tiefe",
     "close": "Schließen",
