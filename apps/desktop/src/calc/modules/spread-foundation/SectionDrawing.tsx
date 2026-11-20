@@ -9,12 +9,11 @@ const napText = (v: number) => `NAP ${v >= 0 ? "+" : ""}${n(v, 2)}`;
 
 export function SectionDrawing({ input: i, result: r }: { input: SpreadInput; result: SpreadOk }) {
   const s = spreadScene(i, r), B = i.widthM, d = r.dims, zf = i.foundationNap;
-  const oneSided = i.hDKn > 0 || i.slopeDeg > 0 || d.eccBM > 1e-6;
   const reach = Math.min(r.drained.aeM, 4 * B);
   // Hetzelfde mechanisme als op het snijvlak van de 3D-weergave.
   const { drained, undrained } = s.mechanism;
 
-  const xR = B / 2 + reach + 0.4 * B, xL = oneSided ? -(B / 2 + 1.3 * B) : -xR;
+  const xR = B / 2 + reach + 0.4 * B, xL = -xR;
   const tanBeta = Math.tan(rad(i.slopeDeg)), tanAlpha = Math.tan(rad(i.baseTiltDeg));
   const arrowTop = zf + Math.max(...s.arrows.map((a) => a.from[2]), s.thicknessM);
   const zTop = Math.max(i.groundNap, arrowTop) + 0.25 * B, zBot = zf - s.depthM;
@@ -22,7 +21,7 @@ export function SectionDrawing({ input: i, result: r }: { input: SpreadInput; re
   const X = (x: number) => padL + (x - xL) * k, Y = (z: number) => padT + (zTop - z) * k;
   const groundAt = (x: number) => (x > B / 2 ? i.groundNap - (x - B / 2) * tanBeta : i.groundNap);
   const soilOutline = `${X(xL)},${Y(zBot)} ${X(xL)},${Y(i.groundNap)} ${X(B / 2)},${Y(i.groundNap)} ${X(xR)},${Y(groundAt(xR))} ${X(xR)},${Y(zBot)}`;
-  const mid = d.eccBM, path = (pts: Pt[]) => pts.map((p) => `${X(mid + p.x).toFixed(1)},${Y(zf - p.z).toFixed(1)}`).join(" ");
+  const mid = d.eccBM, path = (pts: Pt[]) => pts.map((p) => `${X(mid + p.x).toFixed(1)},${Y(zf + mid * tanAlpha - p.z).toFixed(1)}`).join(" ");
   const baseZ = (x: number) => zf + x * tanAlpha, topZ = zf + Math.max(s.thicknessM, (B / 2) * tanAlpha + 0.1);
   const footing = `${X(-B / 2)},${Y(baseZ(-B / 2))} ${X(B / 2)},${Y(baseZ(B / 2))} ${X(B / 2)},${Y(topZ)} ${X(-B / 2)},${Y(topZ)}`;
   const level = (z: number, label: string, cls: string) => <g className={cls}><line x1={padL} x2={W - padR} y1={Y(z)} y2={Y(z)} /><text x={padL - 4} y={Y(z) + 3} textAnchor="end">{label}</text></g>;
@@ -52,16 +51,19 @@ export function SectionDrawing({ input: i, result: r }: { input: SpreadInput; re
         <line x1={X(-B / 2)} y1={Y(zf)} x2={X(-B / 2 - p.thicknessM * tan8)} y2={Y(p.levelNap)} /><line x1={X(B / 2)} y1={Y(zf)} x2={X(B / 2 + p.thicknessM * tan8)} y2={Y(p.levelNap)} />
         <line x1={X(-B / 2 - p.thicknessM * tan8)} x2={X(B / 2 + p.thicknessM * tan8)} y1={Y(p.levelNap)} y2={Y(p.levelNap)} />
       </g>)}
-      {undrained?.sides.map((side) => <g key={side.dir} className="sf-slip sf-slip-undrained"><polyline points={path(side.wedge)} /><polyline points={path(side.transition)} /><polyline points={path(side.passive.slice(0, 2))} /></g>)}
-      {drained.sides.map((side) => <g key={side.dir} className="sf-slip"><polygon className="sf-slip-fill" points={path([...side.wedge.slice(0, 2), ...side.transition, side.passive[1], side.passive[2]])} />
-        <polyline points={path(side.wedge)} /><polyline points={path(side.transition)} /><polyline points={path(side.passive)} /></g>)}
+      {undrained?.sides.map((side) => <g key={side.dir} className={`sf-slip sf-slip-undrained${side.governing ? "" : " sf-slip-other"}`}><polyline points={path(side.wedge)} /><polyline points={path(side.transition)} /><polyline points={path([side.passive[0], side.passive[1], side.daylight])} /></g>)}
+      {/* Eerst het niet-maatgevende vlak (dun en gestreept), daarna het maatgevende (doorgetrokken, met vulling). */}
+      {[...drained.sides].sort((a, b) => Number(a.governing) - Number(b.governing)).map((side) => <g key={side.dir} className={`sf-slip ${side.governing ? "sf-slip-governing" : "sf-slip-other"}`}>
+        {side.governing && <polygon className="sf-slip-fill" points={path([...side.wedge.slice(0, 2), ...side.transition, side.passive[1], side.passive[2]])} />}
+        <polyline points={path(side.wedge)} /><polyline points={path(side.transition)} /><polyline points={path(side.passive)} />
+        {side.daylight.z < side.passive[1].z - 1e-9 && <polyline className="sf-slip-cover" points={path([side.passive[1], side.daylight])} />}</g>)}
     </g>
 
     <polygon className="sf-footing" points={footing} />
     {i.baseTiltDeg > 0 && <text className="sf-note" x={X(-B / 2) - 4} y={Y(baseZ(-B / 2)) + 3} textAnchor="end">α = {n(i.baseTiltDeg, 1)}°</text>}
     <line className="sf-axis" x1={X(0)} x2={X(0)} y1={Y(topZ) - 6} y2={Y(zf) + 14} />
-    <rect className="sf-pressure" x={X(s.effective.x0)} width={X(s.effective.x1) - X(s.effective.x0)} y={Y(zf)} height={blockH * k} />
-    <text className="sf-note sf-note-strong" x={(X(s.effective.x0) + X(s.effective.x1)) / 2} y={Y(zf) + blockH * k + 11} textAnchor="middle">b′ = {n(d.bRawM)} m</text>
+    <polygon className="sf-pressure" points={`${X(s.effective.x0)},${Y(baseZ(s.effective.x0))} ${X(s.effective.x1)},${Y(baseZ(s.effective.x1))} ${X(s.effective.x1)},${Y(baseZ(s.effective.x1) - blockH)} ${X(s.effective.x0)},${Y(baseZ(s.effective.x0) - blockH)}`} />
+    <text className="sf-note sf-note-strong" x={(X(s.effective.x0) + X(s.effective.x1)) / 2} y={Y(baseZ(mid)) + blockH * k + 11} textAnchor="middle">b′ = {n(d.bRawM)} m</text>
     {d.eccBM > 1e-6 && <text className="sf-note" x={X(d.eccBM) - 5} y={Y(zf) - 4} textAnchor="end">e = {n(d.eccBM, 2)} m</text>}
     {s.arrows.filter((a) => a.kind !== "H" || i.hDirection === "B" || r.strip).map((a) => <g key={a.kind} className={`sf-load sf-load-${a.kind.toLowerCase()}`}>
       <line x1={X(a.from[0])} y1={Y(zf + a.from[2])} x2={X(a.to[0])} y2={Y(zf + a.to[2])} markerEnd={`url(#sf-arrow-${a.kind.toLowerCase()})`} />

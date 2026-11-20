@@ -27,6 +27,9 @@
 .sf-pressure { fill: var(--oa-accent, #d97706); opacity: .55; }
 .sf-slip polyline { fill: none; stroke: var(--oa-error, #b91c1c); stroke-width: 1.5; }
 .sf-slip-fill { fill: var(--oa-error, #b91c1c); opacity: .07; stroke: none; }
+.sf-slip-other polyline { stroke-width: .9; stroke-dasharray: 5 3; opacity: .8; }
+.sf-slip polyline.sf-slip-cover { stroke-width: .9; stroke-dasharray: 2 2; }
+.sf-slip-undrained.sf-slip-other polyline { stroke-width: .8; opacity: .7; }
 .sf-slip-undrained polyline { stroke: #7c3aed; stroke-dasharray: 6 3; stroke-width: 1.2; }
 .sf-punch line { stroke: var(--oa-text, #222); stroke-width: .8; stroke-dasharray: 1.5 2.5; }
 .sf-load line { stroke-width: 1.8; }
