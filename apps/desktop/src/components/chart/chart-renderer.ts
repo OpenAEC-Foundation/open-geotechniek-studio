@@ -1,6 +1,7 @@
 import { classify } from "../../utils/browserCore";
 import { chartAxisZoom } from "./chart-zoom";
 import { pt } from "../../utils/panelsI18n";
+import { drawEditMarks } from "../../meetwaarden/chartMarks";
 /**
  * CPT Chart Renderer — pure Canvas drawing.
  *
@@ -1577,6 +1578,10 @@ export function renderChart(
       if (!markerBelongsToCpt(m, c)) continue;
       drawMarker(ctx, colors, shared, c, m, c === computed[0]);
     }
+
+    // Bewerkte meetwaarden: markering op de bewerkte trajecten en een label in het qc-vak.
+    drawEditMarks(ctx, c.cpt, { left: c.layout.qc.l, width: c.layout.qc.w, top: shared.plotT, bottom: shared.plotB },
+      (d) => depthToY(d, shared, c.depthViewMin, c.depthViewMax));
 
     // Hover indicator — only for the CPT under the cursor.
     if (opts.hover && opts.hover.cptId === c.cpt.id) {

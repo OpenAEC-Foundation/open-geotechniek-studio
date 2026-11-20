@@ -1,0 +1,104 @@
+{
+  "title": "Modifier les mesures",
+  "close": "Fermer",
+  "noCpt": "Ouvrez d'abord un sondage.",
+  "cpt": "Sondage",
+  "editedShort": "modifié",
+  "chart": {
+    "badge": "modifié ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Supprimer un intervalle",
+    "invalidate-range": "Invalider un intervalle",
+    "trim-top": "Tronquer le haut",
+    "trim-bottom": "Tronquer le bas",
+    "zero-shift": "Décalage du zéro",
+    "depth-shift": "Décalage de profondeur",
+    "set-value": "Corriger une valeur",
+    "remove-outliers": "Supprimer les valeurs aberrantes"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "inclinaison",
+    "all": "Tous les canaux"
+  },
+  "op": {
+    "removeRange": "Intervalle {{from}} à {{to}} m supprimé",
+    "invalidateRange": "{{channels}} invalidé de {{from}} à {{to}} m",
+    "trimTop": "Haut tronqué : tout ce qui est au-dessus de {{depth}} m est supprimé",
+    "trimBottom": "Bas tronqué : tout ce qui est en dessous de {{depth}} m est supprimé",
+    "zeroShift": "Décalage du zéro {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Décalage du zéro {{channel}} {{offset}} {{unit}} de {{from}} à {{to}} m",
+    "depthShift": "Décalage de profondeur {{offset}} m",
+    "setValue": "{{channel}} à {{depth}} m corrigé",
+    "removeOutliers": "Valeurs aberrantes de {{channel}} invalidées de {{from}} à {{to}} m (fenêtre ±{{window}}, seuil {{threshold}})"
+  },
+  "result": {
+    "noValue": "aucune valeur",
+    "points": "points concernés : {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} points après modification, {{original}} dans le fichier source. Profondeur {{range}}.",
+    "untouched": "{{now}} points, non modifiés. Profondeur {{range}}.",
+    "kept": "Les mesures d'origine sont conservées."
+  },
+  "log": {
+    "title": "Journal",
+    "empty": "Aucune modification sur ce sondage pour l'instant.",
+    "time": "Date et heure",
+    "by": "Qui",
+    "what": "Modification",
+    "result": "Résultat",
+    "reason": "Motif",
+    "undoOne": "Annuler",
+    "undoOneHint": "Cette modification est retirée ; les suivantes sont réappliquées",
+    "undoLast": "Annuler la dernière",
+    "reset": "Tout rétablir",
+    "resetConfirm": "Confirmer ? Le journal sera supprimé"
+  },
+  "form": {
+    "title": "Nouvelle modification",
+    "kind": "Type",
+    "channel": "Canal",
+    "from": "De la profondeur (m)",
+    "to": "À la profondeur (m)",
+    "optional": "toute la série",
+    "keepFrom": "Conserver à partir de (m)",
+    "keepTo": "Conserver jusqu'à (m)",
+    "offsetValue": "Décalage ({{unit}})",
+    "offsetDepth": "Décalage (m, positif = plus profond)",
+    "depth": "Profondeur (m)",
+    "newValue": "Nouvelle valeur ({{unit}})",
+    "emptyIsVoid": "vide = aucune valeur",
+    "halfWindow": "Fenêtre (points par côté)",
+    "threshold": "Seuil (× dispersion)",
+    "outlierHint": "Une valeur est aberrante si elle s'écarte de la médiane de sa fenêtre de plus du seuil multiplié par la dispersion (1,4826 × MAD). La valeur devient invalide ; le point reste.",
+    "removeHint": "Les points de l'intervalle sont entièrement supprimés. Choisissez « invalider » pour garder les points et n'effacer que des valeurs.",
+    "by": "Qui",
+    "byPlaceholder": "Nom",
+    "reason": "Motif (obligatoire)",
+    "reasonPlaceholder": "Pourquoi cette modification est-elle nécessaire ?",
+    "apply": "Appliquer"
+  },
+  "problem": {
+    "number": "Saisissez des nombres valides.",
+    "range": "La fin de l'intervalle est au-dessus de son début.",
+    "noOffset": "Un décalage nul ne change rien.",
+    "window": "La fenêtre compte au moins 1 point et le seuil est supérieur à zéro.",
+    "negativeDepth": "Avec ce décalage, des points se retrouvent au-dessus du terrain."
+  },
+  "preview": {
+    "incomplete": "Remplissez les champs pour voir ce que la modification touche.",
+    "point": "Point à {{depth}} m, valeur actuelle : {{value}}.",
+    "noPoint": "Aucun point à cette profondeur ; le plus proche est à {{depth}} m.",
+    "label": "Aperçu",
+    "points": "touche {{n}} points sur {{total}}.",
+    "none": "Cette modification ne touche aucun point.",
+    "unchanged": "La valeur est déjà celle-ci ; rien ne change.",
+    "needBy": "Indiquez qui effectue la modification.",
+    "needReason": "Indiquez un motif pour appliquer la modification."
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "title": "Editar medições",
+  "close": "Fechar",
+  "noCpt": "Abra primeiro uma sondagem.",
+  "cpt": "Sondagem",
+  "editedShort": "editado",
+  "chart": {
+    "badge": "editado ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Remover troço",
+    "invalidate-range": "Invalidar troço",
+    "trim-top": "Cortar o topo",
+    "trim-bottom": "Cortar a base",
+    "zero-shift": "Desvio do zero",
+    "depth-shift": "Desvio de profundidade",
+    "set-value": "Corrigir um valor",
+    "remove-outliers": "Remover valores atípicos"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "inclinação",
+    "all": "Todos os canais"
+  },
+  "op": {
+    "removeRange": "Troço de {{from}} a {{to}} m removido",
+    "invalidateRange": "{{channels}} invalidado de {{from}} a {{to}} m",
+    "trimTop": "Topo cortado: tudo acima de {{depth}} m é eliminado",
+    "trimBottom": "Base cortada: tudo abaixo de {{depth}} m é eliminado",
+    "zeroShift": "Desvio do zero {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Desvio do zero {{channel}} {{offset}} {{unit}} de {{from}} a {{to}} m",
+    "depthShift": "Desvio de profundidade {{offset}} m",
+    "setValue": "{{channel}} a {{depth}} m corrigido",
+    "removeOutliers": "Valores atípicos de {{channel}} invalidados de {{from}} a {{to}} m (janela ±{{window}}, limiar {{threshold}})"
+  },
+  "result": {
+    "noValue": "sem valor",
+    "points": "pontos afetados: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} pontos após a edição, {{original}} no ficheiro de origem. Profundidade {{range}}.",
+    "untouched": "{{now}} pontos, não editados. Profundidade {{range}}.",
+    "kept": "As medições originais são mantidas."
+  },
+  "log": {
+    "title": "Registo",
+    "empty": "Ainda não há edições nesta sondagem.",
+    "time": "Data e hora",
+    "by": "Quem",
+    "what": "Edição",
+    "result": "Resultado",
+    "reason": "Motivo",
+    "undoOne": "Anular",
+    "undoOneHint": "Esta edição é eliminada; as posteriores são aplicadas de novo",
+    "undoLast": "Anular a última",
+    "reset": "Restaurar tudo",
+    "resetConfirm": "Tem a certeza? O registo é eliminado"
+  },
+  "form": {
+    "title": "Nova edição",
+    "kind": "Tipo",
+    "channel": "Canal",
+    "from": "Da profundidade (m)",
+    "to": "Até à profundidade (m)",
+    "optional": "toda a série",
+    "keepFrom": "Manter a partir de (m)",
+    "keepTo": "Manter até (m)",
+    "offsetValue": "Desvio ({{unit}})",
+    "offsetDepth": "Desvio (m, positivo = mais fundo)",
+    "depth": "Profundidade (m)",
+    "newValue": "Novo valor ({{unit}})",
+    "emptyIsVoid": "vazio = sem valor",
+    "halfWindow": "Janela (pontos por lado)",
+    "threshold": "Limiar (× dispersão)",
+    "outlierHint": "Um valor é atípico se se desviar da mediana da sua janela mais do que o limiar vezes a dispersão (1,4826 × MAD). O valor fica inválido; o ponto mantém-se.",
+    "removeHint": "Os pontos do troço são eliminados por completo. Escolha 'invalidar' para manter os pontos e apagar apenas valores.",
+    "by": "Quem",
+    "byPlaceholder": "Nome",
+    "reason": "Motivo (obrigatório)",
+    "reasonPlaceholder": "Porque é necessária esta edição?",
+    "apply": "Aplicar"
+  },
+  "problem": {
+    "number": "Introduza números válidos.",
+    "range": "O fim do troço está acima do início.",
+    "noOffset": "Um desvio de zero não altera nada.",
+    "window": "A janela tem pelo menos 1 ponto e o limiar é maior que zero.",
+    "negativeDepth": "Com este desvio há pontos acima do terreno."
+  },
+  "preview": {
+    "incomplete": "Preencha os campos para ver o que a edição afeta.",
+    "point": "Ponto a {{depth}} m, valor atual: {{value}}.",
+    "noPoint": "Não há ponto a esta profundidade; o mais próximo está a {{depth}} m.",
+    "label": "Pré-visualização",
+    "points": "afeta {{n}} de {{total}} pontos.",
+    "none": "Esta edição não afeta nenhum ponto.",
+    "unchanged": "O valor já é esse; nada muda.",
+    "needBy": "Indique quem faz a edição.",
+    "needReason": "Indique um motivo para aplicar a edição."
+  }
+}

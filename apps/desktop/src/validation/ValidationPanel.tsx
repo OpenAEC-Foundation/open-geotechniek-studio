@@ -4,6 +4,7 @@ import type { Cpt } from "../types/cpt";
 import { validationOf } from "./report";
 import { downloadBlobAsFile } from "../utils/browserSave";
 import { outliersOf, withBroOutliers } from "./depthOutliers";
+import { rebaseEdits } from "../meetwaarden/state";
 import { useCptStore } from "../store/useCptStore";
 import { IS_TAURI } from "../utils/platform";
 export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
@@ -94,7 +95,7 @@ export default function ValidationPanel({ cpt }: { cpt: Cpt }) {
             onChange={(e) =>
               useCptStore
                 .getState()
-                .replaceCpt(withBroOutliers(cpt, e.target.checked))
+                .replaceCpt(rebaseEdits(withBroOutliers(cpt, e.target.checked)))
             }
           />{" "}
           {t("validation.showOutliers", "Toon {{n}} uitschieters (bronrecords {{records}})", { n: outliers.excluded.length, records: outliers.excluded.join(", ") })}
