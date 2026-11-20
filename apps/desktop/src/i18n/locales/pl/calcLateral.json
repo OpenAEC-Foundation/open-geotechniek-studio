@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Warstwa o zerowej wytrzymałości nie może odwzorować oporu granicznego warstw nadległych."
   },
   "explorer": {
-    "concept": "Wersja robocza",
+    "concept": "Wersja robocza alfa",
     "converged": "Zbieżność · kroki obciążenia: {{steps}} · iteracje: {{iterations}} · residuum {{residual}} kN · względne {{relative}}",
     "counts": "Elementy: {{elements}} · punkty całkowania: {{points}}",
     "displacement": "Przemieszczenie",

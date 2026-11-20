@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Ett lager med hållfasthet noll kan inte representera brottmotståndet hos de överliggande lagren."
   },
   "explorer": {
-    "concept": "Utkast",
+    "concept": "Utkast alfa",
     "converged": "Konvergerat · {{steps}} laststeg · {{iterations}} iterationer · residual {{residual}} kN · relativ {{relative}}",
     "counts": "{{elements}} element · {{points}} integrationspunkter",
     "displacement": "Förskjutning",

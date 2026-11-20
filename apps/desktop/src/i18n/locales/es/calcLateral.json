@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Una capa con resistencia nula no puede representar la resistencia última de las capas superiores."
   },
   "explorer": {
-    "concept": "Borrador",
+    "concept": "Borrador alfa",
     "converged": "Convergido · {{steps}} escalones de carga · {{iterations}} iteraciones · residuo {{residual}} kN · relativo {{relative}}",
     "counts": "{{elements}} elementos · {{points}} puntos de integración",
     "displacement": "Desplazamiento",

@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Uma camada com resistência nula não pode representar a resistência última das camadas sobrejacentes."
   },
   "explorer": {
-    "concept": "Rascunho",
+    "concept": "Rascunho alfa",
     "converged": "Convergiu · {{steps}} incrementos de carga · {{iterations}} iterações · resíduo {{residual}} kN · relativo {{relative}}",
     "counts": "{{elements}} elementos · {{points}} pontos de integração",
     "displacement": "Deslocamento",

@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Eine Schicht mit Festigkeit null kann den Grenzwiderstand der darüberliegenden Schichten nicht abbilden."
   },
   "explorer": {
-    "concept": "Entwurf",
+    "concept": "Entwurf alpha",
     "converged": "Konvergiert · {{steps}} Laststufen · {{iterations}} Iterationen · Residuum {{residual}} kN · relativ {{relative}}",
     "counts": "{{elements}} Elemente · {{points}} Integrationspunkte",
     "displacement": "Verschiebung",

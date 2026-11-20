@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Une couche de résistance nulle ne peut pas représenter la résistance ultime des couches sus-jacentes."
   },
   "explorer": {
-    "concept": "Brouillon",
+    "concept": "Brouillon alpha",
     "converged": "Convergé · {{steps}} pas de chargement · {{iterations}} itérations · résidu {{residual}} kN · relatif {{relative}}",
     "counts": "{{elements}} éléments · {{points}} points d'intégration",
     "displacement": "Déplacement",

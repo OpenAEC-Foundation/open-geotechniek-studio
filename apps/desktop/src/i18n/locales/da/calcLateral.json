@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Et lag med nul styrke kan ikke repræsentere brudmodstanden for de overliggende lag."
   },
   "explorer": {
-    "concept": "Udkast",
+    "concept": "Udkast alfa",
     "converged": "Konvergeret · {{steps}} lasttrin · {{iterations}} iterationer · residual {{residual}} kN · relativ {{relative}}",
     "counts": "{{elements}} elementer · {{points}} integrationspunkter",
     "displacement": "Flytning",

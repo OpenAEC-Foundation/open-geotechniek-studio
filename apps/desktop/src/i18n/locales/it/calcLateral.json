@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Uno strato con resistenza nulla non può rappresentare la resistenza ultima degli strati sovrastanti."
   },
   "explorer": {
-    "concept": "Bozza",
+    "concept": "Bozza alpha",
     "converged": "Convergenza raggiunta · {{steps}} passi di carico · {{iterations}} iterazioni · residuo {{residual}} kN · relativo {{relative}}",
     "counts": "{{elements}} elementi · {{points}} punti di integrazione",
     "displacement": "Spostamento",

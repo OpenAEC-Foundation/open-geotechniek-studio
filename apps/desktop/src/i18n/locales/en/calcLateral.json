@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "A layer with zero strength cannot represent the ultimate resistance of the layers above."
   },
   "explorer": {
-    "concept": "Draft",
+    "concept": "Draft alpha",
     "converged": "Converged · {{steps}} load steps · {{iterations}} iterations · residual {{residual}} kN · relative {{relative}}",
     "counts": "{{elements}} elements · {{points}} integration points",
     "displacement": "Displacement",

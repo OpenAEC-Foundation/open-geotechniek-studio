@@ -59,7 +59,7 @@
     "zeroStrengthLayer": "Een laag met nulsterkte kan de bovenliggende grensweerstand niet vertegenwoordigen."
   },
   "explorer": {
-    "concept": "Concept",
+    "concept": "Concept alpha",
     "converged": "Geconvergeerd · {{steps}} belastingstappen · {{iterations}} iteraties · residu {{residual}} kN · relatief {{relative}}",
     "counts": "{{elements}} elementen · {{points}} integratiepunten",
     "displacement": "Verplaatsing",
