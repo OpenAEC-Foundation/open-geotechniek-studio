@@ -207,6 +207,10 @@ export default function ReportPreview() {
               checked={sections.testReport === true}
               onChange={(v) => setSections((s) => ({ ...s, testReport: v }))}
               hint={t("report.section.testReportHint", "Per sondering een pagina met de gegevens volgens NEN-EN-ISO 22476-1")} />
+            <SectionToggle label={t("magnetometer:report.section", "Magnetometer")}
+              checked={sections.magnetometer === true}
+              onChange={(v) => setSections((s) => ({ ...s, magnetometer: v }))}
+              hint={t("magnetometer:report.sectionHint", "Per magnetometersondering een pagina met grafieken, zones en instellingen")} />
             <SectionToggle label={t("report.section.sbtLegend", "Indicatieve qc/Rf-legenda")}
               checked={sections.sbtLegend}
               onChange={(v) => setSections((s) => ({ ...s, sbtLegend: v }))}

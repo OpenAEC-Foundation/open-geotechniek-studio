@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "No hay valores medidos en el tramo del fondo.",
+    "value": "Campo de fondo (mediana de {{count}} valores): {{value}} nT"
+  },
+  "depthAxis": "Profundidad bajo el terreno (m)",
+  "disclaimer": "Presentación de datos de medición. Las zonas marcadas resultan solo de los umbrales ajustados; no es una evaluación y no sustituye la liberación ni la evaluación por un especialista.",
+  "line": {
+    "declination": "declinación",
+    "inclination": "inclinación"
+  },
+  "noTotal": "Sin intensidad total: el archivo no tiene canal total ni las tres componentes.",
+  "none": "Ninguno de los sondeos abiertos tiene canales de magnetómetro.",
+  "readout": {
+    "depth": "{{depth}} m bajo el terreno",
+    "hint": "Mueva el cursor sobre el gráfico para ver los valores a una profundidad.",
+    "title": "Valores"
+  },
+  "report": {
+    "section": "Magnetómetro",
+    "sectionHint": "Una página por sondeo con magnetómetro con gráficos, zonas y ajustes"
+  },
+  "ribbon": {
+    "group": "Magnetómetro",
+    "show": "Magnetó-\nmetro",
+    "showHint": "Muestra los canales del magnetómetro del sondeo frente a la profundidad, junto a qc."
+  },
+  "settings": {
+    "analysisFrom": "Zonas desde",
+    "anomaly": "Umbral de desviación",
+    "backgroundFrom": "Fondo desde",
+    "backgroundTo": "Fondo hasta",
+    "end": "fin",
+    "gradient": "Umbral de gradiente",
+    "mergeGap": "Unir dentro de",
+    "note": "Los umbrales son ajustes propios, no valores normativos.",
+    "start": "inicio",
+    "title": "Ajustes"
+  },
+  "side": {
+    "cpt": "Sondeo",
+    "title": "Magnetómetro"
+  },
+  "totalComputed": "Intensidad total calculada a partir de las tres componentes: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Componentes − mediana",
+    "declination": "Declinación",
+    "gradient": "Gradiente d|B|/dz",
+    "inclination": "Inclinación",
+    "qc": "qc",
+    "total": "Campo total |B|"
+  },
+  "unknownUnit": "Canal {{channel}} no mostrado: la unidad '{{unit}}' es desconocida.",
+  "zones": {
+    "bottom": "Abajo (m)",
+    "none": "Ningún tramo por encima de los umbrales ajustados.",
+    "note": "Pico = mayor desviación respecto al campo de fondo en la zona. Profundidades en m bajo el terreno.",
+    "peak": "Pico (nT)",
+    "peakDepth": "a (m)",
+    "peakGradient": "Gradiente (nT/m)",
+    "title": "Zonas por encima del umbral",
+    "top": "Arriba (m)",
+    "zoomHint": "Haga clic para ampliar esta zona"
+  }
+}

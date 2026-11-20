@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "Nessun valore misurato nel tratto del fondo.",
+    "value": "Campo di fondo (mediana di {{count}} valori): {{value}} nT"
+  },
+  "depthAxis": "Profondità dal piano campagna (m)",
+  "disclaimer": "Presentazione di dati di misura. Le zone evidenziate derivano solo dalle soglie impostate; non è una valutazione e non sostituisce il nulla osta o la valutazione di uno specialista.",
+  "line": {
+    "declination": "declinazione",
+    "inclination": "inclinazione"
+  },
+  "noTotal": "Nessuna intensità totale: il file non ha il canale totale né tutte e tre le componenti.",
+  "none": "Nessuna delle prove aperte ha canali del magnetometro.",
+  "readout": {
+    "depth": "{{depth}} m dal piano campagna",
+    "hint": "Passa sul grafico per i valori a una profondità.",
+    "title": "Valori"
+  },
+  "report": {
+    "section": "Magnetometro",
+    "sectionHint": "Una pagina per prova con magnetometro con grafici, zone e impostazioni"
+  },
+  "ribbon": {
+    "group": "Magnetometro",
+    "show": "Magneto-\nmetro",
+    "showHint": "Mostra i canali del magnetometro della prova in funzione della profondità, accanto a qc."
+  },
+  "settings": {
+    "analysisFrom": "Zone da",
+    "anomaly": "Soglia scostamento",
+    "backgroundFrom": "Fondo da",
+    "backgroundTo": "Fondo fino a",
+    "end": "fine",
+    "gradient": "Soglia gradiente",
+    "mergeGap": "Unisci entro",
+    "note": "Le soglie sono impostazioni proprie, non valori normativi.",
+    "start": "inizio",
+    "title": "Impostazioni"
+  },
+  "side": {
+    "cpt": "Prova",
+    "title": "Magnetometro"
+  },
+  "totalComputed": "Intensità totale calcolata dalle tre componenti: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Componenti − mediana",
+    "declination": "Declinazione",
+    "gradient": "Gradiente d|B|/dz",
+    "inclination": "Inclinazione",
+    "qc": "qc",
+    "total": "Campo totale |B|"
+  },
+  "unknownUnit": "Canale {{channel}} non mostrato: l'unità '{{unit}}' è sconosciuta.",
+  "zones": {
+    "bottom": "Sotto (m)",
+    "none": "Nessun tratto sopra le soglie impostate.",
+    "note": "Picco = massimo scostamento dal campo di fondo nella zona. Profondità in m dal piano campagna.",
+    "peak": "Picco (nT)",
+    "peakDepth": "a (m)",
+    "peakGradient": "Gradiente (nT/m)",
+    "title": "Zone sopra la soglia",
+    "top": "Sopra (m)",
+    "zoomHint": "Fai clic per ingrandire questa zona"
+  }
+}

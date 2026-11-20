@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { loadChartZoomPreference, useChartZoomStore } from "../../store/useChartZoomStore";
 import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
+import MagnetometerRibbonGroup from "../../magnetometer/MagnetometerRibbonGroup";
 
 
 interface StartTabProps {
@@ -75,6 +76,7 @@ export default function StartTab(props: StartTabProps = {}) {
             />
           </div>
         </RibbonGroup>
+        <MagnetometerRibbonGroup />
       </div>
     </div>
   );

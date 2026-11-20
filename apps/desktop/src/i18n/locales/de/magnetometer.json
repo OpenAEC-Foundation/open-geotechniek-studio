@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "Keine Messwerte im Abschnitt des Hintergrunds.",
+    "value": "Hintergrundfeld (Median von {{count}} Werten): {{value}} nT"
+  },
+  "depthAxis": "Tiefe unter Gelände (m)",
+  "disclaimer": "Darstellung von Messdaten. Die markierten Zonen ergeben sich nur aus den eingestellten Schwellenwerten; dies ist keine Bewertung und ersetzt keine Freigabe oder Bewertung durch eine fachkundige Person.",
+  "line": {
+    "declination": "Deklination",
+    "inclination": "Inklination"
+  },
+  "noTotal": "Keine Gesamtfeldstärke: Die Datei hat keinen Gesamtkanal und nicht alle drei Komponenten.",
+  "none": "Keine der geöffneten Sondierungen hat Magnetometerkanäle.",
+  "readout": {
+    "depth": "{{depth}} m unter Gelände",
+    "hint": "Bewegen Sie die Maus über das Diagramm für die Werte in einer Tiefe.",
+    "title": "Werte"
+  },
+  "report": {
+    "section": "Magnetometer",
+    "sectionHint": "Pro Magnetometersondierung eine Seite mit Diagrammen, Zonen und Einstellungen"
+  },
+  "ribbon": {
+    "group": "Magnetometer",
+    "show": "Magneto-\nmeter",
+    "showHint": "Zeigt die Magnetometerkanäle der Sondierung über die Tiefe, neben qc."
+  },
+  "settings": {
+    "analysisFrom": "Zonen ab",
+    "anomaly": "Schwelle Abweichung",
+    "backgroundFrom": "Hintergrund von",
+    "backgroundTo": "Hintergrund bis",
+    "end": "Ende",
+    "gradient": "Schwelle Gradient",
+    "mergeGap": "Zusammenfassen innerhalb",
+    "note": "Die Schwellenwerte sind eigene Einstellungen, keine Normwerte.",
+    "start": "Anfang",
+    "title": "Einstellungen"
+  },
+  "side": {
+    "cpt": "Sondierung",
+    "title": "Magnetometer"
+  },
+  "totalComputed": "Gesamtfeldstärke aus den drei Komponenten berechnet: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Komponenten − Median",
+    "declination": "Deklination",
+    "gradient": "Gradient d|B|/dz",
+    "inclination": "Inklination",
+    "qc": "qc",
+    "total": "Gesamtfeld |B|"
+  },
+  "unknownUnit": "Kanal {{channel}} nicht angezeigt: Einheit '{{unit}}' ist unbekannt.",
+  "zones": {
+    "bottom": "Unten (m)",
+    "none": "Kein Abschnitt über den eingestellten Schwellenwerten.",
+    "note": "Spitze = größte Abweichung vom Hintergrundfeld in der Zone. Tiefen in m unter Gelände.",
+    "peak": "Spitze (nT)",
+    "peakDepth": "bei (m)",
+    "peakGradient": "Gradient (nT/m)",
+    "title": "Zonen über der Schwelle",
+    "top": "Oben (m)",
+    "zoomHint": "Klicken, um auf diese Zone zu zoomen"
+  }
+}

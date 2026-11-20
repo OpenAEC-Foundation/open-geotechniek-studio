@@ -23,6 +23,8 @@ export interface ReportSections {
   texts?: boolean;
   /** Testrapport per sondering volgens NEN-EN-ISO 22476-1. */
   testReport?: boolean;
+  /** Pagina per magnetometersondering: grafieken, zones en instellingen. */
+  magnetometer?: boolean;
   /** Teksten voor een document zonder project; anders gelden de teksten van het project. */
   reportTexts?: ReportTexts;
 }
@@ -36,6 +38,7 @@ export const DEFAULT_SECTIONS: ReportSections = {
   metadata: false,
   texts: true,
   testReport: false,
+  magnetometer: false,
 };
 
 export function sectionsAreDefault(s: ReportSections): boolean {
