@@ -303,6 +303,39 @@
     "notNumber": "Enter the lower and upper limit as a number in kN.",
     "upper": "Upper limit [kN]"
   },
+  "view3d": {
+    "aria": "3D view of the 4D-8D method; drag to rotate, scroll to zoom",
+    "fit": "Fit to view",
+    "focusPile": "Whole pile",
+    "focusTip": "Pile toe",
+    "label": {
+      "critical": "critical depth {{depth}} m",
+      "ground": "ground level {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "pile toe {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Teal: the clipped qc line of trajectories II and III.",
+      "critical": "Critical depth: {{depth}} m below the pile toe ({{ratio}} Deq, Deq = {{deq}} mm). Dotted lines: search range 0.7 to 4 Deq.",
+      "negative": "Negative skin friction along the shaft; Fnk;d = {{force}} kN",
+      "positive": "Positive shaft friction along the shaft; Rs;cal;max = {{force}} kN",
+      "qc": "Cone resistance qc next to the pile; thick bars are the trajectory averages.",
+      "zone": "Trajectory {{zone}}",
+      "zoneI": "from the pile toe down to the critical depth",
+      "zoneII": "from the critical depth back up to the pile toe",
+      "zoneIII": "from the pile toe to 8 Deq above it"
+    },
+    "noModel": "There is no 3D view: link a CPT to the calculation.",
+    "notComputed": "There is no 3D view while the calculation has no result. Adjust the input or go back to 2D.",
+    "note": "Levels and the pile are to scale. The width of the trajectories is schematic: the method only works along the depth.",
+    "switch": "Drawing view",
+    "switch3dTitle": "4D-8D method in 3D",
+    "toolbar": "View",
+    "unavailable": "3D is not available on this device (no WebGL). Use the 2D drawing."
+  },
   "visual": {
     "cptHeading": "CPT: {{id}}",
     "crossSection": "Cross-section",

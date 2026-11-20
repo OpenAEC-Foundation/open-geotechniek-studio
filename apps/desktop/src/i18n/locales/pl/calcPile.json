@@ -303,6 +303,39 @@
     "notNumber": "Podaj dolną i górną granicę jako liczbę w kN.",
     "upper": "Górna granica [kN]"
   },
+  "view3d": {
+    "aria": "Widok 3D metody 4D-8D; przeciąganie obraca, przewijanie przybliża",
+    "fit": "Dopasuj do widoku",
+    "focusPile": "Cały pal",
+    "focusTip": "Podstawa pala",
+    "label": {
+      "critical": "głębokość krytyczna {{depth}} m",
+      "ground": "poziom terenu {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "podstawa pala {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Zielononiebieski: obcięta linia qc odcinków II i III.",
+      "critical": "Głębokość krytyczna: {{depth}} m poniżej podstawy pala ({{ratio}} Deq, Deq = {{deq}} mm). Linie kropkowane: zakres poszukiwania od 0,7 do 4 Deq.",
+      "negative": "Tarcie negatywne wzdłuż pobocznicy; Fnk;d = {{force}} kN",
+      "positive": "Tarcie pozytywne wzdłuż pobocznicy; Rs;cal;max = {{force}} kN",
+      "qc": "Opór stożka qc obok pala; grube kreski to średnie z odcinków.",
+      "zone": "Odcinek {{zone}}",
+      "zoneI": "od podstawy pala w dół do głębokości krytycznej",
+      "zoneII": "od głębokości krytycznej z powrotem w górę do podstawy pala",
+      "zoneIII": "od podstawy pala do 8 Deq powyżej"
+    },
+    "noModel": "Brak widoku 3D: przypisz sondowanie do obliczenia.",
+    "notComputed": "Brak widoku 3D, dopóki obliczenie nie ma wyniku. Zmień dane lub wróć do 2D.",
+    "note": "Poziomy i pal są w skali. Szerokość odcinków jest schematyczna: metoda liczy tylko wzdłuż głębokości.",
+    "switch": "Widok rysunku",
+    "switch3dTitle": "Metoda 4D-8D w 3D",
+    "toolbar": "Widok",
+    "unavailable": "3D nie jest dostępne na tym urządzeniu (brak WebGL). Użyj rysunku 2D."
+  },
   "visual": {
     "cptHeading": "CPT: {{id}}",
     "crossSection": "Przekrój",

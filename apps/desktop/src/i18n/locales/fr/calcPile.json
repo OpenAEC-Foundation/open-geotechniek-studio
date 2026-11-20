@@ -303,6 +303,39 @@
     "notNumber": "Saisissez les limites inférieure et supérieure sous forme de nombre en kN.",
     "upper": "Limite supérieure [kN]"
   },
+  "view3d": {
+    "aria": "Vue 3D de la méthode 4D-8D ; glisser pour tourner, molette pour zoomer",
+    "fit": "Ajuster à la vue",
+    "focusPile": "Pieu entier",
+    "focusTip": "Pointe du pieu",
+    "label": {
+      "critical": "profondeur critique {{depth}} m",
+      "ground": "terrain naturel {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "pointe du pieu {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Bleu-vert : la courbe qc écrêtée des trajets II et III.",
+      "critical": "Profondeur critique : {{depth}} m sous la pointe du pieu ({{ratio}} Deq, Deq = {{deq}} mm). Pointillés : zone de recherche de 0,7 à 4 Deq.",
+      "negative": "Frottement négatif le long du fût ; Fnk;d = {{force}} kN",
+      "positive": "Frottement latéral positif le long du fût ; Rs;cal;max = {{force}} kN",
+      "qc": "Résistance de pointe qc à côté du pieu ; les traits épais sont les moyennes par trajet.",
+      "zone": "Trajet {{zone}}",
+      "zoneI": "de la pointe du pieu vers le bas jusqu'à la profondeur critique",
+      "zoneII": "de la profondeur critique vers le haut jusqu'à la pointe du pieu",
+      "zoneIII": "de la pointe du pieu jusqu'à 8 Deq au-dessus"
+    },
+    "noModel": "Pas de vue 3D : associez un sondage au calcul.",
+    "notComputed": "Pas de vue 3D tant que le calcul n'a pas de résultat. Modifiez les données ou revenez à la 2D.",
+    "note": "Les niveaux et le pieu sont à l'échelle. La largeur des trajets est schématique : la méthode ne calcule que selon la profondeur.",
+    "switch": "Affichage du dessin",
+    "switch3dTitle": "Méthode 4D-8D en 3D",
+    "toolbar": "Vue",
+    "unavailable": "La 3D n'est pas disponible sur cet appareil (pas de WebGL). Utilisez le dessin 2D."
+  },
   "visual": {
     "cptHeading": "CPT : {{id}}",
     "crossSection": "Section",

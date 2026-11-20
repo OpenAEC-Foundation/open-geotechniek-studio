@@ -10,7 +10,7 @@ import type { PileInput, PileResult } from "./types";
 import { computePile } from "./compute";
 import { buildDefaultSoilLayers } from "./catalog";
 import { InputPanel } from "./ui/InputPanel";
-import { VisualPanel } from "./ui/VisualPanel";
+import { DrawingPanel } from "./ui/DrawingPanel";
 import { ResultPanel } from "./ui/ResultPanel";
 import { buildPileReport, pileReportFileName } from "./parts/build-report";
 import { SettingsPanel } from "./ui/SettingsPanel";
@@ -66,7 +66,7 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
     return computePile(input, cpt);
   },
   InputPanel,
-  VisualPanel,
+  VisualPanel: DrawingPanel,
   ResultPanel,
   SettingsPanel,
   table: {

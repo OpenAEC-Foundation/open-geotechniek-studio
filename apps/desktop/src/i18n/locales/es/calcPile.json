@@ -303,6 +303,39 @@
     "notNumber": "Introduzca el límite inferior y superior como número en kN.",
     "upper": "Límite superior [kN]"
   },
+  "view3d": {
+    "aria": "Vista 3D del método 4D-8D; arrastrar gira, la rueda acerca",
+    "fit": "Ajustar a la vista",
+    "focusPile": "Pilote completo",
+    "focusTip": "Punta del pilote",
+    "label": {
+      "critical": "profundidad crítica {{depth}} m",
+      "ground": "nivel del terreno {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "punta del pilote {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Verde azulado: la curva qc recortada de los tramos II y III.",
+      "critical": "Profundidad crítica: {{depth}} m bajo la punta del pilote ({{ratio}} Deq, Deq = {{deq}} mm). Líneas de puntos: zona de búsqueda de 0,7 a 4 Deq.",
+      "negative": "Rozamiento negativo a lo largo del fuste; Fnk;d = {{force}} kN",
+      "positive": "Rozamiento positivo a lo largo del fuste; Rs;cal;max = {{force}} kN",
+      "qc": "Resistencia de punta qc junto al pilote; los trazos gruesos son las medias de cada tramo.",
+      "zone": "Tramo {{zone}}",
+      "zoneI": "desde la punta del pilote hacia abajo hasta la profundidad crítica",
+      "zoneII": "desde la profundidad crítica de vuelta hacia arriba hasta la punta del pilote",
+      "zoneIII": "desde la punta del pilote hasta 8 Deq por encima"
+    },
+    "noModel": "No hay vista 3D: vincule un sondeo al cálculo.",
+    "notComputed": "No hay vista 3D mientras el cálculo no tenga resultado. Ajuste los datos o vuelva a 2D.",
+    "note": "Los niveles y el pilote están a escala. La anchura de los tramos es esquemática: el método solo calcula a lo largo de la profundidad.",
+    "switch": "Vista del dibujo",
+    "switch3dTitle": "Método 4D-8D en 3D",
+    "toolbar": "Vista",
+    "unavailable": "El 3D no está disponible en este dispositivo (sin WebGL). Use el dibujo 2D."
+  },
   "visual": {
     "cptHeading": "CPT: {{id}}",
     "crossSection": "Sección transversal",

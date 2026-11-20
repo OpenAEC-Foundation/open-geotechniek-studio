@@ -303,6 +303,39 @@
     "notNumber": "Geben Sie Unter- und Obergrenze als Zahl in kN ein.",
     "upper": "Obergrenze [kN]"
   },
+  "view3d": {
+    "aria": "3D-Ansicht der 4D-8D-Methode; Ziehen dreht, Scrollen zoomt",
+    "fit": "In Ansicht einpassen",
+    "focusPile": "Ganzer Pfahl",
+    "focusTip": "Pfahlfuß",
+    "label": {
+      "critical": "kritische Tiefe {{depth}} m",
+      "ground": "Geländeoberkante {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "Pfahlfuß {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Blaugrün: die gekappte qc-Linie der Bereiche II und III.",
+      "critical": "Kritische Tiefe: {{depth}} m unter dem Pfahlfuß ({{ratio}} Deq, Deq = {{deq}} mm). Punktlinien: Suchbereich 0,7 bis 4 Deq.",
+      "negative": "Negative Mantelreibung entlang des Schafts; Fnk;d = {{force}} kN",
+      "positive": "Positive Mantelreibung entlang des Schafts; Rs;cal;max = {{force}} kN",
+      "qc": "Spitzenwiderstand qc neben dem Pfahl; dicke Striche sind die Bereichsmittelwerte.",
+      "zone": "Bereich {{zone}}",
+      "zoneI": "vom Pfahlfuß abwärts bis zur kritischen Tiefe",
+      "zoneII": "von der kritischen Tiefe zurück nach oben zum Pfahlfuß",
+      "zoneIII": "vom Pfahlfuß bis 8 Deq darüber"
+    },
+    "noModel": "Es gibt keine 3D-Ansicht: Verknüpfen Sie eine Drucksondierung mit der Berechnung.",
+    "notComputed": "Es gibt keine 3D-Ansicht, solange die Berechnung kein Ergebnis hat. Passen Sie die Eingabe an oder wechseln Sie zurück zu 2D.",
+    "note": "Höhen und Pfahl sind maßstäblich. Die Breite der Bereiche ist schematisch: Die Methode rechnet nur entlang der Tiefe.",
+    "switch": "Ansicht der Zeichnung",
+    "switch3dTitle": "4D-8D-Methode in 3D",
+    "toolbar": "Ansicht",
+    "unavailable": "3D ist auf diesem Gerät nicht verfügbar (kein WebGL). Verwenden Sie die 2D-Zeichnung."
+  },
   "visual": {
     "cptHeading": "Sondierung: {{id}}",
     "crossSection": "Querschnitt",

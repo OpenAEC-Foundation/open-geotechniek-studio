@@ -303,6 +303,39 @@
     "notNumber": "Indtast nedre og øvre grænse som et tal i kN.",
     "upper": "Øvre grænse [kN]"
   },
+  "view3d": {
+    "aria": "3D-visning af 4D-8D-metoden; træk for at dreje, rul for at zoome",
+    "fit": "Tilpas til visning",
+    "focusPile": "Hele pælen",
+    "focusTip": "Pælespids",
+    "label": {
+      "critical": "kritisk dybde {{depth}} m",
+      "ground": "terræn {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "pælespids {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Blågrøn: den afskårne qc-linje for strækning II og III.",
+      "critical": "Kritisk dybde: {{depth}} m under pælespidsen ({{ratio}} Deq, Deq = {{deq}} mm). Stiplede linjer: søgeområde 0,7 til 4 Deq.",
+      "negative": "Negativ overflademodstand langs skaftet; Fnk;d = {{force}} kN",
+      "positive": "Positiv overflademodstand langs skaftet; Rs;cal;max = {{force}} kN",
+      "qc": "Spidsmodstand qc ved siden af pælen; tykke streger er gennemsnittene for strækningerne.",
+      "zone": "Strækning {{zone}}",
+      "zoneI": "fra pælespidsen nedad til den kritiske dybde",
+      "zoneII": "fra den kritiske dybde tilbage op til pælespidsen",
+      "zoneIII": "fra pælespidsen til 8 Deq over den"
+    },
+    "noModel": "Der er ingen 3D-visning: knyt en CPT-sondering til beregningen.",
+    "notComputed": "Der er ingen 3D-visning, så længe beregningen ikke har et resultat. Tilpas inddata, eller gå tilbage til 2D.",
+    "note": "Niveauer og pælen er i målestok. Bredden af strækningerne er skematisk: metoden regner kun langs dybden.",
+    "switch": "Visning af tegningen",
+    "switch3dTitle": "4D-8D-metoden i 3D",
+    "toolbar": "Visning",
+    "unavailable": "3D er ikke tilgængelig på denne enhed (ingen WebGL). Brug 2D-tegningen."
+  },
   "visual": {
     "cptHeading": "Sondering: {{id}}",
     "crossSection": "Tværsnit",
