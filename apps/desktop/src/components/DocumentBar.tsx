@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useCptStore } from "../store/useCptStore";
 import "./DocumentBar.css";
@@ -15,8 +16,14 @@ export default function DocumentBar({ onOpenClick }: DocumentBarProps) {
   const setActiveDoc = useCptStore((s) => s.setActiveDoc);
   const closeDoc = useCptStore((s) => s.closeDoc);
 
+  const barRef = useRef<HTMLDivElement>(null);
+  // Het actieve tabblad blijft in beeld, ook bij veel open documenten.
+  useEffect(() => {
+    barRef.current?.querySelector(".document-tab.active")?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+  }, [activeDocId, documents.length]);
+
   return (
-    <div className="document-bar">
+    <div className="document-bar" ref={barRef} onWheel={(e) => { if (e.deltaY) e.currentTarget.scrollLeft += e.deltaY; }}>
       <div className="document-tabs">
         {documents.map((doc) => {
           const active = doc.id === activeDocId;
