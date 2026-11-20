@@ -303,6 +303,39 @@
     "notNumber": "Introduza o limite inferior e o superior como número em kN.",
     "upper": "Limite superior [kN]"
   },
+  "view3d": {
+    "aria": "Vista 3D do método 4D-8D; arrastar roda, a roda do rato aproxima",
+    "fit": "Ajustar à vista",
+    "focusPile": "Estaca inteira",
+    "focusTip": "Ponta da estaca",
+    "label": {
+      "critical": "profundidade crítica {{depth}} m",
+      "ground": "nível do terreno {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "ponta da estaca {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Verde-azulado: a curva qc truncada dos troços II e III.",
+      "critical": "Profundidade crítica: {{depth}} m abaixo da ponta da estaca ({{ratio}} Deq, Deq = {{deq}} mm). Linhas pontilhadas: zona de procura de 0,7 a 4 Deq.",
+      "negative": "Atrito negativo ao longo do fuste; Fnk;d = {{force}} kN",
+      "positive": "Atrito lateral positivo ao longo do fuste; Rs;cal;max = {{force}} kN",
+      "qc": "Resistência de ponta qc ao lado da estaca; os traços grossos são as médias dos troços.",
+      "zone": "Troço {{zone}}",
+      "zoneI": "da ponta da estaca para baixo até à profundidade crítica",
+      "zoneII": "da profundidade crítica de volta para cima até à ponta da estaca",
+      "zoneIII": "da ponta da estaca até 8 Deq acima"
+    },
+    "noModel": "Não há vista 3D: associe uma sondagem ao cálculo.",
+    "notComputed": "Não há vista 3D enquanto o cálculo não tiver resultado. Ajuste os dados ou volte ao 2D.",
+    "note": "Os níveis e a estaca estão à escala. A largura dos troços é esquemática: o método só calcula ao longo da profundidade.",
+    "switch": "Vista do desenho",
+    "switch3dTitle": "Método 4D-8D em 3D",
+    "toolbar": "Vista",
+    "unavailable": "O 3D não está disponível neste dispositivo (sem WebGL). Use o desenho 2D."
+  },
   "visual": {
     "cptHeading": "CPT: {{id}}",
     "crossSection": "Secção transversal",

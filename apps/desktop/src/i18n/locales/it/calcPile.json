@@ -303,6 +303,39 @@
     "notNumber": "Inserisci il limite inferiore e superiore come numero in kN.",
     "upper": "Limite superiore [kN]"
   },
+  "view3d": {
+    "aria": "Vista 3D del metodo 4D-8D; trascinare per ruotare, scorrere per ingrandire",
+    "fit": "Adatta alla vista",
+    "focusPile": "Palo intero",
+    "focusTip": "Punta del palo",
+    "label": {
+      "critical": "profondità critica {{depth}} m",
+      "ground": "piano campagna {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "punta del palo {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Verde-azzurro: la curva qc troncata dei tratti II e III.",
+      "critical": "Profondità critica: {{depth}} m sotto la punta del palo ({{ratio}} Deq, Deq = {{deq}} mm). Linee punteggiate: zona di ricerca da 0,7 a 4 Deq.",
+      "negative": "Attrito negativo lungo il fusto; Fnk;d = {{force}} kN",
+      "positive": "Attrito laterale positivo lungo il fusto; Rs;cal;max = {{force}} kN",
+      "qc": "Resistenza alla punta qc accanto al palo; i tratti spessi sono le medie dei tratti.",
+      "zone": "Tratto {{zone}}",
+      "zoneI": "dalla punta del palo verso il basso fino alla profondità critica",
+      "zoneII": "dalla profondità critica di nuovo verso l'alto fino alla punta del palo",
+      "zoneIII": "dalla punta del palo fino a 8 Deq sopra"
+    },
+    "noModel": "Nessuna vista 3D: collegare una prova penetrometrica al calcolo.",
+    "notComputed": "Nessuna vista 3D finché il calcolo non ha un risultato. Modificare i dati o tornare al 2D.",
+    "note": "Le quote e il palo sono in scala. La larghezza dei tratti è schematica: il metodo calcola solo lungo la profondità.",
+    "switch": "Vista del disegno",
+    "switch3dTitle": "Metodo 4D-8D in 3D",
+    "toolbar": "Vista",
+    "unavailable": "Il 3D non è disponibile su questo dispositivo (WebGL assente). Usare il disegno 2D."
+  },
   "visual": {
     "cptHeading": "CPT: {{id}}",
     "crossSection": "Sezione",

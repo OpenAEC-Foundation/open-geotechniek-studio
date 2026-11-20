@@ -303,6 +303,39 @@
     "notNumber": "Ange undre och övre gräns som ett tal i kN.",
     "upper": "Övre gräns [kN]"
   },
+  "view3d": {
+    "aria": "3D-vy av 4D-8D-metoden; dra för att rotera, rulla för att zooma",
+    "fit": "Anpassa till vyn",
+    "focusPile": "Hela pålen",
+    "focusTip": "Pålspets",
+    "label": {
+      "critical": "kritiskt djup {{depth}} m",
+      "ground": "markyta {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "pålspets {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Blågrön: den kapade qc-linjen för sträcka II och III.",
+      "critical": "Kritiskt djup: {{depth}} m under pålspetsen ({{ratio}} Deq, Deq = {{deq}} mm). Prickade linjer: sökområde 0,7 till 4 Deq.",
+      "negative": "Negativ mantelfriktion längs skaftet; Fnk;d = {{force}} kN",
+      "positive": "Positiv mantelfriktion längs skaftet; Rs;cal;max = {{force}} kN",
+      "qc": "Spetsmotstånd qc bredvid pålen; tjocka streck är medelvärdena för sträckorna.",
+      "zone": "Sträcka {{zone}}",
+      "zoneI": "från pålspetsen nedåt till det kritiska djupet",
+      "zoneII": "från det kritiska djupet tillbaka upp till pålspetsen",
+      "zoneIII": "från pålspetsen till 8 Deq ovanför"
+    },
+    "noModel": "Det finns ingen 3D-vy: koppla en CPT-sondering till beräkningen.",
+    "notComputed": "Det finns ingen 3D-vy så länge beräkningen saknar resultat. Ändra indata eller gå tillbaka till 2D.",
+    "note": "Nivåer och pålen är skalenliga. Sträckornas bredd är schematisk: metoden räknar bara längs djupet.",
+    "switch": "Vy av ritningen",
+    "switch3dTitle": "4D-8D-metoden i 3D",
+    "toolbar": "Vy",
+    "unavailable": "3D är inte tillgängligt på den här enheten (ingen WebGL). Använd 2D-ritningen."
+  },
   "visual": {
     "cptHeading": "CPT-sondering: {{id}}",
     "crossSection": "Tvärsnitt",

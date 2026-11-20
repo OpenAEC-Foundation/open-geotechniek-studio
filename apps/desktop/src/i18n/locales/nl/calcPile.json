@@ -303,6 +303,39 @@
     "notNumber": "Vul de onder- en bovengrens in als getal in kN.",
     "upper": "Bovengrens [kN]"
   },
+  "view3d": {
+    "aria": "3D-weergave van de 4D-8D-methode; slepen draait, scrollen zoomt",
+    "fit": "Passend in beeld",
+    "focusPile": "Hele paal",
+    "focusTip": "Paalpunt",
+    "label": {
+      "critical": "kritieke diepte {{depth}} m",
+      "ground": "maaiveld {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "paalpunt {{nap}}",
+      "zone": "{{symbol}} = {{value}}"
+    },
+    "legend": {
+      "clipped": "Groenblauw: de afgekapte qc-lijn van traject II en III.",
+      "critical": "Kritieke diepte: {{depth}} m onder de paalpunt ({{ratio}} Deq, Deq = {{deq}} mm). Stippellijnen: zoekgebied 0,7 tot 4 Deq.",
+      "negative": "Negatieve kleef langs de schacht; Fnk;d = {{force}} kN",
+      "positive": "Positieve schachtwrijving langs de schacht; Rs;cal;max = {{force}} kN",
+      "qc": "Conusweerstand qc naast de paal; dikke strepen zijn de trajectgemiddelden.",
+      "zone": "Traject {{zone}}",
+      "zoneI": "van de paalpunt omlaag tot de kritieke diepte",
+      "zoneII": "van de kritieke diepte terug omhoog naar de paalpunt",
+      "zoneIII": "van de paalpunt tot 8 Deq erboven"
+    },
+    "noModel": "Er is geen 3D-weergave: koppel een sondering aan de berekening.",
+    "notComputed": "Er is geen 3D-weergave zolang de berekening geen resultaat heeft. Pas de invoer aan of ga terug naar 2D.",
+    "note": "Hoogten en de paal zijn op schaal. De breedte van de trajecten is schematisch: de methode rekent alleen langs de diepte.",
+    "switch": "Weergave van de tekening",
+    "switch3dTitle": "4D-8D-methode in 3D",
+    "toolbar": "Beeld",
+    "unavailable": "3D is op dit apparaat niet beschikbaar (geen WebGL). Gebruik de 2D-tekening."
+  },
   "visual": {
     "cptHeading": "Sondering: {{id}}",
     "crossSection": "Doorsnede",

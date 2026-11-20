@@ -1,0 +1,28 @@
+/* Drawing pane switch (2D / 3D) and the 3D explanation of the 4D-8D method. */
+.pile-drawing { position: relative; display: flex; flex-direction: column; min-height: 100%; }
+.pile-drawing > .pile-visual { flex: 1 1 auto; }
+.pile-drawing-switch { position: absolute; top: 0; right: 0; z-index: 2; display: flex; gap: 1px; padding: 2px; border: 1px solid var(--theme-border, #e7e5e4); border-radius: 5px; background: var(--theme-bg-lighter, #fff); }
+.pile-drawing-switch button,
+.pile-3d-bar button { padding: 2px 9px; border: 0; border-radius: 3px; background: none; color: var(--theme-text-secondary, #71717a); font: 600 0.75rem "Inter", sans-serif; cursor: pointer; }
+.pile-drawing-switch button:hover,
+.pile-3d-bar button:hover { color: var(--theme-text, #36363e); background: color-mix(in srgb, var(--theme-text, #36363e) 8%, transparent); }
+.pile-drawing-switch button.on,
+.pile-3d-bar button.on { color: var(--theme-text, #36363e); background: color-mix(in srgb, var(--theme-accent, #d97706) 18%, transparent); }
+
+.pile-3d { flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; min-height: 0; padding-top: 30px; }
+.pile-3d-stage { position: relative; flex: 1 1 auto; min-height: 420px; border: 1px solid var(--theme-border, #e7e5e4); border-radius: 4px; background: var(--theme-bg-lighter, #fff); overflow: hidden; }
+.pile-3d-canvas { position: absolute; inset: 0; }
+.pile-3d-canvas canvas { display: block; touch-action: none; }
+.pile-3d-bar { position: absolute; top: 8px; right: 8px; z-index: 1; display: flex; align-items: center; gap: 1px; padding: 2px; border: 1px solid var(--theme-border, #e7e5e4); border-radius: 5px; background: color-mix(in srgb, var(--theme-bg-lighter, #fff) 90%, transparent); }
+.pile-3d-bar .sep { width: 1px; height: 14px; margin: 0 3px; background: var(--theme-border, #e7e5e4); }
+.pile-3d-bar .pile-3d-icon { display: grid; place-items: center; padding: 2px 4px; }
+
+.pile-3d-legend { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; font: 500 0.78rem "Inter", sans-serif; color: var(--theme-text, #36363e); line-height: 1.4; }
+.pile-3d-legend li { display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: baseline; }
+.pile-3d-swatch { width: 12px; height: 12px; border-radius: 2px; opacity: 0.75; transform: translateY(1px); }
+.pile-3d-swatch-ring { border: 2px solid var(--theme-text, #36363e); border-radius: 50%; box-sizing: border-box; }
+.pile-3d-swatch-line { height: 2px; align-self: center; background: var(--theme-text, #36363e); transform: none; }
+.pile-3d-inline { font-weight: 600; }
+.pile-3d-note,
+.pile-3d-message { margin: 0; font: 500 0.78rem "Inter", sans-serif; color: var(--theme-text-secondary, #71717a); line-height: 1.5; }
+.pile-3d-message { padding: 48px 24px 24px; text-align: center; font-size: 0.85rem; }
