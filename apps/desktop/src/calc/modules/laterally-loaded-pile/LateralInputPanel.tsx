@@ -20,10 +20,10 @@ const nl = (v: number, d = 2) => v.toLocaleString(numberLocale(), { minimumFract
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
 
 const KINDS: Array<{ id: SectionKind; key: string; label: string; icon: ReactNode }> = [
-  { id: 'concrete-square', key: 'concreteSquare', label: 'Beton □', icon: <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="7" y="7" width="18" height="18" fill="currentColor" opacity=".18" stroke="currentColor" strokeWidth="1.5" /><g fill="currentColor">{[[11, 11], [21, 11], [11, 21], [21, 21]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r="1.4" />)}</g></svg> },
-  { id: 'concrete-round', key: 'concreteRound', label: 'Beton ○', icon: <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="currentColor" opacity=".18" stroke="currentColor" strokeWidth="1.5" /><g fill="currentColor">{[0, 1, 2, 3, 4, 5].map((k) => <circle key={k} cx={16 + 6 * Math.cos(k * Math.PI / 3)} cy={16 + 6 * Math.sin(k * Math.PI / 3)} r="1.3" />)}</g></svg> },
-  { id: 'filled-tube', key: 'filledTube', label: 'Buis gevuld', icon: <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="currentColor" opacity=".18" stroke="currentColor" strokeWidth="3" /></svg> },
-  { id: 'steel-tube', key: 'steelTube', label: 'Stalen buis', icon: <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" strokeWidth="3" /></svg> },
+  { id: 'concrete-square', key: 'concreteSquare', label: 'Beton vierkant', icon: <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="7" y="7" width="18" height="18" fill="currentColor" opacity=".18" stroke="currentColor" strokeWidth="1.5" /><g fill="currentColor">{[[11, 11], [21, 11], [11, 21], [21, 21]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r="1.4" />)}</g></svg> },
+  { id: 'concrete-round', key: 'concreteRound', label: 'Beton rond', icon: <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="currentColor" opacity=".18" stroke="currentColor" strokeWidth="1.5" /><g fill="currentColor">{[0, 1, 2, 3, 4, 5].map((k) => <circle key={k} cx={16 + 6 * Math.cos(k * Math.PI / 3)} cy={16 + 6 * Math.sin(k * Math.PI / 3)} r="1.3" />)}</g></svg> },
+  { id: 'filled-tube', key: 'filledTube', label: 'Buis gevuld', icon: <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8.5" fill="currentColor" opacity=".22" /><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" strokeWidth="3" /><g fill="currentColor">{[0, 1, 2, 3].map((k) => <circle key={k} cx={16 + 5 * Math.cos(k * Math.PI / 2 + Math.PI / 4)} cy={16 + 5 * Math.sin(k * Math.PI / 2 + Math.PI / 4)} r="1.2" />)}</g></svg> },
+  { id: 'steel-tube', key: 'steelTube', label: 'Buis hol', icon: <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" strokeWidth="3" /></svg> },
 ];
 
 export function LateralInputPanel({ input: i, onChange }: Props) {
@@ -82,7 +82,7 @@ export function LateralInputPanel({ input: i, onChange }: Props) {
       <div className="cs-tiles lat-head" role="radiogroup" aria-label={t('input.headCondition', 'Kop')}>
         {([[false, 'freeHead', 'Vrije kop'], [true, 'fixedHead', 'Ingeklemde kop']] as const).map(([fixed, key, label]) => <button key={key} type="button" role="radio" aria-checked={i.headFixedRotation === fixed} className={`cs-tile${i.headFixedRotation === fixed ? ' active' : ''}`} onClick={() => change({ headFixedRotation: fixed })}>{t(`input.${key}`, label)}</button>)}
       </div>
-      <Hint>{t('input.axialHint', 'N gebruikt de rekenkern alleen voor de N–M-toets van de doorsnede, niet voor tweede-orde-effecten.')}</Hint>
+      <Hint>{t('input.momentHint', 'Teken van M: een positief moment draait de paalkop tegen de klok in en werkt een positieve H tegen. Een kracht H op hoogte e boven de kop geeft M = −H·e.')} {t('input.axialHint', 'N gebruikt de rekenkern alleen voor de N–M-toets van de doorsnede, niet voor tweede-orde-effecten.')}</Hint>
     </Section>
 
     <Section title={t('input.soil', 'Grond')}>

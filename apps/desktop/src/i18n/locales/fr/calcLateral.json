@@ -143,10 +143,10 @@
     "khOwn": "Valeur personnalisée des paramètres",
     "khTable": "CUR166 tableau 3.3, première plage sécante",
     "kinds": {
-      "concreteRound": "Béton ○",
-      "concreteSquare": "Béton □",
+      "concreteRound": "Béton rond",
+      "concreteSquare": "Béton carré",
       "filledTube": "Tube rempli",
-      "steelTube": "Tube acier"
+      "steelTube": "Tube creux"
     },
     "layer": "Couche",
     "layerBottom": "Base de la couche {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Matériau et résistance",
     "maxElement": "Longueur maximale d'élément",
     "model": "Modèle",
+    "momentHint": "Signe de M : un moment positif fait tourner la tête du pieu dans le sens antihoraire et s’oppose à un H positif. Une force H à la hauteur e au-dessus de la tête donne M = −H·e.",
     "momentM": "Moment fléchissant M",
     "momentMLabel": "Moment fléchissant en tête [kNm]",
     "netPressure": "Pression nette",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Profondeur équivalente",
       "initial": "Rigidité initiale k₀",
       "layer": "Couche de sol",
+      "mobilisation": "Mobilisation p/pu",
       "reaction": "Réaction du sol sur le pieu",
       "resistance": "Résistance mobilisée p",
       "secant": "Rigidité sécante",
@@ -241,6 +243,11 @@
       "tributary": "Longueur d'intégration",
       "ultimate": "Résistance ultime pu"
     }
+  },
+  "legend": {
+    "aria": "Légende des couches de sol et des ressorts",
+    "mobilisation": "Couleur = type de sol ; vire au rouge quand p/pu passe de 50 à 100 %",
+    "springLength": "Longueur du ressort = raideur initiale k₀"
   },
   "model": {
     "aria": "Modèle de calcul avec les points d'intégration réels",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "Modèle 3D du pieu ; faites glisser pour pivoter, faites défiler pour zoomer",
     "help": "Faites glisser pour pivoter · faites défiler pour zoomer · bouton droit de la souris pour déplacer · cliquez sur un point de ressort. La liste des profondeurs offre la même sélection au clavier.",
+    "layerLabel": "{{soil}} · NAP {{top}} à {{bottom}}",
+    "surfaceLabel": "Terrain naturel NAP {{nap}}",
     "unavailable": "La 3D n'est pas disponible sur cet appareil. Utilisez le modèle de calcul et l'inspection des ressorts ci-dessous."
   },
   "settings": {

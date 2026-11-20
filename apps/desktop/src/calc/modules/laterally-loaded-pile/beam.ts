@@ -75,10 +75,14 @@ export function solveBeam(input: BeamInput): BeamResult {
       throw new Error(ct('calcLateral', 'errors.invalidLayerSpring', 'Ongeldige laag of bedding.'));
     if (i>0 && v.topM<layers[i-1].bottomM) throw new Error(ct('calcLateral', 'errors.overlappingLayers', 'Overlappende grondlagen.'));
   });
-  const cuts = [...new Set([0,L,...layers.flatMap(v => [v.topM,v.bottomM])])].sort((a,b)=>a-b);
+  // Grenzen die op afronding na samenvallen (b.v. 40 × L/40 naast L) geven één knoop;
+  // anders ontstaat een element van vrijwel nul lengte en een onoplosbaar stelsel.
+  const cuts = [0];
+  for(const c of [L,...layers.flatMap(v => [v.topM,v.bottomM])].sort((a,b)=>a-b)) if(c-cuts[cuts.length-1]>1e-9) cuts.push(c);
+  if(cuts.length>1) cuts[cuts.length-1]=L;
   const zs = [0];
   for(let i=1;i<cuts.length;i++) {
-    const n=Math.ceil((cuts[i]-cuts[i-1])/step);
+    const n=Math.max(1,Math.ceil((cuts[i]-cuts[i-1])/step-1e-9));
     if (zs.length+n>201) throw new Error(ct('calcLateral', 'errors.maxElements', 'Maximaal 200 elementen; kies een grotere elementlengte.'));
     for(let j=1;j<=n;j++) zs.push(j===n ? cuts[i] : cuts[i-1]+(cuts[i]-cuts[i-1])*j/n);
   }

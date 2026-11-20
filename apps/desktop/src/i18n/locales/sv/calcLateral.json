@@ -143,10 +143,10 @@
     "khOwn": "Eget värde från inställningarna",
     "khTable": "CUR166 tabell 3.3, första sekantintervall",
     "kinds": {
-      "concreteRound": "Betong ○",
-      "concreteSquare": "Betong □",
+      "concreteRound": "Betong rund",
+      "concreteSquare": "Betong kvadratisk",
       "filledTube": "Fyllt rör",
-      "steelTube": "Stålrör"
+      "steelTube": "Ihåligt rör"
     },
     "layer": "Lager",
     "layerBottom": "Underkant lager {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Material och hållfasthet",
     "maxElement": "Största elementlängd",
     "model": "Modell",
+    "momentHint": "Tecken för M: ett positivt moment vrider pålhuvudet moturs och motverkar ett positivt H. En kraft H på höjden e över huvudet ger M = −H·e.",
     "momentM": "Böjmoment M",
     "momentMLabel": "Böjmoment vid huvudet [kNm]",
     "netPressure": "Nettotryck",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Ekvivalent djup",
       "initial": "Initial styvhet k₀",
       "layer": "Jordlager",
+      "mobilisation": "Mobilisering p/pu",
       "reaction": "Jordreaktion på pålen",
       "resistance": "Mobiliserat motstånd p",
       "secant": "Sekantstyvhet",
@@ -241,6 +243,11 @@
       "tributary": "Integrationslängd",
       "ultimate": "Brottmotstånd pu"
     }
+  },
+  "legend": {
+    "aria": "Teckenförklaring för jordlager och fjädrar",
+    "mobilisation": "Färg = jordart; övergår i rött när p/pu går från 50 till 100 %",
+    "springLength": "Fjäderns längd = begynnelsestyvhet k₀"
   },
   "model": {
     "aria": "Beräkningsmodell med verkliga integrationspunkter",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "3D-pålmodell; dra för att rotera, scrolla för att zooma",
     "help": "Dra för att rotera · scrolla för att zooma · höger musknapp för att panorera · klicka på en fjäderpunkt. Djuplistan ger samma val via tangentbordet.",
+    "layerLabel": "{{soil}} · NAP {{top}} till {{bottom}}",
+    "surfaceLabel": "Markyta NAP {{nap}}",
     "unavailable": "3D är inte tillgängligt på denna enhet. Använd beräkningsmodellen och fjäderinspektionen nedan."
   },
   "settings": {

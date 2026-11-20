@@ -3,11 +3,12 @@
 import { jsPDF } from 'jspdf';
 import type { ProjectContext } from '../../framework/types';
 import type { LateralInput, LateralResult } from './compute';
-import { CURVES, extremes, niceTicks, valueAt } from './ForceDiagrams';
+import { CURVES, extremes, niceTicks, signRegions, valueAt } from './ForceDiagrams';
 import { lateralSummary, sectionText } from './LateralSheet';
 import { lateralReportData, type LayerRow } from './report-data';
 import { computeLateral } from './compute';
 import { computePileTable } from './pile-table';
+import { renderMethod } from './report-method';
 import {
   CONTENT_W, M, TOTAL_PAGES_TOKEN, formula, kv, makeCursor, nl, paragraph, sectionTitle, table, winAnsi, type Cursor,
 } from '../pile-bearing-capacity/parts/pile-report-pdf';
@@ -29,6 +30,7 @@ export function buildLateralReport(input: LateralInput, result: LateralResult, c
     norm: 'CUR166 initiele bedding; projectveerwet', date: reportDate(meta.date),
     author: meta.author || 'Open Geotechniek Studio', onderdeel: 'Horizontale paalbelasting',
   });
+  renderMethod(c, input, result);
   const table = input.pileTable;
   if (!table) renderCalc(c, input, result);
   else {
@@ -154,7 +156,7 @@ function drawSoilTable(c: Cursor, layers: LayerRow[], nonlinear: boolean) {
 /** Vier lijnen naast elkaar: diepte in m NAP, eigen schaal, arcering haaks op de paal, max en min. */
 function drawDiagrams(c: Cursor, input: LateralInput, samplesIn: Sample[], head: number) {
   const H = 110;
-  c.reserve(H + 22);
+  c.reserve(H + 26);
   const doc = c.doc, samples = [...samplesIn].sort((a, b) => a.zM - b.zM), L = input.lengthM;
   const top = c.y + 8, bottom = top + H, axisW = 14, gap = 5, W = (CONTENT_W - axisW - 3 * gap) / 4;
   const y = (z: number) => top + H * z / L, TONES = tones();
@@ -176,14 +178,25 @@ function drawDiagrams(c: Cursor, input: LateralInput, samplesIn: Sample[], head:
     doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.setTextColor(90);
     ticks.forEach((t) => { doc.setDrawColor(225); doc.line(x(t), top, x(t), bottom); doc.text(nl(dir * t === 0 ? 0 : dir * t, Math.abs(ticks[1] - ticks[0]) < 1 ? 1 : 0), x(t), bottom + 3.5, { align: 'center' }); });
     doc.text(cv.mirror ? `${cv.unit} (getrokken zijde)` : cv.unit, left + W / 2, bottom + 7, { align: 'center' });
-    // Arcering haaks op de paal, in de kleur van de grootheid.
-    doc.setDrawColor(tone[0], tone[1], tone[2]); doc.setLineWidth(.12);
-    for (let py = y(samples[0].zM); py <= y(samples[samples.length - 1].zM); py += 1.2) doc.line(x0, py, x(valueAt(samples, drawn, (py - top) * L / H)), py);
+    // Rustig vlak: lichte vulling met een fijne arcering haaks op de paal, in de kleur van de grootheid.
+    const pts = samples.map((p) => [x(drawn(p)), y(p.zM)] as const), tint = (f: number) => tone.map((v) => Math.round(255 - (255 - v) * f)) as [number, number, number];
+    const outline = [[x0, pts[0][1]] as const, ...pts, [x0, pts[pts.length - 1][1]] as const];
+    doc.setFillColor(...tint(.1));
+    doc.lines(outline.slice(1).map((p, k) => [p[0] - outline[k][0], p[1] - outline[k][1]]), outline[0][0], outline[0][1], [1, 1], 'F', true);
+    doc.setDrawColor(...tint(.35)); doc.setLineWidth(.1);
+    for (let py = y(samples[0].zM); py <= y(samples[samples.length - 1].zM); py += 2.2) doc.line(x0, py, x(valueAt(samples, drawn, (py - top) * L / H)), py);
     doc.setDrawColor(40); doc.setLineWidth(.3); doc.line(x0, top, x0, bottom);
     doc.setDrawColor(tone[0], tone[1], tone[2]); doc.setLineWidth(.45);
-    const pts = samples.map((p) => [x(drawn(p)), y(p.zM)] as const);
     for (let k = 1; k < pts.length; k++) doc.line(pts[k - 1][0], pts[k - 1][1], pts[k][0], pts[k][1]);
     const e = extremes(samples, cv.value);
+    // Eén teken per gebied tussen twee nuldoorgangen, gelijk aan het scherm.
+    const absMax = Math.max(Math.abs(e.max.v), Math.abs(e.min.v)) || 1;
+    if (cv.sign) for (const g of signRegions(samples, cv.value)) {
+      if (Math.abs(g.peak.v) <= .04 * absMax || y(g.zBottom) - y(g.zTop) < 7) continue;
+      const far = g.peak.z - g.zTop > g.zBottom - g.peak.z ? g.zTop : g.zBottom, cy = Math.min(y(g.zBottom) - 3.5, Math.max(y(g.zTop) + 3.5, y((g.peak.z + far) / 2))), cx = (x0 + x(valueAt(samples, drawn, (cy - top) * L / H))) / 2;
+      // Afschuifteken: de rekenkern geeft V = -H aan de kop; de bovenste pijl wijst met de kracht op het bovenvlak mee.
+      drawSign(c, cv.sign, cx, cy, cv.sign === 'bend' ? (Math.sign(dir * g.sign) || 1) : cv.sign === 'shear' ? -g.sign : g.sign);
+    }
     doc.setFontSize(6); doc.setTextColor(0);
     for (const [kind, v] of [['max', e.max], ['min', e.min]] as const) {
       const px = x(dir * v.v), py = y(v.z), right = px > left + W * .55;
@@ -193,8 +206,30 @@ function drawDiagrams(c: Cursor, input: LateralInput, samplesIn: Sample[], head:
       doc.setTextColor(110); doc.text(`NAP ${nl(head - v.z, 2)}`, right ? px - 1.5 : px + 1.5, ty + 2.4, { align: right ? 'right' : 'left' }); doc.setTextColor(0);
     }
   });
-  doc.setTextColor(0);
-  c.y = bottom + 11;
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(6.5); doc.setTextColor(90);
+  doc.text(winAnsi('Tekens: het moment staat aan de getrokken zijde (boogje bol naar de getrokken vezel, streeplijn = trek); dwarskracht met afschuifteken; z omlaag, H naar rechts.'), M.left, bottom + 11);
+  doc.setFont('helvetica', 'normal'); doc.setTextColor(0);
+  c.y = bottom + 15;
+}
+
+/** Teken in een diagramvlak: buigteken (boogje, trekzijde gestreept), afschuifteken (blokje met twee pijltjes) of plus/min. */
+function drawSign(c: Cursor, kind: 'bend' | 'shear' | 'plain', x: number, y: number, s: number) {
+  const doc = c.doc;
+  doc.setDrawColor(20); doc.setFillColor(20, 20, 20); doc.setLineWidth(.22);
+  if (kind === 'bend') {
+    // Kwadratische boog door drie punten, bol naar de getrokken zijde.
+    const arc = (dx: number, bulge: number) => { let px = x + dx, py = y - 2.6; for (let i = 1; i <= 10; i++) { const t = i / 10, nx = x + dx + bulge * 4 * t * (1 - t), ny = y - 2.6 + 5.2 * t; doc.line(px, py, nx, ny); px = nx; py = ny; } };
+    arc(-s * .6, s * 1.5);
+    doc.setLineDashPattern([.5, .4], 0); doc.setLineWidth(.15); arc(s * .1, s * 1.5); doc.setLineDashPattern([], 0);
+  } else if (kind === 'shear') {
+    doc.setFillColor(255, 255, 255); doc.rect(x - 1.1, y - 1.3, 2.2, 2.6, 'FD'); doc.setFillColor(20, 20, 20);
+    const arrow = (ay: number, d: number) => { doc.line(x - d * 1.7, ay, x + d * 1.7, ay); doc.triangle(x + d * 1.7, ay, x + d * 1.0, ay - .5, x + d * 1.0, ay + .5, 'F'); };
+    arrow(y - 2.1, s); arrow(y + 2.1, -s);
+  } else {
+    doc.setFillColor(255, 255, 255); doc.circle(x, y, 1.5, 'FD');
+    doc.line(x - .8, y, x + .8, y); if (s > 0) doc.line(x, y - .8, x, y + .8);
+  }
+  doc.setLineWidth(.2); doc.setDrawColor(0);
 }
 
 /** N-M-interactiekromme met het ontwerppunt. */

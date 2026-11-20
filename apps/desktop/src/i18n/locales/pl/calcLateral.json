@@ -143,10 +143,10 @@
     "khOwn": "Własna wartość z ustawień",
     "khTable": "CUR166 tabela 3.3, pierwszy zakres sieczny",
     "kinds": {
-      "concreteRound": "Beton ○",
-      "concreteSquare": "Beton □",
+      "concreteRound": "Beton okrągły",
+      "concreteSquare": "Beton kwadratowy",
       "filledTube": "Rura wypełniona",
-      "steelTube": "Rura stalowa"
+      "steelTube": "Rura pusta"
     },
     "layer": "Warstwa",
     "layerBottom": "Spód warstwy {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Materiał i wytrzymałość",
     "maxElement": "Maksymalna długość elementu",
     "model": "Model",
+    "momentHint": "Znak M: dodatni moment obraca głowicę pala przeciwnie do ruchu wskazówek zegara i przeciwdziała dodatniej sile H. Siła H na wysokości e nad głowicą daje M = −H·e.",
     "momentM": "Moment zginający M",
     "momentMLabel": "Moment zginający w głowicy [kNm]",
     "netPressure": "Parcie netto",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Głębokość zastępcza",
       "initial": "Sztywność początkowa k₀",
       "layer": "Warstwa gruntu",
+      "mobilisation": "Mobilizacja p/pu",
       "reaction": "Reakcja gruntu na pal",
       "resistance": "Zmobilizowany opór p",
       "secant": "Sztywność sieczna",
@@ -241,6 +243,11 @@
       "tributary": "Długość całkowania",
       "ultimate": "Opór graniczny pu"
     }
+  },
+  "legend": {
+    "aria": "Legenda warstw gruntu i sprężyn",
+    "mobilisation": "Kolor = rodzaj gruntu; przechodzi w czerwień, gdy p/pu rośnie od 50 do 100 %",
+    "springLength": "Długość sprężyny = sztywność początkowa k₀"
   },
   "model": {
     "aria": "Model obliczeniowy z rzeczywistymi punktami całkowania",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "Model 3D pala; przeciągnij, aby obrócić, przewiń, aby powiększyć",
     "help": "Przeciągnij, aby obrócić · przewiń, aby powiększyć · prawy przycisk myszy, aby przesunąć · kliknij punkt sprężyny. Lista głębokości oferuje ten sam wybór z klawiatury.",
+    "layerLabel": "{{soil}} · NAP {{top}} do {{bottom}}",
+    "surfaceLabel": "Poziom terenu NAP {{nap}}",
     "unavailable": "Widok 3D nie jest dostępny na tym urządzeniu. Użyj modelu obliczeniowego i inspekcji sprężyny poniżej."
   },
   "settings": {

@@ -2,10 +2,15 @@ import { useId } from 'react';
 import type { SpringState, UltimateProfile } from './spring-types';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
+import { soilColor } from './report-data';
+import { soilKey } from './soil';
+import { mobilisation, springCss } from './spring-visual';
 
 const f=(value:number,digits=4)=>Number.isFinite(value)?value.toLocaleString(numberLocale(),{maximumFractionDigits:digits}):'—';
-export function SpringInspector({spring:s,ultimate}:{spring:SpringState|undefined;ultimate?:UltimateProfile}) {
+export function SpringInspector({spring:s,ultimate,soilId}:{spring:SpringState|undefined;ultimate?:UltimateProfile;soilId?:string}) {
   const {t}=useTranslation('calcLateral');
+  const soilName=soilId===undefined?null:soilId==='manual'?t('soils.manual','Eigen waarde'):t(soilKey(soilId),soilId).split(' (')[0];
+  const m=s?mobilisation(s):null;
   const clipId=useId();
   if(!s)return <section className="pile-inspector" aria-label={t('inspector.aria', 'Veerinspectie')}><h3>{t('inspector.spring', 'Grondveer')}</h3><p>{t('spring.none','Geen actieve grondveren in dit model.')}</p></section>;
   const xMax=Math.max(.001,Math.abs(s.displacementM)*1.25,...s.curvePoints.map(p=>Math.abs(p.yM)));
@@ -19,7 +24,10 @@ export function SpringInspector({spring:s,ultimate}:{spring:SpringState|undefine
     [t('inspector.values.initial','Initiële stijfheid k₀'),`${f(s.initialKnM2)} kN/m²`],[t('inspector.values.secant','Secantstijfheid'),`${f(s.secantKnM2)} kN/m²`],
     [t('inspector.values.tangent','Tangentstijfheid'),`${f(s.tangentKnM2)} kN/m²`],[t('inspector.values.ultimate','Grensweerstand pu'),s.mode==='linear'?t('inspector.unbounded','Onbegrensd (lineair)'):s.ultimateKnM===null?'—':`${f(s.ultimateKnM)} kN/m`],
     [t('inspector.values.tributary','Integratielengte'),`${f(s.tributaryLengthM)} m`]];
-  return <section className="pile-inspector" aria-label={t('inspector.aria','Veerinspectie')}><h3>{t('inspector.title', 'Grondveer · laag {{n}}', {n:s.layerIndex+1})}</h3><p className="pile-point-id">{s.id}</p>
+  return <section className="pile-inspector" aria-label={t('inspector.aria','Veerinspectie')}><h3>{soilId!==undefined&&<i className="pile-inspector-swatch" style={{background:soilColor(soilId).fill}}/>}{t('inspector.title', 'Grondveer · laag {{n}}', {n:s.layerIndex+1})}{soilName?` · ${soilName}`:''}</h3><p className="pile-point-id">{s.id}</p>
+    {m!==null&&<div className="pile-mobilisation" role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(m*100)} aria-label={t('inspector.values.mobilisation','Mobilisatie p/pu')}>
+      <span>{t('inspector.values.mobilisation','Mobilisatie p/pu')}</span><b>{f(m*100,0)} %</b>
+      <div><i style={{width:`${Math.min(100,m*100)}%`,background:springCss(soilId??'manual',m)}}/></div></div>}
     <svg viewBox="0 0 400 285" role="img" aria-label={t('inspector.pyCurve','p-y-curve')}>
       <defs><clipPath id={clipId}><rect x="40" y="30" width="300" height="200"/></clipPath></defs>
       {[-1,-.5,0,.5,1].map(t=><g key={t}><line className="pile-grid" x1="40" x2="340" y1={y(t*yMax)} y2={y(t*yMax)}/>

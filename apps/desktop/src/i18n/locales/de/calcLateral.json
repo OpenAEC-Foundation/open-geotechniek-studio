@@ -143,10 +143,10 @@
     "khOwn": "Eigener Wert aus den Einstellungen",
     "khTable": "CUR166 Tabelle 3.3, erster Sekantenbereich",
     "kinds": {
-      "concreteRound": "Beton ○",
-      "concreteSquare": "Beton □",
+      "concreteRound": "Beton rund",
+      "concreteSquare": "Beton quadratisch",
       "filledTube": "Gefülltes Rohr",
-      "steelTube": "Stahlrohr"
+      "steelTube": "Rohr hohl"
     },
     "layer": "Schicht",
     "layerBottom": "Unterkante Schicht {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Material und Festigkeit",
     "maxElement": "Maximale Elementlänge",
     "model": "Modell",
+    "momentHint": "Vorzeichen von M: Ein positives Moment dreht den Pfahlkopf gegen den Uhrzeigersinn und wirkt einem positiven H entgegen. Eine Kraft H in der Höhe e über dem Kopf ergibt M = −H·e.",
     "momentM": "Biegemoment M",
     "momentMLabel": "Biegemoment am Kopf [kNm]",
     "netPressure": "Nettodruck",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Äquivalente Tiefe",
       "initial": "Anfangssteifigkeit k₀",
       "layer": "Bodenschicht",
+      "mobilisation": "Mobilisierung p/pu",
       "reaction": "Bodenreaktion auf den Pfahl",
       "resistance": "Mobilisierter Widerstand p",
       "secant": "Sekantensteifigkeit",
@@ -241,6 +243,11 @@
       "tributary": "Integrationslänge",
       "ultimate": "Grenzwiderstand pu"
     }
+  },
+  "legend": {
+    "aria": "Legende zu Bodenschichten und Federn",
+    "mobilisation": "Farbe = Bodenart; geht in Rot über, wenn p/pu von 50 auf 100 % steigt",
+    "springLength": "Federlänge = Anfangssteifigkeit k₀"
   },
   "model": {
     "aria": "Rechenmodell mit tatsächlichen Integrationspunkten",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "3D-Pfahlmodell; ziehen zum Drehen, scrollen zum Zoomen",
     "help": "Ziehen zum Drehen · Scrollen zum Zoomen · rechte Maustaste zum Verschieben · auf einen Federpunkt klicken. Die Tiefenliste bietet dieselbe Auswahl über die Tastatur.",
+    "layerLabel": "{{soil}} · NAP {{top}} bis {{bottom}}",
+    "surfaceLabel": "Geländeoberkante NAP {{nap}}",
     "unavailable": "3D ist auf diesem Gerät nicht verfügbar. Verwenden Sie das Rechenmodell und die Federprüfung unten."
   },
   "settings": {

@@ -143,10 +143,10 @@
     "khOwn": "Valor personalizado de la configuración",
     "khTable": "CUR166 tabla 3.3, primer tramo secante",
     "kinds": {
-      "concreteRound": "Hormigón ○",
-      "concreteSquare": "Hormigón □",
+      "concreteRound": "Hormigón redondo",
+      "concreteSquare": "Hormigón cuadrado",
       "filledTube": "Tubo relleno",
-      "steelTube": "Tubo de acero"
+      "steelTube": "Tubo hueco"
     },
     "layer": "Capa",
     "layerBottom": "Base de la capa {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Material y resistencia",
     "maxElement": "Longitud máxima de elemento",
     "model": "Modelo",
+    "momentHint": "Signo de M: un momento positivo gira la cabeza del pilote en sentido antihorario y contrarresta una H positiva. Una fuerza H a una altura e sobre la cabeza da M = −H·e.",
     "momentM": "Momento flector M",
     "momentMLabel": "Momento flector en cabeza [kNm]",
     "netPressure": "Presión neta",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Profundidad equivalente",
       "initial": "Rigidez inicial k₀",
       "layer": "Capa del terreno",
+      "mobilisation": "Movilización p/pu",
       "reaction": "Reacción del terreno sobre el pilote",
       "resistance": "Resistencia movilizada p",
       "secant": "Rigidez secante",
@@ -241,6 +243,11 @@
       "tributary": "Longitud de integración",
       "ultimate": "Resistencia última pu"
     }
+  },
+  "legend": {
+    "aria": "Leyenda de capas de suelo y muelles",
+    "mobilisation": "Color = tipo de suelo; pasa a rojo cuando p/pu va del 50 al 100 %",
+    "springLength": "Longitud del muelle = rigidez inicial k₀"
   },
   "model": {
     "aria": "Modelo de cálculo con los puntos de integración reales",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "Modelo 3D del pilote; arrastre para girar, desplace la rueda para hacer zoom",
     "help": "Arrastre para girar · rueda para hacer zoom · botón derecho del ratón para desplazar · haga clic en un punto de muelle. La lista de profundidades ofrece la misma selección mediante el teclado.",
+    "layerLabel": "{{soil}} · NAP {{top}} a {{bottom}}",
+    "surfaceLabel": "Superficie del terreno NAP {{nap}}",
     "unavailable": "La vista 3D no está disponible en este dispositivo. Utilice el modelo de cálculo y la inspección de muelles de abajo."
   },
   "settings": {

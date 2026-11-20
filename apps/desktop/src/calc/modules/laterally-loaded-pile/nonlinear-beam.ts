@@ -59,11 +59,14 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
  const free=Array.from({length:nd},(_,i)=>i).filter(i=>!fixed.has(i));
  const loadScale=Math.max(1,...Array.from(F,(v,i)=>Math.abs(v)/(i%2?L:1)));
  const norm=(r:Float64Array)=>Math.max(0,...free.map(i=>Math.abs(r[i])/(i%2?L:1)));
+ // Afrondingsvloer: het residu is een verschil van grote elementkrachten en kan niet kleiner
+ // worden dan enkele malen de machineprecisie van die krachten (zeer stijve paal, korte elementen).
+ const roundoff=(magnitude:Float64Array)=>16*Number.EPSILON*Math.max(0,...free.map(i=>magnitude[i]/(i%2?L:1)));
  function assemble(u:number[],factor:number,matrix:boolean){
-  const residual=Float64Array.from(F,v=>-factor*v),band=matrix?Array.from({length:nd},()=>new Float64Array(4)):[];
+  const residual=Float64Array.from(F,v=>-factor*v),band=matrix?Array.from({length:nd},()=>new Float64Array(4)):[],magnitude=new Float64Array(nd);
   elements.forEach((el,e)=>{
    for(let i=0;i<4;i++)for(let j=0;j<4;j++){
-    residual[2*e+i]+=el.kb[i][j]*u[2*e+j];
+    const part=el.kb[i][j]*u[2*e+j];residual[2*e+i]+=part;magnitude[2*e+i]+=Math.abs(part);
     if(matrix&&j<=i)band[2*e+i][i-j]+=el.kb[i][j];
    }
    for(const p of el.points){if(!p.law)continue;const y=p.n.reduce((s,v,j)=>s+v*u[2*e+j],0),r=evaluateSpring(p.law,y);
@@ -72,7 +75,8 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
    }
   });
   if(!residual.every(Number.isFinite))throw new Error(ct('calcLateral', 'errors.nonlinearOverflow', 'Numerieke overloop in het niet-lineaire model.'));
-  return {residual,band};
+  // De vloer is begrensd op 100 × de tolerantie, zodat bezwijken (onbegrensde verplaatsing) nooit als evenwicht telt.
+  return {residual,band,limit:tol*loadScale+Math.min(roundoff(magnitude),100*tol*loadScale)};
  }
  let u=Array(nd).fill(0),factor=0,increment=mode==='linear'?1:1/initialSteps,iterations=0,loadSteps=0,cutbacks=0;
  // Ook bij nulbelasting moet de oplossing uniek bepaald zijn.
@@ -81,13 +85,13 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
   const target=Math.min(1,factor+increment);let trial=[...u],converged=false;
   for(let k=0;k<maxIterations;k++){
    const current=assemble(trial,target,true),r=norm(current.residual);
-   if(r<=tol*loadScale){converged=true;break;}
+   if(r<=current.limit){converged=true;break;}
    let du:number[];try{du=solveIncrement(current.band,current.residual,free);}catch{break;}
    iterations++;let improved=false;
    for(let alpha=1;alpha>=1/256;alpha/=2){
     const candidate=[...trial];free.forEach((i,j)=>candidate[i]+=alpha*du[j]);
-    const nr=norm(assemble(candidate,target,false).residual);
-    if(nr<r*(1-1e-4*alpha)||nr<=tol*loadScale){trial=candidate;improved=true;if(nr<=tol*loadScale)converged=true;break;}
+    const next=assemble(candidate,target,false),nr=norm(next.residual);
+    if(nr<r*(1-1e-4*alpha)||nr<=next.limit){trial=candidate;improved=true;if(nr<=next.limit)converged=true;break;}
    }
    if(converged||!improved)break;
   }
@@ -96,7 +100,7 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
   if(loadSteps>200)throw new Error(ct('calcLateral', 'errors.noConvergenceSteps', 'Geen convergentie binnen het maximale aantal belastingstappen.'));
  }
  const final=assemble(u,1,false),residualKn=norm(final.residual);
- if(residualKn>tol*loadScale)throw new Error(ct('calcLateral', 'errors.noConvergenceFull', 'Geen convergentie van het volledige belastingsgeval.'));
+ if(residualKn>final.limit)throw new Error(ct('calcLateral', 'errors.noConvergenceFull', 'Geen convergentie van het volledige belastingsgeval.'));
  const springs:SpringState[]=[],samples:BeamResult['samples']=[];
  let soilForce=0,soilMoment=0,loadForce=input.headForceKn,loadMoment=input.headMomentKnM;
  const responseElements=elements.map((el,e)=>{

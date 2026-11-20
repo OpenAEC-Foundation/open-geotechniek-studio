@@ -143,10 +143,10 @@
     "khOwn": "Egen værdi fra indstillingerne",
     "khTable": "CUR166 tabel 3.3, første sekantområde",
     "kinds": {
-      "concreteRound": "Beton ○",
-      "concreteSquare": "Beton □",
+      "concreteRound": "Beton rund",
+      "concreteSquare": "Beton kvadratisk",
       "filledTube": "Fyldt rør",
-      "steelTube": "Stålrør"
+      "steelTube": "Hult rør"
     },
     "layer": "Lag",
     "layerBottom": "Bund lag {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Materiale og styrke",
     "maxElement": "Maksimal elementlængde",
     "model": "Model",
+    "momentHint": "Fortegn for M: et positivt moment drejer pælehovedet mod uret og modvirker en positiv H. En kraft H i højden e over hovedet giver M = −H·e.",
     "momentM": "Bøjningsmoment M",
     "momentMLabel": "Bøjningsmoment ved hovedet [kNm]",
     "netPressure": "Nettotryk",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Ækvivalent dybde",
       "initial": "Initialstivhed k₀",
       "layer": "Jordlag",
+      "mobilisation": "Mobilisering p/pu",
       "reaction": "Jordreaktion på pælen",
       "resistance": "Mobiliseret modstand p",
       "secant": "Sekantstivhed",
@@ -241,6 +243,11 @@
       "tributary": "Integrationslængde",
       "ultimate": "Brudmodstand pu"
     }
+  },
+  "legend": {
+    "aria": "Signaturforklaring for jordlag og fjedre",
+    "mobilisation": "Farve = jordart; går mod rød, når p/pu går fra 50 til 100 %",
+    "springLength": "Fjederens længde = begyndelsesstivhed k₀"
   },
   "model": {
     "aria": "Beregningsmodel med faktiske integrationspunkter",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "3D-pælemodel; træk for at rotere, rul for at zoome",
     "help": "Træk for at rotere · rul for at zoome · højre museknap for at panorere · klik på et fjederpunkt. Dybdelisten giver samme valg via tastaturet.",
+    "layerLabel": "{{soil}} · NAP {{top}} til {{bottom}}",
+    "surfaceLabel": "Terræn NAP {{nap}}",
     "unavailable": "3D er ikke tilgængelig på denne enhed. Brug beregningsmodellen og fjederinspektionen nedenfor."
   },
   "settings": {
