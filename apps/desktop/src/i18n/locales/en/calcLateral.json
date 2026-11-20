@@ -143,10 +143,10 @@
     "khOwn": "Custom value from the settings",
     "khTable": "CUR166 table 3.3, first secant range",
     "kinds": {
-      "concreteRound": "Concrete ○",
-      "concreteSquare": "Concrete □",
+      "concreteRound": "Concrete round",
+      "concreteSquare": "Concrete square",
       "filledTube": "Filled tube",
-      "steelTube": "Steel tube"
+      "steelTube": "Hollow tube"
     },
     "layer": "Layer",
     "layerBottom": "Bottom of layer {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Material and strength",
     "maxElement": "Maximum element length",
     "model": "Model",
+    "momentHint": "Sign of M: a positive moment turns the pile head anticlockwise and counteracts a positive H. A force H at height e above the head gives M = −H·e.",
     "momentM": "Bending moment M",
     "momentMLabel": "Bending moment at the head [kNm]",
     "netPressure": "Net pressure",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Equivalent depth",
       "initial": "Initial stiffness k₀",
       "layer": "Soil layer",
+      "mobilisation": "Mobilisation p/pu",
       "reaction": "Soil reaction on the pile",
       "resistance": "Mobilised resistance p",
       "secant": "Secant stiffness",
@@ -241,6 +243,11 @@
       "tributary": "Integration length",
       "ultimate": "Ultimate resistance pu"
     }
+  },
+  "legend": {
+    "aria": "Legend for soil layers and springs",
+    "mobilisation": "Colour = soil type; shifts to red as p/pu goes from 50 to 100 %",
+    "springLength": "Spring length = initial stiffness k₀"
   },
   "model": {
     "aria": "Calculation model with actual integration points",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "3D pile model; drag to rotate, scroll to zoom",
     "help": "Drag to rotate · scroll to zoom · right mouse button to pan · click a spring point. The depth list offers the same selection via the keyboard.",
+    "layerLabel": "{{soil}} · NAP {{top}} to {{bottom}}",
+    "surfaceLabel": "Ground level NAP {{nap}}",
     "unavailable": "3D is not available on this device. Use the calculation model and the spring inspection below."
   },
   "settings": {

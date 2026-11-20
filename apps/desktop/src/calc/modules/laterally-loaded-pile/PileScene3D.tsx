@@ -6,6 +6,11 @@ import type { LateralInput } from './compute';
 import type { BeamResult } from './beam';
 import type { SpringState } from './spring-types';
 import { useTranslation } from 'react-i18next';
+import { numberLocale } from '../../i18n';
+import { soilColor } from './report-data';
+import { soilKey } from './soil';
+import { SpringLegend } from './SpringLegend';
+import { mobilisation, mobilisationMix, soilStroke, springLength } from './spring-visual';
 
 interface Props {
   input:LateralInput;beam:BeamResult;springs:SpringState[];selectedId:string|undefined;
@@ -75,11 +80,23 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     const maxY=Math.max(0,...beam.samples.map(p=>Math.abs(p.yM*scale)));
     const {reach,maxDistance,far}=pileSceneExtent(L,diameter,maxY);
     const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(38,1,.01,far);
-    camera.position.set(reach*1.8,L*.1,L*1.4+maxY*2);
-    const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,-L/2,0);controls.minDistance=diameter;controls.maxDistance=maxDistance;controls.update();
+    // Iets ruimer dan de paal: boven de kop blijft plaats voor de belastingpijl en zijn label.
+    camera.position.set(reach*1.8,L*.12,L*1.62+maxY*2);
+    const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,-L*.43,0);controls.minDistance=diameter;controls.maxDistance=maxDistance;controls.update();
     renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));container.appendChild(renderer.domElement);
     renderer.domElement.setAttribute('aria-label',sceneLabel);
-    const render=()=>renderer.render(scene,camera);
+    const projected=new THREE.Vector3();
+    const render=()=>{
+      renderer.render(scene,camera);
+      // Labels volgen hun punt in het model; achter de camera of buiten beeld verdwijnen ze.
+      const width=container.clientWidth,height=container.clientHeight;
+      for(const label of labels){
+        projected.copy(label.position).project(camera);
+        const x=(projected.x+1)/2*width,y=(1-projected.y)/2*height,visible=projected.z<1&&x>4&&x<width-4&&y>8&&y<height-8;
+        label.element.style.display=visible?'':'none';
+        if(visible)label.element.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+      }
+    };
     scene.add(new THREE.AmbientLight(0xffffff,2));
     const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(5,5,10);scene.add(light);
     const token=(name:string)=>new THREE.Color(getComputedStyle(container).getPropertyValue(name).trim());
@@ -89,14 +106,50 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     const inner=Math.max(0,diameter/2-input.section.wallMm/1000);
     scene.add(new THREE.Mesh(pileGeometry(beam.samples,scale,diameter/2,kind==='concrete-square',tube?inner:0),tube?steel:concrete));
     if(kind==='filled-tube')scene.add(new THREE.Mesh(pileGeometry(beam.samples,scale,inner,false),concrete));
-    const soilMaterials:THREE.MeshBasicMaterial[]=[];
-    const edgeMaterials:THREE.LineBasicMaterial[]=[];
-    input.layers.forEach((layer,index)=>{
-      const material=new THREE.MeshBasicMaterial({color:token(index%2?'--oa-hover':'--oa-selected'),transparent:true,opacity:.14,depthWrite:false,side:THREE.DoubleSide});soilMaterials.push(material);
-      const soil=new THREE.Mesh(new THREE.BoxGeometry(reach*2,layer.bottomM-layer.topM,reach*1.2),material);soil.position.set(0,-(layer.topM+layer.bottomM)/2,0);scene.add(soil);
-      const edgeMaterial=new THREE.LineBasicMaterial({color:token('--oa-border-strong'),transparent:true,opacity:.45});edgeMaterials.push(edgeMaterial);
+    const edgeMaterials:THREE.LineBasicMaterial[]=[],accentMaterials:Array<THREE.LineBasicMaterial|THREE.MeshBasicMaterial>=[];
+    // Labels als HTML over het beeld: scherp, in het lettertype en de kleuren van het thema.
+    const overlay=document.createElement('div');overlay.className='pile-scene-labels';container.appendChild(overlay);
+    const labels:Array<{element:HTMLElement;position:THREE.Vector3}>=[];
+    const addLabel=(text:string,position:THREE.Vector3,kind:string)=>{const element=document.createElement('span');element.className=`pile-scene-label pile-scene-label-${kind}`;element.textContent=text;overlay.appendChild(element);labels.push({element,position});};
+    const srgb=([r,g,b]:[number,number,number])=>new THREE.Color().setRGB(r/255,g/255,b/255,THREE.SRGBColorSpace);
+    const headNap=input.headNap??0,napText=(z:number)=>(headNap-z).toLocaleString(numberLocale(),{minimumFractionDigits:2,maximumFractionDigits:2});
+    const soilName=(id:string)=>id==='manual'?t('soils.manual','Eigen waarde'):t(soilKey(id),id).split(' (')[0];
+    const ordered0=[...input.layers].sort((a,b)=>a.topM-b.topM);
+    // Elke laag als doorschijnend blok in de kleur van de grondsoort, met de laaggrenzen als lijnen.
+    ordered0.forEach(layer=>{
+      const material=new THREE.MeshBasicMaterial({color:srgb(soilColor(layer.springId).rgb),transparent:true,opacity:.3,depthWrite:false,side:THREE.DoubleSide});
+      const soil=new THREE.Mesh(new THREE.BoxGeometry(reach*2,layer.bottomM-layer.topM,reach*1.2),material);soil.position.set(0,-(layer.topM+layer.bottomM)/2,0);soil.renderOrder=0;scene.add(soil);
+      const edgeMaterial=new THREE.LineBasicMaterial({color:token('--oa-border-strong'),transparent:true,opacity:.8});edgeMaterials.push(edgeMaterial);
       const outline=new THREE.LineSegments(new THREE.EdgesGeometry(soil.geometry),edgeMaterial);outline.position.copy(soil.position);scene.add(outline);
+      addLabel(t('scene.layerLabel','{{soil}} · NAP {{top}} tot {{bottom}}',{soil:soilName(layer.springId),top:napText(layer.topM),bottom:napText(layer.bottomM)}),new THREE.Vector3(-reach,-(layer.topM+layer.bottomM)/2,reach*.6),'layer');
     });
+    // Maaiveld: de bovenkant van de bovenste laag, als doorgetrokken rand.
+    if(ordered0.length){
+      const zTop=ordered0[0].topM,surfaceMaterial=new THREE.LineBasicMaterial({color:token('--oa-text')});accentMaterials.push(surfaceMaterial);
+      const corners=[[-1,-1],[1,-1],[1,1],[-1,1],[-1,-1]].map(([a,b])=>new THREE.Vector3(a*reach*1.08,-zTop,b*reach*.66));
+      scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(corners),surfaceMaterial));
+      addLabel(t('scene.surfaceLabel','Maaiveld NAP {{nap}}',{nap:napText(zTop)}),new THREE.Vector3(reach*1.08,-zTop,reach*.66),'surface');
+    }
+    // Belasting op de kop: kracht H als pijl, moment M als boog met pijlpunt.
+    const loadColor=()=>token('--oa-accent-text'),loadLength=Math.max(reach*.55,diameter*2),headY=beam.samples.length?beam.samples.reduce((a,p)=>p.zM<a.zM?p:a).yM*scale:0;
+    let forceArrow:THREE.ArrowHelper|undefined;
+    if(input.headForceKn!==0){
+      const sign=Math.sign(input.headForceKn);
+      forceArrow=new THREE.ArrowHelper(new THREE.Vector3(sign,0,0),new THREE.Vector3(headY-sign*(loadLength+diameter*.6),0,0),loadLength,loadColor().getHex(),loadLength*.28,loadLength*.14);scene.add(forceArrow);
+      addLabel(`H = ${input.headForceKn.toLocaleString(numberLocale(),{maximumFractionDigits:1})} kN`,new THREE.Vector3(headY-sign*(loadLength+diameter*.6),loadLength*.16,0),'load');
+    }
+    if(input.headMomentKnM!==0&&!input.headFixedRotation){
+      // Positief M = rotatie dy/dz > 0 (z omlaag): van voren gezien tegen de klok in.
+      const sign=Math.sign(input.headMomentKnM),radius=Math.max(diameter*1.4,L*.06),centre=new THREE.Vector3(headY,radius*.2,0);
+      const angle=(k:number)=>(-.25+1.5*k/40)*Math.PI*sign+(sign<0?Math.PI:0);
+      const arc=Array.from({length:41},(_,k)=>new THREE.Vector3(centre.x+radius*Math.cos(angle(k)),centre.y+radius*Math.sin(angle(k)),0));
+      const arcMaterial=new THREE.LineBasicMaterial({color:loadColor()});accentMaterials.push(arcMaterial);
+      scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc),arcMaterial));
+      const tipMaterial=new THREE.MeshBasicMaterial({color:loadColor()});accentMaterials.push(tipMaterial);
+      const tip=new THREE.Mesh(new THREE.ConeGeometry(radius*.16,radius*.42,12),tipMaterial),end=arc[40],direction=end.clone().sub(arc[38]).normalize();
+      tip.position.copy(end);tip.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),direction);scene.add(tip);
+      addLabel(`M = ${input.headMomentKnM.toLocaleString(numberLocale(),{maximumFractionDigits:1})} kNm`,new THREE.Vector3(centre.x,centre.y+radius*1.25,0),'load');
+    }
     const original=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(0,-L,0)]),new THREE.LineDashedMaterial({color:token('--oa-text-secondary'),dashSize:L/70,gapSize:L/100}));original.computeLineDistances();scene.add(original);
     // Gronddruk: de reactie van de grond op de paal als vlak achter de paalas.
     const ordered=[...springs].sort((a,b)=>a.zM-b.zM),pMax=Math.max(1e-9,...ordered.map(s=>Math.abs(s.resistanceKnM)));
@@ -113,18 +166,24 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
         const dir=new THREE.Vector3(-Math.sign(s.resistanceKnM),0,0),arrow=new THREE.ArrowHelper(dir,new THREE.Vector3(-s.resistanceKnM*pScale,-s.zM,-diameter),len,token('--oa-accent-text').getHex(),Math.min(len*.35,L*.02),Math.min(len*.25,L*.012));scene.add(arrow);});
     }
     const markers:THREE.Mesh<THREE.SphereGeometry,THREE.MeshBasicMaterial>[]=[],springLines:THREE.Line[]=[],springMaterials:THREE.LineBasicMaterial[]=[],markerRadius=Math.max(diameter*.14,L*.004);
+    // Veer: lengte naar de beginstijfheid, kleur van de grondsoort, verlopend naar de foutkleur bij hoge mobilisatie.
+    const kMax=Math.max(1e-12,...ordered.map(s=>s.initialKnM2)),springBase=Math.max(diameter*2.4,L*.09),amplitude=Math.max(diameter*.16,L*.006);
+    const springColor=(s:SpringState)=>srgb(soilStroke(input.layers[s.layerIndex]?.springId??'manual')).lerp(token('--oa-error'),mobilisationMix(mobilisation(s)));
     ordered.forEach(s=>{
-      const marker=new THREE.Mesh(new THREE.SphereGeometry(markerRadius,10,8),new THREE.MeshBasicMaterial({color:token('--oa-accent-text'),depthTest:false}));
+      const marker=new THREE.Mesh(new THREE.SphereGeometry(markerRadius,10,8),new THREE.MeshBasicMaterial({color:springColor(s),depthTest:false}));
       marker.position.set(s.displacementM*scale,-s.zM,diameter/2+markerRadius);marker.userData.springId=s.id;marker.renderOrder=3;markers.push(marker);scene.add(marker);
-      const start=new THREE.Vector3(s.displacementM*scale,-s.zM,diameter/2+markerRadius),end=start.clone().add(new THREE.Vector3(Math.max(diameter*.8,L*.025),0,0));
-      const springMaterial=new THREE.LineBasicMaterial({color:token('--oa-accent-text'),transparent:true,opacity:.35});springMaterials.push(springMaterial);
-      const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([start,end]),springMaterial);springLines.push(line);scene.add(line);
+      const start=new THREE.Vector3(s.displacementM*scale,-s.zM,diameter/2+markerRadius),length=springBase*springLength(s.initialKnM2,kMax),lead=length*.12,coils=Math.max(3,Math.round(8*springLength(s.initialKnM2,kMax)));
+      const points=[start.clone(),start.clone().add(new THREE.Vector3(lead,0,0))];
+      for(let k=0;k<2*coils;k++)points.push(start.clone().add(new THREE.Vector3(lead+(length-2*lead)*(k+.5)/(2*coils),(k%2?-1:1)*amplitude,0)));
+      points.push(start.clone().add(new THREE.Vector3(length-lead,0,0)),start.clone().add(new THREE.Vector3(length,0,0)));
+      const springMaterial=new THREE.LineBasicMaterial({color:springColor(s),depthTest:false});springMaterials.push(springMaterial);
+      const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),springMaterial);line.renderOrder=2;springLines.push(line);scene.add(line);
     });
     // Detailniveau: uitgezoomd een veer of twaalf, inzoomen toont er steeds meer.
     const startDistance=camera.position.distanceTo(controls.target);
     const applyDensity=()=>{const stride=springStride(ordered.length,startDistance,camera.position.distanceTo(controls.target));
       markers.forEach((m,k)=>{const show=k%stride===0||m.userData.springId===selected.current;m.visible=show;springLines[k].visible=show;});};
-    const updateSelection=()=>{applyDensity();markers.forEach(marker=>{const active=marker.userData.springId===selected.current;marker.scale.setScalar(active?1.8:1);marker.material.color.copy(token(active?'--oa-text':'--oa-accent-text'));});render();};
+    const updateSelection=()=>{applyDensity();markers.forEach((marker,k)=>{const active=marker.userData.springId===selected.current;marker.scale.setScalar(active?1.8:1);marker.material.color.copy(active?token('--oa-text'):springColor(ordered[k]));});render();};
     refreshSelection.current=updateSelection;
     const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let downX=0,downY=0;
     const down=(event:PointerEvent)=>{downX=event.clientX;downY=event.clientY;};
@@ -138,18 +197,18 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(container);
     const themeObserver=new MutationObserver(()=>{
       
-      original.material.color.copy(token('--oa-text-secondary'));edgeMaterials.forEach(material=>material.color.copy(token('--oa-border-strong')));(pressureMaterials as Array<THREE.MeshBasicMaterial|THREE.LineBasicMaterial>).forEach((m,k)=>m.color.copy(token(k?'--oa-accent-text':'--oa-accent')));springMaterials.forEach(material=>material.color.copy(token('--oa-accent-text')));
-      soilMaterials.forEach((material,index)=>material.color.copy(token(index%2?'--oa-hover':'--oa-selected')));updateSelection();
-    });themeObserver.observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['class','data-theme']});
+      original.material.color.copy(token('--oa-text-secondary'));edgeMaterials.forEach(material=>material.color.copy(token('--oa-border-strong')));(pressureMaterials as Array<THREE.MeshBasicMaterial|THREE.LineBasicMaterial>).forEach((m,k)=>m.color.copy(token(k?'--oa-accent-text':'--oa-accent')));springMaterials.forEach((material,k)=>material.color.copy(springColor(ordered[k])));
+      accentMaterials.forEach((material,k)=>material.color.copy(k===0&&ordered0.length?token('--oa-text'):loadColor()));forceArrow?.setColor(loadColor());updateSelection();
+    });themeObserver.observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['class','data-theme','data-oa-theme']});
     const onCamera=()=>{applyDensity();render();};controls.addEventListener('change',onCamera);renderer.domElement.addEventListener('pointerdown',down);renderer.domElement.addEventListener('pointerup',up);renderer.domElement.addEventListener('webglcontextlost',lost);resize();updateSelection();
     return ()=>{
       refreshSelection.current=undefined;resizeObserver.disconnect();themeObserver.disconnect();controls.removeEventListener('change',onCamera);controls.dispose();
       renderer.domElement.removeEventListener('pointerdown',down);renderer.domElement.removeEventListener('pointerup',up);renderer.domElement.removeEventListener('webglcontextlost',lost);
       const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>([concrete,steel]);
       scene.traverse(object=>{const mesh=object as THREE.Mesh;if(mesh.geometry)geometries.add(mesh.geometry);if(mesh.material)(Array.isArray(mesh.material)?mesh.material:[mesh.material]).forEach(m=>materials.add(m));});
-      geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.clear();renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();
+      geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.clear();renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();overlay.remove();
     };
-  },[input,beam,springs,scale,unavailable,sceneLabel]);
+  },[input,beam,springs,scale,unavailable,sceneLabel,t]);
   if(unavailable)return <div><p className="pile-webgl-fallback" role="status">{t('scene.unavailable', '3D is op dit apparaat niet beschikbaar. Gebruik het rekenmodel en de veerinspectie hieronder.')}</p>{fallback}</div>;
-  return <><div className="pile-scene" ref={host}/><p className="pile-orbit-help">{t('scene.help', 'Sleep om te draaien · scroll om te zoomen · rechtermuis om te verschuiven · klik een veerpunt. De dieptelijst biedt dezelfde selectie met het toetsenbord.')}</p></>;
+  return <><div className="pile-scene" ref={host}/><SpringLegend layers={input.layers}/><p className="pile-orbit-help">{t('scene.help', 'Sleep om te draaien · scroll om te zoomen · rechtermuis om te verschuiven · klik een veerpunt. De dieptelijst biedt dezelfde selectie met het toetsenbord.')}</p></>;
 }

@@ -143,10 +143,10 @@
     "khOwn": "Eigen waarde uit de instellingen",
     "khTable": "CUR166 tabel 3.3, eerste secanttraject",
     "kinds": {
-      "concreteRound": "Beton ○",
-      "concreteSquare": "Beton □",
+      "concreteRound": "Beton rond",
+      "concreteSquare": "Beton vierkant",
       "filledTube": "Buis gevuld",
-      "steelTube": "Stalen buis"
+      "steelTube": "Buis hol"
     },
     "layer": "Laag",
     "layerBottom": "Onderkant laag {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Materiaal en sterkte",
     "maxElement": "Maximale elementlengte",
     "model": "Model",
+    "momentHint": "Teken van M: een positief moment draait de paalkop tegen de klok in en werkt een positieve H tegen. Een kracht H op hoogte e boven de kop geeft M = −H·e.",
     "momentM": "Moment M",
     "momentMLabel": "Moment op de kop [kNm]",
     "netPressure": "Netto druk",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Equivalente diepte",
       "initial": "Initiële stijfheid k₀",
       "layer": "Grondlaag",
+      "mobilisation": "Mobilisatie p/pu",
       "reaction": "Grondreactie op de paal",
       "resistance": "Gemobiliseerde weerstand p",
       "secant": "Secantstijfheid",
@@ -241,6 +243,11 @@
       "tributary": "Integratielengte",
       "ultimate": "Grensweerstand pu"
     }
+  },
+  "legend": {
+    "aria": "Legenda grondlagen en veren",
+    "mobilisation": "Kleur = grondsoort; verloopt naar rood als p/pu van 50 naar 100 % gaat",
+    "springLength": "Lengte van de veer = beginstijfheid k₀"
   },
   "model": {
     "aria": "Rekenmodel met werkelijke integratiepunten",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "3D-paalmodel; draaien met slepen, zoomen met scrollen",
     "help": "Sleep om te draaien · scroll om te zoomen · rechtermuis om te verschuiven · klik een veerpunt. De dieptelijst biedt dezelfde selectie met het toetsenbord.",
+    "layerLabel": "{{soil}} · NAP {{top}} tot {{bottom}}",
+    "surfaceLabel": "Maaiveld NAP {{nap}}",
     "unavailable": "3D is op dit apparaat niet beschikbaar. Gebruik het rekenmodel en de veerinspectie hieronder."
   },
   "settings": {

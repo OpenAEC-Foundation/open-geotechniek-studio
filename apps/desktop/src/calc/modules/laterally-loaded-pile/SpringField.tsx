@@ -2,13 +2,13 @@ import type { LateralInput } from './compute';
 import type { AnalysisMode, SpringState } from './spring-types';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
+import { soilColor } from './report-data';
+import { soilKey } from './soil';
+import { mobilisation, springCss } from './spring-visual';
+import { SpringLegend } from './SpringLegend';
 
+export { mobilisation };
 const f = (value: number, digits = 2) => value.toLocaleString(numberLocale(), { maximumFractionDigits: digits });
-
-/** Mobilisatie |p| / pu; null bij een lineaire veer zonder grens. */
-export function mobilisation(s: SpringState): number | null {
-  return s.ultimateKnM && s.ultimateKnM > 0 ? Math.abs(s.resistanceKnM) / s.ultimateKnM : null;
-}
 
 /** Klassen voor de kleur: rustig, opgelopen, bijna plastisch. */
 export function mobilisationClass(m: number | null): 'linear' | 'low' | 'mid' | 'high' {
@@ -35,6 +35,7 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
   const { t } = useTranslation('calcLateral');
   if (springs.length === 0) return <p>{t('spring.none', 'Geen actieve grondveren in dit model.')}</p>;
   const L = input.lengthM;
+  const soilName = (id: string) => id === 'manual' ? t('soils.manual', 'Eigen waarde') : t(soilKey(id), id).split(' (')[0];
   const depth = (z: number) => 70 + 500 * z / L;
   const kMax = Math.max(1e-12, ...springs.map((s) => s.initialKnM2));
   const pMax = Math.max(1e-12, ...springs.map((s) => Math.max(Math.abs(s.resistanceKnM), s.ultimateKnM ?? 0)));
@@ -61,8 +62,9 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
   return <div className="pile-springfield">
     <svg viewBox="0 0 480 610" role="img" aria-label={t('field.aria', 'Veerveld langs de paal')}>
       {input.layers.map((l, k) => <g key={k}>
-        <rect className={k % 2 ? 'pile-soil-alt' : 'pile-soil'} x="40" width={C.x0 + C.w - 40 + 4} y={depth(l.topM)} height={depth(l.bottomM) - depth(l.topM)} />
-        <text x={B.x0 + B.w - 2} y={depth(l.topM) + 11} textAnchor="end" className="pile-springfield-layer">{t('field.layer', 'laag {{n}}', { n: k + 1 })}</text>
+        <rect className="pile-soil-band" style={{ fill: soilColor(l.springId).fill }} x="40" width={C.x0 + C.w - 40 + 4} y={depth(l.topM)} height={depth(l.bottomM) - depth(l.topM)} />
+        <line className="pile-layer-line" x1="40" x2={C.x0 + C.w + 4} y1={depth(l.topM)} y2={depth(l.topM)} />
+        <text x={B.x0 + B.w - 2} y={depth(l.topM) + 11} textAnchor="end" className="pile-springfield-layer">{t('field.layer', 'laag {{n}}', { n: k + 1 })} · {soilName(l.springId)}</text>
       </g>)}
       {[0, .25, .5, .75, 1].map((t) => <g key={t}>
         <line className="pile-grid" x1="40" x2={C.x0 + C.w + 4} y1={depth(t * L)} y2={depth(t * L)} />
@@ -85,7 +87,7 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(s.id); } }}>
           <title>{`z ${f(s.zM)} m · k₀ ${f(s.initialKnM2, 0)} · ksec ${f(s.secantKnM2, 0)} kN/m²${m === null ? '' : ` · p/pu ${f(m * 100, 0)} %`}`}</title>
           <rect className="pile-springfield-k0" x={A.x0} y={y} width={kx(s.initialKnM2) - A.x0} height={barH} />
-          <rect className="pile-springfield-ksec" x={A.x0} y={y} width={Math.max(0, kx(s.secantKnM2) - A.x0)} height={barH} />
+          <rect className="pile-springfield-ksec" style={{ fill: springCss(input.layers[s.layerIndex]?.springId ?? 'manual', m) }} x={A.x0} y={y} width={Math.max(0, kx(s.secantKnM2) - A.x0)} height={barH} />
           <rect className="pile-hit-area" x={A.x0 - 4} y={depth(s.zM) - Math.max(barH, 6) / 2} width={A.w + 4} height={Math.max(barH, 6)} />
         </g>;
       })}
@@ -115,6 +117,7 @@ export function SpringField({ input, springs, mode, selectedId, onSelect }: Prop
         </>}
       <text x={C.x0} y="590">0</text><text x={C.x0 + C.w} y="590" textAnchor="end">100 %</text>
     </svg>
+    <SpringLegend layers={input.layers} />
     <div className="pile-legend pile-springfield-legend">
       <span className="mob-low">p/pu &lt; 50 %</span><span className="mob-mid">50–90 %</span><span className="mob-high">{t('field.nearlyPlastic', '≥ 90 %, vrijwel plastisch')}</span>
       {linear && <span className="mob-linear">{t('field.linearSpring', 'lineaire veer')}</span>}

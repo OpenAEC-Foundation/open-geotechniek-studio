@@ -143,10 +143,10 @@
     "khOwn": "Valor personalizado das definições",
     "khTable": "CUR166 quadro 3.3, primeiro troço secante",
     "kinds": {
-      "concreteRound": "Betão ○",
-      "concreteSquare": "Betão □",
+      "concreteRound": "Betão redondo",
+      "concreteSquare": "Betão quadrado",
       "filledTube": "Tubo cheio",
-      "steelTube": "Tubo de aço"
+      "steelTube": "Tubo oco"
     },
     "layer": "Camada",
     "layerBottom": "Base da camada {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Material e resistência",
     "maxElement": "Comprimento máximo de elemento",
     "model": "Modelo",
+    "momentHint": "Sinal de M: um momento positivo roda a cabeça da estaca no sentido anti-horário e contraria um H positivo. Uma força H à altura e acima da cabeça dá M = −H·e.",
     "momentM": "Momento fletor M",
     "momentMLabel": "Momento fletor na cabeça [kNm]",
     "netPressure": "Pressão líquida",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Profundidade equivalente",
       "initial": "Rigidez inicial k₀",
       "layer": "Camada de solo",
+      "mobilisation": "Mobilização p/pu",
       "reaction": "Reação do solo sobre a estaca",
       "resistance": "Resistência mobilizada p",
       "secant": "Rigidez secante",
@@ -241,6 +243,11 @@
       "tributary": "Comprimento de integração",
       "ultimate": "Resistência última pu"
     }
+  },
+  "legend": {
+    "aria": "Legenda de camadas de solo e molas",
+    "mobilisation": "Cor = tipo de solo; passa a vermelho quando p/pu vai de 50 para 100 %",
+    "springLength": "Comprimento da mola = rigidez inicial k₀"
   },
   "model": {
     "aria": "Modelo de cálculo com os pontos de integração reais",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "Modelo 3D da estaca; arraste para rodar, use a roda para ampliar",
     "help": "Arraste para rodar · roda do rato para ampliar · botão direito para deslocar · clique num ponto de mola. A lista de profundidades oferece a mesma seleção através do teclado.",
+    "layerLabel": "{{soil}} · NAP {{top}} a {{bottom}}",
+    "surfaceLabel": "Superfície do terreno NAP {{nap}}",
     "unavailable": "O 3D não está disponível neste dispositivo. Utilize o modelo de cálculo e a inspeção da mola abaixo."
   },
   "settings": {

@@ -1,7 +1,8 @@
 /* Invoer horizontale paal: doorsnede naast de maatvoering, compacte lagentabel. */
 .lat-input select { width: 100%; }
-.lat-kinds { grid-template-columns: repeat(4, 1fr); }
-.lat-head { grid-template-columns: repeat(2, 1fr); }
+.lat-input .cs-tiles.lat-kinds { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.lat-input .cs-tiles.lat-kinds .cs-tile { padding: 8px 2px 6px; line-height: 1.2; text-align: center; overflow-wrap: anywhere; }
+.lat-input .cs-tiles.lat-head { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .lat-head .cs-tile { padding: 7px 4px; }
 .lat-section-grid { display: grid; grid-template-columns: minmax(0, 1fr) 112px; gap: 10px; align-items: start; margin: 4px 0 6px; }
 .lat-section-rows .cs-row { grid-template-columns: minmax(0, 1fr) 96px; }

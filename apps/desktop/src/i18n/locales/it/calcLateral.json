@@ -143,10 +143,10 @@
     "khOwn": "Valore personalizzato dalle impostazioni",
     "khTable": "CUR166 tabella 3.3, primo tratto secante",
     "kinds": {
-      "concreteRound": "Calcestruzzo ○",
-      "concreteSquare": "Calcestruzzo □",
+      "concreteRound": "Calcestruzzo tondo",
+      "concreteSquare": "Calcestruzzo quadrato",
       "filledTube": "Tubo riempito",
-      "steelTube": "Tubo in acciaio"
+      "steelTube": "Tubo cavo"
     },
     "layer": "Strato",
     "layerBottom": "Base dello strato {{n}} [m NAP]",
@@ -164,6 +164,7 @@
     "material": "Materiale e resistenza",
     "maxElement": "Lunghezza massima dell'elemento",
     "model": "Modello",
+    "momentHint": "Segno di M: un momento positivo ruota la testa del palo in senso antiorario e contrasta una H positiva. Una forza H all’altezza e sopra la testa dà M = −H·e.",
     "momentM": "Momento flettente M",
     "momentMLabel": "Momento flettente in testa [kNm]",
     "netPressure": "Pressione netta",
@@ -234,6 +235,7 @@
       "equivalentDepth": "Profondità equivalente",
       "initial": "Rigidezza iniziale k₀",
       "layer": "Strato di terreno",
+      "mobilisation": "Mobilitazione p/pu",
       "reaction": "Reazione del terreno sul palo",
       "resistance": "Resistenza mobilitata p",
       "secant": "Rigidezza secante",
@@ -241,6 +243,11 @@
       "tributary": "Lunghezza d'integrazione",
       "ultimate": "Resistenza ultima pu"
     }
+  },
+  "legend": {
+    "aria": "Legenda di strati di terreno e molle",
+    "mobilisation": "Colore = tipo di terreno; vira al rosso quando p/pu passa dal 50 al 100 %",
+    "springLength": "Lunghezza della molla = rigidezza iniziale k₀"
   },
   "model": {
     "aria": "Modello di calcolo con i punti di integrazione effettivi",
@@ -272,6 +279,8 @@
   "scene": {
     "aria": "Modello 3D del palo; trascina per ruotare, scorri per lo zoom",
     "help": "Trascina per ruotare · scorri per lo zoom · tasto destro del mouse per spostare · fai clic su un punto molla. L'elenco delle profondità offre la stessa selezione tramite tastiera.",
+    "layerLabel": "{{soil}} · NAP da {{top}} a {{bottom}}",
+    "surfaceLabel": "Piano campagna NAP {{nap}}",
     "unavailable": "Il 3D non è disponibile su questo dispositivo. Usa il modello di calcolo e l'ispezione delle molle qui sotto."
   },
   "settings": {

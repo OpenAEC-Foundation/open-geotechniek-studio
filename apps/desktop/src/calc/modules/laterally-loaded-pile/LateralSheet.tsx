@@ -194,7 +194,7 @@ function SoilColumn({ layers, head, toe }: { layers: LayerRow[]; head: number; t
   const H = 300, top = 14, span = Math.max(1e-9, head - toe), y = (nap: number) => top + H * (head - nap) / span;
   return <svg className="lateral-soil-column" viewBox={`0 0 150 ${H + top + 16}`} role="img" aria-label={t('sheet.soilColumn', 'Grondopbouw langs de paal')}>
     {layers.map((l) => <g key={l.index}>
-      <rect x="44" y={y(l.topNap)} width="70" height={Math.max(0, y(l.bottomNap) - y(l.topNap))} fill={l.color} stroke="#555" strokeWidth=".6" />
+      <rect x="44" y={y(l.topNap)} width="70" height={Math.max(0, y(l.bottomNap) - y(l.topNap))} fill={l.color} stroke="var(--oa-border-strong)" strokeWidth=".6" />
       <text x="79" y={(y(l.topNap) + y(l.bottomNap)) / 2 + 3} textAnchor="middle" className="lateral-soil-name">{l.index}</text>
       <text x="40" y={y(l.topNap) + 3} textAnchor="end">{n(l.topNap, 2)}</text>
     </g>)}

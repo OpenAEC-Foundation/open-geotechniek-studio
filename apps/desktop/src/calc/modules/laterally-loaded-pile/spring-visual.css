@@ -1,0 +1,34 @@
+/* Grondlagen en veren in 2D en 3D: grondsoortkleur als band, laaggrenzen als lijn,
+   labels en legenda. De grondsoortkleuren zelf zijn vast (report-data.ts). */
+.pile-soil-band { opacity: .42; stroke: none; }
+.pile-diagrams .pile-soil-band { opacity: .2; }
+.pile-layer-line { stroke: var(--oa-border-strong); stroke-width: .9; }
+.pile-explorer svg text.pile-layer-label { fill: var(--oa-text); font-weight: 600; }
+.pile-spring .pile-spring-line { stroke-width: 1.4; }
+.pile-spring.is-selected .pile-spring-line, .pile-spring:hover .pile-spring-line { stroke-width: 2.4; }
+
+/* 3D: labels als HTML over het canvas. */
+.pile-scene { position: relative; }
+.pile-scene-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.pile-scene-label { position: absolute; left: 0; top: 0; margin: -9px 0 0 6px; padding: 1px 6px; white-space: nowrap; font: 10.5px var(--oa-font-body); color: var(--oa-text);
+  background: color-mix(in srgb, var(--oa-panel) 82%, transparent); border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small, 3px); }
+.pile-scene-label-surface { font-weight: 600; border-color: var(--oa-border-strong); }
+.pile-scene-label-load { color: var(--oa-accent-text); font: 600 11px var(--oa-font-numbers, inherit); border-color: transparent; }
+
+/* Legenda: grondsoorten, lengte = stijfheid, kleurverloop = mobilisatie. */
+.pile-spring-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; margin: 8px 0 2px; font-size: 11px; color: var(--oa-text-secondary); }
+.pile-spring-legend ul { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; padding: 0; list-style: none; }
+.pile-spring-legend li { display: flex; align-items: center; gap: 6px; }
+.pile-spring-legend-soils i { width: 14px; height: 10px; border: 1px solid var(--oa-border-strong); }
+.pile-explorer .pile-spring-legend svg, .pile-spring-legend svg { width: 74px; height: 14px; flex: none; display: block; }
+.pile-spring-legend svg path { fill: none; stroke-width: 1.3; }
+
+/* Veerinspectie: grondsoort en mobilisatie bovenaan. */
+.pile-inspector-swatch { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border: 1px solid var(--oa-border-strong); vertical-align: -1px; }
+.pile-mobilisation { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; align-items: baseline; margin: 8px 0 10px; font-size: 11px; color: var(--oa-text-secondary); }
+.pile-mobilisation b { color: var(--oa-text); font: 600 12px var(--oa-font-numbers, inherit); }
+.pile-mobilisation > div { grid-column: 1 / -1; height: 6px; background: var(--oa-hover); border: 1px solid var(--oa-border); }
+.pile-mobilisation > div i { display: block; height: 100%; }
+
+/* Tekens in de diagrammen. */
+.pile-sign-region { pointer-events: none; }
