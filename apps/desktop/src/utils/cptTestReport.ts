@@ -4,6 +4,7 @@
 // niet staat, blijft leeg (`value: null`) en wordt in het rapport als ontbrekend getoond.
 import type { Cpt, ProjectMeta } from "../types/cpt";
 import { validationOf } from "../validation/report";
+import { editReportGroup } from "../meetwaarden/logbook";
 
 export const MISSING_TEXT = "niet in het bestand";
 export const TEST_REPORT_STANDARD = "NEN-EN-ISO 22476-1";
@@ -222,5 +223,7 @@ export function buildTestReport(cpt: Cpt, project: ProjectMeta): TestReportGroup
       { label: "Dieptebepaling", value: depthMethod },
       { label: "Grootste helling", value: steepest ? `${fmt(steepest.angle, 1)} graden op ${steepest.depth.toFixed(2)} m` : null },
     ] },
+    // Nabewerkte meetwaarden: het logboek van de bewerkingen, alleen als die er zijn.
+    ...[editReportGroup(cpt)].filter((group) => group !== null),
   ];
 }
