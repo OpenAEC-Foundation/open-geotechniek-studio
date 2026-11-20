@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Aggiungi strato",
+    "cancel": "Annulla",
+    "layers": "Strati",
+    "noLayers": "Ancora nessuno strato. Aggiungi il primo strato.",
+    "noProject": "Nessun progetto aperto: il sondaggio si apre in una scheda separata. Apri o crea un progetto per conservarlo.",
+    "save": "Salva",
+    "savedWithProject": "Il sondaggio viene salvato con il progetto e compare come stratigrafia nel rapporto.",
+    "titleEdit": "Modifica il sondaggio {{id}}",
+    "titleNew": "Aggiungi sondaggio"
+  },
+  "field": {
+    "date": "Data",
+    "finalDepth": "Profondità finale (m da p.c.)",
+    "finalDepthAuto": "base dello strato più profondo",
+    "groundLevel": "Piano campagna (m NAP)",
+    "groundwater": "Livello di falda (m da p.c.)",
+    "id": "Numero del sondaggio",
+    "method": "Metodo di perforazione",
+    "notMeasured": "non misurato",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Frazione secondaria",
+    "base": "Base",
+    "colour": "Colore",
+    "grade": "Grado",
+    "name": "Denominazione",
+    "namePlaceholder": "ad es. macerie, riporto",
+    "none": "nessuna",
+    "remark": "Nota",
+    "remove": "Rimuovi strato",
+    "soil": "Tipo di terreno",
+    "top": "Tetto"
+  },
+  "problem": {
+    "duplicate": "Il numero di sondaggio {{id}} esiste già.",
+    "finalDepth": "La profondità finale è minore dello strato più profondo ({{depth}} m).",
+    "id": "Inserisci un numero di sondaggio.",
+    "layerAbove": "Strato {{n}}: il tetto è sopra il piano campagna.",
+    "layerNumbers": "Strato {{n}}: inserisci tetto e base come numeri.",
+    "layerOrder": "Strato {{n}}: la base deve essere più profonda del tetto.",
+    "layerOverlap": "Strato {{n}}: si sovrappone allo strato superiore (che termina a {{depth}} m).",
+    "notNumber": "{{field}}: non è un numero.",
+    "waterNegative": "Il livello di falda è una profondità sotto il piano campagna e non può essere negativo.",
+    "xy": "Inserisci X e Y come numeri, oppure lasciali entrambi vuoti.",
+    "zNeedsXy": "Insieme al piano campagna inserisci anche X e Y."
+  },
+  "report": {
+    "boreLogs": "Stratigrafie dei sondaggi",
+    "boreLogsHint": "Una pagina per sondaggio con la stratigrafia"
+  },
+  "ribbon": {
+    "add": "Aggiungi\nsondaggio",
+    "addTitle": "Inserisci un sondaggio a mano: intestazione, strati e livello di falda",
+    "choose": "Scegli sondaggio",
+    "count": "Sondaggi: {{count}}",
+    "edit": "Modifica\nstratigrafia",
+    "editTitle": "Visualizza e modifica la stratigrafia del sondaggio scelto",
+    "group": "Sondaggi",
+    "none": "Aggiungi un sondaggio o apri un file di sondaggio."
+  },
+  "sheet": {
+    "admixtureNote": "Fascia stretta a destra della colonna: frazione secondaria, più larga quanto più è forte.",
+    "belowGround": "m da p.c.",
+    "bore": "Sondaggio",
+    "colour": "colore",
+    "date": "Data",
+    "depthGround": "m da p.c.",
+    "depthNap": "m NAP",
+    "description": "Descrizione",
+    "finalDepth": "Profondità finale",
+    "groundLevel": "Piano campagna",
+    "groundwater": "Livello di falda",
+    "legend": "Legenda",
+    "method": "Metodo di perforazione",
+    "noLayers": "Questo sondaggio non ha ancora strati.",
+    "scale": "Scala",
+    "title": "Stratigrafia del sondaggio {{id}}",
+    "unknown": "non noto",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Modifica"
+  }
+}

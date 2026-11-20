@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Schicht hinzufügen",
+    "cancel": "Abbrechen",
+    "layers": "Schichten",
+    "noLayers": "Noch keine Schichten. Fügen Sie die erste Schicht hinzu.",
+    "noProject": "Es ist kein Projekt geöffnet: Die Bohrung wird als eigener Tab geöffnet. Öffnen oder erstellen Sie ein Projekt, um sie zu behalten.",
+    "save": "Speichern",
+    "savedWithProject": "Die Bohrung wird mit dem Projekt gespeichert und erscheint als Bohrprofil im Bericht.",
+    "titleEdit": "Bohrung {{id}} bearbeiten",
+    "titleNew": "Bohrung hinzufügen"
+  },
+  "field": {
+    "date": "Datum",
+    "finalDepth": "Endteufe (m u. GOK)",
+    "finalDepthAuto": "Unterkante der tiefsten Schicht",
+    "groundLevel": "Geländehöhe (m NAP)",
+    "groundwater": "Grundwasserstand (m u. GOK)",
+    "id": "Bohrnummer",
+    "method": "Bohrverfahren",
+    "notMeasured": "nicht gemessen",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Beimengung",
+    "base": "Unten",
+    "colour": "Farbe",
+    "grade": "Stärke",
+    "name": "Benennung",
+    "namePlaceholder": "z. B. Bauschutt, Auffüllung",
+    "none": "keine",
+    "remark": "Bemerkung",
+    "remove": "Schicht entfernen",
+    "soil": "Bodenart",
+    "top": "Oben"
+  },
+  "problem": {
+    "duplicate": "Die Bohrnummer {{id}} gibt es bereits.",
+    "finalDepth": "Die Endteufe ist geringer als die tiefste Schicht ({{depth}} m).",
+    "id": "Geben Sie eine Bohrnummer ein.",
+    "layerAbove": "Schicht {{n}}: Die Oberkante liegt über der Geländeoberkante.",
+    "layerNumbers": "Schicht {{n}}: Ober- und Unterkante als Zahl eingeben.",
+    "layerOrder": "Schicht {{n}}: Die Unterkante muss tiefer liegen als die Oberkante.",
+    "layerOverlap": "Schicht {{n}}: überlappt die Schicht darüber (die bei {{depth}} m endet).",
+    "notNumber": "{{field}}: keine Zahl.",
+    "waterNegative": "Der Grundwasserstand ist eine Tiefe unter Gelände und kann nicht negativ sein.",
+    "xy": "Geben Sie X und Y beide als Zahl ein oder lassen Sie beide leer.",
+    "zNeedsXy": "Geben Sie zur Geländehöhe auch X und Y ein."
+  },
+  "report": {
+    "boreLogs": "Bohrprofile",
+    "boreLogsHint": "Je Bohrung eine Seite mit dem Bohrprofil"
+  },
+  "ribbon": {
+    "add": "Bohrung\nhinzufügen",
+    "addTitle": "Eine Bohrung von Hand eingeben: Kopfdaten, Schichten und Grundwasserstand",
+    "choose": "Bohrung wählen",
+    "count": "Bohrungen: {{count}}",
+    "edit": "Bohrprofil\nbearbeiten",
+    "editTitle": "Das Bohrprofil der gewählten Bohrung ansehen und bearbeiten",
+    "group": "Bohrungen",
+    "none": "Fügen Sie eine Bohrung hinzu oder öffnen Sie eine Bohrdatei."
+  },
+  "sheet": {
+    "admixtureNote": "Schmaler Streifen rechts in der Säule: Beimengung, breiter je stärker sie ist.",
+    "belowGround": "m u. GOK",
+    "bore": "Bohrung",
+    "colour": "Farbe",
+    "date": "Datum",
+    "depthGround": "m u. GOK",
+    "depthNap": "m NAP",
+    "description": "Beschreibung",
+    "finalDepth": "Endteufe",
+    "groundLevel": "Geländehöhe",
+    "groundwater": "Grundwasserstand",
+    "legend": "Legende",
+    "method": "Bohrverfahren",
+    "noLayers": "Diese Bohrung hat noch keine Schichten.",
+    "scale": "Maßstab",
+    "title": "Bohrprofil {{id}}",
+    "unknown": "nicht bekannt",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Bearbeiten"
+  }
+}

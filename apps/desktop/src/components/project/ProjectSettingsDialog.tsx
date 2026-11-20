@@ -3,6 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { readTextFile } from "@tauri-apps/plugin-fs";
 import Modal from "../Modal";
+import { openBoreEditor } from "../../boorstaat/boreStore";
 import {
   useCptStore,
   addCptToActiveProject,
@@ -27,6 +28,7 @@ interface ProjectSettingsDialogProps {
 export default function ProjectSettingsDialog({ open, onClose }: ProjectSettingsDialogProps) {
   const { t } = useTranslation("cpt");
   const { t: tp } = useTranslation("panels");
+  const { t: tb } = useTranslation("boring");
   const documents = useCptStore((s) => s.documents);
   const activeDocId = useCptStore((s) => s.activeDocId);
   const activeDoc = useMemo(
@@ -232,6 +234,10 @@ export default function ProjectSettingsDialog({ open, onClose }: ProjectSettings
                         {b.position && ` · RD ${b.position.x_rd.toFixed(0)}, ${b.position.y_rd.toFixed(0)}`}
                       </span>
                     </div>
+                    <button type="button" className="ps-link-btn"
+                            onClick={() => { onClose(); openBoreEditor(b.id); }}>
+                      {tb("view.edit", "Bewerken")}
+                    </button>
                     <button type="button" className="ps-remove-btn"
                             onClick={() => removeBoreFromActiveProject(b.id)}
                             aria-label={t("remove", "Verwijder")}>

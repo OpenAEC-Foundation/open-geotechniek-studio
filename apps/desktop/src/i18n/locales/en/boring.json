@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Add layer",
+    "cancel": "Cancel",
+    "layers": "Layers",
+    "noLayers": "No layers yet. Add the first layer.",
+    "noProject": "No project is open: the borehole opens as a separate tab. Open or create a project to keep it.",
+    "save": "Save",
+    "savedWithProject": "The borehole is saved with the project and appears as a borehole log in the report.",
+    "titleEdit": "Edit borehole {{id}}",
+    "titleNew": "Add borehole"
+  },
+  "field": {
+    "date": "Date",
+    "finalDepth": "Final depth (m bgl)",
+    "finalDepthAuto": "base of deepest layer",
+    "groundLevel": "Ground level (m NAP)",
+    "groundwater": "Groundwater level (m bgl)",
+    "id": "Borehole number",
+    "method": "Drilling method",
+    "notMeasured": "not measured",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Admixture",
+    "base": "Base",
+    "colour": "Colour",
+    "grade": "Grade",
+    "name": "Name",
+    "namePlaceholder": "e.g. rubble, fill",
+    "none": "none",
+    "remark": "Remark",
+    "remove": "Remove layer",
+    "soil": "Soil type",
+    "top": "Top"
+  },
+  "problem": {
+    "duplicate": "Borehole number {{id}} already exists.",
+    "finalDepth": "The final depth is shallower than the deepest layer ({{depth}} m).",
+    "id": "Enter a borehole number.",
+    "layerAbove": "Layer {{n}}: the top lies above ground level.",
+    "layerNumbers": "Layer {{n}}: enter top and base as numbers.",
+    "layerOrder": "Layer {{n}}: the base must be deeper than the top.",
+    "layerOverlap": "Layer {{n}}: overlaps the layer above (which ends at {{depth}} m).",
+    "notNumber": "{{field}}: not a number.",
+    "waterNegative": "The groundwater level is a depth below ground level and cannot be negative.",
+    "xy": "Enter both X and Y as numbers, or leave both empty.",
+    "zNeedsXy": "Enter X and Y as well when giving the ground level."
+  },
+  "report": {
+    "boreLogs": "Borehole logs",
+    "boreLogsHint": "One page per borehole with the borehole log"
+  },
+  "ribbon": {
+    "add": "Add\nborehole",
+    "addTitle": "Enter a borehole by hand: header data, layers and groundwater level",
+    "choose": "Choose borehole",
+    "count": "Boreholes: {{count}}",
+    "edit": "Edit\nborehole log",
+    "editTitle": "View and edit the log of the chosen borehole",
+    "group": "Boreholes",
+    "none": "Add a borehole or open a borehole file."
+  },
+  "sheet": {
+    "admixtureNote": "Narrow strip on the right of the column: admixture, wider as it gets stronger.",
+    "belowGround": "m bgl",
+    "bore": "Borehole",
+    "colour": "colour",
+    "date": "Date",
+    "depthGround": "m bgl",
+    "depthNap": "m NAP",
+    "description": "Description",
+    "finalDepth": "Final depth",
+    "groundLevel": "Ground level",
+    "groundwater": "Groundwater level",
+    "legend": "Legend",
+    "method": "Drilling method",
+    "noLayers": "This borehole has no layers yet.",
+    "scale": "Scale",
+    "title": "Borehole log {{id}}",
+    "unknown": "not known",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Edit"
+  }
+}

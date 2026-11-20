@@ -27,6 +27,10 @@ export interface ReportSections {
   dissipation?: boolean;
   /** Pagina per magnetometersondering: grafieken, zones en instellingen. */
   magnetometer?: boolean;
+  /** Boorstaat per boring; alleen `false` zet ze uit. */
+  boreLogs?: boolean;
+  /** Boringen voor de boorstaten; zonder deze lijst gelden de boringen van het actieve document. */
+  bores?: import("../types/bore").Bore[];
   /** Teksten voor een document zonder project; anders gelden de teksten van het project. */
   reportTexts?: ReportTexts;
 }
@@ -42,6 +46,7 @@ export const DEFAULT_SECTIONS: ReportSections = {
   testReport: false,
   dissipation: false,
   magnetometer: false,
+  boreLogs: true,
 };
 
 export function sectionsAreDefault(s: ReportSections): boolean {

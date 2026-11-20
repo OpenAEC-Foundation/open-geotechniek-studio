@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Añadir capa",
+    "cancel": "Cancelar",
+    "layers": "Capas",
+    "noLayers": "Aún no hay capas. Añada la primera capa.",
+    "noProject": "No hay ningún proyecto abierto: el sondeo se abre en una pestaña aparte. Abra o cree un proyecto para conservarlo.",
+    "save": "Guardar",
+    "savedWithProject": "El sondeo se guarda con el proyecto y aparece como registro de sondeo en el informe.",
+    "titleEdit": "Editar el sondeo {{id}}",
+    "titleNew": "Añadir sondeo"
+  },
+  "field": {
+    "date": "Fecha",
+    "finalDepth": "Profundidad final (m b.t.)",
+    "finalDepthAuto": "base de la capa más profunda",
+    "groundLevel": "Nivel del terreno (m NAP)",
+    "groundwater": "Nivel freático (m b.t.)",
+    "id": "Número de sondeo",
+    "method": "Método de perforación",
+    "notMeasured": "no medido",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Fracción secundaria",
+    "base": "Base",
+    "colour": "Color",
+    "grade": "Grado",
+    "name": "Denominación",
+    "namePlaceholder": "p. ej. escombros, relleno",
+    "none": "ninguna",
+    "remark": "Observación",
+    "remove": "Eliminar capa",
+    "soil": "Tipo de suelo",
+    "top": "Techo"
+  },
+  "problem": {
+    "duplicate": "El número de sondeo {{id}} ya existe.",
+    "finalDepth": "La profundidad final es menor que la capa más profunda ({{depth}} m).",
+    "id": "Introduzca un número de sondeo.",
+    "layerAbove": "Capa {{n}}: el techo queda por encima del terreno.",
+    "layerNumbers": "Capa {{n}}: introduzca techo y base como números.",
+    "layerOrder": "Capa {{n}}: la base debe estar más profunda que el techo.",
+    "layerOverlap": "Capa {{n}}: se solapa con la capa superior (que termina a {{depth}} m).",
+    "notNumber": "{{field}}: no es un número.",
+    "waterNegative": "El nivel freático es una profundidad bajo el terreno y no puede ser negativo.",
+    "xy": "Introduzca X e Y como números, o deje ambos vacíos.",
+    "zNeedsXy": "Introduzca también X e Y junto con el nivel del terreno."
+  },
+  "report": {
+    "boreLogs": "Registros de sondeo",
+    "boreLogsHint": "Una página por sondeo con el registro"
+  },
+  "ribbon": {
+    "add": "Añadir\nsondeo",
+    "addTitle": "Introducir un sondeo a mano: cabecera, capas y nivel freático",
+    "choose": "Elegir sondeo",
+    "count": "Sondeos: {{count}}",
+    "edit": "Editar\nregistro",
+    "editTitle": "Ver y editar el registro del sondeo elegido",
+    "group": "Sondeos",
+    "none": "Añada un sondeo o abra un archivo de sondeo."
+  },
+  "sheet": {
+    "admixtureNote": "Franja estrecha a la derecha de la columna: fracción secundaria, más ancha cuanto mayor es.",
+    "belowGround": "m b.t.",
+    "bore": "Sondeo",
+    "colour": "color",
+    "date": "Fecha",
+    "depthGround": "m b.t.",
+    "depthNap": "m NAP",
+    "description": "Descripción",
+    "finalDepth": "Profundidad final",
+    "groundLevel": "Nivel del terreno",
+    "groundwater": "Nivel freático",
+    "legend": "Leyenda",
+    "method": "Método de perforación",
+    "noLayers": "Este sondeo aún no tiene capas.",
+    "scale": "Escala",
+    "title": "Registro de sondeo {{id}}",
+    "unknown": "desconocido",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Editar"
+  }
+}

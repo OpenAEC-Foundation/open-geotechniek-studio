@@ -12,6 +12,8 @@ import { CPT_REPORT_SECTIONS, loadProfile } from "./profile";
 import BroExportDialog from "../broExport/BroExportDialog";
 import MeetwaardenDialog from "../meetwaarden/MeetwaardenDialog";
 import { editLogOf } from "../meetwaarden/state";
+import { boresOf } from "../boorstaat/boreStore";
+import BoreRibbonGroup from "../boorstaat/BoreRibbonGroup";
 
 export default function SondeerbedrijfTab() {
   const cptsMap = useCptStore((s) => s.cpts);
@@ -20,6 +22,7 @@ export default function SondeerbedrijfTab() {
   const organization = useReportBrand((s) => s.brand.organization);
   const brandSource = useReportBrand((s) => s.source);
   const cpts = useMemo(() => Array.from(cptsMap.values()), [cptsMap]);
+  const boreCount = useCptStore((s) => boresOf(s.documents.find((d) => d.id === s.activeDocId)).length);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null);
   const [company, setCompany] = useState("");
@@ -86,11 +89,12 @@ export default function SondeerbedrijfTab() {
             <div className="ribbon-info-sub">{editCount ? `in ${editedCpts} sondering${editedCpts === 1 ? "" : "en"}; staat in het rapport` : "Het origineel blijft bewaard."}</div>
           </div>
         </RibbonGroup>
+        <BoreRibbonGroup />
         <RibbonGroup label="Sondeerrapport">
-          <RibbonButton icon="report.generate" label={"Rapport\nopslaan"} size="large" disabled={!cpts.length || busy}
-            title="Sondeerrapport als PDF: voorblad, coördinaten, kaart en per sondering de sondeerstaat"
+          <RibbonButton icon="report.generate" label={"Rapport\nopslaan"} size="large" disabled={(!cpts.length && !boreCount) || busy}
+            title="Sondeerrapport als PDF: voorblad, coördinaten, kaart, per sondering de sondeerstaat en per boring de boorstaat"
             onClick={() => void run(() => reports.save(cpts, meta, CPT_REPORT_SECTIONS), "Sondeerrapport gemaakt.")} />
-          <RibbonButton icon="report.open-viewer" label={"Rapport\nbekijken"} size="large" disabled={!cpts.length || busy}
+          <RibbonButton icon="report.open-viewer" label={"Rapport\nbekijken"} size="large" disabled={(!cpts.length && !boreCount) || busy}
             onClick={() => void run(() => reports.generateAndOpen(cpts, meta, CPT_REPORT_SECTIONS), "Sondeerrapport geopend.")} />
           {message && <div className={`ribbon-info-sub${message.error ? " ribbon-info-error" : ""}`} style={{ maxWidth: 320 }} role={message.error ? "alert" : "status"}>{message.text}</div>}
         </RibbonGroup>

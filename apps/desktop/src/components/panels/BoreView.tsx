@@ -1,55 +1,36 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import type { Bore } from "../../types/bore";
-import {
-  mainWidthFraction,
-  parseSoilMix,
-  soilPattern,
-} from "../../types/bore";
-import "./BoreView.css";
+import BoorstaatSvg from "../../boorstaat/BoorstaatSvg";
+import { buildBoorstaat } from "../../boorstaat/boorstaat";
+import { openBoreEditor } from "../../boorstaat/boreStore";
+import { useBoorstaatLabels } from "../../boorstaat/labels";
+import "../../boorstaat/boorstaat.css";
 
-/** Min/max zoom multipliers — 1× = 360 px base height, 0.5× compact, 6× hyper-zoom. */
 const ZOOM_MIN = 0.5;
 const ZOOM_MAX = 6;
 const ZOOM_STEP = 1.4;
-const BASE_HEIGHT_PX = 360;
+/** Breedte van het blad bij 1×: een A4 op ongeveer schermgrootte. */
+const BASE_WIDTH_PX = 760;
 
 /**
- * BoreView — strip-log visualisation for a BHR-GT borehole document.
+ * BoreView — de boorstaat van een boring op het scherm.
  *
- * Layout: paper-style panel with a depth-axis on the left, a coloured
- * lithology strip in the middle, and a per-layer description column on
- * the right. Depths follow the CPT chart convention (positive = below
- * ground, NAP shown on the left axis when available).
- *
- * Hover any layer to highlight + see the full soil description in a
- * tooltip. The header carries the BRO id, position (RD), final depth,
- * and project info if the XML supplied any.
+ * Het blad is dezelfde tekening als de boorstaat-pagina in het rapport (`buildBoorstaat`): kop,
+ * diepteschaal t.o.v. maaiveld en NAP, boorkolom met kleur en arcering per laag, beschrijvingen,
+ * grondwaterstand en legenda. Ctrl + scroll zoomt; "Bewerken" opent de editor.
  */
 export default function BoreView({ bore }: { bore: Bore }) {
   const { t } = useTranslation("panels");
+  const { t: tb } = useTranslation("boring");
+  const labels = useBoorstaatLabels();
   const [zoom, setZoom] = useState(1);
-
-  const totalDepth = useMemo(() => {
-    if (bore.final_depth && bore.final_depth > 0) return bore.final_depth;
-    if (bore.layers.length === 0) return 1;
-    return bore.layers[bore.layers.length - 1].base_depth;
-  }, [bore]);
-
-  // Strip-wrap CSS height grows with `zoom` — `overflow: auto` on the
-  // `.bore-view` wrapper makes the extra space scrollable so descriptions
-  // for very thin layers (a 0.1 m band crushed at 1×) become readable
-  // once the user zooms in.
-  const wrapHeightPx = Math.max(BASE_HEIGHT_PX, BASE_HEIGHT_PX * zoom);
+  const layout = useMemo(() => buildBoorstaat(bore, { labels }), [bore, labels]);
 
   const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z * ZOOM_STEP).toFixed(2)));
   const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z / ZOOM_STEP).toFixed(2)));
-  const zoomReset = () => setZoom(1);
 
-  // Ctrl + wheel → zoom. React's synthetic `onWheel` is passive in
-  // React 18+, so `e.preventDefault()` is a no-op there and the page
-  // would scroll/zoom anyway. We attach a native wheel listener with
-  // `{ passive: false }` so we can actually intercept.
+  // React's onWheel is passive; alleen een eigen listener kan de paginazoom tegenhouden.
   const bodyRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = bodyRef.current;
@@ -57,261 +38,25 @@ export default function BoreView({ bore }: { bore: Bore }) {
     const onWheel = (e: WheelEvent) => {
       if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
-      if (e.deltaY < 0) {
-        setZoom((z) => Math.min(ZOOM_MAX, +(z * ZOOM_STEP).toFixed(2)));
-      } else {
-        setZoom((z) => Math.max(ZOOM_MIN, +(z / ZOOM_STEP).toFixed(2)));
-      }
+      setZoom((z) => e.deltaY < 0 ? Math.min(ZOOM_MAX, +(z * ZOOM_STEP).toFixed(2)) : Math.max(ZOOM_MIN, +(z / ZOOM_STEP).toFixed(2)));
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
-  // Depth axis: pick a "nice" 1-m step until we'd have >25 ticks, then
-  // step up to 2/5/10 so the strip stays readable for deep borings.
-  const tickStep = useMemo(() => {
-    for (const s of [0.5, 1, 2, 5, 10]) {
-      if (totalDepth / s <= 25) return s;
-    }
-    return 10;
-  }, [totalDepth]);
-
-  const depthTicks = useMemo(() => {
-    const out: number[] = [];
-    for (let d = 0; d <= totalDepth + 1e-9; d = +(d + tickStep).toFixed(3)) {
-      out.push(d);
-    }
-    return out;
-  }, [totalDepth, tickStep]);
-
-  const z0 = bore.position?.z_nap;
-
   return (
-    <div className="bore-view">
-      {/* ── Header ─────────────────────────────────────────────── */}
-      <header className="bore-header">
-        <div>
-          <h2 className="bore-title">{bore.id || t("bore.fallbackTitle", "Boring")}</h2>
-          <p className="bore-sub">
-            {bore.metadata.project_name ? `${bore.metadata.project_name} · ` : ""}
-            BHR-GT (BRO)
-          </p>
+    <div className="boorstaat-view">
+      <div className="boorstaat-toolbar">
+        <span className="boorstaat-hint">{t("bore.zoomHint", "Ctrl + scroll om in/uit te zoomen")}</span>
+        <button type="button" onClick={() => openBoreEditor(bore.id)}>{tb("view.edit", "Bewerken")}</button>
+        <button type="button" onClick={zoomOut} disabled={zoom <= ZOOM_MIN} title={t("bore.zoomOut", "Uitzoomen")}>−</button>
+        <button type="button" onClick={() => setZoom(1)} title={t("bore.zoomReset", "Reset zoom")}>{`${zoom.toFixed(1)}×`}</button>
+        <button type="button" onClick={zoomIn} disabled={zoom >= ZOOM_MAX} title={t("bore.zoomIn", "Inzoomen")}>+</button>
+      </div>
+      <div className="boorstaat-scroll" ref={bodyRef}>
+        <div className="boorstaat-sheet" style={{ width: BASE_WIDTH_PX * zoom }}>
+          <BoorstaatSvg scene={layout.scene} width="100%" label={tb("sheet.title", "Boorstaat {{id}}", { id: bore.id || t("bore.fallbackTitle", "Boring") })} />
         </div>
-        <dl className="bore-meta">
-          {bore.position && (
-            <>
-              <dt>RD</dt>
-              <dd>
-                <code>
-                  {bore.position.x_rd.toFixed(1)}, {bore.position.y_rd.toFixed(1)}
-                </code>
-              </dd>
-            </>
-          )}
-          {typeof z0 === "number" && (
-            <>
-              <dt>NAP</dt>
-              <dd>
-                <code>{z0.toFixed(2)} m</code>
-              </dd>
-            </>
-          )}
-          {bore.final_depth && (
-            <>
-              <dt>{t("bore.depth", "Diepte")}</dt>
-              <dd>
-                <code>{bore.final_depth.toFixed(2)} m</code>
-              </dd>
-            </>
-          )}
-          {bore.layers.length > 0 && (
-            <>
-              <dt>{t("bore.layers", "Lagen")}</dt>
-              <dd>
-                <code>{bore.layers.length}</code>
-              </dd>
-            </>
-          )}
-        </dl>
-      </header>
-
-      {/* ── Zoom toolbar ───────────────────────────────────────── */}
-      {bore.layers.length > 0 && (
-        <div className="bore-toolbar">
-          <span className="bore-toolbar-hint">
-            {t("bore.zoomHint", "Ctrl + scroll om in/uit te zoomen")}
-          </span>
-          <div className="bore-toolbar-zoom">
-            <button
-              type="button"
-              className="bore-zoom-btn"
-              onClick={zoomOut}
-              disabled={zoom <= ZOOM_MIN}
-              title={t("bore.zoomOut", "Uitzoomen")}
-            >
-              −
-            </button>
-            <button
-              type="button"
-              className="bore-zoom-btn bore-zoom-reset"
-              onClick={zoomReset}
-              title={t("bore.zoomReset", "Reset zoom")}
-            >
-              {`${zoom.toFixed(1)}×`}
-            </button>
-            <button
-              type="button"
-              className="bore-zoom-btn"
-              onClick={zoomIn}
-              disabled={zoom >= ZOOM_MAX}
-              title={t("bore.zoomIn", "Inzoomen")}
-            >
-              +
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── Strip log ──────────────────────────────────────────── */}
-      <div className="bore-body" ref={bodyRef}>
-        {bore.layers.length === 0 ? (
-          <div className="bore-empty">
-            <p>{t("bore.noLayers", "Geen lagen aangetroffen in deze boring.")}</p>
-            <p className="bore-empty-sub">
-              <Trans t={t} i18nKey="bore.noLayersHint" defaults="De BHR-GT XML bevatte geen <0>describedInterval</0> elementen." components={[<code />]} />
-            </p>
-          </div>
-        ) : (
-          <div
-            className="bore-strip-wrap"
-            style={{
-              minHeight: `${wrapHeightPx}px`,
-              // Scale the strip column horizontally too — zoom is meant
-              // to magnify the whole boorprofiel, not just stretch
-              // vertically. We expose the multiplier as a CSS var so
-              // .bore-strip-wrap's grid template can pick it up.
-              ["--bore-zoom" as unknown as string]: String(zoom),
-            }}
-          >
-            {/* Depth axis */}
-            <div className="bore-axis">
-              {depthTicks.map((d) => {
-                const top = (d / totalDepth) * 100;
-                const napLabel = typeof z0 === "number"
-                  ? `${(z0 - d).toFixed(2)}`
-                  : `−${d.toFixed(1)}`;
-                return (
-                  <div
-                    key={d}
-                    className="bore-axis-tick"
-                    style={{ top: `${top}%` }}
-                  >
-                    <span className="bore-axis-line" aria-hidden />
-                    <span className="bore-axis-label">{napLabel}</span>
-                  </div>
-                );
-              })}
-              <div className="bore-axis-spine" aria-hidden />
-              <div className="bore-axis-title">
-                {typeof z0 === "number" ? "m NAP" : t("bore.belowGround", "m −mv")}
-              </div>
-            </div>
-
-            {/* Coloured layer column. Each layer is split into a wide
-                main-soil column + (optional) thinner admixture column,
-                following the NL boorprofiel-cartografie convention
-                where a composite name like `zwakSiltigeKlei` paints
-                the klei pattern + a small silt stripe. The width ratio
-                comes from the strength prefix (zwak/matig/sterk). */}
-            <div className="bore-strip">
-              {bore.layers.map((l, i) => {
-                const top = (l.top_depth / totalDepth) * 100;
-                const h = ((l.base_depth - l.top_depth) / totalDepth) * 100;
-                const mix = parseSoilMix(l.soil_name);
-                const mainPct = mainWidthFraction(mix) * 100;
-                return (
-                  <div
-                    key={i}
-                    className="bore-layer"
-                    style={{
-                      top: `${top}%`,
-                      height: `${h}%`,
-                    }}
-                    title={`${l.top_depth.toFixed(2)}–${l.base_depth.toFixed(2)} m: ${l.soil_name}${l.description ? ` (${l.description})` : ""}`}
-                  >
-                    <div
-                      className="bore-layer-half bore-layer-main"
-                      style={{
-                        width: `${mainPct}%`,
-                        background: soilPattern(mix.main),
-                      }}
-                    />
-                    {mix.admixture && (
-                      <div
-                        className="bore-layer-half bore-layer-mix"
-                        style={{
-                          width: `${100 - mainPct}%`,
-                          background: soilPattern(mix.admixture),
-                        }}
-                      />
-                    )}
-                    <span className="bore-layer-label">{l.soil_name}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Per-layer description column — natural flow so rows
-                with lots of secondary-attribute chips don't overlap
-                their neighbours. The strip+axis columns stretch to
-                match the descriptions' total height via the grid row. */}
-            <ul className="bore-descriptions">
-              {bore.layers.map((l, i) => {
-                const mix = parseSoilMix(l.soil_name);
-                const swatchMain = soilPattern(mix.main);
-                const swatchMix = mix.admixture ? soilPattern(mix.admixture) : null;
-                return (
-                <li
-                  key={i}
-                  className="bore-description-row"
-                >
-                  <span
-                    className="bore-description-swatch"
-                    style={
-                      swatchMix
-                        ? { background: `linear-gradient(to right, ${swatchMain} 0 65%, ${swatchMix} 65% 100%)` }
-                        : { background: swatchMain }
-                    }
-                    aria-hidden
-                  />
-                  <div className="bore-description-text">
-                    <div className="bore-description-soil">{l.soil_name}</div>
-                    <div className="bore-description-range">
-                      {l.top_depth.toFixed(2)} – {l.base_depth.toFixed(2)} m
-                    </div>
-                    {l.secondary && l.secondary.length > 0 && (
-                      <div className="bore-description-chips">
-                        {l.secondary.map((s, si) => (
-                          <span key={si} className="bore-chip">
-                            <span className="bore-chip-label">{s.label}</span>
-                            <span className="bore-chip-value">{s.value}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {l.colour && (
-                      <div className="bore-description-extra">{t("bore.colour", "Kleur: {{colour}}", { colour: l.colour })}</div>
-                    )}
-                    {l.description && (
-                      <div className="bore-description-extra">{l.description}</div>
-                    )}
-                  </div>
-                </li>
-              );
-              })}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );

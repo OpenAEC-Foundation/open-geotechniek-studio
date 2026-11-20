@@ -14,6 +14,7 @@ import WelcomeScreen from "./components/welcome/WelcomeScreen";
 import { StartSidebar } from "./components/welcome/StartSidebar";
 import ProjectSettingsDialog from "./components/project/ProjectSettingsDialog";
 import { CompanyDialogHost } from "./sondeerbedrijf/CompanyDialog";
+import { BoreEditorHost } from "./boorstaat/BoreEditorDialog";
 import ReportPreview from "./components/panels/ReportPreview";
 import ChartView from "./components/panels/ChartView";
 import MapView from "./components/panels/MapView";
@@ -565,6 +566,7 @@ function App() {
       <FeedbackDialog open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
       <ProjectSettingsDialog open={projectSettingsOpen} onClose={() => setProjectSettingsOpen(false)} />
       <CompanyDialogHost />
+      <BoreEditorHost />
       {welcomeOpen && (
         <WelcomeScreen
           onClose={() => setWelcomeOpen(false)}

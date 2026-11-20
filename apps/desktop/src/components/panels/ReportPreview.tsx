@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { boresOf } from "../../boorstaat/boreStore";
 
 import { useCptStore } from "../../store/useCptStore";
 import { reports } from "../../utils/platform";
@@ -28,6 +29,7 @@ import { OaIcon } from "../icons/oaIcon";
 export default function ReportPreview() {
   const { t } = useTranslation("ribbon");
   const { t: tp } = useTranslation("panels");
+  const { t: tb } = useTranslation("boring");
   const cptsMap = useCptStore((s) => s.cpts);
   const cpts = useMemo(() => Array.from(cptsMap.values()), [cptsMap]);
   const projectMeta = useCptStore((s) => s.projectMeta);
@@ -35,6 +37,10 @@ export default function ReportPreview() {
   const cachedPdf = useCptStore((s) => (activeDocId ? s.pdfCache.get(activeDocId) : undefined));
   const setPdfCacheStore = useCptStore((s) => s.setPdfCache);
   const setProjectMeta = useCptStore((s) => s.setProjectMeta);
+  // Boringen van het actieve document: ze komen als boorstaat in het rapport, ook zonder sonderingen.
+  const activeDocument = useCptStore((s) => s.documents.find((d) => d.id === s.activeDocId));
+  const bores = useMemo(() => boresOf(activeDocument), [activeDocument]);
+  const boreCount = bores.length;
   const inProject = useCptStore((s) => s.documents.find((d) => d.id === s.activeDocId)?.kind === "project");
 
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -59,7 +65,7 @@ export default function ReportPreview() {
   const activeUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (cpts.length === 0) {
+    if (cpts.length === 0 && boreCount === 0) {
       if (activeUrlRef.current) {
         URL.revokeObjectURL(activeUrlRef.current);
         activeUrlRef.current = null;
@@ -118,7 +124,7 @@ export default function ReportPreview() {
     return () => {
       cancelled = true;
     };
-  }, [cpts, projectMeta, sections, cachedPdf, activeDocId, setPdfCacheStore]);
+  }, [cpts, boreCount, bores, projectMeta, sections, cachedPdf, activeDocId, setPdfCacheStore]);
 
   // Final cleanup on unmount.
   useEffect(() => {
@@ -204,6 +210,10 @@ export default function ReportPreview() {
             <SectionToggle label={t("report.section.perCpt", "Per-sondering pagina's")}
               checked={sections.perCpt}
               onChange={(v) => setSections((s) => ({ ...s, perCpt: v }))} />
+            <SectionToggle label={tb("report.boreLogs", "Boorstaten")}
+              checked={sections.boreLogs !== false}
+              onChange={(v) => setSections((s) => ({ ...s, boreLogs: v }))}
+              hint={tb("report.boreLogsHint", "Per boring een pagina met de boorstaat")} />
             <SectionToggle label={t("report.section.testReport", "Testrapport")}
               checked={sections.testReport === true}
               onChange={(v) => setSections((s) => ({ ...s, testReport: v }))}
@@ -290,7 +300,7 @@ export default function ReportPreview() {
         <button
           type="button"
           className="report-generate-btn-side"
-          disabled={cpts.length === 0 || loading || !pdfUrl}
+          disabled={(cpts.length === 0 && boreCount === 0) || loading || !pdfUrl}
           onClick={handleOpenPdf}
           title={t("report.openInNewWindow", "PDF openen in de systeem-viewer")}
         >
@@ -303,7 +313,7 @@ export default function ReportPreview() {
 
   // Render preview area with appropriate state.
   let previewArea: React.ReactNode;
-  if (cpts.length === 0) {
+  if (cpts.length === 0 && boreCount === 0) {
     previewArea = (
       <div className="report-pages-wrapper">
         <div className="report-empty-state">
