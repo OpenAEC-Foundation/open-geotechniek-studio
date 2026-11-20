@@ -1,0 +1,144 @@
+{
+  "calibrate": {
+    "depthAxis": "Eixo da profundidade",
+    "depthMode": "Eixo da profundidade em",
+    "hint": "Clique em dois pontos do eixo da profundidade e em dois do eixo dos valores, o mais afastados possível, e introduza o valor de cada ponto. Os eixos são calibrados separadamente, por isso uma digitalização torta não é problema.",
+    "ok": "A calibração está correta. Verifique se as linhas da grelha coincidem com as linhas do gráfico.",
+    "pick": "Clicar em {{label}}",
+    "pickHint": "Depois clique no ponto sobre a imagem de fundo",
+    "repick": "{{label}} de novo",
+    "shareDepth": "Mesmo eixo da profundidade que qc",
+    "valueAxis": "Eixo dos valores {{name}}",
+    "valueOf": "Valor em {{label}}"
+  },
+  "cone": {
+    "electrical": "elétrica",
+    "mechanical": "mecânica"
+  },
+  "details": {
+    "coneHint": "Ao mudar o tipo de sondagem, o passo passa para 0,2 m (mecânica) ou 0,02 m (elétrica). O tipo é indicado; os valores medidos não são convertidos por isso.",
+    "coneKind": "Tipo de sondagem",
+    "date": "Data da sondagem",
+    "groundLevel": "Nível do terreno (m NAP)",
+    "hint": "Introduza os dados de cabeçalho. A origem é obrigatória e aparece no relatório.",
+    "id": "Nome ou número",
+    "origin": "Origem (obrigatória)",
+    "originExample": "digitalizada do relatório … de …",
+    "x": "X (RD, m), opcional",
+    "y": "Y (RD, m), opcional"
+  },
+  "footer": {
+    "accuracy": "Uma sondagem digitalizada é menos precisa do que um ficheiro medido.",
+    "cancel": "Cancelar",
+    "confirmClose": "Os pontos marcados ainda não foram guardados. Fechar o ecrã mesmo assim?",
+    "next": "Seguinte",
+    "previous": "Anterior",
+    "save": "Guardar"
+  },
+  "label": {
+    "badge": "digitalizada ({{cone}})",
+    "note": "A sondagem {{id}} foi digitalizada a partir de papel ou de uma digitalização (tipo: {{cone}}; origem: {{origin}}). A precisão é inferior à de um ficheiro medido."
+  },
+  "marker": {
+    "depth1": "profundidade 1",
+    "depth2": "profundidade 2",
+    "value1": "valor 1",
+    "value2": "valor 2"
+  },
+  "points": {
+    "clear": "Limpar tudo",
+    "count": "{{n}} pontos para {{name}}",
+    "duplicates": "{{n}} pontos estão à mesma profundidade que um ponto posterior; conta o último marcado.",
+    "hint": "Clique nos pontos ao longo da linha, de cima para baixo. Arraste um ponto para o mover; clique com o botão direito para o remover.",
+    "interpolation": "Entre os pontos",
+    "linear": "linear",
+    "linearHint": "Linear: entre dois pontos o valor segue uma linha reta.",
+    "notCalibrated": "A calibração ainda não está completa; a linha segue agora os pontos pela ordem em que foram marcados.",
+    "removeLast": "Remover último ponto",
+    "reordered": "Os pontos foram ordenados por profundidade.",
+    "result": "Série de medições: {{n}} valores de {{from}} a {{to}} m abaixo do terreno.",
+    "step": "Passo (m)",
+    "stepwise": "em degraus por leitura",
+    "stepwiseHint": "Em degraus: cada leitura vale até à leitura seguinte. Adequado a uma sondagem mecânica lida a cada 0,2 m.",
+    "undo": "Desfazer"
+  },
+  "problem": {
+    "depthPoints": "clique em dois pontos do eixo da profundidade, não no mesmo sítio",
+    "depthValues": "introduza dois valores diferentes para o eixo da profundidade",
+    "groundLevel": "Introduza o nível do terreno em m NAP.",
+    "id": "Introduza o nome ou o número da sondagem.",
+    "idTaken": "Já existe uma sondagem {{id}} neste projeto; escolha outro nome.",
+    "noImage": "Escolha primeiro uma imagem de fundo.",
+    "noSeries": "Os pontos estão mais próximos entre si do que o passo; não resulta nenhuma série de medições.",
+    "origin": "Introduza a origem; é obrigatória.",
+    "parallel": "o eixo da profundidade e o eixo dos valores são quase paralelos; clique nos pontos sobre os dois eixos",
+    "position": "Introduza as duas coordenadas RD, ou nenhuma.",
+    "qcCalibration": "Calibração de qc: {{what}}.",
+    "qcPoints": "Clique em pelo menos dois pontos da linha qc.",
+    "secondCalibration": "Calibração da segunda série: {{what}}.",
+    "secondPoints": "Clique em pelo menos dois pontos da linha da segunda série, ou desative essa série.",
+    "step": "O passo deve estar entre 0,005 e 1 m.",
+    "valuePoints": "clique em dois pontos do eixo dos valores, não no mesmo sítio",
+    "valueValues": "introduza dois valores diferentes para o eixo dos valores"
+  },
+  "ribbon": {
+    "add": "Digitalizar\nsondagem",
+    "addTitle": "Criar uma sondagem a partir de um gráfico em papel ou num PDF ou digitalização: calibrar os eixos e clicar ao longo da linha",
+    "edit": "Atualizar\ndigitalização",
+    "editTitle": "Reabrir a sondagem digitalizada {{id}} para atualizar pontos ou dados"
+  },
+  "save": {
+    "add": "Adicionar ao projeto",
+    "hintDocument": "Não há nenhum projeto aberto: a sondagem abre como documento separado.",
+    "hintProject": "A sondagem é adicionada ao projeto e passa a ser usada normalmente, também no cálculo de estacas.",
+    "hintUpdate": "A sondagem {{id}} será atualizada.",
+    "marked": "É indicada como digitalizada ({{cone}}) no gráfico, no relatório e no cálculo de estacas.",
+    "open": "Abrir como documento separado",
+    "points": "{{n}} valores com um passo de {{step}} m, até {{to}} m abaixo do terreno",
+    "qcOnly": "apenas qc; faltam fs e Rf",
+    "update": "Atualizar sondagem",
+    "withSecond": "qc e {{name}}"
+  },
+  "second": {
+    "fs": "atrito lateral fs (MPa)",
+    "label": "Segunda série",
+    "none": "nenhuma (apenas qc)",
+    "rf": "razão de atrito Rf (%)"
+  },
+  "series": {
+    "choose": "Escolher série"
+  },
+  "stage": {
+    "empty": "Escolha à direita um PDF ou uma imagem com o gráfico da sondagem.",
+    "fit": "Ajustar",
+    "label": "Imagem de fundo com pontos",
+    "zoomIn": "Ampliar",
+    "zoomOut": "Reduzir"
+  },
+  "step": {
+    "calibrate": "Calibrar",
+    "details": "Dados",
+    "points": "Pontos",
+    "save": "Guardar",
+    "underlay": "Imagem de fundo"
+  },
+  "title": {
+    "edit": "Atualizar a sondagem digitalizada {{id}}",
+    "new": "Digitalizar sondagem"
+  },
+  "underlay": {
+    "choose": "Escolher PDF ou imagem…",
+    "failed": "Não é possível ler a imagem.",
+    "hint": "Escolha o PDF ou a imagem (PNG ou JPEG) com o gráfico da sondagem. Num PDF escolhe-se a página; depois recorte até ao gráfico com ambos os eixos.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "A imagem de fundo não foi guardada com esta sondagem. Os pontos estão no lugar; escolha de novo a mesma imagem para os ver sobre a digitalização.",
+    "navigate": "Roda do rato: ampliar e reduzir. Arrastar: deslocar.",
+    "reopen": "Atualizar a sondagem {{id}}",
+    "replace": "Escolher outra imagem de fundo…",
+    "unnamed": "imagem de fundo"
+  },
+  "unit": {
+    "depth": "m abaixo do terreno",
+    "nap": "m NAP"
+  }
+}

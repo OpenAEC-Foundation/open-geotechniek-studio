@@ -12,6 +12,7 @@ import { computeSummary } from "./parts/summary";
 import { pileGeometry, woodTopNap } from "./parts/geometry";
 import { getStandard, usesHistoricalProcedure } from "./standards";
 import { applyOverrides } from "./parts/interpretation-overrides";
+import { digitizedNote } from "../../../digitaliseren/record";
 
 // E-moduli [N/mm²] voor de axiale paalstijfheid EA.
 //  - Staal: 210 000 (EN 1993-1-1)
@@ -73,6 +74,13 @@ const napText = (v: number) => `NAP ${fmtNumber(v, 2)} m`;
  * resultaat zien, zonder eerst de kleefgrenzen te verleggen.
  */
 export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
+  const r = computePileInterpreted(input, cpt);
+  // Een gedigitaliseerde sondering is minder nauwkeurig dan een gemeten bestand; dat staat bij de uitkomst en in de uitdraai.
+  const note = r.ok ? digitizedNote(cpt) : null;
+  return note ? { ...r, warnings: [note, ...r.warnings] } : r;
+}
+
+function computePileInterpreted(input: PileInput, cpt: Cpt | null): PileResult {
   // Aanpassingen van de grondlaaginterpretatie gaan er als eerste in: alles
   // hierna rekent met de aangepaste qc-reeks en lagen van deze sondering.
   const eff = applyOverrides(cpt, input.soilProfile, input.interpretationOverrides);

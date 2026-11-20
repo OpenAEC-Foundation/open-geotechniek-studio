@@ -5,6 +5,7 @@
 import type { Cpt, ProjectMeta } from "../types/cpt";
 import { validationOf } from "../validation/report";
 import { editReportGroup } from "../meetwaarden/logbook";
+import { digitizedReportGroup } from "../digitaliseren/record";
 
 export const MISSING_TEXT = "niet in het bestand";
 export const TEST_REPORT_STANDARD = "NEN-EN-ISO 22476-1";
@@ -225,5 +226,7 @@ export function buildTestReport(cpt: Cpt, project: ProjectMeta): TestReportGroup
     ] },
     // Nabewerkte meetwaarden: het logboek van de bewerkingen, alleen als die er zijn.
     ...[editReportGroup(cpt)].filter((group) => group !== null),
+    // Gedigitaliseerd van papier of scan: herkomst, ijking en nauwkeurigheid.
+    ...[digitizedReportGroup(cpt)].filter((group) => group !== null),
   ];
 }

@@ -1,0 +1,144 @@
+{
+  "calibrate": {
+    "depthAxis": "Axe des profondeurs",
+    "depthMode": "Axe des profondeurs en",
+    "hint": "Cliquez deux points sur l'axe des profondeurs et deux sur l'axe des valeurs, aussi éloignés que possible, et saisissez la valeur de chaque point. Les axes sont calibrés séparément, un scan de travers n'est donc pas un problème.",
+    "ok": "Le calibrage est correct. Vérifiez que les lignes de la grille tombent sur les lignes du graphique.",
+    "pick": "Cliquer {{label}}",
+    "pickHint": "Cliquez ensuite le point sur l'image de fond",
+    "repick": "{{label}} à nouveau",
+    "shareDepth": "Même axe des profondeurs que qc",
+    "valueAxis": "Axe des valeurs {{name}}",
+    "valueOf": "Valeur à {{label}}"
+  },
+  "cone": {
+    "electrical": "électrique",
+    "mechanical": "mécanique"
+  },
+  "details": {
+    "coneHint": "En changeant de type de sondage, le pas passe à 0,2 m (mécanique) ou 0,02 m (électrique). Le type est mentionné ; les valeurs mesurées ne sont pas converties pour autant.",
+    "coneKind": "Type de sondage",
+    "date": "Date du sondage",
+    "groundLevel": "Niveau du terrain (m NAP)",
+    "hint": "Saisissez les données d'en-tête. L'origine est obligatoire et figure dans le rapport.",
+    "id": "Nom ou numéro",
+    "origin": "Origine (obligatoire)",
+    "originExample": "numérisé à partir du rapport … du …",
+    "x": "X (RD, m), facultatif",
+    "y": "Y (RD, m), facultatif"
+  },
+  "footer": {
+    "accuracy": "Un sondage numérisé est moins précis qu'un fichier mesuré.",
+    "cancel": "Annuler",
+    "confirmClose": "Les points cliqués ne sont pas encore enregistrés. Fermer quand même l'écran ?",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "save": "Enregistrer"
+  },
+  "label": {
+    "badge": "numérisé ({{cone}})",
+    "note": "Le sondage {{id}} a été numérisé à partir d'un papier ou d'un scan (type : {{cone}} ; origine : {{origin}}). La précision est inférieure à celle d'un fichier mesuré."
+  },
+  "marker": {
+    "depth1": "profondeur 1",
+    "depth2": "profondeur 2",
+    "value1": "valeur 1",
+    "value2": "valeur 2"
+  },
+  "points": {
+    "clear": "Tout effacer",
+    "count": "{{n}} points pour {{name}}",
+    "duplicates": "{{n}} points sont à la même profondeur qu'un point ultérieur ; le dernier cliqué compte.",
+    "hint": "Cliquez les points le long de la ligne, de haut en bas. Faites glisser un point pour le déplacer ; cliquez avec le bouton droit pour le supprimer.",
+    "interpolation": "Entre les points",
+    "linear": "linéaire",
+    "linearHint": "Linéaire : entre deux points, la valeur suit une ligne droite.",
+    "notCalibrated": "Le calibrage n'est pas encore complet ; la ligne suit pour l'instant les points dans l'ordre des clics.",
+    "removeLast": "Retirer le dernier point",
+    "reordered": "Les points ont été triés par profondeur.",
+    "result": "Série de mesures : {{n}} valeurs de {{from}} à {{to}} m sous le terrain.",
+    "step": "Pas (m)",
+    "stepwise": "par paliers à chaque lecture",
+    "stepwiseHint": "Par paliers : chaque lecture vaut jusqu'à la lecture suivante. Convient à un sondage mécanique lu tous les 0,2 m.",
+    "undo": "Annuler l'action"
+  },
+  "problem": {
+    "depthPoints": "cliquez deux points sur l'axe des profondeurs, pas au même endroit",
+    "depthValues": "saisissez deux valeurs différentes pour l'axe des profondeurs",
+    "groundLevel": "Saisissez le niveau du terrain en m NAP.",
+    "id": "Saisissez le nom ou le numéro du sondage.",
+    "idTaken": "Il existe déjà un sondage {{id}} dans ce projet ; choisissez un autre nom.",
+    "noImage": "Choisissez d'abord une image de fond.",
+    "noSeries": "Les points sont plus rapprochés que le pas ; aucune série de mesures n'est obtenue.",
+    "origin": "Saisissez l'origine ; elle est obligatoire.",
+    "parallel": "l'axe des profondeurs et l'axe des valeurs sont presque parallèles ; cliquez les points sur les deux axes",
+    "position": "Saisissez les deux coordonnées RD, ou aucune.",
+    "qcCalibration": "Calibrage qc : {{what}}.",
+    "qcPoints": "Cliquez au moins deux points sur la ligne qc.",
+    "secondCalibration": "Calibrage de la deuxième série : {{what}}.",
+    "secondPoints": "Cliquez au moins deux points sur la ligne de la deuxième série, ou désactivez cette série.",
+    "step": "Le pas doit être compris entre 0,005 et 1 m.",
+    "valuePoints": "cliquez deux points sur l'axe des valeurs, pas au même endroit",
+    "valueValues": "saisissez deux valeurs différentes pour l'axe des valeurs"
+  },
+  "ribbon": {
+    "add": "Numériser\nun sondage",
+    "addTitle": "Créer un sondage à partir d'un graphique sur papier ou dans un PDF ou un scan : calibrer les axes et cliquer la ligne",
+    "edit": "Modifier la\nnumérisation",
+    "editTitle": "Rouvrir le sondage numérisé {{id}} pour modifier des points ou des données"
+  },
+  "save": {
+    "add": "Ajouter au projet",
+    "hintDocument": "Aucun projet n'est ouvert : le sondage s'ouvre comme document séparé.",
+    "hintProject": "Le sondage est ajouté au projet et est ensuite utilisé normalement, y compris dans le calcul de pieu.",
+    "hintUpdate": "Le sondage {{id}} sera mis à jour.",
+    "marked": "Mentionné comme numérisé ({{cone}}) dans le graphique, le rapport et le calcul de pieu.",
+    "open": "Ouvrir comme document séparé",
+    "points": "{{n}} valeurs avec un pas de {{step}} m, jusqu'à {{to}} m sous le terrain",
+    "qcOnly": "qc seulement ; fs et Rf manquent",
+    "update": "Mettre à jour le sondage",
+    "withSecond": "qc et {{name}}"
+  },
+  "second": {
+    "fs": "frottement latéral fs (MPa)",
+    "label": "Deuxième série",
+    "none": "aucune (qc seulement)",
+    "rf": "rapport de frottement Rf (%)"
+  },
+  "series": {
+    "choose": "Choisir la série"
+  },
+  "stage": {
+    "empty": "Choisissez à droite un PDF ou une image contenant le graphique du sondage.",
+    "fit": "Ajuster",
+    "label": "Image de fond avec points",
+    "zoomIn": "Zoom avant",
+    "zoomOut": "Zoom arrière"
+  },
+  "step": {
+    "calibrate": "Calibrer",
+    "details": "Données",
+    "points": "Points",
+    "save": "Enregistrer",
+    "underlay": "Image de fond"
+  },
+  "title": {
+    "edit": "Mettre à jour le sondage numérisé {{id}}",
+    "new": "Numériser un sondage"
+  },
+  "underlay": {
+    "choose": "Choisir un PDF ou une image…",
+    "failed": "L'image ne peut pas être lue.",
+    "hint": "Choisissez le PDF ou l'image (PNG ou JPEG) contenant le graphique du sondage. Pour un PDF, vous choisissez la page ; recadrez ensuite sur le graphique avec ses deux axes.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "L'image de fond n'a pas été conservée avec ce sondage. Les points sont à leur place ; choisissez à nouveau la même image pour les voir sur le scan.",
+    "navigate": "Molette : zoom avant et arrière. Glisser : déplacer.",
+    "reopen": "Mettre à jour le sondage {{id}}",
+    "replace": "Choisir une autre image de fond…",
+    "unnamed": "image de fond"
+  },
+  "unit": {
+    "depth": "m sous le terrain",
+    "nap": "m NAP"
+  }
+}

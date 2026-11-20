@@ -1,0 +1,144 @@
+{
+  "calibrate": {
+    "depthAxis": "Djupaxel",
+    "depthMode": "Djupaxel i",
+    "hint": "Klicka på två punkter på djupaxeln och två på värdeaxeln, så långt från varandra som möjligt, och ange värdet vid varje punkt. Axlarna kalibreras oberoende av varandra, så en sned skanning är inget problem.",
+    "ok": "Kalibreringen stämmer. Kontrollera att rutnätslinjerna ligger på diagrammets linjer.",
+    "pick": "Klicka på {{label}}",
+    "pickHint": "Klicka sedan på punkten på underlaget",
+    "repick": "{{label}} igen",
+    "shareDepth": "Samma djupaxel som qc",
+    "valueAxis": "Värdeaxel {{name}}",
+    "valueOf": "Värde vid {{label}}"
+  },
+  "cone": {
+    "electrical": "elektrisk",
+    "mechanical": "mekanisk"
+  },
+  "details": {
+    "coneHint": "När sonderingstypen byts hoppar steget till 0,2 m (mekanisk) eller 0,02 m (elektrisk). Typen anges; mätvärdena räknas inte om för den.",
+    "coneKind": "Sonderingstyp",
+    "date": "Sonderingsdatum",
+    "groundLevel": "Marknivå (m NAP)",
+    "hint": "Ange huvuduppgifterna. Ursprunget är obligatoriskt och kommer med i rapporten.",
+    "id": "Namn eller nummer",
+    "origin": "Ursprung (obligatoriskt)",
+    "originExample": "digitaliserad från rapport … daterad …",
+    "x": "X (RD, m), valfritt",
+    "y": "Y (RD, m), valfritt"
+  },
+  "footer": {
+    "accuracy": "En digitaliserad sondering är mindre noggrann än en uppmätt fil.",
+    "cancel": "Avbryt",
+    "confirmClose": "De klickade punkterna är inte sparade ännu. Stänga skärmen ändå?",
+    "next": "Nästa",
+    "previous": "Föregående",
+    "save": "Spara"
+  },
+  "label": {
+    "badge": "digitaliserad ({{cone}})",
+    "note": "Sondering {{id}} är digitaliserad från papper eller skanning (typ: {{cone}}; ursprung: {{origin}}). Noggrannheten är lägre än för en uppmätt fil."
+  },
+  "marker": {
+    "depth1": "djup 1",
+    "depth2": "djup 2",
+    "value1": "värde 1",
+    "value2": "värde 2"
+  },
+  "points": {
+    "clear": "Rensa allt",
+    "count": "{{n}} punkter för {{name}}",
+    "duplicates": "{{n}} punkter ligger på samma djup som en senare punkt; den senast klickade gäller.",
+    "hint": "Klicka på punkterna längs linjen, uppifrån och ned. Dra en punkt för att flytta den; högerklicka för att ta bort den.",
+    "interpolation": "Mellan punkterna",
+    "linear": "linjärt",
+    "linearHint": "Linjärt: mellan två punkter följer värdet en rät linje.",
+    "notCalibrated": "Kalibreringen är inte klar ännu; linjen följer nu punkterna i den ordning de klickades.",
+    "removeLast": "Ta bort sista punkten",
+    "reordered": "Punkterna har sorterats efter djup.",
+    "result": "Mätserie: {{n}} värden från {{from}} till {{to}} m under markytan.",
+    "step": "Steg (m)",
+    "stepwise": "stegvis per avläsning",
+    "stepwiseHint": "Stegvis: varje avläsning gäller fram till nästa avläsning. Passar en mekanisk sondering som lästs av var 0,2 m.",
+    "undo": "Ångra"
+  },
+  "problem": {
+    "depthPoints": "klicka på två punkter på djupaxeln, inte på samma ställe",
+    "depthValues": "ange två olika värden för djupaxeln",
+    "groundLevel": "Ange marknivån i m NAP.",
+    "id": "Ange sonderingens namn eller nummer.",
+    "idTaken": "Det finns redan en sondering {{id}} i det här projektet; välj ett annat namn.",
+    "noImage": "Välj först ett underlag.",
+    "noSeries": "Punkterna ligger tätare än steget; ingen mätserie uppstår.",
+    "origin": "Ange ursprunget; det är obligatoriskt.",
+    "parallel": "djupaxeln och värdeaxeln är nästan parallella; klicka på punkterna på de två axlarna",
+    "position": "Ange båda RD-koordinaterna eller ingen av dem.",
+    "qcCalibration": "Kalibrering qc: {{what}}.",
+    "qcPoints": "Klicka på minst två punkter på qc-linjen.",
+    "secondCalibration": "Kalibrering andra serien: {{what}}.",
+    "secondPoints": "Klicka på minst två punkter på linjen för den andra serien, eller stäng av den serien.",
+    "step": "Steget måste ligga mellan 0,005 och 1 m.",
+    "valuePoints": "klicka på två punkter på värdeaxeln, inte på samma ställe",
+    "valueValues": "ange två olika värden för värdeaxeln"
+  },
+  "ribbon": {
+    "add": "Digitalisera\nsondering",
+    "addTitle": "Skapa en sondering från ett diagram på papper eller i en PDF eller skanning: kalibrera axlarna och klicka längs linjen",
+    "edit": "Uppdatera\ndigitalisering",
+    "editTitle": "Öppna den digitaliserade sonderingen {{id}} igen för att uppdatera punkter eller uppgifter"
+  },
+  "save": {
+    "add": "Lägg till i projekt",
+    "hintDocument": "Inget projekt är öppet: sonderingen öppnas som ett fristående dokument.",
+    "hintProject": "Sonderingen läggs till i projektet och används sedan som vanligt, även i pålberäkningen.",
+    "hintUpdate": "Sondering {{id}} uppdateras.",
+    "marked": "Anges i diagrammet, rapporten och pålberäkningen som digitaliserad ({{cone}}).",
+    "open": "Öppna som fristående dokument",
+    "points": "{{n}} värden med ett steg på {{step}} m, ned till {{to}} m under markytan",
+    "qcOnly": "endast qc; fs och Rf saknas",
+    "update": "Uppdatera sondering",
+    "withSecond": "qc och {{name}}"
+  },
+  "second": {
+    "fs": "mantelfriktion fs (MPa)",
+    "label": "Andra serien",
+    "none": "ingen (endast qc)",
+    "rf": "friktionstal Rf (%)"
+  },
+  "series": {
+    "choose": "Välj serie"
+  },
+  "stage": {
+    "empty": "Välj till höger en PDF eller bild med sonderingsdiagrammet.",
+    "fit": "Anpassa",
+    "label": "Underlag med punkter",
+    "zoomIn": "Zooma in",
+    "zoomOut": "Zooma ut"
+  },
+  "step": {
+    "calibrate": "Kalibrera",
+    "details": "Uppgifter",
+    "points": "Punkter",
+    "save": "Spara",
+    "underlay": "Underlag"
+  },
+  "title": {
+    "edit": "Uppdatera digitaliserad sondering {{id}}",
+    "new": "Digitalisera sondering"
+  },
+  "underlay": {
+    "choose": "Välj PDF eller bild…",
+    "failed": "Bilden kan inte läsas.",
+    "hint": "Välj PDF-filen eller bilden (PNG eller JPEG) med sonderingsdiagrammet. I en PDF väljer du sidan; beskär sedan till diagrammet med båda axlarna.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "Underlaget har inte sparats med den här sonderingen. Punkterna ligger på sin plats; välj samma bild igen för att se dem på skanningen.",
+    "navigate": "Mushjul: zooma in och ut. Dra: panorera.",
+    "reopen": "Uppdatera sondering {{id}}",
+    "replace": "Välj ett annat underlag…",
+    "unnamed": "underlag"
+  },
+  "unit": {
+    "depth": "m under markytan",
+    "nap": "m NAP"
+  }
+}

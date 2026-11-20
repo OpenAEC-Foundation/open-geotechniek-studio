@@ -1,0 +1,144 @@
+{
+  "calibrate": {
+    "depthAxis": "Eje de profundidad",
+    "depthMode": "Eje de profundidad en",
+    "hint": "Haga clic en dos puntos del eje de profundidad y en dos del eje de valores, lo más separados posible, e introduzca el valor de cada punto. Los ejes se calibran por separado, así que un escaneo torcido no es un problema.",
+    "ok": "La calibración es correcta. Compruebe que las líneas de la cuadrícula coinciden con las líneas del gráfico.",
+    "pick": "Hacer clic en {{label}}",
+    "pickHint": "Después haga clic en el punto sobre la imagen de fondo",
+    "repick": "{{label}} de nuevo",
+    "shareDepth": "Mismo eje de profundidad que qc",
+    "valueAxis": "Eje de valores {{name}}",
+    "valueOf": "Valor en {{label}}"
+  },
+  "cone": {
+    "electrical": "eléctrico",
+    "mechanical": "mecánico"
+  },
+  "details": {
+    "coneHint": "Al cambiar el tipo de sondeo, el paso pasa a 0,2 m (mecánico) o 0,02 m (eléctrico). El tipo se indica; los valores medidos no se convierten por ello.",
+    "coneKind": "Tipo de sondeo",
+    "date": "Fecha del sondeo",
+    "groundLevel": "Nivel del terreno (m NAP)",
+    "hint": "Introduzca los datos de cabecera. El origen es obligatorio y aparece en el informe.",
+    "id": "Nombre o número",
+    "origin": "Origen (obligatorio)",
+    "originExample": "digitalizado del informe … de fecha …",
+    "x": "X (RD, m), opcional",
+    "y": "Y (RD, m), opcional"
+  },
+  "footer": {
+    "accuracy": "Un sondeo digitalizado es menos preciso que un archivo medido.",
+    "cancel": "Cancelar",
+    "confirmClose": "Los puntos marcados aún no se han guardado. ¿Cerrar la pantalla de todos modos?",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "save": "Guardar"
+  },
+  "label": {
+    "badge": "digitalizado ({{cone}})",
+    "note": "El sondeo {{id}} se ha digitalizado a partir de papel o de un escaneo (tipo: {{cone}}; origen: {{origin}}). La precisión es menor que la de un archivo medido."
+  },
+  "marker": {
+    "depth1": "profundidad 1",
+    "depth2": "profundidad 2",
+    "value1": "valor 1",
+    "value2": "valor 2"
+  },
+  "points": {
+    "clear": "Borrar todo",
+    "count": "{{n}} puntos para {{name}}",
+    "duplicates": "{{n}} puntos están a la misma profundidad que un punto posterior; cuenta el último marcado.",
+    "hint": "Haga clic en los puntos a lo largo de la línea, de arriba abajo. Arrastre un punto para moverlo; haga clic con el botón derecho para eliminarlo.",
+    "interpolation": "Entre los puntos",
+    "linear": "lineal",
+    "linearHint": "Lineal: entre dos puntos el valor sigue una línea recta.",
+    "notCalibrated": "La calibración aún no está completa; la línea sigue ahora los puntos en el orden en que se marcaron.",
+    "removeLast": "Quitar último punto",
+    "reordered": "Los puntos se han ordenado por profundidad.",
+    "result": "Serie de medidas: {{n}} valores de {{from}} a {{to}} m bajo el terreno.",
+    "step": "Paso (m)",
+    "stepwise": "escalonado por lectura",
+    "stepwiseHint": "Escalonado: cada lectura vale hasta la lectura siguiente. Adecuado para un sondeo mecánico leído cada 0,2 m.",
+    "undo": "Deshacer"
+  },
+  "problem": {
+    "depthPoints": "haga clic en dos puntos del eje de profundidad, no en el mismo sitio",
+    "depthValues": "introduzca dos valores distintos para el eje de profundidad",
+    "groundLevel": "Introduzca el nivel del terreno en m NAP.",
+    "id": "Introduzca el nombre o el número del sondeo.",
+    "idTaken": "Ya existe un sondeo {{id}} en este proyecto; elija otro nombre.",
+    "noImage": "Elija primero una imagen de fondo.",
+    "noSeries": "Los puntos están más juntos que el paso; no se obtiene ninguna serie de medidas.",
+    "origin": "Introduzca el origen; es obligatorio.",
+    "parallel": "el eje de profundidad y el eje de valores son casi paralelos; haga clic en los puntos sobre los dos ejes",
+    "position": "Introduzca las dos coordenadas RD, o ninguna.",
+    "qcCalibration": "Calibración de qc: {{what}}.",
+    "qcPoints": "Haga clic en al menos dos puntos de la línea qc.",
+    "secondCalibration": "Calibración de la segunda serie: {{what}}.",
+    "secondPoints": "Haga clic en al menos dos puntos de la línea de la segunda serie, o desactive esa serie.",
+    "step": "El paso debe estar entre 0,005 y 1 m.",
+    "valuePoints": "haga clic en dos puntos del eje de valores, no en el mismo sitio",
+    "valueValues": "introduzca dos valores distintos para el eje de valores"
+  },
+  "ribbon": {
+    "add": "Digitalizar\nsondeo",
+    "addTitle": "Crear un sondeo a partir de un gráfico en papel o en un PDF o escaneo: calibrar los ejes y hacer clic a lo largo de la línea",
+    "edit": "Actualizar\ndigitalización",
+    "editTitle": "Volver a abrir el sondeo digitalizado {{id}} para actualizar puntos o datos"
+  },
+  "save": {
+    "add": "Añadir al proyecto",
+    "hintDocument": "No hay ningún proyecto abierto: el sondeo se abre como documento independiente.",
+    "hintProject": "El sondeo se añade al proyecto y después se usa con normalidad, también en el cálculo de pilotes.",
+    "hintUpdate": "Se actualizará el sondeo {{id}}.",
+    "marked": "Se indica como digitalizado ({{cone}}) en el gráfico, el informe y el cálculo de pilotes.",
+    "open": "Abrir como documento independiente",
+    "points": "{{n}} valores con un paso de {{step}} m, hasta {{to}} m bajo el terreno",
+    "qcOnly": "solo qc; faltan fs y Rf",
+    "update": "Actualizar sondeo",
+    "withSecond": "qc y {{name}}"
+  },
+  "second": {
+    "fs": "rozamiento lateral fs (MPa)",
+    "label": "Segunda serie",
+    "none": "ninguna (solo qc)",
+    "rf": "razón de fricción Rf (%)"
+  },
+  "series": {
+    "choose": "Elegir serie"
+  },
+  "stage": {
+    "empty": "Elija a la derecha un PDF o una imagen con el gráfico del sondeo.",
+    "fit": "Ajustar",
+    "label": "Imagen de fondo con puntos",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar"
+  },
+  "step": {
+    "calibrate": "Calibrar",
+    "details": "Datos",
+    "points": "Puntos",
+    "save": "Guardar",
+    "underlay": "Imagen de fondo"
+  },
+  "title": {
+    "edit": "Actualizar el sondeo digitalizado {{id}}",
+    "new": "Digitalizar sondeo"
+  },
+  "underlay": {
+    "choose": "Elegir PDF o imagen…",
+    "failed": "No se puede leer la imagen.",
+    "hint": "Elija el PDF o la imagen (PNG o JPEG) con el gráfico del sondeo. En un PDF se elige la página; después recorte hasta el gráfico con ambos ejes.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "La imagen de fondo no se guardó con este sondeo. Los puntos están en su sitio; elija de nuevo la misma imagen para verlos sobre el escaneo.",
+    "navigate": "Rueda del ratón: acercar y alejar. Arrastrar: desplazar.",
+    "reopen": "Actualizar el sondeo {{id}}",
+    "replace": "Elegir otra imagen de fondo…",
+    "unnamed": "imagen de fondo"
+  },
+  "unit": {
+    "depth": "m bajo el terreno",
+    "nap": "m NAP"
+  }
+}

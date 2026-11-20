@@ -1,0 +1,144 @@
+{
+  "calibrate": {
+    "depthAxis": "Tiefenachse",
+    "depthMode": "Tiefenachse in",
+    "hint": "Klicken Sie zwei Punkte auf der Tiefenachse und zwei auf der Werteachse an, möglichst weit auseinander, und geben Sie zu jedem Punkt den Wert ein. Die Achsen werden unabhängig voneinander kalibriert, ein schiefer Scan ist also kein Problem.",
+    "ok": "Die Kalibrierung stimmt. Prüfen Sie, ob die Rasterlinien auf den Linien des Diagramms liegen.",
+    "pick": "{{label}} anklicken",
+    "pickHint": "Klicken Sie danach den Punkt auf der Unterlage an",
+    "repick": "{{label}} erneut",
+    "shareDepth": "Gleiche Tiefenachse wie qc",
+    "valueAxis": "Werteachse {{name}}",
+    "valueOf": "Wert bei {{label}}"
+  },
+  "cone": {
+    "electrical": "elektrisch",
+    "mechanical": "mechanisch"
+  },
+  "details": {
+    "coneHint": "Beim Wechsel der Sondierungsart springt der Schritt auf 0,2 m (mechanisch) oder 0,02 m (elektrisch). Die Art wird angegeben; die Messwerte werden dafür nicht umgerechnet.",
+    "coneKind": "Sondierungsart",
+    "date": "Datum der Sondierung",
+    "groundLevel": "Geländehöhe (m NAP)",
+    "hint": "Geben Sie die Kopfdaten ein. Die Herkunft ist Pflicht und erscheint im Bericht.",
+    "id": "Name oder Nummer",
+    "origin": "Herkunft (Pflicht)",
+    "originExample": "digitalisiert aus Bericht … vom …",
+    "x": "X (RD, m), optional",
+    "y": "Y (RD, m), optional"
+  },
+  "footer": {
+    "accuracy": "Eine digitalisierte Sondierung ist weniger genau als eine gemessene Datei.",
+    "cancel": "Abbrechen",
+    "confirmClose": "Die angeklickten Punkte sind noch nicht gespeichert. Fenster trotzdem schließen?",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "save": "Speichern"
+  },
+  "label": {
+    "badge": "digitalisiert ({{cone}})",
+    "note": "Sondierung {{id}} wurde von Papier oder Scan digitalisiert (Art: {{cone}}; Herkunft: {{origin}}). Die Genauigkeit ist geringer als bei einer gemessenen Datei."
+  },
+  "marker": {
+    "depth1": "Tiefe 1",
+    "depth2": "Tiefe 2",
+    "value1": "Wert 1",
+    "value2": "Wert 2"
+  },
+  "points": {
+    "clear": "Alles löschen",
+    "count": "{{n}} Punkte für {{name}}",
+    "duplicates": "{{n}} Punkte liegen auf derselben Tiefe wie ein späterer Punkt; der zuletzt angeklickte zählt.",
+    "hint": "Klicken Sie die Punkte entlang der Linie an, von oben nach unten. Ziehen Sie einen Punkt, um ihn zu verschieben; klicken Sie mit der rechten Maustaste, um ihn zu entfernen.",
+    "interpolation": "Zwischen den Punkten",
+    "linear": "linear",
+    "linearHint": "Linear: Zwischen zwei Punkten verläuft der Wert in einer geraden Linie.",
+    "notCalibrated": "Die Kalibrierung ist noch nicht vollständig; die Linie folgt jetzt den Punkten in der Reihenfolge des Anklickens.",
+    "removeLast": "Letzten Punkt entfernen",
+    "reordered": "Die Punkte wurden nach Tiefe sortiert.",
+    "result": "Messreihe: {{n}} Werte von {{from}} bis {{to}} m unter Gelände.",
+    "step": "Schritt (m)",
+    "stepwise": "stufenweise je Ablesung",
+    "stepwiseHint": "Stufenweise: Jede Ablesung gilt bis zur nächsten Ablesung. Passt zu einer mechanischen Sondierung, die alle 0,2 m abgelesen wurde.",
+    "undo": "Rückgängig"
+  },
+  "problem": {
+    "depthPoints": "klicken Sie zwei Punkte auf der Tiefenachse an, nicht an derselben Stelle",
+    "depthValues": "geben Sie für die Tiefenachse zwei verschiedene Werte ein",
+    "groundLevel": "Geben Sie die Geländehöhe in m NAP ein.",
+    "id": "Geben Sie den Namen oder die Nummer der Sondierung ein.",
+    "idTaken": "In diesem Projekt gibt es bereits eine Sondierung {{id}}; wählen Sie einen anderen Namen.",
+    "noImage": "Wählen Sie zuerst eine Unterlage.",
+    "noSeries": "Die Punkte liegen dichter beieinander als der Schritt; es entsteht keine Messreihe.",
+    "origin": "Geben Sie die Herkunft ein; sie ist Pflicht.",
+    "parallel": "die Tiefenachse und die Werteachse verlaufen fast parallel; klicken Sie die Punkte auf den beiden Achsen an",
+    "position": "Geben Sie beide RD-Koordinaten ein oder keine von beiden.",
+    "qcCalibration": "Kalibrierung qc: {{what}}.",
+    "qcPoints": "Klicken Sie mindestens zwei Punkte auf der qc-Linie an.",
+    "secondCalibration": "Kalibrierung zweite Reihe: {{what}}.",
+    "secondPoints": "Klicken Sie mindestens zwei Punkte auf der Linie der zweiten Reihe an oder schalten Sie diese Reihe aus.",
+    "step": "Der Schritt muss zwischen 0,005 und 1 m liegen.",
+    "valuePoints": "klicken Sie zwei Punkte auf der Werteachse an, nicht an derselben Stelle",
+    "valueValues": "geben Sie für die Werteachse zwei verschiedene Werte ein"
+  },
+  "ribbon": {
+    "add": "Sondierung\ndigitalisieren",
+    "addTitle": "Eine Sondierung aus einem Diagramm auf Papier oder in einem PDF oder Scan erstellen: Achsen kalibrieren und die Linie anklicken",
+    "edit": "Digitalisierung\nbearbeiten",
+    "editTitle": "Die digitalisierte Sondierung {{id}} erneut öffnen, um Punkte oder Daten zu bearbeiten"
+  },
+  "save": {
+    "add": "Zum Projekt hinzufügen",
+    "hintDocument": "Es ist kein Projekt geöffnet: Die Sondierung wird als einzelnes Dokument geöffnet.",
+    "hintProject": "Die Sondierung wird dem Projekt hinzugefügt und wird danach ganz normal verwendet, auch in der Pfahlberechnung.",
+    "hintUpdate": "Sondierung {{id}} wird aktualisiert.",
+    "marked": "Wird im Diagramm, im Bericht und in der Pfahlberechnung als digitalisiert ({{cone}}) angegeben.",
+    "open": "Als einzelnes Dokument öffnen",
+    "points": "{{n}} Werte mit einem Schritt von {{step}} m, bis {{to}} m unter Gelände",
+    "qcOnly": "nur qc; fs und Rf fehlen",
+    "update": "Sondierung aktualisieren",
+    "withSecond": "qc und {{name}}"
+  },
+  "second": {
+    "fs": "Mantelreibung fs (MPa)",
+    "label": "Zweite Reihe",
+    "none": "keine (nur qc)",
+    "rf": "Reibungsverhältnis Rf (%)"
+  },
+  "series": {
+    "choose": "Reihe wählen"
+  },
+  "stage": {
+    "empty": "Wählen Sie rechts ein PDF oder Bild mit dem Sondierdiagramm.",
+    "fit": "Einpassen",
+    "label": "Unterlage mit Punkten",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern"
+  },
+  "step": {
+    "calibrate": "Kalibrieren",
+    "details": "Daten",
+    "points": "Punkte",
+    "save": "Speichern",
+    "underlay": "Unterlage"
+  },
+  "title": {
+    "edit": "Digitalisierte Sondierung {{id}} bearbeiten",
+    "new": "Sondierung digitalisieren"
+  },
+  "underlay": {
+    "choose": "PDF oder Bild wählen…",
+    "failed": "Das Bild kann nicht gelesen werden.",
+    "hint": "Wählen Sie das PDF oder das Bild (PNG oder JPEG) mit dem Sondierdiagramm. Bei einem PDF wählen Sie die Seite; schneiden Sie danach auf das Diagramm mit beiden Achsen zu.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "Die Unterlage wurde nicht mit dieser Sondierung gespeichert. Die Punkte sind an ihrem Platz; wählen Sie dasselbe Bild erneut, um sie auf dem Scan zu sehen.",
+    "navigate": "Mausrad: vergrößern und verkleinern. Ziehen: verschieben.",
+    "reopen": "Sondierung {{id}} bearbeiten",
+    "replace": "Andere Unterlage wählen…",
+    "unnamed": "Unterlage"
+  },
+  "unit": {
+    "depth": "m unter Gelände",
+    "nap": "m NAP"
+  }
+}
