@@ -40,6 +40,31 @@ Afwijkingen van de bronnen, bewust:
 - **V3, paalgewicht.** De bron rekent met een factor 0,9 (9,0 kN); de module met γ/1,1 (9,2 kN).
 - **V5 en V6.** De bron kapt een laag van 0,7 m op 15 MPa en niet op 12 MPa; de test zet de piekgrens daarvoor op 15 MPa. De groepswaarde klopt bij een invloedsoppervlak van 6,26 m²; welke regel de bron voor een enkele rij gebruikt is onbekend.
 
+## Aanpassingen van de grondlaaginterpretatie
+
+Per berekening kan de gebruiker voor een dieptetraject van een sondering de conusweerstand aanpassen (lineair tussen de randwaarden of een vaste waarde) en de grondsoort wijzigen, met een toelichting. De invoer (`interpretationOverrides`), het paneel bij de tekening en de regels zijn dezelfde als in de module paaldraagvermogen; de gedeelde code staat in `calc/shared/interpretation`. De sondering in het project blijft de meting.
+
+Zo werkt een aanpassing door in de trekweerstand:
+
+- **Conusweerstand.** De aangepaste lijn vervangt de meting vóór het middelen per laag. Daarna volgen de gewone stappen: reductie voor ontgraving en overconsolidatie, afsnuiten op 12 of 15 MPa, de factoren. αt in klei (tabel 7.d) volgt de aangepaste waarde.
+- **Grondsoort.** Het traject wordt één laag met de nieuwe grondsoort. Die bepaalt αt (zand, klei, leem of geen wrijving in veen), of f2 geldt, en het volumegewicht en φ' voor de korrelspanning en de kluit. De laag krijgt de waarden uit "Volumegewichten per grondsoort".
+- **Laaggrenzen.** De randen van een toegepast traject worden laaggrenzen, zodat een aangepaste waarde niet met de meting ernaast wordt gemiddeld.
+- **Keuze.** Een aangepaste conusweerstand verandert de grondsoort niet: de laagindeling blijft die van de gemeten sondering. Wie beide wil wijzigen, geeft beide op in dezelfde aanpassing.
+- **Zonder aanpassingen** is de uitkomst gelijk aan die van vóór deze uitbreiding; `interpretation.test.ts` legt de getallen van een alleenstaande paal en van een paal in een groep vast.
+
+De tests in `interpretation.test.ts` rekenen op een kunstmatige sondering (`interpretation.fixture.ts`) met ronde waarden. Voor een alleenstaande prefab paal □290 zonder ontgraving geldt per MPa·m zand 1,16 · 0,007 · 1000 / (1,39 · 1,00 · 1,35) = 4,327 kN:
+
+| Aanpassing | Met de hand | Verschil in de module |
+|---|---|---|
+| Terugval naar 3 MPa eruit, lineair, NAP -11,90 tot -13,00 m | 11,0 − 4,0 = 7,0 MPa·m | +30,29 kN |
+| Vaste waarde 10 MPa, NAP -12 tot -13 m (gemeten gemiddeld 3,35 MPa) | 6,65 MPa·m | +28,78 kN |
+| Vaste waarde 4 MPa, NAP -14 tot -15 m (gemeten 10 MPa) | −6,0 MPa·m | −25,96 kN |
+| Zand naar veen, NAP -14 tot -16 m | −20,2 MPa·m | −87,41 kN |
+| Klei (qc 1,5 MPa, halve αt = 0,010) naar zand, NAP -5,5 tot -7,5 m | 1,16 · (0,007 − 0,010) · 1500 / 1,8765 · 2 | −5,56 kN |
+| Zand naar veen in een groep 1,5 × 1,5 m: kluit | 2,1659 m² · 2 m · (20/1,1 − 11/1,1) kN/m³ | −35,44 kN |
+
+Deze gevallen zijn eigen handberekeningen met de formules van art. 7.6.3.3; er is geen externe referentie-berekening met aangepaste interpretatie mee vergeleken.
+
 ## Open punten
 
 - αt in klei tussen 2,0 en 2,5 MPa: de reader geeft een formule die niet aansluit op 0,02 en 0,03; de module interpoleert lineair.
@@ -47,4 +72,4 @@ Afwijkingen van de bronnen, bewust:
 - Het invloedsoppervlak A voor rand- en hoekpalen en voor een enkele rij: de module rekent met het stramien min de paaldoorsnede, of met een eigen waarde.
 - f1 is een invoerwaarde. De formule staat in `compactionFactor`, maar is niet tegen een uitgewerkt voorbeeld gecontroleerd en wordt nog niet automatisch toegepast.
 - De αt-waarden van de editie 2025 staan er nog niet in.
-- De grondsoort per laag komt uit de indicatieve laagindeling van de sondering; een eigen laagindeling per sondering kan nog niet worden opgegeven.
+- De grondsoort per laag komt uit de indicatieve laagindeling van de sondering. Per traject is de grondsoort aan te passen (zie hierboven); een volledig eigen laagindeling met eigen gewichten per laag kan nog niet worden opgegeven.
