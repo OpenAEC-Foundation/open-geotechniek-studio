@@ -14,6 +14,7 @@ import MeetwaardenDialog from "../meetwaarden/MeetwaardenDialog";
 import { editLogOf } from "../meetwaarden/state";
 import { boresOf } from "../boorstaat/boreStore";
 import BoreRibbonGroup from "../boorstaat/BoreRibbonGroup";
+import DigitizeRibbonButton from "../digitaliseren/DigitizeRibbonButton";
 
 export default function SondeerbedrijfTab() {
   const cptsMap = useCptStore((s) => s.cpts);
@@ -76,6 +77,7 @@ export default function SondeerbedrijfTab() {
         <RibbonGroup label="Sonderingen">
           <RibbonButton icon="geo.coordinate-tag" label={"Coördinaten\ninlezen"} disabled={!cpts.length}
             title="Lees een bestand met naam; x; y en optioneel de maaiveldhoogte, en vul de posities van de sonderingen aan" onClick={importCoordinates} />
+          <DigitizeRibbonButton />
           <div className="ribbon-info-block">
             <div className="ribbon-info-title">{cpts.length} sondering{cpts.length === 1 ? "" : "en"}</div>
             <div className="ribbon-info-sub">{!cpts.length ? "Open eerst sonderingen." : withoutPosition ? `${withoutPosition} zonder coördinaten` : "Alle met coördinaten"}</div>

@@ -1,0 +1,144 @@
+{
+  "calibrate": {
+    "depthAxis": "Asse della profondità",
+    "depthMode": "Asse della profondità in",
+    "hint": "Fai clic su due punti dell'asse della profondità e su due dell'asse dei valori, il più lontano possibile tra loro, e inserisci il valore di ogni punto. Gli assi sono calibrati separatamente, quindi una scansione storta non è un problema.",
+    "ok": "La calibrazione è corretta. Verifica che le linee della griglia cadano sulle linee del grafico.",
+    "pick": "Fai clic su {{label}}",
+    "pickHint": "Poi fai clic sul punto nell'immagine di sfondo",
+    "repick": "{{label}} di nuovo",
+    "shareDepth": "Stesso asse della profondità di qc",
+    "valueAxis": "Asse dei valori {{name}}",
+    "valueOf": "Valore in {{label}}"
+  },
+  "cone": {
+    "electrical": "elettrica",
+    "mechanical": "meccanica"
+  },
+  "details": {
+    "coneHint": "Cambiando il tipo di prova, il passo passa a 0,2 m (meccanica) o 0,02 m (elettrica). Il tipo viene indicato; i valori misurati non vengono convertiti.",
+    "coneKind": "Tipo di prova",
+    "date": "Data della prova",
+    "groundLevel": "Piano campagna (m NAP)",
+    "hint": "Inserisci i dati di intestazione. L'origine è obbligatoria e compare nel rapporto.",
+    "id": "Nome o numero",
+    "origin": "Origine (obbligatoria)",
+    "originExample": "digitalizzata dal rapporto … del …",
+    "x": "X (RD, m), facoltativo",
+    "y": "Y (RD, m), facoltativo"
+  },
+  "footer": {
+    "accuracy": "Una prova digitalizzata è meno precisa di un file misurato.",
+    "cancel": "Annulla",
+    "confirmClose": "I punti selezionati non sono ancora stati salvati. Chiudere comunque la schermata?",
+    "next": "Avanti",
+    "previous": "Indietro",
+    "save": "Salva"
+  },
+  "label": {
+    "badge": "digitalizzata ({{cone}})",
+    "note": "La prova {{id}} è stata digitalizzata da carta o da scansione (tipo: {{cone}}; origine: {{origin}}). La precisione è inferiore a quella di un file misurato."
+  },
+  "marker": {
+    "depth1": "profondità 1",
+    "depth2": "profondità 2",
+    "value1": "valore 1",
+    "value2": "valore 2"
+  },
+  "points": {
+    "clear": "Cancella tutto",
+    "count": "{{n}} punti per {{name}}",
+    "duplicates": "{{n}} punti sono alla stessa profondità di un punto successivo; vale l'ultimo selezionato.",
+    "hint": "Fai clic sui punti lungo la linea, dall'alto verso il basso. Trascina un punto per spostarlo; fai clic con il pulsante destro per rimuoverlo.",
+    "interpolation": "Tra i punti",
+    "linear": "lineare",
+    "linearHint": "Lineare: tra due punti il valore segue una linea retta.",
+    "notCalibrated": "La calibrazione non è ancora completa; la linea segue ora i punti nell'ordine dei clic.",
+    "removeLast": "Rimuovi ultimo punto",
+    "reordered": "I punti sono stati ordinati per profondità.",
+    "result": "Serie di misure: {{n}} valori da {{from}} a {{to}} m dal piano campagna.",
+    "step": "Passo (m)",
+    "stepwise": "a gradini per lettura",
+    "stepwiseHint": "A gradini: ogni lettura vale fino alla lettura successiva. Adatto a una prova meccanica letta ogni 0,2 m.",
+    "undo": "Annulla azione"
+  },
+  "problem": {
+    "depthPoints": "fai clic su due punti dell'asse della profondità, non nello stesso posto",
+    "depthValues": "inserisci due valori diversi per l'asse della profondità",
+    "groundLevel": "Inserisci la quota del piano campagna in m NAP.",
+    "id": "Inserisci il nome o il numero della prova.",
+    "idTaken": "In questo progetto esiste già una prova {{id}}; scegli un altro nome.",
+    "noImage": "Scegli prima un'immagine di sfondo.",
+    "noSeries": "I punti sono più vicini tra loro del passo; non si ottiene alcuna serie di misure.",
+    "origin": "Inserisci l'origine; è obbligatoria.",
+    "parallel": "l'asse della profondità e l'asse dei valori sono quasi paralleli; fai clic sui punti dei due assi",
+    "position": "Inserisci entrambe le coordinate RD, oppure nessuna.",
+    "qcCalibration": "Calibrazione qc: {{what}}.",
+    "qcPoints": "Fai clic su almeno due punti della linea qc.",
+    "secondCalibration": "Calibrazione seconda serie: {{what}}.",
+    "secondPoints": "Fai clic su almeno due punti della linea della seconda serie, oppure disattiva quella serie.",
+    "step": "Il passo deve essere compreso tra 0,005 e 1 m.",
+    "valuePoints": "fai clic su due punti dell'asse dei valori, non nello stesso posto",
+    "valueValues": "inserisci due valori diversi per l'asse dei valori"
+  },
+  "ribbon": {
+    "add": "Digitalizza\nprova",
+    "addTitle": "Crea una prova da un grafico su carta o in un PDF o una scansione: calibra gli assi e fai clic lungo la linea",
+    "edit": "Aggiorna prova\ndigitalizzata",
+    "editTitle": "Riapri la prova digitalizzata {{id}} per aggiornare punti o dati"
+  },
+  "save": {
+    "add": "Aggiungi al progetto",
+    "hintDocument": "Nessun progetto aperto: la prova si apre come documento separato.",
+    "hintProject": "La prova viene aggiunta al progetto e poi è usata normalmente, anche nel calcolo del palo.",
+    "hintUpdate": "La prova {{id}} verrà aggiornata.",
+    "marked": "Nel grafico, nel rapporto e nel calcolo del palo è indicata come digitalizzata ({{cone}}).",
+    "open": "Apri come documento separato",
+    "points": "{{n}} valori con un passo di {{step}} m, fino a {{to}} m dal piano campagna",
+    "qcOnly": "solo qc; fs e Rf mancano",
+    "update": "Aggiorna prova",
+    "withSecond": "qc e {{name}}"
+  },
+  "second": {
+    "fs": "attrito laterale fs (MPa)",
+    "label": "Seconda serie",
+    "none": "nessuna (solo qc)",
+    "rf": "rapporto d'attrito Rf (%)"
+  },
+  "series": {
+    "choose": "Scegli serie"
+  },
+  "stage": {
+    "empty": "Scegli a destra un PDF o un'immagine con il grafico della prova.",
+    "fit": "Adatta",
+    "label": "Immagine di sfondo con punti",
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci"
+  },
+  "step": {
+    "calibrate": "Calibra",
+    "details": "Dati",
+    "points": "Punti",
+    "save": "Salva",
+    "underlay": "Sfondo"
+  },
+  "title": {
+    "edit": "Aggiorna la prova digitalizzata {{id}}",
+    "new": "Digitalizza prova"
+  },
+  "underlay": {
+    "choose": "Scegli PDF o immagine…",
+    "failed": "Impossibile leggere l'immagine.",
+    "hint": "Scegli il PDF o l'immagine (PNG o JPEG) con il grafico della prova. Per un PDF scegli la pagina; poi ritaglia fino al grafico con entrambi gli assi.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "L'immagine di sfondo non è stata salvata con questa prova. I punti sono al loro posto; scegli di nuovo la stessa immagine per vederli sulla scansione.",
+    "navigate": "Rotellina del mouse: ingrandisci e riduci. Trascina: sposta.",
+    "reopen": "Aggiorna la prova {{id}}",
+    "replace": "Scegli un'altra immagine di sfondo…",
+    "unnamed": "immagine di sfondo"
+  },
+  "unit": {
+    "depth": "m dal piano campagna",
+    "nap": "m NAP"
+  }
+}

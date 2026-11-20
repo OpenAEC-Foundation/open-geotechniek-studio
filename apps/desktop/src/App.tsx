@@ -15,6 +15,7 @@ import { StartSidebar } from "./components/welcome/StartSidebar";
 import ProjectSettingsDialog from "./components/project/ProjectSettingsDialog";
 import { CompanyDialogHost } from "./sondeerbedrijf/CompanyDialog";
 import { BoreEditorHost } from "./boorstaat/BoreEditorDialog";
+import { DigitizeHost } from "./digitaliseren/DigitizeDialog";
 import ReportPreview from "./components/panels/ReportPreview";
 import ChartView from "./components/panels/ChartView";
 import MapView from "./components/panels/MapView";
@@ -567,6 +568,7 @@ function App() {
       <ProjectSettingsDialog open={projectSettingsOpen} onClose={() => setProjectSettingsOpen(false)} />
       <CompanyDialogHost />
       <BoreEditorHost />
+      <DigitizeHost />
       {welcomeOpen && (
         <WelcomeScreen
           onClose={() => setWelcomeOpen(false)}
