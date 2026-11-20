@@ -4,6 +4,7 @@ import type { ProjectContext } from "../../framework/types";
 import { TOTAL_PAGES_TOKEN, formula, kv, makeCursor, nl, paragraph, sectionTitle, table } from "../pile-bearing-capacity/parts/pile-report-pdf";
 import { DEFAULT_FACTORS } from "./catalog";
 import type { SpreadInput, SpreadResult } from "./compute";
+import { spreadSlip } from "./scene";
 
 const NORM = "NEN 9997-1 art. 6.5";
 const reportDate = (iso: string | undefined) => (iso || new Date().toISOString().slice(0, 10)).slice(0, 10).split("-").reverse().join("-");
@@ -53,6 +54,23 @@ export function buildSpreadReport(i: SpreadInput, r: SpreadResult, ctx: ProjectC
     { label: "c'gem;d [kPa]", width: 16, align: "right" }, { label: "gamma'gem;d [kN/m3]", width: 18, align: "right" }, { label: "ze uit tabel [m]", width: 18, align: "right" }],
   d.iterations.map((s) => [String(s.step), nl(s.zeM, 3), nl(s.phiRepDeg, 2), nl(s.phiD, 2), nl(s.cD, 2), nl(s.gammaD, 2), nl(s.zeNextM, 3)]), { size: 7.5 });
   paragraph(c, "Gewogen gemiddelde: het gewicht van een laag is de laagdikte maal de afstand van het laagmidden tot de invloedsdiepte.", { italic: true, size: 7.5 });
+
+  // Het bezwijkmechanisme zoals de doorsnede en de 3D-weergave het tekenen.
+  const slip = spreadSlip(i, r), m = slip.drained;
+  sectionTitle(c, "Bezwijkvlak in de tekening", "Prandtl (1920); hellende belasting: Sokolovskii (1960), Brinch Hansen (1961)");
+  kv(c, "Hoek", `phi'gem;rep = ${nl(slip.phiDeg, 1)} graden; ${m.kind === "circle" ? "cirkelboog" : "logaritmische spiraal r = r0 e^(theta tan phi')"}`);
+  if (m.rotationDeg > 0) {
+    formula(c, "tan delta", "Hd / (Vd + A' c' cot phi')", null, nl(slip.obliquity, 3));
+    formula(c, "alpha", "(Delta + delta) / 2, met sin Delta = sin delta / sin phi'", null, `${nl(m.rotationDeg, 1)} graden`);
+  }
+  kv(c, "Actieve wig", m.rotationDeg > 0 ? `basishoeken 45 + phi'/2 - alpha = ${nl(m.wedgeAnglesDeg[0], 1)} graden en 45 + phi'/2 + alpha = ${nl(m.wedgeAnglesDeg[1], 1)} graden` : `basishoeken 45 + phi'/2 = ${nl(m.wedgeAnglesDeg[0], 1)} graden`);
+  kv(c, "Overgangszone", `openingshoek ${m.rotationDeg > 0 ? "90 - alpha = " : ""}${nl(m.fanDeg, 1)} graden`);
+  kv(c, "Passieve wig", `basishoeken 45 - phi'/2 = ${nl(m.passiveDeg, 1)} graden${m.rotationDeg > 0 ? ", aan de kant waarheen Hd wijst" : m.sides.length === 1 ? ", een kant getekend" : ", aan beide kanten"}`);
+  kv(c, "Afmetingen", `${nl(m.maxDepthM)} m diep en ${nl(m.reachM)} m naast b' (invloedsdiepte en -breedte in de berekening: ze = ${nl(d.zeM)} m, ae = ${nl(d.aeM)} m)`);
+  if (slip.undrained) kv(c, "Ongedraineerd", `cirkelboog${slip.undrained.rotationDeg > 0 ? `, alpha = ${nl(slip.undrained.rotationDeg, 1)} graden uit sin 2 alpha = Hd / (A' cu;d) = ${nl(slip.undrainedRatio, 3)}` : ""}; ${nl(slip.undrained.maxDepthM)} m diep en ${nl(slip.undrained.reachM)} m naast b'`);
+  paragraph(c, m.rotationDeg > 0
+    ? "Het vlak is het glijlijnenveld van de strook op gewichtsloze grond bij een hellende belasting. De invloedsdiepte ze waarover de grondparameters zijn gemiddeld, komt uit de tabel van de norm (lineair in Hd/Vd) en is bij een hellende belasting meestal groter dan de diepte van dit vlak."
+    : "Het vlak is het glijlijnenveld van Prandtl voor een strook op gewichtsloze grond; bij verticale belasting valt het samen met de invloedsdiepte en -breedte uit de tabel.", { italic: true, size: 7.5 });
 
   for (const k of r.checks) {
     sectionTitle(c, k.title, k.article.startsWith("art.") ? `NEN 9997-1 ${k.article}` : k.article);

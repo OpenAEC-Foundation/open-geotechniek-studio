@@ -4,7 +4,7 @@
 // z omhoog, met z = 0 op het funderingsvlak.
 import { getSoilType } from "./catalog";
 import type { SpreadInput, SpreadLayer, SpreadOk } from "./compute";
-import { slipSurface } from "./slip";
+import { slipSurface, type SlipSurface } from "./slip";
 
 export type Vec3 = [x: number, y: number, z: number];
 export interface SceneBox { center: Vec3; size: Vec3 }
@@ -37,6 +37,36 @@ export interface SpreadScene {
   zeM: number;
   /** Omtrek van het bezwijkvlak per kant, in de doorsnede: x [m] en diepte onder het funderingsvlak [m]. */
   slip: { x: number; depth: number }[][];
+  /** Het bezwijkmechanisme zelf, gedraineerd en (als er ongedraineerd is getoetst) ongedraineerd; x vanaf het midden van b'. */
+  mechanism: SpreadSlip;
+}
+
+export interface SpreadSlip {
+  /** Hoek waarmee het gedraineerde vlak is getekend: φ'gem;rep [°]. */
+  phiDeg: number;
+  /** Helling van de belasting in de doorsnede: tan δ = Hd / (Vd + A'·c'·cot φ'); 0 als Hd evenwijdig aan L werkt. */
+  obliquity: number;
+  drained: SlipSurface;
+  /** Hd / (A'·cu;d) en het cirkelvormige vlak. */
+  undrainedRatio: number;
+  undrained: SlipSurface | null;
+}
+
+/**
+ * Het bezwijkmechanisme in de doorsnede over de breedte. Een horizontale belasting in de breedterichting
+ * maakt het eenzijdig, met de hoeken uit slip.ts; een excentriciteit of een maaiveldhelling alleen eenzijdig.
+ */
+export function spreadSlip(input: SpreadInput, r: SpreadOk): SpreadSlip {
+  const d = r.dims, c = r.drained, inSection = r.strip || input.hDirection === "B", h = inSection ? input.hDKn : 0;
+  const oneSided = input.hDKn > 0 || input.slopeDeg > 0 || d.eccBM > 1e-6;
+  const tanPhi = Math.tan((c.phiD * Math.PI) / 180);
+  const obliquity = h <= 0 ? 0 : c.phiRepDeg < 1e-6 || tanPhi < 1e-9 ? (c.cD > 0 ? h / (d.areaM2 * c.cD) : 0) : h / (c.vKn + (d.areaM2 * c.cD) / tanPhi);
+  const u = r.undrained, undrainedRatio = u && h > 0 && u.cuD > 0 ? h / (u.dims.areaM2 * u.cuD) : 0;
+  return {
+    phiDeg: c.phiRepDeg, obliquity, undrainedRatio,
+    drained: slipSurface({ bEffM: d.bRawM, phiDeg: c.phiRepDeg, obliquity, oneSided }),
+    undrained: u ? slipSurface({ bEffM: d.bRawM, phiDeg: 0, obliquity: undrainedRatio, oneSided }) : null,
+  };
 }
 
 /** Dikte van de getekende voet: de invoer kent geen dikte, dus een kwart van B, binnen de dekking als die er is. */
@@ -72,11 +102,11 @@ export function spreadScene(input: SpreadInput, r: SpreadOk): SpreadScene {
   const layers: SceneLayer[] = r.layers.map((l, i) => ({
     topZ: Math.min(groundZ, i === 0 ? groundZ : l.topNap - input.foundationNap), bottomZ: Math.max(-depthM, (r.layers[i + 1]?.topNap ?? -Infinity) - input.foundationNap), name: l.name, color: layerColor(l),
   })).filter((l) => l.topZ - l.bottomZ > 1e-6);
-  const oneSided = input.hDKn > 0 || input.slopeDeg > 0 || d.eccBM > 1e-6;
-  const slip = slipSurface({ bEffM: d.bRawM, phiDeg: r.drained.phiRepDeg, zeM: r.drained.zeM, aeM: r.drained.aeM, oneSided }).sides
+  const mechanism = spreadSlip(input, r);
+  const slip = mechanism.drained.sides
     .map((side) => [...side.wedge.slice(0, 2), ...side.transition, side.passive[1], side.passive[2]].map((q) => ({ x: d.eccBM + q.x, depth: q.z })));
   return {
     strip, lengthM, thicknessM, footing: { center: [0, 0, thicknessM / 2], size: [B, lengthM, thicknessM] }, effective, resultantAt, resultantAngleDeg: (Math.atan(tan) * 180) / Math.PI, arrows, layers,
-    halfWidthM: Math.max(2 * B, B / 2 + Math.min(r.drained.aeM, 4 * B) + 0.4 * B), halfLengthM: strip ? lengthM / 2 : Math.max(lengthM, lengthM / 2 + B), depthM, groundZ, waterZ: input.waterNap - input.foundationNap, foundationNap: input.foundationNap, zeM: r.drained.zeM, slip,
+    halfWidthM: Math.max(2 * B, B / 2 + Math.min(r.drained.aeM, 4 * B) + 0.4 * B), halfLengthM: strip ? lengthM / 2 : Math.max(lengthM, lengthM / 2 + B), depthM, groundZ, waterZ: input.waterNap - input.foundationNap, foundationNap: input.foundationNap, zeM: r.drained.zeM, slip, mechanism,
   };
 }

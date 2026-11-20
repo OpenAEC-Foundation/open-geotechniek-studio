@@ -75,7 +75,7 @@ describe("module", () => {
     const r = ok(input), pdf = module.buildReport!(input, r, ctx);
     const text = new TextDecoder("latin1").decode(pdf);
     expect(text.startsWith("%PDF-")).toBe(true);
-    for (const part of ["Overzicht van de toetsen", "Invloedsdiepte", "Kantelen om de rand van de voet", "Verticaal draagvermogen, gedraineerd"]) expect(text).toContain(part);
+    for (const part of ["Overzicht van de toetsen", "Invloedsdiepte", "Kantelen om de rand van de voet", "Verticaal draagvermogen, gedraineerd", "Bezwijkvlak in de tekening", "Overgangszone"]) expect(text).toContain(part);
     expect(module.reportFileName!(input)).toBe("fundering-op-staal-poer");
     expect(() => module.buildReport!(input, { ok: false, error: "fout" }, ctx)).toThrow("fout");
   });
@@ -104,6 +104,34 @@ describe("geometrie van de 3D-weergave", () => {
     expect(s.effective.y0).toBe(-s.lengthM / 2); expect(s.effective.y1).toBe(s.lengthM / 2);
     const along = { ...input, hDirection: "L" as const }, a = spreadScene(along, ok(along)).arrows.find((x) => x.kind === "H")!;
     expect(a.to[1]).toBeGreaterThan(a.from[1]); expect(a.to[0]).toBe(0);
+  });
+  it("bezwijkvlak: het snijvlak van de 3D is de doorsnede; met Hd eenzijdig, ondieper en korter, en bij Hd → 0 het symmetrische vlak", () => {
+    const sand = { ...input, shape: "strip" as const, widthM: 2, eccBM: 0, slopeDeg: 0, baseTiltDeg: 0, vDKn: 300, hArmM: 0, hGRepKn: 0, hQRepKn: 0, mQRepKnm: 0, layers: [input.layers[0]] };
+    const at = (hDKn: number) => { const i = { ...sand, hDKn }, r = ok(i); return { r, s: spreadScene(i, r) }; };
+    const vertical = at(0), inclined = at(60), m = inclined.s.mechanism;
+    expect(vertical.s.slip).toHaveLength(2); expect(inclined.s.slip).toHaveLength(1);
+    // tan δ = 60/300 = 0,2 bij φ'gem;rep = 32,5°: sin Δ = sin 11,31° / sin 32,5° → Δ = 21,41°, α = 16,36°.
+    expect(m.obliquity).toBeCloseTo(0.2, 9); expect(m.drained.rotationDeg).toBeCloseTo(16.36, 2);
+    expect(m.drained.maxDepthM).toBeLessThan(vertical.s.mechanism.drained.maxDepthM); expect(m.drained.reachM).toBeLessThan(vertical.s.mechanism.drained.reachM);
+    // De omtrek op het snijvlak bestaat uit dezelfde punten als het vlak in de doorsnede, en loopt naar de kant van Hd (+x).
+    const outline = inclined.s.slip[0], side = m.drained.sides[0];
+    expect(outline[0]).toEqual({ x: -1, depth: 0 }); expect(outline[1]).toEqual({ x: side.wedge[1].x, depth: side.wedge[1].z });
+    expect(outline[outline.length - 2]).toEqual({ x: side.passive[1].x, depth: 0 }); expect(outline[outline.length - 2].x).toBeCloseTo(1 + m.drained.reachM, 9);
+    expect(Math.max(...outline.map((q) => q.depth))).toBeCloseTo(m.drained.maxDepthM, 2);
+    expect(Math.min(...outline.map((q) => q.x))).toBe(-1); // aan de andere kant geen zone
+    // Een heel kleine Hd geeft het vlak van Prandtl aan de kant van Hd.
+    const tiny = at(0.003).s.slip[0], prandtl = vertical.s.slip[0];
+    tiny.forEach((q, k) => { expect(q.x).toBeCloseTo(prandtl[k].x, 3); expect(q.depth).toBeCloseTo(prandtl[k].depth, 3); });
+    // Hd evenwijdig aan L: in de doorsnede over de breedte blijft het vlak dat van Prandtl.
+    const pad = { ...sand, shape: "pad" as const, lengthM: 4, hDKn: 60, hDirection: "L" as const };
+    expect(spreadScene(pad, ok(pad)).mechanism.drained.rotationDeg).toBe(0);
+  });
+  it("ongedraineerd bezwijkvlak: een cirkelboog die met Hd / (A'·cu;d) draait", () => {
+    const clay = { ...input, shape: "strip" as const, widthM: 2, eccBM: 0, slopeDeg: 0, baseTiltDeg: 0, hArmM: 0, vDKn: 200, hDKn: 37.04, layers: [{ ...input.layers[1], topNap: 0 }] };
+    const m = spreadScene(clay, ok(clay)).mechanism;
+    // cu;d = 50/1,35 = 37,04 kPa; Hd / (A'·cu;d) = 37,04 / (2 · 37,04) = 0,5 → α = 15°.
+    expect(m.undrainedRatio).toBeCloseTo(0.5, 3); expect(m.undrained!.kind).toBe("circle"); expect(m.undrained!.rotationDeg).toBeCloseTo(15, 1);
+    expect(m.undrained!.sides).toHaveLength(1);
   });
   it("de voet krijgt een dikte binnen de dekking", () => {
     expect(footingThickness(1, 0.2)).toBe(0.2); expect(footingThickness(1, 0)).toBe(0.3); expect(footingThickness(6, 2)).toBe(0.8);

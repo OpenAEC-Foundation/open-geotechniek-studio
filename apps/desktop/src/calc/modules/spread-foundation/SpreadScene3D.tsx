@@ -70,16 +70,13 @@ export function SpreadScene3D({ scene: latest }: { scene: SpreadScene }) {
     if (Math.abs(s.groundZ) > 0.05 * size) level(0, `aanleg ${nap(0)}`, ink, true);
     if (s.waterZ < s.groundZ) level(s.waterZ, `gws ${nap(s.waterZ)}`, "#2563eb", true);
     level(-s.zeM, `ze ${nap(-s.zeM)}`, "#b91c1c", true);
-    // Bezwijkvlak: de omtrek op het snijvlak en het lichaam ervoor, onder het effectieve draagvlak.
-    const slipDepth = Math.max(0.05, -Math.min(0, s.effective.y0));
+    // Bezwijkvlak: alleen op het snijvlak, als omtrek met een lichte vulling. Niets steekt voor het grondblok uit.
     for (const side of s.slip) {
       const clipped = side.map((q) => ({ x: Math.max(-hw, Math.min(hw, q.x)), depth: Math.min(s.depthM, q.depth) }));
       line([...clipped, clipped[0]].map((q) => new THREE.Vector3(q.x, -q.depth, face)), 0xb91c1c);
       const shape = new THREE.Shape(clipped.map((q) => new THREE.Vector2(q.x, -q.depth)));
-      const body = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: slipDepth, bevelEnabled: false }), new THREE.MeshBasicMaterial({ color: 0xb91c1c, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide }));
-      body.renderOrder = 1; scene.add(body);
-      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(body.geometry, 30), new THREE.LineBasicMaterial({ color: 0xb91c1c, transparent: true, opacity: 0.55 }));
-      scene.add(edges);
+      const fill = new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshBasicMaterial({ color: 0xb91c1c, transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide }));
+      fill.position.z = face / 2; fill.renderOrder = 1; scene.add(fill);
     }
     const footing = new THREE.Mesh(new THREE.BoxGeometry(s.footing.size[0], s.footing.size[2], s.footing.size[1]), new THREE.MeshStandardMaterial({ color: 0xb8bcc4, roughness: 0.85, transparent: true, opacity: 0.45, depthWrite: false }));
     footing.position.copy(v(s.footing.center)); scene.add(footing);
@@ -114,6 +111,6 @@ export function SpreadScene3D({ scene: latest }: { scene: SpreadScene }) {
   if (unavailable) return <p className="cs-hint" role="status">3D is op dit apparaat niet beschikbaar. De doorsnede toont dezelfde gegevens.</p>;
   return <>
     <div className="sf-scene" ref={host} />
-    <p className="cs-hint">{s.strip ? "Strook: een stuk van de doorlopende strook." : "Poer."} Het grondblok is opengewerkt: het snijvlak is de doorsnede. Rood: het bezwijkvlak tot de invloedsdiepte ze. Oranje: het effectieve draagvlak b′ × l′. Blauw: Vd, rood: Hd, zwart: de resultante. Sleep om te draaien, scroll om te zoomen.</p>
+    <p className="cs-hint">{s.strip ? "Strook: een stuk van de doorlopende strook." : "Poer."} Het grondblok is opengewerkt: het snijvlak is de doorsnede. Rood op het snijvlak: het bezwijkvlak{s.mechanism.drained.rotationDeg > 0 ? ", eenzijdig door de horizontale belasting" : ""}; de stippellijn is de invloedsdiepte ze. Oranje: het effectieve draagvlak b′ × l′. Blauw: Vd, rood: Hd, zwart: de resultante. Sleep om te draaien, scroll om te zoomen.</p>
   </>;
 }

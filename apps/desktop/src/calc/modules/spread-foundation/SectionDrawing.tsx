@@ -1,18 +1,18 @@
 // Doorsnede in de breedterichting: grondlagen, voet, belastingen, effectieve breedte en het
 // bezwijkvlak tot de invloedsdiepte. De maten komen uit scene.ts en slip.ts.
-import { influenceRatios, n, PUNCH_SPREAD_DEG, type SpreadInput, type SpreadOk } from "./compute";
+import { n, PUNCH_SPREAD_DEG, type SpreadInput, type SpreadOk } from "./compute";
 import { spreadScene } from "./scene";
-import { slipSurface, type Pt, type SlipSurface } from "./slip";
+import type { Pt } from "./slip";
 
 const rad = (d: number) => (d * Math.PI) / 180;
 const napText = (v: number) => `NAP ${v >= 0 ? "+" : ""}${n(v, 2)}`;
 
 export function SectionDrawing({ input: i, result: r }: { input: SpreadInput; result: SpreadOk }) {
   const s = spreadScene(i, r), B = i.widthM, d = r.dims, zf = i.foundationNap;
-  const hv = i.hDKn / i.vDKn, oneSided = i.hDKn > 0 || i.slopeDeg > 0 || d.eccBM > 1e-6;
-  const bSection = d.bRawM, reach = Math.min(r.drained.aeM, 4 * B);
-  const drained = slipSurface({ bEffM: bSection, phiDeg: r.drained.phiRepDeg, zeM: r.drained.zeM, aeM: r.drained.aeM, oneSided });
-  const undrained: SlipSurface | null = r.undrained ? slipSurface({ bEffM: bSection, phiDeg: 0, zeM: r.undrained.zeM, aeM: bSection * influenceRatios(0, hv).ae, oneSided }) : null;
+  const oneSided = i.hDKn > 0 || i.slopeDeg > 0 || d.eccBM > 1e-6;
+  const reach = Math.min(r.drained.aeM, 4 * B);
+  // Hetzelfde mechanisme als op het snijvlak van de 3D-weergave.
+  const { drained, undrained } = s.mechanism;
 
   const xR = B / 2 + reach + 0.4 * B, xL = oneSided ? -(B / 2 + 1.3 * B) : -xR;
   const tanBeta = Math.tan(rad(i.slopeDeg)), tanAlpha = Math.tan(rad(i.baseTiltDeg));
@@ -29,7 +29,7 @@ export function SectionDrawing({ input: i, result: r }: { input: SpreadInput; re
   const tan8 = Math.tan(rad(PUNCH_SPREAD_DEG));
   const blockH = 0.14 * B;
   return <svg className="sf-section" viewBox={`0 0 ${W} ${H.toFixed(0)}`} role="img"
-    aria-label={`Doorsnede van de fundering: breedte ${n(B)} m, effectieve breedte ${n(d.bRawM)} m, invloedsdiepte ${n(r.drained.zeM)} m`}>
+    aria-label={`Doorsnede van de fundering: breedte ${n(B)} m, effectieve breedte ${n(d.bRawM)} m, invloedsdiepte ${n(r.drained.zeM)} m, bezwijkvlak tot ${n(drained.maxDepthM)} m diep`}>
     <defs>
       <clipPath id="sf-soil"><polygon points={soilOutline} /></clipPath>
       <clipPath id="sf-view"><rect x={padL} y={padT} width={W - padL - padR} height={H - padT - padB} /></clipPath>

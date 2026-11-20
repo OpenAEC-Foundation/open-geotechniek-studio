@@ -8,7 +8,7 @@ import { DEFAULT_FACTORS, FACTOR_SETS, SOIL_TYPES, getSoilType, type SpreadFacto
 import { layersFromCpt, type SpreadCheck, type SpreadInput, type SpreadLayer, type SpreadResult } from "./compute";
 import { SectionDrawing } from "./SectionDrawing";
 import { SpreadScene3D } from "./SpreadScene3D";
-import { spreadScene } from "./scene";
+import { spreadScene, spreadSlip } from "./scene";
 import "./styles.css";
 
 type Props = PanelProps<SpreadInput, SpreadResult>;
@@ -103,6 +103,7 @@ export function InputPanel({ input: i, result, onChange }: Props) {
 export function VisualPanel({ input: i, result: r }: Props) {
   const [view, setView] = useState<"section" | "3d">("section");
   if (!r.ok) return <p className="cs-hint">De tekening verschijnt zodra de invoer compleet is.</p>;
+  const slip = spreadSlip(i, r).drained, inclined = slip.rotationDeg > 0;
   return <div className="sf-visual">
     <div className="sf-tabs" role="tablist" aria-label="Weergave">
       <button type="button" role="tab" aria-selected={view === "section"} className={view === "section" ? "active" : ""} onClick={() => setView("section")}>Doorsnede</button>
@@ -110,7 +111,9 @@ export function VisualPanel({ input: i, result: r }: Props) {
     </div>
     {view === "section" ? <>
       <SectionDrawing input={i} result={r} />
-      <p className="cs-hint">Bezwijkvlak: actieve wig onder b′, overgangszone ({r.drained.phiRepDeg > 0 ? "logaritmische spiraal" : "cirkelboog"}) en passieve wig, getekend met φ′gem;rep = {fmt(r.drained.phiRepDeg, 1)}° tot de invloedsdiepte ze.{r.undrained ? " Gestreept: het ongedraineerde vlak (cirkelboog)." : ""}{r.punch.length ? " Gestippeld: de spreiding onder 8° naar een fictief funderingsvlak (doorponsen)." : ""}{i.hDKn > 0 || i.slopeDeg > 0 || r.dims.eccBM > 1e-6 ? " Door de horizontale belasting, de excentriciteit of de helling bezwijkt de grond naar één kant." : ""}</p>
+      <p className="cs-hint">Bezwijkvlak: actieve wig onder b′, overgangszone ({r.drained.phiRepDeg > 0 ? "logaritmische spiraal" : "cirkelboog"}) en passieve wig, getekend met φ′gem;rep = {fmt(r.drained.phiRepDeg, 1)}°.{inclined
+        ? ` Door de horizontale belasting draait de grootste hoofdspanning onder de voet ${fmt(slip.rotationDeg, 1)}°: de wig krijgt basishoeken van ${fmt(slip.wedgeAnglesDeg[0], 1)}° en ${fmt(slip.wedgeAnglesDeg[1], 1)}°, de overgangszone opent ${fmt(slip.fanDeg, 1)}° en de grond wijkt uit naar de kant waarheen Hd wijst. Het vlak reikt ${fmt(slip.maxDepthM, 2)} m diep en ${fmt(slip.reachM, 2)} m naast b′; de berekening middelt over ze = ${fmt(r.drained.zeM, 2)} m uit de tabel.`
+        : ` Het vlak reikt ${fmt(slip.maxDepthM, 2)} m diep en ${fmt(slip.reachM, 2)} m naast b′.${i.hDKn > 0 || i.slopeDeg > 0 || r.dims.eccBM > 1e-6 ? " Door de excentriciteit, de helling of de horizontale belasting in de lengterichting is één kant getekend." : ""}`}{r.undrained ? " Gestreept: het ongedraineerde vlak (cirkelboog)." : ""}{r.punch.length ? " Gestippeld: de spreiding onder 8° naar een fictief funderingsvlak (doorponsen)." : ""}</p>
     </> : <SpreadScene3D scene={spreadScene(i, r)} />}
   </div>;
 }
