@@ -11,10 +11,12 @@ import { computePileTable } from './pile-table';
 import {
   CONTENT_W, M, TOTAL_PAGES_TOKEN, formula, kv, makeCursor, nl, paragraph, sectionTitle, table, winAnsi, type Cursor,
 } from '../pile-bearing-capacity/parts/pile-report-pdf';
+import { reportPalette } from '../../../report/reportPalette';
 
 type Ok = Extract<LateralResult, { ok: true }>;
 type Sample = Ok['beam']['samples'][number];
-const TONES: Record<string, [number, number, number]> = { disp: [21, 128, 61], moment: [220, 38, 38], shear: [37, 99, 235], soil: [180, 83, 9] };
+/** Lijnkleur per grootheid, uit het gedeelde palet van de rapporten. */
+const tones = (): Record<string, [number, number, number]> => { const p = reportPalette(); return { disp: p.success, moment: p.error, shear: p.info, soil: p.accentStrong }; };
 
 const reportDate = (iso: string | undefined) => (iso || new Date().toISOString().slice(0, 10)).slice(0, 10).split('-').reverse().join('-');
 
@@ -57,7 +59,7 @@ function renderTableAppendix(c: Cursor, input: LateralInput, rows: ReturnType<ty
   ], rows.map(({ row, input: ri, summary: x }) => [row.name, String(row.count ?? 1), nl(row.headForceKn, 1), nl(row.headMomentKnM, 1), nl(row.nEdKn, 1),
     nl(ri.lengthM, 2), String(ri.section.diameterMm),
     ...(x.ok ? [nl(x.yHeadMm, 1), nl(x.mMaxKnM, 1), nl(x.mNap, 2), nl(x.vMaxKn, 1), x.uc === null ? '-' : nl(x.uc, 2), x.passes ? 'voldoet' : 'voldoet niet'] : ['-', '-', '-', '-', '-', 'niet berekend'])]), { size: 7 });
-  paragraph(c, 'Alle palen met dezelfde grondopbouw, doorsnedetype en wapening als de basisinvoer; per paal een eigen kopbelasting en zo nodig een eigen lengte of maat. Voldoet: u.c. <= 1,00 en, als opgegeven, de kopverplaatsing binnen de grens.', { italic: true, size: 7.5 });
+  paragraph(c, 'Alle palen met dezelfde grondopbouw, doorsnedetype en wapening als de basisinvoer; per paal een eigen kopbelasting en zo nodig een eigen lengte of maat. Voldoet: u.c. ≤ 1,00 en, als opgegeven, de kopverplaatsing binnen de grens.', { italic: true, size: 7.5 });
 }
 
 /** De volledige uitwerking van één paal. */
@@ -72,52 +74,52 @@ export function renderCalc(c: Cursor, input: LateralInput, result: Extract<Later
   kv(c, 'Paalkop / paalpunt', `${nap(0)} m / ${nap(input.lengthM)} m (lengte ${nl(input.lengthM, 2)} m)`);
   kv(c, 'Belasting op de kop', `H = ${nl(input.headForceKn, 1)} kN, M = ${nl(input.headMomentKnM, 1)} kNm, N = ${nl(input.nEdKn, 1)} kN (druk +)`);
   kv(c, 'Randvoorwaarden', `${input.headFixedRotation ? 'kop ingeklemd' : 'kop vrij draaiend'}${input.toeFixed ? ', voet ingeklemd' : ', voet vrij'}`);
-  kv(c, 'Grondmodel', `${nonlinear ? 'niet-lineair, p = pu tanh(k0 y / pu)' : 'lineair, p = k0 y'}${input.layerCorrection === 'georgiadis' ? '; laagcorrectie Georgiadis' : ''}; werkende breedte ${nl(input.springWidthM, 2)} m`);
+  kv(c, 'Grondmodel', `${nonlinear ? 'niet-lineair, p = p_u · tanh(k_0 · y / p_u)' : 'lineair, p = k_0 · y'}${input.layerCorrection === 'georgiadis' ? '; laagcorrectie Georgiadis' : ''}; werkende breedte ${nl(input.springWidthM, 2)} m`);
   c.y += 2;
 
   sectionTitle(c, '2. Paaldoorsnede');
   const sec = r.section, gross = input.section.kind === 'concrete-square' ? (input.section.diameterMm / 1000) ** 2 : Math.PI * (input.section.diameterMm / 1000) ** 2 / 4;
-  kv(c, 'Bruto oppervlak', `${nl(gross * 1e6, 0)} mm2`);
-  if (sec.concreteAreaM2 > 0) kv(c, 'Beton (netto)', `${nl(sec.concreteAreaM2 * 1e6, 0)} mm2; Ec,eff = ${nl(input.section.concreteEMpa * input.section.concreteFactor / (1 + input.section.creepCoefficient), 0)} MPa`);
-  if (sec.rebarAreaMm2 > 0) kv(c, 'Langswapening', `${nl(sec.rebarAreaMm2, 0)} mm2; rho = ${nl(100 * sec.rebarAreaMm2 / (gross * 1e6), 2)} %`);
-  if (sec.steelAreaM2 > 0) kv(c, 'Buis', `${nl(sec.steelAreaM2 * 1e6, 0)} mm2; wand ${nl(input.section.wallMm, 1)} mm`);
-  if (r.capacity) kv(c, 'MRd bij NEd', `${nl(r.capacity.mRdKnM, 1)} kNm (N tussen ${nl(r.capacity.nMinKn, 0)} en ${nl(r.capacity.nMaxKn, 0)} kN)`);
-  formula(c, 'EI', 'Ec,eff Ic + Es Is + Ea Ia', `${nl(sec.concreteEI, 0)} + ${nl(sec.rebarEI, 0)} + ${nl(sec.tubeEI, 0)}`, `${nl(sec.eiKnM2, 0)} kNm2`);
+  kv(c, 'Bruto oppervlak', `${nl(gross * 1e6, 0)} mm²`);
+  if (sec.concreteAreaM2 > 0) kv(c, 'Beton (netto)', `${nl(sec.concreteAreaM2 * 1e6, 0)} mm²; E_c,eff = ${nl(input.section.concreteEMpa * input.section.concreteFactor / (1 + input.section.creepCoefficient), 0)} MPa`);
+  if (sec.rebarAreaMm2 > 0) kv(c, 'Langswapening', `${nl(sec.rebarAreaMm2, 0)} mm²; ρ = ${nl(100 * sec.rebarAreaMm2 / (gross * 1e6), 2)} %`);
+  if (sec.steelAreaM2 > 0) kv(c, 'Buis', `${nl(sec.steelAreaM2 * 1e6, 0)} mm²; wand ${nl(input.section.wallMm, 1)} mm`);
+  if (r.capacity) kv(c, 'M_Rd bij N_Ed', `${nl(r.capacity.mRdKnM, 1)} kNm (N tussen ${nl(r.capacity.nMinKn, 0)} en ${nl(r.capacity.nMaxKn, 0)} kN)`);
+  formula(c, 'EI', 'E_c,eff · I_c + E_s · I_s + E_a · I_a', `${nl(sec.concreteEI, 0)} + ${nl(sec.rebarEI, 0)} + ${nl(sec.tubeEI, 0)}`, `${nl(sec.eiKnM2, 0)} kNm²`);
 
   sectionTitle(c, '3. Grondopbouw', 'CUR166 deel 1, tabel 3.3 (eerste secanttraject); kleuren: zand geel, klei groen, veen bruin');
   drawSoilTable(c, d.layers, nonlinear);
-  table(c, [{ label: 'Laag', width: 8 }, { label: 'Dikte [m]', width: 12, align: 'right' }, { label: 'phi [gr]', width: 10, align: 'right' }, { label: 'Ka [-]', width: 10, align: 'right' },
-    { label: 'Lijnlast [kN/m]', width: 14, align: 'right' }, { label: 'zeq [m]', width: 18, align: 'right' }, ...(nonlinear ? [{ label: 'int pu dz [kN]', width: 16, align: 'right' as const }] : [])],
+  table(c, [{ label: 'Laag', width: 8 }, { label: 'Dikte [m]', width: 12, align: 'right' }, { label: 'φ [°]', width: 10, align: 'right' }, { label: 'K_a [-]', width: 10, align: 'right' },
+    { label: 'Lijnlast [kN/m]', width: 14, align: 'right' }, { label: 'z_eq [m]', width: 18, align: 'right' }, ...(nonlinear ? [{ label: '∫ p_u dz [kN]', width: 16, align: 'right' as const }] : [])],
   d.layers.map((l) => [String(l.index), nl(l.thicknessM, 2), nl(l.frictionDeg, 0), nl(l.ka, 3), nl(l.lineLoadKnM, 1), `${nl(l.zeqTop, 2)} - ${nl(l.zeqBottom, 2)}`, ...(nonlinear ? [l.cumulativeKn === null ? '-' : nl(l.cumulativeKn, 0)] : [])]), { size: 7 });
-  paragraph(c, `k0 = kh x werkende breedte ${nl(input.springWidthM, 2)} m.${nonlinear ? ' pu als functie van de equivalente diepte zeq.' : ''}`, { size: 7.5, italic: true });
+  paragraph(c, `k_0 = k_h × werkende breedte ${nl(input.springWidthM, 2)} m.${nonlinear ? ' p_u als functie van de equivalente diepte z_eq.' : ''}`, { size: 7.5, italic: true });
 
   sectionTitle(c, '4. Resultaten');
   const row = (name: string, e: ReturnType<typeof extremes>, dg: number) => [name, nl(e.max.v, dg), nap(e.max.z), nl(e.min.v, dg), nap(e.min.z)];
   table(c, [{ label: 'Grootheid', width: 34 }, { label: 'Maximum', width: 18, align: 'right' }, { label: 'Niveau', width: 22 }, { label: 'Minimum', width: 18, align: 'right' }, { label: 'Niveau', width: 22 }], [
     row('Verplaatsing y [mm]', s.y, 2), row('Moment M [kNm]', s.M, 1), row('Dwarskracht V [kN]', s.V, 1), row('Grondreactie p [kN/m]', s.p, 1),
   ]);
-  paragraph(c, `Kopverplaatsing ${nl(s.yHeadMm, 2)} mm.${s.mobilisation ? ` Hoogste mobilisatie p/pu ${nl(s.mobilisation.value * 100, 0)} % op NAP ${nl(s.mobilisation.nap, 2)}.` : ''}`);
+  paragraph(c, `Kopverplaatsing ${nl(s.yHeadMm, 2)} mm.${s.mobilisation ? ` Hoogste mobilisatie p/p_u ${nl(s.mobilisation.value * 100, 0)} % op NAP ${nl(s.mobilisation.nap, 2)}.` : ''}`);
   drawDiagrams(c, input, r.beam.samples, s.head);
 
   sectionTitle(c, '5. Grondreactie per laag');
   table(c, [{ label: 'Laag', width: 8 }, { label: 'Veren', width: 9, align: 'right' }, { label: 'y max [mm]', width: 14, align: 'right' }, { label: 'p max [kN/m]', width: 15, align: 'right' },
-    { label: 'Kracht op paal [kN]', width: 18, align: 'right' }, ...(nonlinear ? [{ label: 'p/pu max', width: 12, align: 'right' as const }, { label: 'ksec/k0 min', width: 13, align: 'right' as const }] : [])],
+    { label: 'Kracht op paal [kN]', width: 18, align: 'right' }, ...(nonlinear ? [{ label: 'p/p_u max', width: 12, align: 'right' as const }, { label: 'k_sec/k_0 min', width: 13, align: 'right' as const }] : [])],
   d.layers.map((l) => [String(l.index), String(l.springs), nl(l.yMaxMm, 2), nl(l.pMaxKnM, 1), nl(l.resultantKn, 1), ...(nonlinear ? [l.mobMax === null ? '-' : `${nl(l.mobMax * 100, 0)} %`, nl(l.secantRatioMin, 2)] : [])]),
   { summaryRow: ['Som + H', '', '', '', nl(d.soilForce + input.headForceKn, 3), ...(nonlinear ? ['', ''] : [])] });
 
   sectionTitle(c, '6. Verloop over de diepte', `stap ${nl(d.step, 2)} m`);
-  table(c, [{ label: 'm NAP', width: 14, align: 'right' }, { label: 'y [mm]', width: 14, align: 'right' }, { label: 'theta [mrad]', width: 16, align: 'right' },
+  table(c, [{ label: 'm NAP', width: 14, align: 'right' }, { label: 'y [mm]', width: 14, align: 'right' }, { label: 'θ [mrad]', width: 16, align: 'right' },
     { label: 'M [kNm]', width: 14, align: 'right' }, { label: 'V [kN]', width: 14, align: 'right' }, { label: 'p [kN/m]', width: 14, align: 'right' }],
   d.depth.map((x) => [nl(x.nap, 2), nl(x.yMm, 2), nl(x.rotMrad, 3), nl(x.mKnM, 1), nl(x.vKn, 1), nl(x.pKnM, 1)]), { size: 7 });
 
   sectionTitle(c, '7. Doorsnedetoets N-M');
-  if (r.capacity && s.uc !== null) formula(c, 'u.c.', '|M|max / MRd(NEd)', `${nl(s.mEd, 1)} / ${nl(r.capacity.mRdKnM, 1)}`, nl(s.uc, 2));
+  if (r.capacity && s.uc !== null) formula(c, 'u.c.', '|M|_max / M_Rd(N_Ed)', `${nl(s.mEd, 1)} / ${nl(r.capacity.mRdKnM, 1)}`, nl(s.uc, 2));
   else paragraph(c, r.capacityError ?? 'Geen doorsnedetoets mogelijk.');
   if (d.nm.length > 1) drawNM(c, d.nm, input.nEdKn, s.mEd);
 
   sectionTitle(c, '8. Conclusie');
   paragraph(c, s.uc === null ? 'Geen doorsnedetoets mogelijk.' : s.uc <= 1
-    ? `De doorsnede voldoet voor buiging met normaalkracht: u.c. ${nl(s.uc, 2)} <= 1,00. Kopverplaatsing ${nl(s.yHeadMm, 1)} mm.`
+    ? `De doorsnede voldoet voor buiging met normaalkracht: u.c. ${nl(s.uc, 2)} ≤ 1,00. Kopverplaatsing ${nl(s.yHeadMm, 1)} mm.`
     : `De doorsnede voldoet niet: u.c. ${nl(s.uc, 2)} > 1,00.`);
   paragraph(c, 'Niet getoetst: dwarskracht, scheurwijdte, minimumwapening, verankering, lokale buisplooi, P-delta en een gescheurde EI. Statische, monotone belasting. Concept: indicatieve berekening.', { italic: true, size: 7.5 });
 
@@ -155,7 +157,7 @@ function drawDiagrams(c: Cursor, input: LateralInput, samplesIn: Sample[], head:
   c.reserve(H + 22);
   const doc = c.doc, samples = [...samplesIn].sort((a, b) => a.zM - b.zM), L = input.lengthM;
   const top = c.y + 8, bottom = top + H, axisW = 14, gap = 5, W = (CONTENT_W - axisW - 3 * gap) / 4;
-  const y = (z: number) => top + H * z / L;
+  const y = (z: number) => top + H * z / L, TONES = tones();
   doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(90);
   doc.text('m NAP', M.left, top - 2);
   const step = L <= 6 ? .5 : L <= 15 ? 1 : L <= 30 ? 2 : 5;
@@ -202,9 +204,10 @@ function drawNM(c: Cursor, pts: Array<{ n: number; m: number }>, nEd: number, mE
   const left = M.left + 14, top = c.y + 2, nLo = Math.min(...pts.map((p) => p.n), nEd), nHi = Math.max(...pts.map((p) => p.n), nEd), mHi = Math.max(...pts.map((p) => p.m), mEd) * 1.08 || 1;
   const x = (m: number) => left + W * m / mHi, y = (v: number) => top + H - H * (v - nLo) / ((nHi - nLo) || 1);
   doc.setDrawColor(120); doc.setLineWidth(.2); doc.line(left, top, left, top + H); doc.line(left, y(0), left + W, y(0));
-  doc.setDrawColor(37, 99, 235); doc.setLineWidth(.45);
+  const pal = reportPalette();
+  doc.setDrawColor(...pal.secondary); doc.setLineWidth(.45);
   for (let k = 1; k < pts.length; k++) doc.line(x(pts[k - 1].m), y(pts[k - 1].n), x(pts[k].m), y(pts[k].n));
-  doc.setFillColor(220, 38, 38); doc.circle(x(mEd), y(nEd), 1, 'F');
+  doc.setFillColor(...pal.accentStrong); doc.circle(x(mEd), y(nEd), 1, 'F');
   doc.setFontSize(6.5); doc.setTextColor(60); doc.setFont('helvetica', 'normal');
   doc.text(`(${nl(mEd, 0)}; ${nl(nEd, 0)})`, x(mEd) + 2, y(nEd) - 1.5);
   doc.text('N [kN]', left - 2, top - 1, { align: 'right' }); doc.text('MRd [kNm]', left + W, y(0) + 4, { align: 'right' });

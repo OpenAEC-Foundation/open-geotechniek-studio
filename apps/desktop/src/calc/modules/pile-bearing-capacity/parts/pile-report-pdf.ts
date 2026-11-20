@@ -16,6 +16,9 @@
 
 import { jsPDF } from "jspdf";
 import { currentBrand, DEFAULT_BRAND } from "../../../../report/reportBrand";
+import { reportPalette } from "../../../../report/reportPalette";
+import { richText, richWidth, richWrap } from "../../../../report/reportText";
+import { drawSheetTitle } from "../../../../report/reportTitle";
 import type { Cpt } from "../../../../types/cpt";
 import type { PileInput, PileResult } from "../types";
 import type { MultiCptSummary } from "./multi-cpt-summary";
@@ -95,9 +98,13 @@ export function nlNap(v: number): string {
 // De standaard-14 PDF-fonts (helvetica/courier) ondersteunen alleen
 // WinAnsi (CP1252). Griekse letters en wiskundige tekens buiten die
 // codepage worden door jsPDF verminkt (codepoint & 0xFF) én forceren
-// 16-bit rendering met kapotte letterspatiëring. Daarom translitereren
-// we formule-symbolen naar herkenbare WinAnsi-veilige namen, zoals
-// alpha, gamma en sigma. Dat voorkomt dubbelzinnige losse letters.
+// 16-bit rendering met kapotte letterspatiëring.
+//
+// De hulpfuncties hieronder (sectionTitle, kv, formula, table, paragraph)
+// hebben dit niet meer nodig: die zetten Griekse letters, wiskundetekens en
+// sub- en superscript als echte tekst via report/reportText. `winAnsi` blijft
+// voor wie zelf met `doc.text` in het standaardfont schrijft en translitereert
+// formule-symbolen dan naar WinAnsi-veilige namen, zoals alpha en gamma.
 const WINANSI_MAP: Array<[RegExp, string]> = [
   [/α/g, "alpha"],
   [/β/g, "beta"],
@@ -139,6 +146,7 @@ export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1
   const printChrome = () => {
     // Logo van de huisstijl linksboven (hoogte 6 mm), de opsteller erachter.
     const brand = currentBrand();
+    const p = reportPalette(brand);
     // Briefpapier van de huisstijl als achtergrond; het logo staat daar dan al op.
     if (brand.pageImage) {
       try { doc.addImage(brand.pageImage, 0, 0, PAGE_W, 297, "huisstijl-briefpapier"); } catch { /* onleesbaar: zonder */ }
@@ -151,47 +159,45 @@ export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1
         authorX = M.left + w + 3;
       } catch { /* onleesbaar logo: alleen tekst */ }
     }
-    doc.setFont("helvetica", "bolditalic");
-    doc.setFontSize(9.5);
-    doc.setTextColor(0);
-    doc.text(doc.splitTextToSize(winAnsi(project.author), 130 - (authorX - M.left))[0] ?? "", authorX, 9);
+    doc.setTextColor(...p.ink);
+    richText(doc, richWrap(doc, project.author, 130 - (authorX - M.left), { size: 9.5, bold: true })[0] ?? "", authorX, 9, { size: 9.5, bold: true });
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8);
-    doc.setTextColor(180, 83, 9);
+    doc.setTextColor(...p.accentStrong);
     doc.text("CONCEPT", PAGE_W - M.right, 9, { align: "right" });
-    doc.setTextColor(0);
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
+    const small = { size: 8 };
     const rows: Array<[string, string, number]> = [
       ["Berekeningsnummer", project.berekeningsnummer ?? "-", 15.5],
       ["Projectnummer", project.number, 20],
       ["Projectomschrijving", project.description, 25],
       ["Onderdeel", project.onderdeel ?? "Funderingspalen", 34],
     ];
-    for (const [label, value, y] of rows) {
-      doc.text(label, M.left, y);
-      const lines = doc.splitTextToSize(winAnsi(`: ${value}`), y < 25 ? 45 : CONTENT_W - 33) as string[];
-      doc.text(lines.slice(0, y === 25 ? 2 : 1), M.left + 33, y);
+    const label = (text: string, x: number, y: number) => { doc.setTextColor(...p.secondary); richText(doc, text, x, y, small); doc.setTextColor(...p.ink); };
+    for (const [name, value, y] of rows) {
+      label(name, M.left, y);
+      const lines = richWrap(doc, `: ${value}`, y < 25 ? 45 : CONTENT_W - 33, small);
+      lines.slice(0, y === 25 ? 2 : 1).forEach((line, i) => richText(doc, line, M.left + 33, y + i * 3.4, small));
     }
-    doc.text("Revisie", 98, 15.5);
-    doc.text(`: ${project.revisie ?? "0"}`, 115, 15.5);
-    doc.text("Datum", 98, 20);
-    doc.text(`: ${project.date}`, 115, 20);
+    label("Revisie", 98, 15.5);
+    richText(doc, `: ${project.revisie ?? "0"}`, 115, 15.5, small);
+    label("Datum", 98, 20);
+    richText(doc, `: ${project.date}`, 115, 20, small);
+    // In het standaardfont, zodat het totaal achteraf kan worden ingevuld.
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
     doc.text(`Blad ${pageNo} van ${TOTAL_PAGES_TOKEN}`, PAGE_W - M.right, 15.5, { align: "right" });
 
-    doc.setDrawColor(40);
-    doc.setLineWidth(0.4);
+    doc.setDrawColor(...p.accent);
+    doc.setLineWidth(0.5);
     doc.line(M.left, 38, PAGE_W - M.right, 38);
 
     // Footer — eigen branding.
-    doc.setFontSize(7.5);
-    doc.setTextColor(110);
-    doc.setFont("helvetica", "italic");
-    const own = brand.organization !== DEFAULT_BRAND.organization && !brand.pageImage ? `${winAnsi(brand.organization)} · ` : "";
-    doc.text(`${own}Open Geotechniek Studio`, PAGE_W - M.right, FOOTER_Y, { align: "right" });
-    doc.text("CONCEPT - Indicatieve berekening", M.left, FOOTER_Y);
-    doc.setTextColor(0);
+    doc.setTextColor(...p.muted);
+    const own = brand.organization !== DEFAULT_BRAND.organization && !brand.pageImage ? `${brand.organization} · ` : "";
+    richText(doc, `${own}Open Geotechniek Studio`, PAGE_W - M.right, FOOTER_Y, { size: 7.5, align: "right" });
+    richText(doc, "CONCEPT - Indicatieve berekening", M.left, FOOTER_Y, { size: 7.5 });
+    doc.setTextColor(...p.ink);
     doc.setFont("helvetica", "normal");
   };
   printChrome();
@@ -206,8 +212,10 @@ export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1
       cursor.y = HEADER_BOTTOM + 4;
       printChrome();
       if (cursor.continuationTitle) {
-        doc.setFont("helvetica","bold"); doc.setFontSize(10);
-        doc.text(winAnsi(cursor.continuationTitle),M.left,cursor.y);
+        doc.setTextColor(...reportPalette().secondary);
+        richText(doc, cursor.continuationTitle, M.left, cursor.y, { size: 10, bold: true });
+        doc.setTextColor(...reportPalette().ink);
+        doc.setFont("helvetica", "normal");
         cursor.y += 8;
       }
     },
@@ -219,43 +227,68 @@ export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1
 }
 
 // ─── Render helpers ──────────────────────────────────────────────
+//
+// Alle kleuren komen uit report/reportPalette (accent van de huisstijl,
+// verder zwart en grijs). Alle tekst loopt via report/reportText, dat
+// "R_c;cal;max", "10^-3" en Griekse letters als echte tekst zet.
+
+/** Titel van een blad: groter, met een accentlijn over de volle breedte. */
+export function sheetTitle(c: Cursor, title: string): void {
+  c.y = drawSheetTitle(c.doc, title, M.left, c.y, CONTENT_W) + 6;
+}
 
 /** Sectiekop met optionele norm-artikel-referentie rechts uitgelijnd. */
 export function sectionTitle(c: Cursor, title: string, artRef?: string): void {
-  c.reserve(10);
-  c.doc.setFont("helvetica", "bold");
-  c.doc.setFontSize(10);
-  c.doc.setTextColor(0);
-  c.doc.text(winAnsi(title), M.left, c.y);
+  c.reserve(15);
+  // Lucht boven de kop, behalve bovenaan een blad.
+  if (c.y > HEADER_BOTTOM + 6) c.y += 1.5;
+  const p = reportPalette(), head = { size: 10, bold: true }, small = { size: 8 };
+  c.doc.setTextColor(...p.ink);
+  const titleW = richText(c.doc, title, M.left, c.y, head);
   if (artRef) {
-    c.doc.setFont("helvetica", "normal");
-    c.doc.setFontSize(8);
-    c.doc.setTextColor(90);
-    c.y += 4;
-    c.doc.text(winAnsi(artRef), M.left, c.y);
-    c.doc.setTextColor(0);
+    c.doc.setTextColor(...p.muted);
+    if (titleW + richWidth(c.doc, artRef, small) + 6 <= CONTENT_W) richText(c.doc, artRef, PAGE_W - M.right, c.y, { ...small, align: "right" });
+    else {
+      // Te lang voor naast de kop: eronder, zo nodig over meer regels.
+      for (const line of richWrap(c.doc, artRef, CONTENT_W, small)) { c.y += 3.8; richText(c.doc, line, M.left, c.y, small); }
+    }
+    c.doc.setTextColor(...p.ink);
   }
-  c.y += 5.5;
+  c.y += 1.5;
+  c.doc.setDrawColor(...p.accent);
+  c.doc.setLineWidth(0.3);
+  c.doc.line(M.left, c.y, PAGE_W - M.right, c.y);
+  c.y += 5;
+  c.doc.setFont("helvetica", "normal");
 }
 
 export function paragraph(c: Cursor, text: string, opts: { italic?: boolean; size?: number; indent?: number } = {}): void {
   const size = opts.size ?? 8.5;
   const lineH = size * 0.45;
-  c.doc.setFont("helvetica", opts.italic ? "italic" : "normal");
-  c.doc.setFontSize(size);
-  const lines = c.doc.splitTextToSize(winAnsi(text), CONTENT_W - (opts.indent ?? 0));
+  const style = { size, italic: opts.italic };
+  const p = reportPalette();
+  const lines = richWrap(c.doc, text, CONTENT_W - (opts.indent ?? 0), style);
   c.reserve(lines.length * lineH + 1);
-  c.doc.setFont("helvetica", opts.italic ? "italic" : "normal");
-  c.doc.setFontSize(size);
+  // Een cursieve regel is een toelichting: die staat iets terug in grijs.
+  c.doc.setTextColor(...(opts.italic ? p.secondary : p.ink));
   for (const line of lines) {
-    c.doc.text(line, M.left + (opts.indent ?? 0), c.y);
+    richText(c.doc, line, M.left + (opts.indent ?? 0), c.y, style);
     c.y += lineH;
   }
   c.y += 1;
+  c.doc.setTextColor(...p.ink);
+  c.doc.setFont("helvetica", "normal");
 }
 
-/** 3-regelige formule (symbolisch → ingevuld → resultaat) met optionele
- *  verwijzing rechts (bv. "...(7.6)" of "...(Figuur 7.n)"). */
+/** Formule in drie regels, uitgelijnd op het gelijkteken:
+ *
+ *      symbool  =  formule                 (verwijzing)
+ *               =  ingevulde getallen
+ *               =  uitkomst met eenheid
+ *
+ *  Sub- en superscript en Griekse letters schrijf je in de tekst zelf
+ *  ("R_b;cal;max", "α_p", "10^-3"); zie report/reportText. De verwijzing
+ *  (bv. "...(7.6)") staat rechts op de eerste regel. */
 export function formula(
   c: Cursor,
   lhs: string,
@@ -264,35 +297,38 @@ export function formula(
   result: string,
   ref?: string,
 ): void {
-  c.doc.setFont("courier", "normal");
-  c.doc.setFontSize(8.5);
-  const lhsW = 30;
-  const lhsLines = c.doc.splitTextToSize(winAnsi(lhs), lhsW - 2) as string[];
-  const wrap = (text: string) => c.doc.splitTextToSize(winAnsi(text), CONTENT_W - lhsW - 4) as string[];
-  const symbolicLines = wrap(symbolic), filledLines = filled ? wrap(filled) : [];
-  c.doc.setFont("courier", "bold");
-  const resultLines = wrap(result);
-  c.reserve((Math.max(lhsLines.length, symbolicLines.length) + filledLines.length + resultLines.length) * 4 + (ref ? 4 : 0) + 3);
-  const row = (lines: string[], bold = false) => {
-    c.doc.setFont("courier", bold ? "bold" : "normal");
-    c.doc.setFontSize(8.5);
-    c.doc.text("=", M.left + lhsW, c.y);
-    lines.forEach((line,i) => c.doc.text(line, M.left + lhsW + 4, c.y + i * 4));
-    c.y += lines.length * 4;
+  const p = reportPalette();
+  const normal = { size: 9 }, strong = { size: 9, bold: true }, small = { size: 7.5 };
+  const indent = 3, lhsW = 30, eqW = 5, lineH = 4.5;
+  const xLhs = M.left + indent, xEq = xLhs + lhsW, xRhs = xEq + eqW;
+  const refW = ref ? richWidth(c.doc, ref, small) + 4 : 0;
+  const rhsW = PAGE_W - M.right - xRhs;
+  const lhsLines = richWrap(c.doc, lhs, lhsW - 2, normal);
+  const symbolicLines = richWrap(c.doc, symbolic, rhsW - refW, normal);
+  const filledLines = filled ? richWrap(c.doc, filled, rhsW, normal) : [];
+  const resultLines = richWrap(c.doc, result, rhsW, strong);
+  const firstBlock = Math.max(lhsLines.length, symbolicLines.length);
+  c.reserve((firstBlock + filledLines.length + resultLines.length) * lineH + 2.5);
+
+  const row = (lines: string[], style: { size: number; bold?: boolean }, color: [number, number, number]) => {
+    c.doc.setTextColor(...p.muted);
+    richText(c.doc, "=", xEq, c.y, normal);
+    c.doc.setTextColor(...color);
+    lines.forEach((line, i) => richText(c.doc, line, xRhs, c.y + i * lineH, style));
+    c.y += lines.length * lineH;
   };
-  c.doc.setFont("courier", "normal");
-  c.doc.setFontSize(8.5);
-  lhsLines.forEach((line,i) => c.doc.text(line, M.left, c.y + i * 4));
-  row(symbolicLines);
-  c.y += Math.max(0,lhsLines.length - symbolicLines.length) * 4;
-  if (filledLines.length) row(filledLines);
-  row(resultLines,true);
+  c.doc.setTextColor(...p.ink);
+  lhsLines.forEach((line, i) => richText(c.doc, line, xLhs, c.y + i * lineH, normal));
   if (ref) {
-    c.doc.setFont("helvetica", "normal"); c.doc.setFontSize(7.5); c.doc.setTextColor(90);
-    c.doc.text(winAnsi(ref), PAGE_W - M.right, c.y, { align: "right" });
-    c.doc.setTextColor(0); c.y += 4;
+    c.doc.setTextColor(...p.muted);
+    richText(c.doc, ref, PAGE_W - M.right, c.y, { ...small, align: "right" });
   }
-  c.y += 3;
+  row(symbolicLines, normal, p.ink);
+  c.y += (firstBlock - symbolicLines.length) * lineH;
+  if (filledLines.length) row(filledLines, normal, p.secondary);
+  row(resultLines, strong, p.ink);
+  c.y += 2.5;
+  c.doc.setTextColor(...p.ink);
   c.doc.setFont("helvetica", "normal");
 }
 
@@ -308,50 +344,97 @@ export function table(
   rows: string[][],
   opts: { summaryRow?: string[]; size?: number } = {},
 ): void {
+  const p = reportPalette();
   const size = opts.size ?? 7.5;
   const scale = CONTENT_W / cols.reduce((sum,col) => sum + col.width,0);
   const widths = cols.map(col => col.width * scale);
   const lineH = size * .45;
-  const wrap = (row: string[], bold: boolean) => {
-    c.doc.setFont("helvetica",bold ? "bold" : "normal"); c.doc.setFontSize(size);
-    return cols.map((_,i) => c.doc.splitTextToSize(winAnsi(row[i] ?? ""),widths[i]-3) as string[]);
-  };
+  const wrap = (row: string[], bold: boolean) => cols.map((_,i) => richWrap(c.doc, row[i] ?? "", widths[i]-3, { size, bold }));
   const height = (cells: string[][]) => Math.max(...cells.map(cell => cell.length),1)*lineH + 3;
   const header = cols.map(col => col.label);
   const headerH = height(wrap(header,true));
-  const draw = (row: string[], bold: boolean, shade?: [number,number,number]) => {
-    const cells = wrap(row,bold), h=height(cells);
-    if (shade) { c.doc.setFillColor(...shade); c.doc.rect(M.left,c.y-2,CONTENT_W,h,"F"); }
+  // kind: kop (grijs vlak, lijn eronder), rij (om en om licht getint) of som (lijn erboven, vet).
+  const draw = (row: string[], kind: "head" | "body" | "sum", shade?: [number,number,number]) => {
+    const bold = kind !== "body", cells = wrap(row,bold), h=height(cells);
+    // Kop en somregel krijgen wat lucht tussen de tekst en hun lijn.
+    const pad = kind === "body" ? 0 : .8;
+    if (shade) { c.doc.setFillColor(...shade); c.doc.rect(M.left,c.y-2,CONTENT_W,h+pad,"F"); }
+    if (kind === "sum") { c.doc.setDrawColor(...p.ruleStrong); c.doc.setLineWidth(.25); c.doc.line(M.left,c.y-2,PAGE_W-M.right,c.y-2); }
+    c.y += pad;
+    c.doc.setTextColor(...p.ink);
     let x=M.left;
     cells.forEach((lines,i) => {
       const right=cols[i].align === "right";
-      lines.forEach((line,j) => c.doc.text(line,right ? x+widths[i]-1.5 : x+1.5,c.y+j*lineH,{align:right ? "right" : "left"}));
+      lines.forEach((line,j) => richText(c.doc,line,right ? x+widths[i]-1.5 : x+1.5,c.y+j*lineH,{size,bold,align:right ? "right" : "left"}));
       x += widths[i];
     });
     c.y += h;
-    c.doc.setDrawColor(225); c.doc.setLineWidth(.1); c.doc.line(M.left,c.y-2,PAGE_W-M.right,c.y-2);
+    if (kind === "head") { c.doc.setDrawColor(...p.ruleStrong); c.doc.setLineWidth(.25); }
+    else { c.doc.setDrawColor(...p.rule); c.doc.setLineWidth(.1); }
+    c.doc.line(M.left,c.y-2,PAGE_W-M.right,c.y-2);
+    if (kind === "head") c.y += .8;
   };
-  c.reserve(headerH + (rows.length ? height(wrap(rows[0],false)) : 0));
-  draw(header,true,[232,234,240]);
-  const bodyRow = (row: string[], bold=false, shade?: [number,number,number]) => {
-    if (c.y + height(wrap(row,bold)) > FOOTER_Y-10) { c.newPage(); draw(header,true,[232,234,240]); }
-    draw(row,bold,shade);
+  c.reserve(headerH + 1.6 + (rows.length ? height(wrap(rows[0],false)) : 0));
+  draw(header,"head",p.surface);
+  const bodyRow = (row: string[], kind: "body" | "sum", shade?: [number,number,number]) => {
+    if (c.y + height(wrap(row,kind === "sum")) > FOOTER_Y-10) { c.newPage(); draw(header,"head",p.surface); }
+    draw(row,kind,shade);
   };
-  rows.forEach((row,i) => bodyRow(row,false,i%2 ? [248,248,248] : undefined));
-  if (opts.summaryRow) bodyRow(opts.summaryRow,true,[255,247,237]);
+  rows.forEach((row,i) => bodyRow(row,"body",i%2 ? p.zebra : undefined));
+  if (opts.summaryRow) bodyRow(opts.summaryRow,"sum");
   c.y += 2;
   c.doc.setFont("helvetica", "normal");
 }
 
 export function kv(c: Cursor, label: string, value: string): void {
-  c.doc.setFont("helvetica", "normal");
-  c.doc.setFontSize(8.5);
-  const lines = c.doc.splitTextToSize(winAnsi(value), CONTENT_W - 52) as string[];
+  const p = reportPalette(), style = { size: 8.5 };
+  const lines = richWrap(c.doc, value, CONTENT_W - 52, style);
   c.reserve(lines.length * 4.2 + 1);
-  c.doc.setFont("helvetica", "normal"); c.doc.setFontSize(8.5);
-  c.doc.text(winAnsi(label), M.left, c.y);
-  lines.forEach((line,i) => c.doc.text(line, M.left + 52, c.y + i * 4.2));
+  c.doc.setTextColor(...p.secondary);
+  richText(c.doc, label, M.left, c.y, style);
+  c.doc.setTextColor(...p.ink);
+  lines.forEach((line,i) => richText(c.doc, line, M.left + 52, c.y + i * 4.2, style));
   c.y += lines.length * 4.2;
+  c.doc.setFont("helvetica", "normal");
+}
+
+/** Uitkomstvak: grijs vlak met een balk in de accentkleur en de kerngetallen
+ *  naast elkaar. `tone` kleurt één waarde als "voldoet" of "voldoet niet". */
+export function resultBox(c: Cursor, title: string, items: Array<{ label: string; value: string; tone?: "pass" | "fail" }>): void {
+  const p = reportPalette(), h = 27;
+  c.reserve(h + 4);
+  const top = c.y - 3;
+  c.doc.setFillColor(...p.surface);
+  c.doc.rect(M.left, top, CONTENT_W, h, "F");
+  c.doc.setFillColor(...p.accent);
+  c.doc.rect(M.left, top, 1.4, h, "F");
+  c.doc.setTextColor(...p.ink);
+  richText(c.doc, title, M.left + 5, c.y + 2.5, { size: 10, bold: true });
+  items.forEach((item, i) => {
+    const x = M.left + 5 + i * (CONTENT_W - 10) / items.length;
+    c.doc.setTextColor(...p.secondary);
+    richText(c.doc, item.label, x, c.y + 10.5, { size: 8 });
+    c.doc.setTextColor(...(item.tone === "pass" ? p.success : item.tone === "fail" ? p.error : p.ink));
+    richText(c.doc, item.value, x, c.y + 17.5, { size: 13, bold: true });
+  });
+  c.doc.setTextColor(...p.ink);
+  c.doc.setFont("helvetica", "normal");
+  c.y = top + h + 5;
+}
+
+/** Eindoordeel: tekst in de succes- of foutkleur met een balk in dezelfde kleur. */
+export function verdict(c: Cursor, text: string, passes: boolean): void {
+  const p = reportPalette(), color = passes ? p.success : p.error;
+  c.reserve(14);
+  c.doc.setFillColor(...(passes ? p.successTint : p.errorTint));
+  c.doc.rect(M.left, c.y - 6, CONTENT_W, 10, "F");
+  c.doc.setFillColor(...color);
+  c.doc.rect(M.left, c.y - 6, 1.4, 10, "F");
+  c.doc.setTextColor(...color);
+  richText(c.doc, text, M.left + 5, c.y + 0.4, { size: 11, bold: true });
+  c.doc.setTextColor(...p.ink);
+  c.doc.setFont("helvetica", "normal");
+  c.y += 9;
 }
 
 // ─── Blad 1 — projectblad ────────────────────────────────────────
@@ -360,23 +443,12 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
   const p = inputs.project;
   const first = inputs.sonderingen[0];
 
-  c.reserve(33);
-  c.doc.setFillColor(255, 247, 237);
-  c.doc.rect(M.left, c.y - 3, CONTENT_W, 29, "F");
-  c.doc.setFont("helvetica", "bold"); c.doc.setFontSize(10);
-  c.doc.text("SAMENVATTING", M.left + 4, c.y + 2);
   const summary = usesHistoricalProcedure(first?.input.standard) && first ? first.result.summary : inputs.summary;
-  const items: Array<[string,string]> = [
-    ["Belasting NEd", `${nl(first?.input.nEd ?? 0,1)} kN`],
-    ["Netto draagvermogen", `${nl(summary.rcNetD,1)} kN`],
-    ["Benutting NEd / Rc,net,d", nl(summary.unityCheck,2)],
-  ];
-  items.forEach(([label,value],i) => {
-    const x=M.left + 4 + i * (CONTENT_W - 8) / 3;
-    c.doc.setFont("helvetica","normal"); c.doc.setFontSize(8); c.doc.text(label,x,c.y+10);
-    c.doc.setFont("helvetica","bold"); c.doc.setFontSize(12); c.doc.text(value,x,c.y+18);
-  });
-  c.y += 33;
+  resultBox(c, "SAMENVATTING", [
+    { label: "Belasting N_Ed", value: `${nl(first?.input.nEd ?? 0,1)} kN` },
+    { label: "Netto draagvermogen R_c;net;d", value: `${nl(summary.rcNetD,1)} kN` },
+    { label: "Benutting N_Ed / R_c;net;d", value: nl(summary.unityCheck,2), tone: summary.unityCheck <= 1 ? "pass" : "fail" },
+  ]);
   paragraph(c,"CONCEPT - Resultaten zijn indicatief; niet gebruiken voor vergunning of uitvoering.",{size:8});
   c.y += 3;
 
@@ -406,7 +478,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
     kv(
       c,
       "Factoren",
-      `: αp = ${nl(inputs.factors.alphaP, 3)}   αs = ${nl(inputs.factors.alphaS, 4)}   αt = ${nl(inputs.factors.alphaT, 4)}   Lastzakkingslijn: ${resolvePileType(inp)?.settlementLine ?? 1}`,
+      `: α_p = ${nl(inputs.factors.alphaP, 3)}   α_s = ${nl(inputs.factors.alphaS, 4)}   α_t = ${nl(inputs.factors.alphaT, 4)}   Lastzakkingslijn: ${resolvePileType(inp)?.settlementLine ?? 1}`,
     );
     const isCircular = resolvePileType(inp)?.isCircular ?? true;
     kv(c, inp.concreteExtension ? "Hout bij de las" : inp.timberTaper ? "Kopdiameter" : isCircular ? "Diameter" : "Zijlengte", `: ${isCircular ? "D" : "a"} = ${inp.diameterMm} mm  (D_eq = ${nl(first.result.base.deqMm, 1)} mm)`);
@@ -474,10 +546,7 @@ export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors:
   const eaKn = result.settlement.eaKn ?? 0;
 
   c.newPage();
-  c.doc.setFont("helvetica", "bold");
-  c.doc.setFontSize(11);
-  c.doc.text(`Berekening — sondering ${s.name}`, M.left, c.y);
-  c.y += 7;
+  sheetTitle(c, `Berekening — sondering ${s.name}`);
   c.continuationTitle = `Berekening - sondering ${s.name} (vervolg)`;
 
   // ─── Negatieve kleef ───────────────────────────────────────────
@@ -496,7 +565,7 @@ export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors:
   formula(
     c,
     "F_nk;rep",
-    "O_s;gem · K_0tan(δ) · Σ ((σ_v,i-1 + σ_v,i)/2 · h_i)",
+    "O_s;gem · K_0 · tan δ · Σ ((σ_{v;i-1} + σ_v;i) / 2 · h_i)",
     sigmaSum !== null
       ? `${nl(Os, 2)} × ${nl(k0tdUniform!, 2)} × ${nl(sigmaSum, 0)}`
       : nk.layers.map((l) => nl(l.fsNkRep, 1)).join(" + ") || "0",
@@ -518,7 +587,7 @@ export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors:
         { label: "σ_top [kPa]", width: 22, align: "right" },
         { label: "σ_bot [kPa]", width: 22, align: "right" },
         { label: "σ_gem·h", width: 20, align: "right" },
-        { label: "K_0·tanδ", width: 20, align: "right" },
+        { label: "K_0·tan δ", width: 20, align: "right" },
         { label: "F_s;nk [kN]", width: 24, align: "right" },
       ],
       nk.layers.map((l) => [
@@ -540,15 +609,15 @@ export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors:
   formula(
     c,
     "q_b;max",
-    "1/2 · α_p · β · s · ((q_c;I;gem + q_c;II;gem)/2 + q_c;III;gem)",
-    `1/2 × ${nl(factors.alphaP, 2)} × ${nl(resolvePileType(input)?.beta ?? 1, 2)} × ${nl(resolvePileType(input)?.s ?? 1, 2)} × ((${nl(result.base.qcIGemMpa, 2)} + ${nl(result.base.qcIIGemMpa, 2)})/2 + ${nl(result.base.qcIIIGemMpa, 2)})`,
+    "½ · α_p · β · s · ((q_c;I;gem + q_c;II;gem) / 2 + q_c;III;gem)",
+    `½ × ${nl(factors.alphaP, 2)} × ${nl(resolvePileType(input)?.beta ?? 1, 2)} × ${nl(resolvePileType(input)?.s ?? 1, 2)} × ((${nl(result.base.qcIGemMpa, 2)} + ${nl(result.base.qcIIGemMpa, 2)})/2 + ${nl(result.base.qcIIIGemMpa, 2)})`,
     capNote,
   );
   formula(
     c,
     "R_b;cal;max",
     "A_b · q_b;max",
-    `${result.base.abMm2.toFixed(0)} × ${nl(result.base.qbMaxMpa, 2)} × 10^-3`,
+    `${result.base.abMm2.toFixed(0)} mm² × ${nl(result.base.qbMaxMpa, 2)} MPa × 10^-3`,
     `${result.base.rbCalMax.toFixed(0)} kN`,
   );
 
@@ -733,23 +802,23 @@ function renderEndAnalysis(
   );
   formula(
     c,
-    "ξ3 ; ξ4",
+    "ξ_3 ; ξ_4",
     "Tabel A.10b (niet-stijf)",
     null,
-    `ξ3 = ${nl(summary.xi3, 2)}   ξ4 = ${nl(summary.xi4, 2)}`,
+    `ξ_3 = ${nl(summary.xi3, 2)}   ξ_4 = ${nl(summary.xi4, 2)}`,
     "...(tabel A.10)",
   );
   formula(
     c,
     "(R_c;k)_gem",
-    "(R_c;cal)_gem / ξ3",
+    "(R_c;cal)_gem / ξ_3",
     `${summary.rcCalMean.toFixed(0)} / ${nl(summary.xi3, 2)}`,
     `${summary.rcKGem.toFixed(0)} kN`,
   );
   formula(
     c,
     "(R_c;k)_min",
-    "(R_c;cal)_min / ξ4",
+    "(R_c;cal)_min / ξ_4",
     `${summary.rcCalMin.toFixed(0)} / ${nl(summary.xi4, 2)}`,
     `${summary.rcKMin.toFixed(0)} kN`,
   );
@@ -771,24 +840,14 @@ function renderEndAnalysis(
   );
   formula(
     c,
-    "NEd/Rc;net;d",
+    "N_Ed / R_c;net;d",
     `${totalNEd} / ${summary.rcNetD.toFixed(0)}`,
     null,
-    `${nl(summary.unityCheck, 2)} ${summary.unityCheck <= 1 ? "<= 1,0 -> rekentoets voldoet" : "> 1,0 -> rekentoets voldoet niet"}`,
+    `${nl(summary.unityCheck, 2)} ${summary.unityCheck <= 1 ? "≤ 1,0 → rekentoets voldoet" : "> 1,0 → rekentoets voldoet niet"}`,
   );
 
-  c.y += 4;
-  c.reserve(12);
-  c.doc.setFont("helvetica", "bold");
-  c.doc.setFontSize(12);
-  if (summary.passes) c.doc.setTextColor(20, 120, 40);
-  else c.doc.setTextColor(190, 30, 30);
-  c.doc.text(
-    `Indicatieve rekentoets: ${summary.passes ? "voldoet" : "voldoet niet"}`,
-    M.left,
-    c.y,
-  );
-  c.doc.setTextColor(0);
+  c.y += 6;
+  verdict(c, `Indicatieve rekentoets: ${summary.passes ? "voldoet" : "voldoet niet"}`, summary.passes);
 }
 
 // ─── Hoofd-export ────────────────────────────────────────────────
@@ -843,10 +902,10 @@ export function generatePileReport(inputs: PileReportInputs): Uint8Array {
     const r = first.result.summary;
     const xi = r.historicalXi;
     formula(c, "R_c;cal", "R_b + R_s", `${first.result.base.rbCalMax.toFixed(1)} + ${first.result.shaft.rsCalMax.toFixed(1)}`, `${nl(r.rcCal, 1)} kN`);
-    formula(c, "R_c;rep/k", xi === undefined ? "R_c;cal / xi3" : "xi x R_c;cal", xi === undefined ? `${nl(r.rcCal, 1)} / ${nl(r.xi3, 2)}` : `${nl(xi, 2)} x ${nl(r.rcCal, 1)}`, `${nl(r.rcK, 1)} kN`);
-    formula(c, "R_c;d", "R_c;rep/k / gamma_m", `${nl(r.rcK, 1)} / ${nl(first.input.gammaM, 2)}`, `${nl(r.rcD, 1)} kN`);
-    formula(c, "R_c;net;d", "R_c;d - F_nk;d", `${nl(r.rcD, 1)} - ${nl(first.result.negKleef.fnkD, 1)}`, `${nl(r.rcNetD, 1)} kN`);
-    formula(c, "U.C.", "NEd / R_c;net;d", `${nl(first.input.nEd, 1)} / ${nl(r.rcNetD, 1)}`, `${nl(r.unityCheck, 2)}`);
+    formula(c, "R_c;rep/k", xi === undefined ? "R_c;cal / ξ_3" : "ξ × R_c;cal", xi === undefined ? `${nl(r.rcCal, 1)} / ${nl(r.xi3, 2)}` : `${nl(xi, 2)} × ${nl(r.rcCal, 1)}`, `${nl(r.rcK, 1)} kN`);
+    formula(c, "R_c;d", "R_c;rep/k / γ_m", `${nl(r.rcK, 1)} / ${nl(first.input.gammaM, 2)}`, `${nl(r.rcD, 1)} kN`);
+    formula(c, "R_c;net;d", "R_c;d − F_nk;d", `${nl(r.rcD, 1)} − ${nl(first.result.negKleef.fnkD, 1)}`, `${nl(r.rcNetD, 1)} kN`);
+    formula(c, "U.C.", "N_Ed / R_c;net;d", `${nl(first.input.nEd, 1)} / ${nl(r.rcNetD, 1)}`, `${nl(r.unityCheck, 2)}`);
     paragraph(c, "Alleenstaande drukpaal bij een sondering. Historische zakking en paalgroepwerking niet geverifieerd.");
   } else if (inputs.endAnalysis !== false) renderEndAnalysis(c, inputs.sonderingen, inputs.summary, totalNEd);
   inputs.appendix?.(c);
