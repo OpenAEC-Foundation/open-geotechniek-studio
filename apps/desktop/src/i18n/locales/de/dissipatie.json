@@ -1,0 +1,96 @@
+{
+  "ribbon": {
+    "group": "Dissipation",
+    "open": "Dissipations-\nversuche",
+    "openCount": "Dissipations-\nversuche ({{n}})",
+    "openHint": "Diagramm, t50 und Konsolidationsbeiwert der Dissipationsversuche von {{cpt}}",
+    "none": "Keine Dissipationsversuche bei {{cpt}}; fügen Sie eine GEF-Dissipationsdatei hinzu.",
+    "noCpt": "Öffnen Sie zuerst eine Drucksondierung.",
+    "add": "GEF\nhinzufügen",
+    "addHint": "Eine GEF-Dissipationsdatei (Zeit in der ersten Spalte) zur aktiven Drucksondierung hinzufügen"
+  },
+  "dialog": {
+    "title": "Dissipationsversuche - {{cpt}}",
+    "titleEmpty": "Dissipationsversuche",
+    "noCpt": "Öffnen oder wählen Sie zuerst eine Drucksondierung.",
+    "empty": "Diese Drucksondierung hat keine Dissipationsversuche. Eine BRO-XML mit Dissipationsversuchen bringt sie mit; eine separate GEF-Dissipationsdatei fügen Sie hier hinzu.",
+    "tests": "Versuche",
+    "add": "GEF-Dissipationsdatei hinzufügen",
+    "remove": "Versuch entfernen",
+    "removeHint": "Diesen Versuch aus der Drucksondierung entfernen",
+    "close": "Schließen",
+    "axis": "Zeitachse",
+    "axisLog": "Logarithmisch",
+    "axisSqrt": "Wurzel-Zeit"
+  },
+  "input": {
+    "title": "Eingabe",
+    "depth": "Tiefe des Versuchs",
+    "channel": "Filterposition",
+    "u0Mode": "Gleichgewichtswert u₀",
+    "u0": "u₀",
+    "groundwater": "Grundwasserstand unter Gelände",
+    "groundwaterHint": "u₀ = 9,81 kN/m³ × (Tiefe − Grundwasserstand)",
+    "rigidity": "Steifigkeitsindex Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. Für Ton meist zwischen 50 und 500; ohne Eingabe gilt 100.",
+    "coneArea": "Fläche der Sondierspitze",
+    "coneAreaFromFile": "Ohne Eingabe gilt der Wert aus der Sondierdatei.",
+    "coneAreaDefault": "Nicht in der Sondierdatei; ohne Eingabe gilt 1000 mm²."
+  },
+  "u0Mode": {
+    "last": "letzte Messung",
+    "manual": "eingegeben",
+    "groundwater": "aus Grundwasserstand und Tiefe"
+  },
+  "result": {
+    "title": "Ergebnis",
+    "indicative": "Indikative Ableitung: Die Theorie gilt für normal bis leicht überkonsolidierten Ton, und der Steifigkeitsindex Iᵣ ist eine Schätzung. Verwenden Sie cₕ nicht ohne eigene Beurteilung."
+  },
+  "row": {
+    "depth": "Tiefe (Sondierlänge)",
+    "channel": "Filterposition",
+    "duration": "Dauer der Messung",
+    "ui": "Anfangswert uᵢ",
+    "uiPeak": "Anfangswert uᵢ (Spitze)",
+    "tPeak": "Zeitpunkt der Spitze",
+    "u0": "Gleichgewichtswert u₀",
+    "u0Mode": "Herkunft von u₀",
+    "u50": "Porenwasserdruck bei U = 0,5",
+    "minU": "Kleinstes U in der Messung",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (ab der Spitze)",
+    "t50Star": "Zeitfaktor T*₅₀",
+    "coneArea": "Fläche der Sondierspitze",
+    "radius": "Radius der Spitze r",
+    "ir": "Steifigkeitsindex Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/Jahr]"
+  },
+  "warning": {
+    "noData": "Zu wenige Messwerte für eine Auswertung.",
+    "nonMonotonic": "Der Porenwasserdruck steigt zunächst an (dilatantes Verhalten). Die Spitze gilt als Anfangswert, und die Zeit zählt ab der Spitze (Sully et al., 1999).",
+    "u0FromLast": "u₀ ist die letzte Messung. Das stimmt nur, wenn der Versuch bis zum Gleichgewicht lief; geben Sie sonst u₀ oder den Grundwasserstand ein.",
+    "noExcess": "Es gibt keinen messbaren Porenwasserüberdruck; t₅₀ ist nicht bestimmbar.",
+    "negativeExcess": "Der Anfangswert liegt unter u₀ (Unterdruck). Die Theorie für cₕ gilt hier nicht; das Ergebnis ist höchstens eine Größenordnung.",
+    "t50NotReached": "Die Hälfte des Überdrucks wurde innerhalb der Messung nicht abgebaut; t₅₀ ist nicht bestimmbar.",
+    "noT50Factor": "Für einen Filter an dieser Stelle (u3) gibt die Veröffentlichung kein T*₅₀ an; cₕ wurde nicht berechnet.",
+    "groundwaterMissing": "Der Grundwasserstand ist nicht eingegeben.",
+    "manualMissing": "u₀ ist nicht eingegeben."
+  },
+  "chart": {
+    "time": "Zeit t [s] (logarithmisch)",
+    "rootTime": "Wurzel der Zeit √t [√s]",
+    "pressure": "Porenwasserdruck u [kPa]",
+    "noData": "Zu wenige Messwerte für ein Diagramm."
+  },
+  "message": {
+    "added": "Dissipationsversuch in {{depth}} m hinzugefügt.",
+    "depthMissing": "Die Tiefe steht nicht in der Datei; geben Sie sie ein.",
+    "otherCpt": "Die Datei nennt die Drucksondierung {{parent}}; prüfen Sie, ob sie zu {{cpt}} gehört.",
+    "notDissipation": "Keine GEF-Dissipationsdatei: Die erste Spalte muss die Zeit sein."
+  },
+  "report": {
+    "section": "Dissipationsversuche",
+    "sectionHint": "Pro Dissipationsversuch eine Seite mit Diagramm und Kennwerten"
+  }
+}

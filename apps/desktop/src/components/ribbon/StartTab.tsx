@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { loadChartZoomPreference, useChartZoomStore } from "../../store/useChartZoomStore";
 import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
+import DissipationRibbonGroup from "../../dissipatie/DissipationRibbonGroup";
 
 
 interface StartTabProps {
@@ -75,6 +76,7 @@ export default function StartTab(props: StartTabProps = {}) {
             />
           </div>
         </RibbonGroup>
+        <DissipationRibbonGroup />
       </div>
     </div>
   );

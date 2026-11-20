@@ -1,0 +1,96 @@
+{
+  "ribbon": {
+    "group": "Dissipation",
+    "open": "Dissipation\ntests",
+    "openCount": "Dissipation\ntests ({{n}})",
+    "openHint": "Chart, t50 and consolidation coefficient of the dissipation tests of {{cpt}}",
+    "none": "No dissipation tests for {{cpt}}; add a GEF dissipation file.",
+    "noCpt": "Open a CPT first.",
+    "add": "Add\nGEF",
+    "addHint": "Add a GEF dissipation file (time in the first column) to the active CPT"
+  },
+  "dialog": {
+    "title": "Dissipation tests - {{cpt}}",
+    "titleEmpty": "Dissipation tests",
+    "noCpt": "Open or select a CPT first.",
+    "empty": "This CPT has no dissipation tests. A BRO XML with dissipation tests brings them along; add a separate GEF dissipation file here.",
+    "tests": "Tests",
+    "add": "Add GEF dissipation file",
+    "remove": "Remove test",
+    "removeHint": "Remove this test from the CPT",
+    "close": "Close",
+    "axis": "Time axis",
+    "axisLog": "Logarithmic",
+    "axisSqrt": "Root time"
+  },
+  "input": {
+    "title": "Input",
+    "depth": "Test depth",
+    "channel": "Filter position",
+    "u0Mode": "Equilibrium value u₀",
+    "u0": "u₀",
+    "groundwater": "Groundwater level below surface",
+    "groundwaterHint": "u₀ = 9.81 kN/m³ × (depth − groundwater level)",
+    "rigidity": "Rigidity index Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. For clay usually between 50 and 500; without input 100 applies.",
+    "coneArea": "Cone tip area",
+    "coneAreaFromFile": "Without input the value from the CPT file applies.",
+    "coneAreaDefault": "Not in the CPT file; without input 1000 mm² applies."
+  },
+  "u0Mode": {
+    "last": "last reading",
+    "manual": "entered",
+    "groundwater": "from groundwater level and depth"
+  },
+  "result": {
+    "title": "Result",
+    "indicative": "Indicative derivation: the theory applies to normally to lightly overconsolidated clay and the rigidity index Iᵣ is an estimate. Do not use cₕ without your own assessment."
+  },
+  "row": {
+    "depth": "Depth (penetration length)",
+    "channel": "Filter position",
+    "duration": "Duration of the test",
+    "ui": "Initial value uᵢ",
+    "uiPeak": "Initial value uᵢ (peak)",
+    "tPeak": "Time of the peak",
+    "u0": "Equilibrium value u₀",
+    "u0Mode": "Source of u₀",
+    "u50": "Pore pressure at U = 0.5",
+    "minU": "Smallest U in the test",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (from the peak)",
+    "t50Star": "Time factor T*₅₀",
+    "coneArea": "Cone tip area",
+    "radius": "Cone radius r",
+    "ir": "Rigidity index Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/year]"
+  },
+  "warning": {
+    "noData": "Too few readings for an analysis.",
+    "nonMonotonic": "The pore pressure first rises (dilative behaviour). The peak is taken as the initial value and time counts from the peak (Sully et al., 1999).",
+    "u0FromLast": "u₀ is the last reading. That is only right if the test ran to equilibrium; otherwise enter u₀ or the groundwater level.",
+    "noExcess": "There is no measurable excess pore pressure; t₅₀ cannot be determined.",
+    "negativeExcess": "The initial value lies below u₀ (negative excess pressure). The theory for cₕ does not apply here; the result is an order of magnitude at best.",
+    "t50NotReached": "Half of the excess pressure did not dissipate within the test; t₅₀ cannot be determined.",
+    "noT50Factor": "For a filter at this position (u3) the publication gives no T*₅₀; cₕ was not calculated.",
+    "groundwaterMissing": "The groundwater level has not been entered.",
+    "manualMissing": "u₀ has not been entered."
+  },
+  "chart": {
+    "time": "Time t [s] (logarithmic)",
+    "rootTime": "Root of time √t [√s]",
+    "pressure": "Pore pressure u [kPa]",
+    "noData": "Too few readings for a chart."
+  },
+  "message": {
+    "added": "Dissipation test at {{depth}} m added.",
+    "depthMissing": "The depth is not in the file; enter it.",
+    "otherCpt": "The file names CPT {{parent}}; check that it belongs to {{cpt}}.",
+    "notDissipation": "Not a GEF dissipation file: the first column must be time."
+  },
+  "report": {
+    "section": "Dissipation tests",
+    "sectionHint": "One page per dissipation test with the chart and the key figures"
+  }
+}

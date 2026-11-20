@@ -23,6 +23,8 @@ export interface ReportSections {
   texts?: boolean;
   /** Testrapport per sondering volgens NEN-EN-ISO 22476-1. */
   testReport?: boolean;
+  /** Per dissipatietest een pagina met grafiek en kerngetallen (zie src/dissipatie). */
+  dissipation?: boolean;
   /** Teksten voor een document zonder project; anders gelden de teksten van het project. */
   reportTexts?: ReportTexts;
 }
@@ -36,6 +38,7 @@ export const DEFAULT_SECTIONS: ReportSections = {
   metadata: false,
   texts: true,
   testReport: false,
+  dissipation: false,
 };
 
 export function sectionsAreDefault(s: ReportSections): boolean {

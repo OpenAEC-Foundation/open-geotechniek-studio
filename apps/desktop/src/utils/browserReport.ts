@@ -10,6 +10,7 @@ import { DEFAULT_SECTIONS, type ReportSections } from "../store/reportSectionsSt
 import { zones } from "./browserCore";
 import { drawTestReport, drawTextChapters, type ReportFlow } from "./browserReportSections";
 import { reportTextChapters } from "./reportTexts";
+import { drawDissipationPages } from "../dissipatie/report";
 /** Local vector report. Includes native axis geometry and an RD grid fallback when map services are unavailable. */
 export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, sections: ReportSections = DEFAULT_SECTIONS): Promise<Uint8Array> {
     if (!cpts.length)
@@ -81,6 +82,8 @@ export async function generateBrowserReport(cpts: Cpt[], project: ProjectMeta, s
         }
     if (sections.testReport)
         for (const c of cpts) drawTestReport(flow, c, project);
+    if (sections.dissipation)
+        for (const c of cpts) drawDissipationPages(flow, c);
     if (sections.sbtLegend) {
         page("Indicatieve qc/Rf-legenda");
         for (const z of zones) {
