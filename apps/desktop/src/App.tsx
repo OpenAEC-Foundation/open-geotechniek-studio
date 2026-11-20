@@ -13,6 +13,7 @@ import FeedbackDialog from "./components/feedback/FeedbackDialog";
 import WelcomeScreen from "./components/welcome/WelcomeScreen";
 import { StartSidebar } from "./components/welcome/StartSidebar";
 import ProjectSettingsDialog from "./components/project/ProjectSettingsDialog";
+import { CompanyDialogHost } from "./sondeerbedrijf/CompanyDialog";
 import ReportPreview from "./components/panels/ReportPreview";
 import ChartView from "./components/panels/ChartView";
 import MapView from "./components/panels/MapView";
@@ -563,6 +564,7 @@ function App() {
       <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} theme={theme} onThemeChange={setTheme} />
       <FeedbackDialog open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
       <ProjectSettingsDialog open={projectSettingsOpen} onClose={() => setProjectSettingsOpen(false)} />
+      <CompanyDialogHost />
       {welcomeOpen && (
         <WelcomeScreen
           onClose={() => setWelcomeOpen(false)}

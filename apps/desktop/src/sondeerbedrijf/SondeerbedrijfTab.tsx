@@ -5,7 +5,7 @@ import RibbonButton from "../components/ribbon/RibbonButton";
 import { useCptStore } from "../store/useCptStore";
 import { reports } from "../utils/platform";
 import { useReportBrand } from "../report/reportBrand";
-import { CompanyDialog } from "./CompanyDialog";
+import { COMPANY_CHANGED_EVENT, openCompanyProfile } from "./CompanyDialog";
 import { matchCoordinates, parseCoordinates, withPosition } from "./coordinates";
 import { CPT_REPORT_SECTIONS, loadProfile } from "./profile";
 
@@ -16,11 +16,15 @@ export default function SondeerbedrijfTab() {
   const organization = useReportBrand((s) => s.brand.organization);
   const brandSource = useReportBrand((s) => s.source);
   const cpts = useMemo(() => Array.from(cptsMap.values()), [cptsMap]);
-  const [dialog, setDialog] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null);
   const [company, setCompany] = useState("");
-  useEffect(() => { if (!dialog) void loadProfile().then((p) => setCompany(p.name)); }, [dialog]);
+  useEffect(() => {
+    const refresh = () => void loadProfile().then((p) => setCompany(p.name));
+    refresh();
+    window.addEventListener(COMPANY_CHANGED_EVENT, refresh);
+    return () => window.removeEventListener(COMPANY_CHANGED_EVENT, refresh);
+  }, []);
   const withoutPosition = cpts.filter((c) => !c.position || (!c.position.x_rd && !c.position.y_rd)).length;
 
   // Zonder ingevulde opsteller staat het sondeerbedrijf als uitvoerder op het rapport.
@@ -53,7 +57,7 @@ export default function SondeerbedrijfTab() {
     <div className="ribbon-content">
       <div className="ribbon-groups">
         <RibbonGroup label="Bedrijf">
-          <RibbonButton icon="project.properties" label={"Bedrijfs-\ngegevens"} title="Naam, logo, kleur en contactgegevens voor het sondeerrapport" onClick={() => setDialog(true)} />
+          <RibbonButton icon="project.properties" label={"Bedrijfs-\ngegevens"} title="Naam, logo, kleur en contactgegevens voor het sondeerrapport" onClick={openCompanyProfile} />
           <div className="ribbon-info-block">
             <div className="ribbon-info-title">{company || "Nog niet ingesteld"}</div>
             <div className="ribbon-info-sub">{company ? `Op het rapport: ${organization} (${brandSource})` : "Stel je bedrijf in voor een rapport in eigen huisstijl."}</div>
@@ -76,7 +80,6 @@ export default function SondeerbedrijfTab() {
           {message && <div className={`ribbon-info-sub${message.error ? " ribbon-info-error" : ""}`} style={{ maxWidth: 320 }} role={message.error ? "alert" : "status"}>{message.text}</div>}
         </RibbonGroup>
       </div>
-      <CompanyDialog open={dialog} onClose={() => setDialog(false)} />
     </div>
   );
 }

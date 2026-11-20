@@ -9,6 +9,23 @@ import "./sondeerbedrijf.css";
 const toHex = (c: Rgb) => `#${c.map((v) => v.toString(16).padStart(2, "0")).join("")}`;
 const fromHex = (h: string): Rgb => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)) as Rgb;
 
+/** Open het scherm Bedrijfsgegevens, vanaf elke plek in de app. */
+export const OPEN_COMPANY_EVENT = "ogs:open-company-profile";
+/** De bedrijfsgegevens zijn opgeslagen of het scherm is gesloten. */
+export const COMPANY_CHANGED_EVENT = "ogs:company-profile-changed";
+export const openCompanyProfile = () => window.dispatchEvent(new Event(OPEN_COMPANY_EVENT));
+
+/** Eén exemplaar van het scherm voor de hele app; het lint, de instellingen en het rapportscherm openen het. */
+export function CompanyDialogHost() {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const show = () => setOpen(true);
+    window.addEventListener(OPEN_COMPANY_EVENT, show);
+    return () => window.removeEventListener(OPEN_COMPANY_EVENT, show);
+  }, []);
+  return <CompanyDialog open={open} onClose={() => { setOpen(false); window.dispatchEvent(new Event(COMPANY_CHANGED_EVENT)); }} />;
+}
+
 export function CompanyDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [p, setP] = useState<CompanyProfile>(EMPTY_PROFILE);
   const [busy, setBusy] = useState(false);
