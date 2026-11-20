@@ -487,7 +487,7 @@ export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors:
 
   const nk = result.negKleef;
   const k0tdUniform =
-    nk.layers.length > 0 && nk.layers.every((l) => Math.abs(l.k0TanDelta - nk.layers[0].k0TanDelta) < 1e-9)
+    nk.layers.length > 0 && nk.layers.every((l) => Math.abs(l.k0TanDelta - nk.layers[0].k0TanDelta) < 1e-9 && Math.abs((l.perimeterM ?? Os) - Os) < 1e-9)
       ? nk.layers[0].k0TanDelta
       : null;
   const sigmaSum = k0tdUniform !== null && k0tdUniform > 0 && Os > 0
@@ -496,7 +496,7 @@ export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors:
   formula(
     c,
     "F_nk;rep",
-    "O_s;gem · K_0tan(δ) · Σ ((σ_v,i-1 + σ_v,i)/2 · h_i)",
+    sigmaSum !== null ? "O_s;gem · K_0tan(δ) · Σ ((σ_v,i-1 + σ_v,i)/2 · h_i)" : "Σ (O_s;i · K_0tan(δ)_i · (σ_v,i-1 + σ_v,i)/2 · h_i)",
     sigmaSum !== null
       ? `${nl(Os, 2)} × ${nl(k0tdUniform!, 2)} × ${nl(sigmaSum, 0)}`
       : nk.layers.map((l) => nl(l.fsNkRep, 1)).join(" + ") || "0",
@@ -515,6 +515,7 @@ export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors:
       [
         { label: "Laag", width: 24 },
         { label: "h [m]", width: 16, align: "right" },
+        { label: "O_s [m]", width: 18, align: "right" },
         { label: "σ_top [kPa]", width: 22, align: "right" },
         { label: "σ_bot [kPa]", width: 22, align: "right" },
         { label: "σ_gem·h", width: 20, align: "right" },
@@ -524,13 +525,14 @@ export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors:
       nk.layers.map((l) => [
         l.layer.kind,
         nl(l.thickness, 2),
+        nl(l.perimeterM ?? Os, 3),
         nl(l.sigmaRepTop, 1),
         nl(l.sigmaRepBottom, 1),
         nl(l.sigmaGemRep, 1),
         nl(l.k0TanDelta, 3),
         nl(l.fsNkRep, 1),
       ]),
-      { summaryRow: ["Σ", "", "", "", "", "", nl(nk.fnkRep, 1)], size: 7 },
+      { summaryRow: ["Σ", "", "", "", "", "", "", nl(nk.fnkRep, 1)], size: 7 },
     );
   }
 

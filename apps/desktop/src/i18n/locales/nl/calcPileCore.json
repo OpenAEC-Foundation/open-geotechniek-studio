@@ -39,7 +39,9 @@
     "historicalConstantSection": "Historisch profiel ondersteunt alleen een constante paaldoorsnede of expliciete houttapsheid",
     "cptTooShallow": "Sondering te ondiep (reikt tot {{reach}} m, vereist ≥ {{required}} m)",
     "pileSizeInvalid": "De paalafmeting moet eindig en groter dan nul zijn",
-    "historicalGroupAnalysis": "Historische paalgroepanalyse is nog niet geverifieerd; gebruik één sondering"
+    "historicalGroupAnalysis": "Historische paalgroepanalyse is nog niet geverifieerd; gebruik één sondering",
+    "factorsMissing2025": "Voor dit paaltype zijn de paalklassefactoren van NEN 9997-1:2025 nog niet in de tabel opgenomen. Kies de editie 2017 of vul projectfactoren in (zelfverklaring of proefbelasting).",
+    "factorsMissingNoRow": "Dit paalsysteem heeft geen eigen rij in tabel 7.c van deze editie. Vul projectfactoren in (zelfverklaring of proefbelasting)."
   },
   "warnings": {
     "factors": "Factoren: {{edition}}; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Tapse houten paal: zakking en veerwaarden met variabele EA zijn niet geverifieerd en worden niet bepaald.",
     "settlementHistorical": "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald.",
     "settlementLineUnsupported": "Lastzakkingslijn {{line}} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.",
-    "extension": "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m: boven de las rekent de omtrek van de opzetter, eronder die van het hout; negatieve kleef met de gemiddelde omtrek over de kleefzone, positieve kleef per laag.",
+    "extension": "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m: boven de las rekent de omtrek van de opzetter, eronder die van het hout; negatieve en positieve kleef rekenen per laag met de omtrek van die laag.",
     "taperWithExtension": "Houttapsheid vanaf de las: positieve kleef met gemiddelde omtrek per laag. Geen verhoging van paalfactoren door coniciteit.",
-    "taper": "Houttapsheid: negatieve kleef met gemiddelde omtrek over de kleefzone; positieve kleef met gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit.",
+    "taper": "Houttapsheid: negatieve en positieve kleef met de gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit.",
     "deviatingToeSize": "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering.",
-    "qbMaxCapped": "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)"
+    "qbMaxCapped": "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)",
+    "settlementLineUnknown": "Voor dit paaltype is geen lastzakkingslijn uit de tabel bekend: zakking en veerwaarden worden niet bepaald."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "sondering buiten bereik",
       "kleefLevels": "boven kleefzone",
       "eaMissing": "EA ontbreekt",
-      "notComputable": "niet berekenbaar"
+      "notComputable": "niet berekenbaar",
+      "factorsMissing": "geen paalfactoren"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — historisch referentieprofiel",
     "nen-6743-2006": "NEN 6743-1:2006 — historisch",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — oorspronkelijke factoren",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — bestaand rekenmodel"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — bestaand rekenmodel",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — paalklassefactoren 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; openbare referentie 05290 p.31–32 (alleenstaande prefab paal)",
@@ -103,7 +108,10 @@
     "conditions": "Historisch drukpaalmodel: zand; geen paalgroep, OCR-, korrelgrootte- of ontgravingscorrectie. Schachtpieken conservatief begrensd op 12 MPa. Zakking niet geverifieerd."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, tabel 7.c (zand/zand-grind)"
+    "table2017": "NEN 9997-1:2016+C2:2017, tabel 7.c (zand/zand-grind)",
+    "table2025": "NEN 9997-1:2025+C1:2025, tabel 7.c",
+    "noTableRow2017": "Geen rij in NEN 9997-1:2016+C2:2017, tabel 7.c",
+    "noTableRowConditions": "Geen eigen rij in tabel 7.c van de editie 2017: reken met de paalklassefactoren uit de zelfverklaring van het paalsysteem of uit een proefbelasting."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Houten heipaal — rond, met of zonder betonopzetter",
       "conditions": "Ronde houten doorsnede, constant of lineair taps vanaf de bovenkant van het hout; optioneel met betonopzetter tot de las. Geen verhoging van paalfactoren wegens coniciteit."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Schroefpaal — verloren punt, blijvende stalen buis",
+      "conditions": "Tabelrij stalen paal, geschroefd, met constante dwarsafmeting boven de schroefpunt (zonder groutinjectie). De buismaat bepaalt de schachtomtrek; geef de schroefpunt op als puntafmeting. Betongevulde buis."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Grondverdringende schroefpaal — in de grond gevormd"
+    },
+    "concrete-auger-cased": {
+      "name": "DPA-paal — verbuisde avegaarpaal"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Zand nat",
     "clay": "Klei nat",
     "peat": "Veen nat"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Prefab betonpaal",
+    "steel-tube-closed": "Stalen buispaal, gesloten punt",
+    "screw-injection": "Schroefinjectiepaal",
+    "screw-permanent-casing": "Schroefpaal, blijvende buis",
+    "screw-lost-tip": "Schroefpaal, getrokken buis",
+    "screw-soil-displacing": "Grondverdringende schroefpaal",
+    "vibro": "Vibropaal",
+    "auger": "Avegaarpaal",
+    "auger-cased": "DPA-paal",
+    "bored": "Boorpaal",
+    "timber": "Houten paal",
+    "timber-extension": "Houten paal met betonopzetter"
   }
 }

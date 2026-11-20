@@ -144,7 +144,9 @@
     "type": "Type de pieu",
     "wallThickness": "Épaisseur de paroi",
     "wallThicknessAria": "Épaisseur de paroi [mm]",
-    "woodDiameterAtJoint": "Diamètre du bois à la jonction"
+    "woodDiameterAtJoint": "Diamètre du bois à la jonction",
+    "system": "Système de pieux",
+    "standardSize": "Dimension standard"
   },
   "profile": {
     "bottom": "Base",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(rehausse et bois)",
       "layer": "Couche",
       "title": "Frottement négatif",
-      "zone": "Zone : tête du pieu NAP {{top}} à NAP {{bottom}} —"
+      "zone": "Zone : tête du pieu NAP {{top}} à NAP {{bottom}} —",
+      "perimeterTitle": "Périmètre du fût dans cette couche",
+      "perimeterNote": "Os;i est le périmètre moyen du fût dans la couche : la rehausse en béton au-dessus de la jonction, le bois en dessous."
     },
     "pending": {
       "missingEA": "Saisissez la rigidité axiale <strong>EA</strong> sous <strong>Pieu</strong>. Pour ce type de pieu, EA n'est pas déduit de la section ; la valeur découle du système de pieu choisi.",
@@ -328,5 +332,11 @@
     "taperLength": "longueur conique depuis la tête",
     "toeSize": "dimension de la pointe",
     "wall": "paroi"
+  },
+  "system": {
+    "noTable2025": "Pour {{system}}, les facteurs de classe de pieu de la NEN 9997-1:2025 ne figurent pas encore dans le tableau de ce programme ; rien n'est estimé. Le système ne peut donc pas être choisi pour cette édition. Choisissez l'édition 2017 ou calculez avec des facteurs de projet issus d'une autodéclaration ou d'un essai de chargement.",
+    "noTableRow": "{{system}} n'a pas de ligne propre dans le tableau 7.c de cette édition et ne peut donc pas être choisi avec des valeurs du tableau. Calculez avec des facteurs de projet issus de l'autodéclaration du système de pieux ou d'un essai de chargement.",
+    "noTableBadge": "pas de valeur tabulée",
+    "useProjectFactors": "Choisir avec des facteurs de projet"
   }
 }

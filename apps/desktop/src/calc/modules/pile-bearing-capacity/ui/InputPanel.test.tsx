@@ -47,10 +47,10 @@ describe("paaltype-invoer",()=>{
   rerender(<InputPanel input={{...input,pileToeNap:bottom-2}} result={result}/>);
   expect(screen.getByRole("status")).toHaveTextContent("telt geen schachtwrijving mee");
  });
- it("geeft bij de tegel Hout een houten paal met betonopzetter, zonder EA-eis",()=>{
+ it("geeft bij de tegel voor hout met opzetter een houten paal met betonopzetter, zonder EA-eis",()=>{
   const onChange=vi.fn();
   const {rerender}=render(<InputPanel input={input} result={result} onChange={onChange}/>);
-  fireEvent.click(screen.getByRole("radio",{name:"Hout"}));
+  fireEvent.click(screen.getByRole("radio",{name:"Houten paal met betonopzetter"}));
   const next=onChange.mock.calls[0][0];
   expect(next).toEqual(expect.objectContaining({pileTypeId:"timber-uniform",axialStiffnessKn:undefined}));
   // Ronde opzetter Ø280, kortste gangbare lengte met de las minstens 0,5 m onder de grondwaterstand; punt Ø150.
@@ -59,7 +59,7 @@ describe("paaltype-invoer",()=>{
   expect(next.timberTaper).toEqual({toeDiameterMm:150,lengthM:+(next.concreteExtension.jointNap-input.pileToeNap).toFixed(2)});
   expect(next.diameterMm).toBe(220);
   rerender(<InputPanel input={next} result={result} onChange={onChange}/>);
-  expect(screen.getByRole("checkbox",{name:"Betonopzetter"})).toBeChecked();
+  expect(screen.getByRole("radio",{name:"Houten paal met betonopzetter"})).toBeChecked();
   expect(screen.getByLabelText("Las [m NAP]")).toHaveValue(String(next.concreteExtension.jointNap));
   expect(screen.getByLabelText("Houtdiameter bij de las [mm]")).toBeInTheDocument();
   expect(screen.queryByLabelText(/Axiale stijfheid EA/)).toBeNull();
@@ -75,7 +75,7 @@ describe("paaltype-invoer",()=>{
   const onChange=vi.fn();
   const woodWithExt={...input,pileTypeId:"timber-uniform",concreteExtension:{jointNap:input.pileTopNap-2,sizeMm:250,isCircular:false}};
   const {rerender}=render(<InputPanel input={woodWithExt} result={result} onChange={onChange}/>);
-  fireEvent.click(screen.getByRole("checkbox",{name:"Betonopzetter"}));
+  fireEvent.click(screen.getByRole("radio",{name:"Houten paal"}));
   const without=onChange.mock.calls[0][0];
   expect(without.concreteExtension).toBeUndefined();
   rerender(<InputPanel input={without} result={result} onChange={onChange}/>);
@@ -83,7 +83,7 @@ describe("paaltype-invoer",()=>{
   // Opzetter aan bij een tapsheid over de hele paal: die wordt ingekort tot het hout.
   const full={...without,timberTaper:{toeDiameterMm:150,lengthM:input.pileTopNap-input.pileToeNap}};
   rerender(<InputPanel input={full} result={result} onChange={onChange}/>);
-  fireEvent.click(screen.getByRole("checkbox",{name:"Betonopzetter"}));
+  fireEvent.click(screen.getByRole("radio",{name:"Houten paal met betonopzetter"}));
   const back=onChange.mock.calls[onChange.mock.calls.length-1][0];
   expect(back.timberTaper.lengthM).toBeLessThanOrEqual(back.concreteExtension.jointNap-input.pileToeNap+1e-9);
  });

@@ -333,7 +333,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           ΔL<sub>nk</sub> = {negKleef.deltaLnk.toFixed(2)} m
         </p>
         <Formula
-          lhs={<>O<sub>s</sub></>}
+          lhs={input.concreteExtension || input.timberTaper ? <>O<sub>s;gem</sub></> : <>O<sub>s</sub></>}
           symbolic={input.concreteExtension ? <>Σ (O<sub>s;i</sub> · h<sub>i</sub>) / ΔL<sub>nk</sub> <small>{t("result.negSkin.extensionAndWood", "(opzetter en hout)")}</small></> : input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : <>4 · a</>}
           filled={input.concreteExtension ? undefined : <>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
           result={<>{Os.toFixed(3)} m</>}
@@ -344,6 +344,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
               <tr>
                 <th>{t("result.negSkin.layer", "Laag")}</th>
                 <th>h [m]</th>
+                <th title={t("result.negSkin.perimeterTitle", "Schachtomtrek in deze laag")}>O<sub>s</sub> [m]</th>
                 <th>γ<sub>k</sub></th>
                 <th>γ<sub>w</sub></th>
                 <th>σ<sub>top</sub></th>
@@ -362,6 +363,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
                   <tr key={i}>
                     <td>{l.layer.kind}</td>
                     <td>{l.thickness.toFixed(2)}</td>
+                    <td>{(l.perimeterM ?? Os).toFixed(3)}</td>
                     <td>{l.layer.gammaK}</td>
                     <td>{l.layer.gammaW}</td>
                     <td>{l.sigmaRepTop.toFixed(1)}</td>
@@ -381,7 +383,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
               })}
               {negKleef.layers.length > 1 && (
                 <tr className="pile-formula-table-sum">
-                  <td colSpan={10}>Σ F<sub>s;nk</sub></td>
+                  <td colSpan={11}>Σ F<sub>s;nk</sub></td>
                   <td><strong>{negKleef.fnkRep.toFixed(1)} kN</strong></td>
                 </tr>
               )}
@@ -389,7 +391,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
           </table>
         </div>
         <p className="pile-result-footnote">
-          F<sub>s;nk;i</sub> = σ<sub>gem;i</sub> · O<sub>s</sub> · K<sub>0</sub>tan(δ)<sub>i</sub> · h<sub>i</sub>
+          F<sub>s;nk;i</sub> = σ<sub>gem;i</sub> · O<sub>s;i</sub> · K<sub>0</sub>tan(δ)<sub>i</sub> · h<sub>i</sub>
+          {(input.concreteExtension || input.timberTaper) && <em> &nbsp;· {t("result.negSkin.perimeterNote", "Os;i is de gemiddelde schachtomtrek binnen de laag: de betonopzetter boven de las, het hout eronder.")}</em>}
           {negKleef.layers.some((l) => l.k0TanDelta === input.ksMinFactor) && (
             <em> &nbsp;· * = K<sub>0</sub>tanδ {t("result.negSkin.cappedNote", "gecapt op ksMin = {{v}}", { v: input.ksMinFactor })}</em>
           )}

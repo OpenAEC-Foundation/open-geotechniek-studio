@@ -33,6 +33,11 @@ export interface PileTypeSpec {
   settlementLine?: 1 | 2 | 3;
   requiresEA?: boolean;
   qcIIIStartCapMpa?: number;
+  /** De tabel van de gekozen editie heeft voor dit type geen (volledige)
+   *  paalklassefactoren; rekenen kan dan alleen met projectfactoren. */
+  factorsMissing?: boolean;
+  /** Met projectfactoren op een type zonder tabelregel: lastzakkingslijn onbekend. */
+  settlementLineUnknown?: boolean;
 }
 
 /** Betonopzetter op een houten paal: boven de las beton, eronder hout. */
@@ -76,7 +81,7 @@ export interface PileInput {
     examples?:Array<{cptId:string;sizeMm:number;toeNap:number}>;
   };
   /** Ontbrekend: behoud het bestaande projectmodel. */
-  standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017";
+  standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017" | "nen-9997-2025";
   cptId: string | null;        // referentie naar CPT in project
   pileTypeId: string;          // "steel-pipe-driven-closed"
   diameterMm: number;          // 219
@@ -121,6 +126,8 @@ export interface NegKleefLayerResult {
   k0: number;
   delta: number;               // radians
   k0TanDelta: number;          // ≥ ksMinFactor
+  /** Lengtegemiddelde schachtomtrek binnen deze laag [m]. Ontbreekt in oudere resultaten. */
+  perimeterM?: number;
   fsNkRep: number;             // kN
 }
 
@@ -153,7 +160,7 @@ export interface BaseResistanceResult {
 }
 
 export interface ShaftFrictionResult {
-  perLayer: Array<{ layer: SoilLayer; qcGemMpa: number; qsMpa: number; rsLayer: number }>;
+  perLayer: Array<{ layer: SoilLayer; qcGemMpa: number; qsMpa: number; rsLayer: number; perimeterM?: number }>;
   rsCalMax: number;            // kN
 }
 
@@ -204,7 +211,7 @@ export interface SummaryResult {
 }
 
 /** Taalonafhankelijke soort fout, voor de draagvermogentabel (de fouttekst zelf is vertaald). */
-export type PileErrorCode = "cptTooShort" | "kleefLevels" | "eaMissing";
+export type PileErrorCode = "cptTooShort" | "kleefLevels" | "eaMissing" | "factorsMissing";
 
 export interface PileResult {
   ok: boolean;

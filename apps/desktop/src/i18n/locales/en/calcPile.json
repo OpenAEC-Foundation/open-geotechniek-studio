@@ -144,7 +144,9 @@
     "type": "Pile type",
     "wallThickness": "Wall thickness",
     "wallThicknessAria": "Wall thickness [mm]",
-    "woodDiameterAtJoint": "Timber diameter at the joint"
+    "woodDiameterAtJoint": "Timber diameter at the joint",
+    "system": "Pile system",
+    "standardSize": "Standard size"
   },
   "profile": {
     "bottom": "Bottom",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(extension and timber)",
       "layer": "Layer",
       "title": "Negative skin friction",
-      "zone": "Zone: pile head NAP {{top}} to NAP {{bottom}} —"
+      "zone": "Zone: pile head NAP {{top}} to NAP {{bottom}} —",
+      "perimeterTitle": "Shaft perimeter in this layer",
+      "perimeterNote": "Os;i is the mean shaft perimeter within the layer: the concrete extension above the joint, the timber below."
     },
     "pending": {
       "missingEA": "Enter the axial stiffness <strong>EA</strong> under <strong>Pile</strong>. For this pile type EA is not derived from the cross-section; the value follows from the selected pile system.",
@@ -328,5 +332,11 @@
     "taperLength": "tapered length from head",
     "toeSize": "toe size",
     "wall": "wall"
+  },
+  "system": {
+    "noTable2025": "For {{system}} the pile class factors of NEN 9997-1:2025 are not yet in this program's table; nothing is estimated. The system therefore cannot be chosen for this edition. Choose the 2017 edition, or calculate with project factors from a self-declaration or load test.",
+    "noTableRow": "{{system}} has no row of its own in table 7.c of this edition and therefore cannot be chosen with table values. Calculate with project factors from the pile system's self-declaration or from a load test.",
+    "noTableBadge": "no table value",
+    "useProjectFactors": "Choose with project factors"
   }
 }

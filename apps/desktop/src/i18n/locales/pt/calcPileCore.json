@@ -39,7 +39,9 @@
     "historicalConstantSection": "O perfil histórico só suporta uma secção de estaca constante ou uma conicidade explícita da madeira",
     "cptTooShallow": "CPT demasiado pouco profundo (atinge {{reach}} m, requer ≥ {{required}} m)",
     "pileSizeInvalid": "A dimensão da estaca deve ser finita e maior que zero",
-    "historicalGroupAnalysis": "A análise histórica com vários CPT ainda não está verificada; utilize um único CPT"
+    "historicalGroupAnalysis": "A análise histórica com vários CPT ainda não está verificada; utilize um único CPT",
+    "factorsMissing2025": "Os fatores de classe de estaca da NEN 9997-1:2025 para este tipo de estaca ainda não constam da tabela. Escolha a edição de 2017 ou introduza fatores de projeto (autodeclaração ou ensaio de carga).",
+    "factorsMissingNoRow": "Este sistema de estacas não tem linha própria na tabela 7.c desta edição. Introduza fatores de projeto (autodeclaração ou ensaio de carga)."
   },
   "warnings": {
     "factors": "Coeficientes: {{edition}}; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Estaca de madeira cónica: o assentamento e os valores de mola com EA variável não estão verificados e não são determinados.",
     "settlementHistorical": "O assentamento e os valores de mola históricos não estão verificados e não são determinados.",
     "settlementLineUnsupported": "Curva carga-assentamento {{line}} ainda não suportada: o assentamento e os valores de mola não são determinados.",
-    "extension": "Prolongamento em betão {{size}} mm até à junta a NAP {{joint}} m: acima da junta usa-se o perímetro do prolongamento, abaixo o da madeira; atrito negativo com o perímetro médio na zona de atrito, atrito lateral positivo por camada.",
+    "extension": "Prolongamento em betão {{size}} mm até à junta a NAP {{joint}} m: acima da junta usa-se o perímetro do prolongamento, abaixo o da madeira; o atrito negativo e o positivo são calculados por camada com o perímetro dessa camada.",
     "taperWithExtension": "Conicidade da madeira a partir da junta: atrito lateral positivo com perímetro médio por camada. Sem aumento dos coeficientes da estaca devido à conicidade.",
-    "taper": "Conicidade da madeira: atrito negativo com perímetro médio na zona de atrito; atrito lateral positivo com perímetro médio por camada. Sem prolongamento em betão nem aumento devido à conicidade.",
+    "taper": "Conicidade da madeira: atrito negativo e positivo com o perímetro médio por camada. Sem prolongamento em betão nem aumento devido à conicidade.",
     "deviatingToeSize": "Dimensão da ponta divergente: verifique o fator de forma da base da estaca β e o troço de atrito lateral admissível para este método de execução.",
-    "qbMaxCapped": "qb;max limitado a 15 MPa (valor bruto {{raw}} MPa)"
+    "qbMaxCapped": "qb;max limitado a 15 MPa (valor bruto {{raw}} MPa)",
+    "settlementLineUnknown": "Não é conhecida nenhuma curva carga-assentamento da tabela para este tipo de estaca: o assentamento e as rigidezes não são determinados."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "CPT fora do alcance",
       "kleefLevels": "acima da zona de atrito",
       "eaMissing": "EA em falta",
-      "notComputable": "não calculável"
+      "notComputable": "não calculável",
+      "factorsMissing": "sem fatores de estaca"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — perfil de referência histórico",
     "nen-6743-2006": "NEN 6743-1:2006 — histórica",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — coeficientes originais",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modelo de cálculo existente"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modelo de cálculo existente",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — fatores de classe de estaca 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; referência pública 05290 pp. 31–32 (estaca pré-fabricada isolada)",
@@ -103,7 +108,10 @@
     "conditions": "Modelo histórico de estaca à compressão: areia; sem correção de grupo de estacas, OCR, granulometria ou escavação. Picos no fuste limitados de forma conservadora a 12 MPa. Assentamento não verificado."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, quadro 7.c (areia/areia com seixo)"
+    "table2017": "NEN 9997-1:2016+C2:2017, quadro 7.c (areia/areia com seixo)",
+    "table2025": "NEN 9997-1:2025+C1:2025, tabela 7.c",
+    "noTableRow2017": "Sem linha em NEN 9997-1:2016+C2:2017, tabela 7.c",
+    "noTableRowConditions": "Sem linha própria na tabela 7.c da edição de 2017: calcule com os fatores de classe de estaca da autodeclaração do sistema de estacas ou de um ensaio de carga."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Estaca cravada de madeira — circular, com ou sem prolongamento em betão",
       "conditions": "Secção circular de madeira, constante ou linearmente cónica a partir do topo da madeira; opcionalmente com prolongamento em betão até à junta. Sem aumento dos coeficientes da estaca devido à conicidade."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Estaca aparafusada — ponta perdida, tubo de aço permanente",
+      "conditions": "Linha da tabela estaca de aço, aparafusada, de secção constante acima da ponta helicoidal (sem injeção de calda). A dimensão do tubo determina o perímetro do fuste; introduza a ponta helicoidal como dimensão da ponta. Tubo cheio de betão."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Estaca aparafusada com deslocamento — moldada in situ"
+    },
+    "concrete-auger-cased": {
+      "name": "Estaca DPA — estaca de trado entubado"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Areia, saturada",
     "clay": "Argila, saturada",
     "peat": "Turfa, saturada"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Estaca pré-fabricada de betão",
+    "steel-tube-closed": "Estaca tubular de aço, ponta fechada",
+    "screw-injection": "Estaca aparafusada com injeção",
+    "screw-permanent-casing": "Estaca aparafusada, tubo permanente",
+    "screw-lost-tip": "Estaca aparafusada, tubo recuperado",
+    "screw-soil-displacing": "Estaca aparafusada com deslocamento",
+    "vibro": "Estaca vibro",
+    "auger": "Estaca de trado contínuo",
+    "auger-cased": "Estaca DPA (trado entubado)",
+    "bored": "Estaca moldada",
+    "timber": "Estaca de madeira",
+    "timber-extension": "Estaca de madeira com prolongamento em betão"
   }
 }

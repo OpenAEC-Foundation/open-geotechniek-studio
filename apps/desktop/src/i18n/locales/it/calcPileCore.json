@@ -39,7 +39,9 @@
     "historicalConstantSection": "Il profilo storico supporta solo una sezione costante del palo o una rastremazione esplicita del legno",
     "cptTooShallow": "Prova CPT troppo poco profonda (raggiunge {{reach}} m, richiede ≥ {{required}} m)",
     "pileSizeInvalid": "La dimensione del palo deve essere finita e maggiore di zero",
-    "historicalGroupAnalysis": "L'analisi storica con più prove CPT non è ancora verificata; usa una sola prova CPT"
+    "historicalGroupAnalysis": "L'analisi storica con più prove CPT non è ancora verificata; usa una sola prova CPT",
+    "factorsMissing2025": "I fattori di classe del palo della NEN 9997-1:2025 per questo tipo di palo non sono ancora nella tabella. Scegliere l'edizione 2017 o inserire fattori di progetto (autodichiarazione o prova di carico).",
+    "factorsMissingNoRow": "Questo sistema di pali non ha una riga propria nella tabella 7.c di questa edizione. Inserire fattori di progetto (autodichiarazione o prova di carico)."
   },
   "warnings": {
     "factors": "Fattori: {{edition}}; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Palo in legno rastremato: i valori di cedimento e delle molle con EA variabile non sono verificati e non vengono determinati.",
     "settlementHistorical": "I valori storici di cedimento e delle molle non sono verificati e non vengono determinati.",
     "settlementLineUnsupported": "Curva carico-cedimento {{line}} non ancora supportata: i valori di cedimento e delle molle non vengono determinati.",
-    "extension": "Prolunga in calcestruzzo {{size}} mm fino al giunto a NAP {{joint}} m: sopra il giunto si usa il perimetro della prolunga, sotto quello del legno; attrito negativo con il perimetro medio sulla zona d'attrito, attrito laterale positivo per strato.",
+    "extension": "Prolunga in calcestruzzo {{size}} mm fino al giunto a NAP {{joint}} m: sopra il giunto si usa il perimetro della prolunga, sotto quello del legno; attrito negativo e positivo sono calcolati per strato con il perimetro di quello strato.",
     "taperWithExtension": "Rastremazione del legno dal giunto: attrito laterale positivo con perimetro medio per strato. Nessun incremento dei fattori del palo per la rastremazione.",
-    "taper": "Rastremazione del legno: attrito negativo con perimetro medio sulla zona d'attrito; attrito laterale positivo con perimetro medio per strato. Senza prolunga in calcestruzzo né incremento per la rastremazione.",
+    "taper": "Rastremazione del legno: attrito negativo e positivo con il perimetro medio per strato. Senza prolunga in calcestruzzo né incremento per la rastremazione.",
     "deviatingToeSize": "Dimensione della punta diversa: verifica il fattore di forma della base del palo β e il tratto d'attrito laterale ammesso per questo metodo di installazione.",
-    "qbMaxCapped": "qb;max limitato a 15 MPa (valore grezzo {{raw}} MPa)"
+    "qbMaxCapped": "qb;max limitato a 15 MPa (valore grezzo {{raw}} MPa)",
+    "settlementLineUnknown": "Per questo tipo di palo non è nota alcuna curva carico-cedimento dalla tabella: cedimento e rigidezze non vengono determinati."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "CPT fuori intervallo",
       "kleefLevels": "sopra la zona d'attrito",
       "eaMissing": "EA mancante",
-      "notComputable": "non calcolabile"
+      "notComputable": "non calcolabile",
+      "factorsMissing": "nessun fattore del palo"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — profilo di riferimento storico",
     "nen-6743-2006": "NEN 6743-1:2006 — storica",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — fattori originali",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modello di calcolo esistente"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — modello di calcolo esistente",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — fattori di classe del palo 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; riferimento pubblico 05290 pp. 31–32 (singolo palo prefabbricato)",
@@ -103,7 +108,10 @@
     "conditions": "Modello storico di palo compresso: sabbia; nessuna correzione per gruppo di pali, OCR, granulometria o scavo. Picchi lungo il fusto limitati cautelativamente a 12 MPa. Cedimento non verificato."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, tabella 7.c (sabbia/ghiaia sabbiosa)"
+    "table2017": "NEN 9997-1:2016+C2:2017, tabella 7.c (sabbia/ghiaia sabbiosa)",
+    "table2025": "NEN 9997-1:2025+C1:2025, tabella 7.c",
+    "noTableRow2017": "Nessuna riga in NEN 9997-1:2016+C2:2017, tabella 7.c",
+    "noTableRowConditions": "Nessuna riga propria nella tabella 7.c dell'edizione 2017: calcolare con i fattori di classe del palo dell'autodichiarazione del sistema di pali o di una prova di carico."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Palo battuto in legno — circolare, con o senza prolunga in calcestruzzo",
       "conditions": "Sezione circolare in legno, costante o rastremata linearmente dalla sommità del legno; eventualmente con una prolunga in calcestruzzo fino al giunto. Nessun incremento dei fattori del palo per la rastremazione."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Palo a vite — punta persa, tubo d'acciaio permanente",
+      "conditions": "Riga della tabella palo in acciaio, avvitato, a sezione costante sopra la punta a vite (senza iniezione di boiacca). La misura del tubo determina il perimetro del fusto; inserire la punta a vite come dimensione della punta. Tubo riempito di calcestruzzo."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Palo a vite a spostamento — gettato in opera"
+    },
+    "concrete-auger-cased": {
+      "name": "Palo DPA — palo a elica intubata"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Sabbia, satura",
     "clay": "Argilla, satura",
     "peat": "Torba, satura"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Palo prefabbricato in calcestruzzo",
+    "steel-tube-closed": "Palo tubolare in acciaio, punta chiusa",
+    "screw-injection": "Palo a vite con iniezione",
+    "screw-permanent-casing": "Palo a vite, tubo permanente",
+    "screw-lost-tip": "Palo a vite, tubo estratto",
+    "screw-soil-displacing": "Palo a vite a spostamento",
+    "vibro": "Palo vibro",
+    "auger": "Palo a elica continua",
+    "auger-cased": "Palo DPA (elica intubata)",
+    "bored": "Palo trivellato",
+    "timber": "Palo in legno",
+    "timber-extension": "Palo in legno con prolunga in calcestruzzo"
   }
 }

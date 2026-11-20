@@ -1,10 +1,12 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/catalog.ts
 import type { PileInput, PileTypeSpec, SoilKind, SoilLayer } from "./types";
-import { applyStandard, HISTORICAL_TEXT } from "./standards";
+import { applyStandard, HISTORICAL_TEXT, SOURCE_2025 } from "./standards";
 import { ct } from "../../i18n";
 
 const SOURCE_2017 = "NEN 9997-1:2016+C2:2017, tabel 7.c (zand/zand-grind)";
-const normativeType = (spec: PileTypeSpec): PileTypeSpec => ({
+const NO_TABLE_ROW = "Geen rij in NEN 9997-1:2016+C2:2017, tabel 7.c";
+const NO_ROW_CONDITIONS = "Geen eigen rij in tabel 7.c van de editie 2017: reken met de paalklassefactoren uit de zelfverklaring van het paalsysteem of uit een proefbelasting.";
+const normativeType =(spec: PileTypeSpec): PileTypeSpec => ({
   material: "concrete", settlementLine: 1,
   edition: "2017", source: SOURCE_2017, ...spec,
 });
@@ -45,6 +47,10 @@ export const PILE_TYPE_CATALOG: PileTypeSpec[] = [
   normativeType({ id: "steel-screw-grout", name: "Stalen schroefpaal — groutinjectie", alphaP: .63, alphaS: .009, alphaT: .009, beta: 1, s: 1, isCircular: true, material: "steel", requiresEA: true, conditions: "Groutschacht ≥ 300 mm; tijdens aanbrengen niet op en neer halen. EA betreft staal/kern, niet het grout-schachtoppervlak." }),
   normativeType({ id: "concrete-auger", name: "Avegaarpaal — beton", alphaP: .56, alphaS: .006, alphaT: .0045, beta: 1, s: 1, isCircular: true, requiresEA: true, settlementLine: 2, qcIIIStartCapMpa: 2, conditions: "Editie 2017: start qc;III begrensd op 2 MPa; geen vrijstelling op basis van nasonderingen toegepast." }),
   normativeType({ id: "concrete-bored", name: "Boorpaal — met steunvloeistof", alphaP: .35, alphaS: .006, alphaT: .0045, beta: 1, s: 1, isCircular: true, requiresEA: true, settlementLine: 3 }),
+  normativeType({ id: "steel-screw-permanent-casing", name: "Schroefpaal — verloren punt, blijvende stalen buis", alphaP: .56, alphaS: .006, alphaT: .0045, beta: 1, s: 1, isCircular: true, material: "steel", conditions: "Tabelrij stalen paal, geschroefd, met constante dwarsafmeting boven de schroefpunt (zonder groutinjectie). De buismaat bepaalt de schachtomtrek; geef de schroefpunt op als puntafmeting. Betongevulde buis." }),
+  // Geen eigen rij in tabel 7.c:2017: alleen te rekenen met projectfactoren (zelfverklaring of proefbelasting).
+  normativeType({ id: "concrete-screw-soil-displacing", name: "Grondverdringende schroefpaal — in de grond gevormd", alphaP: 0, alphaS: 0, alphaT: 0, beta: 1, s: 1, isCircular: true, requiresEA: true, factorsMissing: true, source: NO_TABLE_ROW, conditions: NO_ROW_CONDITIONS }),
+  normativeType({ id: "concrete-auger-cased", name: "DPA-paal — verbuisde avegaarpaal", alphaP: 0, alphaS: 0, alphaT: 0, beta: 1, s: 1, isCircular: true, requiresEA: true, factorsMissing: true, source: NO_TABLE_ROW, conditions: NO_ROW_CONDITIONS }),
   normativeType({ id: "timber-uniform", name: "Houten heipaal — rond, met of zonder betonopzetter", alphaP: .7, alphaS: .010, alphaT: .007, beta: 1, s: 1, isCircular: true, material: "wood", requiresEA: true, conditions: "Ronde houten doorsnede, constant of lineair taps vanaf de bovenkant van het hout; optioneel met betonopzetter tot de las. Geen verhoging van paalfactoren wegens coniciteit." }),
 ];
 
@@ -61,13 +67,13 @@ export function getPileType(id: string): PileTypeSpec | undefined {
 let catalogKeys: Map<string, string> | undefined;
 function catalogTextKeys(): Map<string, string> {
   if (catalogKeys) return catalogKeys;
-  const keys = new Map<string, string>([[SOURCE_2017, "sources.table2017"]]);
+  const keys = new Map<string, string>([[SOURCE_2017, "sources.table2017"], [SOURCE_2025, "sources.table2025"], [NO_TABLE_ROW, "sources.noTableRow2017"], [NO_ROW_CONDITIONS, "sources.noTableRowConditions"]]);
   for (const t of PILE_TYPE_CATALOG) {
     keys.set(t.name, `pileTypes.${t.id}.name`);
     // Bij historische normversies valt de editie-aanduiding uit de naam weg (zie applyStandard).
     const short = t.name.replace(" (tabel 2017)", "").replace(" (bestaand projectmodel)", "");
     if (short !== t.name) keys.set(short, `pileTypes.${t.id}.shortName`);
-    if (t.conditions) keys.set(t.conditions, `pileTypes.${t.id}.conditions`);
+    if (t.conditions && !keys.has(t.conditions)) keys.set(t.conditions, `pileTypes.${t.id}.conditions`);
     if (t.source && !keys.has(t.source)) keys.set(t.source, `pileTypes.${t.id}.source`);
     if (t.edition && !/^\d{4}$/.test(t.edition)) keys.set(t.edition, `pileTypes.${t.id}.edition`);
   }
@@ -100,7 +106,9 @@ export function resolvePileType(input: PileInput): PileTypeSpec | undefined {
   const type = applyStandard(catalogType, input.standard);
   if (!type) return undefined;
   if (!input.projectFactors) return type;
-  return { ...type, ...input.projectFactors,
+  return { ...type, ...input.projectFactors, factorsMissing: false,
+    // Zonder tabelregel is er geen lastzakkingslijn uit de tabel; projectfactoren zeggen daar niets over.
+    settlementLineUnknown: !!type.factorsMissing,
     qcIIIStartCapMpa: input.projectFactors.edition === "2025" ? undefined : type.qcIIIStartCapMpa,
   };
 }

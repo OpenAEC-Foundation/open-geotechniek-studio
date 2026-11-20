@@ -39,7 +39,9 @@
     "historicalConstantSection": "Profil historyczny obsługuje tylko stały przekrój pala lub jawnie podaną zbieżność pala drewnianego",
     "cptTooShallow": "Sondowanie zbyt płytkie (sięga {{reach}} m, wymagane ≥ {{required}} m)",
     "pileSizeInvalid": "Wymiar pala musi być skończony i większy od zera",
-    "historicalGroupAnalysis": "Historyczna analiza dla wielu sondowań nie jest jeszcze zweryfikowana; użyj jednego sondowania"
+    "historicalGroupAnalysis": "Historyczna analiza dla wielu sondowań nie jest jeszcze zweryfikowana; użyj jednego sondowania",
+    "factorsMissing2025": "Współczynniki klasy pala z NEN 9997-1:2025 dla tego typu pala nie są jeszcze ujęte w tabeli. Wybierz wydanie 2017 lub podaj współczynniki projektowe (deklaracja własna lub próbne obciążenie).",
+    "factorsMissingNoRow": "Ten system palowy nie ma własnego wiersza w tabeli 7.c tego wydania. Podaj współczynniki projektowe (deklaracja własna lub próbne obciążenie)."
   },
   "warnings": {
     "factors": "Współczynniki: {{edition}}; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Zbieżny pal drewniany: osiadanie i sztywności sprężyn przy zmiennym EA nie są zweryfikowane i nie są wyznaczane.",
     "settlementHistorical": "Historyczne osiadanie i sztywności sprężyn nie są zweryfikowane i nie są wyznaczane.",
     "settlementLineUnsupported": "Krzywa obciążenie–osiadanie {{line}} nie jest jeszcze obsługiwana: osiadanie i sztywności sprężyn nie są wyznaczane.",
-    "extension": "Nadstawka betonowa {{size}} mm do styku na NAP {{joint}} m: powyżej styku przyjmuje się obwód nadstawki, poniżej obwód drewna; tarcie negatywne ze średnim obwodem w strefie tarcia, tarcie na pobocznicy dla każdej warstwy.",
+    "extension": "Nadstawka betonowa {{size}} mm do styku na NAP {{joint}} m: powyżej styku przyjmuje się obwód nadstawki, poniżej obwód drewna; tarcie negatywne i tarcie na pobocznicy liczone są dla każdej warstwy z obwodem tej warstwy.",
     "taperWithExtension": "Zbieżność pala drewnianego od styku: tarcie na pobocznicy ze średnim obwodem dla każdej warstwy. Bez zwiększenia współczynników pala z tytułu zbieżności.",
-    "taper": "Zbieżność pala drewnianego: tarcie negatywne ze średnim obwodem w strefie tarcia; tarcie na pobocznicy ze średnim obwodem dla każdej warstwy. Bez nadstawki betonowej i bez zwiększenia z tytułu zbieżności.",
+    "taper": "Zbieżność pala drewnianego: tarcie negatywne i tarcie na pobocznicy ze średnim obwodem dla każdej warstwy. Bez nadstawki betonowej i bez zwiększenia z tytułu zbieżności.",
     "deviatingToeSize": "Odmienny wymiar podstawy: sprawdź współczynnik kształtu podstawy pala β i dopuszczalny zakres tarcia na pobocznicy dla tej technologii wykonania.",
-    "qbMaxCapped": "qb;max ograniczono do 15 MPa (wartość surowa {{raw}} MPa)"
+    "qbMaxCapped": "qb;max ograniczono do 15 MPa (wartość surowa {{raw}} MPa)",
+    "settlementLineUnknown": "Dla tego typu pala nie jest znana krzywa obciążenie-osiadanie z tabeli: osiadanie i sztywności nie są wyznaczane."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "CPT poza zakresem",
       "kleefLevels": "powyżej strefy tarcia",
       "eaMissing": "brak EA",
-      "notComputable": "nie do obliczenia"
+      "notComputable": "nie do obliczenia",
+      "factorsMissing": "brak współczynników pala"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — historyczny profil referencyjny",
     "nen-6743-2006": "NEN 6743-1:2006 — historyczna",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — pierwotne współczynniki",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — istniejący model obliczeniowy"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — istniejący model obliczeniowy",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — współczynniki klasy pala 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; publiczne źródło referencyjne 05290 s. 31–32 (pojedynczy pal prefabrykowany)",
@@ -103,7 +108,10 @@
     "conditions": "Historyczny model pala wciskanego: piasek; bez korekty na grupę pali, OCR, uziarnienie ani wykop. Szczyty oporu wzdłuż pobocznicy zachowawczo ograniczone do 12 MPa. Osiadanie niezweryfikowane."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, tabela 7.c (piasek/żwir piaszczysty)"
+    "table2017": "NEN 9997-1:2016+C2:2017, tabela 7.c (piasek/żwir piaszczysty)",
+    "table2025": "NEN 9997-1:2025+C1:2025, tabela 7.c",
+    "noTableRow2017": "Brak wiersza w NEN 9997-1:2016+C2:2017, tabela 7.c",
+    "noTableRowConditions": "Brak własnego wiersza w tabeli 7.c wydania 2017: licz ze współczynnikami klasy pala z deklaracji własnej systemu palowego lub z próbnego obciążenia."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Drewniany pal wbijany — okrągły, z nadstawką betonową lub bez",
       "conditions": "Okrągły przekrój drewniany, stały lub liniowo zbieżny od wierzchu drewna; opcjonalnie z nadstawką betonową do styku. Bez zwiększenia współczynników pala z tytułu zbieżności."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Pal wkręcany — tracony grot, tracona rura stalowa",
+      "conditions": "Wiersz tabeli: pal stalowy wkręcany o stałym przekroju powyżej grotu śrubowego (bez iniekcji zaczynu). Wymiar rury określa obwód pobocznicy; grot śrubowy podaj jako wymiar podstawy. Rura wypełniona betonem."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Pal wkręcany przemieszczeniowy — formowany w gruncie"
+    },
+    "concrete-auger-cased": {
+      "name": "Pal DPA — pal świdrowy w rurze osłonowej"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Piasek, nasycony",
     "clay": "Ił, nasycony",
     "peat": "Torf, nasycony"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Pal żelbetowy prefabrykowany",
+    "steel-tube-closed": "Pal z rury stalowej, zamknięty",
+    "screw-injection": "Pal wkręcany iniekcyjny",
+    "screw-permanent-casing": "Pal wkręcany, rura tracona",
+    "screw-lost-tip": "Pal wkręcany, rura wyciągana",
+    "screw-soil-displacing": "Pal wkręcany przemieszczeniowy",
+    "vibro": "Pal vibro",
+    "auger": "Pal CFA",
+    "auger-cased": "Pal DPA (świder w rurze)",
+    "bored": "Pal wiercony",
+    "timber": "Pal drewniany",
+    "timber-extension": "Pal drewniany z nadstawką betonową"
   }
 }

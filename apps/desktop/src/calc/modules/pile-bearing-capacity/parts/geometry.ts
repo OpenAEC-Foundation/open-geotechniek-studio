@@ -37,6 +37,12 @@ function perimeterAt(input: ShaftGeometry, isCircular: boolean, nap: number, inE
   return (isCircular ? Math.PI : 4) * shaftDiameterAtNap(input, nap) / 1000;
 }
 
+/** Schachtomtrek op één niveau [m]. Boven de las geldt de betonopzetter,
+ *  op en onder de las het hout (met tapsheid). */
+export function shaftPerimeterAtNap(input: ShaftGeometry, isCircular: boolean, nap: number): number {
+  return perimeterAt(input, isCircular, nap, !!input.concreteExtension && nap > input.concreteExtension.jointNap);
+}
+
 /** Exact lengtegemiddelde van de schachtomtrek tussen twee niveaus. Splitst
  *  op de las (opzetter/hout) en op de overgang taps/constant; binnen elk
  *  stuk verloopt de omtrek lineair, dus de trapeziumregel is exact. */

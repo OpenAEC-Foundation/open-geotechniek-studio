@@ -144,7 +144,9 @@
     "type": "Tipo de pilote",
     "wallThickness": "Espesor de pared",
     "wallThicknessAria": "Espesor de pared [mm]",
-    "woodDiameterAtJoint": "Diámetro de la madera en la junta"
+    "woodDiameterAtJoint": "Diámetro de la madera en la junta",
+    "system": "Sistema de pilotes",
+    "standardSize": "Medida estándar"
   },
   "profile": {
     "bottom": "Inferior",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(recrecido y madera)",
       "layer": "Capa",
       "title": "Rozamiento negativo",
-      "zone": "Zona: cabeza del pilote NAP {{top}} a NAP {{bottom}} —"
+      "zone": "Zona: cabeza del pilote NAP {{top}} a NAP {{bottom}} —",
+      "perimeterTitle": "Perímetro del fuste en esta capa",
+      "perimeterNote": "Os;i es el perímetro medio del fuste dentro de la capa: el recrecido de hormigón por encima de la junta, la madera por debajo."
     },
     "pending": {
       "missingEA": "Introduzca la rigidez axial <strong>EA</strong> en <strong>Pilote</strong>. Para este tipo de pilote, EA no se deduce de la sección; el valor depende del sistema de pilote seleccionado.",
@@ -328,5 +332,11 @@
     "taperLength": "longitud cónica desde la cabeza",
     "toeSize": "dimensión de la punta",
     "wall": "pared"
+  },
+  "system": {
+    "noTable2025": "Para {{system}}, los factores de clase de pilote de la NEN 9997-1:2025 aún no están en la tabla de este programa; no se estima nada. Por eso el sistema no se puede elegir en esta edición. Elija la edición 2017 o calcule con factores de proyecto de una autodeclaración o un ensayo de carga.",
+    "noTableRow": "{{system}} no tiene fila propia en la tabla 7.c de esta edición y por eso no se puede elegir con valores de tabla. Calcule con factores de proyecto de la autodeclaración del sistema de pilotes o de un ensayo de carga.",
+    "noTableBadge": "sin valor de tabla",
+    "useProjectFactors": "Elegir con factores de proyecto"
   }
 }

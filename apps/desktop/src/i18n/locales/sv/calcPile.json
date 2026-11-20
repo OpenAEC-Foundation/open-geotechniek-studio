@@ -144,7 +144,9 @@
     "type": "Påltyp",
     "wallThickness": "Godstjocklek",
     "wallThicknessAria": "Godstjocklek [mm]",
-    "woodDiameterAtJoint": "Trädiameter vid skarven"
+    "woodDiameterAtJoint": "Trädiameter vid skarven",
+    "system": "Pålsystem",
+    "standardSize": "Standardmått"
   },
   "profile": {
     "bottom": "Underkant",
@@ -177,7 +179,9 @@
       "extensionAndWood": "(förlängning och trä)",
       "layer": "Lager",
       "title": "Negativ mantelfriktion",
-      "zone": "Zon: pålhuvud NAP {{top}} till NAP {{bottom}} —"
+      "zone": "Zon: pålhuvud NAP {{top}} till NAP {{bottom}} —",
+      "perimeterTitle": "Mantelomkrets i detta lager",
+      "perimeterNote": "Os;i är mantelns medelomkrets inom lagret: betongförlängningen ovanför skarven, träet under."
     },
     "pending": {
       "missingEA": "Ange axialstyvheten <strong>EA</strong> under <strong>Påle</strong>. För denna påltyp härleds EA inte ur tvärsnittet; värdet följer av valt pålsystem.",
@@ -328,5 +332,11 @@
     "taperLength": "konisk längd från huvudet",
     "toeSize": "spetsdimension",
     "wall": "gods"
+  },
+  "system": {
+    "noTable2025": "För {{system}} finns pålklassfaktorerna enligt NEN 9997-1:2025 ännu inte i programmets tabell; inget uppskattas. Systemet kan därför inte väljas för denna utgåva. Välj 2017 års utgåva eller räkna med projektfaktorer från en egendeklaration eller provbelastning.",
+    "noTableRow": "{{system}} har ingen egen rad i tabell 7.c i denna utgåva och kan därför inte väljas med tabellvärden. Räkna med projektfaktorer från pålsystemets egendeklaration eller från en provbelastning.",
+    "noTableBadge": "inget tabellvärde",
+    "useProjectFactors": "Välj med projektfaktorer"
   }
 }

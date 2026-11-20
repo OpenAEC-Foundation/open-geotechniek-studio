@@ -39,7 +39,9 @@
     "historicalConstantSection": "Den historiske profil understøtter kun et konstant pæletværsnit eller en eksplicit trækonicitet",
     "cptTooShallow": "Sondering for kort (når {{reach}} m, kræver ≥ {{required}} m)",
     "pileSizeInvalid": "Pælestørrelsen skal være endelig og større end nul",
-    "historicalGroupAnalysis": "Historisk analyse med flere sonderinger er endnu ikke verificeret; brug en enkelt sondering"
+    "historicalGroupAnalysis": "Historisk analyse med flere sonderinger er endnu ikke verificeret; brug en enkelt sondering",
+    "factorsMissing2025": "Pæleklassefaktorerne i NEN 9997-1:2025 for denne pæletype er endnu ikke med i tabellen. Vælg 2017-udgaven, eller angiv projektfaktorer (egenerklæring eller prøvebelastning).",
+    "factorsMissingNoRow": "Dette pælesystem har ingen egen række i tabel 7.c i denne udgave. Angiv projektfaktorer (egenerklæring eller prøvebelastning)."
   },
   "warnings": {
     "factors": "Faktorer: {{edition}}; {{source}}.",
@@ -50,11 +52,12 @@
     "settlementTaper": "Konisk træpæl: sætnings- og fjederværdier med variabel EA er ikke verificeret og bestemmes ikke.",
     "settlementHistorical": "Historiske sætnings- og fjederværdier er ikke verificeret og bestemmes ikke.",
     "settlementLineUnsupported": "Last-sætningskurve {{line}} understøttes endnu ikke: sætnings- og fjederværdier bestemmes ikke.",
-    "extension": "Betonforlænger {{size}} mm ned til samlingen ved NAP {{joint}} m: over samlingen bruges forlængerens omkreds, under den træets; negativ overflademodstand med middelomkreds over friktionszonen, positiv overflademodstand pr. lag.",
+    "extension": "Betonforlænger {{size}} mm ned til samlingen ved NAP {{joint}} m: over samlingen bruges forlængerens omkreds, under den træets; negativ og positiv overflademodstand beregnes pr. lag med lagets omkreds.",
     "taperWithExtension": "Trækonicitet fra samlingen: positiv overflademodstand med middelomkreds pr. lag. Ingen forøgelse af pælefaktorer for konicitet.",
-    "taper": "Trækonicitet: negativ overflademodstand med middelomkreds over friktionszonen; positiv overflademodstand med middelomkreds pr. lag. Uden betonforlænger eller forøgelse for konicitet.",
+    "taper": "Trækonicitet: negativ og positiv overflademodstand med middelomkreds pr. lag. Uden betonforlænger eller forøgelse for konicitet.",
     "deviatingToeSize": "Afvigende spidsstørrelse: kontrollér pælespidsens formfaktor β og det tilladte område for overflademodstand for denne installationsmetode.",
-    "qbMaxCapped": "qb;max begrænset til 15 MPa (råværdi {{raw}} MPa)"
+    "qbMaxCapped": "qb;max begrænset til 15 MPa (råværdi {{raw}} MPa)",
+    "settlementLineUnknown": "Der kendes ingen last-sætningskurve fra tabellen for denne pæletype: sætning og fjederværdier bestemmes ikke."
   },
   "table": {
     "errors": {
@@ -77,7 +80,8 @@
       "cptTooShort": "Sondering uden for område",
       "kleefLevels": "over friktionszone",
       "eaMissing": "EA mangler",
-      "notComputable": "kan ikke beregnes"
+      "notComputable": "kan ikke beregnes",
+      "factorsMissing": "ingen pælefaktorer"
     }
   },
   "report": {
@@ -94,7 +98,8 @@
     "nen-6743-1991": "NEN 6743:1991 — historisk referenceprofil",
     "nen-6743-2006": "NEN 6743-1:2006 — historisk",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — oprindelige faktorer",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — eksisterende beregningsmodel"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — eksisterende beregningsmodel",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — pæleklassefaktorer 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; offentlig reference 05290 s. 31–32 (enkelt præfabrikeret pæl)",
@@ -103,7 +108,10 @@
     "conditions": "Historisk trykpælemodel: sand; ingen korrektion for pælegruppe, OCR, kornstørrelse eller udgravning. qc-toppe langs skaftet konservativt begrænset til 12 MPa. Sætning ikke verificeret."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, tabel 7.c (sand/sandet grus)"
+    "table2017": "NEN 9997-1:2016+C2:2017, tabel 7.c (sand/sandet grus)",
+    "table2025": "NEN 9997-1:2025+C1:2025, tabel 7.c",
+    "noTableRow2017": "Ingen række i NEN 9997-1:2016+C2:2017, tabel 7.c",
+    "noTableRowConditions": "Ingen egen række i tabel 7.c i 2017-udgaven: regn med pæleklassefaktorerne fra pælesystemets egenerklæring eller fra en prøvebelastning."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -150,6 +158,16 @@
     "timber-uniform": {
       "name": "Rammet træpæl — rund, med eller uden betonforlænger",
       "conditions": "Rundt trætværsnit, konstant eller lineært konisk fra toppen af træet; eventuelt med en betonforlænger ned til samlingen. Ingen forøgelse af pælefaktorer for konicitet."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Skruepæl — tabt spids, blivende stålrør",
+      "conditions": "Tabelrække stålpæl, skruet, med konstant tværsnit over skruespidsen (uden mørtelinjektion). Rørmålet bestemmer skaftets omkreds; angiv skruespidsen som spidsmål. Betonfyldt rør."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Jordfortrængende skruepæl — støbt på stedet"
+    },
+    "concrete-auger-cased": {
+      "name": "DPA-pæl — foret snegleboret pæl"
     }
   },
   "soil": {
@@ -157,5 +175,19 @@
     "sand-wet": "Sand, vandmættet",
     "clay": "Ler, vandmættet",
     "peat": "Tørv, vandmættet"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Præfabrikeret betonpæl",
+    "steel-tube-closed": "Stålrørspæl, lukket spids",
+    "screw-injection": "Skrueinjektionspæl",
+    "screw-permanent-casing": "Skruepæl, blivende rør",
+    "screw-lost-tip": "Skruepæl, optrukket rør",
+    "screw-soil-displacing": "Jordfortrængende skruepæl",
+    "vibro": "Vibropæl",
+    "auger": "Snegleboret pæl",
+    "auger-cased": "DPA-pæl (foret snegl)",
+    "bored": "Boret pæl",
+    "timber": "Træpæl",
+    "timber-extension": "Træpæl med betonforlænger"
   }
 }
