@@ -742,34 +742,8 @@
 .pile-system-tile--no-table { opacity: .55; border-style: dashed; }
 .pile-system-blocked { margin: 0 0 6px; }
 
-/* ─── Aanpassingen van de grondlaaginterpretatie ─── */
-.pile-interp { flex: 0 0 auto; font: 12px var(--oa-font-body); color: var(--oa-text); }
-.pile-interp-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
-.pile-interp-bar .cs-settings-reset { margin: 0; }
-.pile-interp-state { color: var(--oa-text-secondary); margin-right: auto; }
-.pile-interp-state--changed { color: var(--oa-warning); font-weight: 600; }
-.pile-interp-editor { margin-top: 6px; padding: 6px 10px 8px; border: 1px solid var(--oa-border); border-left: 3px solid var(--oa-accent); border-radius: var(--oa-radius-small); background: var(--oa-panel); }
-.pile-interp-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 12px; }
-.pile-interp-fields label { display: flex; flex-direction: column; gap: 2px; color: var(--oa-text-secondary); font-size: 11px; }
-.pile-interp-fields label > span { display: flex; align-items: center; gap: 6px; }
-.pile-interp-fields label > span > input, .pile-interp-fields label > span > select { flex: 1 1 auto; min-width: 0; }
-.pile-interp-fields small { flex: 0 0 auto; color: var(--oa-text-secondary); font: 11px var(--oa-font-body); }
-.pile-interp-fields .pile-interp-comment { grid-column: 1 / -1; }
-.pile-interp-fields .pile-interp-comment input { font-family: var(--oa-font-body); }
-.pile-interp-actions { display: flex; gap: 8px; margin-top: 4px; }
-.pile-interp-actions .cs-settings-reset { margin: 0; }
-.pile-interp-save:not(:disabled) { border-color: var(--oa-accent); color: var(--oa-text); font-weight: 600; }
-.pile-interp-save:disabled { opacity: 0.55; cursor: default; }
-.pile-interp-list { margin: 6px 0 0; padding: 0; list-style: none; max-height: 132px; overflow-y: auto; border-top: 1px solid var(--oa-border); }
-.pile-interp-list li { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--oa-border); }
-.pile-interp-item--active { background: var(--oa-warning-tint); }
-.pile-interp-item--skipped .pile-interp-text { color: var(--oa-text-secondary); }
-.pile-interp-tag { flex: 0 0 auto; min-width: 24px; padding: 1px 4px; border-radius: var(--oa-radius-small); background: var(--oa-warning-tint); color: var(--oa-warning); font: 600 11px var(--oa-font-numbers); text-align: center; }
-.pile-interp-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; line-height: 1.35; overflow-wrap: anywhere; }
-.pile-interp-text em { color: var(--oa-text-secondary); }
-.pile-interp-item-actions { flex: 0 0 auto; display: flex; gap: 4px; }
-.pile-interp-item-actions .cs-settings-reset { margin: 0; }
-
+/* ─── Aanpassingen van de grondlaaginterpretatie ───
+   Paneel en overzicht: calc/shared/interpretation/interpretation.css. */
 /* In de grafiek: band over het aangepaste traject, de nieuwe lijn met een gloed. */
 .pile-cpt-interp-band { fill: var(--amber, #d97706); fill-opacity: 0.09; }
 .pile-cpt-interp--active .pile-cpt-interp-band { fill-opacity: 0.2; }
@@ -780,12 +754,3 @@
 .pile-cpt-interp-capture { fill: transparent; cursor: crosshair; }
 .pile-cpt-qc-curve--adjusted-halo { stroke: var(--amber, #d97706); stroke-width: 8; opacity: 0.3; }
 .pile-cpt-qc-curve--adjusted { stroke: #b45309; stroke-width: 1.8; }
-
-/* Resultaatblad: overzicht van de aanpassingen. */
-.pile-interp-result { padding: 8px 12px; border-left: 3px solid var(--oa-warning); background: var(--oa-warning-tint); border-radius: 0 4px 4px 0; }
-.pile-interp-result-title { display: block; margin: 0 0 4px; font: 600 13px var(--oa-font-body); color: var(--oa-text); }
-.pile-interp-result p { margin: 0 0 6px; font-size: 12px; }
-.pile-interp-result table { width: 100%; border-collapse: collapse; font: 12px var(--oa-font-body); }
-.pile-interp-result th, .pile-interp-result td { padding: 3px 8px 3px 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--oa-border); }
-.pile-interp-result th { font-weight: 600; white-space: nowrap; }
-.pile-interp-result td span { display: block; }
