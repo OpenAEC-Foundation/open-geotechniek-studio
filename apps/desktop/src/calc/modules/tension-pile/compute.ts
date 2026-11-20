@@ -11,6 +11,7 @@
 import type { Cpt } from "../../../types/cpt";
 import { analyzeLayers } from "../../../utils/layerAnalysis";
 import { QcProfile } from "../pile-bearing-capacity/parts/qc-profile";
+import { applyOverridesWith, type AppliedOverride, type EffectiveInterpretation, type InterpretationOverride, type SoilAdapter } from "../../shared/interpretation/overrides";
 import { getTensionPileType, type TensionPileType } from "./catalog";
 
 export type TensionSoil = "sand" | "clay" | "loam" | "peat";
@@ -60,8 +61,14 @@ export interface TensionTableConfig {
   examples?: Array<{ cptId: string; sizeMm: number; toeNap: number }>;
 }
 
+/** Aanpassing van de grondlaaginterpretatie met de grondsoorten van de trekpaalberekening. */
+export type TensionOverride = InterpretationOverride<TensionSoil>;
+export type TensionAppliedOverride = AppliedOverride<TensionSoil>;
+
 export interface TensionInput {
   cptId: string | null;
+  /** Aanpassingen van de grondlaaginterpretatie, per sondering. Ontbrekend = gemeten interpretatie. */
+  interpretationOverrides?: TensionOverride[];
   pileTypeId: string;
   /** Diameter (rond) of zijde (vierkant) [mm]. */
   sizeMm: number;
@@ -149,6 +156,8 @@ export interface TensionOk {
   unityCheck: number | null;
   passes: boolean;
   warnings: string[];
+  /** Aanpassingen van de grondlaaginterpretatie voor de gebruikte sondering. Ontbreekt zonder aanpassingen. */
+  interpretation?: TensionAppliedOverride[];
 }
 export type TensionResult = TensionOk | { ok: false; error: string };
 
@@ -376,10 +385,9 @@ export function computeTensionCore(input: TensionLayer[], o: CoreOptions): Tensi
 /** Grondsoort per classificatiezone van de sondering. */
 const ZONE_SOIL: Record<number, TensionSoil> = { 1: "clay", 2: "peat", 3: "clay", 4: "loam", 5: "sand", 6: "sand", 7: "sand", 8: "sand", 9: "clay" };
 
-/** Grondlagen uit de laagindeling van de sondering, met de gemiddelde qc per stuk van hoogstens 0,5 m. */
-export function layersFromCpt(cpt: Cpt, soil: TensionInput["soil"] = {}, splitAt: number[] = []): TensionLayer[] {
+/** Laagindeling van de sondering als grondlagen vanaf maaiveld, nog zonder conusweerstand. */
+function baseLayersFromCpt(cpt: Cpt, soil: TensionInput["soil"] = {}): TensionLayer[] {
   const ground = cpt.metadata.ground_level_nap ?? 0;
-  const profile = new QcProfile(cpt);
   const zones = analyzeLayers(cpt).layers;
   const base: TensionLayer[] = zones.map((z) => {
     const kind = ZONE_SOIL[z.zone_number] ?? "clay";
@@ -387,7 +395,56 @@ export function layersFromCpt(cpt: Cpt, soil: TensionInput["soil"] = {}, splitAt
   }).filter((l) => l.topNap > l.bottomNap);
   // Sluit aan op maaiveld: het voorgeboorde deel krijgt de grondsoort van de eerste laag.
   if (base.length && base[0].topNap < ground - 1e-9) base.unshift({ ...base[0], topNap: ground, bottomNap: base[0].topNap });
+  return base;
+}
+
+/** Splitst in stukken van hoogstens 0,5 m en geeft elk stuk de gemiddelde qc van de sondering. */
+function withQc(base: TensionLayer[], cpt: Cpt, splitAt: number[]): TensionLayer[] {
+  const ground = cpt.metadata.ground_level_nap ?? 0;
+  const profile = new QcProfile(cpt);
   return splitLayers(base, splitAt, 0.5).map((l) => ({ ...l, qcMpa: profile.average(ground - l.topNap, ground - l.bottomNap) }));
+}
+
+/** Grondlagen uit de laagindeling van de sondering, met de gemiddelde qc per stuk van hoogstens 0,5 m. */
+export function layersFromCpt(cpt: Cpt, soil: TensionInput["soil"] = {}, splitAt: number[] = []): TensionLayer[] {
+  return withQc(baseLayersFromCpt(cpt, soil), cpt, splitAt);
+}
+
+const SAME_M = 1e-9;
+const overlaps = (l: TensionLayer, topNap: number, bottomNap: number) => l.bottomNap < topNap - SAME_M && l.topNap > bottomNap + SAME_M;
+
+/**
+ * Een traject één grondsoort geven in de lagenlijst van de trekpaal. Lagen
+ * worden op de randen gesplitst; de nieuwe laag krijgt de volumegewichten en
+ * de wrijvingshoek van zijn grondsoort (de eigen waarden uit de invoer, anders
+ * de standaardwaarden), net als een laag uit de laagindeling.
+ */
+function tensionSoil(soil: TensionInput["soil"]): SoilAdapter<TensionSoil, TensionLayer[]> {
+  return {
+    isKind: (kind) => kind in SOIL_DEFAULTS,
+    kindsIn: (layers, topNap, bottomNap) => [...new Set(layers.filter((l) => overlaps(l, topNap, bottomNap)).sort((a, b) => b.topNap - a.topNap).map((l) => l.soil))],
+    apply: (layers, topNap, bottomNap, kind) => {
+      const out: TensionLayer[] = [];
+      for (const l of layers) {
+        if (!overlaps(l, topNap, bottomNap)) { out.push(l); continue; }
+        if (l.topNap > topNap + SAME_M) out.push({ ...l, bottomNap: topNap });
+        if (l.bottomNap < bottomNap - SAME_M) out.push({ ...l, topNap: bottomNap });
+      }
+      out.push({ topNap, bottomNap, soil: kind, ...SOIL_DEFAULTS[kind], ...soil?.[kind], qcMpa: 0 });
+      return out.sort((a, b) => b.topNap - a.topNap);
+    },
+  };
+}
+
+/**
+ * De sondering en de laagindeling waarmee wordt gerekend: de meting met de
+ * aanpassingen uit de invoer erop. De grondsoort per laag komt uit de gemeten
+ * sondering; een aangepaste conusweerstand verandert de grondsoort niet, dat
+ * doet alleen een aanpassing van de grondsoort zelf. Zonder aanpassingen voor
+ * deze sondering komt de sondering zelf (dezelfde verwijzing) terug.
+ */
+export function tensionInterpretation(input: Pick<TensionInput, "soil" | "interpretationOverrides">, cpt: Cpt): EffectiveInterpretation<TensionSoil, TensionLayer[]> {
+  return applyOverridesWith(cpt, baseLayersFromCpt(cpt, input.soil), input.interpretationOverrides, tensionSoil(input.soil));
 }
 
 export function tensionFactors(input: TensionInput, xi?: number): TensionFactors {
@@ -407,13 +464,19 @@ export function computeTension(input: TensionInput, cpt: Cpt | null, xi?: number
   const ground = cpt.metadata.ground_level_nap ?? 0;
   const excavation = Math.min(input.excavationNap ?? ground, ground);
   const tensionTop = input.tensionTopNap ?? excavation - 1;
-  let layers: TensionLayer[];
-  try { layers = layersFromCpt(cpt, input.soil, [input.waterNap, excavation, tensionTop, input.pileToeNap, input.pileTopNap]); }
-  catch (e) { return { ok: false, error: e instanceof Error ? e.message : String(e) }; }
-  return computeTensionCore(layers, {
+  let layers: TensionLayer[], applied: TensionAppliedOverride[];
+  try {
+    const eff = tensionInterpretation(input, cpt);
+    applied = eff.applied;
+    // De randen van een aangepast traject worden laaggrenzen, zodat de aangepaste waarde niet met de meting ernaast wordt gemiddeld.
+    const edges = applied.filter((a) => a.status === "applied").flatMap((a) => [a.topNap, a.bottomNap]);
+    layers = withQc(eff.layers, eff.cpt ?? cpt, [input.waterNap, excavation, tensionTop, input.pileToeNap, input.pileTopNap, ...edges]);
+  } catch (e) { return { ok: false, error: e instanceof Error ? e.message : String(e) }; }
+  const result = computeTensionCore(layers, {
     pileType: type, sizeMm: input.sizeMm, pileTopNap: input.pileTopNap, pileToeNap: input.pileToeNap, waterNap: input.waterNap,
     groundNap: ground, excavationNap: excavation, excavationReduction: input.excavationReduction, ocr: input.ocr, tensionTopNap: tensionTop,
     includeCohesive: input.includeCohesive, halveCohesive: input.halveCohesive, group: input.group,
     factors: tensionFactors(input, xi), ftDKn: input.ftDKn,
   });
+  return result.ok && applied.length ? { ...result, interpretation: applied } : result;
 }

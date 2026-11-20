@@ -22,11 +22,12 @@ import { drawSheetTitle } from "../../../../report/reportTitle";
 import type { Cpt } from "../../../../types/cpt";
 import type { AppliedOverride, PileInput, PileResult } from "../types";
 import type { MultiCptSummary } from "./multi-cpt-summary";
-import { overrideChanges } from "./interpretation-text";
+import { overrideChanges } from "../../../shared/interpretation/text";
+import type { AppliedOverride as SharedAppliedOverride } from "../../../shared/interpretation/overrides";
 import { ct } from "../../../i18n";
 import { renderSonderingChart } from "./pile-report-chart";
 import { renderZakkingDiagram } from "./pile-report-zakking";
-import { resolvePileType } from "../catalog";
+import { resolvePileType, soilLabel } from "../catalog";
 import { pileGeometry } from "./geometry";
 import { getStandard, isHistorical, usesHistoricalProcedure } from "../standards";
 
@@ -546,14 +547,20 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
 
 // ─── Aanpassingen aan de grondlaaginterpretatie ──────────────────
 
-/** Per aanpassing: sondering, traject, oude → nieuwe waarde en de toelichting. */
-export function renderInterpretation(c: Cursor, items: NonNullable<PileReportInputs["interpretation"]>): void {
+/**
+ * Per aanpassing: sondering, traject, oude → nieuwe waarde en de toelichting.
+ * Ook voor andere modules: die geven de naam van hun eigen grondsoorten mee,
+ * en zo nodig een eigen inleiding (bijvoorbeeld als de uitdraai geen grafiek heeft).
+ */
+export function renderInterpretation(c: Cursor, items: NonNullable<PileReportInputs["interpretation"]>): void;
+export function renderInterpretation<K extends string>(c: Cursor, items: Array<{ nr: string; applied: SharedAppliedOverride<K> }>, soilLabelOf: (kind: K) => string, intro?: string): void;
+export function renderInterpretation(c: Cursor, items: Array<{ nr: string; applied: SharedAppliedOverride }>, soilLabelOf: (kind: string) => string = soilLabel as (kind: string) => string, intro?: string): void {
   const tr = (key: string, text: string) => ct("calcPile", `interp.report.${key}`, text);
   // Kop, inleiding en de eerste regels van de tabel blijven bij elkaar.
   c.reserve(48);
   c.y += 2;
   sectionTitle(c, tr("title", "Aanpassingen aan de grondlaaginterpretatie"));
-  paragraph(c, tr("intro", "In deze berekening wijken de onderstaande trajecten af van de gemeten sondering. De sondering zelf is niet gewijzigd; een aanpassing geldt alleen voor deze berekening en voor de genoemde sondering. In de grafiek van de sondering staat de meting dun en het aangepaste traject gemarkeerd."), { size: 8 });
+  paragraph(c, intro ?? tr("intro", "In deze berekening wijken de onderstaande trajecten af van de gemeten sondering. De sondering zelf is niet gewijzigd; een aanpassing geldt alleen voor deze berekening en voor de genoemde sondering. In de grafiek van de sondering staat de meting dun en het aangepaste traject gemarkeerd."), { size: 8 });
   const level = (v: number) => (Number.isFinite(v) ? nl(v, 2) : "-");
   table(
     c,
@@ -566,7 +573,7 @@ export function renderInterpretation(c: Cursor, items: NonNullable<PileReportInp
     ],
     items.map(({ nr, applied: a }) => {
       const range = a.status === "applied" ? a : a.override;
-      return [nr, a.override.cptId, `${level(Math.max(range.topNap, range.bottomNap))} / ${level(Math.min(range.topNap, range.bottomNap))}`, overrideChanges(a, "q_c").join("; "), a.override.comment || "-"];
+      return [nr, a.override.cptId, `${level(Math.max(range.topNap, range.bottomNap))} / ${level(Math.min(range.topNap, range.bottomNap))}`, overrideChanges(a, soilLabelOf, "q_c").join("; "), a.override.comment || "-"];
     }),
   );
 }

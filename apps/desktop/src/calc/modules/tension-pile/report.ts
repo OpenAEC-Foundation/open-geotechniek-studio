@@ -2,8 +2,8 @@
 // Met een tabel: de gekozen voorbeelden volledig uitgewerkt, daarna de tabellen per paalmaat.
 import { jsPDF } from "jspdf";
 import type { ProjectContext } from "../../framework/types";
-import { TOTAL_PAGES_TOKEN, formula, kv, makeCursor, nl, paragraph, sectionTitle, table, type Cursor } from "../pile-bearing-capacity/parts/pile-report-pdf";
-import { SOIL_LABELS, computeTension, correlationFactors, type TensionInput, type TensionOk, type TensionResult } from "./compute";
+import { TOTAL_PAGES_TOKEN, formula, kv, makeCursor, nl, paragraph, renderInterpretation, sectionTitle, table, type Cursor } from "../pile-bearing-capacity/parts/pile-report-pdf";
+import { SOIL_LABELS, computeTension, correlationFactors, tensionInterpretation, type TensionAppliedOverride, type TensionInput, type TensionOk, type TensionResult, type TensionSoil } from "./compute";
 import { cellInput, computeTensionTable, sizeLabel, type TensionTable } from "./table";
 
 const NORM = "NEN 9997-1 art. 7.6.3";
@@ -11,6 +11,17 @@ const reportDate = (iso: string | undefined) => (iso || new Date().toISOString()
 const nap = (v: number) => nl(v, 2);
 /** Maximaal zoveel sonderingen naast elkaar op A4. */
 const CPT_COLUMNS = 7;
+
+const soilName = (kind: TensionSoil) => SOIL_LABELS[kind];
+/** Tabel met de aanpassingen van de grondlaaginterpretatie; per sondering genummerd A1, A2, ... zoals op het scherm. */
+function interpretationTable(c: Cursor, applied: TensionAppliedOverride[]): void {
+  const count = new Map<string, number>();
+  renderInterpretation(c, applied.map((a) => {
+    const n = (count.get(a.override.cptId) ?? 0) + 1;
+    count.set(a.override.cptId, n);
+    return { nr: `A${n}`, applied: a };
+  }), soilName, "In deze berekening wijken de onderstaande trajecten af van de gemeten sondering. De sondering zelf is niet gewijzigd; een aanpassing geldt alleen voor deze berekening en voor de genoemde sondering.");
+}
 
 export function tensionReportFileName(input: TensionInput): string {
   return `trekpaal-${input.cptId ?? "tabel"}`;
@@ -37,7 +48,8 @@ export function buildTensionReport(input: TensionInput, result: TensionResult, c
       if (k > 0) c.newPage();
       renderSheet(c, cell, r, `Sondering ${e.cptId}, ${sizeLabel(input, e.sizeMm)} mm, punt NAP ${nap(e.toeNap)} m`);
     });
-    renderTables(c, input, t, picks.length > 0 || result.ok);
+    const applied = t.config.cptIds.flatMap((id) => { const cpt = ctx.cpts.get(id); return cpt ? tensionInterpretation(input, cpt).applied : []; });
+    renderTables(c, input, t, picks.length > 0 || result.ok, applied);
   }
   if (typeof doc.putTotalPages === "function") doc.putTotalPages(TOTAL_PAGES_TOKEN);
   return new Uint8Array(doc.output("arraybuffer"));
@@ -55,6 +67,7 @@ function renderSheet(c: Cursor, i: TensionInput, r: TensionOk, title?: string): 
   kv(c, "Klei en leem", i.includeCohesive ? `tellen mee volgens tabel 7.d${i.halveCohesive ? ", met halve α_t" : ""}` : "tellen niet mee");
   kv(c, "Belasting", `F_t;d = ${nl(i.ftDKn, 0)} kN; F_t;max;rep = ${nl(i.ftMaxRepKn, 0)} kN; F_t;min;rep = ${nl(i.ftMinRepKn, 0)} kN`);
   kv(c, "Paalgroep", r.group ? `stramien ${nl(i.group!.spacingXM, 2)} × ${nl(i.group!.spacingYM, 2)} m; invloedsoppervlak A = ${nl(r.group.areaM2, 2)} m²; f_1 = ${nl(r.group.f1, 2)}${i.group!.edge ? "; rand- of hoekpaal" : ""}` : "alleenstaande paal: f_1 = f_2 = 1, geen kluittoets");
+  if (r.interpretation?.length) interpretationTable(c, r.interpretation);
 
   sectionTitle(c, "Factoren");
   formula(c, "γ_m;var;qc", "1 + 0,25 · (F_t;max;rep − F_t;min;rep) / F_t;max;rep, tussen 1,0 en 1,5", null, nl(f.gammaVar, 2));
@@ -85,13 +98,14 @@ function renderSheet(c: Cursor, i: TensionInput, r: TensionOk, title?: string): 
     r.group ? `min(${nl(r.rFrictionKn, 1)} ; ${nl(r.group.rKluitKn, 1)}) + ${nl(r.gPileKn, 1)}` : `${nl(r.rFrictionKn, 1)} + ${nl(r.gPileKn, 1)}`, `${nl(r.rtDKn, 1)} kN`);
   if (i.ftDKn > 0) formula(c, "F_t;d ≤ R_t;d", `${nl(i.ftDKn, 0)} ≤ ${nl(r.rtDKn, 0)} kN`, null, `u.c. ${nl(r.unityCheck ?? 0, 2)}: ${r.passes ? "voldoet" : "voldoet niet"}`);
   for (const w of r.warnings) paragraph(c, `Let op: ${w}`, { italic: true, size: 7.5 });
-  paragraph(c, "De grondsoort per laag komt uit de indicatieve laagindeling van de sondering. Volumegewichten met een partiële factor 1,1; onder water verminderd met 10 kN/m³.", { italic: true, size: 7.5 });
+  paragraph(c, `De grondsoort per laag komt uit de indicatieve laagindeling van de sondering${r.interpretation?.some((a) => a.status === "applied") ? ", met de hierboven genoemde aanpassingen; q_c in de tabel is de aangepaste waarde" : ""}. Volumegewichten met een partiële factor 1,1; onder water verminderd met 10 kN/m³.`, { italic: true, size: 7.5 });
 }
 
-function renderTables(c: Cursor, input: TensionInput, t: TensionTable, newPage: boolean): void {
+function renderTables(c: Cursor, input: TensionInput, t: TensionTable, newPage: boolean, applied: TensionAppliedOverride[]): void {
   if (newPage) c.newPage();
   sectionTitle(c, "Trekweerstandtabellen", NORM);
   paragraph(c, `Rekenwaarde van de trekweerstand R_t;d per paalmaat, puntniveau en sondering. Per sondering gerekend met ξ_3 = ${nl(t.xi3, 2)}; de eindwaarde is het laagste van het gemiddelde met ξ_3 en de laagste sondering met ξ_4 = ${nl(t.xi4, 2)} (${t.config.cptIds.length} sondering${t.config.cptIds.length === 1 ? "" : "en"}, ${input.stiffStructure ? "stijf" : "niet-stijf"} bouwwerk).${input.ftDKn > 0 ? ` F_t;d = ${nl(input.ftDKn, 0)} kN.` : ""}`);
+  if (applied.length) interpretationTable(c, applied);
   t.config.sizesMm.forEach((sizeMm, si) => {
     const cells = t.cells[si], ids = cells[0]?.perCpt.map((p) => p.cptId) ?? [];
     for (let start = 0; start < Math.max(1, ids.length); start += CPT_COLUMNS) {
