@@ -666,6 +666,9 @@ const FS_LADDER = [1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001];
 const RF_LADDER = [10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05];
 const U2_LADDER = FS_LADDER;
 
+// Shared with the overlay view (overlay-renderer.ts).
+export { readColors, niceStep, formatNap, QC_LADDER, FS_LADDER };
+
 function drawGridV(
   ctx: CanvasRenderingContext2D,
   colors: ChartColors,

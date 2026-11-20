@@ -226,5 +226,10 @@
   "exportImage": "Esporta\ncome immagine",
   "openPdf": "Apri PDF",
   "scaleCptColumns": "Ridimensiona colonne prove",
-  "scaleCptColumnsHint": "Dopo Adatta, allarga anche le colonne; scorri orizzontalmente per le altre prove."
+  "scaleCptColumnsHint": "Dopo Adatta, allarga anche le colonne; scorri orizzontalmente per le altre prove.",
+  "cptLayout": "Mostra prove",
+  "cptSideBySide": "Affiancate",
+  "cptSideBySideHint": "Mostra le prove una accanto all'altra, ciascuna nella propria colonna.",
+  "cptOverlay": "Sovrapposte",
+  "cptOverlayHint": "Disegna tutte le prove visibili sovrapposte: un grafico di qc e uno di fs rispetto al NAP."
 }

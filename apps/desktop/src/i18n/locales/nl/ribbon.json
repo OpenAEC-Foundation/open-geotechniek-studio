@@ -226,5 +226,10 @@
   "exportImage": "Exporteer\nals afbeelding",
   "openPdf": "PDF openen",
   "scaleCptColumns": "Sonderingen meeschalen",
-  "scaleCptColumnsHint": "Vergroot na Passend ook de kolombreedte; schuif horizontaal voor de overige sonderingen."
+  "scaleCptColumnsHint": "Vergroot na Passend ook de kolombreedte; schuif horizontaal voor de overige sonderingen.",
+  "cptLayout": "Sonderingen tonen",
+  "cptSideBySide": "Naast elkaar",
+  "cptSideBySideHint": "Toon de sonderingen naast elkaar, elk in een eigen kolom.",
+  "cptOverlay": "Over elkaar",
+  "cptOverlayHint": "Teken alle zichtbare sonderingen over elkaar: één grafiek van qc en één van fs tegen NAP."
 }

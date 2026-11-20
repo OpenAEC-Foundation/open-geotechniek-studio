@@ -226,5 +226,10 @@
   "exportImage": "Als Bild\nexportieren",
   "openPdf": "PDF öffnen",
   "scaleCptColumns": "Sondierspalten mitskalieren",
-  "scaleCptColumnsHint": "Nach „Einpassen“ auch die Spaltenbreite vergrößern; horizontal scrollen für die übrigen Sondierungen."
+  "scaleCptColumnsHint": "Nach „Einpassen“ auch die Spaltenbreite vergrößern; horizontal scrollen für die übrigen Sondierungen.",
+  "cptLayout": "Sondierungen anzeigen",
+  "cptSideBySide": "Nebeneinander",
+  "cptSideBySideHint": "Sondierungen nebeneinander anzeigen, jede in einer eigenen Spalte.",
+  "cptOverlay": "Übereinander",
+  "cptOverlayHint": "Alle sichtbaren Sondierungen übereinander zeichnen: ein Diagramm für qc und eines für fs über NAP."
 }

@@ -1,0 +1,148 @@
+/* Overlay view: every visible CPT in one qc and one fs chart, legend on the right. */
+.overlay-chart {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+}
+
+.overlay-chart-plot {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.overlay-chart-empty {
+  position: absolute;
+  inset: 28px 0 0 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--theme-text-muted, var(--theme-text));
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.overlay-chart-note {
+  position: absolute;
+  left: 66px;
+  bottom: 12px;
+  max-width: calc(60% - 80px);
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--theme-border);
+  border-radius: 3px;
+  background: var(--theme-bg-elevated, var(--theme-bg));
+  color: var(--theme-text);
+  font-size: 11px;
+  line-height: 1.35;
+  pointer-events: none;
+}
+
+.overlay-chart-note svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.overlay-legend {
+  flex: none;
+  width: 250px;
+  max-width: 45%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--theme-border);
+  background: var(--theme-bg-elevated, var(--theme-bg));
+  font-size: 11px;
+}
+
+.overlay-legend-level {
+  min-height: 28px;
+  box-sizing: border-box;
+  padding: 7px 10px 5px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--theme-border-subtle, var(--theme-border));
+}
+
+.overlay-legend-head,
+.overlay-legend-row {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 44px 48px;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.overlay-legend-head {
+  padding: 4px 10px;
+  color: var(--theme-text-muted, var(--theme-text));
+  font-weight: 600;
+}
+
+.overlay-legend-head span:first-child {
+  grid-column: 1 / span 2;
+}
+
+.overlay-legend-head span:not(:first-child),
+.overlay-legend-value {
+  text-align: right;
+  font-family: "JetBrains Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.overlay-legend-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.overlay-legend-row {
+  width: 100%;
+  padding: 3px 10px;
+  border: 0;
+  border-left: 3px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.overlay-legend-row:hover {
+  background: var(--theme-ribbon-btn-hover, var(--theme-bg));
+}
+
+.overlay-legend-row:focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: -2px;
+}
+
+.overlay-legend-row.active {
+  border-left-color: var(--theme-accent);
+  font-weight: 700;
+}
+
+.overlay-legend-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overlay-legend-name em {
+  margin-left: 6px;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--theme-text-muted, var(--theme-text));
+}
+
+.overlay-legend-units {
+  padding: 5px 10px;
+  border-top: 1px solid var(--theme-border-subtle, var(--theme-border));
+  color: var(--theme-text-muted, var(--theme-text));
+}

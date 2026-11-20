@@ -195,6 +195,16 @@
       "z7": "Gruset sand"
     }
   },
+  "overlay": {
+    "hoverHint": "Bevæg musen over diagrammet for at se værdierne i ét niveau.",
+    "legendTitle": "Sonderinger",
+    "levelDepth": "{{level}} m under terræn",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Uden terrænkote i NAP, tegnet i dybde under terræn og derfor ikke i NAP: {{names}}",
+    "noNapTag": "ingen NAP",
+    "noVisible": "Ingen synlige sonderinger.",
+    "units": "qc og fs i MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} lag · {{depth}} m dybde",
     "close": "Luk",

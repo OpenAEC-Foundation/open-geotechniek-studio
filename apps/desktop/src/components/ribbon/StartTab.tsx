@@ -17,6 +17,8 @@ export default function StartTab(props: StartTabProps = {}) {
   const { t } = useTranslation("ribbon");
   const scaleColumns = useChartZoomStore((s) => s.scaleColumns);
   const setScaleColumns = useChartZoomStore((s) => s.setScaleColumns);
+  const overlay = useChartZoomStore((s) => s.overlay);
+  const setOverlay = useChartZoomStore((s) => s.setOverlay);
   useEffect(() => { void loadChartZoomPreference(); }, []);
   const openProjectSettings =
     props.onOpenProjectSettings ??
@@ -49,10 +51,29 @@ export default function StartTab(props: StartTabProps = {}) {
             <input
               type="checkbox"
               checked={scaleColumns}
+              disabled={overlay}
               onChange={(event) => setScaleColumns(event.target.checked)}
             />
             {t("scaleCptColumns", "Sonderingen meeschalen")}
           </label>
+          <div className="ribbon-btn-stack" role="group" aria-label={t("cptLayout", "Sonderingen tonen")}>
+            <RibbonButton
+              icon="workspace.split-right"
+              label={t("cptSideBySide", "Naast elkaar")}
+              title={t("cptSideBySideHint", "Toon de sonderingen naast elkaar, elk in een eigen kolom.")}
+              size="small"
+              active={!overlay}
+              onClick={() => setOverlay(false)}
+            />
+            <RibbonButton
+              icon="object.layers"
+              label={t("cptOverlay", "Over elkaar")}
+              title={t("cptOverlayHint", "Teken alle zichtbare sonderingen over elkaar: één grafiek van qc en één van fs tegen NAP.")}
+              size="small"
+              active={overlay}
+              onClick={() => setOverlay(true)}
+            />
+          </div>
         </RibbonGroup>
       </div>
     </div>

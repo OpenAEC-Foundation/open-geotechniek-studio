@@ -226,5 +226,10 @@
   "exportImage": "Exportera\nsom bild",
   "openPdf": "Öppna PDF",
   "scaleCptColumns": "Skala sonderingskolumner",
-  "scaleCptColumnsHint": "Efter Anpassa breddas även kolumnerna; rulla vågrätt för övriga sonderingar."
+  "scaleCptColumnsHint": "Efter Anpassa breddas även kolumnerna; rulla vågrätt för övriga sonderingar.",
+  "cptLayout": "Visa sonderingar",
+  "cptSideBySide": "Sida vid sida",
+  "cptSideBySideHint": "Visa sonderingarna sida vid sida, var och en i sin egen kolumn.",
+  "cptOverlay": "Ovanpå varandra",
+  "cptOverlayHint": "Rita alla synliga sonderingar ovanpå varandra: ett diagram för qc och ett för fs mot NAP."
 }

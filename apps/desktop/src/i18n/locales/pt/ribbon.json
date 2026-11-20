@@ -226,5 +226,10 @@
   "exportImage": "Exportar\ncomo imagem",
   "openPdf": "Abrir PDF",
   "scaleCptColumns": "Escalar colunas de ensaios",
-  "scaleCptColumnsHint": "Após Ajustar, alarga também as colunas; desloque na horizontal para os restantes ensaios."
+  "scaleCptColumnsHint": "Após Ajustar, alarga também as colunas; desloque na horizontal para os restantes ensaios.",
+  "cptLayout": "Mostrar ensaios",
+  "cptSideBySide": "Lado a lado",
+  "cptSideBySideHint": "Mostra os ensaios lado a lado, cada um na sua própria coluna.",
+  "cptOverlay": "Sobrepostos",
+  "cptOverlayHint": "Desenha todos os ensaios visíveis sobrepostos: um gráfico de qc e outro de fs em função do NAP."
 }

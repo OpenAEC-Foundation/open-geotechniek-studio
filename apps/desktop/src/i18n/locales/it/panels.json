@@ -195,6 +195,16 @@
       "z7": "Sabbia ghiaiosa"
     }
   },
+  "overlay": {
+    "hoverHint": "Passa il cursore sul grafico per leggere i valori a una stessa quota.",
+    "legendTitle": "Prove",
+    "levelDepth": "{{level}} m sotto il piano campagna",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Senza quota del piano campagna in NAP, disegnato in profondità sotto il piano campagna e quindi non in NAP: {{names}}",
+    "noNapTag": "senza NAP",
+    "noVisible": "Nessuna prova visibile.",
+    "units": "qc e fs in MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} strati · {{depth}} m di profondità",
     "close": "Chiudi",

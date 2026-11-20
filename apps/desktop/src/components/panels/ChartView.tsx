@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useCptStore } from "../../store/useCptStore";
+import { loadChartZoomPreference, useChartZoomStore } from "../../store/useChartZoomStore";
 import ChartCanvas from "../chart/ChartCanvas";
+import OverlayChart from "../chart/OverlayChart";
 import BoreView from "./BoreView";
 import GwpView from "./GwpView";
 
@@ -10,6 +13,7 @@ import GwpView from "./GwpView";
  *   - BoreView when the active document is a borehole (BHR-GT)
  *   - GwpView when the active document is a grondwaterput (GMW)
  *   - ChartCanvas when the active document is a CPT or project
+ *     (OverlayChart instead when the ribbon switch is on "Over elkaar")
  *
  * Borings don't have qc/fs/Rf curves, only a strip log of soil layers,
  * so they need their own viewer instead of an empty chart canvas.
@@ -22,6 +26,8 @@ export default function ChartView() {
   const activeDocId = useCptStore((s) => s.activeDocId);
   const documents = useCptStore((s) => s.documents);
   const activeDoc = activeDocId ? documents.find((d) => d.id === activeDocId) : undefined;
+  const overlay = useChartZoomStore((s) => s.overlay);
+  useEffect(() => { void loadChartZoomPreference(); }, []);
 
   if (activeDoc?.kind === "bore") {
     return <BoreView bore={activeDoc.bore} />;
@@ -40,5 +46,5 @@ export default function ChartView() {
       </div>
     );
   }
-  return <ChartCanvas />;
+  return overlay ? <OverlayChart /> : <ChartCanvas />;
 }
