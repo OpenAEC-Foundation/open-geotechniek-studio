@@ -187,5 +187,7 @@
   "exportImage": "Exportar\ncomo imagen",
   "openPdf": "Abrir PDF",
   "scaleCptColumns": "Escalar columnas de ensayos",
-  "scaleCptColumnsHint": "Tras Ajustar, amplía también las columnas; desplácese horizontalmente para los demás ensayos."
+  "scaleCptColumnsHint": "Tras Ajustar, amplía también las columnas; desplácese horizontalmente para los demás ensayos.",
+  "cptGroup": "Sondeo",
+  "cptFromScan": "Desde escaneo"
 }

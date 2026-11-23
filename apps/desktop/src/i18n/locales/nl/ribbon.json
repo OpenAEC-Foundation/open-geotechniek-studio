@@ -187,5 +187,7 @@
   "exportImage": "Exporteer\nals afbeelding",
   "openPdf": "PDF openen",
   "scaleCptColumns": "Sonderingen meeschalen",
-  "scaleCptColumnsHint": "Vergroot na Passend ook de kolombreedte; schuif horizontaal voor de overige sonderingen."
+  "scaleCptColumnsHint": "Vergroot na Passend ook de kolombreedte; schuif horizontaal voor de overige sonderingen.",
+  "cptGroup": "Sondering",
+  "cptFromScan": "Uit scan"
 }

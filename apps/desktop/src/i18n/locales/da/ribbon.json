@@ -187,5 +187,7 @@
   "exportImage": "Eksportér\nsom billede",
   "openPdf": "Åbn PDF",
   "scaleCptColumns": "Skalér sonderingskolonner",
-  "scaleCptColumnsHint": "Efter Tilpas gøres kolonnerne også bredere; rul vandret for de øvrige sonderinger."
+  "scaleCptColumnsHint": "Efter Tilpas gøres kolonnerne også bredere; rul vandret for de øvrige sonderinger.",
+  "cptGroup": "Sondering",
+  "cptFromScan": "Fra scanning"
 }

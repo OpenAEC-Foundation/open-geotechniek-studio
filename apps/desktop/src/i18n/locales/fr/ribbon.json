@@ -187,5 +187,7 @@
   "exportImage": "Exporter\nen image",
   "openPdf": "Ouvrir le PDF",
   "scaleCptColumns": "Ajuster les colonnes d'essais",
-  "scaleCptColumnsHint": "Après Ajuster, élargit aussi les colonnes ; faites défiler horizontalement pour les autres essais."
+  "scaleCptColumnsHint": "Après Ajuster, élargit aussi les colonnes ; faites défiler horizontalement pour les autres essais.",
+  "cptGroup": "Sondage",
+  "cptFromScan": "Depuis un scan"
 }

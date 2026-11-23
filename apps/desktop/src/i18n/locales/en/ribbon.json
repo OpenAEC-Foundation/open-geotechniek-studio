@@ -187,5 +187,7 @@
   "exportImage": "Export\nas image",
   "openPdf": "Open PDF",
   "scaleCptColumns": "Scale CPT columns",
-  "scaleCptColumnsHint": "After Fit, also widen the columns; scroll horizontally for the other CPTs."
+  "scaleCptColumnsHint": "After Fit, also widen the columns; scroll horizontally for the other CPTs.",
+  "cptGroup": "CPT",
+  "cptFromScan": "From scan"
 }

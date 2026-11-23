@@ -8,6 +8,8 @@ const zoomOutIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
 const zoomFitIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>`;
 const settingsIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82h0a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>`;
 
+const scanIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7l2 3-1 3 4 2-2 3"/></svg>`;
+
 interface StartTabProps {
   onViewChange?: (view: string) => void;
   /** Hook the Home-tab's Projectinfo-knop into App.tsx's existing
@@ -33,6 +35,14 @@ export default function StartTab(props: StartTabProps = {}) {
             label={t("projectInfo", "Projectinfo")}
             size="large"
             onClick={openProjectSettings}
+          />
+        </RibbonGroup>
+        <RibbonGroup label={t("cptGroup", "Sondering")}>
+          <RibbonButton
+            icon={scanIcon}
+            label={t("cptFromScan", "Uit scan")}
+            size="large"
+            onClick={() => window.dispatchEvent(new CustomEvent("ogs:open-scan-cpt"))}
           />
         </RibbonGroup>
         <RibbonGroup label={t("zoom")}>

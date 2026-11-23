@@ -187,5 +187,7 @@
   "exportImage": "Als Bild\nexportieren",
   "openPdf": "PDF öffnen",
   "scaleCptColumns": "Sondierspalten mitskalieren",
-  "scaleCptColumnsHint": "Nach „Einpassen“ auch die Spaltenbreite vergrößern; horizontal scrollen für die übrigen Sondierungen."
+  "scaleCptColumnsHint": "Nach „Einpassen“ auch die Spaltenbreite vergrößern; horizontal scrollen für die übrigen Sondierungen.",
+  "cptGroup": "Sondierung",
+  "cptFromScan": "Aus Scan"
 }

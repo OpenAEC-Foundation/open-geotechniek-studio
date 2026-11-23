@@ -1,0 +1,86 @@
+{
+  "error": {
+    "load": "This file cannot be read. Choose an image (PNG, JPG) or a PDF."
+  },
+  "unit": {
+    "nap": "m NAP",
+    "depth": "m below GL"
+  },
+  "problem": {
+    "scale": "Enter a value for all four calibration lines; the two lines of an axis must not have the same value.",
+    "ground": "Enter the ground level in m NAP; the axis of the scan is in NAP.",
+    "trace": "There is no line yet. Choose ‘Follow line’ and click the start of the measured line, or draw it by hand.",
+    "name": "Give the CPT a name.",
+    "duplicate": "The project already contains a CPT with this name."
+  },
+  "meta": {
+    "originKey": "Origin",
+    "originValue": "Traced from a scan ({{file}}); cone resistance only"
+  },
+  "tool": {
+    "calibrate": "Calibrate scale",
+    "follow": "Follow line",
+    "draw": "Draw",
+    "erase": "Erase"
+  },
+  "hint": {
+    "calibrate": "Drag the four dashed lines onto grid lines whose value you know and enter those values on the right. The lines snap to the grid.",
+    "follow": "Click the start of the measured line: it is followed downwards until it ends. Drag downwards to follow it only as far as the point of release.",
+    "draw": "Hold the mouse button down and draw over the measured line. What you draw replaces the line at that level.",
+    "erase": "Drag over the part of the line that has to go.",
+    "start": "Choose a scan of a CPT chart: an image or a page from a PDF."
+  },
+  "title": "CPT from scan",
+  "cancel": "Cancel",
+  "create": "Create CPT",
+  "undo": "Undo",
+  "clear": "Clear line",
+  "zoomOut": "Zoom out",
+  "zoomIn": "Zoom in",
+  "loading": "Loading…",
+  "choose": "Choose scan…",
+  "section": {
+    "scan": "1. Scan",
+    "scale": "2. Scale",
+    "line": "3. Line",
+    "cpt": "4. CPT"
+  },
+  "prevPage": "Previous page",
+  "page": "Page",
+  "nextPage": "Next page",
+  "rotateLeft": "↺ Anticlockwise",
+  "rotateRight": "↻ Clockwise",
+  "axis": {
+    "label": "The depth axis shows",
+    "nap": "level in m NAP",
+    "depth": "depth below ground level"
+  },
+  "scale": {
+    "v1": "Top line [{{unit}}]",
+    "v2": "Bottom line [{{unit}}]",
+    "q1": "Left line [MPa]",
+    "q2": "Right line [MPa]",
+    "suggest": "Lines on the outer grid"
+  },
+  "ground": {
+    "required": "Ground level [m NAP]",
+    "optional": "Ground level [m NAP] (optional)"
+  },
+  "line": {
+    "threshold": "Darkness of the line ({{value}})",
+    "radius": "Remove thin grid lines",
+    "radius0": "off",
+    "radius1": "light (lines up to 2 pixels)",
+    "radius2": "strong (lines up to 4 pixels)",
+    "showMask": "Show what the algorithm sees as line"
+  },
+  "cpt": {
+    "name": "Name",
+    "x": "X [m RD] (optional)",
+    "y": "Y [m RD] (optional)",
+    "date": "Date (optional)",
+    "summary": "{{count}} data points from {{from}} to {{to}} m below ground level, maximum cone resistance {{max}} MPa.",
+    "empty": "No data points yet.",
+    "note": "A traced CPT has a cone resistance only. Check the line against the scan: the accuracy is that of the paper."
+  }
+}
