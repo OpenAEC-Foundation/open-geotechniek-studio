@@ -883,6 +883,15 @@ export async function addCptToActiveProject(
   // Eén platform-call — zie utils/platform.ts voor de Tauri/web split.
   const { cpt: cptPlatform } = await import("../utils/platform");
   const cpt = await cptPlatform.parse(content, filename, diagnostics);
+  return placeCpt(cpt, filename, targetDocId);
+}
+
+/**
+ * Zet een al opgebouwde sondering in het actieve project, of opent haar als
+ * losse tab als er geen project actief is. Gebruikt door het inlezen van
+ * bestanden en door "Sondering uit scan".
+ */
+export function placeCpt(cpt: Cpt, filename: string, targetDocId: string | null = useCptStore.getState().activeDocId): Cpt {
   const state = useCptStore.getState();
   const active = state.documents.find((d) => d.id === targetDocId);
   if (targetDocId && !active) throw new Error(i18next.t("app:store.targetProjectClosed", { defaultValue: "Het doelproject is gesloten tijdens het toevoegen." }));

@@ -226,5 +226,7 @@
   "exportImage": "Esporta\ncome immagine",
   "openPdf": "Apri PDF",
   "scaleCptColumns": "Ridimensiona colonne prove",
-  "scaleCptColumnsHint": "Dopo Adatta, allarga anche le colonne; scorri orizzontalmente per le altre prove."
+  "scaleCptColumnsHint": "Dopo Adatta, allarga anche le colonne; scorri orizzontalmente per le altre prove.",
+  "cptGroup": "Prova CPT",
+  "cptFromScan": "Da scansione"
 }

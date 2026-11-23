@@ -226,5 +226,7 @@
   "exportImage": "Exportera\nsom bild",
   "openPdf": "Öppna PDF",
   "scaleCptColumns": "Skala sonderingskolumner",
-  "scaleCptColumnsHint": "Efter Anpassa breddas även kolumnerna; rulla vågrätt för övriga sonderingar."
+  "scaleCptColumnsHint": "Efter Anpassa breddas även kolumnerna; rulla vågrätt för övriga sonderingar.",
+  "cptGroup": "Sondering",
+  "cptFromScan": "Från skanning"
 }

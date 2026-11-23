@@ -226,5 +226,7 @@
   "exportImage": "Exportar\ncomo imagem",
   "openPdf": "Abrir PDF",
   "scaleCptColumns": "Escalar colunas de ensaios",
-  "scaleCptColumnsHint": "Após Ajustar, alarga também as colunas; desloque na horizontal para os restantes ensaios."
+  "scaleCptColumnsHint": "Após Ajustar, alarga também as colunas; desloque na horizontal para os restantes ensaios.",
+  "cptGroup": "Sondagem",
+  "cptFromScan": "A partir de digitalização"
 }

@@ -5,6 +5,8 @@ import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
 
 
+const scanIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7l2 3-1 3 4 2-2 3"/></svg>`;
+
 interface StartTabProps {
   onViewChange?: (view: string) => void;
   /** Hook the Home-tab's Projectinfo-knop into App.tsx's existing
@@ -30,6 +32,14 @@ export default function StartTab(props: StartTabProps = {}) {
             label={t("projectInfo", "Projectinfo")}
             size="large"
             onClick={openProjectSettings}
+          />
+        </RibbonGroup>
+        <RibbonGroup label={t("cptGroup", "Sondering")}>
+          <RibbonButton
+            icon={scanIcon}
+            label={t("cptFromScan", "Uit scan")}
+            size="large"
+            onClick={() => window.dispatchEvent(new CustomEvent("ogs:open-scan-cpt"))}
           />
         </RibbonGroup>
         <RibbonGroup label={t("zoom")}>

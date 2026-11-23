@@ -1,0 +1,86 @@
+{
+  "error": {
+    "load": "Não é possível ler este ficheiro. Escolha uma imagem (PNG, JPG) ou um PDF."
+  },
+  "unit": {
+    "nap": "m NAP",
+    "depth": "m abaixo do terreno"
+  },
+  "problem": {
+    "scale": "Introduza um valor nas quatro linhas de calibração; as duas linhas de um mesmo eixo não podem ter o mesmo valor.",
+    "ground": "Introduza a cota do terreno em m NAP; o eixo da digitalização está em NAP.",
+    "trace": "Ainda não existe nenhuma linha. Escolha «Seguir linha» e clique no início da linha de medição, ou desenhe-a à mão.",
+    "name": "Dê um nome ao CPT.",
+    "duplicate": "Já existe um CPT com este nome no projeto."
+  },
+  "meta": {
+    "originKey": "Origem",
+    "originValue": "Decalcado de uma digitalização ({{file}}); apenas a resistência de ponta"
+  },
+  "tool": {
+    "calibrate": "Calibrar escala",
+    "follow": "Seguir linha",
+    "draw": "Desenhar",
+    "erase": "Apagar"
+  },
+  "hint": {
+    "calibrate": "Arraste as quatro linhas tracejadas para linhas da grelha cujo valor conhece e introduza esses valores à direita. As linhas ajustam-se à grelha.",
+    "follow": "Clique no início da linha de medição: a linha é seguida para baixo até terminar. Arraste para baixo para a seguir apenas até ao ponto onde soltar.",
+    "draw": "Desenhe sobre a linha de medição com o botão do rato premido. O que desenhar substitui a linha a essa altura.",
+    "erase": "Arraste sobre o troço da linha que pretende eliminar.",
+    "start": "Escolha a digitalização de um gráfico de CPT: uma imagem ou uma página de um PDF."
+  },
+  "title": "CPT a partir de digitalização",
+  "cancel": "Cancelar",
+  "create": "Criar CPT",
+  "undo": "Anular",
+  "clear": "Apagar linha",
+  "zoomOut": "Reduzir",
+  "zoomIn": "Ampliar",
+  "loading": "A carregar…",
+  "choose": "Escolher digitalização…",
+  "section": {
+    "scan": "1. Digitalização",
+    "scale": "2. Escala",
+    "line": "3. Linha",
+    "cpt": "4. CPT"
+  },
+  "prevPage": "Página anterior",
+  "page": "Página",
+  "nextPage": "Página seguinte",
+  "rotateLeft": "↺ Para a esquerda",
+  "rotateRight": "↻ Para a direita",
+  "axis": {
+    "label": "O eixo de profundidade mostra",
+    "nap": "cota em m NAP",
+    "depth": "profundidade abaixo do terreno"
+  },
+  "scale": {
+    "v1": "Linha superior [{{unit}}]",
+    "v2": "Linha inferior [{{unit}}]",
+    "q1": "Linha esquerda [MPa]",
+    "q2": "Linha direita [MPa]",
+    "suggest": "Linhas na grelha exterior"
+  },
+  "ground": {
+    "required": "Cota do terreno [m NAP]",
+    "optional": "Cota do terreno [m NAP] (opcional)"
+  },
+  "line": {
+    "threshold": "Escuridão da linha ({{value}})",
+    "radius": "Remover linhas finas da grelha",
+    "radius0": "não",
+    "radius1": "ligeiro (linhas até 2 píxeis)",
+    "radius2": "forte (linhas até 4 píxeis)",
+    "showMask": "Mostrar o que o algoritmo reconhece como linha"
+  },
+  "cpt": {
+    "name": "Nome",
+    "x": "X [m RD] (opcional)",
+    "y": "Y [m RD] (opcional)",
+    "date": "Data (opcional)",
+    "summary": "{{count}} pontos de medição de {{from}} a {{to}} m abaixo do terreno, resistência de ponta máxima {{max}} MPa.",
+    "empty": "Ainda não há pontos de medição.",
+    "note": "Um CPT decalcado tem apenas a resistência de ponta. Verifique a linha junto à digitalização: a precisão é a do papel."
+  }
+}

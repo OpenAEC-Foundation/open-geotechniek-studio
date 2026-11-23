@@ -13,6 +13,7 @@ import FeedbackDialog from "./components/feedback/FeedbackDialog";
 import WelcomeScreen from "./components/welcome/WelcomeScreen";
 import { StartSidebar } from "./components/welcome/StartSidebar";
 import ProjectSettingsDialog from "./components/project/ProjectSettingsDialog";
+import ScanCptDialog from "./scan/ScanCptDialog";
 import ReportPreview from "./components/panels/ReportPreview";
 import ChartView from "./components/panels/ChartView";
 import MapView from "./components/panels/MapView";
@@ -97,6 +98,7 @@ function App() {
   const [backstageOpen, setBackstageOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [projectSettingsOpen, setProjectSettingsOpen] = useState(false);
+  const [scanCptOpen, setScanCptOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [theme, setTheme] = useState("light");
   const [activeView, setActiveView] = useState("default");
@@ -315,6 +317,11 @@ function App() {
     const onOpen = () => setProjectSettingsOpen(true);
     window.addEventListener("ogs:open-project-settings", onOpen);
     return () => window.removeEventListener("ogs:open-project-settings", onOpen);
+  }, []);
+  useEffect(() => {
+    const onOpen = () => setScanCptOpen(true);
+    window.addEventListener("ogs:open-scan-cpt", onOpen);
+    return () => window.removeEventListener("ogs:open-scan-cpt", onOpen);
   }, []);
 
   // Publish the currently active view both as a DOM attribute (so panels
@@ -563,6 +570,7 @@ function App() {
       <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} theme={theme} onThemeChange={setTheme} />
       <FeedbackDialog open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
       <ProjectSettingsDialog open={projectSettingsOpen} onClose={() => setProjectSettingsOpen(false)} />
+      {scanCptOpen && <ScanCptDialog open onClose={() => setScanCptOpen(false)} />}
       {welcomeOpen && (
         <WelcomeScreen
           onClose={() => setWelcomeOpen(false)}

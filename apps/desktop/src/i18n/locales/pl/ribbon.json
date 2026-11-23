@@ -226,5 +226,7 @@
   "exportImage": "Eksportuj\njako obraz",
   "openPdf": "Otwórz PDF",
   "scaleCptColumns": "Skaluj kolumny sondowań",
-  "scaleCptColumnsHint": "Po Dopasuj poszerza także kolumny; przewiń w poziomie, aby zobaczyć pozostałe sondowania."
+  "scaleCptColumnsHint": "Po Dopasuj poszerza także kolumny; przewiń w poziomie, aby zobaczyć pozostałe sondowania.",
+  "cptGroup": "Sondowanie",
+  "cptFromScan": "Ze skanu"
 }
