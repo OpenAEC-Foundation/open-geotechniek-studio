@@ -1,5 +1,5 @@
 """Local regression checks; OpenPGP uses an ephemeral test key only."""
-import importlib.util, json, os, shutil, subprocess, tempfile, unittest
+import hashlib, importlib.util, json, os, shutil, subprocess, tempfile, unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('version',ROOT/'scripts/version.py')
@@ -42,6 +42,18 @@ class SigningTests(unittest.TestCase):
             subprocess.run(['bash',script],env=runenv,cwd=root,check=True,capture_output=True)
             gpg('--verify',str(out/'fixture.deb.asc'),str(out/'fixture.deb'))
             self.assertTrue((out/'SHA256SUMS-linux.txt.asc').exists())
+            snapout=root/'snap-artifacts';snapout.mkdir()
+            (snapout/'fixture.snap').write_text('snap fixture only\n')
+            snap_digest=hashlib.sha256((snapout/'fixture.snap').read_bytes()).hexdigest()
+            (snapout/'SHA256SUMS.txt').write_text(f'{snap_digest}  fixture.snap\n')
+            subprocess.run(['bash',script,str(snapout),'SHA256SUMS-snap.txt'],env=runenv,cwd=root,check=True,capture_output=True)
+            gpg('--verify',str(snapout/'fixture.snap.asc'),str(snapout/'fixture.snap'))
+            gpg('--verify',str(snapout/'SHA256SUMS-snap.txt.asc'),str(snapout/'SHA256SUMS-snap.txt'))
+            subprocess.run(['sha256sum','--check','SHA256SUMS-snap.txt'],cwd=snapout,check=True,capture_output=True)
+            self.assertFalse((snapout/'SHA256SUMS-linux.txt').exists())
+            (snapout/'fixture.snap').write_text('tampered snap\n')
+            with self.assertRaises(subprocess.CalledProcessError): gpg('--verify',str(snapout/'fixture.snap.asc'),str(snapout/'fixture.snap'))
+            self.assertNotEqual(subprocess.run(['sha256sum','--check','SHA256SUMS-snap.txt'],cwd=snapout,capture_output=True).returncode,0)
             (out/'fixture.deb').write_text('tampered\n')
             with self.assertRaises(subprocess.CalledProcessError): gpg('--verify',str(out/'fixture.deb.asc'),str(out/'fixture.deb'))
             missing={k:v for k,v in env.items() if not k.startswith('OPENAEC_GPG_')}

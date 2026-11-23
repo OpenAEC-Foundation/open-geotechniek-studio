@@ -1,0 +1,50 @@
+{
+  "verified_on": "2026-11-13",
+  "version": "2026.45.8",
+  "release": "https://github.com/OpenAEC-Foundation/open-geotechniek-studio/releases/tag/v2026.45.8",
+  "approved_master": "docs/branding/open-geotechniek-studio.png",
+  "approved_sha256": "58b2305b0338374defd329a4e9e1ee46d22e4f51b5c0a86d1b556b8df0206728",
+  "deb_sha256": "f74ec4ca6b01ffc2f707413e941f7862647167bfe8744207c341869feb003290",
+  "snap_sha256": "ab13256aaa45b6924654dc8aa844bacee164ef78a2f788aaf4d8c95a8a1e0530",
+  "installed_executable_sha256": "e5d8d010d87f3722652132f81886c2c553872ba99583f290fc382ead3e2664e3",
+  "environment": "Fresh Ubuntu 22.04 QEMU/KVM guest; DEB installed with apt; dpkg-query reports open-geotechniek-studio 2026.45.8; Openbox/tint2 on Xvfb",
+  "screenshot": "docs/screenshots/branding-2026.45.8-installed-deb.png",
+  "visual_checks": [
+    "Approved icon visible in title bar and start panel",
+    "Approved icon visible in taskbar of the installed application",
+    "Version 2026.45.8 visible in the running title bar"
+  ],
+  "packaged_launcher_icons": [
+    {
+      "path": "usr/share/icons/hicolor/128x128/apps/open-geo-studio.png",
+      "size": [
+        128,
+        128
+      ],
+      "rgba_matches_approved_master": true
+    },
+    {
+      "path": "usr/share/icons/hicolor/256x256@2/apps/open-geo-studio.png",
+      "size": [
+        256,
+        256
+      ],
+      "rgba_matches_approved_master": true
+    },
+    {
+      "path": "usr/share/icons/hicolor/32x32/apps/open-geo-studio.png",
+      "size": [
+        32,
+        32
+      ],
+      "rgba_matches_approved_master": true
+    }
+  ],
+  "snap_store_payload_matches_github_sha3_384": true,
+  "snap_confinement_test": "Not completed: Snap Store API connection refused while installing runtime prerequisites. This does not establish resolution of issue #43.",
+  "additional_ico_check": {
+    "released_24px_corner_alpha": 2,
+    "released_32px_and_48px_corner_alpha": 0,
+    "generator_fix": "All ICO frames now preserve fully transparent master corners. Only the four outer corner pixels of each 24px frame change. Requires a new Windows installer before issue #34 is complete."
+  }
+}
