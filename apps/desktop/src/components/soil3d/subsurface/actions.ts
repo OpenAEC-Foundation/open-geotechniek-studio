@@ -1,5 +1,5 @@
 // Ophalen van de verrijking voor het actieve project en afleiden van de grondwaterstanden.
-import type { SoilModel } from "../soilModel";
+import { rdExtent, type SoilModel } from "../soilModel";
 import { useSoil3DStore } from "../useSoil3DStore";
 import { aquifers, cellValue, fetchRegis, type Bbox, type RegisGrid } from "./regis";
 import { fetchGeotop } from "./geotop";
@@ -8,8 +8,8 @@ import { useSubsurfaceStore, type GroundwaterLevels } from "./store";
 
 /** Modelgebied in RD. */
 export function modelArea(model: SoilModel): Bbox {
-  const g = model.grid, o = model.origin;
-  return { xmin: o.x + g.east0, ymin: o.y + g.north0, xmax: o.x + g.east0 + g.nx * g.dx, ymax: o.y + g.north0 + g.ny * g.dy };
+  const g = model.grid;
+  return rdExtent(model, g.east0, g.east0 + g.nx * g.dx, g.north0, g.north0 + g.ny * g.dy);
 }
 
 /** Pakket van elke peilbuis, met de REGIS-cel op de plek van de buis (of de dichtstbijzijnde cel). */

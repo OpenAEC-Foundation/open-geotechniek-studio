@@ -6,6 +6,7 @@ import type { SubsurfaceData } from "./subsurface/store";
 import { describeSelection, type Selection } from "./selection";
 import { useSoil3DStore } from "./useSoil3DStore";
 import { OaIcon } from "../icons/oaIcon";
+import { LevelChartView } from "./LevelChartView";
 
 /** Diameter van de sonderingskolommen in m; leeg = automatisch (meeschalen met het model). */
 function CptDiameterField({ model }: { model: SoilModel }) {
@@ -67,16 +68,18 @@ export function SelectionPanel({ selection, model, subsurface, onClose }: { sele
         <span>Eigenschappen</span>
         {selection && <button type="button" className="soil3d-icon" aria-label="Selectie opheffen" title="Selectie opheffen (Esc)" onClick={onClose}><OaIcon id="edit.deselect" /></button>}
       </header>
-      {!groups.length && <p className="soil3d-props-empty">Klik een object in het 3D-model: een sondering, een cel, een pakket, een peilbuis of het grondwater.</p>}
+      {!groups.length && <p className="soil3d-props-empty">Klik een object in het 3D-model: een sondering, een cel, een pakket, een peilbuis of het grondwater. De peilbuizen naast het model tonen per pakket het verloop van de stand.</p>}
       {groups.map((g) => (
         <section key={g.title}>
-          <h4>{g.title}</h4>
+          <h4>{g.color && <span className="soil3d-props-dot" style={{ background: g.color }} aria-hidden="true" />}{g.title}</h4>
           {g.subtitle && <div className="soil3d-props-sub">{g.subtitle}</div>}
-          <table>
+          {g.chart && <LevelChartView chart={g.chart} />}
+          {g.rows.length > 0 && <table>
             <tbody>
               {g.rows.map(([k, v]) => <tr key={k}><th>{k}</th><td>{v}</td></tr>)}
             </tbody>
-          </table>
+          </table>}
+          {g.note && <p className="soil3d-props-note">{g.note}</p>}
         </section>
       ))}
     </aside>
