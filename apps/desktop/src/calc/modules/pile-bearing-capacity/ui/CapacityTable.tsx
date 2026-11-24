@@ -11,6 +11,7 @@ import {
 import {numberLocale} from '../../../i18n';
 import './capacity-table.css';
 import {GoverningOverview,type OverviewSystem} from './GoverningOverview';
+import {PilePlanExportButton} from './PilePlanExportButton';
 import {OaIcon} from '../../../../components/icons/oaIcon';
 
 const kn=(n:number)=>n.toLocaleString(numberLocale(),{maximumFractionDigits:0});
@@ -61,6 +62,7 @@ export function CapacityTable({input,cpts,onChange,onOpen,cptId=null,onFocusCpt}
   {!config.cptIds.length&&<p role="status">{t('table.selectCpt','Selecteer ten minste één sondering.')}</p>}
   {computed.m&&config.cptIds.length>0&&<>
    {!focused&&<GoverningOverview systems={overview} cpts={cpts} targetsKn={overviewTargets(config)} focus={id=>onFocusCpt?.(id)} />}
+   {!focused&&<PilePlanExportButton m={computed.m} cpts={cpts} />}
    {!focused&&<ChoiceTable m={computed.m} choices={computed.choices} sizeLabel={sizeLabel} open={open} focus={id=>onFocusCpt?.(id)} />}
    <Legend target={computed.m.target} />
    <div className={focused?'capacity-cpt-single':'capacity-cpt-list'}>

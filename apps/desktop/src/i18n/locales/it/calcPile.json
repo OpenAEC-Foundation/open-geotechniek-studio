@@ -178,6 +178,18 @@
     "wallThicknessAria": "Spessore della parete [mm]",
     "woodDiameterAtJoint": "Diametro del legno al giunto"
   },
+  "pilePlan": {
+    "button": "Esporta per Pile Plan Studio (CSV)",
+    "filter": "CSV per Pile Plan Studio",
+    "hint": "Due file: sonderingen.csv (ID, X, Y in RD, millimetri) e funderingsadvies.csv (ID CPT, punta in m NAP, dimensione in mm, Rc;net;d in kN) del tipo principale.",
+    "ids": "ID delle prove CPT in entrambi i file: {{list}}",
+    "missing": "{{n}} combinazioni senza resistenza calcolata (cella FRD vuota, non zero)",
+    "more": "e altre {{n}}",
+    "noPosition": "Senza posizione RD, non esportate: {{list}}",
+    "noneWithPosition": "Nessuna prova CPT ha una posizione RD; non è stato esportato nulla.",
+    "onlyFirst": "È stato scritto solo sonderingen.csv; funderingsadvies.csv è stato annullato.",
+    "written": "Scritti: {{cpts}} prove CPT e {{rows}} resistenze. X e Y sono in RD in millimetri."
+  },
   "profile": {
     "bottom": "Base",
     "fieldAria": "{{field}} strato {{n}}",

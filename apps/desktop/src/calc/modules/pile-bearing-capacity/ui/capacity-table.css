@@ -129,3 +129,12 @@
 .capacity-type-add select {min-width:0;padding:4px;border:1px solid var(--oa-border);background:var(--oa-panel);color:var(--oa-text);font:11px var(--oa-font-body);}
 .capacity-governing thead .capacity-governing-type {text-align:center;white-space:normal;max-width:220px;}
 .capacity-map-loose-label {fill:var(--oa-text-secondary);font:10px var(--oa-font-body);}
+
+/* Export voor Pile Plan Studio */
+.capacity-export {display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 18px;}
+.capacity-export > button {padding:5px 12px;border:1px solid var(--oa-accent);border-radius:var(--oa-radius-small);background:var(--oa-panel);color:var(--oa-text);cursor:pointer;font:inherit;}
+.capacity-export > button:hover {background:var(--oa-hover);}
+.capacity-export-hint {color:var(--oa-text-secondary);flex:1 1 320px;}
+.capacity-export-result {flex:1 1 100%;padding:8px 10px;border:1px solid var(--oa-border);border-radius:var(--oa-radius-small);}
+.capacity-export-result p {margin:0 0 4px;}
+.capacity-export-result ul {margin:4px 0 0;padding-left:18px;max-height:160px;overflow:auto;}

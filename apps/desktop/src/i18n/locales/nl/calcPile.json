@@ -178,6 +178,18 @@
     "wallThicknessAria": "Wanddikte [mm]",
     "woodDiameterAtJoint": "Houtdiameter bij de las"
   },
+  "pilePlan": {
+    "button": "Exporteer voor Pile Plan Studio (CSV)",
+    "filter": "CSV voor Pile Plan Studio",
+    "hint": "Twee bestanden: sonderingen.csv (ID, X, Y in RD, millimeters) en funderingsadvies.csv (CPT ID, punt in m NAP, maat in mm, Rc;net;d in kN) van het hoofdtype.",
+    "ids": "Sonderings-ID’s in beide bestanden: {{list}}",
+    "missing": "{{n}} combinaties zonder berekende weerstand (lege FRD-cel, geen nul)",
+    "more": "en nog {{n}}",
+    "noPosition": "Zonder RD-positie, niet geëxporteerd: {{list}}",
+    "noneWithPosition": "Geen van de sonderingen heeft een RD-positie; er is niets geëxporteerd.",
+    "onlyFirst": "Alleen sonderingen.csv is geschreven; funderingsadvies.csv is geannuleerd.",
+    "written": "Geschreven: {{cpts}} sonderingen en {{rows}} weerstanden. X en Y staan in RD in millimeters."
+  },
   "profile": {
     "bottom": "Onder",
     "fieldAria": "{{field}} laag {{n}}",

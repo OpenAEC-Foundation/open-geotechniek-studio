@@ -178,6 +178,18 @@
     "wallThicknessAria": "Godstykkelse [mm]",
     "woodDiameterAtJoint": "Trædiameter ved samlingen"
   },
+  "pilePlan": {
+    "button": "Eksportér til Pile Plan Studio (CSV)",
+    "filter": "CSV til Pile Plan Studio",
+    "hint": "To filer: sonderingen.csv (ID, X, Y i RD, millimeter) og funderingsadvies.csv (CPT-ID, spids i m NAP, størrelse i mm, Rc;net;d i kN) for hovedtypen.",
+    "ids": "Sonderings-ID i begge filer: {{list}}",
+    "missing": "{{n}} kombinationer uden beregnet bæreevne (tom FRD-celle, ikke nul)",
+    "more": "og {{n}} mere",
+    "noPosition": "Uden RD-position, ikke eksporteret: {{list}}",
+    "noneWithPosition": "Ingen af sonderingerne har en RD-position; intet blev eksporteret.",
+    "onlyFirst": "Kun sonderingen.csv blev skrevet; funderingsadvies.csv blev annulleret.",
+    "written": "Skrevet: {{cpts}} sonderinger og {{rows}} bæreevner. X og Y er i RD i millimeter."
+  },
   "profile": {
     "bottom": "Bund",
     "fieldAria": "{{field}} lag {{n}}",

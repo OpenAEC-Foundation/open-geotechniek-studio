@@ -178,6 +178,18 @@
     "wallThicknessAria": "Wanddicke [mm]",
     "woodDiameterAtJoint": "Holzdurchmesser am Stoß"
   },
+  "pilePlan": {
+    "button": "Für Pile Plan Studio exportieren (CSV)",
+    "filter": "CSV für Pile Plan Studio",
+    "hint": "Zwei Dateien: sonderingen.csv (ID, X, Y in RD, Millimeter) und funderingsadvies.csv (CPT-ID, Pfahlfuß in m NAP, Abmessung in mm, Rc;net;d in kN) des Haupttyps.",
+    "ids": "Sondierungs-IDs in beiden Dateien: {{list}}",
+    "missing": "{{n}} Kombinationen ohne berechneten Widerstand (leere FRD-Zelle, nicht null)",
+    "more": "und {{n}} weitere",
+    "noPosition": "Ohne RD-Position, nicht exportiert: {{list}}",
+    "noneWithPosition": "Keine der Sondierungen hat eine RD-Position; es wurde nichts exportiert.",
+    "onlyFirst": "Nur sonderingen.csv wurde geschrieben; funderingsadvies.csv wurde abgebrochen.",
+    "written": "Geschrieben: {{cpts}} Sondierungen und {{rows}} Widerstände. X und Y sind in RD in Millimetern."
+  },
   "profile": {
     "bottom": "Unten",
     "fieldAria": "{{field}} Schicht {{n}}",
