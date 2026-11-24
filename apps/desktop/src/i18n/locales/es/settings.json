@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Aplicación",
-    "language": "Idioma"
+    "language": "Idioma",
+    "calculations": "Cálculos",
+    "dragSnap": "Paso de ajuste al arrastrar",
+    "dragSnapHint": "Los niveles que arrastra en el gráfico CPT de los cálculos de pilotes (compresión y tracción) se ajustan a múltiplos de esta distancia. 0 = sin ajuste."
   },
   "appearance": {
     "theme": "Tema",

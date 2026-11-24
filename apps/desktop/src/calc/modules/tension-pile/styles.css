@@ -32,3 +32,9 @@
 .tp-units th { font-weight: 400; color: var(--oa-text-secondary); }
 .tp-zero td { color: var(--oa-text-secondary); }
 .tp-table small { color: var(--oa-text-secondary); font-weight: 400; }
+
+/* Niveaus verslepen */
+.tp-hit { stroke: transparent; stroke-width: 10; cursor: ns-resize; }
+.tp-hit:hover, .tp-hit-active { stroke: var(--oa-accent, #d97706); stroke-opacity: 0.25; }
+.tp-dragging { user-select: none; }
+.tp-top-label { font-size: 9px; }
