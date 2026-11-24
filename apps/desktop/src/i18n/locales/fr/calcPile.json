@@ -178,6 +178,18 @@
     "wallThicknessAria": "Épaisseur de paroi [mm]",
     "woodDiameterAtJoint": "Diamètre du bois à la jonction"
   },
+  "pilePlan": {
+    "button": "Exporter pour Pile Plan Studio (CSV)",
+    "filter": "CSV pour Pile Plan Studio",
+    "hint": "Deux fichiers : sonderingen.csv (ID, X, Y en RD, millimètres) et funderingsadvies.csv (ID CPT, pointe en m NAP, dimension en mm, Rc;net;d en kN) du type principal.",
+    "ids": "ID des essais CPT dans les deux fichiers : {{list}}",
+    "missing": "{{n}} combinaisons sans résistance calculée (cellule FRD vide, pas zéro)",
+    "more": "et {{n}} de plus",
+    "noPosition": "Sans position RD, non exporté : {{list}}",
+    "noneWithPosition": "Aucun essai CPT n’a de position RD ; rien n’a été exporté.",
+    "onlyFirst": "Seul sonderingen.csv a été écrit ; funderingsadvies.csv a été annulé.",
+    "written": "Écrit : {{cpts}} essais CPT et {{rows}} résistances. X et Y sont en RD en millimètres."
+  },
   "profile": {
     "bottom": "Base",
     "fieldAria": "{{field}} couche {{n}}",

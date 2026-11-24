@@ -178,6 +178,18 @@
     "wallThicknessAria": "Godstjocklek [mm]",
     "woodDiameterAtJoint": "Trädiameter vid skarven"
   },
+  "pilePlan": {
+    "button": "Exportera för Pile Plan Studio (CSV)",
+    "filter": "CSV för Pile Plan Studio",
+    "hint": "Två filer: sonderingen.csv (ID, X, Y i RD, millimeter) och funderingsadvies.csv (CPT-ID, spets i m NAP, dimension i mm, Rc;net;d i kN) för huvudtypen.",
+    "ids": "Sonderings-ID i båda filerna: {{list}}",
+    "missing": "{{n}} kombinationer utan beräknad bärförmåga (tom FRD-cell, inte noll)",
+    "more": "och {{n}} till",
+    "noPosition": "Utan RD-position, inte exporterad: {{list}}",
+    "noneWithPosition": "Ingen av CPT-sonderingarna har en RD-position; inget exporterades.",
+    "onlyFirst": "Endast sonderingen.csv skrevs; funderingsadvies.csv avbröts.",
+    "written": "Skrivet: {{cpts}} CPT-sonderingar och {{rows}} bärförmågor. X och Y är i RD i millimeter."
+  },
   "profile": {
     "bottom": "Underkant",
     "fieldAria": "{{field}} lager {{n}}",

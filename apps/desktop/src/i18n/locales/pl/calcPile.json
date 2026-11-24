@@ -178,6 +178,18 @@
     "wallThicknessAria": "Grubość ścianki [mm]",
     "woodDiameterAtJoint": "Średnica drewna na styku"
   },
+  "pilePlan": {
+    "button": "Eksportuj dla Pile Plan Studio (CSV)",
+    "filter": "CSV dla Pile Plan Studio",
+    "hint": "Dwa pliki: sonderingen.csv (ID, X, Y w RD, milimetry) i funderingsadvies.csv (ID CPT, podstawa w m NAP, wymiar w mm, Rc;net;d w kN) typu głównego.",
+    "ids": "ID sondowań w obu plikach: {{list}}",
+    "missing": "{{n}} kombinacji bez obliczonej nośności (pusta komórka FRD, nie zero)",
+    "more": "i jeszcze {{n}}",
+    "noPosition": "Bez położenia RD, nie wyeksportowano: {{list}}",
+    "noneWithPosition": "Żadne sondowanie nie ma położenia RD; nic nie wyeksportowano.",
+    "onlyFirst": "Zapisano tylko sonderingen.csv; funderingsadvies.csv anulowano.",
+    "written": "Zapisano: {{cpts}} sondowań CPT i {{rows}} nośności. X i Y są w RD w milimetrach."
+  },
   "profile": {
     "bottom": "Spód",
     "fieldAria": "{{field}} warstwa {{n}}",

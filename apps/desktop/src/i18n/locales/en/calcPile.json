@@ -178,6 +178,18 @@
     "wallThicknessAria": "Wall thickness [mm]",
     "woodDiameterAtJoint": "Timber diameter at the joint"
   },
+  "pilePlan": {
+    "button": "Export for Pile Plan Studio (CSV)",
+    "filter": "CSV for Pile Plan Studio",
+    "hint": "Two files: sonderingen.csv (ID, X, Y in RD, millimetres) and funderingsadvies.csv (CPT ID, toe in m NAP, size in mm, Rc;net;d in kN) of the main type.",
+    "ids": "CPT IDs in both files: {{list}}",
+    "missing": "{{n}} combinations without a computed resistance (empty FRD cell, not zero)",
+    "more": "and {{n}} more",
+    "noPosition": "Without RD position, not exported: {{list}}",
+    "noneWithPosition": "None of the CPTs has an RD position; nothing was exported.",
+    "onlyFirst": "Only sonderingen.csv was written; funderingsadvies.csv was cancelled.",
+    "written": "Written: {{cpts}} CPTs and {{rows}} resistances. X and Y are in RD in millimetres."
+  },
   "profile": {
     "bottom": "Bottom",
     "fieldAria": "{{field}} layer {{n}}",
