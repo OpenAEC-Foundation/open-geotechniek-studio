@@ -123,3 +123,9 @@
 .capacity-map-legend {margin:8px 0 0;}
 .capacity-map-legend span::before {border-radius:50%;}
 .capacity-map-summary {margin:6px 0 0;font-weight:600;}
+
+/* Meerdere paaltypes en sonderingen zonder positie */
+.capacity-type-add {display:grid;gap:4px;margin-top:6px;}
+.capacity-type-add select {min-width:0;padding:4px;border:1px solid var(--oa-border);background:var(--oa-panel);color:var(--oa-text);font:11px var(--oa-font-body);}
+.capacity-governing thead .capacity-governing-type {text-align:center;white-space:normal;max-width:220px;}
+.capacity-map-loose-label {fill:var(--oa-text-secondary);font:10px var(--oa-font-body);}

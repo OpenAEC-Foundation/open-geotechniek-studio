@@ -68,7 +68,8 @@
       "tooManyLevels": "Maximaal {{max}} puntniveaus; kies een grotere stap.",
       "sizesNotPositive": "Paalmaten moeten positief zijn.",
       "targetRangeInvalid": "De bovengrens van het gezochte draagvermogen moet boven de ondergrens liggen.",
-      "targetsInvalid": "Geef unieke, positieve draagvermogens in kN op."
+      "targetsInvalid": "Geef unieke, positieve draagvermogens in kN op.",
+      "extraTypesInvalid": "Geef per extra paaltype een bekend type en positieve paalmaten op; ieder type één keer."
     },
     "notes": {
       "profileAboveToe": "Grondprofiel eindigt boven de paalpunt. Controleer en verleng de grondlagen; ontbrekende schachtlagen dragen niet bij.",

@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Quota della punta: NAP {{level}} m",
-    "loose": "Senza posizione, non disegnato: {{list}}",
+    "looseLabel": "Senza posizione",
     "noPositions": "Nessuna prova CPT ha una posizione; la planimetria non può essere disegnata.",
     "pointNone": "{{cpt}}: nessun risultato a questa quota",
     "pointTitle": "{{cpt}}: {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Valore più basso a questa quota: {{cpt}} con {{rc}} kN.",
     "svgAria": "Planimetria delle prove CPT con Rc;net;d per {{size}} a NAP {{level}} m",
     "target": "Capacità portante",
-    "title": "Prove CPT in planimetria"
+    "title": "Prove CPT in planimetria",
+    "type": "Tipo di palo"
   },
   "material": {
     "concrete": "Calcestruzzo",
@@ -335,6 +336,16 @@
     "lower": "Limite inferiore [kN]",
     "notNumber": "Inserisci il limite inferiore e superiore come numero in kN.",
     "upper": "Limite superiore [kN]"
+  },
+  "types": {
+    "add": "Aggiungi tipo di palo",
+    "hint": "I tipi di palo aggiuntivi compaiono accanto al tipo principale nel riepilogo determinante e in planimetria. Le tabelle per prova CPT restano quelle del tipo principale.",
+    "legend": "Confronta tipi di palo",
+    "listAria": "Tipi di palo aggiuntivi",
+    "none": "Nessun altro tipo di palo può essere confrontato senza dati aggiuntivi.",
+    "removeAria": "Rimuovi il tipo di palo {{type}}",
+    "sizesAria": "Dimensioni del tipo di palo aggiuntivo [mm]",
+    "typeAria": "Tipo di palo aggiuntivo"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

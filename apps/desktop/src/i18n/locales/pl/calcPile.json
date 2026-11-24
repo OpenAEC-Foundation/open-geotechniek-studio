@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Poziom podstawy: NAP {{level}} m",
-    "loose": "Bez położenia, nie narysowano: {{list}}",
+    "looseLabel": "Bez położenia",
     "noPositions": "Żadne sondowanie CPT nie ma położenia; nie można narysować planu.",
     "pointNone": "{{cpt}}: brak wyniku na tym poziomie",
     "pointTitle": "{{cpt}}: {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Najniższa wartość na tym poziomie: {{cpt}}, {{rc}} kN.",
     "svgAria": "Plan sondowań CPT z Rc;net;d dla {{size}} na NAP {{level}} m",
     "target": "Nośność",
-    "title": "Sondowania CPT na planie"
+    "title": "Sondowania CPT na planie",
+    "type": "Typ pala"
   },
   "material": {
     "concrete": "Beton",
@@ -335,6 +336,16 @@
     "lower": "Dolna granica [kN]",
     "notNumber": "Podaj dolną i górną granicę jako liczbę w kN.",
     "upper": "Górna granica [kN]"
+  },
+  "types": {
+    "add": "Dodaj typ pala",
+    "hint": "Dodatkowe typy pali pojawiają się obok typu głównego w zestawieniu miarodajnym i na planie. Tabele dla poszczególnych sondowań CPT pozostają tabelami typu głównego.",
+    "legend": "Porównaj typy pali",
+    "listAria": "Dodatkowe typy pali",
+    "none": "Żadnego innego typu pala nie można porównać bez dodatkowych danych.",
+    "removeAria": "Usuń typ pala {{type}}",
+    "sizesAria": "Wymiary dodatkowego typu pala [mm]",
+    "typeAria": "Dodatkowy typ pala"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Niveau de pointe : NAP {{level}} m",
-    "loose": "Sans position, non dessiné : {{list}}",
+    "looseLabel": "Sans position",
     "noPositions": "Aucun essai CPT n’a de position ; le plan ne peut pas être dessiné.",
     "pointNone": "{{cpt}} : aucun résultat à ce niveau",
     "pointTitle": "{{cpt}} : {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Valeur la plus basse à ce niveau : {{cpt}} avec {{rc}} kN.",
     "svgAria": "Plan des essais CPT avec Rc;net;d pour {{size}} à NAP {{level}} m",
     "target": "Capacité portante",
-    "title": "Essais CPT sur le plan"
+    "title": "Essais CPT sur le plan",
+    "type": "Type de pieu"
   },
   "material": {
     "concrete": "Béton",
@@ -335,6 +336,16 @@
     "lower": "Limite inférieure [kN]",
     "notNumber": "Saisissez les limites inférieure et supérieure sous forme de nombre en kN.",
     "upper": "Limite supérieure [kN]"
+  },
+  "types": {
+    "add": "Ajouter un type de pieu",
+    "hint": "Les types de pieux supplémentaires apparaissent à côté du type principal dans la vue d’ensemble déterminante et sur le plan. Les tableaux par essai CPT restent ceux du type principal.",
+    "legend": "Comparer les types de pieux",
+    "listAria": "Types de pieux supplémentaires",
+    "none": "Aucun autre type de pieu ne peut être comparé sans données supplémentaires.",
+    "removeAria": "Supprimer le type de pieu {{type}}",
+    "sizesAria": "Dimensions du type de pieu supplémentaire [mm]",
+    "typeAria": "Type de pieu supplémentaire"
   },
   "visual": {
     "cptHeading": "CPT : {{id}}",

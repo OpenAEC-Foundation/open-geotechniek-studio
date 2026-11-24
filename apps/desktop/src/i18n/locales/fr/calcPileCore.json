@@ -68,7 +68,8 @@
       "tooManyLevels": "Au plus {{max}} niveaux de pointe ; choisissez un pas plus grand.",
       "sizesNotPositive": "Les dimensions de pieu doivent être positives.",
       "targetRangeInvalid": "La limite supérieure de la capacité portante visée doit être au-dessus de la limite inférieure.",
-      "targetsInvalid": "Saisissez des capacités portantes uniques et positives en kN."
+      "targetsInvalid": "Saisissez des capacités portantes uniques et positives en kN.",
+      "extraTypesInvalid": "Indiquez pour chaque type de pieu supplémentaire un type connu et des dimensions positives ; chaque type une seule fois."
     },
     "notes": {
       "profileAboveToe": "Le profil de sol s'arrête au-dessus de la pointe du pieu. Vérifiez et prolongez les couches de sol ; les couches manquantes le long du fût ne contribuent pas.",

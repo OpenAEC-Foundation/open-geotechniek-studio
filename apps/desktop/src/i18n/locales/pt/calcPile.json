@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Cota da ponta: NAP {{level}} m",
-    "loose": "Sem posição, não desenhado: {{list}}",
+    "looseLabel": "Sem posição",
     "noPositions": "Nenhum CPT tem posição; a planta não pode ser desenhada.",
     "pointNone": "{{cpt}}: sem resultado nesta cota",
     "pointTitle": "{{cpt}}: {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Valor mais baixo nesta cota: {{cpt}} com {{rc}} kN.",
     "svgAria": "Planta dos CPT com Rc;net;d para {{size}} a NAP {{level}} m",
     "target": "Capacidade de carga",
-    "title": "CPT na planta"
+    "title": "CPT na planta",
+    "type": "Tipo de estaca"
   },
   "material": {
     "concrete": "Betão",
@@ -335,6 +336,16 @@
     "lower": "Limite inferior [kN]",
     "notNumber": "Introduza o limite inferior e o superior como número em kN.",
     "upper": "Limite superior [kN]"
+  },
+  "types": {
+    "add": "Adicionar tipo de estaca",
+    "hint": "Os tipos de estaca adicionais aparecem ao lado do tipo principal no resumo determinante e na planta. As tabelas por CPT continuam a ser as do tipo principal.",
+    "legend": "Comparar tipos de estaca",
+    "listAria": "Tipos de estaca adicionais",
+    "none": "Nenhum outro tipo de estaca pode ser comparado sem dados adicionais.",
+    "removeAria": "Remover o tipo de estaca {{type}}",
+    "sizesAria": "Dimensões do tipo de estaca adicional [mm]",
+    "typeAria": "Tipo de estaca adicional"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

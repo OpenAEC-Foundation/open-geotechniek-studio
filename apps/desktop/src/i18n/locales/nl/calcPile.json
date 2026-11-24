@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Puntniveau: NAP {{level}} m",
-    "loose": "Zonder positie, niet getekend: {{list}}",
+    "looseLabel": "Zonder positie",
     "noPositions": "Geen van de sonderingen heeft een positie; de plattegrond kan niet worden getekend.",
     "pointNone": "{{cpt}}: geen uitkomst op dit niveau",
     "pointTitle": "{{cpt}}: {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Laagste op dit niveau: {{cpt}} met {{rc}} kN.",
     "svgAria": "Plattegrond van de sonderingen met Rc;net;d voor {{size}} op NAP {{level}} m",
     "target": "Draagvermogen",
-    "title": "Sonderingen op de plattegrond"
+    "title": "Sonderingen op de plattegrond",
+    "type": "Paaltype"
   },
   "material": {
     "concrete": "Beton",
@@ -335,6 +336,16 @@
     "lower": "Ondergrens [kN]",
     "notNumber": "Vul de onder- en bovengrens in als getal in kN.",
     "upper": "Bovengrens [kN]"
+  },
+  "types": {
+    "add": "Paaltype toevoegen",
+    "hint": "Extra paaltypes komen naast het hoofdtype in het maatgevende overzicht en op de plattegrond. De tabellen per sondering blijven van het hoofdtype.",
+    "legend": "Paaltypes vergelijken",
+    "listAria": "Extra paaltypes",
+    "none": "Geen ander paaltype is zonder extra invoer te vergelijken.",
+    "removeAria": "Verwijder paaltype {{type}}",
+    "sizesAria": "Paalmaten van het extra paaltype [mm]",
+    "typeAria": "Extra paaltype"
   },
   "visual": {
     "cptHeading": "Sondering: {{id}}",
