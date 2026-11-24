@@ -72,6 +72,8 @@ export interface PileInput {
     sizesMm?:number[];
     /** Gezocht netto draagvermogen Rc;net;d [kN]. */
     targetKn?:{minKn:number;maxKn:number};
+    /** Draagvermogens [kN] voor het maatgevende overzicht; ontbrekend = alleen de ondergrens. */
+    targetsKn?:number[];
     /** Voorbeeldberekeningen die volledig in de uitdraai komen; daarna alleen de tabellen. */
     examples?:Array<{cptId:string;sizeMm:number;toeNap:number}>;
   };

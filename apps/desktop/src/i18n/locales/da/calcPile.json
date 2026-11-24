@@ -87,6 +87,20 @@
     "title": "Pælefaktorer",
     "useProject": "Brug projektfaktorer / egenerklæring"
   },
+  "governing": {
+    "bestLevel": "højst {{rc}} kN på {{level}}",
+    "caption": "Højeste spidskote [m NAP], hvor alle sonderinger når bæreevnen, med den dimensionsgivende sondering og dens Rc;net;d. Klik på en celle for at sætte planen på den kote.",
+    "cellAria": "{{target}} kN med {{size}} mm: NAP {{level}}, dimensionsgivende {{cpt}}",
+    "cellMissingAria": "{{target}} kN med {{size}} mm: ikke nået",
+    "noOption": "ikke nået for alle sonderinger med nogen af størrelserne",
+    "option": "{{size}} på NAP {{level}}",
+    "or": " eller ",
+    "tableAria": "Dimensionsgivende spidskote pr. bæreevne og pælestørrelse",
+    "target": "Rc;net;d ≥",
+    "title": "Dimensionsgivende oversigt",
+    "worst": "Oftest dimensionsgivende:",
+    "worstCount": "({{n}} af {{total}})"
+  },
   "legend": {
     "chosen": "valgt kote",
     "over": "> {{max}} kN, rigelig",
@@ -118,6 +132,23 @@
     "materialFactor": "materialefaktor",
     "negativeSkinFriction": "negativ overflademodstand",
     "title": "Last"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "intet resultat",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Spidskote: NAP {{level}} m",
+    "loose": "Uden position, ikke tegnet: {{list}}",
+    "noPositions": "Ingen af sonderingerne har en position; planen kan ikke tegnes.",
+    "pointNone": "{{cpt}}: intet resultat på denne kote",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Pælestørrelse",
+    "summary": "Lavest på denne kote: {{cpt}} med {{rc}} kN.",
+    "svgAria": "Plan over sonderingerne med Rc;net;d for {{size}} på NAP {{level}} m",
+    "target": "Bæreevne",
+    "title": "Sonderinger på planen"
   },
   "material": {
     "concrete": "Beton",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Træets spidsdiameter [mm]"
   },
   "target": {
+    "extra": "Flere bæreevner til oversigten [kN]",
+    "extraPlaceholder": "f.eks. 160; 280",
     "hint": "For hver størrelse finder valgtabellen den korteste pæl, der når den nedre grænse. Over den øvre grænse er størrelsen rigelig.",
     "inverted": "Den øvre grænse skal ligge over den nedre grænse; tabellen bruger stadig det forrige bånd.",
     "legend": "Krævet bæreevne Rc;net;d",

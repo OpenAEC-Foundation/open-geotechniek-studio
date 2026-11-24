@@ -87,6 +87,20 @@
     "title": "Pile factors",
     "useProject": "Use project factors / self-declaration"
   },
+  "governing": {
+    "bestLevel": "at most {{rc}} kN at {{level}}",
+    "caption": "Highest toe level [m NAP] at which all CPTs reach the bearing capacity, with the governing CPT and its Rc;net;d. Click a cell to set the plan to that level.",
+    "cellAria": "{{target}} kN with {{size}} mm: NAP {{level}}, governing {{cpt}}",
+    "cellMissingAria": "{{target}} kN with {{size}} mm: not reached",
+    "noOption": "not reached on all CPTs with any of the sizes",
+    "option": "{{size}} at NAP {{level}}",
+    "or": " or ",
+    "tableAria": "Governing toe level per bearing capacity and pile size",
+    "target": "Rc;net;d ≥",
+    "title": "Governing overview",
+    "worst": "Most often governing:",
+    "worstCount": "({{n}} of {{total}})"
+  },
   "legend": {
     "chosen": "selected level",
     "over": "> {{max}} kN, ample",
@@ -118,6 +132,23 @@
     "materialFactor": "material factor",
     "negativeSkinFriction": "negative skin friction",
     "title": "Load"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "no result",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Toe level: NAP {{level}} m",
+    "loose": "Without position, not drawn: {{list}}",
+    "noPositions": "None of the CPTs has a position; the plan cannot be drawn.",
+    "pointNone": "{{cpt}}: no result at this level",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Pile size",
+    "summary": "Lowest at this level: {{cpt}} with {{rc}} kN.",
+    "svgAria": "Plan of the CPTs with Rc;net;d for {{size}} at NAP {{level}} m",
+    "target": "Bearing capacity",
+    "title": "CPTs on the plan"
   },
   "material": {
     "concrete": "Concrete",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Timber toe diameter [mm]"
   },
   "target": {
+    "extra": "More bearing capacities for the overview [kN]",
+    "extraPlaceholder": "e.g. 160; 280",
     "hint": "For each size, the selection table finds the shortest pile that reaches the lower limit. Above the upper limit the size is ample.",
     "inverted": "The upper limit must be above the lower limit; the table still uses the previous band.",
     "legend": "Required bearing capacity Rc;net;d",

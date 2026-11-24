@@ -87,6 +87,20 @@
     "title": "Paalfactoren",
     "useProject": "Projectfactoren / zelfverklaring gebruiken"
   },
+  "governing": {
+    "bestLevel": "hoogstens {{rc}} kN op {{level}}",
+    "caption": "Hoogste puntniveau [m NAP] waarop alle sonderingen het draagvermogen halen, met de maatgevende sondering en haar Rc;net;d. Klik een cel om de plattegrond op dat niveau te zetten.",
+    "cellAria": "{{target}} kN met {{size}} mm: NAP {{level}}, maatgevend {{cpt}}",
+    "cellMissingAria": "{{target}} kN met {{size}} mm: niet gehaald",
+    "noOption": "met geen van de maten gehaald op alle sonderingen",
+    "option": "{{size}} op NAP {{level}}",
+    "or": " of ",
+    "tableAria": "Maatgevend puntniveau per draagvermogen en paalmaat",
+    "target": "Rc;net;d ≥",
+    "title": "Maatgevend overzicht",
+    "worst": "Vaakst maatgevend:",
+    "worstCount": "({{n}} van {{total}})"
+  },
   "legend": {
     "chosen": "gekozen niveau",
     "over": "> {{max}} kN, ruim",
@@ -118,6 +132,23 @@
     "materialFactor": "materiaalfactor",
     "negativeSkinFriction": "negatieve kleef",
     "title": "Belasting"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "geen uitkomst",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Puntniveau: NAP {{level}} m",
+    "loose": "Zonder positie, niet getekend: {{list}}",
+    "noPositions": "Geen van de sonderingen heeft een positie; de plattegrond kan niet worden getekend.",
+    "pointNone": "{{cpt}}: geen uitkomst op dit niveau",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Paalmaat",
+    "summary": "Laagste op dit niveau: {{cpt}} met {{rc}} kN.",
+    "svgAria": "Plattegrond van de sonderingen met Rc;net;d voor {{size}} op NAP {{level}} m",
+    "target": "Draagvermogen",
+    "title": "Sonderingen op de plattegrond"
   },
   "material": {
     "concrete": "Beton",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Puntdiameter hout [mm]"
   },
   "target": {
+    "extra": "Meer draagvermogens voor het overzicht [kN]",
+    "extraPlaceholder": "bijv. 160; 280",
     "hint": "De keuzetabel zoekt per maat de kortste paal die de ondergrens haalt. Boven de bovengrens is de maat ruim.",
     "inverted": "De bovengrens moet boven de ondergrens liggen; de tabel rekent nog met de vorige band.",
     "legend": "Gezocht draagvermogen Rc;net;d",

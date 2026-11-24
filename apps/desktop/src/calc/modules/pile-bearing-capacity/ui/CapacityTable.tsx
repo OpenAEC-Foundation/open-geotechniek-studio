@@ -4,11 +4,12 @@ import type {Cpt} from '../../../../types/cpt';
 import type {PileInput} from '../types';
 import {getPileType} from '../catalog';
 import {
- band,chooseLevels,invalidReason,computeCapacityMatrix,defaultCapacityConfig,levelRange,matrixCellInput,parseSizes,parseToeLevels,standardSizes,
+ band,chooseLevels,invalidReason,computeCapacityMatrix,defaultCapacityConfig,levelRange,matrixCellInput,overviewTargets,parseSizes,parseTargets,parseToeLevels,standardSizes,
  type CapacityMatrix,type CapacityTableConfig,type CptMatrix,type SizeChoice,
 } from '../capacity-table';
 import {numberLocale} from '../../../i18n';
 import './capacity-table.css';
+import {GoverningOverview} from './GoverningOverview';
 import {OaIcon} from '../../../../components/icons/oaIcon';
 
 const kn=(n:number)=>n.toLocaleString(numberLocale(),{maximumFractionDigits:0});
@@ -56,6 +57,7 @@ export function CapacityTable({input,cpts,onChange,onOpen,cptId=null,onFocusCpt}
   {computed.error&&<p role="alert" className="capacity-grid-error">{computed.error}</p>}
   {!config.cptIds.length&&<p role="status">{t('table.selectCpt','Selecteer ten minste één sondering.')}</p>}
   {computed.m&&config.cptIds.length>0&&<>
+   {!focused&&<GoverningOverview m={computed.m} cpts={cpts} targetsKn={overviewTargets(config)} sizeLabel={sizeLabel} focus={id=>onFocusCpt?.(id)} />}
    {!focused&&<ChoiceTable m={computed.m} choices={computed.choices} sizeLabel={sizeLabel} open={open} focus={id=>onFocusCpt?.(id)} />}
    <Legend target={computed.m.target} />
    <div className={focused?'capacity-cpt-single':'capacity-cpt-list'}>
@@ -75,6 +77,9 @@ function Settings({input,cpts,config,update}:{input:PileInput;cpts:Map<string,Cp
  const [range,setRange]=useState({from:levelText(sorted[0]),to:levelText(sorted[sorted.length-1]),step:levelText(step)});
  const [list,setList]=useState(()=>config.toeNaps.map(levelText).join('\n'));
  const [min,setMin]=useState(String(config.targetKn.minKn)),[max,setMax]=useState(String(config.targetKn.maxKn));
+ const extraKey=config.targetsKn.join('; ');
+ const [extra,setExtra]=useState(extraKey);
+ useEffect(()=>setExtra(extraKey),[extraKey]);
  const [error,setError]=useState('');
  const {t}=useTranslation('calcPile');
  // Keuze voor een nieuw voorbeeld; valt terug op een geldige combinatie als de reeksen wijzigen.
@@ -99,6 +104,8 @@ function Settings({input,cpts,config,update}:{input:PileInput;cpts:Map<string,Cp
    </div>
    {targetError?<p role="alert" className="capacity-grid-error">{targetError}</p>
     :<p>{t('target.hint','De keuzetabel zoekt per maat de kortste paal die de ondergrens haalt. Boven de bovengrens is de maat ruim.')}</p>}
+   <label className="capacity-target-extra">{t('target.extra','Meer draagvermogens voor het overzicht [kN]')}<input inputMode="decimal" placeholder={t('target.extraPlaceholder','bijv. 160; 280')} value={extra} onChange={e=>setExtra(e.target.value)}
+    onBlur={()=>tryApply(()=>update({targetsKn:parseTargets(extra)}))} onKeyDown={e=>{if(e.key==='Enter')tryApply(()=>update({targetsKn:parseTargets(extra)}));}} /></label>
   </fieldset>
   <fieldset><legend>{t('sizes.legend','Paalmaten')}</legend>
    <label>{t('sizes.label','Paalmaten [mm]')}<input value={sizes} onChange={e=>setSizes(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')tryApply(()=>update({sizesMm:parseSizes(sizes)}));}} /></label>
