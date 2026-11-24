@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Anwendung",
-    "language": "Sprache"
+    "language": "Sprache",
+    "calculations": "Berechnungen",
+    "dragSnap": "Fangabstand beim Ziehen",
+    "dragSnapHint": "Niveaus, die Sie im Sondierdiagramm der Pfahlberechnungen (Druck und Zug) verschieben, springen auf Vielfache dieses Abstands. 0 = kein Fangen."
   },
   "appearance": {
     "theme": "Design",

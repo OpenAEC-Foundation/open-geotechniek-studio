@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { LANGUAGES, changeLanguage } from "../../i18n/config";
 import { getSetting, setSetting } from "../../store";
+import { DEFAULT_DRAG_SNAP_M, normalizeSnap, useDragSnapStore } from "../../store/useDragSnapStore";
 import { useAllExtensions, setExtension, type ExtensionId } from "../../hooks/useExtensions";
 import { CALC_REGISTRY } from "../../calc/framework/registry";
 import { moduleText } from "../../calc/framework/moduleText";
@@ -59,6 +60,9 @@ export default function SettingsDialog({
   // Draft state — only committed on Save
   const [draftTheme, setDraftTheme] = useState(theme);
   const [draftLang, setDraftLang] = useState("auto");
+  const snapM = useDragSnapStore((s) => s.snapM);
+  const setSnapM = useDragSnapStore((s) => s.setSnapM);
+  const [draftSnap, setDraftSnap] = useState(String(snapM));
   const [confirmResetOpen, setConfirmResetOpen] = useState(false);
 
   // Snapshot of original values when dialog opens, for reverting on Cancel
@@ -70,6 +74,7 @@ export default function SettingsDialog({
     if (open) {
       originalTheme.current = theme;
       setDraftTheme(theme);
+      setDraftSnap(String(useDragSnapStore.getState().snapM).replace(".", ","));
       getSetting("language", "auto").then((lang) => {
         originalLang.current = lang;
         setDraftLang(lang);
@@ -108,6 +113,8 @@ export default function SettingsDialog({
     setSetting("language", draftLang);
     changeLanguage(draftLang);
 
+    setSnapM(normalizeSnap(draftSnap));
+
     onClose();
   };
 
@@ -121,6 +128,7 @@ export default function SettingsDialog({
     applyTheme("light");
     setDraftLang("auto");
     changeLanguage("auto");
+    setDraftSnap(String(DEFAULT_DRAG_SNAP_M).replace(".", ","));
     setConfirmResetOpen(false);
   };
 
@@ -158,7 +166,7 @@ export default function SettingsDialog({
 
         <div className="settings-content">
           {activeTab === "general" && (
-            <GeneralTabContent lang={draftLang} onLangChange={handleLangPreview} />
+            <GeneralTabContent lang={draftLang} onLangChange={handleLangPreview} snap={draftSnap} onSnapChange={setDraftSnap} />
           )}
           {activeTab === "appearance" && (
             <AppearanceTabContent theme={draftTheme} onThemeSelect={handleThemePreview} />
@@ -199,9 +207,13 @@ export default function SettingsDialog({
 function GeneralTabContent({
   lang,
   onLangChange,
+  snap,
+  onSnapChange,
 }: {
   lang: string;
   onLangChange: (value: string) => void;
+  snap: string;
+  onSnapChange: (value: string) => void;
 }) {
   const { t } = useTranslation("settings");
 
@@ -217,6 +229,15 @@ function GeneralTabContent({
           style={{ width: 180 }}
         />
       </div>
+      <h3>{t("general.calculations", "Berekeningen")}</h3>
+      <div className="settings-row">
+        <label className="settings-label" htmlFor="settings-drag-snap">{t("general.dragSnap", "Snapafstand bij slepen")}</label>
+        <span className="settings-snap">
+          <input id="settings-drag-snap" className="settings-input" inputMode="decimal" value={snap} onChange={(e) => onSnapChange(e.target.value)} style={{ width: 80 }} />
+          <span>m</span>
+        </span>
+      </div>
+      <p className="settings-hint">{t("general.dragSnapHint", "Niveaus die je in de sondeergrafiek van de paalberekeningen (druk en trek) versleept, springen naar veelvouden van deze afstand. 0 = niet snappen.")}</p>
     </div>
   );
 }

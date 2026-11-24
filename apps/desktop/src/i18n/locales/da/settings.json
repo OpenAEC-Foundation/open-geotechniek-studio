@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Program",
-    "language": "Sprog"
+    "language": "Sprog",
+    "calculations": "Beregninger",
+    "dragSnap": "Fangafstand ved træk",
+    "dragSnapHint": "Koter, som du trækker i CPT-diagrammet for pæleberegningerne (tryk og træk), springer til multipla af denne afstand. 0 = ingen fang."
   },
   "appearance": {
     "theme": "Tema",

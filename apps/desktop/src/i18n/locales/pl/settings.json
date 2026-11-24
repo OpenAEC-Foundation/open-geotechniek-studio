@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Aplikacja",
-    "language": "Język"
+    "language": "Język",
+    "calculations": "Obliczenia",
+    "dragSnap": "Krok przyciągania przy przeciąganiu",
+    "dragSnapHint": "Poziomy przeciągane na wykresie CPT w obliczeniach pali (ściskanie i rozciąganie) przyciągają się do wielokrotności tej odległości. 0 = bez przyciągania."
   },
   "appearance": {
     "theme": "Motyw",

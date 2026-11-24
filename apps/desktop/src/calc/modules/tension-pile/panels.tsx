@@ -1,5 +1,6 @@
 // Rekenblad trekpaal: invoer, tekening van sondering en paal, en de uitwerking per laag.
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import { snapNap, useDragSnapStore } from "../../../store/useDragSnapStore";
 import type { PanelProps } from "../../framework/types";
 import { Hint, More, NumberInput, Row, Section } from "../../framework/views/SheetForm";
 import { useCptStore } from "../../../store/useCptStore";
@@ -80,8 +81,15 @@ export function InputPanel({ input: i, result, onChange }: Props) {
 
 const SOIL_FILL: Record<TensionSoil, string> = { sand: "#FF9800", clay: "#4CAF50", loam: "#8BC34A", peat: "#795548" };
 
-export function VisualPanel({ input: i, result }: Props) {
+/** Niveaus die in de tekening te verslepen zijn. */
+type DragField = "pileTopNap" | "pileToeNap" | "waterNap" | "excavationNap";
+
+export function VisualPanel({ input: i, result, onChange }: Props) {
   const cpt = useCptStore((s) => (i.cptId ? s.cpts.get(i.cptId) : undefined));
+  const svgRef = useRef<SVGSVGElement>(null);
+  const snapM = useDragSnapStore((s) => s.snapM);
+  // Schaal bij het begin van het slepen vastgezet: de tekening schaalt mee met paalkop en -punt.
+  const [drag, setDrag] = useState<{ field: DragField; startY: number; startNap: number; napPerPx: number } | null>(null);
   const view = useMemo(() => {
     if (!cpt || !cpt.points.length) return null;
     const ground = cpt.metadata.ground_level_nap ?? 0;
@@ -90,6 +98,27 @@ export function VisualPanel({ input: i, result }: Props) {
     const top = Math.max(ground, i.pileTopNap) + 0.5, bottom = Math.min(pts[pts.length - 1].nap, i.pileToeNap - 1);
     return { ground, pts, top, bottom };
   }, [cpt, i.pileTopNap, i.pileToeNap]);
+  useEffect(() => {
+    if (!drag || !onChange) return;
+    const move = (e: MouseEvent) => {
+      let nap = snapNap(drag.startNap - (e.clientY - drag.startY) * drag.napPerPx, snapM);
+      // De paal houdt lengte: punt minstens één snapstap onder de kop.
+      const gap = Math.max(snapM, 0.01);
+      if (drag.field === "pileToeNap") nap = Math.min(nap, snapNap(i.pileTopNap - gap, snapM));
+      if (drag.field === "pileTopNap") nap = Math.max(nap, snapNap(i.pileToeNap + gap, snapM));
+      if (nap !== i[drag.field]) onChange({ ...i, [drag.field]: nap });
+    };
+    const up = () => setDrag(null);
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+    return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up); };
+  }, [drag, onChange, i, snapM]);
+  useEffect(() => {
+    if (!drag) return;
+    const prev = document.body.style.cursor;
+    document.body.style.cursor = "ns-resize";
+    return () => { document.body.style.cursor = prev; };
+  }, [drag]);
   if (!view) return <p className="cs-hint">Kies een sondering om de paal te tekenen.</p>;
   const W = 420, H = 620, L = 54, R = 16, T = 22, B = 14, QC_MAX = 30;
   const stripX = L + 250, pileX = stripX + 44, plotW = 240;
@@ -100,7 +129,18 @@ export function VisualPanel({ input: i, result }: Props) {
   for (let v = Math.ceil(view.bottom / 2) * 2; v <= view.top; v += 2) ticks.push(v);
   const level = (nap: number, label: string, cls: string) => <g className={cls}><line x1={L} x2={W - R} y1={y(nap)} y2={y(nap)} /><text x={W - R} y={y(nap) - 3} textAnchor="end">{label} {fmt(nap, 2)}</text></g>;
   const pileW = Math.max(6, Math.min(26, i.sizeMm / 18));
-  return <svg className="tp-visual" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Sondering ${i.cptId} met trekpaal van NAP ${fmt(i.pileTopNap, 2)} tot ${fmt(i.pileToeNap, 2)} m`}>
+  const startDrag = (field: DragField, nap: number) => (e: ReactMouseEvent<SVGElement>) => {
+    const svg = svgRef.current;
+    if (!onChange || !svg) return;
+    e.preventDefault(); e.stopPropagation();
+    const rect = svg.getBoundingClientRect();
+    const scale = Math.min(rect.width / W, rect.height / H) || 1;
+    setDrag({ field, startY: e.clientY, startNap: nap, napPerPx: (view.top - view.bottom) / ((H - T - B) * scale) });
+  };
+  // Brede, onzichtbare greep over een niveau; alleen als het rekenblad te bewerken is.
+  const hit = (field: DragField, nap: number, x1 = L, x2 = W - R) => onChange &&
+    <line className={`tp-hit${drag?.field === field ? " tp-hit-active" : ""}`} x1={x1} x2={x2} y1={y(nap)} y2={y(nap)} onMouseDown={startDrag(field, nap)}><title>Sleep om te verplaatsen (snapt op {fmt(snapM, 2)} m)</title></line>;
+  return <svg ref={svgRef} className={`tp-visual${drag ? " tp-dragging" : ""}`} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Sondering ${i.cptId} met trekpaal van NAP ${fmt(i.pileTopNap, 2)} tot ${fmt(i.pileToeNap, 2)} m`}>
     <text x={L} y={12} className="tp-axis-title">qc [MPa]</text>
     {[0, 10, 20, 30].map((v) => <g key={v} className="tp-grid"><line x1={x(v)} x2={x(v)} y1={T} y2={H - B} /><text x={x(v)} y={T - 4} textAnchor="middle">{v}</text></g>)}
     {ticks.map((v) => <g key={v} className="tp-grid"><line x1={L} x2={L + plotW} y1={y(v)} y2={y(v)} /><text x={L - 6} y={y(v) + 3} textAnchor="end">{fmt(v, 0)}</text></g>)}
@@ -115,6 +155,11 @@ export function VisualPanel({ input: i, result }: Props) {
     {i.excavationNap !== undefined && i.excavationNap < view.ground - 1e-6 && level(i.excavationNap, "ontgraving", "tp-level tp-level-exc")}
     {level(i.waterNap, "grondwater", "tp-level tp-level-water")}
     {level(i.pileToeNap, "paalpunt", "tp-level")}
+    {onChange && <text className="tp-top-label" x={pileX + pileW + 4} y={y(i.pileTopNap) + 3}>paalkop {fmt(i.pileTopNap, 2)}</text>}
+    {i.excavationNap !== undefined && i.excavationNap < view.ground - 1e-6 && hit("excavationNap", i.excavationNap)}
+    {hit("waterNap", i.waterNap)}
+    {hit("pileToeNap", i.pileToeNap)}
+    {hit("pileTopNap", i.pileTopNap, pileX - 10, pileX + pileW + 70)}
     <g className="tp-legend" transform={`translate(${L + 6} ${H - B - 44})`}>
       <rect className="tp-applied" width="12" height="8" /><text x="16" y="8">qc in rekening (na reductie en afsnuiten)</text>
       <line className="tp-qc" x1="0" x2="12" y1="18" y2="18" /><text x="16" y="21">qc gemeten</text>

@@ -342,3 +342,6 @@
 .brand-preview-row { display: flex; gap: 8px; align-items: flex-start; }
 .brand-preview-row .brand-preview { flex: 1; }
 .brand-cover-thumb { height: 120px; border: 1px solid var(--theme-border-subtle); box-shadow: 0 1px 4px rgb(0 0 0 / .12); }
+
+.settings-snap { display: inline-flex; align-items: center; gap: 6px; }
+.settings-hint { margin: 4px 0 0; font-size: 11px; color: var(--theme-dialog-label, #666); line-height: 1.4; }

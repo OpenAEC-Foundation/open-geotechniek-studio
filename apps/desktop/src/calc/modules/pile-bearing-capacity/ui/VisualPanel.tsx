@@ -1,4 +1,5 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/ui/VisualPanel.tsx
+import { snapNap, useDragSnapStore } from "../../../../store/useDragSnapStore";
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { fmtNumber } from "../../../i18n";
@@ -829,8 +830,9 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
 
   // ─── Drag-to-edit ──────────────────────────────────────────────
   // Mouse-Y in screen-px → viewBox-px → NAP-m via dezelfde lineaire
-  // mapping als napToY (geïnverteerd). Snappen op 0,05 m raster.
+  // mapping als napToY (geïnverteerd). Snappen op de ingestelde afstand (standaard 0,25 m).
   const draggable = !!onChange;
+  const snapM = useDragSnapStore((s) => s.snapM);
 
   const startDrag = (field: DraggableField, startNap: number) =>
     (e: ReactMouseEvent<SVGElement>) => {
@@ -855,10 +857,10 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
       // NAP increases UPWARDS while SVG-y increases DOWNWARDS — dus -dy.
       const napPerVbPx = (bounds.napTop - bounds.napBot) / PLOT_H;
       let newNap = drag.startNap - dyVb * napPerVbPx;
-      // Snap to nearest 0,05 m. De extra toFixed(2)-ronde haalt de
-      // binaire-float-staart weg (82/20 → 4.1000000000000005) die anders
-      // letterlijk in de number-inputs van het InputPanel verscheen.
-      newNap = Number((Math.round(newNap * 20) / 20).toFixed(2));
+      // Snappen op de ingestelde afstand; snapNap rondt de binaire-float-staart
+      // weg (82/20 → 4.1000000000000005) die anders letterlijk in de
+      // number-inputs van het InputPanel verscheen.
+      newNap = snapNap(newNap, snapM);
       // Voorkom no-op-updates (zelfde waarde → geen onChange-storm).
       // posKleefTopNap kan undefined zijn in oude IFCX-files; fall-back
       // naar negKleefBottomNap (default = pos-kleef begint waar neg-kleef
@@ -877,7 +879,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
-  }, [drag, onChange, input, bounds.napTop, bounds.napBot]);
+  }, [drag, onChange, input, bounds.napTop, bounds.napBot, snapM]);
 
   // ─── Pan-to-shift (alleen bij ingezoomd) ───────────────────────
   useEffect(() => {

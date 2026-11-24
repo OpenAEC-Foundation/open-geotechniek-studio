@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Application",
-    "language": "Langue"
+    "language": "Langue",
+    "calculations": "Calculs",
+    "dragSnap": "Pas d’accrochage lors du glissement",
+    "dragSnapHint": "Les niveaux que vous faites glisser dans le graphique CPT des calculs de pieux (compression et traction) s’accrochent aux multiples de cette distance. 0 = pas d’accrochage."
   },
   "appearance": {
     "theme": "Thème",
