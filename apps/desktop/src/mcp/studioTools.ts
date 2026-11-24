@@ -102,7 +102,7 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
         return { ...layer };
       });
     } else if (key === 'capacityTable') {
-      const config=object(value,'Draagvermogentabel');keys(config,['cptIds','toeNaps','sizesMm','targetKn','examples']);
+      const config=object(value,'Draagvermogentabel');keys(config,['cptIds','toeNaps','sizesMm','targetKn','targetsKn','examples']);
       validateCapacityTable(config as CapacityTableConfig);
       if(config.sizesMm!==undefined)config.sizesMm=numberList(config.sizesMm,'Paalmaten').map(v=>{if(v<=0)throw new Error('Paalmaten moeten positief zijn');return v;});
       if(config.targetKn!==undefined){const t=object(config.targetKn,'Zoekband');keys(t,['minKn','maxKn']);if(!(number(t.minKn,'minKn')>=0)||!(number(t.maxKn,'maxKn')>Number(t.minKn)))throw new Error('De bovengrens moet boven de ondergrens liggen');}

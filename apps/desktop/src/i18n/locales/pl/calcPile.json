@@ -87,6 +87,20 @@
     "title": "Współczynniki pala",
     "useProject": "Użyj współczynników projektowych / własnej deklaracji"
   },
+  "governing": {
+    "bestLevel": "najwyżej {{rc}} kN na {{level}}",
+    "caption": "Najwyższy poziom podstawy [m NAP], na którym wszystkie sondowania CPT osiągają nośność, z miarodajnym sondowaniem i jego Rc;net;d. Kliknij komórkę, aby ustawić plan na tym poziomie.",
+    "cellAria": "{{target}} kN przy {{size}} mm: NAP {{level}}, miarodajne {{cpt}}",
+    "cellMissingAria": "{{target}} kN przy {{size}} mm: nie osiągnięto",
+    "noOption": "nie osiągnięto we wszystkich sondowaniach CPT dla żadnego z wymiarów",
+    "option": "{{size}} na NAP {{level}}",
+    "or": " lub ",
+    "tableAria": "Miarodajny poziom podstawy dla nośności i wymiaru pala",
+    "target": "Rc;net;d ≥",
+    "title": "Zestawienie miarodajne",
+    "worst": "Najczęściej miarodajne:",
+    "worstCount": "({{n}} z {{total}})"
+  },
   "legend": {
     "chosen": "wybrany poziom",
     "over": "> {{max}} kN, z zapasem",
@@ -118,6 +132,23 @@
     "materialFactor": "współczynnik materiałowy",
     "negativeSkinFriction": "tarcie negatywne",
     "title": "Obciążenie"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "brak wyniku",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Poziom podstawy: NAP {{level}} m",
+    "loose": "Bez położenia, nie narysowano: {{list}}",
+    "noPositions": "Żadne sondowanie CPT nie ma położenia; nie można narysować planu.",
+    "pointNone": "{{cpt}}: brak wyniku na tym poziomie",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Wymiar pala",
+    "summary": "Najniższa wartość na tym poziomie: {{cpt}}, {{rc}} kN.",
+    "svgAria": "Plan sondowań CPT z Rc;net;d dla {{size}} na NAP {{level}} m",
+    "target": "Nośność",
+    "title": "Sondowania CPT na planie"
   },
   "material": {
     "concrete": "Beton",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Średnica podstawy pala drewnianego [mm]"
   },
   "target": {
+    "extra": "Dodatkowe nośności do zestawienia [kN]",
+    "extraPlaceholder": "np. 160; 280",
     "hint": "Dla każdego wymiaru tabela doboru wyszukuje najkrótszy pal osiągający dolną granicę. Powyżej górnej granicy wymiar jest z zapasem.",
     "inverted": "Górna granica musi być powyżej dolnej; tabela nadal używa poprzedniego zakresu.",
     "legend": "Wymagana nośność Rc;net;d",

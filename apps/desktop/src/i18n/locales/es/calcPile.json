@@ -87,6 +87,20 @@
     "title": "Coeficientes del pilote",
     "useProject": "Usar coeficientes del proyecto / declaración propia"
   },
+  "governing": {
+    "bestLevel": "como máximo {{rc}} kN a {{level}}",
+    "caption": "Cota de punta más alta [m NAP] en la que todos los CPT alcanzan la capacidad portante, con el CPT determinante y su Rc;net;d. Haga clic en una celda para situar el plano en esa cota.",
+    "cellAria": "{{target}} kN con {{size}} mm: NAP {{level}}, determinante {{cpt}}",
+    "cellMissingAria": "{{target}} kN con {{size}} mm: no alcanzado",
+    "noOption": "no alcanzado en todos los CPT con ninguna de las dimensiones",
+    "option": "{{size}} a NAP {{level}}",
+    "or": " o ",
+    "tableAria": "Cota de punta determinante por capacidad portante y dimensión del pilote",
+    "target": "Rc;net;d ≥",
+    "title": "Resumen determinante",
+    "worst": "Determinante con más frecuencia:",
+    "worstCount": "({{n}} de {{total}})"
+  },
   "legend": {
     "chosen": "cota seleccionada",
     "over": "> {{max}} kN, holgado",
@@ -118,6 +132,23 @@
     "materialFactor": "coeficiente del material",
     "negativeSkinFriction": "rozamiento negativo",
     "title": "Carga"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "sin resultado",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Cota de punta: NAP {{level}} m",
+    "loose": "Sin posición, no dibujado: {{list}}",
+    "noPositions": "Ningún CPT tiene posición; no se puede dibujar el plano.",
+    "pointNone": "{{cpt}}: sin resultado en esta cota",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Dimensión del pilote",
+    "summary": "Valor más bajo en esta cota: {{cpt}} con {{rc}} kN.",
+    "svgAria": "Plano de los CPT con Rc;net;d para {{size}} a NAP {{level}} m",
+    "target": "Capacidad portante",
+    "title": "CPT en el plano"
   },
   "material": {
     "concrete": "Hormigón",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Diámetro de punta de la madera [mm]"
   },
   "target": {
+    "extra": "Más capacidades portantes para el resumen [kN]",
+    "extraPlaceholder": "p. ej. 160; 280",
     "hint": "Para cada dimensión, la tabla de selección busca el pilote más corto que alcanza el límite inferior. Por encima del límite superior, la dimensión es holgada.",
     "inverted": "El límite superior debe estar por encima del límite inferior; la tabla sigue usando la banda anterior.",
     "legend": "Capacidad portante requerida Rc;net;d",

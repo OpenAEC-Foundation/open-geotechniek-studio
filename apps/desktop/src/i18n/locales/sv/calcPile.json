@@ -87,6 +87,20 @@
     "title": "Pålfaktorer",
     "useProject": "Använd projektfaktorer / egen deklaration"
   },
+  "governing": {
+    "bestLevel": "högst {{rc}} kN på {{level}}",
+    "caption": "Högsta spetsnivå [m NAP] där alla CPT-sonderingar uppnår bärförmågan, med den dimensionerande sonderingen och dess Rc;net;d. Klicka på en cell för att ställa planen på den nivån.",
+    "cellAria": "{{target}} kN med {{size}} mm: NAP {{level}}, dimensionerande {{cpt}}",
+    "cellMissingAria": "{{target}} kN med {{size}} mm: ej uppnådd",
+    "noOption": "uppnås inte för alla CPT-sonderingar med någon av dimensionerna",
+    "option": "{{size}} på NAP {{level}}",
+    "or": " eller ",
+    "tableAria": "Dimensionerande spetsnivå per bärförmåga och påldimension",
+    "target": "Rc;net;d ≥",
+    "title": "Dimensionerande översikt",
+    "worst": "Oftast dimensionerande:",
+    "worstCount": "({{n}} av {{total}})"
+  },
   "legend": {
     "chosen": "vald nivå",
     "over": "> {{max}} kN, rikligt",
@@ -118,6 +132,23 @@
     "materialFactor": "materialfaktor",
     "negativeSkinFriction": "negativ mantelfriktion",
     "title": "Last"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "inget resultat",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Spetsnivå: NAP {{level}} m",
+    "loose": "Utan position, inte ritad: {{list}}",
+    "noPositions": "Ingen av CPT-sonderingarna har en position; planen kan inte ritas.",
+    "pointNone": "{{cpt}}: inget resultat på denna nivå",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Påldimension",
+    "summary": "Lägst på denna nivå: {{cpt}} med {{rc}} kN.",
+    "svgAria": "Plan över CPT-sonderingarna med Rc;net;d för {{size}} på NAP {{level}} m",
+    "target": "Bärförmåga",
+    "title": "CPT-sonderingar på planen"
   },
   "material": {
     "concrete": "Betong",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Trädiameter vid spetsen [mm]"
   },
   "target": {
+    "extra": "Fler bärförmågor för översikten [kN]",
+    "extraPlaceholder": "t.ex. 160; 280",
     "hint": "För varje dimension söker urvalstabellen den kortaste påle som når den undre gränsen. Över den övre gränsen är dimensionen riklig.",
     "inverted": "Den övre gränsen måste ligga över den undre; tabellen använder fortfarande det föregående intervallet.",
     "legend": "Erforderlig bärförmåga Rc;net;d",

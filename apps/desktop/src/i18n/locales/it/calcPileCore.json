@@ -67,7 +67,8 @@
       "levelRangeInvalid": "Inserisci una quota superiore e inferiore finita e un passo positivo.",
       "tooManyLevels": "Al massimo {{max}} quote della punta; scegli un passo maggiore.",
       "sizesNotPositive": "Le dimensioni dei pali devono essere positive.",
-      "targetRangeInvalid": "Il limite superiore della capacità portante richiesta deve essere superiore al limite inferiore."
+      "targetRangeInvalid": "Il limite superiore della capacità portante richiesta deve essere superiore al limite inferiore.",
+      "targetsInvalid": "Inserire capacità portanti univoche e positive in kN."
     },
     "notes": {
       "profileAboveToe": "Il profilo stratigrafico termina sopra la punta del palo. Verifica ed estendi gli strati di terreno; gli strati mancanti lungo il fusto non contribuiscono.",

@@ -87,6 +87,20 @@
     "title": "Coeficientes da estaca",
     "useProject": "Usar coeficientes do projeto / autodeclaração"
   },
+  "governing": {
+    "bestLevel": "no máximo {{rc}} kN a {{level}}",
+    "caption": "Cota da ponta mais alta [m NAP] em que todos os CPT atingem a capacidade de carga, com o CPT determinante e o seu Rc;net;d. Clique numa célula para colocar a planta nessa cota.",
+    "cellAria": "{{target}} kN com {{size}} mm: NAP {{level}}, determinante {{cpt}}",
+    "cellMissingAria": "{{target}} kN com {{size}} mm: não atingido",
+    "noOption": "não atingido em todos os CPT com nenhuma das dimensões",
+    "option": "{{size}} a NAP {{level}}",
+    "or": " ou ",
+    "tableAria": "Cota da ponta determinante por capacidade de carga e dimensão da estaca",
+    "target": "Rc;net;d ≥",
+    "title": "Resumo determinante",
+    "worst": "Mais vezes determinante:",
+    "worstCount": "({{n}} de {{total}})"
+  },
   "legend": {
     "chosen": "cota selecionada",
     "over": "> {{max}} kN, folgado",
@@ -118,6 +132,23 @@
     "materialFactor": "coeficiente do material",
     "negativeSkinFriction": "atrito negativo",
     "title": "Carga"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "sem resultado",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Cota da ponta: NAP {{level}} m",
+    "loose": "Sem posição, não desenhado: {{list}}",
+    "noPositions": "Nenhum CPT tem posição; a planta não pode ser desenhada.",
+    "pointNone": "{{cpt}}: sem resultado nesta cota",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Dimensão da estaca",
+    "summary": "Valor mais baixo nesta cota: {{cpt}} com {{rc}} kN.",
+    "svgAria": "Planta dos CPT com Rc;net;d para {{size}} a NAP {{level}} m",
+    "target": "Capacidade de carga",
+    "title": "CPT na planta"
   },
   "material": {
     "concrete": "Betão",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Diâmetro da ponta da madeira [mm]"
   },
   "target": {
+    "extra": "Mais capacidades de carga para o resumo [kN]",
+    "extraPlaceholder": "p. ex. 160; 280",
     "hint": "Para cada dimensão, a tabela de seleção procura a estaca mais curta que atinge o limite inferior. Acima do limite superior, a dimensão é folgada.",
     "inverted": "O limite superior deve ser superior ao limite inferior; a tabela continua a usar o intervalo anterior.",
     "legend": "Capacidade de carga necessária Rc;net;d",

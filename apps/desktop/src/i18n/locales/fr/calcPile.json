@@ -87,6 +87,20 @@
     "title": "Facteurs de pieu",
     "useProject": "Utiliser les facteurs du projet / auto-déclaration"
   },
+  "governing": {
+    "bestLevel": "au plus {{rc}} kN à {{level}}",
+    "caption": "Niveau de pointe le plus haut [m NAP] auquel tous les essais CPT atteignent la capacité portante, avec l’essai CPT déterminant et son Rc;net;d. Cliquez sur une cellule pour régler le plan sur ce niveau.",
+    "cellAria": "{{target}} kN avec {{size}} mm : NAP {{level}}, déterminant {{cpt}}",
+    "cellMissingAria": "{{target}} kN avec {{size}} mm : non atteint",
+    "noOption": "atteint sur tous les essais CPT avec aucune des dimensions",
+    "option": "{{size}} à NAP {{level}}",
+    "or": " ou ",
+    "tableAria": "Niveau de pointe déterminant par capacité portante et dimension de pieu",
+    "target": "Rc;net;d ≥",
+    "title": "Vue d’ensemble déterminante",
+    "worst": "Le plus souvent déterminant :",
+    "worstCount": "({{n}} sur {{total}})"
+  },
   "legend": {
     "chosen": "niveau choisi",
     "over": "> {{max}} kN, large marge",
@@ -118,6 +132,23 @@
     "materialFactor": "facteur de matériau",
     "negativeSkinFriction": "frottement négatif",
     "title": "Charge"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "aucun résultat",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Niveau de pointe : NAP {{level}} m",
+    "loose": "Sans position, non dessiné : {{list}}",
+    "noPositions": "Aucun essai CPT n’a de position ; le plan ne peut pas être dessiné.",
+    "pointNone": "{{cpt}} : aucun résultat à ce niveau",
+    "pointTitle": "{{cpt}} : {{rc}} kN",
+    "size": "Dimension de pieu",
+    "summary": "Valeur la plus basse à ce niveau : {{cpt}} avec {{rc}} kN.",
+    "svgAria": "Plan des essais CPT avec Rc;net;d pour {{size}} à NAP {{level}} m",
+    "target": "Capacité portante",
+    "title": "Essais CPT sur le plan"
   },
   "material": {
     "concrete": "Béton",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Diamètre de pointe du bois [mm]"
   },
   "target": {
+    "extra": "Autres capacités portantes pour la vue d’ensemble [kN]",
+    "extraPlaceholder": "p. ex. 160; 280",
     "hint": "Pour chaque dimension, le tableau de choix recherche le pieu le plus court qui atteint la limite inférieure. Au-delà de la limite supérieure, la dimension offre une large marge.",
     "inverted": "La limite supérieure doit être au-dessus de la limite inférieure ; le tableau utilise encore la plage précédente.",
     "legend": "Capacité portante requise Rc;net;d",

@@ -67,7 +67,8 @@
       "levelRangeInvalid": "Indtast en endelig top- og bundkote og et positivt trin.",
       "tooManyLevels": "Højst {{max}} spidskoter; vælg et større trin.",
       "sizesNotPositive": "Pælestørrelser skal være positive.",
-      "targetRangeInvalid": "Den øvre grænse for den ønskede bæreevne skal ligge over den nedre grænse."
+      "targetRangeInvalid": "Den øvre grænse for den ønskede bæreevne skal ligge over den nedre grænse.",
+      "targetsInvalid": "Angiv unikke, positive bæreevner i kN."
     },
     "notes": {
       "profileAboveToe": "Jordprofilen ender over pælespidsen. Kontrollér og forlæng jordlagene; manglende skaftlag bidrager ikke.",

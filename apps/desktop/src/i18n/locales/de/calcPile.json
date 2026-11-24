@@ -87,6 +87,20 @@
     "title": "Pfahlfaktoren",
     "useProject": "Projektfaktoren / Eigenerklärung verwenden"
   },
+  "governing": {
+    "bestLevel": "höchstens {{rc}} kN auf {{level}}",
+    "caption": "Höchste Pfahlfußtiefe [m NAP], bei der alle Sondierungen die Tragfähigkeit erreichen, mit der maßgebenden Sondierung und ihrem Rc;net;d. Klicken Sie auf eine Zelle, um den Lageplan auf diese Tiefe zu stellen.",
+    "cellAria": "{{target}} kN mit {{size}} mm: NAP {{level}}, maßgebend {{cpt}}",
+    "cellMissingAria": "{{target}} kN mit {{size}} mm: nicht erreicht",
+    "noOption": "mit keiner der Abmessungen bei allen Sondierungen erreicht",
+    "option": "{{size}} auf NAP {{level}}",
+    "or": " oder ",
+    "tableAria": "Maßgebende Pfahlfußtiefe je Tragfähigkeit und Pfahlabmessung",
+    "target": "Rc;net;d ≥",
+    "title": "Maßgebende Übersicht",
+    "worst": "Am häufigsten maßgebend:",
+    "worstCount": "({{n}} von {{total}})"
+  },
   "legend": {
     "chosen": "gewählte Tiefe",
     "over": "> {{max}} kN, reichlich",
@@ -118,6 +132,23 @@
     "materialFactor": "Materialfaktor",
     "negativeSkinFriction": "negative Mantelreibung",
     "title": "Last"
+  },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "kein Ergebnis",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Pfahlfußtiefe: NAP {{level}} m",
+    "loose": "Ohne Position, nicht gezeichnet: {{list}}",
+    "noPositions": "Keine der Sondierungen hat eine Position; der Lageplan kann nicht gezeichnet werden.",
+    "pointNone": "{{cpt}}: kein Ergebnis auf dieser Tiefe",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Pfahlabmessung",
+    "summary": "Niedrigster Wert auf dieser Tiefe: {{cpt}} mit {{rc}} kN.",
+    "svgAria": "Lageplan der Sondierungen mit Rc;net;d für {{size}} auf NAP {{level}} m",
+    "target": "Tragfähigkeit",
+    "title": "Sondierungen im Lageplan"
   },
   "material": {
     "concrete": "Beton",
@@ -296,6 +327,8 @@
     "toeDiameterAria": "Fußdurchmesser Holz [mm]"
   },
   "target": {
+    "extra": "Weitere Tragfähigkeiten für die Übersicht [kN]",
+    "extraPlaceholder": "z. B. 160; 280",
     "hint": "Die Auswahltabelle sucht je Abmessung den kürzesten Pfahl, der die Untergrenze erreicht. Oberhalb der Obergrenze ist die Abmessung reichlich bemessen.",
     "inverted": "Die Obergrenze muss über der Untergrenze liegen; die Tabelle rechnet noch mit dem vorherigen Bereich.",
     "legend": "Erforderliche Tragfähigkeit Rc;net;d",

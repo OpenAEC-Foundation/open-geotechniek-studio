@@ -67,7 +67,8 @@
       "levelRangeInvalid": "Geben Sie eine endliche obere und untere Höhe sowie einen positiven Schritt an.",
       "tooManyLevels": "Höchstens {{max}} Pfahlfußtiefen; wählen Sie einen größeren Schritt.",
       "sizesNotPositive": "Pfahlabmessungen müssen positiv sein.",
-      "targetRangeInvalid": "Die Obergrenze der erforderlichen Tragfähigkeit muss über der Untergrenze liegen."
+      "targetRangeInvalid": "Die Obergrenze der erforderlichen Tragfähigkeit muss über der Untergrenze liegen.",
+      "targetsInvalid": "Geben Sie eindeutige, positive Tragfähigkeiten in kN an."
     },
     "notes": {
       "profileAboveToe": "Das Bodenprofil endet oberhalb des Pfahlfußes. Prüfen und verlängern Sie die Bodenschichten; fehlende Mantelschichten tragen nicht bei.",
