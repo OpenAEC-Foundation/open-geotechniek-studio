@@ -37,6 +37,8 @@ export interface Well {
   stats: WellStats | null;
   /** Watervoerend pakket van het filter (1, 2, …); 0 = deklaag; null = onbekend. */
   aquifer: number | null;
+  /** Verloop als maandgemiddelden ["jjjj-mm", m NAP]; ontbreekt bij oudere projecten. */
+  monthly?: [string, number][];
 }
 
 export function expand(b: Bbox, m: number): Bbox {
@@ -125,7 +127,9 @@ export async function fetchWells(b: Bbox, center: { x: number; y: number }, maxS
         const r = await fetch(`${BRO_CSV}/${id}?rapportagetype=compact`, { signal });
         return r.ok ? parseGldCsv(await r.text()) : [];
       }));
-      w.stats = seriesStats(parts.flat().sort((a, c) => a.t.getTime() - c.t.getTime()));
+      const all = parts.flat().sort((a, c) => a.t.getTime() - c.t.getTime());
+      w.stats = seriesStats(all);
+      w.monthly = monthlyMeans(all);
     } catch { w.stats = null; }
   }));
   return wells.sort((a, c) => dist(a) - dist(c));
@@ -138,4 +142,16 @@ export function wellAquifer(screenMid: number | null, packs: { index: number; to
   const first = packs.find((p) => p.index === 1);
   if (first?.top !== null && first?.top !== undefined && screenMid > first.top) return 0;
   return null;
+}
+
+/** Maandgemiddelden van een meetreeks, op volgorde; compact genoeg om in het projectbestand te bewaren. */
+export function monthlyMeans(series: { t: Date; v: number }[]): [string, number][] {
+  const by = new Map<string, { s: number; n: number }>();
+  for (const p of series) {
+    const k = p.t.toISOString().slice(0, 7);
+    const e = by.get(k) ?? { s: 0, n: 0 };
+    e.s += p.v; e.n += 1;
+    by.set(k, e);
+  }
+  return [...by.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([k, e]) => [k, Math.round((e.s / e.n) * 1000) / 1000]);
 }

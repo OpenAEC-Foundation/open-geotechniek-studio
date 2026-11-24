@@ -100,3 +100,11 @@
 .soil3d-tab-close svg[data-icon] { width: 12px; height: 12px; }
 .soil3d-tab-more { width: 22px; margin-left: -2px; }
 .soil3d-viewbar .soil3d-viewbar-icon { display: grid; place-items: center; padding: 2px 4px; }
+
+/* Verloop van de grondwaterstand in het eigenschappenpaneel */
+.soil3d-level-chart { display: block; width: 100%; height: auto; margin: 4px 0 6px; font: 9px var(--oa-font-numbers, sans-serif); }
+.soil3d-level-chart text { fill: var(--oa-text-secondary); }
+.soil3d-level-chart .grid { stroke: var(--oa-border); stroke-width: 0.5; }
+.soil3d-level-chart .axis { stroke: var(--oa-text-secondary); stroke-width: 0.8; }
+.soil3d-props-note { margin: 4px 0 0; font-size: 11px; color: var(--oa-text-secondary); }
+.soil3d-props-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }

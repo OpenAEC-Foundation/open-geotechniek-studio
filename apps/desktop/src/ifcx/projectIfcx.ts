@@ -174,7 +174,16 @@ export function cylinderMesh(x: number, y: number, bottom: number, top: number, 
  * Buitenhuid van één grondsoort in het voxelraster: alleen de zijden naar
  * een andere zone of leegte, zodat elke stratum een gesloten oppervlak is.
  */
-export function stratumMesh(grid: VoxelGrid, zone: number) {
+/** Draaiing van een lokaal punt naar de RD-assen; de oorsprong blijft gelijk. */
+export type LocalXf = (east: number, north: number) => [number, number];
+const identity: LocalXf = (e, n) => [e, n];
+export function rotationXf(rotation: number | undefined): LocalXf {
+  if (!rotation) return identity;
+  const c = Math.cos(rotation), s = Math.sin(rotation);
+  return (e, n) => [e * c - n * s, e * s + n * c];
+}
+
+export function stratumMesh(grid: VoxelGrid, zone: number, xf: LocalXf = identity) {
   const { nx, ny, nz, east0, north0, dx, dy, topNap, dz } = grid;
   const at = (i: number, j: number, k: number) =>
     i < 0 || j < 0 || k < 0 || i >= nx || j >= ny || k >= nz ? 0 : grid.zone[i + nx * (j + ny * k)];
@@ -183,7 +192,7 @@ export function stratumMesh(grid: VoxelGrid, zone: number) {
   for (let k = 0; k < nz; k++) for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
     if (at(i, j, k) !== zone) continue;
     const x0 = X(i), x1 = X(i + 1), y0 = Y(j), y1 = Y(j + 1), zt = Z(k), zb = Z(k + 1);
-    const v = (x: number, y: number, z: number) => m.vertex(x, y, z);
+    const v = (x: number, y: number, z: number) => { const [px, py] = xf(x, y); return m.vertex(px, py, z); };
     if (at(i - 1, j, k) !== zone) m.quad(v(x0, y0, zb), v(x0, y0, zt), v(x0, y1, zt), v(x0, y1, zb));
     if (at(i + 1, j, k) !== zone) m.quad(v(x1, y0, zb), v(x1, y1, zb), v(x1, y1, zt), v(x1, y0, zt));
     if (at(i, j - 1, k) !== zone) m.quad(v(x0, y0, zb), v(x1, y0, zb), v(x1, y0, zt), v(x0, y0, zt));
@@ -195,13 +204,19 @@ export function stratumMesh(grid: VoxelGrid, zone: number) {
 }
 
 /** Driehoeksnet door de celmiddens van een geïnterpoleerd oppervlak. */
-export function surfaceMesh(s: Surface) {
+export function surfaceMesh(s: Surface, xf: LocalXf = identity) {
   const m = new MeshBuilder();
   const idx: number[] = [];
-  for (let j = 0; j < s.ny; j++) for (let i = 0; i < s.nx; i++)
-    idx.push(m.vertex(s.east0 + (i + 0.5) * s.dx, s.north0 + (j + 0.5) * s.dy, s.values[i + s.nx * j]));
+  // Cellen buiten het bereik van de sonderingen (NaN) blijven open.
+  for (let j = 0; j < s.ny; j++) for (let i = 0; i < s.nx; i++) {
+    const v = s.values[i + s.nx * j];
+    if (!Number.isFinite(v)) { idx.push(-1); continue; }
+    const [px, py] = xf(s.east0 + (i + 0.5) * s.dx, s.north0 + (j + 0.5) * s.dy);
+    idx.push(m.vertex(px, py, v));
+  }
   for (let j = 0; j + 1 < s.ny; j++) for (let i = 0; i + 1 < s.nx; i++) {
     const a = idx[i + s.nx * j], b = idx[i + 1 + s.nx * j], c = idx[i + 1 + s.nx * (j + 1)], d = idx[i + s.nx * (j + 1)];
+    if (a < 0 || b < 0 || c < 0 || d < 0) continue;
     m.quad(a, b, c, d);
   }
   return m;
@@ -292,6 +307,8 @@ export function buildProjectIfcx(input: ProjectIfcxInput): IfcxDocument {
   };
 
   const origin = model?.origin ?? { x: 0, y: 0 };
+  // Het model kan gedraaid liggen; de export staat langs de RD-assen rond dezelfde oorsprong.
+  const xf = rotationXf(model?.rotation);
   const root = P("root"), project = P("project"), site = P("site");
   const siteChildren: Record<string, string> = {};
 
@@ -364,7 +381,7 @@ export function buildProjectIfcx(input: ProjectIfcxInput): IfcxDocument {
       "bsi::ifc::prop::name": name,
       "ogs::cpt": {
         id: cpt.id, sourceFile: cpt.metadata.source_file ?? "", date: cpt.metadata.date ?? "", equipment: cpt.metadata.equipment ?? "",
-        xRd: r3(cpt.position?.x_rd ?? origin.x + col.east), yRd: r3(cpt.position?.y_rd ?? origin.y + col.north),
+        xRd: r3(cpt.position?.x_rd ?? origin.x + xf(col.east, col.north)[0]), yRd: r3(cpt.position?.y_rd ?? origin.y + xf(col.east, col.north)[1]),
         groundLevelNap: r3(col.groundNap), finalDepth: r3(maxDepth), pointCount: cpt.points.length,
       },
     };
@@ -386,7 +403,7 @@ export function buildProjectIfcx(input: ProjectIfcxInput): IfcxDocument {
         attributes: {
           "bsi::ifc::prop::name": zoneName(l.zone),
           "ogs::cpt::layer": { cptId: cpt.id, zone: l.zone, soil: zoneName(l.zone), method: "indicative-qc-rf", topNap: r3(l.topNap), bottomNap: r3(l.bottomNap) },
-          "usd::usdgeom::mesh": cylinderMesh(col.east, col.north, l.bottomNap, l.topNap, radius),
+          "usd::usdgeom::mesh": cylinderMesh(...xf(col.east, col.north), l.bottomNap, l.topNap, radius),
         },
       });
       const list = observationsByZone.get(l.zone) ?? [];
@@ -406,7 +423,7 @@ export function buildProjectIfcx(input: ProjectIfcxInput): IfcxDocument {
           "bsi::ifc::prop::name": "qc",
           "usd::usdgeom::basiscurves": {
             curveVertexCounts: [qc.value.length],
-            points: qc.depth.map((d, i) => [r3(col.east + radius + Math.min(qc.value[i], 60) * scale), r3(col.north), r3(col.groundNap - d)]),
+            points: qc.depth.map((d, i) => { const [px, py] = xf(col.east + radius + Math.min(qc.value[i], 60) * scale, col.north); return [r3(px), r3(py), r3(col.groundNap - d)]; }),
           },
         },
       });
@@ -434,7 +451,7 @@ export function buildProjectIfcx(input: ProjectIfcxInput): IfcxDocument {
       },
     });
     for (const z of model.zonesPresent) {
-      const mesh = stratumMesh(g, z);
+      const mesh = stratumMesh(g, z, xf);
       if (mesh.empty) continue;
       const stratum = P(`stratum:${z}`);
       gmChildren[`Z${z}_${childName(zoneName(z))}`] = stratum;
@@ -458,7 +475,7 @@ export function buildProjectIfcx(input: ProjectIfcxInput): IfcxDocument {
         attributes: {
           "bsi::ifc::class": ifcClass("IfcVirtualElement"),
           "bsi::ifc::prop::name": "Bovenkant draagkrachtige laag",
-          "usd::usdgeom::mesh": surfaceMesh(model.bearing).toUsd(),
+          "usd::usdgeom::mesh": surfaceMesh(model.bearing, xf).toUsd(),
         },
       });
     }
@@ -480,7 +497,7 @@ export function buildProjectIfcx(input: ProjectIfcxInput): IfcxDocument {
         "bsi::ifc::prop::name": pile.name,
         "ogs::pile": { cptId: pile.cptId, pileType: pile.pileType, diameterMm: pile.diameterMm, headNap: r3(pile.headNap), toeNap: r3(pile.toeNap), rcNetDKn: r3(pile.rcNetDKn ?? 0) },
         // Naast de sondering, zodat beide zichtbaar blijven.
-        "usd::usdgeom::mesh": cylinderMesh(col.east - 3 * radius - r, col.north, pile.toeNap, pile.headNap, r, 16),
+        "usd::usdgeom::mesh": cylinderMesh(...xf(col.east - 3 * radius - r, col.north), pile.toeNap, pile.headNap, r, 16),
       },
     });
   }

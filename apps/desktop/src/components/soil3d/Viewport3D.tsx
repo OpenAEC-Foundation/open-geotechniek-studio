@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { SoilModel } from "./soilModel";
-import { addLights, buildContent, disposeTree, fitCamera, modelBounds, type PileToe, type ViewPreset } from "./scene";
+import { addLights, buildContent, disposeTree, fitCamera, modelBounds, piezoLayout, type PileToe, type ViewPreset } from "./scene";
 import type { CameraView, SectionBox, Soil3DSettings } from "./useSoil3DStore";
 import type { SubsurfaceData } from "./subsurface/store";
 import { aquifers } from "./subsurface/regis";
@@ -84,7 +84,15 @@ export function Viewport3D(p: Viewport3DProps) {
     if (s.showAquifers && sub?.regis) for (const a of aquifers(sub.regis)) depths.push(...a.bottom.filter((v): v is number => v !== null));
     if (s.showGeotop && sub?.geotop) depths.push(Math.min(...sub.geotop.zs));
     if (s.showWells && sub?.wells) depths.push(...sub.wells.map((w) => w.screenBottom).filter((v): v is number => v !== null));
-    return modelBounds(model, s.exaggeration, depths.length ? Math.min(...depths) : undefined);
+    const box = modelBounds(model, s.exaggeration, depths.length ? Math.min(...depths) : undefined);
+    // De peilbuizen staan naast het model; hun labels lopen nog een stuk naar rechts door.
+    const row = s.showWater ? piezoLayout(model, sub, s.exaggeration) : null;
+    if (row) {
+      const last = row.tubes[row.tubes.length - 1];
+      box.expandByPoint(new THREE.Vector3(last.east + row.label * 10, row.topNap * s.exaggeration + row.label * 1.5, -row.north));
+      box.expandByPoint(new THREE.Vector3(row.scaleEast - row.label * 2, row.bottom * s.exaggeration, -row.north));
+    }
+    return box;
   };
   const fit = (view: ViewPreset) => {
     const r = rig.current;
