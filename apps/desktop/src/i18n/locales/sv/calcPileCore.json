@@ -68,7 +68,8 @@
       "tooManyLevels": "Högst {{max}} spetsnivåer; välj ett större steg.",
       "sizesNotPositive": "Påldimensionerna måste vara positiva.",
       "targetRangeInvalid": "Övre gränsen för målbärförmågan måste ligga över den undre gränsen.",
-      "targetsInvalid": "Ange unika, positiva bärförmågor i kN."
+      "targetsInvalid": "Ange unika, positiva bärförmågor i kN.",
+      "extraTypesInvalid": "Ange en känd typ och positiva påldimensioner för varje extra påltyp; varje typ en gång."
     },
     "notes": {
       "profileAboveToe": "Jordlagerföljden slutar ovanför pålspetsen. Kontrollera och förläng jordlagren; saknade mantellager bidrar inte.",

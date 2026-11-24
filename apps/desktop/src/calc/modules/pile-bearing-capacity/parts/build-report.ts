@@ -7,11 +7,11 @@ import type { ProjectContext } from "../../../framework/types";
 import type { PileInput, PileResult } from "../types";
 import { generatePileReport } from "./pile-report-pdf";
 import { computeMultiCptSummary } from "./multi-cpt-summary";
-import { resolvePileType } from "../catalog";
-import { getStandard } from "../standards";
+import { getPileType, pileTypeName, resolvePileType } from "../catalog";
+import { applyStandard, getStandard } from "../standards";
 import { computePile } from "../compute";
-import { chooseLevels, computeCapacityMatrix, defaultCapacityConfig, matrixCellInput } from "../capacity-table";
-import { renderCapacityAppendix } from "./capacity-report";
+import { chooseLevels, computeSystems, defaultCapacityConfig, matrixCellInput, overviewTargets } from "../capacity-table";
+import { renderCapacityAppendix, renderGoverningAppendix } from "./capacity-report";
 import { ct } from "../../../i18n";
 
 /** Datum als dd-mm-jjjj; projectdatum wint, anders vandaag. */
@@ -70,7 +70,13 @@ export function buildPileReport(input: PileInput, result: PileResult, ctx: Proje
       alphaT: pileType?.alphaT ?? 0.006,
     },
     appendix: table ? (c) => {
-      const m = computeCapacityMatrix(input, ctx.cpts, defaultCapacityConfig(input, [...ctx.cpts.keys()]));
+      const config = defaultCapacityConfig(input, [...ctx.cpts.keys()]);
+      const systems = computeSystems(input, ctx.cpts, config);
+      const m = systems[0].m;
+      renderGoverningAppendix(c, systems.map((s) => {
+        const type = getPileType(s.pileTypeId), shown = type ? applyStandard(type, input.standard) ?? type : undefined;
+        return { name: shown ? pileTypeName(shown) : s.pileTypeId, circular: type?.isCircular ?? true, m: s.m };
+      }), overviewTargets(config), ctx.cpts);
       renderCapacityAppendix(c, m, chooseLevels(m), (s) => `${circular ? "Ø" : "□"}${s}`);
     } : undefined,
   });

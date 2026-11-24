@@ -2,14 +2,15 @@ import {useEffect,useMemo,useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import type {Cpt} from '../../../../types/cpt';
 import type {PileInput} from '../types';
-import {getPileType} from '../catalog';
+import {getPileType,pileTypeName} from '../catalog';
+import {applyStandard} from '../standards';
 import {
- band,chooseLevels,invalidReason,computeCapacityMatrix,defaultCapacityConfig,levelRange,matrixCellInput,overviewTargets,parseSizes,parseTargets,parseToeLevels,standardSizes,
+ band,chooseLevels,comparableTypes,computeSystems,invalidReason,defaultCapacityConfig,levelRange,matrixCellInput,overviewTargets,parseSizes,parseTargets,parseToeLevels,standardSizes,
  type CapacityMatrix,type CapacityTableConfig,type CptMatrix,type SizeChoice,
 } from '../capacity-table';
 import {numberLocale} from '../../../i18n';
 import './capacity-table.css';
-import {GoverningOverview} from './GoverningOverview';
+import {GoverningOverview,type OverviewSystem} from './GoverningOverview';
 import {OaIcon} from '../../../../components/icons/oaIcon';
 
 const kn=(n:number)=>n.toLocaleString(numberLocale(),{maximumFractionDigits:0});
@@ -37,14 +38,16 @@ export function CapacityTable({input,cpts,onChange,onOpen,cptId=null,onFocusCpt}
  const config=defaultCapacityConfig(input,[...cpts.keys()]);
  const key=JSON.stringify(config);
  const computed=useMemo(()=>{
-  try {const m=computeCapacityMatrix(input,cpts,config);return {m,choices:chooseLevels(m),error:''};}
-  catch(e){return {m:null,choices:[],error:e instanceof Error?e.message:String(e)};}
+  try {const systems=computeSystems(input,cpts,config),m=systems[0].m;return {m,systems,choices:chooseLevels(m),error:''};}
+  catch(e){return {m:null,systems:[],choices:[],error:e instanceof Error?e.message:String(e)};}
   // eslint-disable-next-line react-hooks/exhaustive-deps
  },[input,cpts,key]);
  const update=(patch:Partial<CapacityTableConfig>)=>onChange({...input,capacityTable:{...config,...patch}});
  const open=(id:string,sizeMm:number,toeNap:number)=>{onChange({...matrixCellInput(input,id,sizeMm,toeNap),capacityTable:config});onOpen();};
  const circular=getPileType(input.pileTypeId)?.isCircular??true;
  const sizeLabel=(s:number)=>`${circular?'Ø':'□'}${s}`;
+ const overview:OverviewSystem[]=computed.systems.map(s=>{const type=getPileType(s.pileTypeId),shown=type?applyStandard(type,input.standard)??type:undefined;
+  return {pileTypeId:s.pileTypeId,name:shown?pileTypeName(shown):s.pileTypeId,circular:type?.isCircular??true,m:s.m};});
  const focused=cptId&&computed.m?computed.m.cpts.find(c=>c.cptId===cptId):undefined;
  const {t}=useTranslation('calcPile');
 
@@ -57,7 +60,7 @@ export function CapacityTable({input,cpts,onChange,onOpen,cptId=null,onFocusCpt}
   {computed.error&&<p role="alert" className="capacity-grid-error">{computed.error}</p>}
   {!config.cptIds.length&&<p role="status">{t('table.selectCpt','Selecteer ten minste één sondering.')}</p>}
   {computed.m&&config.cptIds.length>0&&<>
-   {!focused&&<GoverningOverview m={computed.m} cpts={cpts} targetsKn={overviewTargets(config)} sizeLabel={sizeLabel} focus={id=>onFocusCpt?.(id)} />}
+   {!focused&&<GoverningOverview systems={overview} cpts={cpts} targetsKn={overviewTargets(config)} focus={id=>onFocusCpt?.(id)} />}
    {!focused&&<ChoiceTable m={computed.m} choices={computed.choices} sizeLabel={sizeLabel} open={open} focus={id=>onFocusCpt?.(id)} />}
    <Legend target={computed.m.target} />
    <div className={focused?'capacity-cpt-single':'capacity-cpt-list'}>
@@ -81,6 +84,11 @@ function Settings({input,cpts,config,update}:{input:PileInput;cpts:Map<string,Cp
  const [extra,setExtra]=useState(extraKey);
  useEffect(()=>setExtra(extraKey),[extraKey]);
  const [error,setError]=useState('');
+ const typeName=(id:string)=>{const type=getPileType(id),shown=type?applyStandard(type,input.standard)??type:undefined;return shown?pileTypeName(shown):id;};
+ const typeOptions=comparableTypes(input).filter(o=>!config.extraTypes.some(x=>x.pileTypeId===o.id));
+ const defaultSizes=(id:string)=>(standardSizes(id,input.presets)??config.sizesMm).join(' ');
+ const [typeState,setTypeState]=useState<{id:string;sizes:string}|null>(null);
+ const typePick=typeState&&typeOptions.some(o=>o.id===typeState.id)?typeState:typeOptions[0]?{id:typeOptions[0].id,sizes:defaultSizes(typeOptions[0].id)}:null;
  const {t}=useTranslation('calcPile');
  // Keuze voor een nieuw voorbeeld; valt terug op een geldige combinatie als de reeksen wijzigen.
  const [pickState,setPick]=useState({cptId:input.cptId??config.cptIds[0]??'',sizeMm:input.diameterMm,toeNap:input.pileToeNap});
@@ -138,6 +146,16 @@ function Settings({input,cpts,config,update}:{input:PileInput;cpts:Map<string,Cp
     <button type="button" disabled={!config.cptIds.includes(pick.cptId)||config.examples.some(e=>e.cptId===pick.cptId&&e.sizeMm===pick.sizeMm&&e.toeNap===pick.toeNap)}
      onClick={()=>update({examples:[...config.examples,{...pick}]})}>{t('examples.add','Voorbeeld toevoegen')}</button>
    </div>
+  </fieldset>
+  <fieldset className="capacity-examples"><legend>{t('types.legend','Paaltypes vergelijken')}</legend>
+   <p>{t('types.hint','Extra paaltypes komen naast het hoofdtype in het maatgevende overzicht en op de plattegrond. De tabellen per sondering blijven van het hoofdtype.')}</p>
+   {config.extraTypes.length>0&&<ul aria-label={t('types.listAria','Extra paaltypes')}>{config.extraTypes.map(x=><li key={x.pileTypeId}><span>{typeName(x.pileTypeId)} · {x.sizesMm.join(' ')} mm</span>
+    <button type="button" aria-label={t('types.removeAria','Verwijder paaltype {{type}}',{type:typeName(x.pileTypeId)})} onClick={()=>update({extraTypes:config.extraTypes.filter(y=>y.pileTypeId!==x.pileTypeId)})}><OaIcon id="list.item-remove" /></button></li>)}</ul>}
+   {typePick?<div className="capacity-type-add">
+    <select aria-label={t('types.typeAria','Extra paaltype')} value={typePick.id} onChange={e=>setTypeState({id:e.target.value,sizes:defaultSizes(e.target.value)})}>{typeOptions.map(o=><option key={o.id} value={o.id}>{typeName(o.id)}</option>)}</select>
+    <input aria-label={t('types.sizesAria','Paalmaten van het extra paaltype [mm]')} value={typePick.sizes} onChange={e=>setTypeState({id:typePick.id,sizes:e.target.value})} />
+    <button type="button" onClick={()=>tryApply(()=>{update({extraTypes:[...config.extraTypes,{pileTypeId:typePick.id,sizesMm:parseSizes(typePick.sizes)}]});setTypeState(null);})}>{t('types.add','Paaltype toevoegen')}</button>
+   </div>:<p>{t('types.none','Geen ander paaltype is zonder extra invoer te vergelijken.')}</p>}
   </fieldset>
   <fieldset><legend>{t('cpts.legend','Sonderingen')}</legend>
    <div className="capacity-cpt-options">{names.map(id=><label key={id}><input type="checkbox" checked={config.cptIds.includes(id)} onChange={e=>update({cptIds:e.target.checked?[...config.cptIds,id]:config.cptIds.filter(v=>v!==id)})}/>{!cpts.has(id)?t('cpts.missingOption','{{id}} (ontbreekt)',{id}):id}</label>)}</div>

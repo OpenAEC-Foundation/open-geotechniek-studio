@@ -3,6 +3,9 @@ import type {PileErrorCode,PileInput,PileResult} from './types';
 import {ct} from '../../i18n';
 import {computePile} from './compute';
 import {seriesFor,type Presets} from './standard-sizes';
+import {PILE_TYPE_CATALOG,getPileType} from './catalog';
+import {applyStandard} from './standards';
+import type {PileTypeSpec} from './types';
 
 export type CapacityTableConfig=NonNullable<PileInput['capacityTable']>;
 const msg=(key:string,nl:string,vars?:Record<string,unknown>)=>ct('calcPileCore',key,nl,vars);
@@ -20,6 +23,9 @@ export function validateCapacityTable(config:CapacityTableConfig):void {
   throw new Error(msg('table.errors.toeNapsInvalid','De tabel vereist unieke, eindige puntniveaus.'));
  if(config.targetsKn!==undefined&&(!Array.isArray(config.targetsKn)||config.targetsKn.some(n=>typeof n!=='number'||!Number.isFinite(n)||n<=0)||new Set(config.targetsKn).size!==config.targetsKn.length))
   throw new Error(msg('table.errors.targetsInvalid','Geef unieke, positieve draagvermogens in kN op.'));
+ if(config.extraTypes!==undefined&&(!Array.isArray(config.extraTypes)||config.extraTypes.some(t=>!t||typeof t.pileTypeId!=='string'||!getPileType(t.pileTypeId)||!Array.isArray(t.sizesMm)||!t.sizesMm.length||t.sizesMm.some(n=>typeof n!=='number'||!Number.isFinite(n)||n<=0))
+  ||new Set(config.extraTypes.map(t=>t.pileTypeId)).size!==config.extraTypes.length))
+  throw new Error(msg('table.errors.extraTypesInvalid','Geef per extra paaltype een bekend type en positieve paalmaten op; ieder type één keer.'));
 }
 export function tableCellInput(base:PileInput,cptId:string,toeNap:number):PileInput {
  return {...base,cptId,pileToeNap:toeNap};
@@ -67,6 +73,7 @@ export function defaultCapacityConfig(input:PileInput,cptIds:string[]):Required<
   sizesMm:c?.sizesMm??[input.diameterMm],
   targetKn:c?.targetKn??target,
   targetsKn:c?.targetsKn??[],
+  extraTypes:c?.extraTypes??[],
   examples:c?.examples??[],
  };
 }
@@ -223,4 +230,36 @@ export function governingCount(rows:GoverningRow[]):Array<{cptId:string;count:nu
 /** Draagvermogens voor het overzicht: de ondergrens van de zoekband plus de extra waarden. */
 export function overviewTargets(config:{targetKn?:{minKn:number;maxKn:number};targetsKn?:number[]}):number[] {
  return [...new Set([...(config.targetKn&&config.targetKn.minKn>0?[config.targetKn.minKn]:[]),...(config.targetsKn??[])])].sort((a,b)=>a-b);
+}
+
+/* ------------------------------------------------------------------ */
+/* Meerdere paaltypes naast elkaar in het maatgevende overzicht.       */
+/* ------------------------------------------------------------------ */
+
+/** Kleurklasse van een sondering: verhouding Rc;net;d tot het gezochte draagvermogen. */
+export type MapBand='none'|'low'|'short'|'ok'|'ample';
+export function mapBand(rcNetD:number|null,targetKn:number):MapBand {
+ if(rcNetD===null)return 'none';
+ const r=rcNetD/targetKn;
+ return r<.8?'low':r<1?'short':r<1.25?'ok':'ample';
+}
+/**
+ * Paaltypes die zonder extra invoer naast het hoofdtype te rekenen zijn:
+ * toegestaan onder de gekozen norm, geen hout en geen type dat een eigen EA vraagt.
+ */
+export function comparableTypes(input:PileInput):PileTypeSpec[] {
+ return PILE_TYPE_CATALOG.filter(t=>t.id!==input.pileTypeId&&t.material!=='wood'&&!t.requiresEA&&!!applyStandard(t,input.standard));
+}
+/** Dezelfde invoer met een ander paaltype; wat bij één paalsysteem hoort vervalt. */
+export function typeInput(base:PileInput,pileTypeId:string):PileInput {
+ if(pileTypeId===base.pileTypeId)return base;
+ return {...base,pileTypeId,projectFactors:undefined,axialStiffnessKn:undefined,baseDiameterMm:undefined,timberTaper:undefined,concreteExtension:undefined};
+}
+/** Eén paaltype met zijn maatreeks, gerekend op dezelfde sonderingen en puntniveaus. */
+export interface PileSystem {pileTypeId:string;main:boolean;m:CapacityMatrix}
+export function computeSystems(base:PileInput,cpts:Map<string,Cpt>,config:CapacityTableConfig):PileSystem[] {
+ const main=computeCapacityMatrix(base,cpts,config);
+ return [{pileTypeId:base.pileTypeId,main:true,m:main},
+  ...(config.extraTypes??[]).filter(t=>t.pileTypeId!==base.pileTypeId).map(t=>({pileTypeId:t.pileTypeId,main:false,
+   m:computeCapacityMatrix(typeInput(base,t.pileTypeId),cpts,{...config,sizesMm:t.sizesMm})}))];
 }

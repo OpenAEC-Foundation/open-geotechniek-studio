@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Cota de punta: NAP {{level}} m",
-    "loose": "Sin posición, no dibujado: {{list}}",
+    "looseLabel": "Sin posición",
     "noPositions": "Ningún CPT tiene posición; no se puede dibujar el plano.",
     "pointNone": "{{cpt}}: sin resultado en esta cota",
     "pointTitle": "{{cpt}}: {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Valor más bajo en esta cota: {{cpt}} con {{rc}} kN.",
     "svgAria": "Plano de los CPT con Rc;net;d para {{size}} a NAP {{level}} m",
     "target": "Capacidad portante",
-    "title": "CPT en el plano"
+    "title": "CPT en el plano",
+    "type": "Tipo de pilote"
   },
   "material": {
     "concrete": "Hormigón",
@@ -335,6 +336,16 @@
     "lower": "Límite inferior [kN]",
     "notNumber": "Introduzca el límite inferior y superior como número en kN.",
     "upper": "Límite superior [kN]"
+  },
+  "types": {
+    "add": "Añadir tipo de pilote",
+    "hint": "Los tipos de pilote adicionales aparecen junto al tipo principal en el resumen determinante y en el plano. Las tablas por CPT siguen siendo las del tipo principal.",
+    "legend": "Comparar tipos de pilote",
+    "listAria": "Tipos de pilote adicionales",
+    "none": "Ningún otro tipo de pilote puede compararse sin datos adicionales.",
+    "removeAria": "Eliminar el tipo de pilote {{type}}",
+    "sizesAria": "Dimensiones del tipo de pilote adicional [mm]",
+    "typeAria": "Tipo de pilote adicional"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

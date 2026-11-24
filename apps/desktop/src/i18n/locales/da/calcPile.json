@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Spidskote: NAP {{level}} m",
-    "loose": "Uden position, ikke tegnet: {{list}}",
+    "looseLabel": "Uden position",
     "noPositions": "Ingen af sonderingerne har en position; planen kan ikke tegnes.",
     "pointNone": "{{cpt}}: intet resultat på denne kote",
     "pointTitle": "{{cpt}}: {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Lavest på denne kote: {{cpt}} med {{rc}} kN.",
     "svgAria": "Plan over sonderingerne med Rc;net;d for {{size}} på NAP {{level}} m",
     "target": "Bæreevne",
-    "title": "Sonderinger på planen"
+    "title": "Sonderinger på planen",
+    "type": "Pæletype"
   },
   "material": {
     "concrete": "Beton",
@@ -335,6 +336,16 @@
     "lower": "Nedre grænse [kN]",
     "notNumber": "Indtast nedre og øvre grænse som et tal i kN.",
     "upper": "Øvre grænse [kN]"
+  },
+  "types": {
+    "add": "Tilføj pæletype",
+    "hint": "Ekstra pæletyper vises ved siden af hovedtypen i den dimensionsgivende oversigt og på planen. Tabellerne pr. sondering forbliver hovedtypens.",
+    "legend": "Sammenlign pæletyper",
+    "listAria": "Ekstra pæletyper",
+    "none": "Ingen anden pæletype kan sammenlignes uden ekstra input.",
+    "removeAria": "Fjern pæletype {{type}}",
+    "sizesAria": "Pælestørrelser for den ekstra pæletype [mm]",
+    "typeAria": "Ekstra pæletype"
   },
   "visual": {
     "cptHeading": "Sondering: {{id}}",

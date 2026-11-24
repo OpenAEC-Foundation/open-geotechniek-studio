@@ -68,7 +68,8 @@
       "tooManyLevels": "Maksymalnie {{max}} poziomów podstawy; wybierz większy krok.",
       "sizesNotPositive": "Wymiary pali muszą być dodatnie.",
       "targetRangeInvalid": "Górna granica docelowej nośności musi być powyżej dolnej granicy.",
-      "targetsInvalid": "Podaj unikalne, dodatnie nośności w kN."
+      "targetsInvalid": "Podaj unikalne, dodatnie nośności w kN.",
+      "extraTypesInvalid": "Podaj dla każdego dodatkowego typu pala znany typ i dodatnie wymiary; każdy typ jeden raz."
     },
     "notes": {
       "profileAboveToe": "Profil gruntu kończy się powyżej podstawy pala. Sprawdź i wydłuż warstwy gruntu; brakujące warstwy wzdłuż pobocznicy nie są uwzględniane.",

@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Toe level: NAP {{level}} m",
-    "loose": "Without position, not drawn: {{list}}",
+    "looseLabel": "Without position",
     "noPositions": "None of the CPTs has a position; the plan cannot be drawn.",
     "pointNone": "{{cpt}}: no result at this level",
     "pointTitle": "{{cpt}}: {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Lowest at this level: {{cpt}} with {{rc}} kN.",
     "svgAria": "Plan of the CPTs with Rc;net;d for {{size}} at NAP {{level}} m",
     "target": "Bearing capacity",
-    "title": "CPTs on the plan"
+    "title": "CPTs on the plan",
+    "type": "Pile type"
   },
   "material": {
     "concrete": "Concrete",
@@ -335,6 +336,16 @@
     "lower": "Lower limit [kN]",
     "notNumber": "Enter the lower and upper limit as a number in kN.",
     "upper": "Upper limit [kN]"
+  },
+  "types": {
+    "add": "Add pile type",
+    "hint": "Extra pile types appear next to the main type in the governing overview and on the plan. The tables per CPT remain those of the main type.",
+    "legend": "Compare pile types",
+    "listAria": "Extra pile types",
+    "none": "No other pile type can be compared without extra input.",
+    "removeAria": "Remove pile type {{type}}",
+    "sizesAria": "Pile sizes of the extra pile type [mm]",
+    "typeAria": "Extra pile type"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

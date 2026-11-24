@@ -140,7 +140,7 @@
     "legendOk": "{{a}}–{{b}} kN",
     "legendShort": "{{a}}–{{b}} kN",
     "level": "Pfahlfußtiefe: NAP {{level}} m",
-    "loose": "Ohne Position, nicht gezeichnet: {{list}}",
+    "looseLabel": "Ohne Position",
     "noPositions": "Keine der Sondierungen hat eine Position; der Lageplan kann nicht gezeichnet werden.",
     "pointNone": "{{cpt}}: kein Ergebnis auf dieser Tiefe",
     "pointTitle": "{{cpt}}: {{rc}} kN",
@@ -148,7 +148,8 @@
     "summary": "Niedrigster Wert auf dieser Tiefe: {{cpt}} mit {{rc}} kN.",
     "svgAria": "Lageplan der Sondierungen mit Rc;net;d für {{size}} auf NAP {{level}} m",
     "target": "Tragfähigkeit",
-    "title": "Sondierungen im Lageplan"
+    "title": "Sondierungen im Lageplan",
+    "type": "Pfahltyp"
   },
   "material": {
     "concrete": "Beton",
@@ -335,6 +336,16 @@
     "lower": "Untergrenze [kN]",
     "notNumber": "Geben Sie Unter- und Obergrenze als Zahl in kN ein.",
     "upper": "Obergrenze [kN]"
+  },
+  "types": {
+    "add": "Pfahltyp hinzufügen",
+    "hint": "Zusätzliche Pfahltypen erscheinen neben dem Haupttyp in der maßgebenden Übersicht und im Lageplan. Die Tabellen je Sondierung bleiben die des Haupttyps.",
+    "legend": "Pfahltypen vergleichen",
+    "listAria": "Zusätzliche Pfahltypen",
+    "none": "Kein anderer Pfahltyp lässt sich ohne zusätzliche Eingaben vergleichen.",
+    "removeAria": "Pfahltyp {{type}} entfernen",
+    "sizesAria": "Pfahlabmessungen des zusätzlichen Pfahltyps [mm]",
+    "typeAria": "Zusätzlicher Pfahltyp"
   },
   "visual": {
     "cptHeading": "Sondierung: {{id}}",
