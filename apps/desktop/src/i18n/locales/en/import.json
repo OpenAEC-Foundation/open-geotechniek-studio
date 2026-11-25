@@ -1,6 +1,6 @@
 {
   "gef": {
-    "dissipationTest": "{{file}} is a dissipation test (GEF-DISS), not a CPT. Dissipation tests cannot be imported yet; open the related CPT{{parent}} instead.",
+    "dissipationTest": "{{file}} is a dissipation test (GEF-DISS), not a CPT. Add it to the related CPT{{parent}}.",
     "noDepthRecords": "{{file}}: no measurement record has a depth (penetration length or corrected depth), so there is no CPT to import.",
     "bomRemoved": "UTF-8 BOM removed.",
     "suspectEncoding": "Possibly incorrect character encoding; check the original text.",
@@ -42,7 +42,10 @@
     "columnMinMax": "Column {{column}}: measured min/max differs from the header.",
     "preExcavationUnitConversion": "Pre-excavation depth converted from {{unit}} to m; source value kept in measurement variables.",
     "unknownPreExcavationUnit": "Pre-excavation depth with unknown unit {{unit}} kept only as source value.",
-    "preExcavated": "Measurement channels in pre-excavated soil masked; original values remain in parameters."
+    "preExcavated": "Measurement channels in pre-excavated soil masked; original values remain in parameters.",
+    "dissipationColumns": "{{file}}: dissipation test without a time or pore pressure column.",
+    "dissipationUnit": "{{file}}: unknown unit in column {{column}}.",
+    "dissipationEmpty": "{{file}}: dissipation test without pore pressure readings."
   },
   "bro": {
     "xmlParseError": "BRO CPT XML parse error: {{detail}}",

@@ -6,6 +6,7 @@
     "untitled": "Naamloos"
   },
   "drop": {
+    "openFailed": "Kon {{name}} niet openen: {{message}}",
     "hint": "Laat los om te openen — GEF, BRO-XML of .ifcgeo",
     "browserOpenFailed": "Kon {{name}} niet openen in browser-modus:\n{{message}}\n\nTip: BHR-GT XML + GMW XML + GEF werken in de browser. Voor BRO CPT-XML en projectbestanden heb je de desktop-versie nodig."
   },
@@ -69,6 +70,7 @@
   "store": {
     "noProject": "Geen project actief.",
     "noProjectForBro": "Geen project actief — kan BRO-sondering niet toevoegen.",
+    "dissipationWithoutCpt": "{{file}} is een dissipatietest bij sondering {{parent}}. Open eerst die sondering of het project waar hij in zit, en voeg de dissipatietest daarna toe.",
     "targetProjectClosed": "Het doelproject is gesloten tijdens het toevoegen.",
     "gmwParseFailed": "{{filename}}: kon geen GMW-dispatch parsen (geen <GMW_PO>/<GMW_O> root of geen broId gevonden)",
     "unsupportedBore": "{{filename}}: geen ondersteunde BHR-XML- of GEF-boring"

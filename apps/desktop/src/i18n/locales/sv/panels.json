@@ -258,5 +258,16 @@
     "z7": "Grusig sand / grus",
     "z8": "Mycket fast sand/lera",
     "z9": "Mycket fast finkornig"
+  },
+  "dissipation": {
+    "title": "Dissipationsförsök",
+    "chartLabel": "Portryck i kPa mot tiden i sekunder (logaritmisk)",
+    "timeAxis": "tid [s]",
+    "atDepth": "På {{depth}} m",
+    "remove": "Ta bort dissipationsförsök",
+    "uMax": "u max",
+    "uEnd": "u slut",
+    "noDecay": "ingen minskning",
+    "note": "t50: tid till hälften av minskningen mellan det högsta och det sista mätvärdet. Det sista mätvärdet närmar sig jämvikten; om försöket avbröts tidigt är t50 vägledande."
   }
 }

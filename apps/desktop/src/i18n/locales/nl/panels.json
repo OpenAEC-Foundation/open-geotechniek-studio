@@ -258,5 +258,16 @@
     "z7": "Grof zand / grind",
     "z8": "Zeer vast zand/klei",
     "z9": "Zeer vast fijnkorrelig"
+  },
+  "dissipation": {
+    "title": "Dissipatietests",
+    "chartLabel": "Waterspanning in kPa tegen de tijd in seconden (logaritmisch)",
+    "timeAxis": "tijd [s]",
+    "atDepth": "Op {{depth}} m",
+    "remove": "Dissipatietest verwijderen",
+    "uMax": "u max",
+    "uEnd": "u eind",
+    "noDecay": "geen afname",
+    "note": "t50: tijd tot de helft van de afname tussen de hoogste en de laatste meting. De laatste meting benadert het evenwicht; is de test vroeg gestopt, dan is t50 indicatief."
   }
 }

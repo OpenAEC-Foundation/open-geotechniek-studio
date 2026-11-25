@@ -3,6 +3,7 @@ import { readSourceFile } from "../utils/sourceEncoding";
 import { withMarkers } from "../components/chart/markers";
 import type { ChartMarker } from "../components/chart/chart-renderer";
 import { looksLikeGefBore, parseGefBore } from "../types/gefBoreParser";
+import { belongsToCpt, looksLikeGefDissipation, parseGefDissipation, withDissipationTest, type DissipationTest } from "../types/gefDissipation";
 import { parseProjectFile, isProjectFile, readJson } from "../types/projectFile";
 export { serializeActiveProject } from "./projectSerialization";
 import { create } from "zustand";
@@ -880,10 +881,34 @@ export async function addCptToActiveProject(
   targetDocId: string | null = useCptStore.getState().activeDocId,
   diagnostics: Diagnostic[] = [],
 ): Promise<Cpt> {
+  if (looksLikeGefDissipation(content)) return attachDissipationTest(parseGefDissipation(content, filename), targetDocId);
   // Eén platform-call — zie utils/platform.ts voor de Tauri/web split.
   const { cpt: cptPlatform } = await import("../utils/platform");
   const cpt = await cptPlatform.parse(content, filename, diagnostics);
   return placeCpt(cpt, filename, targetDocId);
+}
+
+/**
+ * Hangt een dissipatietest aan de sondering waar hij bij hoort (#PARENT), eerst gezocht in het opgegeven
+ * document en daarna in de andere open documenten. Die sondering wordt actief; er komt geen nieuw document bij.
+ */
+export function attachDissipationTest(test: DissipationTest, preferDocId: string | null = useCptStore.getState().activeDocId): Cpt {
+  const docs = [...useCptStore.getState().documents].sort((a, b) => Number(b.id === preferDocId) - Number(a.id === preferDocId));
+  for (const doc of docs) {
+    const cpts = doc.kind === "project" ? [...doc.cpts.values()] : doc.kind === "cpt" ? [doc.cpt] : [];
+    const cpt = cpts.find((c) => belongsToCpt(test, c));
+    if (!cpt) continue;
+    const store = useCptStore.getState();
+    if (store.activeDocId !== doc.id) store.setActiveDoc(doc.id);
+    if (doc.kind === "project") useCptStore.getState().setActive(cpt.id);
+    const updated = withDissipationTest(cpt, test);
+    useCptStore.getState().replaceCpt(updated);
+    return updated;
+  }
+  throw new Error(i18next.t("app:store.dissipationWithoutCpt", {
+    defaultValue: "{{file}} is een dissipatietest bij sondering {{parent}}. Open eerst die sondering of het project waar hij in zit, en voeg de dissipatietest daarna toe.",
+    file: test.source_file, parent: test.parent_file ?? test.id,
+  }));
 }
 
 /**
@@ -1286,6 +1311,10 @@ export async function openContentByFilename(
       await openProjectFromContent(content, filename, path);
       return true;
     }
+  }
+  if (looksLikeGefDissipation(content)) {
+    attachDissipationTest(parseGefDissipation(content, filename));
+    return true;
   }
   const {cpt:platformCpt}=await import('../utils/platform');
   const values=await platformCpt.parseMany(content,filename,diagnostics);

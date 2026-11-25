@@ -1,0 +1,12 @@
+.dissipation-list { display: flex; flex-direction: column; gap: 10px; }
+.dissipation-item header { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.dissipation-item header span { color: var(--oa-text-secondary); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dissipation-remove { border: 0; background: none; padding: 2px; cursor: pointer; color: var(--oa-text-secondary); display: inline-flex; }
+.dissipation-remove:hover { color: var(--oa-text); }
+.dissipation-chart { display: block; width: 100%; height: auto; margin: 4px 0 6px; font: 9px var(--oa-font-numbers, sans-serif); }
+.dissipation-chart text { fill: var(--oa-text-secondary); }
+.dissipation-chart .grid { stroke: var(--oa-border); stroke-width: 0.5; }
+.dissipation-chart .axis { stroke: var(--oa-text-secondary); stroke-width: 0.8; }
+.dissipation-chart .curve { stroke: var(--oa-accent); stroke-width: 1.4; }
+.dissipation-chart .t50 line { stroke: var(--oa-text-secondary); stroke-width: 0.8; stroke-dasharray: 3 2; }
+.dissipation-list .panel-note { margin: 0; font-size: 11px; color: var(--oa-text-secondary); }

@@ -6,6 +6,7 @@
     "untitled": "Bez tytułu"
   },
   "drop": {
+    "openFailed": "Nie można otworzyć {{name}}: {{message}}",
     "hint": "Upuść, aby otworzyć — GEF, BRO XML lub .ifcgeo",
     "browserOpenFailed": "Nie udało się otworzyć {{name}} w trybie przeglądarki:\n{{message}}\n\nWskazówka: BHR-GT XML, GMW XML i GEF działają w przeglądarce. Do BRO CPT XML i plików projektu potrzebna jest wersja desktopowa."
   },
@@ -69,6 +70,7 @@
   "store": {
     "noProject": "Brak aktywnego projektu.",
     "noProjectForBro": "Brak aktywnego projektu — nie można dodać sondowania BRO.",
+    "dissipationWithoutCpt": "{{file}} to test dysypacji należący do sondowania {{parent}}. Najpierw otwórz to sondowanie lub projekt, który je zawiera, a następnie dodaj test dysypacji.",
     "targetProjectClosed": "Projekt docelowy został zamknięty podczas dodawania.",
     "gmwParseFailed": "{{filename}}: nie udało się sparsować dostawy GMW (brak elementu głównego <GMW_PO>/<GMW_O> lub nie znaleziono broId)",
     "unsupportedBore": "{{filename}}: nieobsługiwany odwiert BHR XML lub GEF"

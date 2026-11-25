@@ -30,6 +30,7 @@ import TekeningProperties from "./components/panels/TekeningProperties";
 import { getDetachedParams, useWindowManager } from "./hooks/useWindowManager";
 import { getSetting, setSetting } from "./store";
 import { openPathByExtension, openContentByFilename, useCptStore } from "./store/useCptStore";
+import { dissipationLast } from "./types/gefDissipation";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { IS_TAURI } from "./utils/platform";
 import "./styles/blueprint/openaec-fonts.css";
@@ -172,11 +173,12 @@ function App() {
         } else if (t === "drop") {
           setDragOver(false);
           const paths = (event.payload as { paths: string[] }).paths;
-          for (const path of paths) {
+          for (const path of dissipationLast(paths, (p) => p)) {
             try {
               await openPathByExtension(path);
             } catch (err) {
               console.error("drag-drop open failed for", path, err);
+              alert(i18next.t("app:drop.openFailed", { defaultValue: "Kon {{name}} niet openen: {{message}}", name: path.split(/[\\/]/).pop() ?? path, message: err instanceof Error ? err.message : String(err) }));
             }
           }
         }
@@ -239,7 +241,7 @@ function App() {
       setDragOver(false);
       const files = Array.from(e.dataTransfer?.files ?? []);
       let openedAny = false;
-      for (const f of files) {
+      for (const f of dissipationLast(files, (file) => file.name)) {
         if (!isOpenableExt(f.name)) {
           console.warn("Drop genegeerd — onbekende extensie:", f.name);
           continue;

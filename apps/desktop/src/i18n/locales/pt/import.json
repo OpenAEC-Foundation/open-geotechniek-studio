@@ -1,6 +1,6 @@
 {
   "gef": {
-    "dissipationTest": "{{file}} é um ensaio de dissipação (GEF-DISS), não um CPT. Ensaios de dissipação ainda não podem ser importados; abra o CPT correspondente{{parent}}.",
+    "dissipationTest": "{{file}} é um ensaio de dissipação (GEF-DISS), não um CPT. Adicione-o ao CPT correspondente{{parent}}.",
     "noDepthRecords": "{{file}}: nenhum registo tem profundidade (comprimento de penetração ou profundidade corrigida), por isso não há CPT para importar.",
     "bomRemoved": "BOM UTF-8 removido.",
     "suspectEncoding": "Codificação de caracteres possivelmente incorreta; verifique o texto original.",
@@ -42,7 +42,10 @@
     "columnMinMax": "Coluna {{column}}: o mín./máx. medido difere do cabeçalho.",
     "preExcavationUnitConversion": "Profundidade de pré-escavação convertida de {{unit}} para m; valor de origem mantido nas variáveis de medição.",
     "unknownPreExcavationUnit": "Profundidade de pré-escavação com unidade desconhecida {{unit}} mantida apenas como valor de origem.",
-    "preExcavated": "Canais de medição em solo pré-escavado mascarados; os valores originais permanecem nos parâmetros."
+    "preExcavated": "Canais de medição em solo pré-escavado mascarados; os valores originais permanecem nos parâmetros.",
+    "dissipationColumns": "{{file}}: ensaio de dissipação sem coluna de tempo ou de pressão intersticial.",
+    "dissipationUnit": "{{file}}: unidade desconhecida na coluna {{column}}.",
+    "dissipationEmpty": "{{file}}: ensaio de dissipação sem leituras de pressão intersticial."
   },
   "bro": {
     "xmlParseError": "Erro de leitura do BRO CPT XML: {{detail}}",
