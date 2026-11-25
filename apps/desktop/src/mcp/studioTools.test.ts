@@ -166,3 +166,36 @@ it("maakt een funderingsadvies via MCP en exporteert het als PDF", async () => {
   const out = await executeStudioTool("studio_export_report", { id: advice.id, path: "C:/rapporten/advies.pdf" }, view) as { bytes: number };
   expect(out.bytes).toBeGreaterThan(1000);
 });
+
+it("opent een al geopend bestand niet nog een keer, maar activeert het", async () => {
+  const path = "C:/werk/3336/project.ifcx";
+  const first = await executeStudioTool("studio_open_file", { path }, view) as { opened: string };
+  expect(first.opened).toBe("opened");
+  const docId = useCptStore.getState().activeDocId;
+  newProjectDocument();
+  expect(useCptStore.getState().documents).toHaveLength(2);
+  // zelfde bestand, andere schrijfwijze van het pad
+  const again = await executeStudioTool("studio_open_file", { path: "c:\\werk\\3336\\PROJECT.ifcx" }, view) as { opened: string };
+  expect(again.opened).toBe("already-open");
+  expect(useCptStore.getState().documents).toHaveLength(2);
+  expect(useCptStore.getState().activeDocId).toBe(docId);
+});
+it("herlaadt een projectbestand op verzoek in hetzelfde document", async () => {
+  const path = "C:/werk/3336/project.ifcx";
+  await executeStudioTool("studio_open_file", { path }, view);
+  const docId = useCptStore.getState().activeDocId!;
+  useCalculationsStore.getState().addCalculation(docId, "pile-bearing-capacity", "Oud", {});
+  const reloaded = await executeStudioTool("studio_open_file", { path, reload: true }, view) as { opened: string };
+  expect(reloaded.opened).toBe("reloaded");
+  expect(useCptStore.getState().documents).toHaveLength(1);
+  expect(useCptStore.getState().activeDocId).toBe(docId);
+  expect(useCptStore.getState().projectMeta.title).toBe("Geopend project");
+  expect(useCalculationsStore.getState().getList(docId)).toEqual([]);
+  await expect(executeStudioTool("studio_open_file", { path, reload: "ja" }, view)).rejects.toThrow();
+});
+it("voegt sonderingen alleen aan een geopend project toe", async () => {
+  await expect(executeStudioTool("studio_add_cpt", { path: "C:/werk/S1.gef" }, view)).rejects.toThrow();
+  newProjectDocument();
+  await expect(executeStudioTool("studio_add_cpt", { path: "C:/werk/S1.pdf" }, view)).rejects.toThrow();
+  expect(useCptStore.getState().documents).toHaveLength(1);
+});

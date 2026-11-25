@@ -1050,12 +1050,16 @@ export function removeBoreFromActiveProject(id: string): void {
 }
 
 /** Open native project files through the same validated content loader used by the browser. */
-export async function openProjectIfcgis(path: string): Promise<void> {
+export async function openProjectIfcgis(path: string, opts: { replaceDocId?: string } = {}): Promise<void> {
   const { readTextFile } = await import("@tauri-apps/plugin-fs");
-  return openProjectFromContent(await readTextFile(path), path.split(/[\\/]/).pop() ?? path, path);
+  return openProjectFromContent(await readTextFile(path), path.split(/[\\/]/).pop() ?? path, path, opts);
 }
 
-export async function openProjectFromContent(content: string, filename: string, path?: string): Promise<void> {
+/**
+ * Laadt een projectbestand als document. Met `replaceDocId` komt de inhoud in dat bestaande document
+ * (zelfde tab, zelfde id) in plaats van in een nieuwe tab.
+ */
+export async function openProjectFromContent(content: string, filename: string, path?: string, opts: { replaceDocId?: string } = {}): Promise<void> {
   const result = parseProjectFile(content);
   const { IS_TAURI } = await import("../utils/platform");
   if (IS_TAURI) {
@@ -1080,9 +1084,10 @@ export async function openProjectFromContent(content: string, filename: string, 
     for (const c of cptList) cpts.set(c.id, c);
     const bores = new Map<string, Bore>();
     for (const b of boreList) bores.set(b.id, b);
+    const replace = opts.replaceDocId ? s.documents.findIndex((d) => d.id === opts.replaceDocId) : -1;
     const doc: ProjectDocument = {
       kind: "project",
-      id: makeId(),
+      id: replace >= 0 ? opts.replaceDocId! : makeId(),
       title: projectMeta.title || filename,
       path,
       meta: projectMeta,
@@ -1092,12 +1097,14 @@ export async function openProjectFromContent(content: string, filename: string, 
       activeCptId: cptList[0]?.id ?? null,
     };
     createdDoc = doc;
-    const documents = [...s.documents, doc];
+    const documents = replace >= 0 ? s.documents.map((d, i) => (i === replace ? doc : d)) : [...s.documents, doc];
     const activeDocId = doc.id;
     const derived = deriveFromActive(documents, activeDocId);
     return { documents, activeDocId, ...derived };
   });
   if (createdDoc) {
+    // Herladen: berekeningen en ondergrond van het document vervangen door die uit het bestand.
+    if (opts.replaceDocId) { useCalculationsStore.getState().loadFromIfcx((createdDoc as ProjectDocument).id, []); useSubsurfaceStore.getState().remove((createdDoc as ProjectDocument).id); }
     schedulePdfPreview(createdDoc);
     scheduleIfcGenerate(createdDoc);
     // ifcgis-0.4: berekeningen herstellen in de calculations-store
@@ -1200,7 +1207,29 @@ export function markProjectSaved(docId: string, name: string, path?: string, exp
  *
  * Returns true when the file was handled, false otherwise.
  */
-export async function openPathByExtension(path: string): Promise<boolean> {
+/** Vergelijkbare vorm van een pad: schuine strepen gelijk, op Windows hoofdletterongevoelig. */
+export function samePath(a: string | undefined, b: string): boolean {
+  if (!a) return false;
+  const norm = (p: string) => p.replace(/[\\/]+/g, "/").replace(/\/$/, "").toLowerCase();
+  return norm(a) === norm(b);
+}
+
+/** Het geopende document met dit bestand, als dat er is. */
+export function openDocumentForPath(path: string): AppDocument | undefined {
+  return useCptStore.getState().documents.find((d) => samePath(d.path, path));
+}
+
+/**
+ * Opent een bestand. Staat het al open, dan wordt dat document actief in plaats van een tweede kopie te openen;
+ * met `reload` wordt een projectbestand opnieuw van schijf gelezen in hetzelfde document.
+ */
+export async function openPathByExtension(path: string, opts: { reload?: boolean } = {}): Promise<boolean> {
+  const existing = openDocumentForPath(path);
+  if (existing) {
+    if (opts.reload && existing.kind === "project") { await openProjectIfcgis(path, { replaceDocId: existing.id }); return true; }
+    useCptStore.getState().setActiveDoc(existing.id);
+    return true;
+  }
   const lower = path.toLowerCase();
   // `.ifcgis` is legacy project-extensie — leest nog steeds via de
   // project-loader (oude opslag-bestanden blijven werken).
