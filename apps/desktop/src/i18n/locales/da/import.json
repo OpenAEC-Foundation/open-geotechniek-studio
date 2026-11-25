@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} er en dissipationstest (GEF-DISS), ikke en CPT. Dissipationstest kan endnu ikke indlæses; åbn den tilhørende CPT{{parent}}.",
+    "noDepthRecords": "{{file}}: ingen måling har en dybde (nedtrængningslængde eller korrigeret dybde), så der er ingen CPT at indlæse.",
     "bomRemoved": "UTF-8 BOM fjernet.",
     "suspectEncoding": "Muligvis forkert tegnkodning; kontrollér den oprindelige tekst.",
     "unrecognisedHeaderLine": "Ukendt headerlinje bevaret.",

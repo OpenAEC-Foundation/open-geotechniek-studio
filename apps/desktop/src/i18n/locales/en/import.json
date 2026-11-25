@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} is a dissipation test (GEF-DISS), not a CPT. Dissipation tests cannot be imported yet; open the related CPT{{parent}} instead.",
+    "noDepthRecords": "{{file}}: no measurement record has a depth (penetration length or corrected depth), so there is no CPT to import.",
     "bomRemoved": "UTF-8 BOM removed.",
     "suspectEncoding": "Possibly incorrect character encoding; check the original text.",
     "unrecognisedHeaderLine": "Unrecognised header line kept.",

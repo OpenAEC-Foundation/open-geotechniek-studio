@@ -120,3 +120,17 @@ it('reports mixed record depth methods and explicit fallback from a void correct
  expect(report.depthMethod).toBe('mixed');expect(report.depthMethods).toEqual([{record:1,method:'corrected-depth'},{record:2,method:'penetration-length'}]);
  expect(report.diagnostics.find(d=>d.code==='DEPTH_FALLBACK')).toMatchObject({record:2,column:4});
 });
+
+const dissipation = (reportCode: string) => [
+  "#GEFID= 1, 1, 0", "#FILEOWNER= test", "#FILEDATE= 2024,01,01", "#PROJECTID= CPT, 1, -",
+  "#PARENT= S01.gef, 6.33, Sondeerlengte, 1", "#COLUMN= 3",
+  "#COLUMNINFO= 1, s, Tijd, 12", "#COLUMNINFO= 2, MPa, Conusweerstand qc, 2", "#COLUMNINFO= 3, MPa, Waterspanning u1, 5",
+  "#TESTID= S01-DIS", `#REPORTCODE= ${reportCode}`, "#EOH=",
+  "0.00 1.219 0.31953", "1.00 0.843 0.36122", "2.00 0.742 0.36752", "",
+].join("\n");
+it("names a dissipation test instead of returning an empty CPT", () => {
+  expect(() => parseGef(dissipation("GEF-DISS-Report,1,0,0"), "S01_DIS.gef")).toThrow(/dissipatietest.*S01\.gef/);
+});
+it("refuses a GEF in which no record has a depth", () => {
+  expect(() => parseGef(dissipation("GEF-CPT-Report,1,1,2"), "S01.gef")).toThrow(/geen enkel meetrecord/);
+});

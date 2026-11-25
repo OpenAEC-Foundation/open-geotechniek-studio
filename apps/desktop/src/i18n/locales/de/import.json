@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} ist ein Dissipationsversuch (GEF-DISS), keine Drucksondierung. Dissipationsversuche können noch nicht eingelesen werden; öffnen Sie die zugehörige Sondierung{{parent}}.",
+    "noDepthRecords": "{{file}}: Kein Messdatensatz hat eine Tiefe (Eindringlänge oder korrigierte Tiefe), daher gibt es keine Sondierung zum Einlesen.",
     "bomRemoved": "UTF-8-BOM entfernt.",
     "suspectEncoding": "Möglicherweise falsche Zeichenkodierung; prüfen Sie den Originaltext.",
     "unrecognisedHeaderLine": "Nicht erkannte Kopfzeile beibehalten.",
