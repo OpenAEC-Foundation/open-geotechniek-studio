@@ -11,6 +11,8 @@ import { looksLikeBoringXml } from "../../types/bore";
 import { looksLikeGefBore } from "../../types/gefBoreParser";
 import type { Gwp } from "../../types/gwp";
 import { OaIcon } from "../icons/oaIcon";
+import { DissipationPanel } from "./DissipationPanel";
+import { dissipationTestsOf, looksLikeGefDissipation } from "../../types/gefDissipation";
 
 /**
  * Document-aware left panel.
@@ -363,6 +365,7 @@ function BoreRawXml({ xml }: { xml?: string }) {
 function ProjectBrowser() {
   const [importError, setImportError] = useState<string | null>(null);
   const { t } = useTranslation("cpt");
+  const { t: tp } = useTranslation("panels");
   const documents = useCptStore((s) => s.documents);
   const activeDocId = useCptStore((s) => s.activeDocId);
   const setActiveCpt = useCptStore((s) => s.setActive);
@@ -387,7 +390,9 @@ function ProjectBrowser() {
     try {
       const selected=await files.pickAndRead(true);
       const errors:string[]=[];
-      for(const f of selected) {
+      // Dissipatietests na de sonderingen, zodat ze de sondering uit dezelfde selectie vinden.
+      const ordered=[...selected].sort((a,b)=>Number(looksLikeGefDissipation(a.text))-Number(looksLikeGefDissipation(b.text)));
+      for(const f of ordered) {
         try {
           if(looksLikeBoringXml(f.text)||looksLikeGefBore(f.text))await addBoreToActiveProject(f.text,f.name,f.diagnostics);
           else await addCptToActiveProject(f.text,f.name,undefined,f.diagnostics);
@@ -470,6 +475,11 @@ function ProjectBrowser() {
             <MetadataList cpt={active} />
             <ValidationPanel cpt={active} />
           </PanelSection>
+          {dissipationTestsOf(active).length > 0 && (
+            <PanelSection title={tp("dissipation.title", "Dissipatietests")} defaultOpen>
+              <DissipationPanel cpt={active} />
+            </PanelSection>
+          )}
           <PanelSection title={t("fileMetadata", "Bestandsmetadata")}>
             <ExtraMetadataList cpt={active} />
           </PanelSection>
@@ -506,6 +516,11 @@ function CptDetails({ cpt }: { cpt: Cpt }) {
         <MetadataList cpt={cpt} />
         <ValidationPanel cpt={cpt} />
       </PanelSection>
+      {dissipationTestsOf(cpt).length > 0 && (
+        <PanelSection title={tp("dissipation.title", "Dissipatietests")} defaultOpen>
+          <DissipationPanel cpt={cpt} />
+        </PanelSection>
+      )}
       <PanelSection title={t("fileMetadata", "Bestandsmetadata")}>
         <ExtraMetadataList cpt={cpt} />
       </PanelSection>

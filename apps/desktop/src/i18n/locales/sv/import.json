@@ -1,6 +1,6 @@
 {
   "gef": {
-    "dissipationTest": "{{file}} är ett dissipationsförsök (GEF-DISS), inte en CPT. Dissipationsförsök kan ännu inte läsas in; öppna tillhörande CPT{{parent}}.",
+    "dissipationTest": "{{file}} är ett dissipationsförsök (GEF-DISS), inte en CPT. Lägg till det i tillhörande CPT{{parent}}.",
     "noDepthRecords": "{{file}}: ingen mätpost har ett djup (neddrivningslängd eller korrigerat djup), så det finns ingen CPT att läsa in.",
     "bomRemoved": "UTF-8 BOM borttagen.",
     "suspectEncoding": "Möjligen felaktig teckenkodning; kontrollera originaltexten.",
@@ -42,7 +42,10 @@
     "columnMinMax": "Kolumn {{column}}: uppmätt min/max avviker från huvudet.",
     "preExcavationUnitConversion": "Förschaktningsdjup omräknat från {{unit}} till m; källvärdet behålls i mätvariablerna.",
     "unknownPreExcavationUnit": "Förschaktningsdjup med okänd enhet {{unit}} behålls endast som källvärde.",
-    "preExcavated": "Mätkanaler i förschaktad jord maskerade; originalvärdena finns kvar i parametrarna."
+    "preExcavated": "Mätkanaler i förschaktad jord maskerade; originalvärdena finns kvar i parametrarna.",
+    "dissipationColumns": "{{file}}: dissipationsförsök utan tids- eller portryckskolumn.",
+    "dissipationUnit": "{{file}}: okänd enhet i kolumn {{column}}.",
+    "dissipationEmpty": "{{file}}: dissipationsförsök utan portrycksmätningar."
   },
   "bro": {
     "xmlParseError": "Tolkningsfel i BRO CPT XML: {{detail}}",

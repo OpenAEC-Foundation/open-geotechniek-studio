@@ -258,5 +258,16 @@
     "z7": "Kiesiger Sand / Kies",
     "z8": "Sehr steifer Sand/Ton",
     "z9": "Sehr steif feinkörnig"
+  },
+  "dissipation": {
+    "title": "Dissipationsversuche",
+    "chartLabel": "Porenwasserdruck in kPa über der Zeit in Sekunden (logarithmisch)",
+    "timeAxis": "Zeit [s]",
+    "atDepth": "In {{depth}} m",
+    "remove": "Dissipationsversuch entfernen",
+    "uMax": "u max",
+    "uEnd": "u Ende",
+    "noDecay": "kein Abbau",
+    "note": "t50: Zeit bis zur Hälfte des Abbaus zwischen dem höchsten und dem letzten Messwert. Der letzte Messwert nähert das Gleichgewicht an; wurde der Versuch früh beendet, ist t50 ein Richtwert."
   }
 }

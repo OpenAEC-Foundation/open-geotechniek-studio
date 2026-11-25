@@ -6,6 +6,7 @@
     "untitled": "Unavngivet"
   },
   "drop": {
+    "openFailed": "Kunne ikke åbne {{name}}: {{message}}",
     "hint": "Slip for at åbne — GEF, BRO XML eller .ifcgeo",
     "browserOpenFailed": "Kunne ikke åbne {{name}} i browsertilstand:\n{{message}}\n\nTip: BHR-GT XML, GMW XML og GEF virker i browseren. Til BRO CPT XML og projektfiler skal du bruge desktopversionen."
   },
@@ -69,6 +70,7 @@
   "store": {
     "noProject": "Intet aktivt projekt.",
     "noProjectForBro": "Intet aktivt projekt — kan ikke tilføje BRO-sonderingen.",
+    "dissipationWithoutCpt": "{{file}} er en dissipationstest til CPT {{parent}}. Åbn først den CPT eller projektet, der indeholder den, og tilføj derefter dissipationstesten.",
     "targetProjectClosed": "Målprojektet blev lukket under tilføjelsen.",
     "gmwParseFailed": "{{filename}}: kunne ikke parse en GMW-forsendelse (ingen <GMW_PO>/<GMW_O>-rod eller intet broId fundet)",
     "unsupportedBore": "{{filename}}: ikke en understøttet BHR XML- eller GEF-boring"

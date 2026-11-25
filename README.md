@@ -59,7 +59,7 @@ The screenshots show the Dutch interface.
 
 ## CPTs and boreholes
 
-- **GEF 1.x and BRO-XML.** CPT_O and CPT_O_DP, and boreholes from BHR-GT. Import messages stay with the project and can be exported as CSV or JSON.
+- **GEF 1.x and BRO-XML.** CPT_O and CPT_O_DP, and boreholes from BHR-GT. Dissipation tests (GEF-DISS) join their CPT, with the pore pressure decay and t50. Import messages stay with the project and can be exported as CSV or JSON.
 - **The CPT chart.** Cone resistance qc, sleeve friction fs, friction ratio Rf and pore pressure u2 against depth in m NAP, with indicative qc/Rf soil zones. The zones are indicative; they are not a normalised classification.
 - **Many CPTs side by side.** Scale the columns with the zoom, or fit them to the window.
 

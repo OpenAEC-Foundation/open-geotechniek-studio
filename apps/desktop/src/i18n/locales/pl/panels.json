@@ -258,5 +258,16 @@
     "z7": "Piasek żwirowy / żwir",
     "z8": "Bardzo sztywny piasek/ił",
     "z9": "Bardzo sztywny drobnoziarnisty"
+  },
+  "dissipation": {
+    "title": "Testy dysypacji",
+    "chartLabel": "Ciśnienie porowe w kPa w funkcji czasu w sekundach (logarytmicznie)",
+    "timeAxis": "czas [s]",
+    "atDepth": "Na {{depth}} m",
+    "remove": "Usuń test dysypacji",
+    "uMax": "u maks",
+    "uEnd": "u końcowe",
+    "noDecay": "brak spadku",
+    "note": "t50: czas do połowy spadku między najwyższym a ostatnim odczytem. Ostatni odczyt przybliża stan równowagi; jeśli test przerwano wcześnie, t50 jest orientacyjne."
   }
 }

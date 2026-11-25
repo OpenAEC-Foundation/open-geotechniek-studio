@@ -113,7 +113,7 @@ export function parseGef(text: string, filename: string): Cpt {
   // Een dissipatietest (GEF-DISS) meet waterspanning tegen de tijd op één diepte en heeft geen dieptekolom.
   if (/^\s*GEF-DISS/i.test(first("REPORTCODE") ?? "")) {
     const parent = first("PARENT")?.split(",")[0]?.trim();
-    throw new Error(m("gef.dissipationTest", "{{file}} is een dissipatietest (GEF-DISS), geen sondering. Dissipatietests worden nog niet ingelezen; open de bijbehorende sondering{{parent}}.", { file: filename, parent: parent ? ` (${parent})` : "" }));
+    throw new Error(m("gef.dissipationTest", "{{file}} is een dissipatietest (GEF-DISS), geen sondering. Voeg hem toe aan de bijbehorende sondering{{parent}}.", { file: filename, parent: parent ? ` (${parent})` : "" }));
   }
   const extra: Record<string, string> = {};
   if (unparsedHeader.length)
