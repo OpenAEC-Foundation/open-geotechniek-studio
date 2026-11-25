@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} to test dysypacji (GEF-DISS), a nie sondowanie CPT. Testów dysypacji nie można jeszcze wczytać; otwórz powiązane sondowanie{{parent}}.",
+    "noDepthRecords": "{{file}}: żaden rekord pomiarowy nie ma głębokości (długości penetracji ani skorygowanej głębokości), więc nie ma sondowania do wczytania.",
     "bomRemoved": "Usunięto UTF-8 BOM.",
     "suspectEncoding": "Możliwe nieprawidłowe kodowanie znaków; sprawdź tekst oryginalny.",
     "unrecognisedHeaderLine": "Zachowano nierozpoznany wiersz nagłówka.",

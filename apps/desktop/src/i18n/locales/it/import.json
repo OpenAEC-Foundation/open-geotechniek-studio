@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} è una prova di dissipazione (GEF-DISS), non una CPT. Le prove di dissipazione non possono ancora essere importate; aprire la CPT corrispondente{{parent}}.",
+    "noDepthRecords": "{{file}}: nessun record ha una profondità (lunghezza di penetrazione o profondità corretta), quindi non c'è una CPT da importare.",
     "bomRemoved": "BOM UTF-8 rimosso.",
     "suspectEncoding": "Codifica dei caratteri forse errata; controlla il testo originale.",
     "unrecognisedHeaderLine": "Riga di intestazione non riconosciuta mantenuta.",

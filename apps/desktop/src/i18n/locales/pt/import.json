@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} é um ensaio de dissipação (GEF-DISS), não um CPT. Ensaios de dissipação ainda não podem ser importados; abra o CPT correspondente{{parent}}.",
+    "noDepthRecords": "{{file}}: nenhum registo tem profundidade (comprimento de penetração ou profundidade corrigida), por isso não há CPT para importar.",
     "bomRemoved": "BOM UTF-8 removido.",
     "suspectEncoding": "Codificação de caracteres possivelmente incorreta; verifique o texto original.",
     "unrecognisedHeaderLine": "Linha de cabeçalho não reconhecida mantida.",

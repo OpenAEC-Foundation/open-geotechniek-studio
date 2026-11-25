@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} is een dissipatietest (GEF-DISS), geen sondering. Dissipatietests worden nog niet ingelezen; open de bijbehorende sondering{{parent}}.",
+    "noDepthRecords": "{{file}}: geen enkel meetrecord heeft een diepte (sondeerlengte of gecorrigeerde diepte), dus er is geen sondering om in te lezen.",
     "bomRemoved": "UTF-8 BOM verwijderd.",
     "suspectEncoding": "Mogelijk onjuiste tekencodering; controleer de oorspronkelijke tekst.",
     "unrecognisedHeaderLine": "Onherkende headerregel bewaard.",
