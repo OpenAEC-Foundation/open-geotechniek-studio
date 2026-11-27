@@ -1,0 +1,29 @@
+.placement-bar { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.placement-btn { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid var(--oa-border); border-radius: 4px; background: var(--oa-panel); color: var(--oa-text); font: 12px var(--oa-font-body); cursor: pointer; }
+.placement-btn:hover:not(:disabled) { border-color: var(--icon-accent, #d97706); }
+.placement-btn:disabled { opacity: 0.5; cursor: default; }
+.placement-modal { width: min(720px, 94vw); max-height: 88vh; display: flex; flex-direction: column; }
+.placement-body { overflow: auto; display: flex; flex-direction: column; gap: 10px; font: 12px var(--oa-font-body); }
+.placement-intro { margin: 0; color: var(--oa-text-secondary); }
+.placement-warn { margin: 0; padding: 6px 8px; border-left: 3px solid #d97706; background: color-mix(in srgb, #d97706 10%, transparent); }
+.placement-draw, .placement-row, .placement-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.placement-draw button, .placement-actions button, .placement-actions select, .placement-open { padding: 4px 10px; border: 1px solid var(--oa-border); border-radius: 4px; background: var(--oa-panel); color: var(--oa-text); font: inherit; cursor: pointer; }
+.placement-table { border-collapse: collapse; width: 100%; }
+.placement-table th, .placement-table td { text-align: left; padding: 3px 6px; border-bottom: 1px solid var(--oa-border); }
+.placement-table input, .placement-table select, .placement-row select { padding: 2px 4px; border: 1px solid var(--oa-border); border-radius: 3px; background: var(--oa-bg, transparent); color: var(--oa-text); font: inherit; }
+.placement-icon { border: none; background: none; color: var(--oa-text-secondary); cursor: pointer; padding: 2px; }
+.placement-muted { color: var(--oa-text-secondary); }
+.placement-sub { margin: 6px 0 0; font-size: 12px; font-weight: 600; }
+.placement-section { display: flex; flex-direction: column; gap: 8px; }
+.placement-selection { padding: 8px 12px; }
+.placement-selection h4 { margin: 0 0 2px; }
+.placement-status { margin: 6px 0; padding: 3px 8px; border-left: 4px solid; font-size: 12px; }
+.placement-open { margin-top: 8px; }
+.placement-legend { display: flex; align-items: center; gap: 6px; }
+
+.placement-drawbar-host { position: fixed; z-index: 3000; transform: translateX(-50%); }
+/* Werkbalk voor het tekenen op de kaart en de situatietekening. */
+.placement-drawbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 4px; background: #fff; color: #1f2933; box-shadow: 0 1px 4px rgba(0,0,0,0.3); font: 12px system-ui, sans-serif; max-width: 420px; }
+.placement-drawbar button { padding: 3px 8px; border: 1px solid #cbd5e1; border-radius: 3px; background: #f8fafc; cursor: pointer; font: inherit; }
+.placement-drawbar button.primary { background: #d97706; border-color: #d97706; color: #fff; }
+.placement-pile-icon { background: none; border: none; }

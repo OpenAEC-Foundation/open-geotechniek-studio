@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Estacas",
+    "walls": "Cortinas de estacas-prancha",
+    "pit": "Escavação",
+    "anchors": "Ancoragens e escoras",
+    "footings": "Fundações diretas",
+    "collapse": "Recolher",
+    "expand": "Expandir",
+    "hint": "Cálculos com uma localização no projeto",
+    "title": "Cálculos posicionados",
+    "none": "nenhum",
+    "empty": "Posicione um cálculo com o botão Posicionar no cálculo."
+  },
+  "props": {
+    "top": "Cabeça da estaca",
+    "assumed": "assumido",
+    "toe": "Ponta da estaca",
+    "size": "Dimensão",
+    "count": "Número de estacas",
+    "wallTop": "Topo da cortina",
+    "wallToe": "Pé",
+    "excavation": "Escavação",
+    "profile": "Perfil",
+    "perimeter": "Perímetro",
+    "length": "Comprimento",
+    "supports": "Ancoragens/escoras",
+    "base": "Base da fundação",
+    "width": "Largura",
+    "open": "Abrir cálculo"
+  },
+  "bar": {
+    "placeHint": "Posicionar este cálculo no mapa e no modelo 3D",
+    "edit": "Posicionamento",
+    "place": "Posicionar",
+    "notPlaced": "Posicione primeiro o cálculo",
+    "show3d": "Mostrar no modelo 3D"
+  },
+  "dialog": {
+    "title": "Posicionamento",
+    "close": "Fechar",
+    "introPiles": "Uma ou mais estacas em coordenadas RD. Cabeça e ponta vêm do cálculo.",
+    "introWall": "Uma linha de estacas-prancha ou uma escavação fechada em RD. Topo, pé, escavação e ancoragens vêm do cálculo.",
+    "introFooting": "Centro e direção da sapata corrida ou isolada. Dimensões e profundidade vêm do cálculo.",
+    "incomplete": "Os dados do cálculo ainda não estão completos; o modelo mostra-o quando cabeça/topo e ponta/pé forem conhecidos.",
+    "drawWall": "Desenhe a linha clicando em pontos:",
+    "drawPoints": "Clique na localização:",
+    "onMap": "No mapa",
+    "onDrawing": "Na planta de situação",
+    "clear": "Limpar posicionamento",
+    "done": "Concluído",
+    "atCpt": "junto a {{id}}"
+  },
+  "table": {
+    "pile": "Estaca",
+    "cpt": "Ensaio CPT",
+    "remove": "Remover",
+    "noPiles": "Ainda não há estacas posicionadas.",
+    "addCoord": "+ Coordenada",
+    "addAtCpt": "+ Junto a um ensaio…",
+    "point": "Ponto",
+    "noPoints": "Ainda não há pontos. Desenhe a linha ou adicione pontos.",
+    "addPoint": "+ Ponto",
+    "atCpt": "Junto a um ensaio…"
+  },
+  "wall": {
+    "closed": "Escavação fechada",
+    "side": "Escavação",
+    "inside": "dentro da escavação",
+    "outside": "fora da escavação",
+    "left": "à esquerda da linha",
+    "right": "à direita da linha",
+    "perimeter": "perímetro",
+    "length": "comprimento",
+    "perSide": "Cálculo por lado",
+    "sideCol": "Lado",
+    "lengthCol": "Comprimento",
+    "calcCol": "Cálculo",
+    "thisCalc": "este cálculo"
+  },
+  "footing": {
+    "angle": "Rotação do eixo longo [°]",
+    "angleHint": "a partir do eixo RD x, anti-horário",
+    "length": "Comprimento da sapata [m]"
+  },
+  "map": {
+    "clickToOpen": "clique para abrir o cálculo"
+  },
+  "draw": {
+    "hintWall": "Clique nos vértices da cortina. Duplo clique ou Concluído termina uma linha; Fechar transforma-a numa escavação.",
+    "hintPiles": "Clique numa localização por estaca. Concluído ou Enter termina.",
+    "hintFooting": "Clique no centro da fundação.",
+    "points": "{{n}} pontos",
+    "undo": "Voltar",
+    "close": "Fechar escavação",
+    "done": "Concluído",
+    "cancel": "Cancelar"
+  }
+}

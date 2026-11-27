@@ -1,6 +1,7 @@
 // apps/desktop/src/calc/framework/types.ts
 import type { ReactNode, FC } from "react";
 import type { Cpt, ProjectMeta } from "../../types/cpt";
+import type { Placement } from "../../placement/types";
 
 /** Categorie waarmee modules in de UI gegroepeerd worden. */
 export type CalcCategory = "pile" | "spread" | "wall" | "anchor" | "report";
@@ -84,6 +85,8 @@ export interface CalculationInstance {
   updatedAt: string;             // ISO 8601
   cptRefs?: string[];
   boreRefs?: string[];
+  /** Plaats in het project (palen, damwandlijn, fundering); ontbrekend = niet geplaatst. */
+  placement?: Placement;
 }
 
 /** Eigenschappen van een tabelweergave; `focus` is één onderdeel (sondering, paal). */

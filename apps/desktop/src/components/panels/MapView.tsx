@@ -22,6 +22,7 @@ import {
 } from "../../store/useCptStore";
 import { setLayerLive } from "../../store/tekeningState";
 import { bro as broPlatform } from "../../utils/platform";
+import { attachPlacementLayer } from "../../placement/mapLayer";
 // Topotijdreis slider lives in the GisLayerPanel (left side, with the
 // other map layer controls) — not in this view's bottom bar.
 
@@ -577,6 +578,8 @@ export default function MapView() {
     kadasterLayerRef.current = L.layerGroup();
 
     mapRef.current = map;
+    // Geplaatste berekeningen (palen, damwanden, funderingen) en het tekenen ervan.
+    const detachPlacement = attachPlacementLayer(map);
 
     // ── Schaalstok rechtsonder — metric only (geen miles); maxWidth
     //    200 px zodat hij subtiel blijft op kleine displays. Leaflet
@@ -1504,6 +1507,7 @@ export default function MapView() {
       adressenLayerRef.current?.detach();
       adressenLayerRef.current = null;
       try { ro.disconnect(); } catch { /* noop */ }
+      detachPlacement();
       map.remove();
       mapRef.current = null;
     };

@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Pfähle",
+    "walls": "Spundwände",
+    "pit": "Aushub",
+    "anchors": "Anker und Steifen",
+    "footings": "Flachgründungen",
+    "collapse": "Einklappen",
+    "expand": "Ausklappen",
+    "hint": "Berechnungen mit einem Ort im Projekt",
+    "title": "Platzierte Berechnungen",
+    "none": "keine",
+    "empty": "Platzieren Sie eine Berechnung über die Schaltfläche Platzieren in der Berechnung."
+  },
+  "props": {
+    "top": "Pfahlkopf",
+    "assumed": "angenommen",
+    "toe": "Pfahlfuß",
+    "size": "Maß",
+    "count": "Anzahl Pfähle",
+    "wallTop": "Oberkante Wand",
+    "wallToe": "Fuß",
+    "excavation": "Aushub",
+    "profile": "Profil",
+    "perimeter": "Umfang",
+    "length": "Länge",
+    "supports": "Anker/Steifen",
+    "base": "Gründungssohle",
+    "width": "Breite",
+    "open": "Berechnung öffnen"
+  },
+  "bar": {
+    "placeHint": "Diese Berechnung auf der Karte und im 3D-Modell platzieren",
+    "edit": "Platzierung",
+    "place": "Platzieren",
+    "notPlaced": "Platzieren Sie die Berechnung zuerst",
+    "show3d": "Im 3D-Modell zeigen"
+  },
+  "dialog": {
+    "title": "Platzierung",
+    "close": "Schließen",
+    "introPiles": "Ein oder mehrere Pfähle auf RD-Koordinaten. Kopf und Fuß stammen aus der Berechnung.",
+    "introWall": "Eine Spundwandlinie oder eine geschlossene Baugrube in RD. Oberkante, Fuß, Aushub und Anker stammen aus der Berechnung.",
+    "introFooting": "Mittelpunkt und Richtung des Streifens oder Einzelfundaments. Maße und Tiefe stammen aus der Berechnung.",
+    "incomplete": "Die Eingabe der Berechnung ist noch nicht vollständig; das Modell zeigt sie erst, wenn Kopf/Oberkante und Fuß bekannt sind.",
+    "drawWall": "Zeichnen Sie die Linie durch Klicken von Punkten:",
+    "drawPoints": "Klicken Sie den Ort an:",
+    "onMap": "Auf der Karte",
+    "onDrawing": "Im Lageplan",
+    "clear": "Platzierung löschen",
+    "done": "Fertig",
+    "atCpt": "bei {{id}}"
+  },
+  "table": {
+    "pile": "Pfahl",
+    "cpt": "Sondierung",
+    "remove": "Entfernen",
+    "noPiles": "Noch keine Pfähle platziert.",
+    "addCoord": "+ Koordinate",
+    "addAtCpt": "+ Bei Sondierung…",
+    "point": "Punkt",
+    "noPoints": "Noch keine Punkte. Zeichnen Sie die Linie oder fügen Sie Punkte hinzu.",
+    "addPoint": "+ Punkt",
+    "atCpt": "Bei Sondierung…"
+  },
+  "wall": {
+    "closed": "Geschlossene Baugrube",
+    "side": "Aushub",
+    "inside": "innerhalb der Grube",
+    "outside": "außerhalb der Grube",
+    "left": "links der Linie",
+    "right": "rechts der Linie",
+    "perimeter": "Umfang",
+    "length": "Länge",
+    "perSide": "Berechnung je Seite",
+    "sideCol": "Seite",
+    "lengthCol": "Länge",
+    "calcCol": "Berechnung",
+    "thisCalc": "diese Berechnung"
+  },
+  "footing": {
+    "angle": "Drehung der Längsachse [°]",
+    "angleHint": "gegen RD-x, gegen den Uhrzeigersinn",
+    "length": "Streifenlänge [m]"
+  },
+  "map": {
+    "clickToOpen": "klicken, um die Berechnung zu öffnen"
+  },
+  "draw": {
+    "hintWall": "Klicken Sie die Eckpunkte der Wand an. Doppelklick oder Fertig schließt als Linie ab; Schließen macht daraus eine Baugrube.",
+    "hintPiles": "Klicken Sie einen Ort je Pfahl. Fertig oder Enter schließt ab.",
+    "hintFooting": "Klicken Sie den Mittelpunkt der Gründung an.",
+    "points": "{{n}} Punkte",
+    "undo": "Zurück",
+    "close": "Baugrube schließen",
+    "done": "Fertig",
+    "cancel": "Abbrechen"
+  }
+}

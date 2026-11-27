@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Palen",
+    "walls": "Damwanden",
+    "pit": "Ontgraving",
+    "anchors": "Ankers en stempels",
+    "footings": "Funderingen op staal",
+    "collapse": "Inklappen",
+    "expand": "Uitklappen",
+    "hint": "Berekeningen met een plaats in het project",
+    "title": "Geplaatste berekeningen",
+    "none": "geen",
+    "empty": "Plaats een berekening via de knop Plaatsen in de berekening."
+  },
+  "props": {
+    "top": "Paalkop",
+    "assumed": "aangenomen",
+    "toe": "Paalpunt",
+    "size": "Maat",
+    "count": "Aantal palen",
+    "wallTop": "Bovenkant wand",
+    "wallToe": "Teen",
+    "excavation": "Ontgraving",
+    "profile": "Profiel",
+    "perimeter": "Omtrek",
+    "length": "Lengte",
+    "supports": "Ankers/stempels",
+    "base": "Funderingsvlak",
+    "width": "Breedte",
+    "open": "Open berekening"
+  },
+  "bar": {
+    "placeHint": "Plaats deze berekening op de kaart en in het 3D-model",
+    "edit": "Plaatsing",
+    "place": "Plaatsen",
+    "notPlaced": "Plaats de berekening eerst",
+    "show3d": "Toon in 3D-model"
+  },
+  "dialog": {
+    "title": "Plaatsing",
+    "close": "Sluiten",
+    "introPiles": "Eén of meer palen op RD-coördinaten. Kop en punt komen uit de berekening.",
+    "introWall": "Een damwandlijn of een gesloten bouwkuip in RD. Bovenkant, teen, ontgraving en ankers komen uit de berekening.",
+    "introFooting": "Middelpunt en richting van de strook of poer. Maten en diepte komen uit de berekening.",
+    "incomplete": "De invoer van de berekening is nog niet volledig; het model toont hem pas als kop/bovenkant en punt/teen bekend zijn.",
+    "drawWall": "Teken de lijn door punten te klikken:",
+    "drawPoints": "Klik de plaats aan:",
+    "onMap": "Op de kaart",
+    "onDrawing": "Op de situatietekening",
+    "clear": "Plaatsing wissen",
+    "done": "Klaar",
+    "atCpt": "bij {{id}}"
+  },
+  "table": {
+    "pile": "Paal",
+    "cpt": "Sondering",
+    "remove": "Verwijderen",
+    "noPiles": "Nog geen palen geplaatst.",
+    "addCoord": "+ Coördinaat",
+    "addAtCpt": "+ Bij sondering…",
+    "point": "Punt",
+    "noPoints": "Nog geen punten. Teken de lijn of voeg punten toe.",
+    "addPoint": "+ Punt",
+    "atCpt": "Bij sondering…"
+  },
+  "wall": {
+    "closed": "Gesloten bouwkuip",
+    "side": "Ontgraving",
+    "inside": "binnen de kuip",
+    "outside": "buiten de kuip",
+    "left": "links van de lijn",
+    "right": "rechts van de lijn",
+    "perimeter": "omtrek",
+    "length": "lengte",
+    "perSide": "Berekening per zijde",
+    "sideCol": "Zijde",
+    "lengthCol": "Lengte",
+    "calcCol": "Berekening",
+    "thisCalc": "deze berekening"
+  },
+  "footing": {
+    "angle": "Draaiing lengteas [°]",
+    "angleHint": "t.o.v. RD-x, tegen de klok in",
+    "length": "Lengte strook [m]"
+  },
+  "map": {
+    "clickToOpen": "klik om de berekening te openen"
+  },
+  "draw": {
+    "hintWall": "Klik de hoekpunten van de damwand. Dubbelklik of Klaar rondt af als lijn; Sluit maakt er een bouwkuip van.",
+    "hintPiles": "Klik een plaats per paal. Klaar of Enter rondt af.",
+    "hintFooting": "Klik het middelpunt van de fundering.",
+    "points": "{{n}} punten",
+    "undo": "Terug",
+    "close": "Sluit bouwkuip",
+    "done": "Klaar",
+    "cancel": "Annuleren"
+  }
+}

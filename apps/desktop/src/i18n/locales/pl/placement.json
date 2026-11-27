@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Pale",
+    "walls": "Ścianki szczelne",
+    "pit": "Wykop",
+    "anchors": "Kotwy i rozpory",
+    "footings": "Fundamenty bezpośrednie",
+    "collapse": "Zwiń",
+    "expand": "Rozwiń",
+    "hint": "Obliczenia z położeniem w projekcie",
+    "title": "Umieszczone obliczenia",
+    "none": "brak",
+    "empty": "Umieść obliczenie przyciskiem Umieść w obliczeniu."
+  },
+  "props": {
+    "top": "Głowica pala",
+    "assumed": "przyjęto",
+    "toe": "Podstawa pala",
+    "size": "Wymiar",
+    "count": "Liczba pali",
+    "wallTop": "Góra ścianki",
+    "wallToe": "Podstawa",
+    "excavation": "Wykop",
+    "profile": "Profil",
+    "perimeter": "Obwód",
+    "length": "Długość",
+    "supports": "Kotwy/rozpory",
+    "base": "Poziom posadowienia",
+    "width": "Szerokość",
+    "open": "Otwórz obliczenie"
+  },
+  "bar": {
+    "placeHint": "Umieść to obliczenie na mapie i w modelu 3D",
+    "edit": "Położenie",
+    "place": "Umieść",
+    "notPlaced": "Najpierw umieść obliczenie",
+    "show3d": "Pokaż w modelu 3D"
+  },
+  "dialog": {
+    "title": "Położenie",
+    "close": "Zamknij",
+    "introPiles": "Jeden lub więcej pali we współrzędnych RD. Głowica i podstawa pochodzą z obliczenia.",
+    "introWall": "Linia ścianki szczelnej lub zamknięty wykop w RD. Góra, podstawa, wykop i kotwy pochodzą z obliczenia.",
+    "introFooting": "Środek i kierunek ławy lub stopy. Wymiary i głębokość pochodzą z obliczenia.",
+    "incomplete": "Dane obliczenia nie są jeszcze kompletne; model pokaże je, gdy znane będą głowica/góra i podstawa.",
+    "drawWall": "Narysuj linię, klikając punkty:",
+    "drawPoints": "Kliknij miejsce:",
+    "onMap": "Na mapie",
+    "onDrawing": "Na planie sytuacyjnym",
+    "clear": "Usuń położenie",
+    "done": "Gotowe",
+    "atCpt": "przy {{id}}"
+  },
+  "table": {
+    "pile": "Pal",
+    "cpt": "Sondowanie",
+    "remove": "Usuń",
+    "noPiles": "Nie umieszczono jeszcze pali.",
+    "addCoord": "+ Współrzędna",
+    "addAtCpt": "+ Przy sondowaniu…",
+    "point": "Punkt",
+    "noPoints": "Brak punktów. Narysuj linię lub dodaj punkty.",
+    "addPoint": "+ Punkt",
+    "atCpt": "Przy sondowaniu…"
+  },
+  "wall": {
+    "closed": "Zamknięty wykop",
+    "side": "Wykop",
+    "inside": "wewnątrz wykopu",
+    "outside": "na zewnątrz wykopu",
+    "left": "po lewej od linii",
+    "right": "po prawej od linii",
+    "perimeter": "obwód",
+    "length": "długość",
+    "perSide": "Obliczenie dla każdego boku",
+    "sideCol": "Bok",
+    "lengthCol": "Długość",
+    "calcCol": "Obliczenie",
+    "thisCalc": "to obliczenie"
+  },
+  "footing": {
+    "angle": "Obrót osi podłużnej [°]",
+    "angleHint": "od osi RD x, przeciwnie do ruchu wskazówek zegara",
+    "length": "Długość ławy [m]"
+  },
+  "map": {
+    "clickToOpen": "kliknij, aby otworzyć obliczenie"
+  },
+  "draw": {
+    "hintWall": "Kliknij wierzchołki ścianki. Podwójne kliknięcie lub Gotowe kończy linię; Zamknij tworzy wykop.",
+    "hintPiles": "Kliknij jedno miejsce na pal. Gotowe lub Enter kończy.",
+    "hintFooting": "Kliknij środek fundamentu.",
+    "points": "{{n}} punktów",
+    "undo": "Wstecz",
+    "close": "Zamknij wykop",
+    "done": "Gotowe",
+    "cancel": "Anuluj"
+  }
+}

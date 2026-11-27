@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Pilotes",
+    "walls": "Tablestacas",
+    "pit": "Excavación",
+    "anchors": "Anclajes y puntales",
+    "footings": "Cimentaciones superficiales",
+    "collapse": "Contraer",
+    "expand": "Expandir",
+    "hint": "Cálculos con una ubicación en el proyecto",
+    "title": "Cálculos colocados",
+    "none": "ninguno",
+    "empty": "Coloque un cálculo con el botón Colocar en el cálculo."
+  },
+  "props": {
+    "top": "Cabeza del pilote",
+    "assumed": "supuesto",
+    "toe": "Punta del pilote",
+    "size": "Tamaño",
+    "count": "Número de pilotes",
+    "wallTop": "Coronación del muro",
+    "wallToe": "Pie",
+    "excavation": "Excavación",
+    "profile": "Perfil",
+    "perimeter": "Perímetro",
+    "length": "Longitud",
+    "supports": "Anclajes/puntales",
+    "base": "Base de cimentación",
+    "width": "Ancho",
+    "open": "Abrir cálculo"
+  },
+  "bar": {
+    "placeHint": "Colocar este cálculo en el mapa y en el modelo 3D",
+    "edit": "Ubicación",
+    "place": "Colocar",
+    "notPlaced": "Coloque primero el cálculo",
+    "show3d": "Mostrar en el modelo 3D"
+  },
+  "dialog": {
+    "title": "Ubicación",
+    "close": "Cerrar",
+    "introPiles": "Uno o más pilotes en coordenadas RD. Cabeza y punta provienen del cálculo.",
+    "introWall": "Una línea de tablestacas o un recinto cerrado en RD. Coronación, pie, excavación y anclajes provienen del cálculo.",
+    "introFooting": "Centro y dirección de la zapata corrida o aislada. Dimensiones y profundidad provienen del cálculo.",
+    "incomplete": "La entrada del cálculo aún no está completa; el modelo lo muestra cuando se conocen cabeza/coronación y punta/pie.",
+    "drawWall": "Dibuje la línea haciendo clic en puntos:",
+    "drawPoints": "Haga clic en la ubicación:",
+    "onMap": "En el mapa",
+    "onDrawing": "En el plano de situación",
+    "clear": "Borrar ubicación",
+    "done": "Listo",
+    "atCpt": "junto a {{id}}"
+  },
+  "table": {
+    "pile": "Pilote",
+    "cpt": "Sondeo",
+    "remove": "Eliminar",
+    "noPiles": "Aún no hay pilotes colocados.",
+    "addCoord": "+ Coordenada",
+    "addAtCpt": "+ Junto a un sondeo…",
+    "point": "Punto",
+    "noPoints": "Aún no hay puntos. Dibuje la línea o añada puntos.",
+    "addPoint": "+ Punto",
+    "atCpt": "Junto a un sondeo…"
+  },
+  "wall": {
+    "closed": "Recinto cerrado",
+    "side": "Excavación",
+    "inside": "dentro del recinto",
+    "outside": "fuera del recinto",
+    "left": "a la izquierda de la línea",
+    "right": "a la derecha de la línea",
+    "perimeter": "perímetro",
+    "length": "longitud",
+    "perSide": "Cálculo por lado",
+    "sideCol": "Lado",
+    "lengthCol": "Longitud",
+    "calcCol": "Cálculo",
+    "thisCalc": "este cálculo"
+  },
+  "footing": {
+    "angle": "Giro del eje largo [°]",
+    "angleHint": "desde el eje RD x, antihorario",
+    "length": "Longitud de la zapata [m]"
+  },
+  "map": {
+    "clickToOpen": "haga clic para abrir el cálculo"
+  },
+  "draw": {
+    "hintWall": "Haga clic en los vértices del muro. Doble clic o Listo termina una línea; Cerrar lo convierte en recinto.",
+    "hintPiles": "Haga clic en una ubicación por pilote. Listo o Intro termina.",
+    "hintFooting": "Haga clic en el centro de la cimentación.",
+    "points": "{{n}} puntos",
+    "undo": "Atrás",
+    "close": "Cerrar recinto",
+    "done": "Listo",
+    "cancel": "Cancelar"
+  }
+}

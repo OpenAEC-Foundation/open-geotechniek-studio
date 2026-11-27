@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Piles",
+    "walls": "Sheet pile walls",
+    "pit": "Excavation",
+    "anchors": "Anchors and struts",
+    "footings": "Shallow foundations",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "hint": "Calculations with a location in the project",
+    "title": "Placed calculations",
+    "none": "none",
+    "empty": "Place a calculation with the Place button in the calculation."
+  },
+  "props": {
+    "top": "Pile head",
+    "assumed": "assumed",
+    "toe": "Pile toe",
+    "size": "Size",
+    "count": "Number of piles",
+    "wallTop": "Top of wall",
+    "wallToe": "Toe",
+    "excavation": "Excavation",
+    "profile": "Profile",
+    "perimeter": "Perimeter",
+    "length": "Length",
+    "supports": "Anchors/struts",
+    "base": "Foundation base",
+    "width": "Width",
+    "open": "Open calculation"
+  },
+  "bar": {
+    "placeHint": "Place this calculation on the map and in the 3D model",
+    "edit": "Placement",
+    "place": "Place",
+    "notPlaced": "Place the calculation first",
+    "show3d": "Show in 3D model"
+  },
+  "dialog": {
+    "title": "Placement",
+    "close": "Close",
+    "introPiles": "One or more piles on RD coordinates. Head and toe come from the calculation.",
+    "introWall": "A sheet pile line or a closed excavation pit in RD. Top, toe, excavation and anchors come from the calculation.",
+    "introFooting": "Centre and direction of the strip or pad. Dimensions and depth come from the calculation.",
+    "incomplete": "The calculation input is not complete yet; the model shows it once head/top and toe are known.",
+    "drawWall": "Draw the line by clicking points:",
+    "drawPoints": "Click the location:",
+    "onMap": "On the map",
+    "onDrawing": "On the site plan",
+    "clear": "Clear placement",
+    "done": "Done",
+    "atCpt": "at {{id}}"
+  },
+  "table": {
+    "pile": "Pile",
+    "cpt": "CPT",
+    "remove": "Remove",
+    "noPiles": "No piles placed yet.",
+    "addCoord": "+ Coordinate",
+    "addAtCpt": "+ At CPT…",
+    "point": "Point",
+    "noPoints": "No points yet. Draw the line or add points.",
+    "addPoint": "+ Point",
+    "atCpt": "At CPT…"
+  },
+  "wall": {
+    "closed": "Closed excavation pit",
+    "side": "Excavation",
+    "inside": "inside the pit",
+    "outside": "outside the pit",
+    "left": "left of the line",
+    "right": "right of the line",
+    "perimeter": "perimeter",
+    "length": "length",
+    "perSide": "Calculation per side",
+    "sideCol": "Side",
+    "lengthCol": "Length",
+    "calcCol": "Calculation",
+    "thisCalc": "this calculation"
+  },
+  "footing": {
+    "angle": "Rotation of long axis [°]",
+    "angleHint": "from RD x, counter-clockwise",
+    "length": "Strip length [m]"
+  },
+  "map": {
+    "clickToOpen": "click to open the calculation"
+  },
+  "draw": {
+    "hintWall": "Click the corners of the wall. Double-click or Done finishes a line; Close makes it a pit.",
+    "hintPiles": "Click one location per pile. Done or Enter finishes.",
+    "hintFooting": "Click the centre of the foundation.",
+    "points": "{{n}} points",
+    "undo": "Back",
+    "close": "Close pit",
+    "done": "Done",
+    "cancel": "Cancel"
+  }
+}

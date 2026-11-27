@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Pali",
+    "walls": "Palancole",
+    "pit": "Scavo",
+    "anchors": "Tiranti e puntoni",
+    "footings": "Fondazioni superficiali",
+    "collapse": "Comprimi",
+    "expand": "Espandi",
+    "hint": "Calcoli con una posizione nel progetto",
+    "title": "Calcoli posizionati",
+    "none": "nessuno",
+    "empty": "Posiziona un calcolo con il pulsante Posiziona nel calcolo."
+  },
+  "props": {
+    "top": "Testa del palo",
+    "assumed": "assunto",
+    "toe": "Punta del palo",
+    "size": "Dimensione",
+    "count": "Numero di pali",
+    "wallTop": "Sommità della paratia",
+    "wallToe": "Piede",
+    "excavation": "Scavo",
+    "profile": "Profilo",
+    "perimeter": "Perimetro",
+    "length": "Lunghezza",
+    "supports": "Tiranti/puntoni",
+    "base": "Piano di posa",
+    "width": "Larghezza",
+    "open": "Apri calcolo"
+  },
+  "bar": {
+    "placeHint": "Posiziona questo calcolo sulla mappa e nel modello 3D",
+    "edit": "Posizionamento",
+    "place": "Posiziona",
+    "notPlaced": "Posiziona prima il calcolo",
+    "show3d": "Mostra nel modello 3D"
+  },
+  "dialog": {
+    "title": "Posizionamento",
+    "close": "Chiudi",
+    "introPiles": "Uno o più pali in coordinate RD. Testa e punta provengono dal calcolo.",
+    "introWall": "Una linea di palancole o uno scavo chiuso in RD. Sommità, piede, scavo e tiranti provengono dal calcolo.",
+    "introFooting": "Centro e direzione della trave o del plinto. Dimensioni e profondità provengono dal calcolo.",
+    "incomplete": "I dati del calcolo non sono ancora completi; il modello lo mostra quando testa/sommità e punta/piede sono noti.",
+    "drawWall": "Disegna la linea cliccando dei punti:",
+    "drawPoints": "Clicca la posizione:",
+    "onMap": "Sulla mappa",
+    "onDrawing": "Sulla planimetria",
+    "clear": "Cancella posizionamento",
+    "done": "Fatto",
+    "atCpt": "presso {{id}}"
+  },
+  "table": {
+    "pile": "Palo",
+    "cpt": "Prova penetrometrica",
+    "remove": "Rimuovi",
+    "noPiles": "Nessun palo posizionato.",
+    "addCoord": "+ Coordinata",
+    "addAtCpt": "+ Presso una prova…",
+    "point": "Punto",
+    "noPoints": "Nessun punto. Disegna la linea o aggiungi punti.",
+    "addPoint": "+ Punto",
+    "atCpt": "Presso una prova…"
+  },
+  "wall": {
+    "closed": "Scavo chiuso",
+    "side": "Scavo",
+    "inside": "all'interno dello scavo",
+    "outside": "all'esterno dello scavo",
+    "left": "a sinistra della linea",
+    "right": "a destra della linea",
+    "perimeter": "perimetro",
+    "length": "lunghezza",
+    "perSide": "Calcolo per lato",
+    "sideCol": "Lato",
+    "lengthCol": "Lunghezza",
+    "calcCol": "Calcolo",
+    "thisCalc": "questo calcolo"
+  },
+  "footing": {
+    "angle": "Rotazione dell'asse lungo [°]",
+    "angleHint": "dall'asse RD x, antiorario",
+    "length": "Lunghezza della trave [m]"
+  },
+  "map": {
+    "clickToOpen": "clicca per aprire il calcolo"
+  },
+  "draw": {
+    "hintWall": "Clicca i vertici della paratia. Doppio clic o Fatto termina una linea; Chiudi la trasforma in scavo.",
+    "hintPiles": "Clicca una posizione per palo. Fatto o Invio termina.",
+    "hintFooting": "Clicca il centro della fondazione.",
+    "points": "{{n}} punti",
+    "undo": "Indietro",
+    "close": "Chiudi scavo",
+    "done": "Fatto",
+    "cancel": "Annulla"
+  }
+}

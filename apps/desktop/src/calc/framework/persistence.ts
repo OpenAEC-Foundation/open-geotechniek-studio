@@ -1,5 +1,6 @@
 // apps/desktop/src/calc/framework/persistence.ts
 import type { CalculationInstance } from "./types";
+import { parsePlacement } from "../../placement/types";
 
 /** Snake_case JSON-vorm zoals opgeslagen in .ifcgeo */
 interface CalculationIfcx {
@@ -11,6 +12,7 @@ interface CalculationIfcx {
   updated_at: string;
   cpt_refs?: string[];
   bore_refs?: string[];
+  placement?: unknown;
 }
 
 export function toIfcxArray(list: CalculationInstance[]): CalculationIfcx[] {
@@ -25,6 +27,7 @@ export function toIfcxArray(list: CalculationInstance[]): CalculationIfcx[] {
     };
     if (c.cptRefs && c.cptRefs.length > 0) out.cpt_refs = c.cptRefs;
     if (c.boreRefs && c.boreRefs.length > 0) out.bore_refs = c.boreRefs;
+    if (c.placement) out.placement = c.placement;
     return out;
   });
 }
@@ -51,6 +54,7 @@ export function fromIfcxArray(raw: unknown): CalculationInstance[] {
       updatedAt: typeof r.updated_at === "string" ? r.updated_at : new Date().toISOString(),
       cptRefs: Array.isArray(r.cpt_refs) ? (r.cpt_refs as string[]) : undefined,
       boreRefs: Array.isArray(r.bore_refs) ? (r.bore_refs as string[]) : undefined,
+      ...(() => { const placement = parsePlacement(r.placement); return placement ? { placement } : {}; })(),
     });
   }
   return out;

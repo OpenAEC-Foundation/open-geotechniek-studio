@@ -21,6 +21,8 @@ import PdfCropDialog from "./PdfCropDialog";
 import OffertesDialog from "./OffertesDialog";
 import IfcxPreviewDialog from "./IfcxPreviewDialog";
 import "./SonderingstekeningView.css";
+import { attachPlacementLayer } from "../../placement/mapLayer";
+import { placementDwgEntities, PLACEMENT_DWG_COLORS } from "../../placement/dwg";
 import { useReportBrand } from "../../report/reportBrand";
 import {
   getPlaceSoort,
@@ -444,6 +446,7 @@ const DWG_LAYER_COLORS: Record<string, number> = {
   OPMERKINGEN: 2,
   GIS_GEBOUWEN: 8,
   GIS_PERCELEN: 9,
+  ...PLACEMENT_DWG_COLORS,
 };
 
 /**
@@ -571,6 +574,8 @@ function buildDwgPayload(
   };
   pushRings(src.bagFeatures, "GIS_GEBOUWEN");
   pushRings(src.kadasterFeatures, "GIS_PERCELEN");
+  // Geplaatste berekeningen: palen, damwanden met arcering en funderingen (al in RD).
+  ents.push(...placementDwgEntities());
 
   let origin: [number, number] = [0, 0];
   if (!rdCoords && ents.length) {
@@ -3102,6 +3107,8 @@ export default function SonderingstekeningView() {
     });
 
     mapRef.current = map;
+    // Geplaatste berekeningen (palen, damwanden, funderingen) en het tekenen ervan.
+    const detachPlacement = attachPlacementLayer(map);
 
     // Initial sizing — wait for layout, then invalidate the map size.
     // The rAF can fire AFTER cleanup if the user navigates away mid-init,
@@ -3134,6 +3141,7 @@ export default function SonderingstekeningView() {
       window.removeEventListener("ogs:topotijdreis-year", onTopoYear as EventListener);
       adressenLayer?.detach();
       adressenLayer = null;
+      detachPlacement();
       map.remove();
       mapRef.current = null;
     };
