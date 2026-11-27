@@ -3,7 +3,7 @@ import { jsPDF } from "jspdf";
 import type { ProjectContext } from "../../framework/types";
 import { M, TOTAL_PAGES_TOKEN, type Cursor, formula, kv, makeCursor, nl, paragraph, sectionTitle, table } from "../pile-bearing-capacity/parts/pile-report-pdf";
 import type { BlumCase } from "./blum";
-import { DEFAULT_FACTORS, GAMMA_WATER, anchorAngle, anchorStiffness, hasAnchor, normalizeWallInput, supportStiffness, type RunSample, type WallInput, type WallResult, type WallRun } from "./compute";
+import { DEFAULT_FACTORS, GAMMA_WATER, anchorAngle, anchorStiffness, hasAnchor, normalizeWallInput, supportPreload, supportStiffness, wallLoads, wallSupports, type RunSample, type WallInput, type WallResult, type WallRun } from "./compute";
 import { sheetContour } from "../../library/sheetPileContour";
 import type { SheetPileProfile } from "../../library/sheetPiles";
 import { niceTicks, wallScene } from "./scene";
@@ -69,7 +69,13 @@ function sectionFigure(c: Cursor, i: WallInput, r: Extract<WallResult, { ok: tru
     diagram(side, (row) => (side === "high" ? row.high?.pressureKpa : row.low?.pressureKpa) ?? 0, [222, 184, 135], [146, 64, 14]);
   }
   doc.setDrawColor(30); doc.setLineWidth(0.35);
-  doc.line(X(-hi), Y(s.high.surfaceNap), X(-wallHalf), Y(s.high.surfaceNap)); doc.line(X(wallHalf), Y(s.low.surfaceNap), X(half), Y(s.low.surfaceNap));
+  // Maaiveld met het profiel van de wand af, afgekapt aan de rand van de figuur.
+  const groundLine = (side: -1 | 1, pts: Array<{ xM: number; nap: number }>, reach: number) => {
+    const inside = pts.filter((q) => q.xM < reach - wallHalf), last = inside[inside.length - 1] ?? pts[0];
+    const line: Array<[number, number]> = [...inside.map((q): [number, number] => [X(side * (wallHalf + q.xM)), Y(q.nap)]), [X(side * reach), Y(last.nap)]];
+    for (let n = 1; n < line.length; n++) doc.line(line[n - 1][0], line[n - 1][1], line[n][0], line[n][1]);
+  };
+  groundLine(-1, s.profileHigh, hi); groundLine(1, s.profileLow, half);
   if (s.construction === "sheet-pile") doc.setFillColor(91, 100, 112); else doc.setFillColor(138, 98, 57);
   doc.setLineWidth(0.15); doc.rect(X(-wallHalf), Y(s.wallTopNap), 2 * wallHalf * k, (s.wallTopNap - s.toeNap) * k, "FD");
   if (s.boards) { const w = Math.max(0.5, s.boards.thicknessM * k); doc.rect(X(-wallHalf) - w, Y(s.wallTopNap), w, (s.wallTopNap - s.boards.bottomNap) * k, "FD"); }
@@ -88,12 +94,12 @@ function sectionFigure(c: Cursor, i: WallInput, r: Extract<WallResult, { ok: tru
     doc.setDrawColor(185, 28, 28); doc.setLineWidth(0.2); doc.setLineDashPattern([0.6, 0.8], 0);
     doc.line(X(-wallHalf), Y(s.toeNap), X(-wallHalf - s.slip.reachM), Y(Math.min(s.wallTopNap, s.high.surfaceNap))); doc.setLineDashPattern([], 0);
   }
-  if (s.support) {
-    const sup = s.support, a = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, free = strut ? Math.min(half - wallHalf - 0.1, sup.freeM) : sup.freeM;
+  for (const sup of s.supports) {
+    const a = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, free = strut ? Math.min(half - wallHalf - 0.1, sup.freeM) : sup.freeM;
     const at = (len: number): [number, number] => [X(dir * (wallHalf + len * Math.cos(a))), Y(sup.levelNap - len * Math.sin(a))], p1 = at(0), p2 = at(free), p3 = at(free + sup.groutM);
     doc.setDrawColor(180, 83, 9); doc.setLineWidth(sup.kind === "strut" ? 0.6 : 0.3); doc.line(p1[0], p1[1], p2[0], p2[1]);
     if (sup.groutM > 0) { doc.setDrawColor(107, 114, 128); doc.setLineWidth(Math.max(0.9, sup.groutDiameterM * k)); doc.line(p2[0], p2[1], p3[0], p3[1]); }
-    doc.setTextColor(180, 83, 9); if (run.anchor) doc.text(`${nl(run.anchor.axialKn, 0)} kN/m`, p2[0], p2[1] + (strut ? -1 : 2.4), { align: strut ? "right" : "left" });
+    doc.setTextColor(180, 83, 9); if (sup.forceKnPerM !== null) doc.text(`${s.supports.length > 1 ? `${sup.id} ` : ""}${nl(sup.forceKnPerM, 0)} kN/m`, p2[0], p2[1] + (strut ? -1 : 2.4), { align: strut ? "right" : "left" });
   }
   if (s.surchargeKpa > 0) { doc.setTextColor(29, 78, 216); doc.text(`q = ${nl(s.surchargeKpa, 1)} kPa`, X(-hi / 2), Y(s.high.surfaceNap) - 1.5, { align: "center" }); }
   doc.setTextColor(90); doc.text(`druk op de wand: ${nl(pMax, 0)} kPa = ${nl((pMax * pScale) / k, 2)} m`, X(0), Y(bottom) + 3, { align: "center" });
@@ -145,10 +151,28 @@ export function buildWallReport(raw: WallInput, r: WallResult, ctx: ProjectConte
   }
   if (posts) kv(c, "Palen en schotten", `h.o.h. ${nl(i.posts.spacingM)} m; schotten ${nl(i.posts.boardMm, 0)} mm tot NAP ${nap(i.posts.boardBottomNap)} m; onder de schotten gronddruk over ${nl(i.posts.sizeMm, 0)} mm en passieve weerstand en bedding over ${nl(i.posts.spatialFactor, 1)} × de paalbreedte (factor voor ruimtelijke werking, invoer)`);
   if (!sheet && (i.material === "timber" || posts)) kv(c, "Hout", `${i.timber.classId}: f_m;k = ${nl(i.timber.fmK, 1)} N/mm²; f_v;k = ${nl(i.timber.fvK, 1)} N/mm²; E_0;mean = ${nl(i.timber.eMeanMPa, 0)} N/mm²; k_mod = ${nl(i.timber.kmod)}; γ_M = ${nl(i.timber.gammaM)}; k_cr = ${nl(i.timber.kcr)}`);
-  kv(c, "Steun", !anchored ? "geen" : `${a.kind === "strut" ? "stempel" : a.kind === "grout" ? "groutanker" : "ankerstaaf naar ankerschot of ankerpaal"} op NAP ${nap(a.levelNap)} m, ${nl(anchorAngle(a), 1)}° met de horizontaal, h.o.h. ${nl(a.spacingM)} m; ${a.rigid && a.kind !== "grout" ? "star" : `veerstijfheid ${nl(anchorStiffness(a), 0)} kN/m per anker, horizontaal ${nl(supportStiffness(a), 0)} kN/m per m wand`}`);
+  const supportText = (x: WallInput["anchor"]) => `${x.kind === "strut" ? "stempel" : x.kind === "grout" ? "groutanker" : "ankerstaaf naar ankerschot of ankerpaal"} op NAP ${nap(x.levelNap)} m, ${nl(anchorAngle(x), 1)}° met de horizontaal, h.o.h. ${nl(x.spacingM)} m; ${x.rigid && x.kind !== "grout" ? "star" : `veerstijfheid ${nl(anchorStiffness(x), 0)} kN/m per anker, horizontaal ${nl(supportStiffness(x), 0)} kN/m per m wand`}${supportPreload(x) > 0 ? `; voorspanning ${nl(supportPreload(x), 1)} kN/m horizontaal` : ""}`;
+  const supports = wallSupports(i);
+  if (!anchored) kv(c, "Steun", "geen");
+  else for (const x of supports) kv(c, supports.length > 1 ? `Steunpunt ${x.id}` : "Steun", supportText(x));
   if (anchored && a.kind === "grout" && a.grout) {
     const g = a.grout;
     kv(c, "Groutanker", `vrije lengte ${nl(g.freeLengthM)} m; groutlichaam ${nl(g.groutLengthM)} m, rond ${nl(g.diameterMm, 0)} mm; ${g.tendonType === "strand" ? "strengen" : "staaf"}, A = ${nl(g.areaMm2, 0)} mm², ${g.tendonType === "strand" ? "f_p0,1k" : "f_y"} = ${nl(g.fMPa, 0)} N/mm², E = ${nl(g.eMPa, 0)} N/mm²; voorspankracht ${nl(g.prestressKn, 0)} kN per anker; schachtwrijving ${nl(g.shaftFrictionKpa, 0)} kPa (invoer)`);
+  }
+  if (i.profileHigh?.length || i.profileLow?.length) kv(c, "Maaiveld", [["hoge zijde", i.profileHigh], ["lage zijde", i.profileLow]].filter(([, p]) => (p as unknown[] | undefined)?.length).map(([side, p]) => `${side}: ${(p as Array<{ xM: number; dzM: number }>).map((q) => `(${nl(q.xM)} m; ${q.dzM >= 0 ? "+" : ""}${nl(q.dzM)} m)`).join(" ")}`).join("; ") + " (afstand tot de wand; hoogte ten opzichte van het maaiveld bij de wand)");
+  const loads = wallLoads(i);
+  if (loads.length) kv(c, "Belastingen op afstand", loads.map((l) => `${l.id}: ${l.kind === "strip" ? `strook ${nl(l.value, 1)} kPa van ${nl(l.fromM)} tot ${nl(l.toM)} m` : `lijnlast ${nl(l.value, 1)} kN/m op ${nl(l.fromM)} m`} uit de wand, ${l.side === "high" ? "hoge" : "lage"} zijde`).join("; ") + "; spreiding volgens Boussinesq, gespiegeld in de wand (Poulos en Davis, 1974)");
+  if (r.phases.length > 1 || i.phases?.length) {
+    sectionTitle(c, "Bouwfasen");
+    table(c, [{ label: "Fase", width: 26 }, { label: "Lage zijde [m NAP]", width: 18, align: "right" }, { label: "Hoge zijde [m NAP]", width: 18, align: "right" }, { label: "Water hoog / laag [m NAP]", width: 26, align: "right" }, { label: "q [kPa]", width: 12, align: "right" }, { label: "Steunpunten", width: 26 }, { label: "Belastingen", width: 18 }],
+      r.phases.map((p) => [p.name, nap(p.excavationNap), nap(p.groundHighNap), `${nap(p.waterHighNap)} / ${nap(p.waterLowNap)}`, nl(p.surchargeKpa, 1), p.supports.map((x) => `${x.id}${p.installed.includes(x.id!) ? " (nieuw)" : ""}`).join(", ") || "-", p.loadIds.join(", ") || "-"]), { size: 7.5 });
+    paragraph(c, "Elke fase rekent verder vanaf de vervormde wand en de grond van de vorige fase: een veer begint op zijn druk aan het eind van de vorige fase, met K0 maal de verandering van de verticale korrelspanning erbij (binnen de nieuwe actieve en passieve grens); nieuwe grond begint neutraal op de vervormde wand. Een steunpunt werkt vanaf de verplaatsing waarbij het wordt aangebracht, met zijn voorspanning.", { italic: true, size: 7.5 });
+  }
+  if (i.cur?.enabled) {
+    sectionTitle(c, "Stappenplan", "CUR 166");
+    table(c, [{ label: "Stap", width: 14 }, { label: "Grond", width: 26 }, { label: "Factor op k_h", width: 22, align: "right" }, { label: "Water lage zijde", width: 26 }, { label: "Factor op M, V, F", width: 24, align: "right" }, { label: "Gerekend", width: 18 }],
+      i.cur.steps.map((x) => [x.id, x.design ? "rekenwaarden" : "representatief", nl(x.khFactor, 3), x.lowWater === "up" ? `+${nl(f.deltaWaterLowM)} m` : x.lowWater === "down" ? `−${nl(f.deltaWaterLowM)} m` : "-", nl(x.resultFactor, 2), r.cases.some((k) => k.stepId === x.id) ? "ja" : x.on ? "vervalt" : "uit"]), { size: 7.5 });
+    paragraph(c, "De stappen volgen de instellingen die openbare berekeningen per stap afdrukken; ze zijn niet tegen de tekst van CUR 166 gelegd. Rekenwaarden gelden in alle fasen. Stap 6.5 levert de verplaatsingen; maal de factor telt hij ook mee voor moment, dwarskracht en ankerkracht.", { italic: true, size: 7.5 });
   }
   if ((i.eiFactor ?? 1) !== 1) kv(c, "Buigstijfheid", `reductiefactor ${nl(i.eiFactor ?? 1)} op EI: in de berekening ${nl(r.eiKnM2, 0)} kNm² per m wand`);
   kv(c, "Partiële factoren", `γ_φ' = ${nl(f.gammaPhi, 3)} (op tan φ'); γ_c' = ${nl(f.gammaC)}; γ_cu = ${nl(f.gammaCu)}; γ_γ = ${nl(f.gammaGamma)}; γ_Q = ${nl(f.gammaQ)} op q; γ_k = ${nl(f.gammaK)} op k_h; γ_M0 = ${nl(f.gammaM0)}`);
@@ -194,6 +218,19 @@ export function buildWallReport(raw: WallInput, r: WallResult, ctx: ProjectConte
     pair("Aangesproken passieve weerstand", "kN/m", u.passive.mobilisedKn, s.passive.mobilisedKn), pair("Grootste passieve weerstand", "kN/m", u.passive.maxKn, s.passive.maxKn),
   ], { size: 7.5 });
   paragraph(c, `Grootste moment op NAP ${nap(u.maxMoment.nap)} m, grootste dwarskracht op NAP ${nap(u.maxShear.nap)} m (rekenwaarden). Verplaatsingen beoordeelt u met de representatieve waarden.`, { size: 7.5 });
+  if (r.cases.length > 2) {
+    sectionTitle(c, "Overzicht per fase en stap");
+    const ids = [...new Set(r.cases.flatMap((k) => k.run.supports.map((x) => x.id)))];
+    const label = (k: (typeof r.cases)[number]) => `${k.stepId === "uls" ? "rekenwaarden" : k.stepId === "sls" ? "representatief" : `stap ${k.stepId}`}${r.phases.length > 1 ? `, fase ${k.phaseName}` : ""}`;
+    const rows: string[][] = [];
+    for (const k of r.cases) {
+      const run = k.run, anchor = (f2: number) => ids.map((id) => { const x = run.supports.find((y) => y.id === id); return x ? nl(x.axialKn * f2, 1) : "-"; });
+      rows.push([label(k), nl(Math.abs(run.maxMoment.value), 1), nl(Math.abs(run.maxShear.value), 1), k.serviceability ? nl(Math.abs(run.maxDisplacement.value) * 1000, 1) : "-", ...anchor(1), nl(100 * run.passive.ratio, 0)]);
+      if (k.serviceability && k.design && k.resultFactor !== 1) rows.push([`${label(k)} × ${nl(k.resultFactor, 2)}`, nl(Math.abs(run.maxMoment.value) * k.resultFactor, 1), nl(Math.abs(run.maxShear.value) * k.resultFactor, 1), "-", ...anchor(k.resultFactor), "-"]);
+    }
+    table(c, [{ label: "Berekening", width: 42 }, { label: "M [kNm/m]", width: 16, align: "right" }, { label: "V [kN/m]", width: 16, align: "right" }, { label: "u [mm]", width: 14, align: "right" }, ...ids.map((id) => ({ label: `${id} [kN/m]`, width: 16, align: "right" as const })), { label: "passief [%]", width: 16, align: "right" }], rows, { size: 7 });
+    paragraph(c, `Omhullende voor de toetsen: moment ${nl(Math.abs(u.maxMoment.value), 1)} kNm/m, dwarskracht ${nl(Math.abs(u.maxShear.value), 1)} kN/m${u.supports.map((x) => `, ${x.id} ${nl(x.axialKn, 1)} kN/m`).join("")}; grootste verplaatsing ${nl(Math.abs(s.maxDisplacement.value) * 1000, 1)} mm (representatief). Ankerkrachten axiaal per m wand.`, { size: 7.5 });
+  }
 
   sectionTitle(c, "Verloop over de hoogte (rekenwaarden)");
   const picks = u.rows.filter((_, k) => k % Math.max(1, Math.round(u.rows.length / 28)) === 0 || k === u.rows.length - 1);
@@ -234,7 +271,7 @@ export function buildWallReport(raw: WallInput, r: WallResult, ctx: ProjectConte
     for (const step of k.steps) formula(c, step.symbol || " ", step.formula || " ", step.filled ?? null, step.result);
   }
   if (posts) paragraph(c, "Palen met schotten zijn per m wand gerekend: de buigstijfheid van de paal gedeeld door de hart-op-hartafstand; moment en dwarskracht per paal zijn de uitkomst per m wand maal de hart-op-hartafstand. De drukken onder de schotten in de tabellen en de figuur zijn omgerekend naar de paalbreedte.", { size: 7.5 });
-  paragraph(c, "Niet in deze berekening: fasering en voorspanning, meer ankerrijen, het stappenplan 6.1 tot en met 6.5 van CUR 166 met lage en hoge stijfheid, een berekening van de grondwaterstroming, de stabiliteit van het diepe glijvlak (Kranz), belastingen op afstand, hellend maaiveld en een aflopende waterbodem, verticaal evenwicht, algehele stabiliteit, het ontwerp van anker, ankerschot en gording, plooi van koudgevormde profielen, kruip van hout en kunststof en de toets van de vervorming tegen een eis.", { italic: true, size: 7.5 });
+  paragraph(c, "Niet in deze berekening: de stabiliteit van het diepe glijvlak (Kranz), algehele stabiliteit (Bishop), een glijvlakberekening (Culmann) met het werkelijke maaiveld en gelaagde grond, een ontlasttak van de veer, uitval van een anker, rekenwaarden alleen in de getoetste fase, een berekening van de grondwaterstroming, het ankerschot, plooi van koudgevormde profielen en kruip van hout en kunststof.", { italic: true, size: 7.5 });
 
   if (typeof doc.putTotalPages === "function") doc.putTotalPages(TOTAL_PAGES_TOKEN);
   return new Uint8Array(doc.output("arraybuffer"));

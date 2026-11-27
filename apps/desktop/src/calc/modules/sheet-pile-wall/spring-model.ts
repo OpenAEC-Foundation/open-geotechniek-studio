@@ -93,6 +93,18 @@ function branchOf(c: Curve, w: number): number {
   return b;
 }
 
+/**
+ * Mag de veer op tak b blijven bij verplaatsing w? Ja als w binnen 0,1 µm van die tak ligt. Zonder die marge kan een veer
+ * die precies op een knik staat (zoals aan het begin van een volgende fase) eindeloos tussen twee takken wisselen.
+ */
+const SETTLE_M = 1e-7;
+function stays(c: Curve, b: number, w: number): boolean {
+  const n = c.w.length;
+  if (b === 0) return w <= c.w[0] + SETTLE_M;
+  if (b === n) return w >= c.w[n - 1] - SETTLE_M;
+  return w >= c.w[b - 1] - SETTLE_M && w <= c.w[b] + SETTLE_M;
+}
+
 /** Druk op de lijn (zonder reststijfheid), en het lineaire stuk p = load + spring·w van één tak. */
 function pressureAt(c: Curve, w: number): number {
   const b = branchOf(c, w), n = c.w.length;
@@ -136,7 +148,8 @@ export function solveSpringWall(input: { lengthM: number; eiKnM2: number; elemen
       const a = beam!.nodes[i], b = beam!.nodes[i + 1], l = e.bottomM - e.topM;
       return (a.yM + b.yM) / 2 + (l * (a.rotationRad - b.rotationRad)) / 8;
     });
-    const nextLeft = curves.map((c, i) => (c.left ? branchOf(c.left, -mids[i]) : 0)), nextRight = curves.map((c, i) => (c.right ? branchOf(c.right, mids[i]) : 0));
+    const nextLeft = curves.map((c, i) => (c.left ? (stays(c.left, left[i], -mids[i]) ? left[i] : branchOf(c.left, -mids[i])) : 0));
+    const nextRight = curves.map((c, i) => (c.right ? (stays(c.right, right[i], mids[i]) ? right[i] : branchOf(c.right, mids[i])) : 0));
     const changed = nextLeft.reduce((c, s, i) => c + Number(s !== left[i]) + Number(nextRight[i] !== right[i]), 0);
     if (changed === 0) { converged = true; break; }
     // Een toestand die terugkomt betekent een cyclus: dan wisselt per stap nog maar de helft van de veren.
