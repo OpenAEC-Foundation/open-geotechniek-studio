@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "Brak wartości pomiarowych w odcinku tła.",
+    "value": "Pole tła (mediana z {{count}} wartości): {{value}} nT"
+  },
+  "depthAxis": "Głębokość poniżej terenu (m)",
+  "disclaimer": "Prezentacja danych pomiarowych. Zaznaczone strefy wynikają wyłącznie z ustawionych progów; nie jest to ocena i nie zastępuje zwolnienia terenu ani oceny przez specjalistę.",
+  "line": {
+    "declination": "deklinacja",
+    "inclination": "inklinacja"
+  },
+  "noTotal": "Brak całkowitego natężenia pola: plik nie ma kanału całkowitego ani wszystkich trzech składowych.",
+  "none": "Żadne z otwartych sondowań nie ma kanałów magnetometru.",
+  "readout": {
+    "depth": "{{depth}} m poniżej terenu",
+    "hint": "Przesuń kursor nad wykresem, aby zobaczyć wartości na jednej głębokości.",
+    "title": "Wartości"
+  },
+  "report": {
+    "section": "Magnetometr",
+    "sectionHint": "Jedna strona na sondowanie z magnetometrem z wykresami, strefami i ustawieniami"
+  },
+  "ribbon": {
+    "group": "Magnetometr",
+    "show": "Magneto-\nmetr",
+    "showHint": "Pokazuje kanały magnetometru sondowania w funkcji głębokości, obok qc."
+  },
+  "settings": {
+    "analysisFrom": "Strefy od",
+    "anomaly": "Próg odchylenia",
+    "backgroundFrom": "Tło od",
+    "backgroundTo": "Tło do",
+    "end": "koniec",
+    "gradient": "Próg gradientu",
+    "mergeGap": "Łącz w odległości",
+    "note": "Progi są własnymi ustawieniami, a nie wartościami normowymi.",
+    "start": "początek",
+    "title": "Ustawienia"
+  },
+  "side": {
+    "cpt": "Sondowanie",
+    "title": "Magnetometr"
+  },
+  "totalComputed": "Całkowite natężenie pola obliczone z trzech składowych: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Składowe − mediana",
+    "declination": "Deklinacja",
+    "gradient": "Gradient d|B|/dz",
+    "inclination": "Inklinacja",
+    "qc": "qc",
+    "total": "Pole całkowite |B|"
+  },
+  "unknownUnit": "Kanał {{channel}} nie jest pokazany: jednostka '{{unit}}' jest nieznana.",
+  "zones": {
+    "bottom": "Dół (m)",
+    "none": "Brak odcinka powyżej ustawionych progów.",
+    "note": "Szczyt = największe odchylenie od pola tła w strefie. Głębokości w m poniżej terenu.",
+    "peak": "Szczyt (nT)",
+    "peakDepth": "na (m)",
+    "peakGradient": "Gradient (nT/m)",
+    "title": "Strefy powyżej progu",
+    "top": "Góra (m)",
+    "zoomHint": "Kliknij, aby przybliżyć tę strefę"
+  }
+}

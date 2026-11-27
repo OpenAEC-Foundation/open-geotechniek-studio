@@ -1,0 +1,31 @@
+/* Boorstaat: het blad op het scherm en de editor. Het blad zelf is altijd wit, zoals op papier. */
+.boorstaat-view { display: flex; flex-direction: column; flex: 1; min-height: 0; background: var(--theme-bg); color: var(--theme-text); }
+.boorstaat-toolbar { display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-bottom: 1px solid var(--theme-border); font-size: 12px; }
+.boorstaat-toolbar .boorstaat-hint { color: var(--theme-text-secondary); margin-right: auto; }
+.boorstaat-toolbar button { height: 24px; min-width: 26px; padding: 0 8px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-bg); color: var(--theme-text); font: inherit; cursor: pointer; }
+.boorstaat-toolbar button:hover:not(:disabled) { background: var(--theme-hover); }
+.boorstaat-toolbar button:disabled { opacity: .5; cursor: default; }
+.boorstaat-scroll { flex: 1; min-height: 0; overflow: auto; padding: 16px; background: var(--theme-hover); }
+.boorstaat-sheet { margin: 0 auto; background: #fff; box-shadow: 0 1px 6px rgba(0, 0, 0, .25); padding: 3%; box-sizing: border-box; }
+
+.bs-editor { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; font-size: 12px; align-items: start; }
+.bs-form { display: grid; gap: 10px; min-width: 0; }
+.bs-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 10px; }
+.bs-field { display: grid; gap: 3px; min-width: 0; }
+.bs-field span { color: var(--theme-text-secondary); font-size: 11px; }
+.bs-editor input, .bs-editor select { height: 26px; padding: 0 6px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-input-bg, var(--theme-bg)); color: var(--theme-text); font: inherit; min-width: 0; width: 100%; box-sizing: border-box; }
+.bs-layers-head { display: flex; align-items: center; justify-content: space-between; }
+.bs-layers-head h4 { margin: 0; font-size: 12px; }
+.bs-layers { width: 100%; border-collapse: collapse; }
+.bs-layers th { text-align: left; font-weight: 500; font-size: 11px; color: var(--theme-text-secondary); padding: 0 3px 3px; }
+.bs-layers td { padding: 2px 3px; vertical-align: top; }
+.bs-layers .bs-num { width: 58px; }
+.bs-layers .bs-name { margin-top: 3px; }
+.bs-adm { display: grid; grid-template-columns: 74px minmax(84px, 1fr); gap: 3px; }
+.bs-adm + .bs-adm { margin-top: 3px; }
+.bs-remove { width: 24px; height: 26px; border: 1px solid transparent; border-radius: 3px; background: none; color: var(--theme-text-secondary); font-size: 16px; line-height: 1; cursor: pointer; }
+.bs-remove:hover { border-color: var(--theme-border); color: var(--oa-error, #b91c1c); }
+.bs-note { margin: 0; font-size: 11px; color: var(--theme-text-secondary); }
+.bs-problem { margin: 0; color: var(--oa-error, #b91c1c); }
+.bs-preview { position: sticky; top: 0; border: 1px solid var(--theme-border); background: #fff; padding: 8px; }
+.bs-ribbon-select { height: 24px; max-width: 150px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-bg); color: var(--theme-text); font-size: 11px; }

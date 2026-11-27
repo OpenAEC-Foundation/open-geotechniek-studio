@@ -4,10 +4,12 @@ import { laterallyLoadedPileModule } from '../modules/laterally-loaded-pile/modu
 import { foundationAdviceModule } from '../modules/foundation-advice/module';
 import { tensionPileModule } from '../modules/tension-pile/module';
 import { drivingAssessmentModule } from '../modules/driving-assessment/module';
+import { spreadFoundationModule } from '../modules/spread-foundation/module';
+import { sheetPileWallModule } from '../modules/sheet-pile-wall/module';
 
 // The public website and desktop expose the same calculation module.
 // Other module sources remain available for existing project data.
-export const CALC_REGISTRY: CalcModule[] = [pileBearingCapacityModule, tensionPileModule, laterallyLoadedPileModule, drivingAssessmentModule, foundationAdviceModule];
+export const CALC_REGISTRY: CalcModule[] = [pileBearingCapacityModule, tensionPileModule, laterallyLoadedPileModule, drivingAssessmentModule, spreadFoundationModule, sheetPileWallModule, foundationAdviceModule];
 
 export function getCalcModule(id: string): CalcModule | undefined {
   return CALC_REGISTRY.find((module) => module.id === id);

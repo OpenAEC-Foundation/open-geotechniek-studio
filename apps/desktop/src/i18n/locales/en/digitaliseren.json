@@ -1,0 +1,177 @@
+{
+  "calibrate": {
+    "depthAxis": "Depth axis",
+    "depthMode": "Depth axis in",
+    "gridFound": "Grid found: {{rows}} × {{cols}} lines. The calibration points go on the outermost lines; enter their values. A clicked calibration point snaps to the grid.",
+    "gridNone": "No grid found on the underlay; click the calibration points yourself.",
+    "hint": "Click two points on the depth axis and two on the value axis, as far apart as possible, and enter the value at each point. The axes are calibrated independently, so a skewed scan is not a problem.",
+    "ok": "The calibration is correct. Check that the grid lines fall on the lines of the chart.",
+    "pick": "Click {{label}}",
+    "pickHint": "Then click the point on the underlay",
+    "repick": "{{label}} again",
+    "shareDepth": "Same depth axis as qc",
+    "suggest": "Place calibration points on the grid",
+    "valueAxis": "Value axis {{name}}",
+    "valueOf": "Value at {{label}}"
+  },
+  "cone": {
+    "electrical": "electrical",
+    "mechanical": "mechanical",
+    "unknown": "unknown"
+  },
+  "details": {
+    "coneHint": "Changing the CPT type sets the step to 0.2 m (mechanical) or 0.02 m (electrical). The type is stated; the measured values are not converted for it.",
+    "coneKind": "CPT type",
+    "date": "CPT date",
+    "groundLevel": "Ground level (m NAP)",
+    "hint": "Enter the header data. The origin is required and appears in the report.",
+    "id": "Name or number",
+    "origin": "Origin (required)",
+    "originExample": "digitized from report … dated …",
+    "x": "X (RD, m), optional",
+    "y": "Y (RD, m), optional"
+  },
+  "footer": {
+    "accuracy": "A digitized CPT is less accurate than a measured file.",
+    "cancel": "Cancel",
+    "confirmClose": "The clicked points have not been saved yet. Close the screen anyway?",
+    "next": "Next",
+    "previous": "Previous",
+    "save": "Save"
+  },
+  "label": {
+    "badge": "digitized ({{cone}})",
+    "badgePlain": "digitized",
+    "note": "CPT {{id}} was digitized from paper or a scan (type: {{cone}}; origin: {{origin}}). The accuracy is lower than that of a measured file."
+  },
+  "marker": {
+    "depth1": "depth 1",
+    "depth2": "depth 2",
+    "value1": "value 1",
+    "value2": "value 2"
+  },
+  "method": {
+    "label": "Method",
+    "points": "Click points",
+    "trace": "Follow line automatically"
+  },
+  "points": {
+    "clear": "Clear all",
+    "count": "{{n}} points for {{name}}",
+    "duplicates": "{{n}} points are at the same depth as a later point; the last one clicked counts.",
+    "hint": "Click the points along the line, from top to bottom. Drag a point to move it; right-click to remove it.",
+    "interpolation": "Between the points",
+    "linear": "linear",
+    "linearHint": "Linear: between two points the value follows a straight line.",
+    "notCalibrated": "The calibration is not complete yet; the line now follows the points in the order they were clicked.",
+    "removeLast": "Remove last point",
+    "reordered": "The points have been sorted by depth.",
+    "result": "Data series: {{n}} values from {{from}} to {{to}} m below ground level.",
+    "step": "Step (m)",
+    "stepwise": "stepwise per reading",
+    "stepwiseHint": "Stepwise: each reading holds until the next reading. Suits a mechanical CPT read every 0.2 m.",
+    "undo": "Undo"
+  },
+  "problem": {
+    "depthPoints": "click two points on the depth axis, not at the same spot",
+    "depthValues": "enter two different values for the depth axis",
+    "groundLevel": "Enter the ground level in m NAP.",
+    "id": "Enter the name or number of the CPT.",
+    "idTaken": "There is already a CPT {{id}} in this project; choose another name.",
+    "noImage": "Choose an underlay first.",
+    "noSeries": "The points are closer together than the step; no data series results.",
+    "origin": "Enter the origin; it is required.",
+    "parallel": "the depth axis and the value axis are almost parallel; click the points on the two axes",
+    "position": "Enter both RD coordinates, or neither.",
+    "qcCalibration": "Calibration qc: {{what}}.",
+    "qcPoints": "Click at least two points on the qc line.",
+    "qcTrace": "Follow or draw the qc line first.",
+    "secondCalibration": "Calibration second series: {{what}}.",
+    "secondPoints": "Click at least two points on the line of the second series, or switch that series off.",
+    "secondTrace": "Follow or draw the line of the second series, or switch that series off.",
+    "step": "The step must be between 0.005 and 1 m.",
+    "valuePoints": "click two points on the value axis, not at the same spot",
+    "valueValues": "enter two different values for the value axis"
+  },
+  "ribbon": {
+    "add": "Digitize\nCPT",
+    "addTitle": "Create a CPT from a chart on paper or in a PDF or scan: calibrate the axes and click along the line",
+    "edit": "Update\ndigitization",
+    "editTitle": "Reopen the digitized CPT {{id}} to update points or data"
+  },
+  "save": {
+    "add": "Add to project",
+    "hintDocument": "No project is open: the CPT opens as a separate document.",
+    "hintProject": "The CPT is added to the project and is then used like any other, including in the pile calculation.",
+    "hintUpdate": "CPT {{id}} will be updated.",
+    "marked": "Stated as digitized ({{cone}}) in the chart, the report and the pile calculation.",
+    "open": "Open as separate document",
+    "points": "{{n}} values at a step of {{step}} m, down to {{to}} m below ground level",
+    "qcOnly": "qc only; fs and Rf are missing",
+    "update": "Update CPT",
+    "withSecond": "qc and {{name}}"
+  },
+  "second": {
+    "fs": "sleeve friction fs (MPa)",
+    "label": "Second series",
+    "none": "none (qc only)",
+    "rf": "friction ratio Rf (%)"
+  },
+  "series": {
+    "choose": "Choose series"
+  },
+  "stage": {
+    "empty": "Choose a PDF or image with the CPT chart on the right.",
+    "fit": "Fit",
+    "label": "Underlay with points",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
+  },
+  "step": {
+    "calibrate": "Calibrate",
+    "details": "Data",
+    "points": "Points",
+    "save": "Save",
+    "underlay": "Underlay"
+  },
+  "title": {
+    "edit": "Update digitized CPT {{id}}",
+    "new": "Digitize CPT"
+  },
+  "trace": {
+    "clear": "Clear line",
+    "count": "Line over {{n}} image rows for {{name}}",
+    "draw": "Draw",
+    "drawHint": "Hold the mouse button down and draw over the measured line. What you draw replaces the line at that level.",
+    "erase": "Erase",
+    "eraseHint": "Drag over the part of the line that has to go.",
+    "follow": "Follow line",
+    "followHint": "Click the start of the measured line: it is followed downwards until it ends. Drag downwards to follow it only as far as the point of release.",
+    "navigate": "Dragging draws or follows. Pan: middle mouse button. Zoom: mouse wheel. The data series is the average of the line per step.",
+    "noScan": "There is no scan to follow. Drawing and erasing still work.",
+    "notCalibrated": "The calibration is not complete yet; without calibration there is no data series.",
+    "radius": "Remove thin grid lines",
+    "radius0": "off",
+    "radius1": "light (lines up to 2 pixels)",
+    "radius2": "strong (lines up to 4 pixels)",
+    "showMask": "Show what the algorithm sees as line",
+    "threshold": "Darkness of the line ({{value}})",
+    "tools": "Tool"
+  },
+  "underlay": {
+    "choose": "Choose PDF or image…",
+    "failed": "The image cannot be read.",
+    "hint": "Choose the PDF or the image (PNG or JPEG) with the CPT chart. For a PDF you choose the page; then crop to the chart with both axes.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "The underlay was not saved with this CPT. The points are in place; choose the same image again to see them on the scan.",
+    "navigate": "Mouse wheel: zoom in and out. Drag: pan.",
+    "reopen": "Update CPT {{id}}",
+    "replace": "Choose another underlay…",
+    "synthetic": "This CPT was taken from a scan earlier; the scan and the calibration were not saved. The line is on a blank sheet: add to it there, or choose the scan again to calibrate and follow the line anew.",
+    "unnamed": "underlay"
+  },
+  "unit": {
+    "depth": "m below ground level",
+    "nap": "m NAP"
+  }
+}

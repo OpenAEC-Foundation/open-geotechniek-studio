@@ -10,12 +10,13 @@ import type { PileInput, PileResult } from "./types";
 import { computePile } from "./compute";
 import { buildDefaultSoilLayers } from "./catalog";
 import { InputPanel } from "./ui/InputPanel";
-import { VisualPanel } from "./ui/VisualPanel";
+import { DrawingPanel } from "./ui/DrawingPanel";
 import { ResultPanel } from "./ui/ResultPanel";
 import { buildPileReport, pileReportFileName } from "./parts/build-report";
 import { SettingsPanel } from "./ui/SettingsPanel";
 import { CapacityTable } from "./ui/CapacityTable";
 import { ct } from "../../i18n";
+import { defaultStandard } from "./standards";
 
 function defaultInput(ctx: ProjectContext): PileInput {
   const cpt = ctx.activeCptId ? ctx.cpts.get(ctx.activeCptId) : null;
@@ -28,7 +29,8 @@ function defaultInput(ctx: ProjectContext): PileInput {
   const water = groundNap - 0.5;
   return {
     cptId: ctx.activeCptId,
-    standard: "nen-9997-2017",
+    // 2025 zodra de tabel voor de gangbare typen volledig is; tot dan 2017.
+    standard: defaultStandard(),
     pileTypeId: "steel-pipe-driven-closed-2017",
     diameterMm: 219,
     wallThicknessMm: 8.0,
@@ -66,7 +68,7 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
     return computePile(input, cpt);
   },
   InputPanel,
-  VisualPanel,
+  VisualPanel: DrawingPanel,
   ResultPanel,
   SettingsPanel,
   table: {
@@ -90,6 +92,7 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
       { label: "Rc;net;d", value: kn(r.summary.rcNetD) },
       // Zonder ontwerpbelasting is u.c. 0 en "voldoet" niets zeggend.
       ...(input.nEd > 0 ? [{ label: ct("calcPileCore", "module.checks.capacity", "draagvermogen"), value: `NEd ${kn(input.nEd)}`, uc: r.summary.unityCheck }] : []),
+      ...(r.strength?.governing && Number.isFinite(r.strength.governing.uc) ? [{ label: ct("calcPileCore", "module.checks.strength", "sterkte paal"), value: `NEd;max ${kn(r.strength.nEdMaxKn)}`, uc: r.strength.governing.uc }] : []),
     ];
   },
   buildReport: buildPileReport,

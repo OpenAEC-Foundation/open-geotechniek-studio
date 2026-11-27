@@ -195,6 +195,16 @@
       "z7": "Areia com seixo"
     }
   },
+  "overlay": {
+    "hoverHint": "Passe o cursor sobre o gráfico para ver os valores a um mesmo nível.",
+    "legendTitle": "Ensaios",
+    "levelDepth": "{{level}} m abaixo do terreno",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Sem cota do terreno em NAP, desenhado em profundidade abaixo do terreno e, por isso, não em NAP: {{names}}",
+    "noNapTag": "sem NAP",
+    "noVisible": "Nenhum ensaio visível.",
+    "units": "qc e fs em MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} camadas · {{depth}} m de profundidade",
     "close": "Fechar",
@@ -260,14 +270,6 @@
     "z9": "Solo fino muito rijo"
   },
   "dissipation": {
-    "title": "Ensaios de dissipação",
-    "chartLabel": "Pressão intersticial em kPa em função do tempo em segundos (logarítmico)",
-    "timeAxis": "tempo [s]",
-    "atDepth": "A {{depth}} m",
-    "remove": "Remover ensaio de dissipação",
-    "uMax": "u máx",
-    "uEnd": "u final",
-    "noDecay": "sem dissipação",
-    "note": "t50: tempo até metade da dissipação entre a leitura mais alta e a última. A última leitura aproxima o equilíbrio; se o ensaio parou cedo, t50 é indicativo."
+    "title": "Ensaios de dissipação"
   }
 }

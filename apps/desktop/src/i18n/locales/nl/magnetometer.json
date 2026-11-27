@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "Geen meetwaarden in het traject van de achtergrond.",
+    "value": "Achtergrondveld (mediaan van {{count}} waarden): {{value}} nT"
+  },
+  "depthAxis": "Diepte onder maaiveld (m)",
+  "disclaimer": "Presentatie van meetgegevens. De gemarkeerde zones volgen alleen uit de ingestelde drempels; dit is geen beoordeling en vervangt geen vrijgave of beoordeling door een deskundige.",
+  "line": {
+    "declination": "declinatie",
+    "inclination": "inclinatie"
+  },
+  "noTotal": "Geen totale veldsterkte: het bestand heeft geen totaalkanaal en niet alle drie de componenten.",
+  "none": "Geen van de geopende sonderingen heeft magnetometerkanalen.",
+  "readout": {
+    "depth": "{{depth}} m onder maaiveld",
+    "hint": "Beweeg over de grafiek voor de waarden op één diepte.",
+    "title": "Waarden"
+  },
+  "report": {
+    "section": "Magnetometer",
+    "sectionHint": "Per magnetometersondering een pagina met grafieken, zones en instellingen"
+  },
+  "ribbon": {
+    "group": "Magnetometer",
+    "show": "Magneto-\nmeter",
+    "showHint": "Toon de magnetometerkanalen van de sondering tegen de diepte, naast qc."
+  },
+  "settings": {
+    "analysisFrom": "Zones vanaf",
+    "anomaly": "Drempel afwijking",
+    "backgroundFrom": "Achtergrond van",
+    "backgroundTo": "Achtergrond tot",
+    "end": "eind",
+    "gradient": "Drempel gradiënt",
+    "mergeGap": "Samenvoegen binnen",
+    "note": "De drempels zijn eigen instelwaarden, geen normwaarden.",
+    "start": "begin",
+    "title": "Instellingen"
+  },
+  "side": {
+    "cpt": "Sondering",
+    "title": "Magnetometer"
+  },
+  "totalComputed": "Totale veldsterkte berekend uit de drie componenten: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Componenten − mediaan",
+    "declination": "Declinatie",
+    "gradient": "Gradiënt d|B|/dz",
+    "inclination": "Inclinatie",
+    "qc": "qc",
+    "total": "Totaalveld |B|"
+  },
+  "unknownUnit": "Kanaal {{channel}} niet getoond: eenheid '{{unit}}' is onbekend.",
+  "zones": {
+    "bottom": "Onder (m)",
+    "none": "Geen traject boven de ingestelde drempels.",
+    "note": "Piek = grootste afwijking van het achtergrondveld in de zone. Diepten in m onder maaiveld.",
+    "peak": "Piek (nT)",
+    "peakDepth": "op (m)",
+    "peakGradient": "Gradiënt (nT/m)",
+    "title": "Zones boven de drempel",
+    "top": "Boven (m)",
+    "zoomHint": "Klik om op deze zone in te zoomen"
+  }
+}

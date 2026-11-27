@@ -1,6 +1,7 @@
 // Uitdraai horizontale paal: dezelfde opbouw als het rekenblad van het
 // draagvermogen. Eerst de uitgangspunten, dan per stap de uitkomst met de
 // ingevulde formule, en tot slot de toets en de conclusie.
+import { usesUltimate } from './spring-types';
 import type { PanelProps } from '../../framework/types';
 import type { LateralInput, LateralResult } from './compute';
 import { ForceDiagrams, extremes } from './ForceDiagrams';
@@ -12,10 +13,12 @@ import '../pile-bearing-capacity/ui/styles.css';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
 import { soilKey } from './soil';
+import { MaterialTable, ucText } from './MaterialTable';
+import { sheetProps } from './sheet-section';
 
 type Ok = Extract<LateralResult, { ok: true }>;
 const n = (v: number, d = 1) => Number.isFinite(v) ? v.toLocaleString(numberLocale(), { minimumFractionDigits: d, maximumFractionDigits: d }) : '—';
-const KIND_LABEL: Record<string, string> = { 'concrete-square': 'Betonpaal, vierkant', 'concrete-round': 'Betonpaal, rond', 'steel-tube': 'Stalen buis, hol', 'filled-tube': 'Stalen buis, betongevuld' };
+const KIND_LABEL: Record<string, string> = { 'concrete-square': 'Betonpaal, vierkant', 'concrete-round': 'Betonpaal, rond', 'steel-tube': 'Stalen buis, hol', 'filled-tube': 'Stalen buis, betongevuld', 'sheet-pile': 'Damwandprofiel' };
 
 /** Samenvatting die de uitdraai, de chips en het PDF-rapport delen. */
 export function lateralSummary(input: LateralInput, r: Ok) {
@@ -28,10 +31,18 @@ export function lateralSummary(input: LateralInput, r: Ok) {
     yHeadMm: r.beam.nodes[0].yM * 1000,
     mobilisation: mob ? { value: mob.m!, nap: head - mob.x.zM } : null,
     uc: r.sectionUtilization,
+    // Materiaaltoetsing: hoogste u.c. van alle toetsen die meetellen, en het oordeel.
+    material: r.material, ucGov: r.material?.governing?.uc ?? r.sectionUtilization,
   };
 }
 
+/** Profiel, staalsoort en rekenbreedte van een damwandprofiel; null als het profiel niet in de bibliotheek staat. */
+function sheetInfo(s: LateralInput['section']) {
+  try { const p = sheetProps(s.sheet, s.steelEMpa); return { p, id: p.profile.id, grade: p.grade, single: s.sheet?.widthMode === 'single' }; } catch { return null; }
+}
+
 export function sectionText(s: LateralInput['section']): string {
+  if (s.kind === 'sheet-pile') { const x = sheetInfo(s); return x ? `${KIND_LABEL[s.kind]} ${x.id}, ${x.grade}, ${x.single ? `losse plank ${n(x.p.widthM, 2)} m` : 'per m wand'}` : KIND_LABEL[s.kind]; }
   const size = s.kind === 'concrete-square' ? `□${s.diameterMm} mm` : `Ø${s.diameterMm} mm`;
   const bars = s.kind === 'steel-tube' || s.barCount < 1 ? '' : `, ${s.barCount}Ø${s.barDiameterMm} op ${s.coverToBarCentreMm} mm van de rand`;
   const wall = s.kind === 'steel-tube' || s.kind === 'filled-tube' ? `, wand ${s.wallMm} mm` : '';
@@ -39,9 +50,10 @@ export function sectionText(s: LateralInput['section']): string {
 }
 
 type Tr = (key: string, nl: string, vars?: Record<string, unknown>) => string;
-const KIND_KEY: Record<string, string> = { 'concrete-square': 'concreteSquare', 'concrete-round': 'concreteRound', 'steel-tube': 'steelTube', 'filled-tube': 'filledTube' };
+const KIND_KEY: Record<string, string> = { 'concrete-square': 'concreteSquare', 'concrete-round': 'concreteRound', 'steel-tube': 'steelTube', 'filled-tube': 'filledTube', 'sheet-pile': 'sheetPile' };
 /** sectionText in de actieve taal, voor het scherm; het PDF-rapport houdt de Nederlandse tekst. */
 function sectionTextT(s: LateralInput['section'], t: Tr): string {
+  if (s.kind === 'sheet-pile') { const x = sheetInfo(s), kind = t('sheet.kind.sheetPile', KIND_LABEL[s.kind]); return x ? `${kind} ${x.id}, ${x.grade}, ${x.single ? t('sheet.sheetSingle', 'losse plank {{b}} m', { b: n(x.p.widthM, 2) }) : t('sheet.sheetWall', 'per m wand')}` : kind; }
   const size = s.kind === 'concrete-square' ? `□${s.diameterMm} mm` : `Ø${s.diameterMm} mm`;
   const bars = s.kind === 'steel-tube' || s.barCount < 1 ? '' : t('sheet.sectionBars', ', {{count}}Ø{{dia}} op {{cover}} mm van de rand', { count: s.barCount, dia: s.barDiameterMm, cover: s.coverToBarCentreMm });
   const wall = s.kind === 'steel-tube' || s.kind === 'filled-tube' ? t('sheet.sectionWall', ', wand {{wall}} mm', { wall: s.wallMm }) : '';
@@ -55,10 +67,11 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
   const r = result, sum = lateralSummary(i, r), nap = (z: number) => `NAP ${n(sum.head - z, 2)}`, secText = sectionTextT(i.section, t);
   const soilName = (id: string) => id === 'manual' ? t('soils.manual', 'Eigen waarde') : t(soilKey(id), soilLabel(id));
   const soilSource = (id: string) => id === 'manual' ? t('sheet.sourceProject', 'projectwaarde') : i.springOverrides?.[id]?.[i.scenario] !== undefined ? t('sheet.sourceOwn', 'eigen waarde (instellingen berekening)') : t('sheet.sourceTable', 'CUR166 tabel 3.3, {{scenario}} gemiddelde', { scenario: i.scenario === 'low' ? t('sheet.low', 'laag') : t('sheet.high', 'hoog') });
-  const nonlinear = r.analysisMode === 'nonlinear';
-  const ok = sum.uc !== null && sum.uc <= 1;
+  const nonlinear = usesUltimate(r.analysisMode), plasticLaw = r.analysisMode === 'elastoplastic';
+  const mat = r.material, gov = mat?.governing, sheet = i.section.kind === 'sheet-pile' ? sheetInfo(i.section) : null;
+  const govLabel = gov ? t(`material.rows.${gov.id}`, gov.label) : '';
   const data = lateralReportData(i, r), sec = r.section, tube = i.section.kind === 'steel-tube' || i.section.kind === 'filled-tube';
-  const grossArea = i.section.kind === 'concrete-square' ? (i.section.diameterMm / 1000) ** 2 : Math.PI * (i.section.diameterMm / 1000) ** 2 / 4;
+  const grossArea = i.section.kind === 'sheet-pile' ? sec.steelAreaM2 : i.section.kind === 'concrete-square' ? (i.section.diameterMm / 1000) ** 2 : Math.PI * (i.section.diameterMm / 1000) ** 2 / 4;
   const exportJson = () => {
     const blob = new Blob([JSON.stringify({ module: 'laterally-loaded-pile', status: 'concept', input: i, result: r, references }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = 'horizontale-paalbelasting.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
@@ -66,7 +79,7 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
   return <div className="pile-result lateral-sheet">
     <header className="pile-sheet-title">
       <h2>{t('sheet.title', 'Horizontale paalbelasting')}</h2>
-      <p>{secText} · {nonlinear ? t('sheet.nonlinearSprings', 'niet-lineaire grondveren') : t('sheet.linearSprings', 'lineaire grondveren')}{i.layerCorrection === 'georgiadis' ? t('sheet.georgiadis', ', laagcorrectie Georgiadis') : ''} · {t('sheet.concept', 'concept')}</p>
+      <p>{secText} · {plasticLaw ? t('sheet.elastoplasticSprings', 'elastoplastische grondveren') : nonlinear ? t('sheet.nonlinearSprings', 'niet-lineaire grondveren') : t('sheet.linearSprings', 'lineaire grondveren')}{i.layerCorrection === 'georgiadis' ? t('sheet.georgiadis', ', laagcorrectie Georgiadis') : ''} · {t('sheet.concept', 'concept')}</p>
     </header>
 
     <section>
@@ -76,6 +89,8 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
       <tr><th scope="row">{t('sheet.head', 'Paalkop')}</th><td>{nap(0)} m</td><th scope="row">{t('sheet.toe', 'Paalpunt')}</th><td>{nap(i.lengthM)} m</td></tr>
       <tr><th scope="row">{t('sheet.length', 'Lengte')}</th><td>{n(i.lengthM, 2)} m</td><th scope="row">{t('sheet.headCondition', 'Kop')}</th><td>{i.headFixedRotation ? t('sheet.fixed', 'ingeklemd') : t('sheet.free', 'vrij draaiend')}{i.toeFixed ? t('sheet.toeFixed', ', voet ingeklemd') : ''}</td></tr>
       <tr><th scope="row">{t('sheet.hHead', 'H op de kop')}</th><td>{n(i.headForceKn)} kN</td><th scope="row">{t('sheet.mHead', 'M op de kop')}</th><td>{n(i.headMomentKnM)} kNm</td></tr>
+      {r.water && <tr><th scope="row">{t('sheet.waterBed', 'Waterbodem')}</th><td>NAP {n(r.water.bedNap, 2)} m</td><th scope="row">{t('sheet.waterLevel', 'Waterpeil')}</th><td>NAP {n(r.water.waterNap, 2)} m · {t('sheet.freeLength', 'vrij in water {{l}} m', { l: n(r.water.freeLengthM, 2) })}</td></tr>}
+      {r.water?.current && <tr><th scope="row">{t('sheet.current', 'Stroming')}</th><td colSpan={3}>q = ½·ρ·C_D·D·u² = {n(r.water.current.qMaxKnM, 2)} kN/m (C_D {n(r.water.current.cd, 2)}, u {n(r.water.current.speedMs, 2)} m/s, γ {n(r.water.current.factor, 2)}); {t('sheet.currentResultant', 'resultante {{F}} kN op NAP {{z}} m', { F: n(r.water.current.resultantKn, 1), z: n(r.water.current.resultantNap, 2) })}. {t('sheet.currentNot', 'Golfbelasting en wervelafschudding niet meegenomen.')}</td></tr>}
       <tr><th scope="row">{t('sheet.nComp', 'N (druk +)')}</th><td>{n(i.nEdKn)} kN</td><th scope="row">{t('sheet.width', 'Werkende breedte')}</th><td>{n(i.springWidthM, 2)} m</td></tr>
     </tbody></table>
     </section>
@@ -90,7 +105,8 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
         {sec.concreteAreaM2 > 0 && <tr><th scope="row">{t('sheet.concreteNet', 'Beton (netto)')}</th><td>{n(sec.concreteAreaM2 * 1e6, 0)} mm² · Ec,eff = {n(i.section.concreteEMpa * i.section.concreteFactor / (1 + i.section.creepCoefficient), 0)} MPa</td></tr>}
         {sec.rebarAreaMm2 > 0 && <tr><th scope="row">{t('sheet.longRebar', 'Langswapening')}</th><td>{n(sec.rebarAreaMm2, 0)} mm² · ρ = {n(100 * sec.rebarAreaMm2 / (grossArea * 1e6), 2)} %</td></tr>}
         {tube && <tr><th scope="row">{t('sheet.tube', 'Buis')}</th><td>{n(sec.steelAreaM2 * 1e6, 0)} mm² · {t('sheet.wall', 'wand {{wall}} mm', { wall: n(i.section.wallMm, 1) })}{i.section.kind === 'filled-tube' ? ` · ${i.section.tubeParticipates ? t('sheet.participates', 'werkt mee') : t('sheet.notParticipates', 'werkt niet mee in EI')}` : ''}</td></tr>}
-        <tr><th scope="row">{t('sheet.strengths', 'Sterkten')}</th><td>{i.section.kind !== 'steel-tube' ? `fck ${n(i.section.fckMpa, 0)} · fcd ${n(i.section.fcdMpa, 1)} · fyd ${n(i.section.fydMpa, 0)} MPa` : ''}{tube ? `${i.section.kind !== 'steel-tube' ? ' · ' : ''}${t('sheet.fydTube', 'fyd buis')} ${n(i.section.tubeFydMpa, 0)} MPa` : ''}</td></tr>
+        {sheet && <tr><th scope="row">{t('sheet.sheetProfile', 'Profiel')}</th><td>{sheet.p.profile.manufacturer} {sheet.id} · I = {n(sheet.p.profile.iCm4PerM ?? NaN, 0)} cm⁴/m · W<sub>el</sub> = {n(sheet.p.profile.welCm3PerM ?? NaN, 0)} cm³/m{sheet.p.profile.wplCm3PerM !== null ? <> · W<sub>pl</sub> = {n(sheet.p.profile.wplCm3PerM, 0)} cm³/m</> : null} · {t('sheet.sheetWidth', 'rekenbreedte {{b}} m', { b: n(sheet.p.widthM, 3) })} · β<sub>B</sub> = {n(sheet.p.betaB, 2)} · β<sub>D</sub> = {n(sheet.p.betaD, 2)}</td></tr>}
+        <tr><th scope="row">{t('sheet.strengths', 'Sterkten')}</th><td>{sheet ? `${sheet.grade} · fy ${n(sheet.p.fyMpa, 0)} MPa` : ''}{i.section.kind !== 'steel-tube' && !sheet ? `fck ${n(i.section.fckMpa, 0)} · fcd ${n(i.section.fcdMpa, 1)} · fyd ${n(i.section.fydMpa, 0)} MPa` : ''}{tube ? `${i.section.kind !== 'steel-tube' ? ' · ' : ''}${t('sheet.fydTube', 'fyd buis')} ${n(i.section.tubeFydMpa, 0)} MPa` : ''}</td></tr>
         {r.capacity && <tr><th scope="row">{t('sheet.mrdAtNed', 'MRd bij NEd')}</th><td>{n(r.capacity.mRdKnM)} kNm ({t('sheet.nRange', 'N tussen {{min}} en {{max}} kN', { min: n(r.capacity.nMinKn, 0), max: n(r.capacity.nMaxKn, 0) })})</td></tr>}
       </tbody></table>
     </div>
@@ -113,7 +129,7 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
       <tbody>{data.layers.map((l) => <tr key={l.index}><td>{l.index}</td><td className="num">{n(l.thicknessM, 2)}</td><td className="num">{n(l.frictionDeg, 0)}</td><td className="num">{n(l.ka, 3)}</td>
         <td className="num">{n(l.lineLoadKnM, 1)}</td><td className="num">{n(l.zeqTop, 2)} – {n(l.zeqBottom, 2)}</td>{data.nonlinear && <td className="num">{l.cumulativeKn === null ? '—' : n(l.cumulativeKn, 0)}</td>}</tr>)}</tbody>
     </table>
-    <p className="pile-result-pending-note">{t('sheet.k0Note', 'k₀ = kh × werkende breedte {{width}} m (CUR166 tabel 3.3, eerste secanttraject)', { width: n(i.springWidthM, 2) })}{nonlinear ? t('sheet.nonlinearNote', '; p = pu · tanh(k₀ y / pu); pu als functie van de equivalente diepte zeq') : '; p = k₀ y'}.{i.layerCorrection === 'georgiadis' ? ` ${t('sheet.georgiadisNote', 'Georgiadis: zeq zo dat de grensweerstand van de bovenliggende lagen behouden blijft.')}` : ''}</p>
+    <p className="pile-result-pending-note">{t('sheet.k0Note', 'k₀ = kh × werkende breedte {{width}} m (CUR166 tabel 3.3, eerste secanttraject)', { width: n(i.springWidthM, 2) })}{nonlinear ? (plasticLaw ? t('sheet.elastoplasticNote', '; p = min(k₀ y; pu) (elastoplastisch); pu als functie van de equivalente diepte zeq') : t('sheet.nonlinearNote', '; p = pu · tanh(k₀ y / pu); pu als functie van de equivalente diepte zeq')) : '; p = k₀ y'}.</p>
     </section>
 
     <section>
@@ -157,7 +173,6 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
       <tbody>{data.depth.map((d) => <tr key={d.z}><td className="num">{n(d.nap, 2)}</td><td className="num">{n(d.yMm, 2)}</td><td className="num">{n(d.rotMrad, 3)}</td>
         <td className="num">{n(d.mKnM, 1)}</td><td className="num">{n(d.vKn, 1)}</td><td className="num">{n(d.pKnM, 1)}</td></tr>)}</tbody>
     </table>
-    <p className="pile-result-pending-note">{t('sheet.stepNote', 'Stap {{step}} m; tussenliggende waarden lineair uit de elementoplossing.', { step: n(data.step, 2) })}</p>
     </section>
 
     <section>
@@ -171,11 +186,18 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
     </section>
 
     <section>
+    <h3>{t('material.title', 'Materiaaltoetsing')}</h3>
+    {mat ? <MaterialTable material={mat} nap={nap} /> : <p className="pile-result-pending-note">{r.materialError}</p>}
+    </section>
+
+    <section>
     <h3>{t('sheet.conclusion', 'Conclusie')}</h3>
-    <p className="pile-sheet-conclusion">{sum.uc === null ? t('sheet.noCheck', 'Geen doorsnedetoets mogelijk.') : ok
-      ? t('sheet.passes', 'De doorsnede voldoet voor buiging met normaalkracht: u.c. {{uc}} ≤ {{one}}. Kopverplaatsing {{y}} mm.', { uc: n(sum.uc, 2), one: n(1, 2), y: n(sum.yHeadMm, 1) })
-      : t('sheet.fails', 'De doorsnede voldoet niet: u.c. {{uc}} > {{one}}. Vergroot de doorsnede of de wapening.', { uc: n(sum.uc, 2), one: n(1, 2) })}</p>
-    <p className="pile-result-pending-note">{t('sheet.notChecked', 'Niet getoetst: dwarskracht, scheurwijdte, minimumwapening, verankering, lokale buisplooi, P–Δ en een gescheurde EI. Statische, monotone belasting.')}</p>
+    <p className="pile-sheet-conclusion">{!mat || mat.ok === null ? t('sheet.noCheck', 'Geen doorsnedetoets mogelijk.') : mat.outside
+      ? t('sheet.outside', 'Geen oordeel: een deel van de materiaaltoetsing valt buiten deze toetsing. Zie het overzicht hierboven.')
+      : mat.ok && gov
+        ? t('sheet.passesAll', 'De doorsnede voldoet op alle uitgevoerde toetsen. Maatgevend: {{check}}, u.c. {{uc}} ≤ {{one}}. Kopverplaatsing {{y}} mm.', { check: govLabel, uc: ucText(gov.uc), one: n(1, 2), y: n(sum.yHeadMm, 1) })
+        : t('sheet.failsAt', 'De doorsnede voldoet niet. Maatgevend: {{check}}, u.c. {{uc}} > {{one}}.', { check: govLabel, uc: ucText(gov?.uc ?? null), one: n(1, 2) })}</p>
+    {mat && <p className="pile-result-pending-note">{t(`material.notes.${mat.notChecked.key}`, mat.notChecked.nl)} {t('sheet.staticLoad', 'Statische, monotone belasting.')}</p>}
     </section>
 
     <details className="lateral-sheet-more"><summary>{t('sheet.details', 'Rekendetails')}</summary>
@@ -194,7 +216,7 @@ function SoilColumn({ layers, head, toe }: { layers: LayerRow[]; head: number; t
   const H = 300, top = 14, span = Math.max(1e-9, head - toe), y = (nap: number) => top + H * (head - nap) / span;
   return <svg className="lateral-soil-column" viewBox={`0 0 150 ${H + top + 16}`} role="img" aria-label={t('sheet.soilColumn', 'Grondopbouw langs de paal')}>
     {layers.map((l) => <g key={l.index}>
-      <rect x="44" y={y(l.topNap)} width="70" height={Math.max(0, y(l.bottomNap) - y(l.topNap))} fill={l.color} stroke="#555" strokeWidth=".6" />
+      <rect x="44" y={y(l.topNap)} width="70" height={Math.max(0, y(l.bottomNap) - y(l.topNap))} fill={l.color} stroke="var(--oa-border-strong)" strokeWidth=".6" />
       <text x="79" y={(y(l.topNap) + y(l.bottomNap)) / 2 + 3} textAnchor="middle" className="lateral-soil-name">{l.index}</text>
       <text x="40" y={y(l.topNap) + 3} textAnchor="end">{n(l.topNap, 2)}</text>
     </g>)}

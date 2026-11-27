@@ -176,7 +176,30 @@
     "type": "Tipo di palo",
     "wallThickness": "Spessore della parete",
     "wallThicknessAria": "Spessore della parete [mm]",
-    "woodDiameterAtJoint": "Diametro del legno al giunto"
+    "woodDiameterAtJoint": "Diametro del legno al giunto",
+    "system": "Sistema di pali",
+    "standardSize": "Misura standard",
+    "woodSection": "Sezione",
+    "woodRound": "Tondo (palo battuto)",
+    "woodSawn": "Quadrato o rettangolare a × b (segato)",
+    "sideA": "Lato a",
+    "sideB": "Lato b",
+    "rectHint": "Rettangolo a ≠ b: area, perimetro e Deq derivano da a e b; il programma non determina il fattore di forma s per una punta del palo rettangolare. Se necessario, inserire s come fattore di progetto.",
+    "timberSpecies": "Specie legnosa",
+    "timberSpeciesOwn": "Classe di resistenza propria",
+    "timberGrade": "Categoria di classificazione",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Solo per la verifica di resistenza; i fattori di classe del palo e la portata dipendono dal tipo di palo.",
+    "timberSpeciesNoClass": "Nessuna classe di resistenza univoca nella fonte: scegliere la classe nella verifica di resistenza. I fattori di classe del palo e la portata dipendono dal tipo di palo.",
+    "species": {
+      "vuren": "abete rosso",
+      "grenen": "pino silvestre",
+      "lariks": "larice",
+      "douglas": "douglasia",
+      "eiken": "rovere, Europa centrale",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Esporta per Pile Plan Studio (CSV)",
@@ -213,7 +236,8 @@
       "sideA": "Lato a",
       "tapered": "{{size}} mm (rastremato)",
       "title": "Ipotesi di base",
-      "woodAtJoint": "Legno al giunto"
+      "woodAtJoint": "Legno al giunto",
+      "sidesAB": "Sezione a × b"
     },
     "negSkin": {
       "cappedNote": "limitato a ksMin = {{v}}",
@@ -221,7 +245,9 @@
       "extensionAndWood": "(prolunga e legno)",
       "layer": "Strato",
       "title": "Attrito negativo",
-      "zone": "Zona: testa del palo NAP {{top}} fino a NAP {{bottom}} —"
+      "zone": "Zona: testa del palo NAP {{top}} fino a NAP {{bottom}} —",
+      "perimeterTitle": "Perimetro del fusto in questo strato",
+      "perimeterNote": "Os;i è il perimetro medio del fusto nello strato: la prolunga in calcestruzzo sopra il giunto, il legno sotto."
     },
     "pending": {
       "missingEA": "Inserisci la rigidezza assiale <strong>EA</strong> in <strong>Palo</strong>. Per questo tipo di palo EA non è ricavata dalla sezione; il valore deriva dal sistema di palo selezionato.",
@@ -257,6 +283,15 @@
     "title": "Capacità portante del palo",
     "total": {
       "title": "Capacità portante geotecnica massima"
+    },
+    "compact": {
+      "remarks": "Osservazioni",
+      "layers": "Valori intermedi per strato",
+      "results": "Risultati",
+      "formula": "Formula",
+      "value": "Valore",
+      "capacity": "Capacità portante",
+      "settlement": "Cedimento"
     }
   },
   "settings": {
@@ -289,7 +324,10 @@
     "sourceAria": "Fonte dei fattori di progetto",
     "table": "Tabella",
     "timberToe": "Diametro di punta del legno",
-    "useTableValues": "Usa valori tabellari"
+    "useTableValues": "Usa valori tabellari",
+    "rectSizes": "Legno segato a × b",
+    "rectSizesAria": "Serie di legno segato a × b [mm]",
+    "rectHint": "Sezioni come a×b, separate da spazi; un solo numero è un quadrato. Le misure quadrate compilano anche la tabella della capacità portante."
   },
   "shape": {
     "round": "Circolare",
@@ -349,6 +387,71 @@
     "notNumber": "Inserisci il limite inferiore e superiore come numero in kN.",
     "upper": "Limite superiore [kN]"
   },
+  "view3d": {
+    "aria": "Vista 3D del metodo 4D-8D; trascinare per ruotare, scorrere per ingrandire",
+    "fit": "Adatta alla vista",
+    "focusPile": "Palo intero",
+    "focusTip": "Punta del palo",
+    "label": {
+      "critical": "profondità critica {{depth}} m = {{ratio}} Deq",
+      "ground": "piano campagna {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "punta del palo {{nap}}",
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "limite superiore della zona III {{height}} m = {{ratio}} Deq"
+    },
+    "legend": {
+      "clipped": "Verde-azzurro: la curva qc troncata dei tratti II e III.",
+      "critical": "Profondità critica: {{depth}} m sotto la punta del palo ({{ratio}} Deq, Deq = {{deq}} mm). Linee punteggiate: zona di ricerca da 0,7 a 4 Deq.",
+      "negative": "Attrito negativo lungo il fusto; Fnk;d = {{force}} kN",
+      "positive": "Attrito laterale positivo lungo il fusto; Rs;cal;max = {{force}} kN",
+      "qc": "Resistenza alla punta qc accanto al palo; i tratti spessi sono le medie dei tratti.",
+      "slip": "Corpo di rottura: il terreno scorre lungo una spirale logaritmica, dalla profondità critica sotto la punta verso l'esterno e verso l'alto fino al limite superiore della zona III, come scelti dal calcolo. Un quarto è omesso per vedere all'interno; le frecce indicano la direzione di scorrimento. La forma è schematica.",
+      "zone": "Tratto {{zone}}",
+      "zoneI": "dalla punta del palo verso il basso fino alla profondità critica",
+      "zoneII": "dalla profondità critica di nuovo verso l'alto fino alla punta del palo",
+      "zoneIII": "dalla punta del palo verso l'alto fino al limite superiore della zona III"
+    },
+    "noModel": "Nessuna vista 3D: collegare una prova penetrometrica al calcolo.",
+    "notComputed": "Nessuna vista 3D finché il calcolo non ha un risultato. Modificare i dati o tornare al 2D.",
+    "note": "Le quote e il palo sono in scala. La larghezza dei tratti è schematica: il metodo calcola solo lungo la profondità.",
+    "switch": "Vista del disegno",
+    "switch3dTitle": "Il palo in 3D: vista fisica o di calcolo (metodo 4D-8D)",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Prova e palo in 3D affiancati",
+    "toolbar": "Vista",
+    "unavailable": "Il 3D non è disponibile su questo dispositivo (WebGL assente). Usare il disegno 2D.",
+    "viewSwitch": "Tipo di vista 3D",
+    "viewPhysical": "Fisica",
+    "viewPhysicalTitle": "Il palo così com'è, negli strati di terreno",
+    "viewCalc": "Calcolo",
+    "viewCalcTitle": "Tratti I, II e III, meccanismo di rottura, attrito e qc",
+    "ariaPhysical": "Vista 3D del palo nel terreno; trascinare per ruotare, scorrere per lo zoom",
+    "noPhysical": "Nessuna vista 3D: le dimensioni del palo o le quote non sono valide.",
+    "notePhysical": "Palo, strati e livelli sono in scala; il blocco di terreno è aperto lungo l'asse del palo. Gli strati sono la stratigrafia della prova CPT, con le modifiche dell'interpretazione degli strati. Schematici: la punta, i ferri di ripresa e l'armatura, l'elica, il tubo centrale e l'anello di saldatura. Dove la prova non dà uno strato, viene prolungato lo strato più vicino.",
+    "material": {
+      "concrete": "Calcestruzzo",
+      "steel": "Acciaio",
+      "wood": "Legno",
+      "grout": "Boiacca",
+      "plug": "Tappo di terreno"
+    },
+    "soil": {
+      "sand": "Sabbia",
+      "clay": "Argilla",
+      "peat": "Torba"
+    },
+    "physical": {
+      "head": "testa del palo {{nap}}",
+      "water": "falda {{nap}}",
+      "excavation": "scavo {{nap}}",
+      "joint": "giunto {{nap}}",
+      "excavatedLayer": "{{soil}} (scavato)",
+      "adjustedLayer": "{{soil}} (modificato)"
+    }
+  },
   "types": {
     "add": "Aggiungi tipo di palo",
     "hint": "I tipi di palo aggiuntivi compaiono accanto al tipo principale nel riepilogo determinante e in planimetria. Le tabelle per prova CPT restano quelle del tipo principale.",
@@ -376,7 +479,9 @@
       "prefab": "Calcestruzzo prefabbricato",
       "steelEA": "Palo in acciaio; EA specifica del progetto",
       "steelTube": "Palo tubolare in acciaio, riempito di calcestruzzo",
-      "wood": "Legno, sezione costante"
+      "wood": "Legno, sezione costante",
+      "steelOpen": "Tubo d'acciaio aperto, senza tappo",
+      "steelOpenPlug": "Tubo d'acciaio aperto, con tappo di terreno"
     },
     "noPoints": "Nessuna misura in questa prova CPT",
     "notComputed": "Non calcolato: {{error}}. Trascina le quote o modifica i dati di input.",
@@ -384,5 +489,147 @@
     "taperLength": "lunghezza rastremata dalla testa",
     "toeSize": "dimensione della punta",
     "wall": "parete"
+  },
+  "system": {
+    "noTable2025": "Per {{system}} i fattori di classe del palo della NEN 9997-1:2025 non sono ancora nella tabella di questo programma; nulla viene stimato. Il sistema non è quindi selezionabile per questa edizione. Scegliere l'edizione 2017 o calcolare con fattori di progetto da un'autodichiarazione o una prova di carico.",
+    "noTableRow": "{{system}} non ha una riga propria nella tabella 7.c di questa edizione e quindi non è selezionabile con valori di tabella. Calcolare con fattori di progetto dell'autodichiarazione del sistema di pali o di una prova di carico.",
+    "noTableBadge": "nessun valore di tabella",
+    "useProjectFactors": "Scegli con fattori di progetto"
+  },
+  "interp": {
+    "add": "Modifica un tratto",
+    "bottom": "Limite inferiore",
+    "bottomAria": "Limite inferiore del tratto [m NAP]",
+    "cancel": "Annulla",
+    "captureTitle": "Trascinare dall'alto verso il basso per scegliere il tratto",
+    "change": {
+      "noLayer": "nessuno strato",
+      "qcFixed": "{{qc}}: misurato {{min}}–{{max}} MPa (media {{mean}}) → valore fisso {{top}} MPa",
+      "qcLinear": "{{qc}}: misurato {{min}}–{{max}} MPa (media {{mean}}) → lineare da {{top}} a {{bottom}} MPa",
+      "soil": "Tipo di terreno: {{before}} → {{after}}"
+    },
+    "colChange": "Modifica (prima → dopo)",
+    "colRange": "Tratto",
+    "comment": "Commento",
+    "commentAria": "Commento all'adattamento",
+    "commentPlaceholder": "Perché questa modifica?",
+    "delete": "Elimina",
+    "deleteAria": "Elimina l'adattamento A{{n}}",
+    "edit": "Modifica",
+    "editAria": "Modifica l'adattamento A{{n}}",
+    "editTitle": "Modifica dell'adattamento",
+    "listAria": "Modifiche di questo CPT",
+    "markTitle": "Tratto modificato A{{n}}; fare clic per modificare",
+    "newTitle": "Nuovo adattamento",
+    "notApplied": {
+      "invalid": "Non applicato: tratto non valido o nessuna modifica indicata.",
+      "outsideRange": "Non applicato: il tratto è fuori dal CPT."
+    },
+    "problem": {
+      "nothing": "Scegliere una modifica della resistenza alla punta o del tipo di terreno.",
+      "order": "Il limite superiore deve essere più alto di quello inferiore.",
+      "range": "Scegliere un tratto: trascinare nel grafico dall'alto verso il basso oppure digitare entrambe le quote.",
+      "value": "Indicare una resistenza alla punta fissa pari o superiore a zero."
+    },
+    "qc": "Resistenza alla punta",
+    "qcFixed": "valore fisso",
+    "qcLinear": "lineare tra i bordi",
+    "qcNone": "invariato",
+    "range": "NAP da {{top}} a {{bottom}} m",
+    "report": {
+      "colChange": "Modifica (prima → dopo)",
+      "colComment": "Commento",
+      "colCpt": "CPT",
+      "colNr": "N.",
+      "colRange": "Tratto [m NAP]",
+      "intro": "In questo calcolo i tratti seguenti differiscono dal CPT misurato. Il CPT stesso non è stato modificato; una modifica vale solo per questo calcolo e per il CPT indicato. Nel grafico del CPT la misura è tracciata sottile e il tratto modificato è evidenziato.",
+      "title": "Modifiche all'interpretazione degli strati"
+    },
+    "resetAll": "Ripristina tutto",
+    "resetAllTitle": "Rimuove tutte le modifiche di questo CPT in questo calcolo; torna a valere la misura.",
+    "resultNote": "Per il CPT {{cpt}} questo calcolo differisce dall'interpretazione misurata. Il CPT stesso è invariato.",
+    "resultTitle": "Modifiche all'interpretazione degli strati",
+    "save": "Salva",
+    "selectHint": "Trascinare nel grafico dall'alto verso il basso per scegliere il tratto, oppure digitare le quote. La linea misurata resta visibile in grigio.",
+    "soilAria": "Tipo di terreno del tratto",
+    "stateChanged": "{{n}} modifica/che per questo CPT",
+    "stateMeasured": "come misurato",
+    "tableNote": "Interpretazione degli strati modificata per questo CPT: {{n}} tratto/i. I valori seguenti sono calcolati di conseguenza.",
+    "title": "Interpretazione degli strati",
+    "top": "Limite superiore",
+    "topAria": "Limite superiore del tratto [m NAP]",
+    "value": "Valore",
+    "valueAria": "Resistenza alla punta fissa [MPa]",
+    "warning": {
+      "applied": "Interpretazione degli strati modificata: {{n}} tratto/i del CPT {{cpt}} differiscono dalla misura.",
+      "skipped": "{{n}} modifica/che dell'interpretazione degli strati non sono state applicate: il tratto è fuori dal CPT o non è valido."
+    }
+  },
+  "strength": {
+    "title": "Resistenza del palo",
+    "enable": "Verificare la resistenza del palo",
+    "steelGrade": "Tipo di acciaio",
+    "timberClass": "Classe di resistenza del legno",
+    "ownValue": "Valore personalizzato",
+    "timber": "legno",
+    "concreteClass": "Classe di resistenza del calcestruzzo",
+    "concreteClassExtension": "Classe di calcestruzzo della prolunga",
+    "hintTimber": "Compressione parallela alla fibratura sotto N_Ed + F_nk;d (EN 1995-1-1). k_mod e γ_M: valori predefiniti per legno permanentemente bagnato e carico permanente. L'instabilità non è verificata.",
+    "hintSteel": "Classe della sezione e sforzo normale del tubo sotto N_Ed + F_nk;d (EN 1993-1-1). L'instabilità non è verificata: il programma non conosce una lunghezza libera o debolmente vincolata.",
+    "hintConcrete": "Sforzo normale della sezione in calcestruzzo sotto N_Ed + F_nk;d (EN 1992-1-1), senza armatura. L'instabilità non è verificata.",
+    "col": {
+      "article": "Punto",
+      "demand": "Valore di progetto",
+      "resistance": "Resistenza"
+    },
+    "notesTitle": "Ipotesi e ciò che non è verificato",
+    "status": {
+      "ok": "verificato",
+      "fail": "non verificato",
+      "outside": "fuori dall'ambito di questa verifica",
+      "na": "non verificato in questa sede",
+      "info": "a titolo informativo"
+    },
+    "rows": {
+      "steelClass": "Classe della sezione del tubo",
+      "steelAxial": "Sforzo normale del tubo in acciaio",
+      "timberAxial": "Legno: compressione parallela alla fibratura",
+      "timberToe": "Legno: sezione minima alla punta",
+      "extensionAxial": "Prolunga in calcestruzzo: sforzo normale",
+      "concreteAxial": "Sforzo normale della sezione in calcestruzzo"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, assunto dalla testa del palo fino alla base della zona di attrito negativo. Al di sotto lo sforzo normale diminuisce per attrito laterale positivo; quella parte non è verificata.",
+      "steelNoSection": "Non verificato: la sezione in acciaio (tubo centrale, spessore di parete) non è presente nei dati di ingresso per questo sistema di palo.",
+      "class4": "Classe della sezione 4: l'instabilità locale è determinante. Ciò esula da questa verifica (EN 1993-1-6); la resistenza non è stata calcolata.",
+      "class4Short": "Fuori dall'ambito di questa verifica (classe della sezione 4).",
+      "classIs": "Classe della sezione {{cls}}.",
+      "steel": "Acciaio: solo il tubo con lo spessore di parete inserito e f_y per t ≤ 40 mm; un riempimento in calcestruzzo non è considerato. Non verificati: instabilità (punto 6.3; il modulo non conosce una lunghezza libera o debolmente vincolata), corrosione (inserire lo spessore di parete residuo), saldature e giunzioni, e le tensioni di battitura.",
+      "timber": "Legno: classe di resistenza {{cls}} con f_c,0,k = {{fc}} MPa (EN 338); k_mod e γ_M sono dati di ingresso, valori predefiniti per legno permanentemente bagnato e carico permanente. Non verificati: instabilità (punto 6.3.2), il giunto con una prolunga, il degrado del legno e le tensioni di battitura.",
+      "timberToe": "A titolo informativo: limite superiore con l'intero N_Ed;max sulla sezione di punta. L'attrito laterale positivo sopra la punta non è stato detratto; la forza effettiva alla punta è minore.",
+      "concrete": "Calcestruzzo: N_Rd = A_c · f_cd della sezione del fusto, senza armatura (non è presente nei dati di ingresso). Non verificati: l'eccentricità minima (punto 6.1 (4)), l'instabilità, l'armatura e le tensioni di battitura.",
+      "concreteInSitu": "Palo gettato in opera: il diametro di calcolo ridotto (punto 2.3.4.2) e l'aumento di γ_c (punto 2.4.2.5) per pali senza tubo permanente non sono stati applicati; ricalcolare autonomamente la resistenza.",
+      "concreteClassUnknown": "Classe di resistenza del calcestruzzo sconosciuta {{cls}}.",
+      "timberSpecies": "Specie {{species}}, categoria {{grade}} → {{cls}} secondo {{source}}. La specie determina solo la classe di resistenza; i fattori di classe del palo e la portata dipendono dal tipo di palo.",
+      "timberSpeciesOwn": "Specie {{species}}: la fonte non indica una classe di resistenza univoca; la classe è stata scelta dall'utente."
+    }
+  },
+  "report": {
+    "title": "Stampa",
+    "detail": "Estensione",
+    "detailAria": "Estensione della stampa",
+    "compact": "Sintetico: tabelle",
+    "full": "Esteso: derivazione completa"
+  },
+  "openTube": {
+    "tip": "Punta",
+    "noPlug": "Senza tappo: solo l'anello d'acciaio",
+    "plug": "Con tappo: anello + η × sezione interna",
+    "plugFactor": "Fattore di tappo",
+    "plugFactorAria": "Fattore di tappo η [-]",
+    "plugFactorPlaceholder": "inserire",
+    "plugFactorMissing": "Inserire η (da 0 a 1) — senza η non si calcola.",
+    "hintPlug": "Con tappo conta l'anello d'acciaio più η volte la sezione interna; η = 1 è la sezione piena. La norma non fornisce un valore per η: lo giustifichi, ad esempio con l'attrito all'interno del tubo (NEN 9997-1 art. 7.6.2.3(d); oltre 500 mm anche art. 7.6.2.1(13)).",
+    "hintNoPlug": "Senza tappo conta solo l'anello d'acciaio e l'attrito interno è trascurato; è un limite inferiore di NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

@@ -1,0 +1,25 @@
+/* Meetwaarden bewerken: logboek en formulier voor een nieuwe bewerking. */
+.mw-dialog { display: grid; gap: 12px; padding: 12px 16px; font-size: 12px; color: var(--theme-text); }
+.mw-dialog h4 { margin: 0 0 6px; font-size: 12px; font-weight: 600; }
+.mw-dialog p { margin: 0; }
+.mw-head { display: flex; gap: 14px; align-items: end; }
+.mw-note { color: var(--theme-text-secondary); font-size: 11px; }
+.mw-field { display: grid; gap: 3px; min-width: 0; }
+.mw-field span { color: var(--theme-text-secondary); font-size: 11px; white-space: nowrap; }
+.mw-field input, .mw-field select { height: 26px; padding: 0 8px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-input-bg, var(--theme-bg)); color: var(--theme-text); font: inherit; min-width: 0; }
+.mw-cpt { flex: none; min-width: 180px; }
+.mw-table-wrap { max-height: 190px; overflow: auto; border: 1px solid var(--theme-border); border-radius: 3px; }
+.mw-table { width: 100%; border-collapse: collapse; }
+.mw-table th, .mw-table td { padding: 4px 8px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--theme-border); }
+.mw-table th { position: sticky; top: 0; background: var(--theme-hover); font-weight: 600; font-size: 11px; color: var(--theme-text-secondary); }
+.mw-table tr:last-child td { border-bottom: 0; }
+.mw-nowrap { white-space: nowrap; }
+.mw-link { padding: 0; border: 0; background: none; color: var(--theme-accent, #D97706); font: inherit; cursor: pointer; white-space: nowrap; }
+.mw-link:hover { text-decoration: underline; }
+.mw-actions { display: flex; gap: 8px; margin-top: 8px; }
+.mw-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: end; }
+.mw-form .mw-kind { min-width: 190px; }
+.mw-who { grid-template-columns: 180px 1fr auto; margin-top: 10px; }
+.mw-preview { display: grid; gap: 3px; min-height: 34px; margin-top: 8px; padding: 6px 8px; border-radius: 3px; background: var(--theme-hover); }
+.mw-problem { color: var(--oa-error, #b91c1c); }
+.mw-dialog section > .mw-note { margin-top: 6px; }

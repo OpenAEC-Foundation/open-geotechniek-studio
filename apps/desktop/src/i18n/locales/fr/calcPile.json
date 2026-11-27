@@ -176,7 +176,30 @@
     "type": "Type de pieu",
     "wallThickness": "Épaisseur de paroi",
     "wallThicknessAria": "Épaisseur de paroi [mm]",
-    "woodDiameterAtJoint": "Diamètre du bois à la jonction"
+    "woodDiameterAtJoint": "Diamètre du bois à la jonction",
+    "system": "Système de pieux",
+    "standardSize": "Dimension standard",
+    "woodSection": "Section",
+    "woodRound": "Rond (pieu battu)",
+    "woodSawn": "Carré ou rectangulaire a × b (scié)",
+    "sideA": "Côté a",
+    "sideB": "Côté b",
+    "rectHint": "Rectangle a ≠ b : l'aire, le périmètre et Deq découlent de a et b ; le programme ne détermine pas le facteur de forme s pour une pointe de pieu rectangulaire. Saisissez s comme facteur de projet si nécessaire.",
+    "timberSpecies": "Essence de bois",
+    "timberSpeciesOwn": "Classe de résistance propre",
+    "timberGrade": "Classe de tri",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Uniquement pour la vérification de résistance ; les facteurs de classe de pieu et la portance découlent du type de pieu.",
+    "timberSpeciesNoClass": "Pas de classe de résistance univoque dans la source : choisissez la classe dans la vérification de résistance. Les facteurs de classe de pieu et la portance découlent du type de pieu.",
+    "species": {
+      "vuren": "épicéa",
+      "grenen": "pin sylvestre",
+      "lariks": "mélèze",
+      "douglas": "douglas",
+      "eiken": "chêne, Europe centrale",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Exporter pour Pile Plan Studio (CSV)",
@@ -213,7 +236,8 @@
       "sideA": "Côté a",
       "tapered": "{{size}} mm (conique)",
       "title": "Hypothèses de base",
-      "woodAtJoint": "Bois à la jonction"
+      "woodAtJoint": "Bois à la jonction",
+      "sidesAB": "Section a × b"
     },
     "negSkin": {
       "cappedNote": "plafonné à ksMin = {{v}}",
@@ -221,7 +245,9 @@
       "extensionAndWood": "(rehausse et bois)",
       "layer": "Couche",
       "title": "Frottement négatif",
-      "zone": "Zone : tête du pieu NAP {{top}} à NAP {{bottom}} —"
+      "zone": "Zone : tête du pieu NAP {{top}} à NAP {{bottom}} —",
+      "perimeterTitle": "Périmètre du fût dans cette couche",
+      "perimeterNote": "Os;i est le périmètre moyen du fût dans la couche : la rehausse en béton au-dessus de la jonction, le bois en dessous."
     },
     "pending": {
       "missingEA": "Saisissez la rigidité axiale <strong>EA</strong> sous <strong>Pieu</strong>. Pour ce type de pieu, EA n'est pas déduit de la section ; la valeur découle du système de pieu choisi.",
@@ -257,6 +283,15 @@
     "title": "Capacité portante du pieu",
     "total": {
       "title": "Capacité portante géotechnique maximale"
+    },
+    "compact": {
+      "remarks": "Remarques",
+      "layers": "Valeurs intermédiaires par couche",
+      "results": "Résultats",
+      "formula": "Formule",
+      "value": "Valeur",
+      "capacity": "Capacité portante",
+      "settlement": "Tassement"
     }
   },
   "settings": {
@@ -289,7 +324,10 @@
     "sourceAria": "Source des facteurs du projet",
     "table": "Tableau",
     "timberToe": "Diamètre de pointe du bois",
-    "useTableValues": "Utiliser les valeurs du tableau"
+    "useTableValues": "Utiliser les valeurs du tableau",
+    "rectSizes": "Bois scié a × b",
+    "rectSizesAria": "Série de bois scié a × b [mm]",
+    "rectHint": "Sections sous la forme a×b, séparées par des espaces ; un nombre seul est un carré. Les dimensions carrées alimentent aussi le tableau de capacité portante."
   },
   "shape": {
     "round": "Circulaire",
@@ -349,6 +387,71 @@
     "notNumber": "Saisissez les limites inférieure et supérieure sous forme de nombre en kN.",
     "upper": "Limite supérieure [kN]"
   },
+  "view3d": {
+    "aria": "Vue 3D de la méthode 4D-8D ; glisser pour tourner, molette pour zoomer",
+    "fit": "Ajuster à la vue",
+    "focusPile": "Pieu entier",
+    "focusTip": "Pointe du pieu",
+    "label": {
+      "critical": "profondeur critique {{depth}} m = {{ratio}} Deq",
+      "ground": "terrain naturel {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "pointe du pieu {{nap}}",
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "limite supérieure de la zone III {{height}} m = {{ratio}} Deq"
+    },
+    "legend": {
+      "clipped": "Bleu-vert : la courbe qc écrêtée des trajets II et III.",
+      "critical": "Profondeur critique : {{depth}} m sous la pointe du pieu ({{ratio}} Deq, Deq = {{deq}} mm). Pointillés : zone de recherche de 0,7 à 4 Deq.",
+      "negative": "Frottement négatif le long du fût ; Fnk;d = {{force}} kN",
+      "positive": "Frottement latéral positif le long du fût ; Rs;cal;max = {{force}} kN",
+      "qc": "Résistance de pointe qc à côté du pieu ; les traits épais sont les moyennes par trajet.",
+      "slip": "Corps de rupture : le sol cisaille le long d'une spirale logarithmique, de la profondeur critique sous la pointe vers l'extérieur et vers le haut jusqu'à la limite supérieure de la zone III, telles que retenues par le calcul. Un quart est omis pour voir l'intérieur ; les flèches indiquent le sens du cisaillement. La forme est schématique.",
+      "zone": "Trajet {{zone}}",
+      "zoneI": "de la pointe du pieu vers le bas jusqu'à la profondeur critique",
+      "zoneII": "de la profondeur critique vers le haut jusqu'à la pointe du pieu",
+      "zoneIII": "de la pointe du pieu vers le haut jusqu'à la limite supérieure de la zone III"
+    },
+    "noModel": "Pas de vue 3D : associez un sondage au calcul.",
+    "notComputed": "Pas de vue 3D tant que le calcul n'a pas de résultat. Modifiez les données ou revenez à la 2D.",
+    "note": "Les niveaux et le pieu sont à l'échelle. La largeur des trajets est schématique : la méthode ne calcule que selon la profondeur.",
+    "switch": "Affichage du dessin",
+    "switch3dTitle": "Le pieu en 3D : vue physique ou de calcul (méthode 4D-8D)",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondage et pieu en 3D côte à côte",
+    "toolbar": "Vue",
+    "unavailable": "La 3D n'est pas disponible sur cet appareil (pas de WebGL). Utilisez le dessin 2D.",
+    "viewSwitch": "Type de vue 3D",
+    "viewPhysical": "Physique",
+    "viewPhysicalTitle": "Le pieu tel qu'il est, dans les couches de sol",
+    "viewCalc": "Calcul",
+    "viewCalcTitle": "Trajets I, II et III, zone de rupture, frottement et qc",
+    "ariaPhysical": "Vue 3D du pieu dans le sol ; glisser pour pivoter, défiler pour zoomer",
+    "noPhysical": "Pas de vue 3D : les dimensions du pieu ou les niveaux ne sont pas valides.",
+    "notePhysical": "Le pieu, les couches et les niveaux sont à l'échelle ; le bloc de sol est ouvert le long de l'axe du pieu. Les couches sont la stratigraphie de l'essai CPT, avec les ajustements de l'interprétation des couches. Schématiques : la pointe, les attentes et l'armature, l'hélice, le tube central et la bague de soudure. Là où l'essai ne donne pas de couche, la couche la plus proche est prolongée.",
+    "material": {
+      "concrete": "Béton",
+      "steel": "Acier",
+      "wood": "Bois",
+      "grout": "Coulis",
+      "plug": "Bouchon de sol"
+    },
+    "soil": {
+      "sand": "Sable",
+      "clay": "Argile",
+      "peat": "Tourbe"
+    },
+    "physical": {
+      "head": "tête du pieu {{nap}}",
+      "water": "nappe phréatique {{nap}}",
+      "excavation": "excavation {{nap}}",
+      "joint": "joint {{nap}}",
+      "excavatedLayer": "{{soil}} (excavé)",
+      "adjustedLayer": "{{soil}} (ajusté)"
+    }
+  },
   "types": {
     "add": "Ajouter un type de pieu",
     "hint": "Les types de pieux supplémentaires apparaissent à côté du type principal dans la vue d’ensemble déterminante et sur le plan. Les tableaux par essai CPT restent ceux du type principal.",
@@ -376,7 +479,9 @@
       "prefab": "Béton préfabriqué",
       "steelEA": "Pieu acier ; EA spécifique au projet",
       "steelTube": "Pieu tubulaire en acier, rempli de béton",
-      "wood": "Bois, section constante"
+      "wood": "Bois, section constante",
+      "steelOpen": "Tube acier ouvert, sans bouchon",
+      "steelOpenPlug": "Tube acier ouvert, avec bouchon de sol"
     },
     "noPoints": "Aucune mesure dans ce CPT",
     "notComputed": "Non calculé : {{error}}. Déplacez les niveaux ou ajustez la saisie.",
@@ -384,5 +489,147 @@
     "taperLength": "longueur conique depuis la tête",
     "toeSize": "dimension de la pointe",
     "wall": "paroi"
+  },
+  "system": {
+    "noTable2025": "Pour {{system}}, les facteurs de classe de pieu de la NEN 9997-1:2025 ne figurent pas encore dans le tableau de ce programme ; rien n'est estimé. Le système ne peut donc pas être choisi pour cette édition. Choisissez l'édition 2017 ou calculez avec des facteurs de projet issus d'une autodéclaration ou d'un essai de chargement.",
+    "noTableRow": "{{system}} n'a pas de ligne propre dans le tableau 7.c de cette édition et ne peut donc pas être choisi avec des valeurs du tableau. Calculez avec des facteurs de projet issus de l'autodéclaration du système de pieux ou d'un essai de chargement.",
+    "noTableBadge": "pas de valeur tabulée",
+    "useProjectFactors": "Choisir avec des facteurs de projet"
+  },
+  "interp": {
+    "add": "Modifier un intervalle",
+    "bottom": "Bas",
+    "bottomAria": "Bas de l'intervalle [m NAP]",
+    "cancel": "Annuler",
+    "captureTitle": "Faites glisser de haut en bas pour choisir l'intervalle",
+    "change": {
+      "noLayer": "aucune couche",
+      "qcFixed": "{{qc}} : mesuré {{min}}–{{max}} MPa (moyenne {{mean}}) → valeur fixe {{top}} MPa",
+      "qcLinear": "{{qc}} : mesuré {{min}}–{{max}} MPa (moyenne {{mean}}) → linéaire de {{top}} à {{bottom}} MPa",
+      "soil": "Type de sol : {{before}} → {{after}}"
+    },
+    "colChange": "Modification (ancien → nouveau)",
+    "colRange": "Intervalle",
+    "comment": "Commentaire",
+    "commentAria": "Commentaire sur l'ajustement",
+    "commentPlaceholder": "Pourquoi cet ajustement ?",
+    "delete": "Supprimer",
+    "deleteAria": "Supprimer l'ajustement A{{n}}",
+    "edit": "Modifier",
+    "editAria": "Modifier l'ajustement A{{n}}",
+    "editTitle": "Modifier l'ajustement",
+    "listAria": "Ajustements de ce CPT",
+    "markTitle": "Intervalle modifié A{{n}} ; cliquez pour modifier",
+    "newTitle": "Nouvel ajustement",
+    "notApplied": {
+      "invalid": "Non appliqué : intervalle invalide ou aucune modification indiquée.",
+      "outsideRange": "Non appliqué : l'intervalle est hors du CPT."
+    },
+    "problem": {
+      "nothing": "Choisissez une modification de la résistance de cône ou du type de sol.",
+      "order": "Le haut doit être plus haut que le bas.",
+      "range": "Choisissez un intervalle : faites glisser dans le graphique de haut en bas, ou saisissez les deux niveaux.",
+      "value": "Indiquez une résistance de cône fixe supérieure ou égale à zéro."
+    },
+    "qc": "Résistance de cône",
+    "qcFixed": "valeur fixe",
+    "qcLinear": "linéaire entre les bords",
+    "qcNone": "inchangé",
+    "range": "NAP {{top}} à {{bottom}} m",
+    "report": {
+      "colChange": "Modification (ancien → nouveau)",
+      "colComment": "Commentaire",
+      "colCpt": "CPT",
+      "colNr": "N°",
+      "colRange": "Intervalle [m NAP]",
+      "intro": "Dans ce calcul, les intervalles ci-dessous diffèrent du CPT mesuré. Le CPT lui-même n'a pas été modifié ; un ajustement ne vaut que pour ce calcul et pour le CPT indiqué. Dans le graphique du CPT, la mesure est tracée en trait fin et l'intervalle modifié est marqué.",
+      "title": "Ajustements de l'interprétation des couches"
+    },
+    "resetAll": "Tout rétablir",
+    "resetAllTitle": "Supprime toutes les modifications de ce CPT dans ce calcul ; la mesure s'applique à nouveau.",
+    "resultNote": "Pour le CPT {{cpt}}, ce calcul diffère de l'interprétation mesurée. Le CPT lui-même est inchangé.",
+    "resultTitle": "Ajustements de l'interprétation des couches",
+    "save": "Enregistrer",
+    "selectHint": "Faites glisser dans le graphique de haut en bas pour choisir l'intervalle, ou saisissez les niveaux. La courbe mesurée reste visible en gris.",
+    "soilAria": "Type de sol de l'intervalle",
+    "stateChanged": "{{n}} modification(s) pour ce CPT",
+    "stateMeasured": "telle que mesurée",
+    "tableNote": "Interprétation des couches modifiée pour ce CPT : {{n}} intervalle(s). Les valeurs ci-dessous en tiennent compte.",
+    "title": "Interprétation des couches",
+    "top": "Haut",
+    "topAria": "Haut de l'intervalle [m NAP]",
+    "value": "Valeur",
+    "valueAria": "Résistance de cône fixe [MPa]",
+    "warning": {
+      "applied": "Interprétation des couches modifiée : {{n}} intervalle(s) du CPT {{cpt}} diffèrent de la mesure.",
+      "skipped": "{{n}} modification(s) de l'interprétation des couches n'ont pas été appliquées : l'intervalle est hors du CPT ou invalide."
+    }
+  },
+  "strength": {
+    "title": "Résistance du pieu",
+    "enable": "Vérifier la résistance du pieu",
+    "steelGrade": "Nuance d'acier",
+    "timberClass": "Classe de résistance du bois",
+    "ownValue": "Valeur personnalisée",
+    "timber": "bois",
+    "concreteClass": "Classe de résistance du béton",
+    "concreteClassExtension": "Classe de béton de la rehausse",
+    "hintTimber": "Compression parallèle au fil sous N_Ed + F_nk;d (EN 1995-1-1). k_mod et γ_M : valeurs par défaut pour un bois immergé en permanence et une charge permanente. Le flambement n'est pas vérifié.",
+    "hintSteel": "Classe de section et effort normal du tube sous N_Ed + F_nk;d (EN 1993-1-1). Le flambement n'est pas vérifié : le programme ne connaît pas de longueur libre ou faiblement maintenue.",
+    "hintConcrete": "Effort normal de la section en béton sous N_Ed + F_nk;d (EN 1992-1-1), sans armatures. Le flambement n'est pas vérifié.",
+    "col": {
+      "article": "Article",
+      "demand": "Valeur de calcul",
+      "resistance": "Résistance"
+    },
+    "notesTitle": "Hypothèses et éléments non vérifiés",
+    "status": {
+      "ok": "satisfait",
+      "fail": "ne satisfait pas",
+      "outside": "hors du champ de cette vérification",
+      "na": "non vérifié",
+      "info": "pour information"
+    },
+    "rows": {
+      "steelClass": "Classe de section du tube",
+      "steelAxial": "Effort normal du tube en acier",
+      "timberAxial": "Bois : compression parallèle au fil",
+      "timberToe": "Bois : plus petite section à la pointe",
+      "extensionAxial": "Rehausse en béton : effort normal",
+      "concreteAxial": "Effort normal de la section en béton"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, retenu de la tête du pieu jusqu'à la base de la zone de frottement négatif. En dessous, l'effort normal diminue par frottement latéral positif ; cette partie n'est pas vérifiée.",
+      "steelNoSection": "Non vérifié : la section en acier (tube central, épaisseur de paroi) ne figure pas dans les données d'entrée pour ce système de pieu.",
+      "class4": "Classe de section 4 : le voilement local est déterminant. Cela sort du champ de cette vérification (EN 1993-1-6) ; la résistance n'a pas été calculée.",
+      "class4Short": "Hors du champ de cette vérification (classe de section 4).",
+      "classIs": "Classe de section {{cls}}.",
+      "steel": "Acier : uniquement le tube avec l'épaisseur de paroi saisie et f_y pour t ≤ 40 mm ; un remplissage en béton n'est pas pris en compte. Non vérifiés : le flambement (art. 6.3 ; le module ne connaît pas de longueur libre ou faiblement maintenue), la corrosion (saisissez l'épaisseur de paroi résiduelle), les soudures et raccords, et les contraintes de battage.",
+      "timber": "Bois : classe de résistance {{cls}} avec f_c,0,k = {{fc}} MPa (EN 338) ; k_mod et γ_M sont des données d'entrée, valeurs par défaut pour un bois immergé en permanence et une charge permanente. Non vérifiés : le flambement (art. 6.3.2), le joint avec une rehausse, la dégradation du bois et les contraintes de battage.",
+      "timberToe": "Pour information : borne supérieure avec la totalité de N_Ed;max sur la section en pointe. Le frottement latéral positif au-dessus de la pointe n'a pas été déduit ; l'effort réel en pointe est plus faible.",
+      "concrete": "Béton : N_Rd = A_c · f_cd de la section du fût, sans armatures (elles ne figurent pas dans les données d'entrée). Non vérifiés : l'excentricité minimale (art. 6.1 (4)), le flambement, les armatures et les contraintes de battage.",
+      "concreteInSitu": "Pieu coulé en place : le diamètre de calcul réduit (art. 2.3.4.2) et la majoration de γ_c (art. 2.4.2.5) pour les pieux sans tubage permanent n'ont pas été appliqués ; convertissez vous-même la résistance en conséquence.",
+      "concreteClassUnknown": "Classe de résistance du béton inconnue {{cls}}.",
+      "timberSpecies": "Essence {{species}}, classe de tri {{grade}} → {{cls}} selon {{source}}. L'essence ne fixe que la classe de résistance ; les facteurs de classe de pieu et la portance découlent du type de pieu.",
+      "timberSpeciesOwn": "Essence {{species}} : la source ne donne pas de classe de résistance univoque ; la classe a été choisie par l'utilisateur."
+    }
+  },
+  "report": {
+    "title": "Impression",
+    "detail": "Étendue",
+    "detailAria": "Étendue de l'impression",
+    "compact": "Abrégé : tableaux",
+    "full": "Détaillé : dérivation complète"
+  },
+  "openTube": {
+    "tip": "Pointe",
+    "noPlug": "Sans bouchon : anneau d'acier seul",
+    "plug": "Avec bouchon : anneau + η × section intérieure",
+    "plugFactor": "Facteur de bouchon",
+    "plugFactorAria": "Facteur de bouchon η [-]",
+    "plugFactorPlaceholder": "à saisir",
+    "plugFactorMissing": "Saisissez η (0 à 1) — sans η, aucun calcul.",
+    "hintPlug": "Avec bouchon, l'anneau d'acier compte plus η fois la section intérieure ; η = 1 correspond à la section pleine. La norme ne donne pas de valeur pour η : justifiez-la, par exemple avec le frottement à l'intérieur du tube (NEN 9997-1 art. 7.6.2.3(d) ; au-delà de 500 mm aussi art. 7.6.2.1(13)).",
+    "hintNoPlug": "Sans bouchon, seul l'anneau d'acier compte et le frottement intérieur est ignoré ; c'est une borne inférieure de NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

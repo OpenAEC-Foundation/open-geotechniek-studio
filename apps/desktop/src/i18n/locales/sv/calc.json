@@ -11,7 +11,7 @@
       "settings": "Inställningar"
     },
     "defaultVisual": "CPT-sondering",
-    "draft": "Utkast",
+    "draft": "Betaversion",
     "input": "Indata",
     "settings": {
       "title": "Inställningar · {{name}}",
@@ -47,8 +47,8 @@
     "title": "Ny beräkning",
     "name": "Namn",
     "namePlaceholder": "Till exempel: Sättning av utfyllnad",
-    "alphaTitle": "Alfa — fortfarande under utveckling, inte produktionsklar",
-    "alpha": "UTKAST — under utveckling",
+    "alphaTitle": "Betaversion: beräkningarna kontrolleras fortfarande; använd dem inte utan egen kontroll",
+    "alpha": "BETAVERSION — testare sökes",
     "cancel": "Avbryt",
     "add": "Lägg till"
   },
@@ -82,7 +82,7 @@
     "explanation": "Förklaring",
     "contextTitle": "Geotekniska beräkningar",
     "contextModules": "Sättning · Platta på mark",
-    "draftCalculation": "Utkastberäkning"
+    "draftCalculation": "Beräkning (betaversion)"
   },
   "modules": {
     "pile-bearing-capacity": {
@@ -108,6 +108,51 @@
       "subtitle": "Förväntat antal slag från sonderingen, bredvid det räknade",
       "norm": "Tumregel N = intervall · D² · qc / E",
       "visualLabel": "Antal slag"
+    },
+    "sheet-pile-wall": {
+      "name": "Spont och strandskoning",
+      "subtitle": "Stålspont eller strandskoning av trä, plast eller betong: fjädermodell, Blum som kontroll, kontroll av tvärsnitt och nedslagningsdjup",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Tvärsnitt"
+    }
+  },
+  "corrosion": {
+    "sourceNone": "Ingen korrosion",
+    "sourceTable": "Enligt NEN-EN 1993-5 tabell 4-1 / 4-2",
+    "sourceCustom": "Eget värde",
+    "environment": "Miljö",
+    "table41": "Tabell 4-1: i jord",
+    "table42": "Tabell 4-2: i vatten",
+    "life": "Avsedd livslängd",
+    "years": "år",
+    "loss": "Tjockleksförlust",
+    "noValue": "inget tabellvärde: välj ett eget värde",
+    "verification": "Verifiering",
+    "verificationOk": "i ordning",
+    "vCase": "Fall",
+    "vInput": "Indata",
+    "vQuantity": "Storhet",
+    "vExpected": "Förväntat",
+    "vModule": "Modul",
+    "vDiff": "Skillnad",
+    "env": {
+      "soil-undisturbed": "Ostörd naturlig jord (sand, silt, lera)",
+      "soil-polluted": "Förorenad naturlig jord och industriområden",
+      "soil-aggressive": "Aggressiv naturlig jord (myr, torv)",
+      "fill-loose": "Fyllning, ej packad, ej aggressiv",
+      "fill-compacted": "Fyllning, packad, ej aggressiv",
+      "fill-aggressive-loose": "Fyllning, ej packad, aggressiv (aska, slagg)",
+      "fill-aggressive-compacted": "Fyllning, packad, aggressiv (aska, slagg)",
+      "fresh-water": "Sötvatten (flod, kanal), zon med kraftigt angrepp (vattenlinje)",
+      "fresh-water-polluted": "Starkt förorenat sötvatten, zon med kraftigt angrepp (vattenlinje)",
+      "sea-splash": "Havsvatten, tempererat klimat, zon med kraftigt angrepp (lågvatten och stänkzon)",
+      "sea-immersion": "Havsvatten, tempererat klimat, ständigt nedsänkt eller tidvattenzon"
+    },
+    "errors": {
+      "missing": "Korrosion {{where}}: tabellen har inget värde för detta val. Ange en egen tjockleksförlust.",
+      "negative": "Tjockleksförlusten genom korrosion kan inte vara negativ.",
+      "noThickness": "Biblioteket anger ingen fläns- och livtjocklek för denna profil; korrosionen kan inte beaktas.",
+      "tooLarge": "Tjockleksförlusten ({{loss}} mm) är nästan hela plåttjockleken ({{t}} mm): tvärsnittet kan inte längre kontrolleras."
     }
   }
 }

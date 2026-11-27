@@ -9,6 +9,7 @@ import {
  type CapacityMatrix,type CapacityTableConfig,type CptMatrix,type SizeChoice,
 } from '../capacity-table';
 import {numberLocale} from '../../../i18n';
+import {countOverrides} from '../parts/interpretation-overrides';
 import './capacity-table.css';
 import {GoverningOverview,type OverviewSystem} from './GoverningOverview';
 import {PilePlanExportButton} from './PilePlanExportButton';
@@ -66,7 +67,7 @@ export function CapacityTable({input,cpts,onChange,onOpen,cptId=null,onFocusCpt}
    {!focused&&<ChoiceTable m={computed.m} choices={computed.choices} sizeLabel={sizeLabel} open={open} focus={id=>onFocusCpt?.(id)} />}
    <Legend target={computed.m.target} />
    <div className={focused?'capacity-cpt-single':'capacity-cpt-list'}>
-    {(focused?[focused]:computed.m.cpts).map(c=><CptTable key={c.cptId} c={c} m={computed.m!} choices={computed.choices} sizeLabel={sizeLabel} open={open} focus={focused?undefined:()=>onFocusCpt?.(c.cptId)} />)}
+    {(focused?[focused]:computed.m.cpts).map(c=><CptTable key={c.cptId} c={c} m={computed.m!} choices={computed.choices} sizeLabel={sizeLabel} open={open} adjusted={countOverrides(input.interpretationOverrides,c.cptId)} focus={focused?undefined:()=>onFocusCpt?.(c.cptId)} />)}
    </div>
   </>}
  </section>;
@@ -208,7 +209,7 @@ function Legend({target}:{target:{minKn:number;maxKn:number}}) {
  </div>;
 }
 
-function CptTable({c,m,choices,sizeLabel,open,focus}:{c:CptMatrix;m:CapacityMatrix;choices:SizeChoice[];sizeLabel:(s:number)=>string;open:(id:string,s:number,t:number)=>void;focus?:()=>void}) {
+function CptTable({c,m,choices,sizeLabel,open,focus,adjusted=0}:{c:CptMatrix;m:CapacityMatrix;choices:SizeChoice[];sizeLabel:(s:number)=>string;open:(id:string,s:number,t:number)=>void;focus?:()=>void;adjusted?:number}) {
  const chosen=choices.map(ch=>ch.perCpt.find(p=>p.cptId===c.cptId)?.toeNap??null);
  const {t}=useTranslation('calcPile');
  const title=t('table.cpt','Sondering {{id}}',{id:c.cptId});
@@ -216,6 +217,7 @@ function CptTable({c,m,choices,sizeLabel,open,focus}:{c:CptMatrix;m:CapacityMatr
   <h3>{focus?<button type="button" className="capacity-link" onClick={focus}>{title}</button>:title}</h3>
   {c.missing&&<p role="status" className="capacity-grid-error">{t('table.cptMissing','Sondering {{id}} ontbreekt in het project.',{id:c.cptId})}</p>}
   {c.profileNote&&<p className="capacity-cell-note">{c.profileNote}</p>}
+  {adjusted>0&&<p className="capacity-cell-note" role="note">{t('interp.tableNote','Grondlaaginterpretatie aangepast voor deze sondering: {{n}} traject(en). De waarden hieronder zijn daarmee berekend.',{n:adjusted})}</p>}
   <div className="capacity-grid-scroll"><table aria-label={t('table.cptTableAria','Rc;net;d sondering {{id}}',{id:c.cptId})}>
    <thead><tr><th scope="col">{t('table.toe','Punt [m NAP]')}</th>{m.sizesMm.map(s=><th scope="col" key={s}>{sizeLabel(s)}</th>)}</tr></thead>
    <tbody>{m.toeNaps.map((toe,li)=><tr key={toe}><th scope="row">{nap(toe)}</th>{m.sizesMm.map((s,si)=>{

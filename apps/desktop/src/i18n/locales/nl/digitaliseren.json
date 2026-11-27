@@ -1,0 +1,177 @@
+{
+  "calibrate": {
+    "depthAxis": "Diepte-as",
+    "depthMode": "Diepte-as in",
+    "gridFound": "Raster gevonden: {{rows}} × {{cols}} lijnen. De ijkpunten komen op de buitenste lijnen; vul de waarden daarvan in. Een aangeklikt ijkpunt klikt vast op het raster.",
+    "gridNone": "Geen raster gevonden op de onderlegger; klik de ijkpunten zelf aan.",
+    "hint": "Klik twee punten op de diepte-as en twee op de waarde-as, zo ver mogelijk uit elkaar, en vul bij elk punt de waarde in. De assen worden los van elkaar geijkt, dus een scheve scan is geen bezwaar.",
+    "ok": "De ijking klopt. Controleer of de rasterlijnen over de lijnen van de grafiek vallen.",
+    "pick": "{{label}} aanklikken",
+    "pickHint": "Klik daarna het punt aan op de onderlegger",
+    "repick": "{{label}} opnieuw",
+    "shareDepth": "Zelfde diepte-as als qc",
+    "suggest": "IJkpunten op het raster zetten",
+    "valueAxis": "Waarde-as {{name}}",
+    "valueOf": "Waarde bij {{label}}"
+  },
+  "cone": {
+    "electrical": "elektrisch",
+    "mechanical": "mechanisch",
+    "unknown": "onbekend"
+  },
+  "details": {
+    "coneHint": "Bij het wisselen van het soort sondering springt de stap naar 0,2 m (mechanisch) of 0,02 m (elektrisch). Het soort wordt vermeld; de meetwaarden worden er niet voor omgerekend.",
+    "coneKind": "Soort sondering",
+    "date": "Datum sondering",
+    "groundLevel": "Maaiveld (m NAP)",
+    "hint": "Vul de kopgegevens in. De herkomst is verplicht en komt in het rapport.",
+    "id": "Naam of nummer",
+    "origin": "Herkomst (verplicht)",
+    "originExample": "gedigitaliseerd van rapport … d.d. …",
+    "x": "X (RD, m), optioneel",
+    "y": "Y (RD, m), optioneel"
+  },
+  "footer": {
+    "accuracy": "Een gedigitaliseerde sondering is minder nauwkeurig dan een gemeten bestand.",
+    "cancel": "Annuleren",
+    "confirmClose": "De aangeklikte punten zijn nog niet opgeslagen. Scherm toch sluiten?",
+    "next": "Volgende",
+    "previous": "Vorige",
+    "save": "Opslaan"
+  },
+  "label": {
+    "badge": "gedigitaliseerd ({{cone}})",
+    "badgePlain": "gedigitaliseerd",
+    "note": "Sondering {{id}} is gedigitaliseerd van papier of scan (soort: {{cone}}; herkomst: {{origin}}). De nauwkeurigheid is lager dan die van een gemeten bestand."
+  },
+  "marker": {
+    "depth1": "diepte 1",
+    "depth2": "diepte 2",
+    "value1": "waarde 1",
+    "value2": "waarde 2"
+  },
+  "method": {
+    "label": "Werkwijze",
+    "points": "Punten aanklikken",
+    "trace": "Lijn automatisch volgen"
+  },
+  "points": {
+    "clear": "Alles wissen",
+    "count": "{{n}} punten voor {{name}}",
+    "duplicates": "{{n}} punten liggen op dezelfde diepte als een later punt; het laatst aangeklikte telt.",
+    "hint": "Klik de punten aan langs de lijn, van boven naar beneden. Sleep een punt om het te verplaatsen; klik met de rechtermuisknop om het te verwijderen.",
+    "interpolation": "Tussen de punten",
+    "linear": "lineair",
+    "linearHint": "Lineair: tussen twee punten loopt de waarde in een rechte lijn.",
+    "notCalibrated": "De ijking is nog niet compleet; de lijn volgt nu de punten in de volgorde van aanklikken.",
+    "removeLast": "Laatste punt weg",
+    "reordered": "De punten zijn op diepte gesorteerd.",
+    "result": "Meetreeks: {{n}} waarden van {{from}} tot {{to}} m onder maaiveld.",
+    "step": "Stap (m)",
+    "stepwise": "trapsgewijs per aflezing",
+    "stepwiseHint": "Trapsgewijs: elke aflezing geldt tot de volgende aflezing. Past bij een mechanische sondering die per 0,2 m is afgelezen.",
+    "undo": "Ongedaan maken"
+  },
+  "problem": {
+    "depthPoints": "klik twee punten op de diepte-as, niet op dezelfde plek",
+    "depthValues": "vul bij de diepte-as twee verschillende waarden in",
+    "groundLevel": "Vul de maaiveldhoogte in m NAP in.",
+    "id": "Vul de naam of het nummer van de sondering in.",
+    "idTaken": "Er is al een sondering {{id}} in dit project; kies een andere naam.",
+    "noImage": "Kies eerst een onderlegger.",
+    "noSeries": "De punten liggen dichter bij elkaar dan de stap; er ontstaat geen meetreeks.",
+    "origin": "Vul de herkomst in; die is verplicht.",
+    "parallel": "de diepte-as en de waarde-as lopen bijna evenwijdig; klik de punten op de twee assen",
+    "position": "Vul beide RD-coördinaten in, of geen van beide.",
+    "qcCalibration": "IJking qc: {{what}}.",
+    "qcPoints": "Klik minstens twee punten op de qc-lijn.",
+    "qcTrace": "Volg of teken eerst de qc-lijn.",
+    "secondCalibration": "IJking tweede reeks: {{what}}.",
+    "secondPoints": "Klik minstens twee punten op de lijn van de tweede reeks, of zet die reeks uit.",
+    "secondTrace": "Volg of teken de lijn van de tweede reeks, of zet die reeks uit.",
+    "step": "De stap moet tussen 0,005 en 1 m liggen.",
+    "valuePoints": "klik twee punten op de waarde-as, niet op dezelfde plek",
+    "valueValues": "vul bij de waarde-as twee verschillende waarden in"
+  },
+  "ribbon": {
+    "add": "Sondering\ndigitaliseren",
+    "addTitle": "Maak een sondering van een grafiek op papier of in een PDF of scan: assen ijken en de lijn aanklikken",
+    "edit": "Digitalisering\nbijwerken",
+    "editTitle": "Open de gedigitaliseerde sondering {{id}} opnieuw om punten of gegevens bij te werken"
+  },
+  "save": {
+    "add": "Toevoegen aan project",
+    "hintDocument": "Er is geen project open: de sondering opent als los document.",
+    "hintProject": "De sondering wordt aan het project toegevoegd en doet daarna gewoon mee, ook in de paalberekening.",
+    "hintUpdate": "Sondering {{id}} wordt bijgewerkt.",
+    "marked": "Wordt in de grafiek, het rapport en de paalberekening vermeld als gedigitaliseerd ({{cone}}).",
+    "open": "Openen als los document",
+    "points": "{{n}} waarden op een stap van {{step}} m, tot {{to}} m onder maaiveld",
+    "qcOnly": "alleen qc; fs en Rf ontbreken",
+    "update": "Sondering bijwerken",
+    "withSecond": "qc en {{name}}"
+  },
+  "second": {
+    "fs": "plaatselijke wrijving fs (MPa)",
+    "label": "Tweede reeks",
+    "none": "geen (alleen qc)",
+    "rf": "wrijvingsgetal Rf (%)"
+  },
+  "series": {
+    "choose": "Reeks kiezen"
+  },
+  "stage": {
+    "empty": "Kies rechts een PDF of afbeelding met de sondeergrafiek.",
+    "fit": "Passend",
+    "label": "Onderlegger met punten",
+    "zoomIn": "Inzoomen",
+    "zoomOut": "Uitzoomen"
+  },
+  "step": {
+    "calibrate": "IJken",
+    "details": "Gegevens",
+    "points": "Punten",
+    "save": "Opslaan",
+    "underlay": "Onderlegger"
+  },
+  "title": {
+    "edit": "Gedigitaliseerde sondering {{id}} bijwerken",
+    "new": "Sondering digitaliseren"
+  },
+  "trace": {
+    "clear": "Lijn wissen",
+    "count": "Lijn over {{n}} beeldrijen voor {{name}}",
+    "draw": "Tekenen",
+    "drawHint": "Teken met ingedrukte muisknop over de meetlijn. Wat je tekent vervangt de lijn op die hoogte.",
+    "erase": "Wissen",
+    "eraseHint": "Sleep over het stuk van de lijn dat weg moet.",
+    "follow": "Lijn volgen",
+    "followHint": "Klik op het begin van de meetlijn: de lijn wordt naar beneden gevolgd tot ze ophoudt. Sleep omlaag om alleen tot het loslaatpunt te volgen.",
+    "navigate": "Slepen tekent of volgt. Verschuiven: middelste muisknop. Zoomen: muiswiel. De meetreeks is het gemiddelde van de lijn per stap.",
+    "noScan": "Er is geen scan om te volgen. Tekenen en wissen kan wel.",
+    "notCalibrated": "De ijking is nog niet compleet; zonder ijking ontstaat er geen meetreeks.",
+    "radius": "Dunne rasterlijnen wegpoetsen",
+    "radius0": "niet",
+    "radius1": "licht (lijnen tot 2 pixels)",
+    "radius2": "sterk (lijnen tot 4 pixels)",
+    "showMask": "Toon wat het algoritme als lijn ziet",
+    "threshold": "Donkerte van de lijn ({{value}})",
+    "tools": "Gereedschap"
+  },
+  "underlay": {
+    "choose": "PDF of afbeelding kiezen…",
+    "failed": "De afbeelding kan niet worden gelezen.",
+    "hint": "Kies de PDF of de afbeelding (PNG of JPEG) met de sondeergrafiek. Bij een PDF kies je de pagina; snijd daarna bij tot de grafiek met beide assen.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "De onderlegger is niet bij deze sondering bewaard. De punten staan op hun plek; kies dezelfde afbeelding opnieuw om ze op de scan te zien.",
+    "navigate": "Muiswiel: in- en uitzoomen. Slepen: verschuiven.",
+    "reopen": "Sondering {{id}} bijwerken",
+    "replace": "Andere onderlegger kiezen…",
+    "synthetic": "Deze sondering is eerder uit een scan overgenomen; de scan en de ijking zijn daarbij niet bewaard. De lijn staat op een leeg blad: teken haar daar bij, of kies de scan opnieuw om opnieuw te ijken en de lijn te volgen.",
+    "unnamed": "onderlegger"
+  },
+  "unit": {
+    "depth": "m onder maaiveld",
+    "nap": "m NAP"
+  }
+}

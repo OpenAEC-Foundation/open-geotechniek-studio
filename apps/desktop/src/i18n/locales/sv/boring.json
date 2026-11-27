@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Lägg till lager",
+    "cancel": "Avbryt",
+    "layers": "Lager",
+    "noLayers": "Inga lager än. Lägg till det första lagret.",
+    "noProject": "Inget projekt är öppet: borrhålet öppnas som en egen flik. Öppna eller skapa ett projekt för att behålla det.",
+    "save": "Spara",
+    "savedWithProject": "Borrhålet sparas med projektet och kommer med som borrprotokoll i rapporten.",
+    "titleEdit": "Redigera borrhål {{id}}",
+    "titleNew": "Lägg till borrhål"
+  },
+  "field": {
+    "date": "Datum",
+    "finalDepth": "Slutdjup (m u.my.)",
+    "finalDepthAuto": "underkant av djupaste lagret",
+    "groundLevel": "Marknivå (m NAP)",
+    "groundwater": "Grundvattennivå (m u.my.)",
+    "id": "Borrhålsnummer",
+    "method": "Borrmetod",
+    "notMeasured": "inte mätt",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Inblandning",
+    "base": "Underkant",
+    "colour": "Färg",
+    "grade": "Grad",
+    "name": "Benämning",
+    "namePlaceholder": "t.ex. rivningsmassor, fyllning",
+    "none": "ingen",
+    "remark": "Anmärkning",
+    "remove": "Ta bort lager",
+    "soil": "Jordart",
+    "top": "Överkant"
+  },
+  "problem": {
+    "duplicate": "Borrhålsnummer {{id}} finns redan.",
+    "finalDepth": "Slutdjupet är mindre än det djupaste lagret ({{depth}} m).",
+    "id": "Ange ett borrhålsnummer.",
+    "layerAbove": "Lager {{n}}: överkanten ligger över markytan.",
+    "layerNumbers": "Lager {{n}}: ange över- och underkant som tal.",
+    "layerOrder": "Lager {{n}}: underkanten måste ligga djupare än överkanten.",
+    "layerOverlap": "Lager {{n}}: överlappar lagret ovanför (som slutar vid {{depth}} m).",
+    "notNumber": "{{field}}: inte ett tal.",
+    "waterNegative": "Grundvattennivån är ett djup under markytan och kan inte vara negativ.",
+    "xy": "Ange både X och Y som tal, eller lämna båda tomma.",
+    "zNeedsXy": "Ange även X och Y tillsammans med marknivån."
+  },
+  "report": {
+    "boreLogs": "Borrprotokoll",
+    "boreLogsHint": "En sida per borrhål med borrprotokollet"
+  },
+  "ribbon": {
+    "add": "Lägg till\nborrhål",
+    "addTitle": "Mata in ett borrhål för hand: huvuddata, lager och grundvattennivå",
+    "choose": "Välj borrhål",
+    "count": "Borrhål: {{count}}",
+    "edit": "Redigera\nborrprotokoll",
+    "editTitle": "Visa och redigera borrprotokollet för det valda borrhålet",
+    "group": "Borrhål",
+    "none": "Lägg till ett borrhål eller öppna en borrfil."
+  },
+  "sheet": {
+    "admixtureNote": "Smal remsa till höger i kolumnen: inblandning, bredare ju starkare den är.",
+    "belowGround": "m u.my.",
+    "bore": "Borrhål",
+    "colour": "färg",
+    "date": "Datum",
+    "depthGround": "m u.my.",
+    "depthNap": "m NAP",
+    "description": "Beskrivning",
+    "finalDepth": "Slutdjup",
+    "groundLevel": "Marknivå",
+    "groundwater": "Grundvattennivå",
+    "legend": "Teckenförklaring",
+    "method": "Borrmetod",
+    "noLayers": "Det här borrhålet har inga lager än.",
+    "scale": "Skala",
+    "title": "Borrprotokoll {{id}}",
+    "unknown": "inte känt",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Redigera"
+  }
+}

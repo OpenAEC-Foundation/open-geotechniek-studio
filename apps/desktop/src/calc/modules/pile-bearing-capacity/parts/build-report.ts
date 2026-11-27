@@ -13,6 +13,7 @@ import { computePile } from "../compute";
 import { chooseLevels, computeSystems, defaultCapacityConfig, matrixCellInput, overviewTargets } from "../capacity-table";
 import { renderCapacityAppendix, renderGoverningAppendix } from "./capacity-report";
 import { ct } from "../../../i18n";
+import { applyOverrides } from "./interpretation-overrides";
 
 /** Datum als dd-mm-jjjj; projectdatum wint, anders vandaag. */
 function reportDate(iso: string | undefined): string {
@@ -32,8 +33,20 @@ export function buildPileReport(input: PileInput, result: PileResult, ctx: Proje
     const cpt = e.cptId ? ctx.cpts.get(e.cptId) : undefined;
     const exampleResult = isCurrent ? result : computePile(exampleInput, cpt ?? null);
     if (!exampleResult.ok) throw new Error(ct("calcPileCore", "report.errors.exampleFailed", "Voorbeeld {{cpt}}, {{size}} mm op {{level}} m NAP is niet berekenbaar: {{error}}", { cpt: e.cptId, size: e.sizeMm, level: e.toeNap, error: exampleResult.error }));
-    return { name: picks.length > 1 ? `${e.cptId ?? "Sondering"} · ${e.sizeMm} mm · NAP ${e.toeNap}` : (e.cptId || "Sondering"), input: exampleInput, result: exampleResult, cpt };
+    // Het rapport toont de lagen waarmee is gerekend; de meetlijn blijft de sondering uit het project.
+    const eff = applyOverrides(cpt, exampleInput.soilProfile, exampleInput.interpretationOverrides);
+    return {
+      name: picks.length > 1 ? `${e.cptId ?? "Sondering"} · ${e.sizeMm} mm · NAP ${e.toeNap}` : (e.cptId || "Sondering"),
+      input: eff.applied.length ? { ...exampleInput, soilProfile: eff.layers, interpretationOverrides: undefined } : exampleInput,
+      result: exampleResult, cpt,
+      adjustedCpt: eff.cpt && eff.cpt !== cpt ? eff.cpt : undefined,
+      adjustments: eff.applied,
+    };
   });
+  // Alle aanpassingen van de sonderingen in deze uitdraai: de voorbeelden en de tabel.
+  const reportCptIds = [...new Set([...picks.map((e) => e.cptId), ...(table ? defaultCapacityConfig(input, [...ctx.cpts.keys()]).cptIds : [])])];
+  const interpretation = reportCptIds.flatMap((id) =>
+    applyOverrides(ctx.cpts.get(id), input.soilProfile, input.interpretationOverrides).applied.map((applied, i) => ({ nr: `A${i + 1}`, applied })));
   const summary = computeMultiCptSummary({
     standard: input.standard,
     cases: sonderingen.map((s) => ({
@@ -62,7 +75,10 @@ export function buildPileReport(input: PileInput, result: PileResult, ctx: Proje
     },
     sonderingen,
     summary,
+    interpretation,
     endAnalysis: samePile,
+    // Beknopt is de standaard; "uitgebreid" geeft de volledige afleiding.
+    detail: input.reportDetail === "full" ? "full" : "compact",
     pileTypeName: pileType?.name ?? input.pileTypeId,
     factors: {
       alphaP: pileType?.alphaP ?? 0.7,

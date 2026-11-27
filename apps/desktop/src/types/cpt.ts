@@ -5,6 +5,8 @@ export interface Cpt {
   metadata: Metadata;
   position?: Position;
   points: MeasurementPoint[];
+  /** Dissipatietests bij deze sondering (zie src/dissipatie). */
+  dissipation_tests?: import("../dissipatie/types").DissipationTest[];
 }
 
 export interface Metadata {
@@ -62,6 +64,13 @@ export interface Layer {
   zone_color: string;
 }
 
+/** Vrije teksten van het sondeerrapport; een lege tekst komt niet in het rapport. */
+export interface ReportTexts {
+  introduction?: string;
+  levelling?: string;
+  groundwater?: string;
+}
+
 export interface ProjectMeta {
   title: string;
   client: string;
@@ -69,4 +78,5 @@ export interface ProjectMeta {
   project_number: string;
   author: string;
   date: string; // ISO 8601
+  report_texts?: ReportTexts;
 }

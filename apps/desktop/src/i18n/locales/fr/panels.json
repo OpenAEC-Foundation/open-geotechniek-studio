@@ -195,6 +195,16 @@
       "z7": "Sable graveleux"
     }
   },
+  "overlay": {
+    "hoverHint": "Survolez le graphique pour lire les valeurs à un même niveau.",
+    "legendTitle": "Essais",
+    "levelDepth": "{{level}} m sous le terrain naturel",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Sans niveau du terrain en NAP, tracé en profondeur sous le terrain et donc pas en NAP : {{names}}",
+    "noNapTag": "pas de NAP",
+    "noVisible": "Aucun essai visible.",
+    "units": "qc et fs en MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} couches · {{depth}} m de profondeur",
     "close": "Fermer",
@@ -260,14 +270,6 @@
     "z9": "Fins très raides"
   },
   "dissipation": {
-    "title": "Essais de dissipation",
-    "chartLabel": "Pression interstitielle en kPa en fonction du temps en secondes (logarithmique)",
-    "timeAxis": "temps [s]",
-    "atDepth": "À {{depth}} m",
-    "remove": "Supprimer l'essai de dissipation",
-    "uMax": "u max",
-    "uEnd": "u fin",
-    "noDecay": "pas de dissipation",
-    "note": "t50 : temps jusqu'à la moitié de la dissipation entre la mesure la plus haute et la dernière. La dernière mesure approche l'équilibre ; si l'essai a été arrêté tôt, t50 est indicatif."
+    "title": "Essais de dissipation"
   }
 }

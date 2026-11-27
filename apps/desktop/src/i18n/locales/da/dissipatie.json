@@ -1,0 +1,98 @@
+{
+  "ribbon": {
+    "group": "Dissipation",
+    "open": "Dissipations-\nforsøg",
+    "openCount": "Dissipations-\nforsøg ({{n}})",
+    "openHint": "Graf, t50 og konsolideringskoefficient for dissipationsforsøgene ved {{cpt}}",
+    "none": "Ingen dissipationsforsøg ved {{cpt}}; tilføj en GEF-dissipationsfil.",
+    "noCpt": "Åbn først en sondering."
+  },
+  "dialog": {
+    "title": "Dissipationsforsøg - {{cpt}}",
+    "titleEmpty": "Dissipationsforsøg",
+    "noCpt": "Åbn eller vælg først en sondering.",
+    "empty": "Denne sondering har ingen dissipationsforsøg. En BRO-XML med dissipationsforsøg har dem med; en separat GEF-dissipationsfil tilføjer du her.",
+    "tests": "Forsøg",
+    "add": "Tilføj GEF-dissipationsfil",
+    "remove": "Fjern forsøg",
+    "removeHint": "Fjern dette forsøg fra sonderingen",
+    "close": "Luk",
+    "axis": "Tidsakse",
+    "axisLog": "Logaritmisk",
+    "axisSqrt": "Rod-tid"
+  },
+  "panel": {
+    "open": "Analysér…",
+    "openHint": "Graf, input og resultat for dissipationsforsøgene"
+  },
+  "input": {
+    "title": "Input",
+    "depth": "Forsøgets dybde",
+    "channel": "Filterposition",
+    "u0Mode": "Ligevægtsværdi u₀",
+    "u0": "u₀",
+    "groundwater": "Grundvandsspejl under terræn",
+    "groundwaterHint": "u₀ = 9,81 kN/m³ × (dybde − grundvandsspejl)",
+    "rigidity": "Stivhedsindeks Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. For ler normalt mellem 50 og 500; uden input gælder 100.",
+    "coneArea": "Spidsens areal",
+    "coneAreaFromFile": "Uden input gælder værdien fra sonderingsfilen.",
+    "coneAreaDefault": "Ikke i sonderingsfilen; uden input gælder 1000 mm²."
+  },
+  "u0Mode": {
+    "last": "sidste måling",
+    "manual": "indtastet",
+    "groundwater": "ud fra grundvandsspejl og dybde"
+  },
+  "result": {
+    "title": "Resultat",
+    "indicative": "Vejledende udledning: teorien gælder for normalt til let overkonsolideret ler, og stivhedsindekset Iᵣ er et skøn. Brug ikke cₕ uden egen vurdering."
+  },
+  "row": {
+    "depth": "Dybde (sonderingslængde)",
+    "channel": "Filterposition",
+    "duration": "Målingens varighed",
+    "ui": "Startværdi uᵢ",
+    "uiPeak": "Startværdi uᵢ (top)",
+    "tPeak": "Tidspunkt for toppen",
+    "u0": "Ligevægtsværdi u₀",
+    "u0Mode": "Kilde til u₀",
+    "u50": "Poretryk ved U = 0,5",
+    "minU": "Mindste U i målingen",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (fra toppen)",
+    "t50Star": "Tidsfaktor T*₅₀",
+    "coneArea": "Spidsens areal",
+    "radius": "Spidsens radius r",
+    "ir": "Stivhedsindeks Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/år]"
+  },
+  "warning": {
+    "noData": "For få måleværdier til en analyse.",
+    "nonMonotonic": "Poretrykket stiger først (dilatant opførsel). Toppen gælder som startværdi, og tiden tælles fra toppen (Sully et al., 1999).",
+    "u0FromLast": "u₀ er den sidste måling. Det passer kun, hvis forsøget er ført til ligevægt; indtast ellers u₀ eller grundvandsspejlet.",
+    "noExcess": "Der er intet måleligt overtryk; t₅₀ kan ikke bestemmes.",
+    "negativeExcess": "Startværdien ligger under u₀ (undertryk). Teorien for cₕ gælder ikke her; resultatet er højst en størrelsesorden.",
+    "t50NotReached": "Halvdelen af overtrykket er ikke afviklet inden for målingen; t₅₀ kan ikke bestemmes.",
+    "noT50Factor": "For et filter på dette sted (u3) angiver publikationen ingen T*₅₀; cₕ er ikke beregnet.",
+    "groundwaterMissing": "Grundvandsspejlet er ikke indtastet.",
+    "manualMissing": "u₀ er ikke indtastet."
+  },
+  "chart": {
+    "time": "Tid t [s] (logaritmisk)",
+    "rootTime": "Roden af tiden √t [√s]",
+    "pressure": "Poretryk u [kPa]",
+    "noData": "For få måleværdier til en graf."
+  },
+  "message": {
+    "added": "Dissipationsforsøg i {{depth}} m tilføjet.",
+    "depthMissing": "Dybden står ikke i filen; indtast den.",
+    "otherCpt": "Filen nævner sondering {{parent}}; kontrollér, at den hører til {{cpt}}.",
+    "notDissipation": "Ikke en GEF-dissipationsfil: første kolonne skal være tiden."
+  },
+  "report": {
+    "section": "Dissipationsforsøg",
+    "sectionHint": "Én side pr. dissipationsforsøg med graf og nøgletal"
+  }
+}

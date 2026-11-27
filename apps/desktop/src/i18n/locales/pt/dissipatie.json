@@ -1,0 +1,98 @@
+{
+  "ribbon": {
+    "group": "Dissipação",
+    "open": "Ensaios de\ndissipação",
+    "openCount": "Ensaios de\ndissipação ({{n}})",
+    "openHint": "Gráfico, t50 e coeficiente de consolidação dos ensaios de dissipação de {{cpt}}",
+    "none": "Sem ensaios de dissipação em {{cpt}}; adicione um ficheiro GEF de dissipação.",
+    "noCpt": "Abra primeiro uma sondagem."
+  },
+  "dialog": {
+    "title": "Ensaios de dissipação - {{cpt}}",
+    "titleEmpty": "Ensaios de dissipação",
+    "noCpt": "Abra ou escolha primeiro uma sondagem.",
+    "empty": "Esta sondagem não tem ensaios de dissipação. Um BRO XML com ensaios de dissipação traz-os consigo; adicione aqui um ficheiro GEF de dissipação separado.",
+    "tests": "Ensaios",
+    "add": "Adicionar ficheiro GEF de dissipação",
+    "remove": "Remover ensaio",
+    "removeHint": "Retirar este ensaio da sondagem",
+    "close": "Fechar",
+    "axis": "Eixo do tempo",
+    "axisLog": "Logarítmico",
+    "axisSqrt": "Raiz do tempo"
+  },
+  "panel": {
+    "open": "Analisar…",
+    "openHint": "Gráfico, dados e resultado dos ensaios de dissipação"
+  },
+  "input": {
+    "title": "Dados",
+    "depth": "Profundidade do ensaio",
+    "channel": "Posição do filtro",
+    "u0Mode": "Valor de equilíbrio u₀",
+    "u0": "u₀",
+    "groundwater": "Nível freático abaixo do terreno",
+    "groundwaterHint": "u₀ = 9,81 kN/m³ × (profundidade − nível freático)",
+    "rigidity": "Índice de rigidez Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. Em argila, normalmente entre 50 e 500; sem valor aplica-se 100.",
+    "coneArea": "Área da ponta do cone",
+    "coneAreaFromFile": "Sem valor aplica-se o do ficheiro da sondagem.",
+    "coneAreaDefault": "Não consta do ficheiro da sondagem; sem valor aplica-se 1000 mm²."
+  },
+  "u0Mode": {
+    "last": "última leitura",
+    "manual": "introduzido",
+    "groundwater": "pelo nível freático e profundidade"
+  },
+  "result": {
+    "title": "Resultado",
+    "indicative": "Estimativa indicativa: a teoria vale para argila normalmente a ligeiramente sobreconsolidada e o índice de rigidez Iᵣ é uma estimativa. Não use cₕ sem avaliação própria."
+  },
+  "row": {
+    "depth": "Profundidade (comprimento de penetração)",
+    "channel": "Posição do filtro",
+    "duration": "Duração da medição",
+    "ui": "Valor inicial uᵢ",
+    "uiPeak": "Valor inicial uᵢ (pico)",
+    "tPeak": "Instante do pico",
+    "u0": "Valor de equilíbrio u₀",
+    "u0Mode": "Origem de u₀",
+    "u50": "Pressão de poros com U = 0,5",
+    "minU": "Menor U na medição",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (desde o pico)",
+    "t50Star": "Fator de tempo T*₅₀",
+    "coneArea": "Área da ponta do cone",
+    "radius": "Raio do cone r",
+    "ir": "Índice de rigidez Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/ano]"
+  },
+  "warning": {
+    "noData": "Leituras insuficientes para uma análise.",
+    "nonMonotonic": "A pressão de poros primeiro aumenta (comportamento dilatante). O pico vale como valor inicial e o tempo conta a partir do pico (Sully et al., 1999).",
+    "u0FromLast": "u₀ é a última leitura. Só está certo se o ensaio chegou ao equilíbrio; caso contrário introduza u₀ ou o nível freático.",
+    "noExcess": "Não há sobrepressão mensurável; não é possível determinar t₅₀.",
+    "negativeExcess": "O valor inicial está abaixo de u₀ (depressão). A teoria de cₕ não se aplica aqui; o resultado é, no máximo, uma ordem de grandeza.",
+    "t50NotReached": "Metade da sobrepressão não se dissipou durante a medição; não é possível determinar t₅₀.",
+    "noT50Factor": "Para um filtro nesta posição (u3) a publicação não dá T*₅₀; cₕ não foi calculado.",
+    "groundwaterMissing": "O nível freático não foi introduzido.",
+    "manualMissing": "u₀ não foi introduzido."
+  },
+  "chart": {
+    "time": "Tempo t [s] (logarítmico)",
+    "rootTime": "Raiz do tempo √t [√s]",
+    "pressure": "Pressão de poros u [kPa]",
+    "noData": "Leituras insuficientes para um gráfico."
+  },
+  "message": {
+    "added": "Ensaio de dissipação a {{depth}} m adicionado.",
+    "depthMissing": "A profundidade não consta do ficheiro; introduza-a.",
+    "otherCpt": "O ficheiro indica a sondagem {{parent}}; verifique se pertence a {{cpt}}.",
+    "notDissipation": "Não é um ficheiro GEF de dissipação: a primeira coluna tem de ser o tempo."
+  },
+  "report": {
+    "section": "Ensaios de dissipação",
+    "sectionHint": "Uma página por ensaio de dissipação com o gráfico e os valores principais"
+  }
+}

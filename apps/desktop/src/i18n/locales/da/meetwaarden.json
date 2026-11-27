@@ -1,0 +1,104 @@
+{
+  "title": "Rediger måleværdier",
+  "close": "Luk",
+  "noCpt": "Åbn først en sondering.",
+  "cpt": "Sondering",
+  "editedShort": "redigeret",
+  "chart": {
+    "badge": "redigeret ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Fjern interval",
+    "invalidate-range": "Gør interval ugyldigt",
+    "trim-top": "Afkort top",
+    "trim-bottom": "Afkort bund",
+    "zero-shift": "Nulpunktsforskydning",
+    "depth-shift": "Dybdeforskydning",
+    "set-value": "Ret en måleværdi",
+    "remove-outliers": "Fjern afvigere"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "hældning",
+    "all": "Alle kanaler"
+  },
+  "op": {
+    "removeRange": "Interval {{from}} til {{to}} m fjernet",
+    "invalidateRange": "{{channels}} gjort ugyldig fra {{from}} til {{to}} m",
+    "trimTop": "Top afkortet: alt over {{depth}} m bortfalder",
+    "trimBottom": "Bund afkortet: alt under {{depth}} m bortfalder",
+    "zeroShift": "Nulpunktsforskydning {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Nulpunktsforskydning {{channel}} {{offset}} {{unit}} fra {{from}} til {{to}} m",
+    "depthShift": "Dybdeforskydning {{offset}} m",
+    "setValue": "{{channel}} ved {{depth}} m rettet",
+    "removeOutliers": "Afvigere i {{channel}} gjort ugyldige fra {{from}} til {{to}} m (vindue ±{{window}}, tærskel {{threshold}})"
+  },
+  "result": {
+    "noValue": "ingen værdi",
+    "points": "berørte målepunkter: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} målepunkter efter redigering, {{original}} i kildefilen. Dybde {{range}}.",
+    "untouched": "{{now}} målepunkter, ikke redigeret. Dybde {{range}}.",
+    "kept": "De oprindelige måleværdier bevares."
+  },
+  "log": {
+    "title": "Logbog",
+    "empty": "Endnu ingen redigeringer på denne sondering.",
+    "time": "Tidspunkt",
+    "by": "Hvem",
+    "what": "Redigering",
+    "result": "Resultat",
+    "reason": "Årsag",
+    "undoOne": "Fortryd",
+    "undoOneHint": "Denne redigering bortfalder; de senere anvendes igen",
+    "undoLast": "Fortryd seneste",
+    "reset": "Gendan alt",
+    "resetConfirm": "Er du sikker? Logbogen bortfalder"
+  },
+  "form": {
+    "title": "Ny redigering",
+    "kind": "Type",
+    "channel": "Kanal",
+    "from": "Fra dybde (m)",
+    "to": "Til dybde (m)",
+    "optional": "hele serien",
+    "keepFrom": "Behold fra dybde (m)",
+    "keepTo": "Behold til dybde (m)",
+    "offsetValue": "Forskydning ({{unit}})",
+    "offsetDepth": "Forskydning (m, positiv = dybere)",
+    "depth": "Dybde (m)",
+    "newValue": "Ny værdi ({{unit}})",
+    "emptyIsVoid": "tom = ingen værdi",
+    "halfWindow": "Vindue (punkter pr. side)",
+    "threshold": "Tærskel (× spredning)",
+    "outlierHint": "En værdi er en afviger, når den afviger fra medianen i sit vindue med mere end tærsklen gange spredningen (1,4826 × MAD). Værdien bliver ugyldig; målepunktet bliver.",
+    "removeHint": "Målepunkterne i intervallet bortfalder helt. Vælg 'gør ugyldigt' for at beholde punkterne og kun slette værdier.",
+    "by": "Hvem",
+    "byPlaceholder": "Navn",
+    "reason": "Årsag (påkrævet)",
+    "reasonPlaceholder": "Hvorfor er denne redigering nødvendig?",
+    "apply": "Anvend"
+  },
+  "problem": {
+    "number": "Indtast gyldige tal.",
+    "range": "Intervallets slutning ligger over begyndelsen.",
+    "noOffset": "En forskydning på nul ændrer intet.",
+    "window": "Vinduet er mindst 1 punkt, og tærsklen er større end nul.",
+    "negativeDepth": "Med denne forskydning kommer målepunkter over terræn."
+  },
+  "preview": {
+    "incomplete": "Udfyld felterne for at se, hvad redigeringen berører.",
+    "point": "Målepunkt ved {{depth}} m, nuværende værdi: {{value}}.",
+    "noPoint": "Intet målepunkt i denne dybde; det nærmeste ligger ved {{depth}} m.",
+    "label": "Forhåndsvisning",
+    "points": "berører {{n}} af {{total}} målepunkter.",
+    "none": "Denne redigering berører ingen målepunkter.",
+    "unchanged": "Måleværdien står allerede sådan; intet ændres.",
+    "needBy": "Angiv, hvem der foretager redigeringen.",
+    "needReason": "Angiv en årsag for at anvende redigeringen."
+  }
+}

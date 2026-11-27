@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Tilføj lag",
+    "cancel": "Annuller",
+    "layers": "Lag",
+    "noLayers": "Ingen lag endnu. Tilføj det første lag.",
+    "noProject": "Der er ikke åbnet et projekt: boringen åbnes som en separat fane. Åbn eller opret et projekt for at beholde den.",
+    "save": "Gem",
+    "savedWithProject": "Boringen gemmes med projektet og kommer med som boreprofil i rapporten.",
+    "titleEdit": "Rediger boring {{id}}",
+    "titleNew": "Tilføj boring"
+  },
+  "field": {
+    "date": "Dato",
+    "finalDepth": "Slutdybde (m u.t.)",
+    "finalDepthAuto": "underkant af dybeste lag",
+    "groundLevel": "Terrænniveau (m NAP)",
+    "groundwater": "Grundvandsstand (m u.t.)",
+    "id": "Boringsnummer",
+    "method": "Boremetode",
+    "notMeasured": "ikke målt",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Iblanding",
+    "base": "Bund",
+    "colour": "Farve",
+    "grade": "Grad",
+    "name": "Betegnelse",
+    "namePlaceholder": "f.eks. murbrokker, fyld",
+    "none": "ingen",
+    "remark": "Bemærkning",
+    "remove": "Fjern lag",
+    "soil": "Jordart",
+    "top": "Top"
+  },
+  "problem": {
+    "duplicate": "Boringsnummer {{id}} findes allerede.",
+    "finalDepth": "Slutdybden er mindre end det dybeste lag ({{depth}} m).",
+    "id": "Angiv et boringsnummer.",
+    "layerAbove": "Lag {{n}}: toppen ligger over terræn.",
+    "layerNumbers": "Lag {{n}}: angiv top og bund som tal.",
+    "layerOrder": "Lag {{n}}: bunden skal ligge dybere end toppen.",
+    "layerOverlap": "Lag {{n}}: overlapper laget ovenover (som slutter ved {{depth}} m).",
+    "notNumber": "{{field}}: ikke et tal.",
+    "waterNegative": "Grundvandsstanden er en dybde under terræn og kan ikke være negativ.",
+    "xy": "Angiv både X og Y som tal, eller lad begge stå tomme.",
+    "zNeedsXy": "Angiv også X og Y sammen med terrænniveauet."
+  },
+  "report": {
+    "boreLogs": "Boreprofiler",
+    "boreLogsHint": "Én side pr. boring med boreprofilet"
+  },
+  "ribbon": {
+    "add": "Tilføj\nboring",
+    "addTitle": "Indtast en boring manuelt: hoveddata, lag og grundvandsstand",
+    "choose": "Vælg boring",
+    "count": "Boringer: {{count}}",
+    "edit": "Rediger\nboreprofil",
+    "editTitle": "Se og rediger boreprofilet for den valgte boring",
+    "group": "Boringer",
+    "none": "Tilføj en boring, eller åbn en borefil."
+  },
+  "sheet": {
+    "admixtureNote": "Smal stribe til højre i søjlen: iblanding, bredere jo stærkere den er.",
+    "belowGround": "m u.t.",
+    "bore": "Boring",
+    "colour": "farve",
+    "date": "Dato",
+    "depthGround": "m u.t.",
+    "depthNap": "m NAP",
+    "description": "Beskrivelse",
+    "finalDepth": "Slutdybde",
+    "groundLevel": "Terrænniveau",
+    "groundwater": "Grundvandsstand",
+    "legend": "Signaturforklaring",
+    "method": "Boremetode",
+    "noLayers": "Denne boring har endnu ingen lag.",
+    "scale": "Målestok",
+    "title": "Boreprofil {{id}}",
+    "unknown": "ikke kendt",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Rediger"
+  }
+}

@@ -2,10 +2,15 @@ import { useId } from 'react';
 import type { SpringState, UltimateProfile } from './spring-types';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
+import { soilColor } from './report-data';
+import { soilKey } from './soil';
+import { mobilisation, springCss } from './spring-visual';
 
 const f=(value:number,digits=4)=>Number.isFinite(value)?value.toLocaleString(numberLocale(),{maximumFractionDigits:digits}):'—';
-export function SpringInspector({spring:s,ultimate}:{spring:SpringState|undefined;ultimate?:UltimateProfile}) {
+export function SpringInspector({spring:s,ultimate,soilId}:{spring:SpringState|undefined;ultimate?:UltimateProfile;soilId?:string}) {
   const {t}=useTranslation('calcLateral');
+  const soilName=soilId===undefined?null:soilId==='manual'?t('soils.manual','Eigen waarde'):t(soilKey(soilId),soilId).split(' (')[0];
+  const m=s?mobilisation(s):null;
   const clipId=useId();
   if(!s)return <section className="pile-inspector" aria-label={t('inspector.aria', 'Veerinspectie')}><h3>{t('inspector.spring', 'Grondveer')}</h3><p>{t('spring.none','Geen actieve grondveren in dit model.')}</p></section>;
   const xMax=Math.max(.001,Math.abs(s.displacementM)*1.25,...s.curvePoints.map(p=>Math.abs(p.yM)));
@@ -19,7 +24,10 @@ export function SpringInspector({spring:s,ultimate}:{spring:SpringState|undefine
     [t('inspector.values.initial','Initiële stijfheid k₀'),`${f(s.initialKnM2)} kN/m²`],[t('inspector.values.secant','Secantstijfheid'),`${f(s.secantKnM2)} kN/m²`],
     [t('inspector.values.tangent','Tangentstijfheid'),`${f(s.tangentKnM2)} kN/m²`],[t('inspector.values.ultimate','Grensweerstand pu'),s.mode==='linear'?t('inspector.unbounded','Onbegrensd (lineair)'):s.ultimateKnM===null?'—':`${f(s.ultimateKnM)} kN/m`],
     [t('inspector.values.tributary','Integratielengte'),`${f(s.tributaryLengthM)} m`]];
-  return <section className="pile-inspector" aria-label={t('inspector.aria','Veerinspectie')}><h3>{t('inspector.title', 'Grondveer · laag {{n}}', {n:s.layerIndex+1})}</h3><p className="pile-point-id">{s.id}</p>
+  return <section className="pile-inspector" aria-label={t('inspector.aria','Veerinspectie')}><h3>{soilId!==undefined&&<i className="pile-inspector-swatch" style={{background:soilColor(soilId).fill}}/>}{t('inspector.title', 'Grondveer · laag {{n}}', {n:s.layerIndex+1})}{soilName?` · ${soilName}`:''}</h3><p className="pile-point-id">{s.id}</p>
+    {m!==null&&<div className="pile-mobilisation" role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(m*100)} aria-label={t('inspector.values.mobilisation','Mobilisatie p/pu')}>
+      <span>{t('inspector.values.mobilisation','Mobilisatie p/pu')}</span><b>{f(m*100,0)} %</b>
+      <div><i style={{width:`${Math.min(100,m*100)}%`,background:springCss(soilId??'manual',m)}}/></div></div>}
     <svg viewBox="0 0 400 285" role="img" aria-label={t('inspector.pyCurve','p-y-curve')}>
       <defs><clipPath id={clipId}><rect x="40" y="30" width="300" height="200"/></clipPath></defs>
       {[-1,-.5,0,.5,1].map(t=><g key={t}><line className="pile-grid" x1="40" x2="340" y1={y(t*yMax)} y2={y(t*yMax)}/>
@@ -33,10 +41,10 @@ export function SpringInspector({spring:s,ultimate}:{spring:SpringState|undefine
     </svg>
     <div className="pile-legend"><span className="pile-legend-curve">{t('inspector.pyCurve','p-y-curve')}</span><span className="pile-legend-reference">{t('inspector.linearRef', 'Lineaire referentie k₀')}</span><span className="pile-legend-tangent">{t('inspector.tangentLegend', 'Tangent werkpunt')}</span></div>
     <dl>{values.map(([key,value])=><div key={key}><dt>{key}</dt><dd>{value}</dd></div>)}</dl>
-    <h4>{s.mode==='linear'?t('inspector.modelLinear', 'Lineaire bedding'):t('inspector.modelNonlinear', 'Hyperbolisch projectmodel')}</h4><p className="pile-formula">{s.formula}</p><p>{t('inspector.pNote', 'p is de gemobiliseerde weerstand; de grondreactie op de paal is −p.')}</p><p>{t('inspector.source', 'Bron: {{source}}', {source:t('inspector.sourceText','k0 = kh × werkende breedte; pu-profiel = projectinvoer')})}</p>
-    {s.mode==='nonlinear'&&ultimate&&<p>{t('inspector.profile', 'Projectprofiel pu = min(cap, pu,0 + g × z): pu,0 = {{pu0}} kN/m; g = {{g}} kN/m²; cap = {{cap}} kN/m. Gebruikte z = {{z}} m. Deze grenswaarden vereisen een projectspecifieke onderbouwing.', {pu0:f(ultimate.atSurfaceKnM),g:f(ultimate.gradientKnM2),cap:f(ultimate.capKnM),z:f(s.equivalentDepthM)})}</p>}
+    <h4>{s.mode==='linear'?t('inspector.modelLinear', 'Lineaire bedding'):s.mode==='elastoplastic'?t('inspector.modelElastoplastic', 'Elastoplastische bedding'):t('inspector.modelNonlinear', 'Hyperbolisch projectmodel')}</h4><p className="pile-formula">{s.formula}</p><p>{t('inspector.pNote', 'p is de gemobiliseerde weerstand; de grondreactie op de paal is −p.')}</p><p>{t('inspector.source', 'Bron: {{source}}', {source:t('inspector.sourceText','k0 = kh × werkende breedte; pu-profiel = projectinvoer')})}</p>
+    {s.mode!=='linear'&&ultimate&&!ultimate.brinchHansen&&<p>{t('inspector.profile', 'Projectprofiel pu = min(cap, pu,0 + g × z): pu,0 = {{pu0}} kN/m; g = {{g}} kN/m²; cap = {{cap}} kN/m. Gebruikte z = {{z}} m. Deze grenswaarden vereisen een projectspecifieke onderbouwing.', {pu0:f(ultimate.atSurfaceKnM),g:f(ultimate.gradientKnM2),cap:f(ultimate.capKnM),z:f(s.equivalentDepthM)})}</p>}
     <p>{s.correction==='georgiadis'?t('inspector.georgiadis', 'Georgiadis: laagcorrectie via equivalente diepte; geen afzonderlijke p-y-veerwet.'):t('inspector.noCorrection', 'Laagcorrectie: geen.')} {t('inspector.k0Note', 'k₀ blijft de ingevoerde bedding × werkende breedte.')}</p>
-    <p>{s.mode==='linear'?t('inspector.linearNote', 'Lineaire veer zonder begrenzing van p.'):t('inspector.nonlinearNote', 'Hyperbolisch projectmodel, statisch en monotoon; symmetrische weerstand, zonder cyclische hysterese of degradatie.')}</p>
+    <p>{s.mode==='linear'?t('inspector.linearNote', 'Lineaire veer zonder begrenzing van p.'):s.mode==='elastoplastic'?t('inspector.elastoplasticNote', 'Elastoplastisch: lineair tot pu, daarna constant; statisch en monotoon.'):t('inspector.nonlinearNote', 'Hyperbolisch projectmodel, statisch en monotoon; symmetrische weerstand, zonder cyclische hysterese of degradatie.')}</p>
     <details><summary>{t('inspector.curvePoints', 'Numerieke curvepunten')}</summary><table aria-label={t('inspector.curveTable', 'Curvepunten')}><thead><tr><th>y [mm]</th><th>p [kN/m]</th></tr></thead><tbody>{s.curvePoints.map((p,index)=><tr key={index}><td>{f(p.yM*1000,6)}</td><td>{f(p.pKnM,6)}</td></tr>)}</tbody></table></details>
   </section>;
 }

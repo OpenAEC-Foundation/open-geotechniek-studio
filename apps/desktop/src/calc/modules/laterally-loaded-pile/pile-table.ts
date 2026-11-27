@@ -27,7 +27,7 @@ export interface LateralTableConfig {
 /** Ronde betonpalen [mm]; vierkant en buizen komen uit de gedeelde reeksen. */
 export const ROUND_CONCRETE = [300, 350, 400, 450, 500, 550, 600];
 export function sizeSeries(kind: SectionKind): number[] {
-  return kind === 'concrete-square' ? PREFAB_SQUARE : kind === 'concrete-round' ? ROUND_CONCRETE : STEEL_TUBE_OD;
+  return kind === 'sheet-pile' ? [] : kind === 'concrete-square' ? PREFAB_SQUARE : kind === 'concrete-round' ? ROUND_CONCRETE : STEEL_TUBE_OD;
 }
 
 /** Andere paallengte: lagen gaan mee, de onderste laag eindigt op de punt. */
@@ -49,20 +49,22 @@ export function rowInput(base: LateralInput, row: LateralRow): LateralInput {
 export interface RowSummary {
   ok: boolean; error?: string;
   yHeadMm: number; mMaxKnM: number; mNap: number; vMaxKn: number; mobMax: number | null; uc: number | null;
-  /** Voldoet aan u.c. ≤ 1 en de verplaatsingsgrens. */
+  /** Hoogste u.c. van de N–M-toets en de materiaaltoetsing; null als er geen toets is. */
+  ucGov: number | null;
+  /** Voldoet aan u.c. ≤ 1 (N–M en materiaaltoetsing) en de verplaatsingsgrens. */
   passes: boolean;
 }
 export function summarize(input: LateralInput, r: LateralResult, maxY?: number): RowSummary {
-  if (!r.ok) return { ok: false, error: r.error, yHeadMm: NaN, mMaxKnM: NaN, mNap: NaN, vMaxKn: NaN, mobMax: null, uc: null, passes: false };
+  if (!r.ok) return { ok: false, error: r.error, yHeadMm: NaN, mMaxKnM: NaN, mNap: NaN, vMaxKn: NaN, mobMax: null, uc: null, ucGov: null, passes: false };
   const s = r.beam.samples;
   const top = s.reduce((a, p) => Math.abs(p.momentKnM) > Math.abs(a.momentKnM) ? p : a, s[0]);
   const mobs = r.springs.map(mobilisation).filter((m): m is number => m !== null);
-  const yHeadMm = r.beam.nodes[0].yM * 1000;
+  const yHeadMm = r.beam.nodes[0].yM * 1000, parts = [r.sectionUtilization, r.material?.governing?.uc ?? null].filter((v): v is number => v !== null);
   return {
     ok: true, yHeadMm, mMaxKnM: Math.abs(top.momentKnM), mNap: (input.headNap ?? 0) - top.zM,
     vMaxKn: Math.max(...s.map((p) => Math.abs(p.shearKn))), mobMax: mobs.length ? Math.max(...mobs) : null,
-    uc: r.sectionUtilization,
-    passes: r.sectionUtilization !== null && r.sectionUtilization <= 1 && (maxY === undefined || Math.abs(yHeadMm) <= maxY),
+    uc: r.sectionUtilization, ucGov: parts.length ? Math.max(...parts) : null,
+    passes: r.sectionUtilization !== null && r.sectionUtilization <= 1 && r.material?.ok !== false && (maxY === undefined || Math.abs(yHeadMm) <= maxY),
   };
 }
 

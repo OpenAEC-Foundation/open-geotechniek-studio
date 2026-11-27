@@ -733,3 +733,46 @@
 .pile-fail { color: #DC2626; }
 
 .pile-visual-error { margin: 0 0 8px; padding: 6px 10px; border-left: 3px solid var(--oa-error); background: var(--oa-error-tint); color: var(--oa-text); font-size: 12px; }
+
+/* Paalsysteem kiezen: tegels met een schetsje van de paalvorm. */
+.pile-system-tiles { grid-template-columns: repeat(3, 1fr); }
+.pile-system-tiles .cs-tile { line-height: 1.2; text-align: center; }
+.pile-system-tiles .cs-tile svg.pile-sketch { width: 28px; height: 35px; }
+.pile-system-tiles .cs-tile small { font: 400 9px var(--oa-font-body); color: var(--oa-text-secondary); }
+.pile-system-tile--no-table { opacity: .55; border-style: dashed; }
+.pile-system-blocked { margin: 0 0 6px; }
+
+/* ─── Aanpassingen van de grondlaaginterpretatie ───
+   Paneel en overzicht: calc/shared/interpretation/interpretation.css. */
+/* In de grafiek: band over het aangepaste traject, de nieuwe lijn met een gloed. */
+.pile-cpt-interp-band { fill: var(--amber, #d97706); fill-opacity: 0.09; }
+.pile-cpt-interp--active .pile-cpt-interp-band { fill-opacity: 0.2; }
+.pile-cpt-interp-band--draft { fill: #2563eb; fill-opacity: 0.14; stroke: #2563eb; stroke-width: 1; stroke-dasharray: 5 3; }
+.pile-cpt-interp-edge { stroke: var(--amber, #d97706); stroke-width: 1; stroke-dasharray: 5 3; }
+.pile-cpt-interp-label { fill: #b45309; font-weight: 700; paint-order: stroke; stroke: var(--theme-bg-lighter, #fff); stroke-width: 3px; }
+.pile-cpt-interp-label--pick { pointer-events: auto; cursor: pointer; }
+.pile-cpt-interp-capture { fill: transparent; cursor: crosshair; }
+.pile-cpt-qc-curve--adjusted-halo { stroke: var(--amber, #d97706); stroke-width: 8; opacity: 0.3; }
+.pile-cpt-qc-curve--adjusted { stroke: #b45309; stroke-width: 1.8; }
+
+/* Beknopt rekenblad en sterktetoets: compacte tabellen. */
+.pile-warnings--compact ul { margin: 4px 0 0; padding-left: 22px; font-size: 11.5px; line-height: 1.45; }
+.pile-compact-table { width: 100%; margin: 6px 0 12px; border-collapse: collapse; font: 12px var(--oa-font-body); }
+.pile-compact-table caption { caption-side: top; text-align: left; padding: 2px 0 4px; color: var(--oa-text-secondary); font-size: 11.5px; }
+.pile-compact-table th { text-align: left; font-weight: 600; padding: 3px 8px 3px 0; border-bottom: 1.5px solid var(--oa-text); white-space: nowrap; }
+.pile-compact-table td { padding: 3px 8px 3px 0; border-bottom: 1px solid var(--oa-border); vertical-align: top; }
+.pile-compact-table .num { text-align: right; font-family: var(--oa-font-numbers); white-space: nowrap; }
+.pile-compact-table td.num:last-child, .pile-compact-table th.num:last-child { padding-right: 0; }
+.pile-compact-sum td { font-weight: 600; border-top: 1.5px solid var(--oa-text); }
+.pile-compact-group th { padding-top: 8px; border-bottom: 1px solid var(--oa-border); color: var(--oa-text-secondary); font-weight: 600; }
+.pile-compact-group small { font-weight: 400; margin-left: 6px; }
+.pile-compact-results td:first-child { white-space: nowrap; }
+.pile-compact-results td:nth-child(2) { color: var(--oa-text-secondary); }
+.pile-strength-table td small { color: var(--oa-text-secondary); }
+.pile-strength-fail td:last-child, .pile-strength-outside td:last-child { color: var(--oa-error); font-weight: 600; }
+.pile-strength-ok td:last-child { color: var(--oa-success); }
+.pile-strength-info td, .pile-strength-na td { color: var(--oa-text-secondary); }
+.pile-strength-steps td { padding-top: 0; font-size: 11px; color: var(--oa-text-secondary); line-height: 1.5; }
+.pile-strength-notes { font-size: 11.5px; color: var(--oa-text-secondary); }
+.pile-strength-notes summary { cursor: pointer; }
+.pile-strength-notes p { margin: 4px 0; }

@@ -27,10 +27,12 @@ const REGISTERED_CALC_IDS: ReadonlySet<string> = new Set(
 export type ExtensionId =
   | "tekening"
   | "offertes"
+  | "sondeerbedrijf"
   | "calc.pile-bearing-capacity"
   | "calc.settlement"
   | "calc.kalendering"
   | "calc.driving-assessment"
+  | "calc.spread-foundation"
   | "calc.spread-foundation-drained"
   | "calc.spread-foundation-undrained"
   | "calc.laterally-loaded-pile"
@@ -40,10 +42,12 @@ export type ExtensionId =
 const SETTING_KEYS: Record<ExtensionId, string> = {
   tekening: "ext.tekening.enabled",
   offertes: "ext.offertes.enabled",
+  sondeerbedrijf: "ext.sondeerbedrijf.enabled",
   "calc.pile-bearing-capacity": "ext.calc.pile-bearing-capacity.enabled",
   "calc.kalendering": "ext.calc.kalendering.enabled",
   "calc.driving-assessment": "ext.calc.driving-assessment.enabled",
   "calc.settlement": "ext.calc.settlement.enabled",
+  "calc.spread-foundation": "ext.calc.spread-foundation.enabled",
   "calc.spread-foundation-drained": "ext.calc.spread-foundation-drained.enabled",
   "calc.spread-foundation-undrained": "ext.calc.spread-foundation-undrained.enabled",
   "calc.laterally-loaded-pile": "ext.calc.laterally-loaded-pile.enabled",
@@ -62,6 +66,8 @@ const DEFAULTS: Record<ExtensionId, boolean> = {
   // steeds via Instellingen → Extensies.
   tekening: true,
   offertes: false,
+  // Voor sondeerbedrijven: bedrijfsgegevens, coördinaten inlezen en het sondeerrapport in eigen huisstijl.
+  sondeerbedrijf: false,
   "calc.pile-bearing-capacity": true,
   // `calc.kalendering` staat default AAN — module is in actieve ontwikkeling
   // en moet direct zichtbaar zijn naast de Funderingspaal-module zodat de
@@ -71,6 +77,7 @@ const DEFAULTS: Record<ExtensionId, boolean> = {
   "calc.kalendering": true,
   "calc.driving-assessment": true,
   "calc.settlement": true,
+  "calc.spread-foundation": true,
   "calc.spread-foundation-drained": false,
   "calc.spread-foundation-undrained": false,
   "calc.laterally-loaded-pile": true,
@@ -168,9 +175,11 @@ export function useAllExtensions(): Record<ExtensionId, boolean> {
     const ids: ExtensionId[] = [
       "tekening",
       "offertes",
+      "sondeerbedrijf",
       "calc.pile-bearing-capacity",
       "calc.kalendering",
       "calc.settlement",
+      "calc.spread-foundation",
       "calc.spread-foundation-drained",
       "calc.spread-foundation-undrained",
       "calc.laterally-loaded-pile",

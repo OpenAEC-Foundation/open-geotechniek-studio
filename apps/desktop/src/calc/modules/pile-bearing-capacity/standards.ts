@@ -1,5 +1,6 @@
 import type { PileInput, PileTypeSpec } from "./types";
 import { ct } from "../../i18n";
+import { FACTORS_2025, factors2025, table2025Complete, type FactorTable2025 } from "./factors-2025";
 
 export type PileStandard = NonNullable<PileInput["standard"]>;
 export const PILE_STANDARDS = [
@@ -7,7 +8,17 @@ export const PILE_STANDARDS = [
   { id: "nen-6743-2006", label: "NEN 6743-1:2006 — historisch", edition: "2006", gammaM: 1.2, xi: .72 },
   { id: "nen-9997-2012", label: "NEN 9997-1:2011 + C1:2012 — oorspronkelijke factoren", edition: "2012", gammaM: 1.2 },
   { id: "nen-9997-2017", label: "NEN 9997-1:2016 + C2:2017 — bestaand rekenmodel", edition: "2017", gammaM: 1.2 },
+  // γm is voor 2025 niet opnieuw vastgesteld; de waarde blijft invoer van de berekening.
+  { id: "nen-9997-2025", label: "NEN 9997-1:2025 + C1:2025 — paalklassefactoren 2025", edition: "2025", gammaM: 1.2 },
 ] as const;
+
+/** Normversie voor nieuwe berekeningen: 2025 zodra de tabel voor de gangbare typen volledig is. */
+export function defaultStandard(complete: boolean = table2025Complete()): PileStandard {
+  return complete ? "nen-9997-2025" : "nen-9997-2017";
+}
+
+export const SOURCE_2025 = "NEN 9997-1:2025+C1:2025, tabel 7.c";
+const editionFreeName = (name: string) => name.replace(" (tabel 2017)", "").replace(" (bestaand projectmodel)", "");
 
 export function getStandard(id: PileInput["standard"]) {
   return PILE_STANDARDS.find(s => s.id === (id ?? "nen-9997-2017"));
@@ -53,9 +64,22 @@ const HISTORICAL_FACTORS: Record<string, readonly [number, number]> = {
   "concrete-auger": [.8, .006],
   "concrete-bored": [.5, .006],
   "timber-uniform": [1, .010],
+  "timber-square": [1, .010],
 };
 
+/** Paaltype volgens de tabel van 2025. Zonder volledige regel blijft het type
+ *  herkenbaar (vorm, materiaal), maar is er geen tabelwaarde om mee te rekenen. */
+export function applyTable2025(type: PileTypeSpec, table: FactorTable2025 = FACTORS_2025): PileTypeSpec {
+  const base: PileTypeSpec = { ...type, name: editionFreeName(type.name), edition: "2025", source: SOURCE_2025,
+    conditions: undefined, qcIIIStartCapMpa: undefined };
+  const f = factors2025(type.id, table);
+  if (!f) return { ...base, alphaP: 0, alphaS: 0, alphaT: 0, factorsMissing: true };
+  return { ...base, alphaP: f.alphaP, alphaS: f.alphaS, alphaT: f.alphaT, beta: f.beta, s: f.s,
+    settlementLine: f.settlementLine, source: `${SOURCE_2025}; ${f.source}`, factorsMissing: false };
+}
+
 export function applyStandard(type: PileTypeSpec, standard: PileInput["standard"]): PileTypeSpec | undefined {
+  if (standard === "nen-9997-2025") return applyTable2025(type);
   if (!usesHistoricalProcedure(standard)) return type;
   // 1991 is uitsluitend onderbouwd voor de vierkante prefab referentiepaal.
   if (standard === "nen-6743-1991" && type.id !== "concrete-prefab-prestressed-driven") return undefined;

@@ -195,6 +195,16 @@
       "z7": "Arena con grava"
     }
   },
+  "overlay": {
+    "hoverHint": "Pase el cursor por el gráfico para ver los valores a un mismo nivel.",
+    "legendTitle": "Ensayos",
+    "levelDepth": "{{level}} m bajo el terreno",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Sin cota del terreno en NAP, dibujado en profundidad bajo el terreno y por tanto no en NAP: {{names}}",
+    "noNapTag": "sin NAP",
+    "noVisible": "No hay ensayos visibles.",
+    "units": "qc y fs en MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} capas · {{depth}} m de profundidad",
     "close": "Cerrar",
@@ -260,14 +270,6 @@
     "z9": "Fino muy rígido"
   },
   "dissipation": {
-    "title": "Ensayos de disipación",
-    "chartLabel": "Presión intersticial en kPa frente al tiempo en segundos (logarítmico)",
-    "timeAxis": "tiempo [s]",
-    "atDepth": "A {{depth}} m",
-    "remove": "Eliminar ensayo de disipación",
-    "uMax": "u máx",
-    "uEnd": "u final",
-    "noDecay": "sin disipación",
-    "note": "t50: tiempo hasta la mitad de la disipación entre la lectura más alta y la última. La última lectura se aproxima al equilibrio; si el ensayo se detuvo pronto, t50 es indicativo."
+    "title": "Ensayos de disipación"
   }
 }

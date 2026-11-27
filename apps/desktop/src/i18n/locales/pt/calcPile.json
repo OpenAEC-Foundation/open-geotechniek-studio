@@ -176,7 +176,30 @@
     "type": "Tipo de estaca",
     "wallThickness": "Espessura da parede",
     "wallThicknessAria": "Espessura da parede [mm]",
-    "woodDiameterAtJoint": "Diâmetro da madeira na junta"
+    "woodDiameterAtJoint": "Diâmetro da madeira na junta",
+    "system": "Sistema de estacas",
+    "standardSize": "Dimensão padrão",
+    "woodSection": "Secção",
+    "woodRound": "Redonda (estaca cravada)",
+    "woodSawn": "Quadrada ou retangular a × b (serrada)",
+    "sideA": "Lado a",
+    "sideB": "Lado b",
+    "rectHint": "Retângulo a ≠ b: a área, o perímetro e Deq resultam de a e b; o programa não determina o fator de forma s para uma ponta de estaca retangular. Introduza s como fator de projeto, se necessário.",
+    "timberSpecies": "Espécie de madeira",
+    "timberSpeciesOwn": "Classe de resistência própria",
+    "timberGrade": "Classe de classificação",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Apenas para a verificação de resistência; os fatores de classe da estaca e a capacidade resistente resultam do tipo de estaca.",
+    "timberSpeciesNoClass": "A fonte não indica uma classe de resistência inequívoca: escolha a classe na verificação de resistência. Os fatores de classe da estaca e a capacidade resistente resultam do tipo de estaca.",
+    "species": {
+      "vuren": "espruce",
+      "grenen": "pinho silvestre",
+      "lariks": "lariço",
+      "douglas": "pseudotsuga (Douglas)",
+      "eiken": "carvalho, Europa central",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Exportar para Pile Plan Studio (CSV)",
@@ -213,7 +236,8 @@
       "sideA": "Lado a",
       "tapered": "{{size}} mm (cónica)",
       "title": "Pressupostos de base",
-      "woodAtJoint": "Madeira na junta"
+      "woodAtJoint": "Madeira na junta",
+      "sidesAB": "Secção a × b"
     },
     "negSkin": {
       "cappedNote": "limitado a ksMin = {{v}}",
@@ -221,7 +245,9 @@
       "extensionAndWood": "(prolongamento e madeira)",
       "layer": "Camada",
       "title": "Atrito negativo",
-      "zone": "Zona: cabeça da estaca NAP {{top}} até NAP {{bottom}} —"
+      "zone": "Zona: cabeça da estaca NAP {{top}} até NAP {{bottom}} —",
+      "perimeterTitle": "Perímetro do fuste nesta camada",
+      "perimeterNote": "Os;i é o perímetro médio do fuste dentro da camada: o prolongamento em betão acima da junta, a madeira abaixo."
     },
     "pending": {
       "missingEA": "Introduza a rigidez axial <strong>EA</strong> em <strong>Estaca</strong>. Para este tipo de estaca, EA não é derivado da secção; o valor resulta do sistema de estaca selecionado.",
@@ -257,6 +283,15 @@
     "title": "Capacidade de carga da estaca",
     "total": {
       "title": "Capacidade de carga geotécnica máxima"
+    },
+    "compact": {
+      "remarks": "Observações",
+      "layers": "Valores intermédios por camada",
+      "results": "Resultados",
+      "formula": "Fórmula",
+      "value": "Valor",
+      "capacity": "Capacidade de carga",
+      "settlement": "Assentamento"
     }
   },
   "settings": {
@@ -289,7 +324,10 @@
     "sourceAria": "Fonte dos coeficientes do projeto",
     "table": "Quadro",
     "timberToe": "Diâmetro da ponta da madeira",
-    "useTableValues": "Usar valores do quadro"
+    "useTableValues": "Usar valores do quadro",
+    "rectSizes": "Madeira serrada a × b",
+    "rectSizesAria": "Série de madeira serrada a × b [mm]",
+    "rectHint": "Secções como a×b, separadas por espaços; um único número é um quadrado. As medidas quadradas também preenchem a tabela de capacidade de carga."
   },
   "shape": {
     "round": "Circular",
@@ -349,6 +387,71 @@
     "notNumber": "Introduza o limite inferior e o superior como número em kN.",
     "upper": "Limite superior [kN]"
   },
+  "view3d": {
+    "aria": "Vista 3D do método 4D-8D; arrastar roda, a roda do rato aproxima",
+    "fit": "Ajustar à vista",
+    "focusPile": "Estaca inteira",
+    "focusTip": "Ponta da estaca",
+    "label": {
+      "critical": "profundidade crítica {{depth}} m = {{ratio}} Deq",
+      "ground": "nível do terreno {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "ponta da estaca {{nap}}",
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "limite superior da zona III {{height}} m = {{ratio}} Deq"
+    },
+    "legend": {
+      "clipped": "Verde-azulado: a curva qc truncada dos troços II e III.",
+      "critical": "Profundidade crítica: {{depth}} m abaixo da ponta da estaca ({{ratio}} Deq, Deq = {{deq}} mm). Linhas pontilhadas: zona de procura de 0,7 a 4 Deq.",
+      "negative": "Atrito negativo ao longo do fuste; Fnk;d = {{force}} kN",
+      "positive": "Atrito lateral positivo ao longo do fuste; Rs;cal;max = {{force}} kN",
+      "qc": "Resistência de ponta qc ao lado da estaca; os traços grossos são as médias dos troços.",
+      "slip": "Corpo de rotura: o solo desliza ao longo de uma espiral logarítmica, desde a profundidade crítica abaixo da ponta para fora e para cima até ao limite superior da zona III, tal como escolhidos pelo cálculo. Um quarto foi omitido para se ver o interior; as setas indicam o sentido do corte. A forma é esquemática.",
+      "zone": "Troço {{zone}}",
+      "zoneI": "da ponta da estaca para baixo até à profundidade crítica",
+      "zoneII": "da profundidade crítica de volta para cima até à ponta da estaca",
+      "zoneIII": "da ponta da estaca para cima até ao limite superior da zona III"
+    },
+    "noModel": "Não há vista 3D: associe uma sondagem ao cálculo.",
+    "notComputed": "Não há vista 3D enquanto o cálculo não tiver resultado. Ajuste os dados ou volte ao 2D.",
+    "note": "Os níveis e a estaca estão à escala. A largura dos troços é esquemática: o método só calcula ao longo da profundidade.",
+    "switch": "Vista do desenho",
+    "switch3dTitle": "A estaca em 3D: vista física ou de cálculo (método 4D-8D)",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondagem e estaca em 3D lado a lado",
+    "toolbar": "Vista",
+    "unavailable": "O 3D não está disponível neste dispositivo (sem WebGL). Use o desenho 2D.",
+    "viewSwitch": "Tipo de vista 3D",
+    "viewPhysical": "Física",
+    "viewPhysicalTitle": "A estaca tal como é, nas camadas de solo",
+    "viewCalc": "Cálculo",
+    "viewCalcTitle": "Troços I, II e III, mecanismo de rotura, atrito e qc",
+    "ariaPhysical": "Vista 3D da estaca no terreno; arrastar roda, deslocar amplia",
+    "noPhysical": "Não existe vista 3D: as dimensões da estaca ou os níveis são inválidos.",
+    "notePhysical": "A estaca, as camadas e os níveis estão à escala; o bloco de solo está aberto ao longo do eixo da estaca. As camadas são a estratigrafia do CPT, com os ajustes da interpretação das camadas. Esquemáticos: a ponta, os arranques e a armadura, a hélice, o tubo central e o anel de soldadura. Onde o CPT não dá camada, prolonga-se a camada mais próxima.",
+    "material": {
+      "concrete": "Betão",
+      "steel": "Aço",
+      "wood": "Madeira",
+      "grout": "Calda de cimento",
+      "plug": "Tampão de solo"
+    },
+    "soil": {
+      "sand": "Areia",
+      "clay": "Argila",
+      "peat": "Turfa"
+    },
+    "physical": {
+      "head": "cabeça da estaca {{nap}}",
+      "water": "nível freático {{nap}}",
+      "excavation": "escavação {{nap}}",
+      "joint": "junta {{nap}}",
+      "excavatedLayer": "{{soil}} (escavado)",
+      "adjustedLayer": "{{soil}} (ajustado)"
+    }
+  },
   "types": {
     "add": "Adicionar tipo de estaca",
     "hint": "Os tipos de estaca adicionais aparecem ao lado do tipo principal no resumo determinante e na planta. As tabelas por CPT continuam a ser as do tipo principal.",
@@ -376,7 +479,9 @@
       "prefab": "Betão pré-fabricado",
       "steelEA": "Estaca de aço; EA específico do projeto",
       "steelTube": "Estaca tubular de aço, cheia de betão",
-      "wood": "Madeira, secção constante"
+      "wood": "Madeira, secção constante",
+      "steelOpen": "Tubo de aço aberto, sem tampão",
+      "steelOpenPlug": "Tubo de aço aberto, com tampão de solo"
     },
     "noPoints": "Sem medições neste CPT",
     "notComputed": "Não calculado: {{error}}. Arraste as cotas ou ajuste os dados.",
@@ -384,5 +489,147 @@
     "taperLength": "comprimento cónico a partir da cabeça",
     "toeSize": "dimensão da ponta",
     "wall": "parede"
+  },
+  "system": {
+    "noTable2025": "Para {{system}}, os fatores de classe de estaca da NEN 9997-1:2025 ainda não constam da tabela deste programa; nada é estimado. Por isso o sistema não pode ser escolhido nesta edição. Escolha a edição de 2017 ou calcule com fatores de projeto de uma autodeclaração ou de um ensaio de carga.",
+    "noTableRow": "{{system}} não tem linha própria na tabela 7.c desta edição e por isso não pode ser escolhido com valores da tabela. Calcule com fatores de projeto da autodeclaração do sistema de estacas ou de um ensaio de carga.",
+    "noTableBadge": "sem valor de tabela",
+    "useProjectFactors": "Escolher com fatores de projeto"
+  },
+  "interp": {
+    "add": "Ajustar um troço",
+    "bottom": "Base",
+    "bottomAria": "Base do troço [m NAP]",
+    "cancel": "Cancelar",
+    "captureTitle": "Arraste de cima para baixo para escolher o troço",
+    "change": {
+      "noLayer": "sem camada",
+      "qcFixed": "{{qc}}: medido {{min}}–{{max}} MPa (média {{mean}}) → valor fixo {{top}} MPa",
+      "qcLinear": "{{qc}}: medido {{min}}–{{max}} MPa (média {{mean}}) → linear de {{top}} a {{bottom}} MPa",
+      "soil": "Tipo de solo: {{before}} → {{after}}"
+    },
+    "colChange": "Alteração (antes → depois)",
+    "colRange": "Troço",
+    "comment": "Comentário",
+    "commentAria": "Comentário sobre o ajuste",
+    "commentPlaceholder": "Porquê este ajuste?",
+    "delete": "Eliminar",
+    "deleteAria": "Eliminar o ajuste A{{n}}",
+    "edit": "Editar",
+    "editAria": "Editar o ajuste A{{n}}",
+    "editTitle": "Editar ajuste",
+    "listAria": "Ajustes deste CPT",
+    "markTitle": "Troço ajustado A{{n}}; clique para editar",
+    "newTitle": "Novo ajuste",
+    "notApplied": {
+      "invalid": "Não aplicado: troço inválido ou nenhuma alteração indicada.",
+      "outsideRange": "Não aplicado: o troço fica fora do CPT."
+    },
+    "problem": {
+      "nothing": "Escolha uma alteração da resistência de ponta ou do tipo de solo.",
+      "order": "O topo tem de ficar acima da base.",
+      "range": "Escolha um troço: arraste no gráfico de cima para baixo ou escreva ambos os níveis.",
+      "value": "Indique uma resistência de ponta fixa igual ou superior a zero."
+    },
+    "qc": "Resistência de ponta",
+    "qcFixed": "valor fixo",
+    "qcLinear": "linear entre os limites",
+    "qcNone": "inalterado",
+    "range": "NAP {{top}} a {{bottom}} m",
+    "report": {
+      "colChange": "Alteração (antes → depois)",
+      "colComment": "Comentário",
+      "colCpt": "CPT",
+      "colNr": "N.º",
+      "colRange": "Troço [m NAP]",
+      "intro": "Neste cálculo, os troços abaixo diferem do CPT medido. O CPT em si não foi alterado; um ajuste vale apenas para este cálculo e para o CPT indicado. No gráfico do CPT, a medição aparece em traço fino e o troço ajustado está marcado.",
+      "title": "Ajustes à interpretação das camadas"
+    },
+    "resetAll": "Repor tudo",
+    "resetAllTitle": "Remove todos os ajustes deste CPT neste cálculo; volta a valer a medição.",
+    "resultNote": "Para o CPT {{cpt}}, este cálculo difere da interpretação medida. O CPT em si não foi alterado.",
+    "resultTitle": "Ajustes à interpretação das camadas",
+    "save": "Guardar",
+    "selectHint": "Arraste no gráfico de cima para baixo para escolher o troço, ou escreva os níveis. A linha medida continua visível a cinzento.",
+    "soilAria": "Tipo de solo do troço",
+    "stateChanged": "{{n}} ajuste(s) para este CPT",
+    "stateMeasured": "tal como medido",
+    "tableNote": "Interpretação das camadas ajustada para este CPT: {{n}} troço(s). Os valores abaixo foram calculados com ela.",
+    "title": "Interpretação das camadas",
+    "top": "Topo",
+    "topAria": "Topo do troço [m NAP]",
+    "value": "Valor",
+    "valueAria": "Resistência de ponta fixa [MPa]",
+    "warning": {
+      "applied": "Interpretação das camadas ajustada: {{n}} troço(s) do CPT {{cpt}} diferem da medição.",
+      "skipped": "{{n}} ajuste(s) da interpretação das camadas não foram aplicados: o troço fica fora do CPT ou é inválido."
+    }
+  },
+  "strength": {
+    "title": "Resistência da estaca",
+    "enable": "Verificar a resistência da estaca",
+    "steelGrade": "Classe de aço",
+    "timberClass": "Classe de resistência da madeira",
+    "ownValue": "Valor próprio",
+    "timber": "madeira",
+    "concreteClass": "Classe de resistência do betão",
+    "concreteClassExtension": "Classe de betão do prolongamento",
+    "hintTimber": "Compressão paralela ao fio sob N_Ed + F_nk;d (EN 1995-1-1). k_mod e γ_M: valores por defeito para madeira permanentemente húmida e carga permanente. A encurvadura não é verificada.",
+    "hintSteel": "Classe da secção e esforço normal do tubo sob N_Ed + F_nk;d (EN 1993-1-1). A encurvadura não é verificada: o programa não conhece um comprimento livre ou fracamente apoiado.",
+    "hintConcrete": "Esforço normal da secção de betão sob N_Ed + F_nk;d (EN 1992-1-1), sem armadura. A encurvadura não é verificada.",
+    "col": {
+      "article": "Cláusula",
+      "demand": "Valor de cálculo",
+      "resistance": "Resistência"
+    },
+    "notesTitle": "Pressupostos e o que não foi verificado",
+    "status": {
+      "ok": "verifica",
+      "fail": "não verifica",
+      "outside": "fora do âmbito desta verificação",
+      "na": "não verificado",
+      "info": "a título informativo"
+    },
+    "rows": {
+      "steelClass": "Classe da secção do tubo",
+      "steelAxial": "Esforço normal do tubo de aço",
+      "timberAxial": "Madeira: compressão paralela ao fio",
+      "timberToe": "Madeira: secção mínima na ponta",
+      "extensionAxial": "Prolongamento de betão: esforço normal",
+      "concreteAxial": "Esforço normal da secção de betão"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, adotado desde a cabeça da estaca até à base da zona de atrito negativo. Abaixo, o esforço normal diminui por atrito lateral positivo; essa parte não é verificada.",
+      "steelNoSection": "Não verificado: a secção de aço (tubo central, espessura de parede) não consta dos dados de entrada para este sistema de estaca.",
+      "class4": "Classe da secção 4: a encurvadura local é condicionante. Está fora do âmbito desta verificação (EN 1993-1-6); a resistência não foi calculada.",
+      "class4Short": "Fora do âmbito desta verificação (classe da secção 4).",
+      "classIs": "Classe da secção {{cls}}.",
+      "steel": "Aço: apenas o tubo com a espessura de parede introduzida e f_y para t ≤ 40 mm; um enchimento de betão não é considerado. Não verificado: encurvadura (cl. 6.3; o módulo não conhece um comprimento livre ou fracamente apoiado), corrosão (introduza a espessura de parede residual), soldaduras e uniões, e as tensões de cravação.",
+      "timber": "Madeira: classe de resistência {{cls}} com f_c,0,k = {{fc}} MPa (EN 338); k_mod e γ_M são dados de entrada, valores por defeito para madeira permanentemente húmida e carga permanente. Não verificado: encurvadura (cl. 6.3.2), a junta com um prolongamento, a degradação da madeira e as tensões de cravação.",
+      "timberToe": "A título informativo: limite superior com a totalidade de N_Ed;max na secção da ponta. O atrito lateral positivo acima da ponta não foi deduzido; a força real na ponta é menor.",
+      "concrete": "Betão: N_Rd = A_c · f_cd da secção do fuste, sem armadura (não consta dos dados de entrada). Não verificado: a excentricidade mínima (cl. 6.1 (4)), a encurvadura, a armadura e as tensões de cravação.",
+      "concreteInSitu": "Estaca moldada no terreno: o diâmetro de cálculo reduzido (cl. 2.3.4.2) e o aumento de γ_c (cl. 2.4.2.5) para estacas sem tubo permanente não foram aplicados; converta a resistência por si próprio.",
+      "concreteClassUnknown": "Classe de resistência do betão desconhecida {{cls}}.",
+      "timberSpecies": "Espécie {{species}}, classe {{grade}} → {{cls}} segundo {{source}}. A espécie só define a classe de resistência; os fatores de classe da estaca e a capacidade resistente resultam do tipo de estaca.",
+      "timberSpeciesOwn": "Espécie {{species}}: a fonte não indica uma classe de resistência inequívoca; a classe foi escolhida pelo utilizador."
+    }
+  },
+  "report": {
+    "title": "Impressão",
+    "detail": "Extensão",
+    "detailAria": "Extensão da impressão",
+    "compact": "Resumido: tabelas",
+    "full": "Detalhado: dedução completa"
+  },
+  "openTube": {
+    "tip": "Ponta",
+    "noPlug": "Sem tampão: só o anel de aço",
+    "plug": "Com tampão: anel + η × secção interior",
+    "plugFactor": "Fator de tampão",
+    "plugFactorAria": "Fator de tampão η [-]",
+    "plugFactorPlaceholder": "introduzir",
+    "plugFactorMissing": "Introduza η (0 a 1) — sem η não se calcula.",
+    "hintPlug": "Com tampão conta o anel de aço mais η vezes a secção interior; η = 1 é a secção cheia. A norma não dá valor para η: justifique-o, por exemplo com o atrito dentro do tubo (NEN 9997-1 art. 7.6.2.3(d); acima de 500 mm também art. 7.6.2.1(13)).",
+    "hintNoPlug": "Sem tampão conta só o anel de aço e o atrito interior é ignorado; é um limite inferior da NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

@@ -1,0 +1,98 @@
+{
+  "ribbon": {
+    "group": "Dissipatie",
+    "open": "Dissipatie-\ntests",
+    "openCount": "Dissipatie-\ntests ({{n}})",
+    "openHint": "Grafiek, t50 en consolidatiecoëfficiënt van de dissipatietests bij {{cpt}}",
+    "none": "Geen dissipatietests bij {{cpt}}; voeg een GEF-dissipatiebestand toe.",
+    "noCpt": "Open eerst een sondering."
+  },
+  "dialog": {
+    "title": "Dissipatietests - {{cpt}}",
+    "titleEmpty": "Dissipatietests",
+    "noCpt": "Open of kies eerst een sondering.",
+    "empty": "Deze sondering heeft geen dissipatietests. Een BRO-XML met dissipatietests brengt ze zelf mee; een los GEF-dissipatiebestand voeg je hier toe.",
+    "tests": "Tests",
+    "add": "GEF-dissipatiebestand toevoegen",
+    "remove": "Test verwijderen",
+    "removeHint": "Haal deze test weg bij de sondering",
+    "close": "Sluiten",
+    "axis": "Tijdas",
+    "axisLog": "Logaritmisch",
+    "axisSqrt": "Wortel-tijd"
+  },
+  "panel": {
+    "open": "Uitwerken…",
+    "openHint": "Grafiek, invoer en uitkomst van de dissipatietests"
+  },
+  "input": {
+    "title": "Invoer",
+    "depth": "Diepte van de test",
+    "channel": "Filterpositie",
+    "u0Mode": "Evenwichtswaarde u₀",
+    "u0": "u₀",
+    "groundwater": "Grondwaterstand onder maaiveld",
+    "groundwaterHint": "u₀ = 9,81 kN/m³ × (diepte − grondwaterstand)",
+    "rigidity": "Stijfheidsindex Iᵣ",
+    "rigidityHint": "Iᵣ = G / sᵤ. Voor klei meestal tussen 50 en 500; zonder invoer geldt 100.",
+    "coneArea": "Oppervlakte conuspunt",
+    "coneAreaFromFile": "Zonder invoer geldt de waarde uit het sondeerbestand.",
+    "coneAreaDefault": "Niet in het sondeerbestand; zonder invoer geldt 1000 mm²."
+  },
+  "u0Mode": {
+    "last": "laatste meting",
+    "manual": "ingevuld",
+    "groundwater": "uit grondwaterstand en diepte"
+  },
+  "result": {
+    "title": "Uitkomst",
+    "indicative": "Indicatieve afleiding: de theorie geldt voor normaal tot licht overgeconsolideerde klei en de stijfheidsindex Iᵣ is een schatting. Gebruik cₕ niet zonder eigen beoordeling."
+  },
+  "row": {
+    "depth": "Diepte (sondeerlengte)",
+    "channel": "Filterpositie",
+    "duration": "Duur van de meting",
+    "ui": "Beginwaarde uᵢ",
+    "uiPeak": "Beginwaarde uᵢ (piek)",
+    "tPeak": "Tijdstip van de piek",
+    "u0": "Evenwichtswaarde u₀",
+    "u0Mode": "Herkomst van u₀",
+    "u50": "Waterspanning bij U = 0,5",
+    "minU": "Kleinste U in de meting",
+    "t50": "t₅₀",
+    "t50Peak": "t₅₀ (vanaf de piek)",
+    "t50Star": "Tijdfactor T*₅₀",
+    "coneArea": "Oppervlakte conuspunt",
+    "radius": "Conusstraal r",
+    "ir": "Stijfheidsindex Iᵣ",
+    "ch": "cₕ [m²/s]",
+    "chYear": "cₕ [m²/jaar]"
+  },
+  "warning": {
+    "noData": "Te weinig meetwaarden voor een uitwerking.",
+    "nonMonotonic": "De waterspanning loopt eerst op (dilatant gedrag). De piek geldt als beginwaarde en de tijd telt vanaf de piek (Sully et al., 1999).",
+    "u0FromLast": "u₀ is de laatste meting. Dat klopt alleen als de test tot evenwicht is doorgezet; vul anders u₀ of de grondwaterstand in.",
+    "noExcess": "Er is geen meetbare overspanning; t₅₀ is niet te bepalen.",
+    "negativeExcess": "De beginwaarde ligt onder u₀ (onderspanning). De theorie voor cₕ geldt hier niet; de uitkomst is hooguit een orde van grootte.",
+    "t50NotReached": "De helft van de overspanning is binnen de meting niet afgebouwd; t₅₀ is niet te bepalen.",
+    "noT50Factor": "Voor een filter op deze plaats (u3) geeft de publicatie geen T*₅₀; cₕ is niet berekend.",
+    "groundwaterMissing": "De grondwaterstand is niet ingevuld.",
+    "manualMissing": "u₀ is niet ingevuld."
+  },
+  "chart": {
+    "time": "Tijd t [s] (logaritmisch)",
+    "rootTime": "Wortel van de tijd √t [√s]",
+    "pressure": "Waterspanning u [kPa]",
+    "noData": "Te weinig meetwaarden voor een grafiek."
+  },
+  "message": {
+    "added": "Dissipatietest op {{depth}} m toegevoegd.",
+    "depthMissing": "De diepte staat niet in het bestand; vul die in.",
+    "otherCpt": "Het bestand noemt sondering {{parent}}; controleer of het bij {{cpt}} hoort.",
+    "notDissipation": "Geen GEF-dissipatiebestand: de eerste kolom moet de tijd zijn."
+  },
+  "report": {
+    "section": "Dissipatietests",
+    "sectionHint": "Per dissipatietest een pagina met de grafiek en de kerngetallen"
+  }
+}

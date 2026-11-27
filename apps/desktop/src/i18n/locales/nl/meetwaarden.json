@@ -1,0 +1,104 @@
+{
+  "title": "Meetwaarden bewerken",
+  "close": "Sluiten",
+  "noCpt": "Open eerst een sondering.",
+  "cpt": "Sondering",
+  "editedShort": "bewerkt",
+  "chart": {
+    "badge": "bewerkt ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Traject verwijderen",
+    "invalidate-range": "Traject ongeldig maken",
+    "trim-top": "Bovenkant afkappen",
+    "trim-bottom": "Onderkant afkappen",
+    "zero-shift": "Nulpuntverschuiving",
+    "depth-shift": "Diepteverschuiving",
+    "set-value": "Meetwaarde corrigeren",
+    "remove-outliers": "Uitschieters verwijderen"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "helling",
+    "all": "Alle kanalen"
+  },
+  "op": {
+    "removeRange": "Traject {{from}} tot {{to}} m verwijderd",
+    "invalidateRange": "{{channels}} ongeldig gemaakt van {{from}} tot {{to}} m",
+    "trimTop": "Bovenkant afgekapt: alles boven {{depth}} m vervalt",
+    "trimBottom": "Onderkant afgekapt: alles onder {{depth}} m vervalt",
+    "zeroShift": "Nulpuntverschuiving {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Nulpuntverschuiving {{channel}} {{offset}} {{unit}} van {{from}} tot {{to}} m",
+    "depthShift": "Diepteverschuiving {{offset}} m",
+    "setValue": "{{channel}} op {{depth}} m gecorrigeerd",
+    "removeOutliers": "Uitschieters in {{channel}} ongeldig gemaakt van {{from}} tot {{to}} m (venster ±{{window}}, drempel {{threshold}})"
+  },
+  "result": {
+    "noValue": "geen waarde",
+    "points": "geraakte meetpunten: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} meetpunten na bewerking, {{original}} in het bronbestand. Diepte {{range}}.",
+    "untouched": "{{now}} meetpunten, niet bewerkt. Diepte {{range}}.",
+    "kept": "De oorspronkelijke meetwaarden blijven bewaard."
+  },
+  "log": {
+    "title": "Logboek",
+    "empty": "Nog geen bewerkingen op deze sondering.",
+    "time": "Tijdstip",
+    "by": "Wie",
+    "what": "Bewerking",
+    "result": "Resultaat",
+    "reason": "Reden",
+    "undoOne": "Ongedaan maken",
+    "undoOneHint": "Deze bewerking vervalt; de latere worden opnieuw toegepast",
+    "undoLast": "Laatste ongedaan maken",
+    "reset": "Alles herstellen",
+    "resetConfirm": "Zeker weten? Het logboek vervalt"
+  },
+  "form": {
+    "title": "Nieuwe bewerking",
+    "kind": "Soort",
+    "channel": "Kanaal",
+    "from": "Van diepte (m)",
+    "to": "Tot diepte (m)",
+    "optional": "hele reeks",
+    "keepFrom": "Behouden vanaf diepte (m)",
+    "keepTo": "Behouden tot diepte (m)",
+    "offsetValue": "Verschuiving ({{unit}})",
+    "offsetDepth": "Verschuiving (m, positief = dieper)",
+    "depth": "Diepte (m)",
+    "newValue": "Nieuwe waarde ({{unit}})",
+    "emptyIsVoid": "leeg = geen waarde",
+    "halfWindow": "Venster (punten per kant)",
+    "threshold": "Drempel (× spreiding)",
+    "outlierHint": "Een waarde is een uitschieter als zij meer dan de drempel maal de spreiding (1,4826 × MAD) afwijkt van de mediaan van haar venster. De waarde wordt ongeldig; het meetpunt blijft.",
+    "removeHint": "De meetpunten in het traject vervallen helemaal. Kies 'ongeldig maken' om de punten te houden en alleen waarden te wissen.",
+    "by": "Wie",
+    "byPlaceholder": "Naam",
+    "reason": "Reden (verplicht)",
+    "reasonPlaceholder": "Waarom is deze bewerking nodig?",
+    "apply": "Toepassen"
+  },
+  "problem": {
+    "number": "Vul geldige getallen in.",
+    "range": "De onderkant van het traject ligt boven de bovenkant.",
+    "noOffset": "Een verschuiving van nul verandert niets.",
+    "window": "Het venster is minstens 1 punt en de drempel groter dan nul.",
+    "negativeDepth": "Met deze verschuiving komen meetpunten boven het maaiveld."
+  },
+  "preview": {
+    "incomplete": "Vul de velden in om te zien wat de bewerking raakt.",
+    "point": "Meetpunt op {{depth}} m, huidige waarde: {{value}}.",
+    "noPoint": "Geen meetpunt op deze diepte; het dichtstbijzijnde ligt op {{depth}} m.",
+    "label": "Voorbeeld",
+    "points": "raakt {{n}} van {{total}} meetpunten.",
+    "none": "Deze bewerking raakt geen meetpunten.",
+    "unchanged": "De meetwaarde staat al zo; er verandert niets.",
+    "needBy": "Vul in wie de bewerking doet.",
+    "needReason": "Geef een reden om de bewerking toe te passen."
+  }
+}

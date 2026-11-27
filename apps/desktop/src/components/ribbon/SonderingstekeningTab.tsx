@@ -4,6 +4,20 @@ import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
 import RibbonButtonStack from "./RibbonButtonStack";
 import { useExtension } from "../../hooks/useExtensions";
+import {
+  getPlaceSoort,
+  setPlaceSoort,
+  SONDERING_SOORTEN,
+  type SonderingSoort,
+} from "../panels/tekening/sonderingSoort";
+
+/** Nederlandse brontekst per soort sondering (`drawing:soort.<key>`). */
+const SOORT_LABEL: Record<SonderingSoort, string> = {
+  conus: "Zonder kleefmeting",
+  kleef: "Met kleefmeting",
+  water: "Met waterspanningsmeting",
+  "kleef-water": "Met kleef- en waterspanningsmeting",
+};
 
 /**
  * Sonderingstekening ribbon — full toolset.
@@ -95,6 +109,8 @@ export default function SonderingstekeningTab() {
   // Selecteren-knop kan highlighten (active-style). De view dispatcht
   // `ogs:tekening-select-mode-changed` zodra de gebruiker hem toggelt.
   const [selectActive, setSelectActive] = useState(false);
+  // Soort voor de volgende geplaatste sondering of het volgende raster.
+  const [soort, setSoort] = useState<SonderingSoort>(getPlaceSoort);
   useEffect(() => {
     const onChange = (e: Event) => {
       const ce = e as CustomEvent<{ active: boolean }>;
@@ -233,6 +249,24 @@ export default function SonderingstekeningTab() {
             size="large"
             onClick={() => dispatch("ogs:tekening-place-raster")}
           />
+          <label
+            className="ribbon-drawing-soort"
+            title={td("place.kindTitle", "Soort van de sondering of het raster dat je hierna plaatst; later te wijzigen bij de eigenschappen.")}
+          >
+            <span>{td("place.kind", "Soort sondering")}</span>
+            <select
+              value={soort}
+              onChange={(e) => {
+                const next = e.target.value as SonderingSoort;
+                setPlaceSoort(next);
+                setSoort(next);
+              }}
+            >
+              {SONDERING_SOORTEN.map((s) => (
+                <option key={s} value={s}>{td(`soort.${s}`, SOORT_LABEL[s])}</option>
+              ))}
+            </select>
+          </label>
           <RibbonButton
             icon="draw.line"
             label={t("tekening.drawLine", "Lijn")}

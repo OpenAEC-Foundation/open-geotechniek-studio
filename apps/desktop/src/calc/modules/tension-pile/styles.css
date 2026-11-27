@@ -1,6 +1,7 @@
 /* Trekpalen: tekening en uitwerking. Het formulier gebruikt de gedeelde rekenblad-stijl. */
 .tp-input select { max-width: 100%; }
-.tp-visual { width: 100%; height: 100%; max-height: 720px; font: 10px var(--oa-font-numbers, monospace); }
+.tp-visual-wrap { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 0; }
+.tp-visual { flex: 1 1 auto; min-height: 0; width: 100%; max-height: 720px; font: 10px var(--oa-font-numbers, monospace); }
 .tp-visual text { fill: var(--oa-text-secondary, #555); }
 .tp-axis-title { font-weight: 600; }
 .tp-grid line { stroke: var(--oa-border, #ddd); stroke-width: 0.5; }
@@ -14,6 +15,14 @@
 .tp-level-water text { fill: #2563eb; }
 .tp-level-exc line { stroke: var(--oa-error, #b91c1c); }
 .tp-legend line.tp-qc { stroke-width: 1.4; }
+/* Aanpassingen van de grondlaaginterpretatie: de meting dun en grijs, het traject gemarkeerd. */
+.tp-qc.tp-qc--measured, .tp-legend line.tp-qc--measured { stroke: var(--oa-text-secondary, #888); stroke-width: 0.8; opacity: 0.7; }
+.tp-interp-band { fill: var(--amber, #d97706); fill-opacity: 0.12; }
+.tp-interp-band--active { fill-opacity: 0.24; }
+.tp-interp-band--draft { fill: #2563eb; fill-opacity: 0.14; stroke: #2563eb; stroke-width: 1; stroke-dasharray: 5 3; pointer-events: none; }
+.tp-visual text.tp-interp-label { fill: #b45309; font-weight: 700; }
+.tp-interp-label--pick { cursor: pointer; }
+.tp-interp-capture { fill: transparent; cursor: crosshair; touch-action: none; }
 
 .tp-result { padding: 12px 16px; font-size: 12px; }
 .tp-result h3 { margin: 14px 0 6px; font-size: 12px; font-weight: 600; color: var(--oa-accent-text); }

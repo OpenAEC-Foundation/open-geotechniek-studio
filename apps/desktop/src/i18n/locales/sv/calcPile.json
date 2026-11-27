@@ -176,7 +176,30 @@
     "type": "Påltyp",
     "wallThickness": "Godstjocklek",
     "wallThicknessAria": "Godstjocklek [mm]",
-    "woodDiameterAtJoint": "Trädiameter vid skarven"
+    "woodDiameterAtJoint": "Trädiameter vid skarven",
+    "system": "Pålsystem",
+    "standardSize": "Standardmått",
+    "woodSection": "Tvärsnitt",
+    "woodRound": "Rund (slagen påle)",
+    "woodSawn": "Kvadratisk eller rektangulär a × b (sågad)",
+    "sideA": "Sida a",
+    "sideB": "Sida b",
+    "rectHint": "Rektangel a ≠ b: area, omkrets och Deq följer av a och b; programmet bestämmer inte formfaktorn s för en rektangulär pålspets. Ange vid behov s som projektfaktor.",
+    "timberSpecies": "Träslag",
+    "timberSpeciesOwn": "Egen hållfasthetsklass",
+    "timberGrade": "Sorteringsklass",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Endast för hållfasthetskontrollen; pålklassfaktorer och bärförmåga följer av påltypen.",
+    "timberSpeciesNoClass": "Källan anger ingen entydig hållfasthetsklass: välj klassen i hållfasthetskontrollen. Pålklassfaktorer och bärförmåga följer av påltypen.",
+    "species": {
+      "vuren": "gran",
+      "grenen": "tall",
+      "lariks": "lärk",
+      "douglas": "douglasgran",
+      "eiken": "ek, centraleuropeisk",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Exportera för Pile Plan Studio (CSV)",
@@ -213,7 +236,8 @@
       "sideA": "Sida a",
       "tapered": "{{size}} mm (konisk)",
       "title": "Grundantaganden",
-      "woodAtJoint": "Trä vid skarven"
+      "woodAtJoint": "Trä vid skarven",
+      "sidesAB": "Tvärsnitt a × b"
     },
     "negSkin": {
       "cappedNote": "begränsad till ksMin = {{v}}",
@@ -221,7 +245,9 @@
       "extensionAndWood": "(förlängning och trä)",
       "layer": "Lager",
       "title": "Negativ mantelfriktion",
-      "zone": "Zon: pålhuvud NAP {{top}} till NAP {{bottom}} —"
+      "zone": "Zon: pålhuvud NAP {{top}} till NAP {{bottom}} —",
+      "perimeterTitle": "Mantelomkrets i detta lager",
+      "perimeterNote": "Os;i är mantelns medelomkrets inom lagret: betongförlängningen ovanför skarven, träet under."
     },
     "pending": {
       "missingEA": "Ange axialstyvheten <strong>EA</strong> under <strong>Påle</strong>. För denna påltyp härleds EA inte ur tvärsnittet; värdet följer av valt pålsystem.",
@@ -257,6 +283,15 @@
     "title": "Pålens bärförmåga",
     "total": {
       "title": "Maximal geoteknisk bärförmåga"
+    },
+    "compact": {
+      "remarks": "Anmärkningar",
+      "layers": "Mellanvärden per lager",
+      "results": "Resultat",
+      "formula": "Formel",
+      "value": "Värde",
+      "capacity": "Bärförmåga",
+      "settlement": "Sättning"
     }
   },
   "settings": {
@@ -289,7 +324,10 @@
     "sourceAria": "Källa för projektfaktorer",
     "table": "Tabell",
     "timberToe": "Trädiameter vid spetsen",
-    "useTableValues": "Använd tabellvärden"
+    "useTableValues": "Använd tabellvärden",
+    "rectSizes": "Sågat trä a × b",
+    "rectSizesAria": "Serie sågat trä a × b [mm]",
+    "rectHint": "Tvärsnitt som a×b, åtskilda med mellanslag; ett ensamt tal är en kvadrat. De kvadratiska måtten fyller även bärförmågetabellen."
   },
   "shape": {
     "round": "Rund",
@@ -349,6 +387,71 @@
     "notNumber": "Ange undre och övre gräns som ett tal i kN.",
     "upper": "Övre gräns [kN]"
   },
+  "view3d": {
+    "aria": "3D-vy av 4D-8D-metoden; dra för att rotera, rulla för att zooma",
+    "fit": "Anpassa till vyn",
+    "focusPile": "Hela pålen",
+    "focusTip": "Pålspets",
+    "label": {
+      "critical": "kritiskt djup {{depth}} m = {{ratio}} Deq",
+      "ground": "markyta {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "pålspets {{nap}}",
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "övre gräns för zon III {{height}} m = {{ratio}} Deq"
+    },
+    "legend": {
+      "clipped": "Blågrön: den kapade qc-linjen för sträcka II och III.",
+      "critical": "Kritiskt djup: {{depth}} m under pålspetsen ({{ratio}} Deq, Deq = {{deq}} mm). Prickade linjer: sökområde 0,7 till 4 Deq.",
+      "negative": "Negativ mantelfriktion längs skaftet; Fnk;d = {{force}} kN",
+      "positive": "Positiv mantelfriktion längs skaftet; Rs;cal;max = {{force}} kN",
+      "qc": "Spetsmotstånd qc bredvid pålen; tjocka streck är medelvärdena för sträckorna.",
+      "slip": "Brottkropp: jorden skjuvas längs en logaritmisk spiral, från det kritiska djupet under pålspetsen utåt och uppåt till övre gränsen för zon III, så som beräkningen har valt dem. En fjärdedel är utelämnad så att du ser in; pilarna visar skjuvriktningen. Formen är schematisk.",
+      "zone": "Sträcka {{zone}}",
+      "zoneI": "från pålspetsen nedåt till det kritiska djupet",
+      "zoneII": "från det kritiska djupet tillbaka upp till pålspetsen",
+      "zoneIII": "från pålspetsen upp till övre gränsen för zon III"
+    },
+    "noModel": "Det finns ingen 3D-vy: koppla en CPT-sondering till beräkningen.",
+    "notComputed": "Det finns ingen 3D-vy så länge beräkningen saknar resultat. Ändra indata eller gå tillbaka till 2D.",
+    "note": "Nivåer och pålen är skalenliga. Sträckornas bredd är schematisk: metoden räknar bara längs djupet.",
+    "switch": "Vy av ritningen",
+    "switch3dTitle": "Pålen i 3D: fysisk eller beräkningsmässig (4D-8D-metoden)",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondering och pålen i 3D sida vid sida",
+    "toolbar": "Vy",
+    "unavailable": "3D är inte tillgängligt på den här enheten (ingen WebGL). Använd 2D-ritningen.",
+    "viewSwitch": "Typ av 3D-vy",
+    "viewPhysical": "Fysisk",
+    "viewPhysicalTitle": "Pålen som den är, i jordlagren",
+    "viewCalc": "Beräkning",
+    "viewCalcTitle": "Sträcka I, II och III, brottfigur, mantelfriktion och qc",
+    "ariaPhysical": "3D-vy av pålen i marken; dra för att rotera, rulla för att zooma",
+    "noPhysical": "Det finns ingen 3D-vy: pålmåtten eller nivåerna är ogiltiga.",
+    "notePhysical": "Påle, lager och nivåer är skalenliga; jordblocket är uppskuret längs pålaxeln. Lagren är sonderingens lagerföljd med justeringarna från lagertolkningen. Schematiskt: pålspetsen, anslutningsjärn och armering, skruvbladet, kärnröret och svetsringen. Där sonderingen inte ger något lager är närmaste lager förlängt.",
+    "material": {
+      "concrete": "Betong",
+      "steel": "Stål",
+      "wood": "Trä",
+      "grout": "Injekteringsbruk",
+      "plug": "Jordpropp"
+    },
+    "soil": {
+      "sand": "Sand",
+      "clay": "Lera",
+      "peat": "Torv"
+    },
+    "physical": {
+      "head": "pålhuvud {{nap}}",
+      "water": "grundvatten {{nap}}",
+      "excavation": "schakt {{nap}}",
+      "joint": "skarv {{nap}}",
+      "excavatedLayer": "{{soil}} (schaktad)",
+      "adjustedLayer": "{{soil}} (justerad)"
+    }
+  },
   "types": {
     "add": "Lägg till påltyp",
     "hint": "Extra påltyper visas bredvid huvudtypen i den dimensionerande översikten och på planen. Tabellerna per CPT-sondering förblir huvudtypens.",
@@ -376,7 +479,9 @@
       "prefab": "Prefabricerad betong",
       "steelEA": "Stålpåle; projektspecifik EA",
       "steelTube": "Stålrörspåle, betongfylld",
-      "wood": "Trä, konstant tvärsnitt"
+      "wood": "Trä, konstant tvärsnitt",
+      "steelOpen": "Öppet stålrör, utan propp",
+      "steelOpenPlug": "Öppet stålrör, med jordpropp"
     },
     "noPoints": "Inga mätvärden i denna CPT-sondering",
     "notComputed": "Ej beräknad: {{error}}. Dra nivåerna eller justera indata.",
@@ -384,5 +489,147 @@
     "taperLength": "konisk längd från huvudet",
     "toeSize": "spetsdimension",
     "wall": "gods"
+  },
+  "system": {
+    "noTable2025": "För {{system}} finns pålklassfaktorerna enligt NEN 9997-1:2025 ännu inte i programmets tabell; inget uppskattas. Systemet kan därför inte väljas för denna utgåva. Välj 2017 års utgåva eller räkna med projektfaktorer från en egendeklaration eller provbelastning.",
+    "noTableRow": "{{system}} har ingen egen rad i tabell 7.c i denna utgåva och kan därför inte väljas med tabellvärden. Räkna med projektfaktorer från pålsystemets egendeklaration eller från en provbelastning.",
+    "noTableBadge": "inget tabellvärde",
+    "useProjectFactors": "Välj med projektfaktorer"
+  },
+  "interp": {
+    "add": "Justera ett djupintervall",
+    "bottom": "Underkant",
+    "bottomAria": "Djupintervallets underkant [m NAP]",
+    "cancel": "Avbryt",
+    "captureTitle": "Dra uppifrån och ned för att välja djupintervallet",
+    "change": {
+      "noLayer": "inget lager",
+      "qcFixed": "{{qc}}: uppmätt {{min}}–{{max}} MPa (medel {{mean}}) → fast värde {{top}} MPa",
+      "qcLinear": "{{qc}}: uppmätt {{min}}–{{max}} MPa (medel {{mean}}) → linjärt från {{top}} till {{bottom}} MPa",
+      "soil": "Jordart: {{before}} → {{after}}"
+    },
+    "colChange": "Ändring (före → efter)",
+    "colRange": "Djupintervall",
+    "comment": "Kommentar",
+    "commentAria": "Kommentar till justeringen",
+    "commentPlaceholder": "Varför denna justering?",
+    "delete": "Ta bort",
+    "deleteAria": "Ta bort justering A{{n}}",
+    "edit": "Redigera",
+    "editAria": "Redigera justering A{{n}}",
+    "editTitle": "Redigera justering",
+    "listAria": "Justeringar av denna CPT-sondering",
+    "markTitle": "Justerat djupintervall A{{n}}; klicka för att redigera",
+    "newTitle": "Ny justering",
+    "notApplied": {
+      "invalid": "Inte tillämpad: ogiltigt djupintervall eller ingen ändring angiven.",
+      "outsideRange": "Inte tillämpad: djupintervallet ligger utanför CPT-sonderingen."
+    },
+    "problem": {
+      "nothing": "Välj en ändring av spetstrycket eller av jordarten.",
+      "order": "Överkanten måste ligga högre än underkanten.",
+      "range": "Välj ett djupintervall: dra i diagrammet uppifrån och ned, eller skriv båda nivåerna.",
+      "value": "Ange ett fast spetstryck på noll eller mer."
+    },
+    "qc": "Spetstryck",
+    "qcFixed": "fast värde",
+    "qcLinear": "linjärt mellan kanterna",
+    "qcNone": "oförändrad",
+    "range": "NAP {{top}} till {{bottom}} m",
+    "report": {
+      "colChange": "Ändring (före → efter)",
+      "colComment": "Kommentar",
+      "colCpt": "CPT-sondering",
+      "colNr": "Nr",
+      "colRange": "Djupintervall [m NAP]",
+      "intro": "I denna beräkning avviker djupintervallen nedan från den uppmätta CPT-sonderingen. Själva sonderingen har inte ändrats; en justering gäller bara för denna beräkning och för den angivna sonderingen. I sonderingens diagram är mätningen ritad tunt och det justerade intervallet markerat.",
+      "title": "Justeringar av lagertolkningen"
+    },
+    "resetAll": "Återställ allt",
+    "resetAllTitle": "Tar bort alla justeringar av denna CPT-sondering i denna beräkning; mätningen gäller igen.",
+    "resultNote": "För CPT-sondering {{cpt}} avviker denna beräkning från den uppmätta tolkningen. Själva sonderingen är oförändrad.",
+    "resultTitle": "Justeringar av lagertolkningen",
+    "save": "Spara",
+    "selectHint": "Dra i diagrammet uppifrån och ned för att välja djupintervallet, eller skriv nivåerna. Den uppmätta linjen förblir synlig i grått.",
+    "soilAria": "Jordart i djupintervallet",
+    "stateChanged": "{{n}} justering(ar) för denna CPT-sondering",
+    "stateMeasured": "som uppmätt",
+    "tableNote": "Lagertolkningen är justerad för denna CPT-sondering: {{n}} djupintervall. Värdena nedan är beräknade med den.",
+    "title": "Lagertolkning",
+    "top": "Överkant",
+    "topAria": "Djupintervallets överkant [m NAP]",
+    "value": "Värde",
+    "valueAria": "Fast spetstryck [MPa]",
+    "warning": {
+      "applied": "Lagertolkningen är justerad: {{n}} djupintervall i CPT-sondering {{cpt}} avviker från mätningen.",
+      "skipped": "{{n}} justering(ar) av lagertolkningen har inte tillämpats: djupintervallet ligger utanför CPT-sonderingen eller är ogiltigt."
+    }
+  },
+  "strength": {
+    "title": "Pålens hållfasthet",
+    "enable": "Kontrollera pålens hållfasthet",
+    "steelGrade": "Stålsort",
+    "timberClass": "Hållfasthetsklass trä",
+    "ownValue": "Eget värde",
+    "timber": "trä",
+    "concreteClass": "Betonghållfasthetsklass",
+    "concreteClassExtension": "Betongklass förlängning",
+    "hintTimber": "Tryck parallellt med fibrerna för N_Ed + F_nk;d (EN 1995-1-1). k_mod och γ_M: standardvärden för permanent vått trä och permanent last. Knäckning kontrolleras inte.",
+    "hintSteel": "Tvärsnittsklass och normalkraft i röret för N_Ed + F_nk;d (EN 1993-1-1). Knäckning kontrolleras inte: programmet känner inte till någon fri eller svagt stödd längd.",
+    "hintConcrete": "Normalkraft i betongtvärsnittet för N_Ed + F_nk;d (EN 1992-1-1), utan armering. Knäckning kontrolleras inte.",
+    "col": {
+      "article": "Avsnitt",
+      "demand": "Dimensioneringsvärde",
+      "resistance": "Bärförmåga"
+    },
+    "notesTitle": "Förutsättningar och vad som inte kontrollerats",
+    "status": {
+      "ok": "uppfyller",
+      "fail": "uppfyller inte",
+      "outside": "utanför denna kontroll",
+      "na": "inte kontrollerat",
+      "info": "för information"
+    },
+    "rows": {
+      "steelClass": "Tvärsnittsklass rör",
+      "steelAxial": "Normalkraft stålrör",
+      "timberAxial": "Trä: tryck parallellt med fibrerna",
+      "timberToe": "Trä: minsta tvärsnitt vid spetsen",
+      "extensionAxial": "Betongförlängning: normalkraft",
+      "concreteAxial": "Normalkraft betongtvärsnitt"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, antagen från pålhuvudet till underkanten av den negativa mantelfriktionen. Därunder minskar normalkraften genom positiv mantelfriktion; den delen kontrolleras inte.",
+      "steelNoSection": "Inte kontrollerat: ståltvärsnittet (kärnrör, godstjocklek) ingår inte i indata för detta pålsystem.",
+      "class4": "Tvärsnittsklass 4: lokal buckling är dimensionerande. Det ligger utanför denna kontroll (EN 1993-1-6); bärförmågan har inte beräknats.",
+      "class4Short": "Utanför denna kontroll (tvärsnittsklass 4).",
+      "classIs": "Tvärsnittsklass {{cls}}.",
+      "steel": "Stål: endast röret med angiven godstjocklek och f_y för t ≤ 40 mm; en betongfyllning är inte medräknad. Inte kontrollerat: knäckning (avsnitt 6.3; modulen känner inte till någon fri eller svagt stödd längd), korrosion (ange återstående godstjocklek), svetsar och skarvar samt slagningsspänningarna.",
+      "timber": "Trä: hållfasthetsklass {{cls}} med f_c,0,k = {{fc}} MPa (EN 338); k_mod och γ_M är indata, standardvärden för permanent vått trä och permanent last. Inte kontrollerat: knäckning (avsnitt 6.3.2), skarven mot en förlängning, nedbrytning av träet och slagningsspänningarna.",
+      "timberToe": "För information: övre gräns med hela N_Ed;max på spetstvärsnittet. Den positiva mantelfriktionen ovanför spetsen har inte dragits av; den verkliga kraften vid spetsen är mindre.",
+      "concrete": "Betong: N_Rd = A_c · f_cd för skafttvärsnittet, utan armering (den ingår inte i indata). Inte kontrollerat: minsta excentricitet (avsnitt 6.1 (4)), knäckning, armeringen och slagningsspänningarna.",
+      "concreteInSitu": "Platsgjuten påle: den reducerade dimensionerande diametern (avsnitt 2.3.4.2) och höjningen av γ_c (avsnitt 2.4.2.5) för pålar utan kvarsittande rör har inte tillämpats; räkna själv om bärförmågan för detta.",
+      "concreteClassUnknown": "Okänd betonghållfasthetsklass {{cls}}.",
+      "timberSpecies": "Träslag {{species}}, sorteringsklass {{grade}} → {{cls}} enligt {{source}}. Träslaget bestämmer endast hållfasthetsklassen; pålklassfaktorer och bärförmåga följer av påltypen.",
+      "timberSpeciesOwn": "Träslag {{species}}: källan anger ingen entydig hållfasthetsklass; klassen har valts av användaren."
+    }
+  },
+  "report": {
+    "title": "Utskrift",
+    "detail": "Omfattning",
+    "detailAria": "Utskriftens omfattning",
+    "compact": "Kortfattad: tabeller",
+    "full": "Utförlig: fullständig härledning"
+  },
+  "openTube": {
+    "tip": "Spets",
+    "noPlug": "Utan propp: bara stålringen",
+    "plug": "Med propp: stålring + η × inre tvärsektion",
+    "plugFactor": "Proppfaktor",
+    "plugFactorAria": "Proppfaktor η [-]",
+    "plugFactorPlaceholder": "ange",
+    "plugFactorMissing": "Ange η (0 till 1) — utan η räknas inget.",
+    "hintPlug": "Med propp räknas stålringen plus η gånger den inre tvärsektionen; η = 1 är hela tvärsektionen. Normen ger inget värde för η: motivera det, t.ex. med friktionen inne i röret (NEN 9997-1 art. 7.6.2.3(d); över 500 mm även art. 7.6.2.1(13)).",
+    "hintNoPlug": "Utan propp räknas bara stålringen och friktionen inne i röret bortses från; det är en undre gräns enligt NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

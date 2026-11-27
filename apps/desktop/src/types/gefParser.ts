@@ -35,6 +35,13 @@ const fields: Record<number, string> = {
   21: "inclination_x",
   22: "inclination_y",
   23: "electric_conductivity",
+  // Magnetometerconus; de reeksen worden gelezen in src/magnetometer/channels.ts.
+  31: "magnetic_field_x",
+  32: "magnetic_field_y",
+  33: "magnetic_field_z",
+  34: "magnetic_field_total",
+  35: "magnetic_inclination",
+  36: "magnetic_declination",
 };
 interface Column {
   index: number;

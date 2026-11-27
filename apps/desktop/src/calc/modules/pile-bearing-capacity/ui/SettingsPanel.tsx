@@ -7,7 +7,7 @@ import type { PanelProps } from "../../../framework/types";
 import { Hint, NumberInput, Row, Section } from "../../../framework/views/SheetForm";
 import { catalogText, resolvePileType } from "../catalog";
 import type { PileInput, PileResult, ProjectPileFactors } from "../types";
-import { DEFAULT_SIZES, seriesFor, sizeText } from "../standard-sizes";
+import { DEFAULT_SIZES, rectText, seriesFor, sizeText } from "../standard-sizes";
 import { OaIcon } from '../../../../components/icons/oaIcon';
 
 const FACTORS: Array<[keyof Pick<ProjectPileFactors, "alphaP" | "alphaS" | "alphaT" | "beta" | "s">, string]> = [
@@ -17,6 +17,27 @@ const parseList = (text: string) => {
   const v = text.split(/[;\s]+/).map((t) => Number(t.replace(",", "."))).filter((x) => Number.isFinite(x) && x > 0);
   return [...new Set(v)].sort((a, b) => a - b);
 };
+
+/** "150x150 150×200" → [[150, 150], [150, 200]]; a is de kleinste zijde. */
+export const parseRectList = (text: string): Array<[number, number]> => {
+  const out = new Map<string, [number, number]>();
+  for (const token of text.split(/[;\s]+/)) {
+    const m = token.replace(/,/g, ".").match(/^(\d+(?:\.\d+)?)(?:[x×*](\d+(?:\.\d+)?))?$/i);
+    if (!m) continue;
+    const a = Number(m[1]), b = m[2] === undefined ? a : Number(m[2]);
+    if (a > 0 && b > 0) out.set(`${Math.min(a, b)}x${Math.max(a, b)}`, [Math.min(a, b), Math.max(a, b)]);
+  }
+  return [...out.values()].sort((p, q) => (p[0] === p[1] ? 0 : 1) - (q[0] === q[1] ? 0 : 1) || p[0] - q[0] || p[1] - q[1]);
+};
+
+/** Tekstveld voor een reeks doorsneden a × b, toegepast bij Enter of verlaten. */
+function RectField({ label, value, onApply }: { label: string; value: ReadonlyArray<readonly [number, number]>; onApply: (v: Array<[number, number]>) => void }) {
+  const shown = value.map(([a, b]) => rectText(a, b)).join(" ");
+  const [text, setText] = useState(shown);
+  useEffect(() => setText(shown), [shown]);
+  const apply = () => { const v = parseRectList(text); if (v.length) onApply(v); else setText(shown); };
+  return <input aria-label={label} value={text} onChange={(e) => setText(e.target.value)} onBlur={apply} onKeyDown={(e) => { if (e.key === "Enter") apply(); }} />;
+}
 
 /** Tekstveld voor een reeks getallen, toegepast bij Enter of verlaten. */
 function ListField({ label, value, onApply }: { label: string; value: number[]; onApply: (v: number[]) => void }) {
@@ -47,7 +68,7 @@ export function SettingsPanel({ input, onChange }: PanelProps<PileInput, PileRes
     <Section title={t("settings.factorsTitle", "Paalfactoren · {{type}}", { type: type?.name ?? input.pileTypeId })}>
       <table className="cs-layer-table cs-settings-table" aria-label={t("factors.title", "Paalfactoren")}>
         <thead><tr><th>{t("settings.factor", "Factor")}</th><th>{t("settings.table", "Tabel")}</th><th>{t("settings.project", "Project")}</th></tr></thead>
-        <tbody>{FACTORS.map(([key, label]) => <tr key={key}><td>{label}</td><td className="cs-settings-default">{type?.[key] === undefined ? "—" : sizeText(type[key])}</td>
+        <tbody>{FACTORS.map(([key, label]) => <tr key={key}><td>{label}</td><td className="cs-settings-default">{type?.[key] === undefined || (type.factorsMissing && key !== "beta" && key !== "s") ? "—" : sizeText(type[key])}</td>
           <td><NumberInput label={t("settings.projectValueAria", "{{factor}} project", { factor: label })} value={own?.[key]} onChange={(v) => setFactor(key, v)} /></td></tr>)}</tbody>
       </table>
       {own && <>
@@ -63,12 +84,20 @@ export function SettingsPanel({ input, onChange }: PanelProps<PileInput, PileRes
     </Section>
 
     <Section title={t("settings.series", "Standaardreeksen")}>
+      {input.pileTypeId === "timber-square" ? <>
+        <Row label={t("settings.rectSizes", "Gezaagd hout a × b")} unit="mm">
+          <RectField label={t("settings.rectSizesAria", "Reeks gezaagd hout a × b [mm]")} value={series.rect} onApply={(v) => set({ presets: { ...presets, rectSizesMm: v } })} />
+        </Row>
+        {presets.rectSizesMm && <button type="button" className="cs-settings-reset" onClick={() => set({ presets: { ...presets, rectSizesMm: undefined } })}>{t("settings.restoreSeries", "Standaardreeks herstellen")}</button>}
+        <Hint>{t("settings.rectHint", "Doorsneden als a×b, gescheiden door spaties; een enkel getal is een vierkant. De vierkante maten vullen ook de draagvermogentabel.")}</Hint>
+      </> : <>
       <Row label={t("settings.sizesFor", "Maten {{type}}", { type: type?.name.split(" —")[0] ?? "" })} unit="mm">
         <ListField label={t("settings.sizesAria", "Maatreeks paaltype [mm]")} value={series.sizes ?? []} onApply={(v) => set({ presets: { ...presets, sizesMm: { ...presets.sizesMm, [input.pileTypeId]: v } } })} />
       </Row>
       {sizesOwn && <button type="button" className="cs-settings-reset" onClick={() => { const next = { ...presets.sizesMm }; delete next[input.pileTypeId]; set({ presets: { ...presets, sizesMm: next } }); }}>
         {DEFAULT_SIZES[input.pileTypeId] ? t("settings.restoreSeries", "Standaardreeks herstellen") : t("settings.restoreSeriesNone", "Standaardreeks herstellen (geen)")}</button>}
       <Hint>{t("settings.seriesHint", "De reeks voor de keuzelijst in de invoer (buismaten) en de knop Standaardreeks in de draagvermogentabel.")}</Hint>
+      </>}
 
       <h5 className="cs-settings-sub">{t("settings.extensionsTitle", "Betonopzetters op hout")}</h5>
       <table className="cs-layer-table cs-settings-table" aria-label={t("settings.extensionsAria", "Betonopzetters")}>

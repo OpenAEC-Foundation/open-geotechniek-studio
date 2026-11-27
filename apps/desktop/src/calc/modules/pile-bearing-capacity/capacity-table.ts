@@ -82,7 +82,7 @@ export function defaultCapacityConfig(input:PileInput,cptIds:string[]):Required<
 export function sizeInput(base:PileInput,sizeMm:number):PileInput {
  if(sizeMm===base.diameterMm)return base;
  const r=sizeMm/base.diameterMm;
- return {...base,diameterMm:sizeMm,
+ return {...base,diameterMm:sizeMm,sideBMm:undefined,
   axialStiffnessKn:base.axialStiffnessKn===undefined?undefined:base.axialStiffnessKn*r*r,
   baseDiameterMm:base.baseDiameterMm===undefined?undefined:base.baseDiameterMm*r};
 }
@@ -110,6 +110,7 @@ const INVALID_REASON:Record<InvalidKind,string>={
  cptTooShort:'sondering buiten bereik',
  kleefLevels:'boven kleefzone',
  eaMissing:'EA ontbreekt',
+ factorsMissing:'geen paalfactoren',
  notComputable:'niet berekenbaar',
 };
 /** Korte reden voor een cel die niet te berekenen is, in de actieve taal. */

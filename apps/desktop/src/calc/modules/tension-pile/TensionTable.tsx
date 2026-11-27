@@ -5,6 +5,7 @@ import type { TablePanelProps } from "../../framework/types";
 import { levelRange, parseSizes, parseToeLevels } from "../pile-bearing-capacity/capacity-table";
 import "../pile-bearing-capacity/ui/capacity-table.css";
 import { OaIcon } from "../../../components/icons/oaIcon";
+import { countOverrides } from "../../shared/interpretation/overrides";
 import { getTensionPileType } from "./catalog";
 import type { TensionInput, TensionTableConfig } from "./compute";
 import { cellInput, computeTensionTable, sizeLabel, type TensionCell, type TensionTable as Table } from "./table";
@@ -46,7 +47,8 @@ function SizeTable({ input, table, cells, sizeMm, only, open, focus }: { input: 
     <div className="capacity-grid-scroll"><table aria-label={`Trekweerstand ${sizeLabel(input, sizeMm)} mm`}>
       <caption>Rt;d per sondering [kN], gerekend met ξ3. {target > 0 ? `Groen: Rt;d ≥ Ft;d = ${fmt(target, 0)} kN.` : "Vul Ft;d in om de toets te zien."} Klik een waarde voor het rekenblad.</caption>
       <thead><tr><th scope="col">Punt [m NAP]</th>
-        {ids.map((id) => <th scope="col" key={id}><button type="button" className="capacity-link" onClick={() => focus(only ? null : id)}>{id}</button></th>)}
+        {ids.map((id) => { const adjusted = countOverrides(input.interpretationOverrides, id); return <th scope="col" key={id}><button type="button" className="capacity-link" onClick={() => focus(only ? null : id)}>{id}</button>
+          {adjusted > 0 && <small title={`${adjusted} aanpassing${adjusted === 1 ? "" : "en"} van de grondlaaginterpretatie in deze berekening`}> aangepast</small>}</th>; })}
         {!only && <><th scope="col" className="capacity-sum">Gemiddeld (ξ3)</th><th scope="col" className="capacity-sum">Laagste (ξ4)</th><th scope="col" className="capacity-sum">Rt;d</th>{target > 0 && <th scope="col" className="capacity-sum">u.c.</th>}</>}
       </tr></thead>
       <tbody>{cells.map((cell) => <tr key={cell.toeNap}>

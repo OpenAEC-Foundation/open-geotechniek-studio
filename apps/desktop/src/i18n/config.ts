@@ -26,7 +26,7 @@ export const LANGUAGES = [
   { code: "da", name: "Dansk" },
 ];
 
-const ns = ["common", "ribbon", "backstage", "settings", "feedback", "cpt", "calc", "calcPile", "calcPileCore", "calcLateral", "calcAdvice", "calcDriving", "scan", "import", "map", "drawing", "app", "panels"];
+const ns = ["common", "ribbon", "backstage", "settings", "feedback", "cpt", "calc", "calcPile", "calcPileCore", "calcLateral", "calcAdvice", "calcDriving", "calcWall", "import", "map", "drawing", "app", "panels", "dissipatie", "magnetometer", "boring", "digitaliseren"];
 
 i18next
   .use(LanguageDetector)

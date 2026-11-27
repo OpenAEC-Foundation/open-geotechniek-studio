@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Adicionar camada",
+    "cancel": "Cancelar",
+    "layers": "Camadas",
+    "noLayers": "Ainda não há camadas. Adicione a primeira camada.",
+    "noProject": "Não há projeto aberto: a sondagem abre num separador próprio. Abra ou crie um projeto para a manter.",
+    "save": "Guardar",
+    "savedWithProject": "A sondagem é guardada com o projeto e aparece como perfil de sondagem no relatório.",
+    "titleEdit": "Editar a sondagem {{id}}",
+    "titleNew": "Adicionar sondagem"
+  },
+  "field": {
+    "date": "Data",
+    "finalDepth": "Profundidade final (m a.t.)",
+    "finalDepthAuto": "base da camada mais profunda",
+    "groundLevel": "Nível do terreno (m NAP)",
+    "groundwater": "Nível freático (m a.t.)",
+    "id": "Número da sondagem",
+    "method": "Método de furação",
+    "notMeasured": "não medido",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Fração secundária",
+    "base": "Base",
+    "colour": "Cor",
+    "grade": "Grau",
+    "name": "Designação",
+    "namePlaceholder": "p. ex. entulho, aterro",
+    "none": "nenhuma",
+    "remark": "Observação",
+    "remove": "Remover camada",
+    "soil": "Tipo de solo",
+    "top": "Topo"
+  },
+  "problem": {
+    "duplicate": "O número de sondagem {{id}} já existe.",
+    "finalDepth": "A profundidade final é menor do que a camada mais profunda ({{depth}} m).",
+    "id": "Introduza um número de sondagem.",
+    "layerAbove": "Camada {{n}}: o topo fica acima do terreno.",
+    "layerNumbers": "Camada {{n}}: introduza topo e base como números.",
+    "layerOrder": "Camada {{n}}: a base tem de ficar mais funda do que o topo.",
+    "layerOverlap": "Camada {{n}}: sobrepõe-se à camada de cima (que termina a {{depth}} m).",
+    "notNumber": "{{field}}: não é um número.",
+    "waterNegative": "O nível freático é uma profundidade abaixo do terreno e não pode ser negativo.",
+    "xy": "Introduza X e Y como números, ou deixe ambos vazios.",
+    "zNeedsXy": "Introduza também X e Y com o nível do terreno."
+  },
+  "report": {
+    "boreLogs": "Perfis de sondagem",
+    "boreLogsHint": "Uma página por sondagem com o perfil"
+  },
+  "ribbon": {
+    "add": "Adicionar\nsondagem",
+    "addTitle": "Introduzir uma sondagem à mão: cabeçalho, camadas e nível freático",
+    "choose": "Escolher sondagem",
+    "count": "Sondagens: {{count}}",
+    "edit": "Editar\nperfil",
+    "editTitle": "Ver e editar o perfil da sondagem escolhida",
+    "group": "Sondagens",
+    "none": "Adicione uma sondagem ou abra um ficheiro de sondagem."
+  },
+  "sheet": {
+    "admixtureNote": "Faixa estreita à direita da coluna: fração secundária, mais larga quanto mais forte.",
+    "belowGround": "m a.t.",
+    "bore": "Sondagem",
+    "colour": "cor",
+    "date": "Data",
+    "depthGround": "m a.t.",
+    "depthNap": "m NAP",
+    "description": "Descrição",
+    "finalDepth": "Profundidade final",
+    "groundLevel": "Nível do terreno",
+    "groundwater": "Nível freático",
+    "legend": "Legenda",
+    "method": "Método de furação",
+    "noLayers": "Esta sondagem ainda não tem camadas.",
+    "scale": "Escala",
+    "title": "Perfil de sondagem {{id}}",
+    "unknown": "desconhecido",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Editar"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Ajouter une couche",
+    "cancel": "Annuler",
+    "layers": "Couches",
+    "noLayers": "Pas encore de couches. Ajoutez la première couche.",
+    "noProject": "Aucun projet n'est ouvert : le sondage s'ouvre dans un onglet séparé. Ouvrez ou créez un projet pour le conserver.",
+    "save": "Enregistrer",
+    "savedWithProject": "Le sondage est enregistré avec le projet et figure comme coupe de sondage dans le rapport.",
+    "titleEdit": "Modifier le sondage {{id}}",
+    "titleNew": "Ajouter un sondage"
+  },
+  "field": {
+    "date": "Date",
+    "finalDepth": "Profondeur finale (m/TN)",
+    "finalDepthAuto": "base de la couche la plus profonde",
+    "groundLevel": "Niveau du terrain (m NAP)",
+    "groundwater": "Niveau de la nappe (m/TN)",
+    "id": "Numéro du sondage",
+    "method": "Méthode de forage",
+    "notMeasured": "non mesuré",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Fraction secondaire",
+    "base": "Bas",
+    "colour": "Couleur",
+    "grade": "Degré",
+    "name": "Désignation",
+    "namePlaceholder": "p. ex. gravats, remblai",
+    "none": "aucune",
+    "remark": "Remarque",
+    "remove": "Supprimer la couche",
+    "soil": "Type de sol",
+    "top": "Haut"
+  },
+  "problem": {
+    "duplicate": "Le numéro de sondage {{id}} existe déjà.",
+    "finalDepth": "La profondeur finale est inférieure à la couche la plus profonde ({{depth}} m).",
+    "id": "Saisissez un numéro de sondage.",
+    "layerAbove": "Couche {{n}} : le haut est au-dessus du terrain.",
+    "layerNumbers": "Couche {{n}} : saisissez le haut et le bas sous forme de nombres.",
+    "layerOrder": "Couche {{n}} : le bas doit être plus profond que le haut.",
+    "layerOverlap": "Couche {{n}} : chevauche la couche du dessus (qui se termine à {{depth}} m).",
+    "notNumber": "{{field}} : pas un nombre.",
+    "waterNegative": "Le niveau de la nappe est une profondeur sous le terrain et ne peut pas être négatif.",
+    "xy": "Saisissez X et Y sous forme de nombres, ou laissez les deux vides.",
+    "zNeedsXy": "Saisissez aussi X et Y avec le niveau du terrain."
+  },
+  "report": {
+    "boreLogs": "Coupes de sondage",
+    "boreLogsHint": "Une page par sondage avec la coupe de sondage"
+  },
+  "ribbon": {
+    "add": "Ajouter\nun sondage",
+    "addTitle": "Saisir un sondage à la main : en-tête, couches et niveau de la nappe",
+    "choose": "Choisir un sondage",
+    "count": "Sondages : {{count}}",
+    "edit": "Modifier\nla coupe",
+    "editTitle": "Afficher et modifier la coupe du sondage choisi",
+    "group": "Sondages",
+    "none": "Ajoutez un sondage ou ouvrez un fichier de sondage."
+  },
+  "sheet": {
+    "admixtureNote": "Bande étroite à droite de la colonne : fraction secondaire, plus large si elle est plus forte.",
+    "belowGround": "m/TN",
+    "bore": "Sondage",
+    "colour": "couleur",
+    "date": "Date",
+    "depthGround": "m/TN",
+    "depthNap": "m NAP",
+    "description": "Description",
+    "finalDepth": "Profondeur finale",
+    "groundLevel": "Niveau du terrain",
+    "groundwater": "Niveau de la nappe",
+    "legend": "Légende",
+    "method": "Méthode de forage",
+    "noLayers": "Ce sondage n'a pas encore de couches.",
+    "scale": "Échelle",
+    "title": "Coupe de sondage {{id}}",
+    "unknown": "inconnu",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Modifier"
+  }
+}

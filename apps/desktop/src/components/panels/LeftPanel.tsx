@@ -11,8 +11,8 @@ import { looksLikeBoringXml } from "../../types/bore";
 import { looksLikeGefBore } from "../../types/gefBoreParser";
 import type { Gwp } from "../../types/gwp";
 import { OaIcon } from "../icons/oaIcon";
-import { DissipationPanel } from "./DissipationPanel";
-import { dissipationTestsOf, looksLikeGefDissipation } from "../../types/gefDissipation";
+import DissipationPanel from "../../dissipatie/DissipationPanel";
+import { looksLikeGefDissipation } from "../../dissipatie/gefDissipation";
 
 /**
  * Document-aware left panel.
@@ -475,7 +475,7 @@ function ProjectBrowser() {
             <MetadataList cpt={active} />
             <ValidationPanel cpt={active} />
           </PanelSection>
-          {dissipationTestsOf(active).length > 0 && (
+          {(active.dissipation_tests?.length ?? 0) > 0 && (
             <PanelSection title={tp("dissipation.title", "Dissipatietests")} defaultOpen>
               <DissipationPanel cpt={active} />
             </PanelSection>
@@ -516,7 +516,7 @@ function CptDetails({ cpt }: { cpt: Cpt }) {
         <MetadataList cpt={cpt} />
         <ValidationPanel cpt={cpt} />
       </PanelSection>
-      {dissipationTestsOf(cpt).length > 0 && (
+      {(cpt.dissipation_tests?.length ?? 0) > 0 && (
         <PanelSection title={tp("dissipation.title", "Dissipatietests")} defaultOpen>
           <DissipationPanel cpt={cpt} />
         </PanelSection>

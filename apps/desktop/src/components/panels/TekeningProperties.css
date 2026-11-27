@@ -87,6 +87,7 @@
 }
 .tekprops-field input[type="text"],
 .tekprops-field input[type="number"],
+.tekprops-field-wide select,
 .tekprops-field-wide input[type="text"],
 .tekprops-field-wide input[type="number"] {
   flex: 1;

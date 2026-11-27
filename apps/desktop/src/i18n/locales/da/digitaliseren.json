@@ -1,0 +1,177 @@
+{
+  "calibrate": {
+    "depthAxis": "Dybdeakse",
+    "depthMode": "Dybdeakse i",
+    "gridFound": "Gitter fundet: {{rows}} × {{cols}} linjer. Kalibreringspunkterne sættes på de yderste linjer; angiv deres værdier. Et klikket kalibreringspunkt fanger gitteret.",
+    "gridNone": "Intet gitter fundet på underlaget; klik selv kalibreringspunkterne.",
+    "hint": "Klik på to punkter på dybdeaksen og to på værdiaksen, så langt fra hinanden som muligt, og angiv værdien ved hvert punkt. Akserne kalibreres uafhængigt af hinanden, så en skæv scanning er ikke noget problem.",
+    "ok": "Kalibreringen passer. Kontrollér, at gitterlinjerne ligger oven på grafens linjer.",
+    "pick": "Klik på {{label}}",
+    "pickHint": "Klik derefter på punktet på underlaget",
+    "repick": "{{label}} igen",
+    "shareDepth": "Samme dybdeakse som qc",
+    "suggest": "Sæt kalibreringspunkterne på gitteret",
+    "valueAxis": "Værdiakse {{name}}",
+    "valueOf": "Værdi ved {{label}}"
+  },
+  "cone": {
+    "electrical": "elektrisk",
+    "mechanical": "mekanisk",
+    "unknown": "ukendt"
+  },
+  "details": {
+    "coneHint": "Når sonderingstypen skiftes, springer trinnet til 0,2 m (mekanisk) eller 0,02 m (elektrisk). Typen angives; måleværdierne omregnes ikke af den grund.",
+    "coneKind": "Sonderingstype",
+    "date": "Sonderingsdato",
+    "groundLevel": "Terrænniveau (m NAP)",
+    "hint": "Angiv hoveddata. Oprindelsen er obligatorisk og kommer med i rapporten.",
+    "id": "Navn eller nummer",
+    "origin": "Oprindelse (obligatorisk)",
+    "originExample": "digitaliseret fra rapport … dateret …",
+    "x": "X (RD, m), valgfri",
+    "y": "Y (RD, m), valgfri"
+  },
+  "footer": {
+    "accuracy": "En digitaliseret sondering er mindre nøjagtig end en målt fil.",
+    "cancel": "Annuller",
+    "confirmClose": "De klikkede punkter er endnu ikke gemt. Luk skærmen alligevel?",
+    "next": "Næste",
+    "previous": "Forrige",
+    "save": "Gem"
+  },
+  "label": {
+    "badge": "digitaliseret ({{cone}})",
+    "badgePlain": "digitaliseret",
+    "note": "Sondering {{id}} er digitaliseret fra papir eller scanning (type: {{cone}}; oprindelse: {{origin}}). Nøjagtigheden er lavere end for en målt fil."
+  },
+  "marker": {
+    "depth1": "dybde 1",
+    "depth2": "dybde 2",
+    "value1": "værdi 1",
+    "value2": "værdi 2"
+  },
+  "method": {
+    "label": "Metode",
+    "points": "Klik punkter",
+    "trace": "Følg linjen automatisk"
+  },
+  "points": {
+    "clear": "Ryd alt",
+    "count": "{{n}} punkter for {{name}}",
+    "duplicates": "{{n}} punkter ligger i samme dybde som et senere punkt; det sidst klikkede gælder.",
+    "hint": "Klik på punkterne langs linjen, oppefra og ned. Træk et punkt for at flytte det; højreklik for at fjerne det.",
+    "interpolation": "Mellem punkterne",
+    "linear": "lineært",
+    "linearHint": "Lineært: mellem to punkter følger værdien en ret linje.",
+    "notCalibrated": "Kalibreringen er endnu ikke komplet; linjen følger nu punkterne i den rækkefølge, de blev klikket.",
+    "removeLast": "Fjern sidste punkt",
+    "reordered": "Punkterne er sorteret efter dybde.",
+    "result": "Måleserie: {{n}} værdier fra {{from}} til {{to}} m under terræn.",
+    "step": "Trin (m)",
+    "stepwise": "trinvist pr. aflæsning",
+    "stepwiseHint": "Trinvist: hver aflæsning gælder indtil næste aflæsning. Passer til en mekanisk sondering, der er aflæst for hver 0,2 m.",
+    "undo": "Fortryd"
+  },
+  "problem": {
+    "depthPoints": "klik på to punkter på dybdeaksen, ikke samme sted",
+    "depthValues": "angiv to forskellige værdier for dybdeaksen",
+    "groundLevel": "Angiv terrænniveauet i m NAP.",
+    "id": "Angiv sonderingens navn eller nummer.",
+    "idTaken": "Der findes allerede en sondering {{id}} i dette projekt; vælg et andet navn.",
+    "noImage": "Vælg først et underlag.",
+    "noSeries": "Punkterne ligger tættere på hinanden end trinnet; der opstår ingen måleserie.",
+    "origin": "Angiv oprindelsen; den er obligatorisk.",
+    "parallel": "dybdeaksen og værdiaksen er næsten parallelle; klik på punkterne på de to akser",
+    "position": "Angiv begge RD-koordinater eller ingen af dem.",
+    "qcCalibration": "Kalibrering qc: {{what}}.",
+    "qcPoints": "Klik på mindst to punkter på qc-linjen.",
+    "qcTrace": "Følg eller tegn først qc-linjen.",
+    "secondCalibration": "Kalibrering anden serie: {{what}}.",
+    "secondPoints": "Klik på mindst to punkter på linjen for den anden serie, eller slå den serie fra.",
+    "secondTrace": "Følg eller tegn linjen for den anden serie, eller slå den serie fra.",
+    "step": "Trinnet skal ligge mellem 0,005 og 1 m.",
+    "valuePoints": "klik på to punkter på værdiaksen, ikke samme sted",
+    "valueValues": "angiv to forskellige værdier for værdiaksen"
+  },
+  "ribbon": {
+    "add": "Digitalisér\nsondering",
+    "addTitle": "Opret en sondering ud fra en graf på papir eller i en PDF eller scanning: kalibrér akserne og klik langs linjen",
+    "edit": "Opdater\ndigitalisering",
+    "editTitle": "Åbn den digitaliserede sondering {{id}} igen for at opdatere punkter eller data"
+  },
+  "save": {
+    "add": "Føj til projekt",
+    "hintDocument": "Der er ikke noget projekt åbent: sonderingen åbnes som et separat dokument.",
+    "hintProject": "Sonderingen føjes til projektet og indgår derefter på normal vis, også i pæleberegningen.",
+    "hintUpdate": "Sondering {{id}} opdateres.",
+    "marked": "Angives i grafen, rapporten og pæleberegningen som digitaliseret ({{cone}}).",
+    "open": "Åbn som separat dokument",
+    "points": "{{n}} værdier med et trin på {{step}} m, ned til {{to}} m under terræn",
+    "qcOnly": "kun qc; fs og Rf mangler",
+    "update": "Opdater sondering",
+    "withSecond": "qc og {{name}}"
+  },
+  "second": {
+    "fs": "lokal friktion fs (MPa)",
+    "label": "Anden serie",
+    "none": "ingen (kun qc)",
+    "rf": "friktionsforhold Rf (%)"
+  },
+  "series": {
+    "choose": "Vælg serie"
+  },
+  "stage": {
+    "empty": "Vælg til højre en PDF eller et billede med sonderingsgrafen.",
+    "fit": "Tilpas",
+    "label": "Underlag med punkter",
+    "zoomIn": "Zoom ind",
+    "zoomOut": "Zoom ud"
+  },
+  "step": {
+    "calibrate": "Kalibrér",
+    "details": "Data",
+    "points": "Punkter",
+    "save": "Gem",
+    "underlay": "Underlag"
+  },
+  "title": {
+    "edit": "Opdater digitaliseret sondering {{id}}",
+    "new": "Digitalisér sondering"
+  },
+  "trace": {
+    "clear": "Ryd linje",
+    "count": "Linje over {{n}} billedrækker for {{name}}",
+    "draw": "Tegn",
+    "drawHint": "Tegn hen over målelinjen med museknappen holdt nede. Det, du tegner, erstatter linjen i den højde.",
+    "erase": "Visk ud",
+    "eraseHint": "Træk hen over den del af linjen, der skal fjernes.",
+    "follow": "Følg linje",
+    "followHint": "Klik på målelinjens begyndelse: linjen følges nedad, indtil den slutter. Træk nedad for kun at følge den til det punkt, hvor du slipper.",
+    "navigate": "Træk tegner eller følger. Panorér: midterste museknap. Zoom: musehjul. Måleserien er gennemsnittet af linjen pr. trin.",
+    "noScan": "Der er ingen scanning at følge. Tegning og sletning er stadig muligt.",
+    "notCalibrated": "Kalibreringen er endnu ikke komplet; uden kalibrering opstår der ingen måleserie.",
+    "radius": "Fjern tynde gitterlinjer",
+    "radius0": "fra",
+    "radius1": "let (linjer op til 2 pixels)",
+    "radius2": "kraftigt (linjer op til 4 pixels)",
+    "showMask": "Vis, hvad algoritmen opfatter som linje",
+    "threshold": "Linjens mørkhed ({{value}})",
+    "tools": "Værktøj"
+  },
+  "underlay": {
+    "choose": "Vælg PDF eller billede…",
+    "failed": "Billedet kan ikke læses.",
+    "hint": "Vælg PDF'en eller billedet (PNG eller JPEG) med sonderingsgrafen. I en PDF vælger du siden; beskær derefter til grafen med begge akser.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "Underlaget er ikke gemt sammen med denne sondering. Punkterne står på deres plads; vælg det samme billede igen for at se dem på scanningen.",
+    "navigate": "Musehjul: zoom ind og ud. Træk: flyt.",
+    "reopen": "Opdater sondering {{id}}",
+    "replace": "Vælg et andet underlag…",
+    "synthetic": "Denne sondering er tidligere overtaget fra en scanning; scanningen og kalibreringen blev ikke gemt. Linjen står på et tomt ark: tegn videre på den dér, eller vælg scanningen igen for at kalibrere og følge linjen på ny.",
+    "unnamed": "underlag"
+  },
+  "unit": {
+    "depth": "m under terræn",
+    "nap": "m NAP"
+  }
+}

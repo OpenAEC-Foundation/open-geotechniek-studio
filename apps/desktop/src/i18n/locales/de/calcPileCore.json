@@ -3,7 +3,8 @@
     "cptItem": "Sondierung {{id}}",
     "notCalculated": "Nicht berechnet",
     "checks": {
-      "capacity": "Tragfähigkeit"
+      "capacity": "Tragfähigkeit",
+      "strength": "Pfahlfestigkeit"
     }
   },
   "notes": {
@@ -39,7 +40,12 @@
     "historicalConstantSection": "Das historische Profil unterstützt nur einen konstanten Pfahlquerschnitt oder eine explizite Holzkonizität",
     "cptTooShallow": "Sondierung zu flach (reicht bis {{reach}} m, erforderlich ≥ {{required}} m)",
     "pileSizeInvalid": "Die Pfahlabmessung muss endlich und größer als null sein",
-    "historicalGroupAnalysis": "Die historische Analyse mit mehreren Sondierungen ist noch nicht verifiziert; verwenden Sie eine einzelne Sondierung"
+    "historicalGroupAnalysis": "Die historische Analyse mit mehreren Sondierungen ist noch nicht verifiziert; verwenden Sie eine einzelne Sondierung",
+    "factorsMissing2025": "Für diesen Pfahltyp sind die Pfahlklassenfaktoren der NEN 9997-1:2025 noch nicht in der Tabelle enthalten. Wählen Sie die Ausgabe 2017 oder geben Sie Projektfaktoren ein (Selbsterklärung oder Probebelastung).",
+    "factorsMissingNoRow": "Dieses Pfahlsystem hat keine eigene Zeile in Tabelle 7.c dieser Ausgabe. Geben Sie Projektfaktoren ein (Selbsterklärung oder Probebelastung).",
+    "rectInvalid": "Ein rechteckiger Querschnitt a × b erfordert einen gesägten Holzpfahl mit positiven Seiten, ohne Verjüngung oder gesondertes Fußmaß",
+    "openTubeNoBase": "Ein offenes Rohr hat keine Fußplatte und kein abweichendes Spitzenmaß",
+    "openTubePlugFactor": "Offenes Rohr mit Pfropfen: Pfropfenfaktor η eingeben (größer als 0, höchstens 1) und begründen. Ohne Faktor wird nicht gerechnet."
   },
   "warnings": {
     "factors": "Faktoren: {{edition}}; {{source}}.",
@@ -50,11 +56,17 @@
     "settlementTaper": "Konischer Holzpfahl: Setzung und Federsteifigkeiten mit veränderlicher EA sind nicht verifiziert und werden nicht ermittelt.",
     "settlementHistorical": "Historische Setzung und Federsteifigkeiten sind nicht verifiziert und werden nicht ermittelt.",
     "settlementLineUnsupported": "Last-Setzungs-Linie {{line}} noch nicht unterstützt: Setzung und Federsteifigkeiten werden nicht ermittelt.",
-    "extension": "Betonaufsatz {{size}} mm bis zum Stoß bei NAP {{joint}} m: Oberhalb des Stoßes wird der Umfang des Aufsatzes angesetzt, darunter der des Holzes; negative Mantelreibung mit dem mittleren Umfang über die Reibungszone, positive Mantelreibung je Schicht.",
+    "extension": "Betonaufsatz {{size}} mm bis zum Stoß bei NAP {{joint}} m: Oberhalb des Stoßes wird der Umfang des Aufsatzes angesetzt, darunter der des Holzes; negative und positive Mantelreibung werden je Schicht mit dem Umfang dieser Schicht berechnet.",
     "taperWithExtension": "Holzkonizität ab dem Stoß: positive Mantelreibung mit mittlerem Umfang je Schicht. Keine Erhöhung der Pfahlfaktoren infolge Konizität.",
-    "taper": "Holzkonizität: negative Mantelreibung mit mittlerem Umfang über die Reibungszone; positive Mantelreibung mit mittlerem Umfang je Schicht. Ohne Betonaufsatz oder Erhöhung infolge Konizität.",
+    "taper": "Holzkonizität: negative und positive Mantelreibung mit dem mittleren Umfang je Schicht. Ohne Betonaufsatz oder Erhöhung infolge Konizität.",
     "deviatingToeSize": "Abweichende Fußabmessung: Prüfen Sie den Pfahlfußformbeiwert β und den zulässigen Mantelreibungsbereich für dieses Herstellverfahren.",
-    "qbMaxCapped": "qb;max auf 15 MPa begrenzt (Rohwert {{raw}} MPa)"
+    "qbMaxCapped": "qb;max auf 15 MPa begrenzt (Rohwert {{raw}} MPa)",
+    "settlementLineUnknown": "Für diesen Pfahltyp ist keine Last-Setzungs-Linie aus der Tabelle bekannt: Setzung und Federwerte werden nicht bestimmt.",
+    "rectShape": "Rechteckiger Querschnitt {{a}} × {{b}} mm: gerechnet mit A = a · b, Umfang 2 (a + b) und Deq = √(4 · a · b / π). Den Faktor s für die Form eines rechteckigen Pfahlfußes (a ≠ b) bestimmt das Programm nicht; gerechnet wurde mit s = {{s}}. Bestimmen Sie s nach der Norm und geben Sie ihn bei Bedarf als Projektfaktor ein.",
+    "openTubePlug": "Offenes Rohr mit Pfropfen: Spitze über den Stahlring ({{ring}} mm²) plus η = {{factor}} × Innenquerschnitt ({{inner}} mm²), zusammen {{area}} mm². Der Pfropfenfaktor η ist Ihre Annahme: weisen Sie nach, dass sich der Pfropfen bildet, also dass die Reibung im Rohr mindestens den Spitzenwiderstand über den Innenquerschnitt erreicht (NEN 9997-1 Art. 7.6.2.3(d)). Die Innenreibung rechnet das Programm nicht.",
+    "openTubeNoPlug": "Offenes Rohr ohne Pfropfen: Spitze nur über den Stahlring ({{ring}} mm²); die Reibung im Rohr ist nicht berücksichtigt. Nach NEN 9997-1 Art. 7.6.2.3(d) darf sie zählen, begrenzt auf den Spitzenwiderstand mit festem Pfropfen; dies ist also eine Untergrenze.",
+    "openTubeLarge": "Rohr größer als 500 mm: ohne Vorkehrungen zur Pfropfenbildung ist der Spitzenwiderstand auf den kleineren Wert aus Innenreibung am Pfropfen und Spitzenwiderstand über den vollen Querschnitt begrenzt (NEN 9997-1 Art. 7.6.2.1(13)). Begründen Sie η darauf, oder rechnen Sie ohne Pfropfen.",
+    "openTubeCoarse": "Offenes Rohr in grobem Sand (d50 ≥ 600 μm) oder Kies (d50 ≥ 2 mm): der Spitzendruck für die Mantelreibung ist vor dem Abschneiden auf 80 % (Sand) bzw. 70 % (Kies) zu reduzieren; beim Einrütteln 70 % bzw. 50 % (NEN 9997-1 Art. 7.6.2.3(i)). Das Programm wendet dies nicht an; Korngröße prüfen."
   },
   "table": {
     "errors": {
@@ -79,7 +91,8 @@
       "cptTooShort": "Sondierung außerhalb des Bereichs",
       "kleefLevels": "über Reibungszone",
       "eaMissing": "EA fehlt",
-      "notComputable": "nicht berechenbar"
+      "notComputable": "nicht berechenbar",
+      "factorsMissing": "keine Pfahlfaktoren"
     }
   },
   "report": {
@@ -96,7 +109,8 @@
     "nen-6743-1991": "NEN 6743:1991 — historisches Referenzprofil",
     "nen-6743-2006": "NEN 6743-1:2006 — historisch",
     "nen-9997-2012": "NEN 9997-1:2011 + C1:2012 — ursprüngliche Faktoren",
-    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — bestehendes Rechenmodell"
+    "nen-9997-2017": "NEN 9997-1:2016 + C2:2017 — bestehendes Rechenmodell",
+    "nen-9997-2025": "NEN 9997-1:2025 + C1:2025 — Pfahlklassenfaktoren 2025"
   },
   "historical": {
     "source1991": "NEN 6743:1991 / NEN 6740:1991; öffentliche Referenz 05290 S. 31–32 (einzelner Fertigteilpfahl)",
@@ -105,7 +119,10 @@
     "conditions": "Historisches Druckpfahlmodell: Sand; keine Pfahlgruppen-, OCR-, Korngrößen- oder Aushubkorrektur. Mantelspitzen konservativ auf 12 MPa begrenzt. Setzung nicht verifiziert."
   },
   "sources": {
-    "table2017": "NEN 9997-1:2016+C2:2017, Tabelle 7.c (Sand/sandiger Kies)"
+    "table2017": "NEN 9997-1:2016+C2:2017, Tabelle 7.c (Sand/sandiger Kies)",
+    "table2025": "NEN 9997-1:2025+C1:2025, Tabelle 7.c",
+    "noTableRow2017": "Keine Zeile in NEN 9997-1:2016+C2:2017, Tabelle 7.c",
+    "noTableRowConditions": "Keine eigene Zeile in Tabelle 7.c der Ausgabe 2017: mit den Pfahlklassenfaktoren aus der Selbsterklärung des Pfahlsystems oder aus einer Probebelastung rechnen."
   },
   "pileTypes": {
     "steel-pipe-driven-closed": {
@@ -152,6 +169,25 @@
     "timber-uniform": {
       "name": "Holzrammpfahl — rund, mit oder ohne Betonaufsatz",
       "conditions": "Runder Holzquerschnitt, konstant oder linear konisch ab der Oberkante des Holzes; optional mit Betonaufsatz bis zum Stoß. Keine Erhöhung der Pfahlfaktoren infolge Konizität."
+    },
+    "steel-screw-permanent-casing": {
+      "name": "Schraubpfahl — verlorene Spitze, bleibendes Stahlrohr",
+      "conditions": "Tabellenzeile Stahlpfahl, geschraubt, mit konstantem Querschnitt oberhalb der Schraubspitze (ohne Mörtelinjektion). Das Rohrmaß bestimmt den Schaftumfang; die Schraubspitze als Spitzenmaß eingeben. Betongefülltes Rohr."
+    },
+    "concrete-screw-soil-displacing": {
+      "name": "Verdrängungsschraubpfahl — Ortbeton"
+    },
+    "concrete-auger-cased": {
+      "name": "DPA-Pfahl — verrohrter Schneckenbohrpfahl"
+    },
+    "timber-square": {
+      "name": "Holzrammpfahl — quadratisch oder rechteckig, mit oder ohne Betonaufsatz",
+      "conditions": "Gesägter Holzquerschnitt a × b, konstant über die Länge; optional mit Betonaufsatz bis zum Stoß. Pfahlklassenfaktoren wie beim runden Holzpfahl. Den Formfaktor s für einen rechteckigen Pfahlfuß (a ≠ b) bestimmt das Programm nicht."
+    },
+    "steel-pipe-driven-open": {
+      "name": "Stahlrohrpfahl — offenes Ende (Tabelle 2017)",
+      "shortName": "Stahlrohrpfahl — offenes Ende",
+      "conditions": "Offenes Rohr ohne Fußplatte. Spitze: Stahlring, oder mit Pfropfen der Stahlring plus ein von Ihnen begründeter Teil des Innenquerschnitts (Art. 7.6.2.3(d) und 7.6.2.1(13)). Mantelreibung nur außen; die Steifigkeit EA rechnet nur mit dem Stahlring."
     }
   },
   "soil": {
@@ -159,5 +195,20 @@
     "sand-wet": "Sand, gesättigt",
     "clay": "Ton, gesättigt",
     "peat": "Torf, gesättigt"
+  },
+  "pileSystems": {
+    "prefab-concrete": "Fertigbetonpfahl",
+    "steel-tube-closed": "Stahlrohrpfahl, geschlossene Spitze",
+    "screw-injection": "Schraubinjektionspfahl",
+    "screw-permanent-casing": "Schraubpfahl, bleibendes Rohr",
+    "screw-lost-tip": "Schraubpfahl, gezogenes Rohr",
+    "screw-soil-displacing": "Verdrängungsschraubpfahl",
+    "vibro": "Vibropfahl",
+    "auger": "Schneckenbohrpfahl",
+    "auger-cased": "DPA-Pfahl (verrohrte Schnecke)",
+    "bored": "Bohrpfahl",
+    "timber": "Holzpfahl",
+    "timber-extension": "Holzpfahl mit Betonaufsatz",
+    "steel-tube-open": "Stahlrohrpfahl, offenes Ende"
   }
 }

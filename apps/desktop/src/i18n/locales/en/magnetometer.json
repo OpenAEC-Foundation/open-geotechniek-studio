@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "No measured values in the background interval.",
+    "value": "Background field (median of {{count}} values): {{value}} nT"
+  },
+  "depthAxis": "Depth below ground level (m)",
+  "disclaimer": "Presentation of measured data. The marked zones follow only from the thresholds you set; this is not an assessment and does not replace clearance or assessment by a qualified specialist.",
+  "line": {
+    "declination": "declination",
+    "inclination": "inclination"
+  },
+  "noTotal": "No total field strength: the file has no total channel and not all three components.",
+  "none": "None of the open CPTs has magnetometer channels.",
+  "readout": {
+    "depth": "{{depth}} m below ground level",
+    "hint": "Move over the chart for the values at one depth.",
+    "title": "Values"
+  },
+  "report": {
+    "section": "Magnetometer",
+    "sectionHint": "One page per magnetometer CPT with charts, zones and settings"
+  },
+  "ribbon": {
+    "group": "Magnetometer",
+    "show": "Magneto-\nmeter",
+    "showHint": "Show the magnetometer channels of the CPT against depth, next to qc."
+  },
+  "settings": {
+    "analysisFrom": "Zones from",
+    "anomaly": "Deviation threshold",
+    "backgroundFrom": "Background from",
+    "backgroundTo": "Background to",
+    "end": "end",
+    "gradient": "Gradient threshold",
+    "mergeGap": "Merge within",
+    "note": "The thresholds are your own settings, not values from a standard.",
+    "start": "start",
+    "title": "Settings"
+  },
+  "side": {
+    "cpt": "CPT",
+    "title": "Magnetometer"
+  },
+  "totalComputed": "Total field strength calculated from the three components: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Components − median",
+    "declination": "Declination",
+    "gradient": "Gradient d|B|/dz",
+    "inclination": "Inclination",
+    "qc": "qc",
+    "total": "Total field |B|"
+  },
+  "unknownUnit": "Channel {{channel}} not shown: unit '{{unit}}' is unknown.",
+  "zones": {
+    "bottom": "Bottom (m)",
+    "none": "No interval above the thresholds set.",
+    "note": "Peak = largest deviation from the background field in the zone. Depths in m below ground level.",
+    "peak": "Peak (nT)",
+    "peakDepth": "at (m)",
+    "peakGradient": "Gradient (nT/m)",
+    "title": "Zones above the threshold",
+    "top": "Top (m)",
+    "zoomHint": "Click to zoom in on this zone"
+  }
+}

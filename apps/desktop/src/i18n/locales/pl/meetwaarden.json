@@ -1,0 +1,104 @@
+{
+  "title": "Edycja pomiarów",
+  "close": "Zamknij",
+  "noCpt": "Najpierw otwórz sondowanie.",
+  "cpt": "Sondowanie",
+  "editedShort": "edytowane",
+  "chart": {
+    "badge": "edytowane ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Usuń odcinek",
+    "invalidate-range": "Unieważnij odcinek",
+    "trim-top": "Przytnij górę",
+    "trim-bottom": "Przytnij dół",
+    "zero-shift": "Przesunięcie zera",
+    "depth-shift": "Przesunięcie głębokości",
+    "set-value": "Popraw wartość",
+    "remove-outliers": "Usuń wartości odstające"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "nachylenie",
+    "all": "Wszystkie kanały"
+  },
+  "op": {
+    "removeRange": "Usunięto odcinek {{from}} do {{to}} m",
+    "invalidateRange": "{{channels}} unieważniono od {{from}} do {{to}} m",
+    "trimTop": "Przycięto górę: wszystko powyżej {{depth}} m odpada",
+    "trimBottom": "Przycięto dół: wszystko poniżej {{depth}} m odpada",
+    "zeroShift": "Przesunięcie zera {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Przesunięcie zera {{channel}} {{offset}} {{unit}} od {{from}} do {{to}} m",
+    "depthShift": "Przesunięcie głębokości {{offset}} m",
+    "setValue": "{{channel}} na {{depth}} m poprawiono",
+    "removeOutliers": "Wartości odstające w {{channel}} unieważniono od {{from}} do {{to}} m (okno ±{{window}}, próg {{threshold}})"
+  },
+  "result": {
+    "noValue": "brak wartości",
+    "points": "zmienione punkty: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} punktów po edycji, {{original}} w pliku źródłowym. Głębokość {{range}}.",
+    "untouched": "{{now}} punktów, bez edycji. Głębokość {{range}}.",
+    "kept": "Oryginalne pomiary pozostają zachowane."
+  },
+  "log": {
+    "title": "Dziennik",
+    "empty": "Brak edycji tego sondowania.",
+    "time": "Czas",
+    "by": "Kto",
+    "what": "Edycja",
+    "result": "Wynik",
+    "reason": "Powód",
+    "undoOne": "Cofnij",
+    "undoOneHint": "Ta edycja odpada; późniejsze są stosowane ponownie",
+    "undoLast": "Cofnij ostatnią",
+    "reset": "Przywróć wszystko",
+    "resetConfirm": "Na pewno? Dziennik zostanie usunięty"
+  },
+  "form": {
+    "title": "Nowa edycja",
+    "kind": "Rodzaj",
+    "channel": "Kanał",
+    "from": "Od głębokości (m)",
+    "to": "Do głębokości (m)",
+    "optional": "cała seria",
+    "keepFrom": "Zachowaj od głębokości (m)",
+    "keepTo": "Zachowaj do głębokości (m)",
+    "offsetValue": "Przesunięcie ({{unit}})",
+    "offsetDepth": "Przesunięcie (m, dodatnie = głębiej)",
+    "depth": "Głębokość (m)",
+    "newValue": "Nowa wartość ({{unit}})",
+    "emptyIsVoid": "puste = brak wartości",
+    "halfWindow": "Okno (punkty z każdej strony)",
+    "threshold": "Próg (× rozrzut)",
+    "outlierHint": "Wartość jest odstająca, gdy różni się od mediany swojego okna o więcej niż próg razy rozrzut (1,4826 × MAD). Wartość staje się nieważna; punkt pozostaje.",
+    "removeHint": "Punkty w odcinku są usuwane w całości. Wybierz 'unieważnij', aby zachować punkty i usunąć tylko wartości.",
+    "by": "Kto",
+    "byPlaceholder": "Imię i nazwisko",
+    "reason": "Powód (wymagany)",
+    "reasonPlaceholder": "Dlaczego ta edycja jest potrzebna?",
+    "apply": "Zastosuj"
+  },
+  "problem": {
+    "number": "Wpisz poprawne liczby.",
+    "range": "Koniec odcinka leży powyżej początku.",
+    "noOffset": "Przesunięcie o zero niczego nie zmienia.",
+    "window": "Okno ma co najmniej 1 punkt, a próg jest większy od zera.",
+    "negativeDepth": "Przy tym przesunięciu punkty znajdą się powyżej terenu."
+  },
+  "preview": {
+    "incomplete": "Wypełnij pola, aby zobaczyć, czego dotyczy edycja.",
+    "point": "Punkt na {{depth}} m, bieżąca wartość: {{value}}.",
+    "noPoint": "Brak punktu na tej głębokości; najbliższy jest na {{depth}} m.",
+    "label": "Podgląd",
+    "points": "dotyczy {{n}} z {{total}} punktów.",
+    "none": "Ta edycja nie dotyczy żadnego punktu.",
+    "unchanged": "Wartość jest już taka; nic się nie zmienia.",
+    "needBy": "Podaj, kto wykonuje edycję.",
+    "needReason": "Podaj powód, aby zastosować edycję."
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "editor": {
+    "addLayer": "Laag toevoegen",
+    "cancel": "Annuleren",
+    "layers": "Lagen",
+    "noLayers": "Nog geen lagen. Voeg de eerste laag toe.",
+    "noProject": "Er is geen project open: de boring opent als los tabblad. Open of maak een project om hem te bewaren.",
+    "save": "Opslaan",
+    "savedWithProject": "De boring wordt met het project opgeslagen en komt als boorstaat in het rapport.",
+    "titleEdit": "Boring {{id}} bewerken",
+    "titleNew": "Boring toevoegen"
+  },
+  "field": {
+    "date": "Datum",
+    "finalDepth": "Einddiepte (m -mv)",
+    "finalDepthAuto": "onderkant diepste laag",
+    "groundLevel": "Maaiveld (m NAP)",
+    "groundwater": "Grondwaterstand (m -mv)",
+    "id": "Boornummer",
+    "method": "Boormethode",
+    "notMeasured": "niet gemeten",
+    "x": "X (RD, m)",
+    "y": "Y (RD, m)"
+  },
+  "layer": {
+    "admixture": "Bijmenging",
+    "base": "Onder",
+    "colour": "Kleur",
+    "grade": "Gradatie",
+    "name": "Benaming",
+    "namePlaceholder": "bijv. puin, ophooglaag",
+    "none": "geen",
+    "remark": "Opmerking",
+    "remove": "Laag verwijderen",
+    "soil": "Grondsoort",
+    "top": "Boven"
+  },
+  "problem": {
+    "duplicate": "Boornummer {{id}} bestaat al.",
+    "finalDepth": "De einddiepte is ondieper dan de diepste laag ({{depth}} m).",
+    "id": "Vul een boornummer in.",
+    "layerAbove": "Laag {{n}}: de bovenkant ligt boven het maaiveld.",
+    "layerNumbers": "Laag {{n}}: vul boven- en onderkant in als getal.",
+    "layerOrder": "Laag {{n}}: de onderkant moet dieper liggen dan de bovenkant.",
+    "layerOverlap": "Laag {{n}}: overlapt de laag erboven (die eindigt op {{depth}} m).",
+    "notNumber": "{{field}}: geen getal.",
+    "waterNegative": "De grondwaterstand is een diepte onder maaiveld en kan niet negatief zijn.",
+    "xy": "Vul X en Y allebei in als getal, of laat ze allebei leeg.",
+    "zNeedsXy": "Vul bij de maaiveldhoogte ook X en Y in."
+  },
+  "report": {
+    "boreLogs": "Boorstaten",
+    "boreLogsHint": "Per boring een pagina met de boorstaat"
+  },
+  "ribbon": {
+    "add": "Boring\ntoevoegen",
+    "addTitle": "Voer een boring met de hand in: kopgegevens, lagen en grondwaterstand",
+    "choose": "Boring kiezen",
+    "count": "Boringen: {{count}}",
+    "edit": "Boorstaat\nbewerken",
+    "editTitle": "Bekijk en bewerk de boorstaat van de gekozen boring",
+    "group": "Boringen",
+    "none": "Voeg een boring toe of open een boorbestand."
+  },
+  "sheet": {
+    "admixtureNote": "Smalle strook rechts in de kolom: bijmenging, breder naarmate die sterker is.",
+    "belowGround": "m -mv",
+    "bore": "Boring",
+    "colour": "kleur",
+    "date": "Datum",
+    "depthGround": "m -mv",
+    "depthNap": "m NAP",
+    "description": "Beschrijving",
+    "finalDepth": "Einddiepte",
+    "groundLevel": "Maaiveld",
+    "groundwater": "Grondwaterstand",
+    "legend": "Legenda",
+    "method": "Boormethode",
+    "noLayers": "Deze boring heeft nog geen lagen.",
+    "scale": "Schaal",
+    "title": "Boorstaat {{id}}",
+    "unknown": "niet bekend",
+    "x": "X (RD)",
+    "y": "Y (RD)"
+  },
+  "view": {
+    "edit": "Bewerken"
+  }
+}

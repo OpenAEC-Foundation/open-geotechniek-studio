@@ -11,7 +11,7 @@
       "settings": "Paramètres"
     },
     "defaultVisual": "CPT",
-    "draft": "Brouillon",
+    "draft": "Version bêta",
     "input": "Saisie",
     "settings": {
       "title": "Paramètres · {{name}}",
@@ -47,8 +47,8 @@
     "title": "Nouveau calcul",
     "name": "Nom",
     "namePlaceholder": "Par exemple : Tassement du remblai",
-    "alphaTitle": "Alpha — encore en développement, pas prêt pour la production",
-    "alpha": "BROUILLON — en développement",
+    "alphaTitle": "Version bêta : les calculs sont encore en cours de vérification ; ne pas utiliser sans votre propre contrôle",
+    "alpha": "VERSION BÊTA — testeurs recherchés",
     "cancel": "Annuler",
     "add": "Ajouter"
   },
@@ -82,7 +82,7 @@
     "explanation": "Explication",
     "contextTitle": "Calculs géotechniques",
     "contextModules": "Tassement · Semelle superficielle",
-    "draftCalculation": "Calcul provisoire"
+    "draftCalculation": "Calcul (version bêta)"
   },
   "modules": {
     "pile-bearing-capacity": {
@@ -108,6 +108,51 @@
       "subtitle": "Nombre de coups attendu d'après l'essai CPT, à côté du nombre compté",
       "norm": "Règle empirique N = intervalle · D² · qc / E",
       "visualLabel": "Nombre de coups"
+    },
+    "sheet-pile-wall": {
+      "name": "Rideau de palplanches et protection de berge",
+      "subtitle": "Palplanches en acier ou protection de berge en bois, plastique ou béton : modèle à ressorts, Blum en contrôle, vérification de la section et de la fiche",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Coupe"
+    }
+  },
+  "corrosion": {
+    "sourceNone": "Pas de corrosion",
+    "sourceTable": "Selon NEN-EN 1993-5 tableau 4-1 / 4-2",
+    "sourceCustom": "Valeur propre",
+    "environment": "Milieu",
+    "table41": "Tableau 4-1 : dans le sol",
+    "table42": "Tableau 4-2 : dans l'eau",
+    "life": "Durée d'utilisation de projet",
+    "years": "ans",
+    "loss": "Perte d'épaisseur",
+    "noValue": "pas de valeur tabulée : choisissez une valeur propre",
+    "verification": "Vérification",
+    "verificationOk": "conformes",
+    "vCase": "Cas",
+    "vInput": "Données",
+    "vQuantity": "Grandeur",
+    "vExpected": "Attendu",
+    "vModule": "Module",
+    "vDiff": "Écart",
+    "env": {
+      "soil-undisturbed": "Sol naturel non remanié (sable, limon, argile)",
+      "soil-polluted": "Sol naturel pollué et sites industriels",
+      "soil-aggressive": "Sol naturel agressif (marais, tourbe)",
+      "fill-loose": "Remblai non compacté, non agressif",
+      "fill-compacted": "Remblai compacté, non agressif",
+      "fill-aggressive-loose": "Remblai non compacté, agressif (cendres, scories)",
+      "fill-aggressive-compacted": "Remblai compacté, agressif (cendres, scories)",
+      "fresh-water": "Eau douce (rivière, canal), zone de forte attaque (ligne d'eau)",
+      "fresh-water-polluted": "Eau douce très polluée, zone de forte attaque (ligne d'eau)",
+      "sea-splash": "Eau de mer, climat tempéré, zone de forte attaque (basses eaux et zone d'éclaboussures)",
+      "sea-immersion": "Eau de mer, climat tempéré, immersion permanente ou zone de marnage"
+    },
+    "errors": {
+      "missing": "Corrosion {{where}} : le tableau n'a pas de valeur pour ce choix. Saisissez une perte d'épaisseur propre.",
+      "negative": "La perte d'épaisseur due à la corrosion ne peut pas être négative.",
+      "noThickness": "La bibliothèque ne donne pas l'épaisseur de semelle et d'âme de ce profil ; la corrosion ne peut pas être prise en compte.",
+      "tooLarge": "La perte d'épaisseur ({{loss}} mm) représente presque toute l'épaisseur ({{t}} mm) : la section ne peut plus être vérifiée."
     }
   }
 }

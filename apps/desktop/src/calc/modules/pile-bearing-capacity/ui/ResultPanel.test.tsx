@@ -22,7 +22,7 @@ it("neemt projectgegevens mee in het rapport en vermeldt concept op iedere pagin
     expect(text.includes(value), value).toBe(true);
   const pages = Number(text.match(/\/Count (\d+)/)?.[1]);
   expect(pages).toBeGreaterThan(1);
-  expect((text.match(/CONCEPT/g) ?? []).length).toBeGreaterThanOrEqual(pages);
+  expect((text.match(/BETA RELEASE/g) ?? []).length).toBeGreaterThanOrEqual(pages);
   expect((text.match(/re\s+W\s+n/g) ?? []).length).toBeGreaterThanOrEqual(2);
 });
 
@@ -33,7 +33,8 @@ it("weigert een rapport van een mislukte berekening", () => {
 });
 
 it("vult de ontwerpbelasting in de u.c.-regel in en trekt een conclusie", () => {
-  const input = { ...fixture.input, cptId: cpt.id, nEd: 250 } as PileInput;
+  // De volledige afleiding; het beknopte blad heeft een eigen test.
+  const input = { ...fixture.input, cptId: cpt.id, nEd: 250, reportDetail: "full" } as PileInput;
   const result = computePile(input, cpt);
   render(<ResultPanel input={input} result={result} />);
   expect(screen.getByRole("heading", { name: "Uitgangspunten" })).toBeInTheDocument();
@@ -58,7 +59,7 @@ it("vraagt bij een houten paal zonder EA gericht om dat gegeven in plaats van ee
 });
 
 it("beschrijft de betonopzetter in de uitgangspunten en de kleefomtrek", () => {
-  const input = { ...fixture.input, cptId: cpt.id, pileTypeId: "timber-uniform", diameterMm: 220, axialStiffnessKn: undefined,
+  const input = { ...fixture.input, cptId: cpt.id, pileTypeId: "timber-uniform", diameterMm: 220, axialStiffnessKn: undefined, reportDetail: "full",
     concreteExtension: { jointNap: fixture.input.pileTopNap - 2, sizeMm: 250, isCircular: false } } as PileInput;
   const result = computePile(input, cpt);
   expect(result.ok).toBe(true);

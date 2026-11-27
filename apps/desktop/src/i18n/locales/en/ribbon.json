@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Report",
   "tekeningTab": "Site plan",
+  "sondeerbedrijfTab": "CPT contractor",
   "berekeningenTab": "Calculations",
   "tekening": {
     "info": "Drawing",
@@ -143,12 +144,27 @@
       "sbtLegend": "Indicative qc/Rf legend",
       "sbtHint": "Separate page with the 9 soil zones",
       "metadata": "Metadata overview",
-      "metaHint": "Full #COMPANYID / #PROJECTID / calibration etc."
+      "metaHint": "Full #COMPANYID / #PROJECTID / calibration etc.",
+      "texts": "Texts",
+      "textsHint": "Introduction, levelling and groundwater level directly after the cover",
+      "testReport": "Test report",
+      "testReportHint": "One page per CPT with the data required by EN ISO 22476-1"
     },
     "cptCount": "CPTs",
     "openProjectInfo": "Edit project details",
     "openInNewWindow": "Open the PDF in the system viewer",
-    "openPdf": "Open PDF"
+    "openPdf": "Open PDF",
+    "text": {
+      "title": "Texts",
+      "introduction": "Introduction",
+      "levelling": "Levelling",
+      "groundwater": "Groundwater level",
+      "sample": "Sample text",
+      "sampleHint": "Insert a standard text with the project details, then adjust it",
+      "sampleBlocked": "Clear the text box first to insert the sample text",
+      "hint": "An empty text is left out of the report. The texts are saved with the project.",
+      "hintNoProject": "An empty text is left out of the report. Without a project the texts are not saved."
+    }
   },
   "model3dTab": "3D model",
   "model3d": {
@@ -227,6 +243,11 @@
   "openPdf": "Open PDF",
   "scaleCptColumns": "Scale CPT columns",
   "scaleCptColumnsHint": "After Fit, also widen the columns; scroll horizontally for the other CPTs.",
+  "cptLayout": "Show CPTs",
+  "cptSideBySide": "Side by side",
+  "cptSideBySideHint": "Show the CPTs side by side, each in its own column.",
+  "cptOverlay": "Overlaid",
+  "cptOverlayHint": "Draw all visible CPTs over each other: one chart of qc and one of fs against NAP.",
   "cptGroup": "CPT",
   "cptFromScan": "From scan"
 }

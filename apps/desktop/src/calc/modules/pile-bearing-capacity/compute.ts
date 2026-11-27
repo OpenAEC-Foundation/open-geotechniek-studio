@@ -11,6 +11,10 @@ import { computeSpringStiffness } from "./parts/spring-stiffness";
 import { computeSummary } from "./parts/summary";
 import { pileGeometry, woodTopNap } from "./parts/geometry";
 import { getStandard, usesHistoricalProcedure } from "./standards";
+import { applyOverrides } from "./parts/interpretation-overrides";
+import { digitizedNote } from "../../../digitaliseren/record";
+import { strengthCheck } from "./parts/strength-check";
+import { applyOpenTube, openTubeAreas, validPlugFactor } from "./parts/open-tube";
 
 // E-moduli [N/mm²] voor de axiale paalstijfheid EA.
 //  - Staal: 210 000 (EN 1993-1-1)
@@ -27,11 +31,13 @@ function computeEA_N(
   wallMm: number,
   material: "steel" | "concrete",
   isCircular: boolean,
+  sideBMm?: number,
+  openEnd = false,
 ): number {
   const D = diameterMm;
   if (material === "concrete") {
     // Massieve betonpaal — vierkant (a×a) of rond.
-    const A_mm2 = isCircular ? (Math.PI / 4) * D * D : D * D;
+    const A_mm2 = isCircular ? (Math.PI / 4) * D * D : D * (sideBMm ?? D);
     return E_CONCRETE_PREFAB * A_mm2;
   }
   // Stalen buis met gesloten punt — in den natte gevuld met beton:
@@ -39,6 +45,8 @@ function computeEA_N(
   const innerD = Math.max(0, D - 2 * wallMm);
   const aRing_mm2 = (Math.PI / 4) * (D * D - innerD * innerD);
   const aCore_mm2 = (Math.PI / 4) * innerD * innerD;
+  // Open buis: niet met beton gevuld; de grondprop draagt niet bij aan EA.
+  if (openEnd) return E_STEEL * aRing_mm2;
   return E_STEEL * aRing_mm2 + E_CONCRETE_FILL * aCore_mm2;
 }
 
@@ -72,6 +80,26 @@ const napText = (v: number) => `NAP ${fmtNumber(v, 2)} m`;
  * resultaat zien, zonder eerst de kleefgrenzen te verleggen.
  */
 export function computePile(input: PileInput, cpt: Cpt | null): PileResult {
+  const r = computePileInterpreted(input, cpt);
+  // Een gedigitaliseerde sondering is minder nauwkeurig dan een gemeten bestand; dat staat bij de uitkomst en in de uitdraai.
+  const note = r.ok ? digitizedNote(cpt) : null;
+  return note ? { ...r, warnings: [note, ...r.warnings] } : r;
+}
+
+function computePileInterpreted(input: PileInput, cpt: Cpt | null): PileResult {
+  // Aanpassingen van de grondlaaginterpretatie gaan er als eerste in: alles
+  // hierna rekent met de aangepaste qc-reeks en lagen van deze sondering.
+  const eff = applyOverrides(cpt, input.soilProfile, input.interpretationOverrides);
+  if (!eff.applied.length) return computePileClamped(input, cpt);
+  const r = computePileClamped({ ...input, soilProfile: eff.layers }, eff.cpt);
+  const used = eff.applied.filter((a) => a.status === "applied").length, skipped = eff.applied.length - used;
+  const notes: string[] = [];
+  if (used) notes.push(ct("calcPile", "interp.warning.applied", "Grondlaaginterpretatie aangepast: {{n}} traject(en) van sondering {{cpt}} wijken af van de meting.", { n: used, cpt: cpt?.id }));
+  if (skipped) notes.push(ct("calcPile", "interp.warning.skipped", "{{n}} aanpassing(en) van de grondlaaginterpretatie zijn niet toegepast: het traject valt buiten de sondering of is ongeldig.", { n: skipped }));
+  return { ...r, interpretation: eff.applied, warnings: [...notes, ...r.warnings] };
+}
+
+function computePileClamped(input: PileInput, cpt: Cpt | null): PileResult {
   const top = input.pileTopNap, toe = input.pileToeNap;
   if ([top, toe, input.negKleefBottomNap].every(Number.isFinite) && top > toe) {
     const neg = Math.min(top, Math.max(toe, input.negKleefBottomNap));
@@ -94,6 +122,10 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   const historical = usesHistoricalProcedure(input.standard);
   const pileType = resolvePileType(input);
   if (!pileType) return emptyResult(msg("errors.pileTypeNotSupported", "Paaltype niet ondersteund voor deze normversie: {{id}}", { id: input.pileTypeId }));
+  // Zonder tabelwaarden wordt er niet gerekend: geen geschatte of geleende factoren.
+  if (pileType.factorsMissing) return emptyResult(input.standard === "nen-9997-2025"
+    ? msg("errors.factorsMissing2025", "Voor dit paaltype zijn de paalklassefactoren van NEN 9997-1:2025 nog niet in de tabel opgenomen. Kies de editie 2017 of vul projectfactoren in (zelfverklaring of proefbelasting).")
+    : msg("errors.factorsMissingNoRow", "Dit paalsysteem heeft geen eigen rij in tabel 7.c van deze editie. Vul projectfactoren in (zelfverklaring of proefbelasting)."), "factorsMissing");
   const taper = input.timberTaper;
   const ext = input.concreteExtension;
   if (ext && (pileType.material !== "wood" || ![ext.jointNap, ext.sizeMm].every(Number.isFinite) || ext.sizeMm <= 0 ||
@@ -107,9 +139,15 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
       ? msg("errors.taperInvalidWithExtension", "Houttapsheid vereist een positieve puntdiameter ≤ houtdiameter bij de las en een tapse lengte binnen het houten deel onder de las")
       : msg("errors.taperInvalid", "Houttapsheid vereist een positieve puntdiameter ≤ kopdiameter en een tapse lengte binnen de paallengte, zonder losse voetmaat"));
   }
+  const sideB = input.sideBMm;
+  if (sideB !== undefined && (pileType.material !== "wood" || pileType.isCircular || !Number.isFinite(sideB) || sideB <= 0 || !!taper || input.baseDiameterMm !== undefined)) {
+    return emptyResult(msg("errors.rectInvalid", "Een rechthoekige doorsnede a × b vereist een gezaagde houten paal met positieve zijden, zonder tapsheid of losse voetmaat"));
+  }
   const baseDiameterMm = taper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm;
   if (!Number.isFinite(baseDiameterMm) || baseDiameterMm <= 0) return emptyResult(msg("errors.toeSizeInvalid", "Puntafmeting moet positief en eindig zijn"));
   if (pileType.id === "steel-pipe-driven-closed-2017" && baseDiameterMm - input.diameterMm > 20) return emptyResult(msg("errors.footPlateTooWide", "De voetplaat mag voor dit paaltype maximaal 10 mm per zijde uitsteken"));
+  if (pileType.openEnd && baseDiameterMm !== input.diameterMm) return emptyResult(msg("errors.openTubeNoBase", "Een open buis heeft geen voetplaat of afwijkende puntmaat"));
+  if (pileType.openEnd && input.openTube?.plug && !validPlugFactor(input.openTube.plugFactor)) return emptyResult(msg("errors.openTubePlugFactor", "Open buis met prop: vul de propfactor η in (groter dan 0, ten hoogste 1) en onderbouw hem. Zonder factor wordt er niet gerekend."));
   if (pileType.id === "steel-screw-grout" && input.diameterMm < 300) return emptyResult(msg("errors.groutScrewMinDiameter", "Deze groutschroefpreset vereist een schachtdiameter van ten minste 300 mm"));
   if (pileType.material === "wood" && !taper && baseDiameterMm !== input.diameterMm) return emptyResult(msg("errors.timberConstantSection", "Dit houten paaltype vereist een constante doorsnede zonder oplanger"));
   if (input.axialStiffnessKn !== undefined && (!Number.isFinite(input.axialStiffnessKn) || input.axialStiffnessKn <= 0)) return emptyResult(msg("errors.eaInvalid", "EA moet positief en eindig zijn"));
@@ -118,7 +156,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     const f = input.projectFactors;
     if (![f.alphaP, f.alphaS, f.alphaT, f.beta, f.s].every(Number.isFinite) ||
         f.alphaP <= 0 || f.alphaS < 0 || f.alphaT < 0 || f.beta <= 0 || f.beta > 1 || f.s <= 0 ||
-        !f.source?.trim() || !(historical ? [getStandard(input.standard)!.edition] : ["2017", "2025"]).includes(f.edition)) {
+        !f.source?.trim() || !(historical ? [getStandard(input.standard)!.edition] : input.standard === "nen-9997-2025" ? ["2025"] : ["2017", "2025"]).includes(f.edition)) {
       return emptyResult(msg("errors.projectFactorsInvalid", "Projectfactoren vereisen geldige waarden, een bron en een editie die bij de gekozen norm past"));
     }
   }
@@ -161,7 +199,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
 
   // Edge-case: sondering te ondiep
   const lastDepth = cpt.points[cpt.points.length - 1]?.depth ?? 0;
-  const Deq = pileGeometry(baseDiameterMm, pileType.isCircular).equivalentDiameterMm / 1000;
+  const Deq = pileGeometry(baseDiameterMm, pileType.isCircular, sideB).equivalentDiameterMm / 1000;
   if (historical) {
     if (cpt.points.some((p, i) => !Number.isFinite(p.depth) || !Number.isFinite(p.qc) || p.qc! < 0 || (i > 0 && p.depth <= cpt.points[i - 1].depth))) {
       return emptyResult(msg("errors.historicalCptData", "Historische berekening vereist oplopende diepten met volledige, niet-negatieve qc-waarden"));
@@ -182,12 +220,15 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   }
 
   const negKleef = computeNegKleef(input);
-  const base = computeBaseResistance(cpt, {
+  const closedBase = computeBaseResistance(cpt, {
     method: historical ? "minimum-qb" : "legacy-qci",
     pileToeDepth,
     diameterMm: baseDiameterMm,
+    sideBMm: sideB,
     pileType,
   });
+  // Open buis: zelfde q_b;max, oppervlak staalring (met prop plus η · binnendoorsnede).
+  const base = pileType.openEnd ? applyOpenTube(closedBase, openTubeAreas(input.diameterMm, input.wallThicknessMm), input.openTube) : closedBase;
   // Positief schachtwrijvings-traject: van posKleefTopNap (boven, default
   // = negKleefBottomNap) tot pileToeNap (onder, ALTIJD paalpunt — geen
   // exclusion-zone bij paalpunt per gebruikers-wens). Engineer kan de
@@ -211,6 +252,8 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     input.wallThicknessMm,
     pileType.material === "concrete" ? "concrete" : "steel",
     pileType.isCircular,
+    sideB,
+    !!pileType.openEnd,
   );
   const L = input.pileTopNap - input.pileToeNap;
   // ΔL = lengte van het positieve schachtwrijvings-traject; λ (ell) =
@@ -235,7 +278,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
 
   // Taps hout en een betonopzetter geven elk een paal met wisselende EA; de
   // zakkingsformules gaan uit van één EA en zijn daarvoor niet geverifieerd.
-  settlement.available = !taper && !ext && !historical && (pileType.settlementLine ?? 1) === 1;
+  settlement.available = !taper && !ext && !historical && !pileType.settlementLineUnknown && (pileType.settlementLine ?? 1) === 1;
   if (!settlement.available) {
     settlement.sls = anyZero();
     settlement.uls = anyZero();
@@ -260,14 +303,24 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   }));
   if (pileType.conditions) warnings.push(catalogText(pileType.conditions));
   if (input.projectFactors?.edition === "2025") warnings.push(msg("warnings.projectFactors2025", "Projectfactoren 2025 toegepast; dit is geen volledige omzetting van de rekenmethode naar NEN 9997:2025."));
-  if (!settlement.available) warnings.push(ext ? msg("warnings.settlementExtension", "Houten paal met betonopzetter: zakking en veerwaarden met verschillende EA voor beton en hout zijn niet geverifieerd en worden niet bepaald.") : taper ? msg("warnings.settlementTaper", "Tapse houten paal: zakking en veerwaarden met variabele EA zijn niet geverifieerd en worden niet bepaald.") : historical ? msg("warnings.settlementHistorical", "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald.") : msg("warnings.settlementLineUnsupported", "Lastzakkingslijn {{line}} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.", { line: pileType.settlementLine }));
-  if (ext) warnings.push(msg("warnings.extension", "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m: boven de las rekent de omtrek van de opzetter, eronder die van het hout; negatieve kleef met de gemiddelde omtrek over de kleefzone, positieve kleef per laag.", {
+  if (!settlement.available) warnings.push(ext ? msg("warnings.settlementExtension", "Houten paal met betonopzetter: zakking en veerwaarden met verschillende EA voor beton en hout zijn niet geverifieerd en worden niet bepaald.") : taper ? msg("warnings.settlementTaper", "Tapse houten paal: zakking en veerwaarden met variabele EA zijn niet geverifieerd en worden niet bepaald.") : historical ? msg("warnings.settlementHistorical", "Historische zakking en veerwaarden zijn niet geverifieerd en worden niet bepaald.") : pileType.settlementLineUnknown ? msg("warnings.settlementLineUnknown", "Voor dit paaltype is geen lastzakkingslijn uit de tabel bekend: zakking en veerwaarden worden niet bepaald.") : msg("warnings.settlementLineUnsupported", "Lastzakkingslijn {{line}} nog niet ondersteund: zakking en veerwaarden worden niet bepaald.", { line: pileType.settlementLine }));
+  if (ext) warnings.push(msg("warnings.extension", "Betonopzetter {{size}} mm tot de las op NAP {{joint}} m: boven de las rekent de omtrek van de opzetter, eronder die van het hout; negatieve en positieve kleef rekenen per laag met de omtrek van die laag.", {
     size: `${ext.isCircular ? "Ø" : `${ext.sizeMm}×`}${ext.sizeMm}`, joint: ext.jointNap.toFixed(2),
   }));
   if (taper) warnings.push(ext
     ? msg("warnings.taperWithExtension", "Houttapsheid vanaf de las: positieve kleef met gemiddelde omtrek per laag. Geen verhoging van paalfactoren door coniciteit.")
-    : msg("warnings.taper", "Houttapsheid: negatieve kleef met gemiddelde omtrek over de kleefzone; positieve kleef met gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit."));
+    : msg("warnings.taper", "Houttapsheid: negatieve en positieve kleef met de gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit."));
+  if (sideB !== undefined && sideB !== input.diameterMm) warnings.push(msg("warnings.rectShape", "Rechthoekige doorsnede {{a}} × {{b}} mm: gerekend met A = a · b, omtrek 2 (a + b) en Deq = √(4 · a · b / π). De factor s voor de vorm van een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet; gerekend is met s = {{s}}. Bepaal s volgens de norm en vul hem zo nodig in als projectfactor.", {
+    a: fmtNumber(Math.min(input.diameterMm, sideB), 0), b: fmtNumber(Math.max(input.diameterMm, sideB), 0), s: fmtNumber(pileType.s, 2) }));
   if (!taper && baseDiameterMm !== input.diameterMm) warnings.push(msg("warnings.deviatingToeSize", "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering."));
+  if (base.openTube) {
+    const o = base.openTube, mm2 = (v: number) => fmtNumber(v, 0);
+    warnings.push(o.plug
+      ? msg("warnings.openTubePlug", "Open buis met prop: punt over de staalring ({{ring}} mm²) plus η = {{factor}} × de binnendoorsnede ({{inner}} mm²), samen {{area}} mm². De propfactor η is uw aanname: toon aan dat de prop zich vormt, dus dat de wrijving binnen in de buis ten minste de puntweerstand over de binnendoorsnede haalt (NEN 9997-1 art. 7.6.2.3(d)). De binnenwrijving rekent het programma niet.", { ring: mm2(o.ringMm2), factor: fmtNumber(o.plugFactor ?? 0, 2), inner: mm2(o.innerMm2), area: mm2(base.abMm2) })
+      : msg("warnings.openTubeNoPlug", "Open buis zonder prop: punt alleen over de staalring ({{ring}} mm²); de wrijving binnen in de buis is niet meegenomen. Volgens NEN 9997-1 art. 7.6.2.3(d) mag die wel tellen, begrensd op de puntweerstand met een vaste prop; dit is dus een ondergrens.", { ring: mm2(o.ringMm2) }));
+    if (o.plug && input.diameterMm > 500) warnings.push(msg("warnings.openTubeLarge", "Buis groter dan 500 mm: zonder voorzieningen voor propvorming is de puntweerstand begrensd op de kleinste van de binnenwrijving tegen de prop en de puntweerstand over de volle doorsnede (NEN 9997-1 art. 7.6.2.1(13)). Onderbouw η daarop, of reken zonder prop."));
+    warnings.push(msg("warnings.openTubeCoarse", "Open buis in grof zand (d50 ≥ 600 μm) of grind (d50 ≥ 2 mm): de conusweerstand voor de schachtwrijving moet vóór het afsnuiten worden verlaagd tot 80 % (zand) of 70 % (grind); bij intrillen 70 % of 50 % (NEN 9997-1 art. 7.6.2.3(i)). Het programma past dit niet toe; controleer de korrelgrootte."));
+  }
   if (base.qbMaxMpaRaw > 15) {
     warnings.push(msg("warnings.qbMaxCapped", "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)", { raw: base.qbMaxMpaRaw.toFixed(2) }));
   }
@@ -281,5 +334,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     settlement,
     spring,
     summary,
+    // Optionele sterktetoets van de paal; uit = het resultaat blijft zoals het was.
+    ...(input.strengthCheck?.enabled ? { strength: strengthCheck(input, pileType, negKleef.fnkD) } : {}),
   };
 }

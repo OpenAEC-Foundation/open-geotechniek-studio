@@ -9,6 +9,7 @@ import {
 import { BRAND_MODES, getBrandMode, getOwnBrand, saveOwnBrand, setBrandMode, type BrandMode } from "../../report/brandSettings";
 import { logoToImage, pageToImage, readFileAsDataUrl } from "../../report/brandAssets";
 import ThemedSelect from "../ThemedSelect";
+import { COMPANY_CHANGED_EVENT, openCompanyProfile } from "../../sondeerbedrijf/CompanyDialog";
 
 const rgb = (c?: Rgb) => (c ? `rgb(${c.join(",")})` : "transparent");
 const toHex = (c?: Rgb) => (c ? `#${c.map((v) => v.toString(16).padStart(2, "0")).join("")}` : "#000000");
@@ -21,7 +22,14 @@ const fromHex = (h: string): Rgb => [1, 3, 5].map((i) => parseInt(h.slice(i, i +
 export function BrandTabContent() {
   const { t } = useTranslation("settings");
   const [mode, setMode] = useState<BrandMode | null>(null);
-  useEffect(() => { void getBrandMode().then(setMode); }, []);
+  const [version, setVersion] = useState(0);
+  useEffect(() => { void getBrandMode().then(setMode); }, [version]);
+  // Bedrijfsgegevens opslaan kiest de eigen huisstijl: neem dat hier over.
+  useEffect(() => {
+    const refresh = () => setVersion((v) => v + 1);
+    window.addEventListener(COMPANY_CHANGED_EVENT, refresh);
+    return () => window.removeEventListener(COMPANY_CHANGED_EVENT, refresh);
+  }, []);
   const choose = (m: BrandMode) => { setMode(m); void setBrandMode(m); };
   const label: Record<BrandMode, [string, string]> = {
     standaard: [t("brand.modeStandard", "Standaard OpenAEC"), t("brand.modeStandardHint", "De vaste OpenAEC-stijl.")],
@@ -32,6 +40,10 @@ export function BrandTabContent() {
     <div className="settings-section brand-tab">
       <h3>{t("brand.title", "Huisstijl")}</h3>
       <p className="settings-description" style={{ marginBottom: 10 }}>{t("brand.introModes", "Voorblad, kop en voet van de rapporten volgen de gekozen huisstijl.")}</p>
+      <div className="settings-row">
+        <span className="settings-label">{t("brand.company", "Bedrijfsgegevens")}<small className="settings-description">{t("brand.companyHint", "Naam, logo, kleur en contactgegevens in één scherm; wordt de eigen huisstijl.")}</small></span>
+        <button className="settings-btn settings-btn-secondary" onClick={openCompanyProfile}>{t("brand.companyOpen", "Invullen…")}</button>
+      </div>
       <div className="brand-modes" role="radiogroup" aria-label={t("brand.title", "Huisstijl")}>
         {BRAND_MODES.map((m) => (
           <label key={m} className={`brand-mode${mode === m ? " active" : ""}`}>
@@ -40,7 +52,7 @@ export function BrandTabContent() {
           </label>
         ))}
       </div>
-      {mode === "eigen" && <OwnBrandForm />}
+      {mode === "eigen" && <OwnBrandForm key={version} />}
       {mode === "supercloud" && <CloudSection />}
       <BrandPreview />
     </div>

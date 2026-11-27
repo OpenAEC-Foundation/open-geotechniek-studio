@@ -1,0 +1,84 @@
+/* Scherm "Sondering digitaliseren": links de onderlegger, rechts de stappen. */
+.dig-modal { max-width: calc(100vw - 32px); }
+.dig-modal .modal-body { overflow: hidden; }
+.dig-modal .modal-footer { gap: 8px; }
+.dig-footer-note { margin-right: auto; font-size: 11.5px; color: var(--theme-text-secondary); }
+.dig-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; flex: 1; min-height: 0; font-size: 12px; color: var(--theme-text); }
+
+.dig-stage { position: relative; min-width: 0; min-height: 0; background: var(--theme-hover); border-right: 1px solid var(--theme-border); overflow: hidden; }
+.dig-svg { display: block; width: 100%; height: 100%; cursor: crosshair; user-select: none; }
+.dig-paper { fill: #fff; stroke: #9a9aa3; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.dig-stage-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; text-align: center; color: var(--theme-text-secondary); pointer-events: none; }
+.dig-zoom { position: absolute; top: 8px; right: 8px; display: flex; align-items: center; gap: 4px; padding: 3px 6px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-surface, var(--theme-bg)); font-size: 11px; color: var(--theme-text-secondary); }
+.dig-zoom button { height: 22px; min-width: 22px; padding: 0 6px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-bg); color: var(--theme-text); font: inherit; cursor: pointer; }
+.dig-zoom button:hover { background: var(--theme-hover); }
+
+/* De kleuren op de onderlegger zijn vast: de scan is altijd licht, ook in een donker thema. */
+.dig-gridline line { stroke-dasharray: none; }
+.dig-gridline-depth line { stroke: #0e7490; opacity: 0.55; }
+.dig-gridline-value line { stroke: #b45309; opacity: 0.55; }
+.dig-gridline text { font-family: Inter, system-ui, sans-serif; font-weight: 600; paint-order: stroke; stroke: #fff; stroke-width: 0.25em; }
+.dig-gridline-depth text { fill: #0e7490; }
+.dig-gridline-value text { fill: #b45309; }
+.dig-line { fill: none; stroke-linejoin: round; stroke-linecap: round; opacity: 0.6; }
+.dig-line.active { opacity: 0.95; }
+.dig-line-qc { stroke: #dc2626; }
+.dig-line-second { stroke: #2563eb; }
+.dig-line.loose { stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
+
+.dig-marker { cursor: grab; }
+.dig-marker.locked { cursor: inherit; opacity: 0.75; }
+.dig-marker-hit { fill: transparent; }
+.dig-marker-ring { fill: rgba(255, 255, 255, 0.55); stroke-width: 1.6; }
+.dig-marker-cross { fill: none; stroke-width: 1; }
+.dig-marker-point .dig-marker-ring, .dig-marker-point .dig-marker-cross { stroke: #b91c1c; }
+.dig-marker-depth .dig-marker-ring, .dig-marker-depth .dig-marker-cross { stroke: #0e7490; }
+.dig-marker-value .dig-marker-ring, .dig-marker-value .dig-marker-cross { stroke: #b45309; }
+.dig-marker.active .dig-marker-ring { stroke-width: 3; }
+.dig-marker-label { font: 600 11px Inter, system-ui, sans-serif; paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+.dig-marker-depth .dig-marker-label { fill: #0e7490; }
+.dig-marker-value .dig-marker-label { fill: #b45309; }
+
+.dig-side { min-width: 0; overflow: auto; padding: 10px 12px; user-select: text; }
+.dig-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.dig-steps > li { border: 1px solid var(--theme-border); border-radius: 3px; }
+.dig-steps > li.active { border-color: var(--theme-accent); }
+.dig-step-head { display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 8px; border: 0; background: none; color: inherit; font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
+.dig-step-head:disabled { opacity: 0.5; cursor: default; }
+.dig-step-head:hover:not(:disabled) { background: var(--theme-hover); }
+.dig-steps > li.active .dig-step-head { background: var(--theme-accent-soft); }
+.dig-step-nr { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--theme-border); font-size: 11px; }
+.dig-steps > li.active .dig-step-nr { background: var(--theme-accent); border-color: var(--theme-accent); color: var(--theme-accent-text); }
+.dig-step-body { display: grid; gap: 8px; padding: 8px; border-top: 1px solid var(--theme-border); }
+.dig-step-body h4 { margin: 4px 0 0; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--theme-text-secondary); }
+.dig-hint { margin: 0; line-height: 1.45; }
+.dig-note { margin: 0; font-size: 11.5px; line-height: 1.4; color: var(--theme-text-secondary); }
+.dig-ok { margin: 0; font-size: 11.5px; line-height: 1.4; padding: 5px 8px; border-left: 3px solid var(--oa-success, #15803d); background: var(--theme-hover); }
+.dig-warning { margin: 0; font-size: 11.5px; line-height: 1.4; padding: 5px 8px; border-left: 3px solid var(--oa-warning, #b7791f); background: var(--theme-hover); }
+.dig-problems, .dig-summary { margin: 0; padding-left: 18px; display: grid; gap: 3px; line-height: 1.4; }
+.dig-problems { color: var(--oa-error, #b91c1c); }
+.dig-row { display: flex; flex-wrap: wrap; align-items: end; gap: 6px; }
+.dig-grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.dig-field { display: grid; gap: 3px; min-width: 0; flex: 1; }
+.dig-field span { font-size: 11px; color: var(--theme-text-secondary); }
+.dig-side input:not([type="checkbox"]), .dig-side select, .dig-side textarea { min-height: 26px; padding: 0 6px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-input-bg, var(--theme-bg)); color: var(--theme-text); font: inherit; min-width: 0; width: 100%; box-sizing: border-box; }
+.dig-side textarea { padding: 5px 6px; resize: vertical; }
+.dig-check { display: flex; align-items: center; gap: 6px; }
+.dig-btn { min-height: 26px; padding: 3px 10px; border: 1px solid var(--theme-border); border-radius: 3px; background: var(--theme-surface, var(--theme-bg)); color: var(--theme-text); font: inherit; cursor: pointer; }
+.dig-btn:hover:not(:disabled) { background: var(--theme-hover); }
+.dig-btn:disabled { opacity: 0.5; cursor: default; }
+.dig-btn-primary { background: var(--theme-accent); border-color: var(--theme-accent); color: var(--theme-accent-text); }
+.dig-btn-primary:hover:not(:disabled) { background: var(--theme-accent-hover); }
+.dig-toggle { display: inline-flex; }
+.dig-toggle button { min-height: 26px; padding: 0 12px; border: 1px solid var(--theme-border); background: var(--theme-bg); color: var(--theme-text); font: inherit; cursor: pointer; }
+.dig-toggle button + button { border-left: 0; }
+.dig-toggle button.active { background: var(--theme-accent-soft); border-color: var(--theme-accent); font-weight: 600; }
+.dig-ref { display: grid; grid-template-columns: minmax(0, 1fr) 74px auto 14px; align-items: center; gap: 6px; padding: 2px; border-radius: 3px; }
+.dig-ref.active { outline: 2px solid var(--theme-accent); outline-offset: 1px; }
+.dig-ref .dig-btn { text-align: left; }
+.dig-unit { font-size: 11px; color: var(--theme-text-secondary); white-space: nowrap; }
+.dig-state { color: var(--theme-text-secondary); }
+.dig-state.ok { color: var(--oa-success, #15803d); font-weight: 700; }
+
+/* De bijsnijder voor de pagina of afbeelding ligt boven dit scherm. */
+.dig-crop-layer .icrop-backdrop { z-index: 10100; }

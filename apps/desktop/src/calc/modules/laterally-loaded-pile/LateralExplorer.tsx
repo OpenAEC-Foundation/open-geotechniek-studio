@@ -1,4 +1,5 @@
 import { useId, useState } from 'react';
+import { currentLoadKnM } from './water';
 import type { PanelProps } from '../../framework/types';
 import type { LateralInput, LateralResult } from './compute';
 import type { AnalysisMode, ConvergenceInfo, EquivalentLayer, SpringState, UltimateProfile } from './spring-types';
@@ -7,6 +8,10 @@ import { SpringInspector } from './SpringInspector';
 import { PileScene3D } from './PileScene3D';
 import { SpringField } from './SpringField';
 import { ForceDiagrams } from './ForceDiagrams';
+import { SpringLegend } from './SpringLegend';
+import { soilColor } from './report-data';
+import { soilKey } from './soil';
+import { mobilisation, springCss, springLength, springPath } from './spring-visual';
 import './explorer.css';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
@@ -25,9 +30,22 @@ export function PileCalculationModel({input:i,beam,springs,selectedId,onSelect,s
   const arrowId=useId();
   const depth=(z:number)=>65+490*z/i.lengthM;
   const horizontal=(displacement:number)=>210+displacement*scale*490/i.lengthM;
+  const head=i.headNap??0,kMax=Math.max(1e-12,...springs.map(s=>s.initialKnM2));
+  const soilName=(id:string)=>id==='manual'?t('soils.manual','Eigen waarde'):t(soilKey(id),id).split(' (')[0];
   return <div className="pile-model"><svg viewBox="0 0 520 610" aria-label={t('model.aria', 'Rekenmodel met werkelijke integratiepunten')} role="img">
     <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" className="pile-arrow-fill"/></marker></defs>
-    {i.layers.map((l,k)=><g key={k}><rect className={k%2?'pile-soil-alt':'pile-soil'} x="90" width="335" y={depth(l.topM)} height={depth(l.bottomM)-depth(l.topM)}/><text x="430" y={depth((l.topM+l.bottomM)/2)}>{t('model.layer', 'Laag {{n}}', {n:k+1})}</text></g>)}
+    {i.waterBed?.enabled&&(()=>{const w=i.waterBed!,bed=Math.min(i.lengthM,Math.max(0,head-w.bedNap)),top=Math.max(0,Math.min(bed,head-w.waterNap)),c=w.current,d=w.waterNap-w.bedNap;
+      const qs=c&&c.speedMs>0&&c.cd&&d>0?Array.from({length:6},(_,k)=>{const z=top+(bed-top)*(k+.5)/6;return {z,q:currentLoadKnM(c,i.section.kind==='sheet-pile'?i.springWidthM:i.section.diameterMm/1000,bed-z,d)};}):[];
+      const qMax=Math.max(1e-9,...qs.map(v=>v.q)),dir=c?.sign??1;
+      return <g>{bed>top&&<rect className="pile-water" x="90" width="335" y={depth(top)} height={depth(bed)-depth(top)}/>}
+        {head-w.waterNap>=0&&<><line className="pile-water-line" x1="90" x2="425" y1={depth(top)} y2={depth(top)}/><text x="95" y={depth(top)-3} className="pile-layer-label">{t('model.waterLevel','Waterpeil NAP {{nap}}',{nap:f(w.waterNap,2)})}</text></>}
+        <line className="pile-bed-line" x1="90" x2="425" y1={depth(bed)} y2={depth(bed)}/><text x="95" y={depth(bed)-3} className="pile-layer-label">{t('model.waterBed','Waterbodem NAP {{nap}}',{nap:f(w.bedNap,2)})}</text>
+        {qs.map((v,k)=>{const len=10+40*v.q/qMax,x0=dir>0?205-len:215+len,x1=dir>0?205:215;return <line key={k} className="pile-current" x1={x0} x2={x1} y1={depth(v.z)} y2={depth(v.z)} markerEnd={`url(#${arrowId})`}/>;})}
+        {qs.length>0&&<text x="95" y={depth((top+bed)/2)} className="pile-layer-label">{t('model.current','Stroming')}</text>}</g>;})()}
+    {i.layers.map((l,k)=><g key={k}><rect className="pile-soil-band" style={{fill:soilColor(l.springId).fill}} x="90" width="335" y={depth(l.topM)} height={depth(l.bottomM)-depth(l.topM)}/>
+      <line className="pile-layer-line" x1="90" x2="425" y1={depth(l.topM)} y2={depth(l.topM)}/>
+      <text x="420" y={depth(l.topM)+12} textAnchor="end" className="pile-layer-label">{t('model.layer', 'Laag {{n}}', {n:k+1})} · {soilName(l.springId)}</text>
+      <text x="420" y={depth(l.topM)+24} textAnchor="end">NAP {f(head-l.topM,2)} / {f(head-l.bottomM,2)}</text></g>)}
     {[0,.25,.5,.75,1].map(t=><g key={t}><line className="pile-grid" x1="70" x2="425" y1={depth(t*i.lengthM)} y2={depth(t*i.lengthM)}/><text x="55" y={depth(t*i.lengthM)+4} textAnchor="end">{f(t*i.lengthM)} m</text></g>)}
     <text x="14" y="27">{t('model.zFromHead', 'z vanaf kop')}</text><line className="pile-reference" x1="210" x2="210" y1={depth(0)} y2={depth(i.lengthM)}/>
     {beam.elements.map((element,index)=><line key={index} x1="210" x2="210" y1={depth(element.topM)} y2={depth(element.bottomM)} className="pile-element"/>)}
@@ -36,15 +54,15 @@ export function PileCalculationModel({input:i,beam,springs,selectedId,onSelect,s
     {visibleSprings(springs,depth,selectedId).map(s=><g key={s.id} role="button" tabIndex={0} aria-label={t('spring.select','Selecteer veer {{id}}',{id:s.id})} aria-pressed={s.id===selectedId} className={`pile-spring ${s.id===selectedId?'is-selected':''}`}
       onClick={()=>onSelect(s.id)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onSelect(s.id);}}}>
       <title>{s.id} · z {f(s.zM)} m · y {f(s.displacementM*1000)} mm</title>
-      <path d={`M216 ${depth(s.zM)}h8l4 -4l6 8l6 -8l6 8l4 -4h16`} className="pile-spring-line"/>
-      <circle cx="210" cy={depth(s.zM)} r={s.id===selectedId?5:3} className="pile-spring-point"/><rect x="202" y={depth(s.zM)-4} width="78" height="8" className="pile-hit-area"/>
+      <path d={springPath(214,depth(s.zM),90*springLength(s.initialKnM2,kMax))} className="pile-spring-line" style={{stroke:springCss(i.layers[s.layerIndex]?.springId??'manual',mobilisation(s))}}/>
+      <circle cx="210" cy={depth(s.zM)} r={s.id===selectedId?5:3} className="pile-spring-point" style={{fill:springCss(i.layers[s.layerIndex]?.springId??'manual',mobilisation(s))}}/><rect x="202" y={depth(s.zM)-5} width="104" height="10" className="pile-hit-area"/>
     </g>)}
     <line x1={i.headForceKn>=0?105:195} x2={i.headForceKn>=0?195:105} y1="45" y2="45" className="pile-load" markerEnd={`url(#${arrowId})`}/><text x="85" y="25">H = {f(i.headForceKn)} kN</text>
     <path d={i.headMomentKnM>=0?'M245 60a24 24 0 1 0 -28 -33':'M217 27a24 24 0 1 1 28 33'} className="pile-load" markerEnd={`url(#${arrowId})`}/><text x="280" y="40">M = {f(i.headMomentKnM)} kNm</text>
     {i.headFixedRotation&&<g><path className="pile-support" d="M185 62h50m-50 -8v16m8 -16v16m8 -16v16m8 -16v16m8 -16v16m8 -16v16m8 -16v16"/><text x="280" y="62">{t('model.headFixed', 'Koprotatie vast')}</text></g>}
     {i.toeFixed&&<g><path className="pile-support" d="M185 557h50m-50 0l-6 10m16 -10l-6 10m16 -10l-6 10m16 -10l-6 10m16 -10l-6 10m16 -10l-6 10"/><text x="280" y="575">{t('model.toeFixed', 'Punt ingeklemd')}</text></g>}
     <text x="85" y="600">{t('model.footer', 'Elementlijn · verplaatsing ×{{scale}} · klik een veerpunt', {scale:f(scale,0)})}</text>
-  </svg></div>;
+  </svg><SpringLegend layers={i.layers}/></div>;
 }
 const TAB_KEY={'3D':'view3d',Rekenmodel:'model',Veren:'springs',Diagrammen:'diagrams'} as const;
 export function LateralExplorer({input,result}:PanelProps<LateralInput,LateralResult>) {
@@ -58,16 +76,13 @@ export function LateralExplorer({input,result}:PanelProps<LateralInput,LateralRe
   const selected=springs.find(s=>s.id===selectedId)??springs[0];
   const selectedLayer=selected?input.layers[selected.layerIndex] as (LateralInput['layers'][number]&{ultimate?:UltimateProfile})|undefined:undefined;
   const props={input,beam:r.beam,springs,selectedId:selected?.id,onSelect:setSelectedId,scale};
-  return <div className="pile-explorer"><header><h2>{t('explorer.title', 'Horizontale paalbelasting')} <span>{t('explorer.concept', 'Concept')}</span></h2>
-    <p>{r.analysisMode==='nonlinear'?t('explorer.nonlinearModel', 'Niet-lineair projectmodel'):t('explorer.linearModel', 'Lineair grondmodel')} · EI {f(r.section.eiKnM2)} kNm² · {t('explorer.counts', '{{elements}} elementen · {{points}} integratiepunten', {elements:r.beam.elements.length,points:springs.length})}</p>
-    {r.convergence&&<p className="pile-convergence">{t('explorer.converged', 'Geconvergeerd · {{steps}} belastingstappen · {{iterations}} iteraties · residu {{residual}} kN · relatief {{relative}}', {steps:r.convergence.loadSteps,iterations:r.convergence.iterations,residual:r.convergence.residualKn.toExponential(2),relative:r.convergence.relativeResidual.toExponential(2)})}</p>}</header>
+  return <div className="pile-explorer"><header><h2>{t('explorer.title', 'Horizontale paalbelasting')} <span>{t('explorer.concept', 'Beta release')}</span></h2>
+    <p>{r.analysisMode==='elastoplastic'?t('explorer.elastoplasticModel', 'Elastoplastisch grondmodel'):r.analysisMode==='nonlinear'?t('explorer.nonlinearModel', 'Niet-lineair projectmodel'):t('explorer.linearModel', 'Lineair grondmodel')} · EI {f(r.section.eiKnM2)} kNm² · {t('explorer.counts', '{{elements}} elementen · {{points}} integratiepunten', {elements:r.beam.elements.length,points:springs.length})}</p></header>
     <div className="pile-explorer-toolbar"><div className="pile-tabs" role="tablist" aria-label={t('explorer.views', 'Paalweergave')}>{(['3D','Rekenmodel','Veren','Diagrammen'] as const).map(tab=><button key={tab} id={`pile-tab-${tab}`} role="tab" aria-selected={view===tab} aria-controls="pile-active-view" onClick={()=>setView(tab)}>{t(`explorer.tabs.${TAB_KEY[tab]}`,tab)}</button>)}</div>
       <label>{t('explorer.displacement', 'Verplaatsing')} ×<input type="number" min="1" max="1000" step="1" aria-label={t('explorer.magnification', 'Vergroting verplaatsing')} value={scale} onChange={event=>{const v=event.target.valueAsNumber;if(Number.isFinite(v))setScale(Math.max(1,Math.min(1000,v)));}}/></label>
       <button type="button" onClick={()=>setScale(1)}>{t('explorer.trueScale', 'Ware schaal')}</button></div>
     <div className="pile-explorer-layout"><section className="pile-view" id="pile-active-view" role="tabpanel" aria-labelledby={`pile-tab-${view}`}>
-      <p className="pile-scale">{t('explorer.scaleNote', 'Geometrie in meters · verplaatsing ×{{scale}} · werkelijk y bij geselecteerde veer: {{y}}', {scale,y:selected?`${f(selected.displacementM*1000)} mm`:'—'})}</p>
       {view==='3D'?<PileScene3D {...props} fallback={<PileCalculationModel {...props}/>}/>:view==='Rekenmodel'?<PileCalculationModel {...props}/>:view==='Veren'?<SpringField input={input} springs={springs} mode={r.analysisMode} selectedId={selected?.id} onSelect={setSelectedId}/>:<ForceDiagrams input={input} beam={r.beam}/>}
-      <p className="pile-model-note">{t('explorer.note', '3D toont dezelfde Euler–Bernoulli-ligger en grondveren. De weergave is geen continuümgrondberekening. Grondlagen zijn schematisch transparant.')}</p>
-    </section><aside><label className="pile-depth-select">{t('explorer.springAtDepth', 'Grondveer op diepte')}<select aria-label={t('explorer.springAtDepth','Grondveer op diepte')} value={selected?.id??''} onChange={event=>setSelectedId(event.target.value)}>{springs.map(s=><option key={s.id} value={s.id}>{t('explorer.springOption', 'z {{z}} m · laag {{layer}} · {{id}}', {z:f(s.zM),layer:s.layerIndex+1,id:s.id})}</option>)}</select></label><SpringInspector spring={selected} ultimate={selectedLayer?.ultimate}/></aside></div>
+    </section><aside><label className="pile-depth-select">{t('explorer.springAtDepth', 'Grondveer op diepte')}<select aria-label={t('explorer.springAtDepth','Grondveer op diepte')} value={selected?.id??''} onChange={event=>setSelectedId(event.target.value)}>{springs.map(s=><option key={s.id} value={s.id}>{t('explorer.springOption', 'z {{z}} m · laag {{layer}} · {{id}}', {z:f(s.zM),layer:s.layerIndex+1,id:s.id})}</option>)}</select></label><SpringInspector spring={selected} ultimate={selectedLayer?.ultimate} soilId={selectedLayer?.springId}/></aside></div>
   </div>;
 }

@@ -176,7 +176,30 @@
     "type": "Typ pala",
     "wallThickness": "Grubość ścianki",
     "wallThicknessAria": "Grubość ścianki [mm]",
-    "woodDiameterAtJoint": "Średnica drewna na styku"
+    "woodDiameterAtJoint": "Średnica drewna na styku",
+    "system": "System palowy",
+    "standardSize": "Wymiar standardowy",
+    "woodSection": "Przekrój",
+    "woodRound": "Okrągły (pal wbijany)",
+    "woodSawn": "Kwadratowy lub prostokątny a × b (tarty)",
+    "sideA": "Bok a",
+    "sideB": "Bok b",
+    "rectHint": "Prostokąt a ≠ b: pole, obwód i Deq wynikają z a i b; program nie wyznacza współczynnika kształtu s dla prostokątnej podstawy pala. W razie potrzeby wprowadź s jako współczynnik projektowy.",
+    "timberSpecies": "Gatunek drewna",
+    "timberSpeciesOwn": "Własna klasa wytrzymałości",
+    "timberGrade": "Klasa sortowania",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Tylko dla sprawdzenia wytrzymałości; współczynniki klasy pala i nośność wynikają z typu pala.",
+    "timberSpeciesNoClass": "Źródło nie podaje jednoznacznej klasy wytrzymałości: wybierz klasę w sprawdzeniu wytrzymałości. Współczynniki klasy pala i nośność wynikają z typu pala.",
+    "species": {
+      "vuren": "świerk",
+      "grenen": "sosna zwyczajna",
+      "lariks": "modrzew",
+      "douglas": "daglezja",
+      "eiken": "dąb, Europa Środkowa",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Eksportuj dla Pile Plan Studio (CSV)",
@@ -213,7 +236,8 @@
       "sideA": "Bok a",
       "tapered": "{{size}} mm (zbieżny)",
       "title": "Założenia podstawowe",
-      "woodAtJoint": "Drewno na styku"
+      "woodAtJoint": "Drewno na styku",
+      "sidesAB": "Przekrój a × b"
     },
     "negSkin": {
       "cappedNote": "ograniczono do ksMin = {{v}}",
@@ -221,7 +245,9 @@
       "extensionAndWood": "(nadstawka i drewno)",
       "layer": "Warstwa",
       "title": "Tarcie negatywne",
-      "zone": "Strefa: głowica pala NAP {{top}} do NAP {{bottom}} —"
+      "zone": "Strefa: głowica pala NAP {{top}} do NAP {{bottom}} —",
+      "perimeterTitle": "Obwód pobocznicy w tej warstwie",
+      "perimeterNote": "Os;i to średni obwód pobocznicy w warstwie: nadstawka betonowa powyżej styku, drewno poniżej."
     },
     "pending": {
       "missingEA": "Podaj sztywność osiową <strong>EA</strong> w sekcji <strong>Pal</strong>. Dla tego typu pala EA nie wynika z przekroju; wartość zależy od wybranego systemu pali.",
@@ -257,6 +283,15 @@
     "title": "Nośność pala",
     "total": {
       "title": "Maksymalna nośność geotechniczna"
+    },
+    "compact": {
+      "remarks": "Uwagi",
+      "layers": "Wartości pośrednie dla warstw",
+      "results": "Wyniki",
+      "formula": "Wzór",
+      "value": "Wartość",
+      "capacity": "Nośność",
+      "settlement": "Osiadanie"
     }
   },
   "settings": {
@@ -289,7 +324,10 @@
     "sourceAria": "Źródło współczynników projektowych",
     "table": "Tabela",
     "timberToe": "Średnica podstawy pala drewnianego",
-    "useTableValues": "Użyj wartości tabelarycznych"
+    "useTableValues": "Użyj wartości tabelarycznych",
+    "rectSizes": "Drewno tarte a × b",
+    "rectSizesAria": "Szereg drewna tartego a × b [mm]",
+    "rectHint": "Przekroje jako a×b, rozdzielone spacjami; pojedyncza liczba oznacza kwadrat. Wymiary kwadratowe wypełniają także tabelę nośności."
   },
   "shape": {
     "round": "Okrągły",
@@ -349,6 +387,71 @@
     "notNumber": "Podaj dolną i górną granicę jako liczbę w kN.",
     "upper": "Górna granica [kN]"
   },
+  "view3d": {
+    "aria": "Widok 3D metody 4D-8D; przeciąganie obraca, przewijanie przybliża",
+    "fit": "Dopasuj do widoku",
+    "focusPile": "Cały pal",
+    "focusTip": "Podstawa pala",
+    "label": {
+      "critical": "głębokość krytyczna {{depth}} m = {{ratio}} Deq",
+      "ground": "poziom terenu {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "podstawa pala {{nap}}",
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "górna granica strefy III {{height}} m = {{ratio}} Deq"
+    },
+    "legend": {
+      "clipped": "Zielononiebieski: obcięta linia qc odcinków II i III.",
+      "critical": "Głębokość krytyczna: {{depth}} m poniżej podstawy pala ({{ratio}} Deq, Deq = {{deq}} mm). Linie kropkowane: zakres poszukiwania od 0,7 do 4 Deq.",
+      "negative": "Tarcie negatywne wzdłuż pobocznicy; Fnk;d = {{force}} kN",
+      "positive": "Tarcie pozytywne wzdłuż pobocznicy; Rs;cal;max = {{force}} kN",
+      "qc": "Opór stożka qc obok pala; grube kreski to średnie z odcinków.",
+      "slip": "Bryła zniszczenia: grunt ścina się wzdłuż spirali logarytmicznej, od głębokości krytycznej pod podstawą pala na zewnątrz i w górę do górnej granicy strefy III, tak jak wybrało je obliczenie. Ćwiartka jest pominięta, aby zajrzeć do środka; strzałki wskazują kierunek ścinania. Kształt jest schematyczny.",
+      "zone": "Odcinek {{zone}}",
+      "zoneI": "od podstawy pala w dół do głębokości krytycznej",
+      "zoneII": "od głębokości krytycznej z powrotem w górę do podstawy pala",
+      "zoneIII": "od podstawy pala w górę do górnej granicy strefy III"
+    },
+    "noModel": "Brak widoku 3D: przypisz sondowanie do obliczenia.",
+    "notComputed": "Brak widoku 3D, dopóki obliczenie nie ma wyniku. Zmień dane lub wróć do 2D.",
+    "note": "Poziomy i pal są w skali. Szerokość odcinków jest schematyczna: metoda liczy tylko wzdłuż głębokości.",
+    "switch": "Widok rysunku",
+    "switch3dTitle": "Pal w 3D: widok fizyczny lub obliczeniowy (metoda 4D-8D)",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondowanie i pal w 3D obok siebie",
+    "toolbar": "Widok",
+    "unavailable": "3D nie jest dostępne na tym urządzeniu (brak WebGL). Użyj rysunku 2D.",
+    "viewSwitch": "Rodzaj widoku 3D",
+    "viewPhysical": "Fizyczny",
+    "viewPhysicalTitle": "Pal w rzeczywistej postaci, w warstwach gruntu",
+    "viewCalc": "Obliczeniowy",
+    "viewCalcTitle": "Odcinki I, II i III, strefa zniszczenia, tarcie i qc",
+    "ariaPhysical": "Widok 3D pala w gruncie; przeciąganie obraca, przewijanie powiększa",
+    "noPhysical": "Brak widoku 3D: wymiary pala lub poziomy są nieprawidłowe.",
+    "notePhysical": "Pal, warstwy i poziomy są w skali; blok gruntu jest rozcięty wzdłuż osi pala. Warstwy to układ warstw z sondowania CPT, z korektami z interpretacji warstw. Schematycznie: grot, pręty wystające i zbrojenie, łopata śrubowa, rura rdzeniowa i pierścień spawalniczy. Tam, gdzie sondowanie nie podaje warstwy, przedłużono najbliższą warstwę.",
+    "material": {
+      "concrete": "Beton",
+      "steel": "Stal",
+      "wood": "Drewno",
+      "grout": "Zaczyn",
+      "plug": "Korek gruntowy"
+    },
+    "soil": {
+      "sand": "Piasek",
+      "clay": "Ił",
+      "peat": "Torf"
+    },
+    "physical": {
+      "head": "głowica pala {{nap}}",
+      "water": "woda gruntowa {{nap}}",
+      "excavation": "wykop {{nap}}",
+      "joint": "styk {{nap}}",
+      "excavatedLayer": "{{soil}} (wykopany)",
+      "adjustedLayer": "{{soil}} (zmieniony)"
+    }
+  },
   "types": {
     "add": "Dodaj typ pala",
     "hint": "Dodatkowe typy pali pojawiają się obok typu głównego w zestawieniu miarodajnym i na planie. Tabele dla poszczególnych sondowań CPT pozostają tabelami typu głównego.",
@@ -376,7 +479,9 @@
       "prefab": "Beton prefabrykowany",
       "steelEA": "Pal stalowy; EA właściwe dla projektu",
       "steelTube": "Pal stalowy rurowy, wypełniony betonem",
-      "wood": "Drewno, stały przekrój"
+      "wood": "Drewno, stały przekrój",
+      "steelOpen": "Otwarta rura stalowa, bez korka",
+      "steelOpenPlug": "Otwarta rura stalowa, z korkiem gruntowym"
     },
     "noPoints": "Brak pomiarów w tym sondowaniu",
     "notComputed": "Nie obliczono: {{error}}. Przeciągnij poziomy lub zmień dane wejściowe.",
@@ -384,5 +489,147 @@
     "taperLength": "długość zbieżna od głowicy",
     "toeSize": "wymiar podstawy",
     "wall": "ścianka"
+  },
+  "system": {
+    "noTable2025": "Dla systemu {{system}} współczynniki klasy pala z NEN 9997-1:2025 nie są jeszcze ujęte w tabeli tego programu; niczego się nie szacuje. Dlatego systemu nie można wybrać dla tego wydania. Wybierz wydanie 2017 lub licz ze współczynnikami projektowymi z deklaracji własnej lub próbnego obciążenia.",
+    "noTableRow": "{{system}} nie ma własnego wiersza w tabeli 7.c tego wydania i dlatego nie można go wybrać z wartościami tabelarycznymi. Licz ze współczynnikami projektowymi z deklaracji własnej systemu palowego lub z próbnego obciążenia.",
+    "noTableBadge": "brak wartości w tabeli",
+    "useProjectFactors": "Wybierz ze współczynnikami projektowymi"
+  },
+  "interp": {
+    "add": "Zmień przedział",
+    "bottom": "Dół",
+    "bottomAria": "Dół przedziału [m NAP]",
+    "cancel": "Anuluj",
+    "captureTitle": "Przeciągnij z góry na dół, aby wybrać przedział",
+    "change": {
+      "noLayer": "brak warstwy",
+      "qcFixed": "{{qc}}: pomiar {{min}}–{{max}} MPa (średnio {{mean}}) → stała wartość {{top}} MPa",
+      "qcLinear": "{{qc}}: pomiar {{min}}–{{max}} MPa (średnio {{mean}}) → liniowo od {{top}} do {{bottom}} MPa",
+      "soil": "Rodzaj gruntu: {{before}} → {{after}}"
+    },
+    "colChange": "Zmiana (stare → nowe)",
+    "colRange": "Przedział",
+    "comment": "Uzasadnienie",
+    "commentAria": "Uzasadnienie zmiany",
+    "commentPlaceholder": "Dlaczego ta zmiana?",
+    "delete": "Usuń",
+    "deleteAria": "Usuń zmianę A{{n}}",
+    "edit": "Edytuj",
+    "editAria": "Edytuj zmianę A{{n}}",
+    "editTitle": "Edytuj zmianę",
+    "listAria": "Zmiany dla tego sondowania CPT",
+    "markTitle": "Zmieniony przedział A{{n}}; kliknij, aby edytować",
+    "newTitle": "Nowa zmiana",
+    "notApplied": {
+      "invalid": "Nie zastosowano: nieprawidłowy przedział lub nie podano zmiany.",
+      "outsideRange": "Nie zastosowano: przedział leży poza sondowaniem CPT."
+    },
+    "problem": {
+      "nothing": "Wybierz zmianę oporu stożka lub rodzaju gruntu.",
+      "order": "Góra musi leżeć wyżej niż dół.",
+      "range": "Wybierz przedział: przeciągnij na wykresie z góry na dół albo wpisz oba poziomy.",
+      "value": "Podaj stały opór stożka równy zero lub większy."
+    },
+    "qc": "Opór stożka",
+    "qcFixed": "stała wartość",
+    "qcLinear": "liniowo między krawędziami",
+    "qcNone": "bez zmian",
+    "range": "NAP od {{top}} do {{bottom}} m",
+    "report": {
+      "colChange": "Zmiana (stare → nowe)",
+      "colComment": "Uzasadnienie",
+      "colCpt": "CPT",
+      "colNr": "Nr",
+      "colRange": "Przedział [m NAP]",
+      "intro": "W tym obliczeniu poniższe przedziały różnią się od pomiaru sondowania CPT. Samo sondowanie nie zostało zmienione; zmiana obowiązuje tylko w tym obliczeniu i dla wskazanego sondowania. Na wykresie sondowania pomiar narysowano cienką linią, a zmieniony przedział jest oznaczony.",
+      "title": "Zmiany interpretacji warstw"
+    },
+    "resetAll": "Przywróć wszystko",
+    "resetAllTitle": "Usuwa wszystkie zmiany tego sondowania CPT w tym obliczeniu; znów obowiązuje pomiar.",
+    "resultNote": "Dla sondowania CPT {{cpt}} to obliczenie różni się od interpretacji z pomiaru. Samo sondowanie pozostaje bez zmian.",
+    "resultTitle": "Zmiany interpretacji warstw",
+    "save": "Zapisz",
+    "selectHint": "Przeciągnij na wykresie z góry na dół, aby wybrać przedział, albo wpisz poziomy. Linia pomiaru pozostaje widoczna na szaro.",
+    "soilAria": "Rodzaj gruntu w przedziale",
+    "stateChanged": "{{n}} zmian(y) dla tego sondowania CPT",
+    "stateMeasured": "zgodnie z pomiarem",
+    "tableNote": "Zmieniono interpretację warstw dla tego sondowania CPT: {{n}} przedział(y). Poniższe wartości obliczono z jej uwzględnieniem.",
+    "title": "Interpretacja warstw",
+    "top": "Góra",
+    "topAria": "Góra przedziału [m NAP]",
+    "value": "Wartość",
+    "valueAria": "Stały opór stożka [MPa]",
+    "warning": {
+      "applied": "Zmieniono interpretację warstw: {{n}} przedział(y) sondowania CPT {{cpt}} różnią się od pomiaru.",
+      "skipped": "Nie zastosowano {{n}} zmian(y) interpretacji warstw: przedział leży poza sondowaniem CPT lub jest nieprawidłowy."
+    }
+  },
+  "strength": {
+    "title": "Wytrzymałość pala",
+    "enable": "Sprawdź wytrzymałość pala",
+    "steelGrade": "Gatunek stali",
+    "timberClass": "Klasa wytrzymałości drewna",
+    "ownValue": "Wartość własna",
+    "timber": "drewno",
+    "concreteClass": "Klasa wytrzymałości betonu",
+    "concreteClassExtension": "Klasa betonu nadstawki",
+    "hintTimber": "Ściskanie wzdłuż włókien pod N_Ed + F_nk;d (EN 1995-1-1). k_mod i γ_M: wartości domyślne dla drewna stale mokrego i obciążenia stałego. Wyboczenie nie jest sprawdzane.",
+    "hintSteel": "Klasa przekroju i siła osiowa rury pod N_Ed + F_nk;d (EN 1993-1-1). Wyboczenie nie jest sprawdzane: program nie zna długości swobodnej ani słabo podpartej.",
+    "hintConcrete": "Siła osiowa przekroju betonowego pod N_Ed + F_nk;d (EN 1992-1-1), bez zbrojenia. Wyboczenie nie jest sprawdzane.",
+    "col": {
+      "article": "Punkt",
+      "demand": "Wartość obliczeniowa",
+      "resistance": "Nośność"
+    },
+    "notesTitle": "Założenia i zakres niesprawdzony",
+    "status": {
+      "ok": "spełnia",
+      "fail": "nie spełnia",
+      "outside": "poza zakresem tego sprawdzenia",
+      "na": "nie sprawdzono",
+      "info": "informacyjnie"
+    },
+    "rows": {
+      "steelClass": "Klasa przekroju rury",
+      "steelAxial": "Siła osiowa w rurze stalowej",
+      "timberAxial": "Drewno: ściskanie wzdłuż włókien",
+      "timberToe": "Drewno: najmniejszy przekrój przy podstawie",
+      "extensionAxial": "Nadstawka betonowa: siła osiowa",
+      "concreteAxial": "Siła osiowa w przekroju betonowym"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, przyjęte od głowicy pala do spodu strefy tarcia negatywnego. Poniżej siła osiowa maleje wskutek dodatniego tarcia na pobocznicy; ta część nie jest sprawdzana.",
+      "steelNoSection": "Nie sprawdzono: przekrój stalowy (rura rdzeniowa, grubość ścianki) nie występuje w danych wejściowych dla tego systemu pali.",
+      "class4": "Klasa przekroju 4: decyduje wyboczenie miejscowe. Wykracza to poza zakres tego sprawdzenia (EN 1993-1-6); nośności nie obliczono.",
+      "class4Short": "Poza zakresem tego sprawdzenia (klasa przekroju 4).",
+      "classIs": "Klasa przekroju {{cls}}.",
+      "steel": "Stal: tylko rura o wprowadzonej grubości ścianki i f_y dla t ≤ 40 mm; wypełnienia betonem nie uwzględniono. Nie sprawdzono: wyboczenia (p. 6.3; moduł nie zna długości swobodnej ani słabo podpartej), korozji (wprowadź pozostałą grubość ścianki), spoin i złączy oraz naprężeń przy wbijaniu.",
+      "timber": "Drewno: klasa wytrzymałości {{cls}} z f_c,0,k = {{fc}} MPa (EN 338); k_mod i γ_M są danymi wejściowymi, domyślnie dla drewna stale mokrego i obciążenia stałego. Nie sprawdzono: wyboczenia (p. 6.3.2), styku z nadstawką, degradacji drewna oraz naprężeń przy wbijaniu.",
+      "timberToe": "Informacyjnie: górne oszacowanie z pełnym N_Ed;max na przekroju przy podstawie. Dodatniego tarcia na pobocznicy powyżej podstawy nie odjęto; rzeczywista siła przy podstawie jest mniejsza.",
+      "concrete": "Beton: N_Rd = A_c · f_cd przekroju trzonu, bez zbrojenia (nie występuje w danych wejściowych). Nie sprawdzono: minimalnego mimośrodu (p. 6.1 (4)), wyboczenia, zbrojenia oraz naprężeń przy wbijaniu.",
+      "concreteInSitu": "Pal formowany w gruncie: zmniejszonej średnicy obliczeniowej (p. 2.3.4.2) i zwiększenia γ_c (p. 2.4.2.5) dla pali bez rury traconej nie zastosowano; nośność należy przeliczyć samodzielnie.",
+      "concreteClassUnknown": "Nieznana klasa wytrzymałości betonu {{cls}}.",
+      "timberSpecies": "Gatunek {{species}}, klasa sortowania {{grade}} → {{cls}} według {{source}}. Gatunek określa tylko klasę wytrzymałości; współczynniki klasy pala i nośność wynikają z typu pala.",
+      "timberSpeciesOwn": "Gatunek {{species}}: źródło nie podaje jednoznacznej klasy wytrzymałości; klasę wybrał użytkownik."
+    }
+  },
+  "report": {
+    "title": "Wydruk",
+    "detail": "Zakres",
+    "detailAria": "Zakres wydruku",
+    "compact": "Skrócony: tabele",
+    "full": "Rozszerzony: pełne wyprowadzenie"
+  },
+  "openTube": {
+    "tip": "Podstawa",
+    "noPlug": "Bez korka: tylko pierścień stalowy",
+    "plug": "Z korkiem: pierścień + η × przekrój wewnętrzny",
+    "plugFactor": "Współczynnik korka",
+    "plugFactorAria": "Współczynnik korka η [-]",
+    "plugFactorPlaceholder": "wpisz",
+    "plugFactorMissing": "Wpisz η (od 0 do 1) — bez η obliczenia nie są wykonywane.",
+    "hintPlug": "Z korkiem liczy się pierścień stalowy plus η razy przekrój wewnętrzny; η = 1 to pełny przekrój. Norma nie podaje wartości η: uzasadnij ją, np. tarciem wewnątrz rury (NEN 9997-1 art. 7.6.2.3(d); powyżej 500 mm także art. 7.6.2.1(13)).",
+    "hintNoPlug": "Bez korka liczy się tylko pierścień stalowy, a tarcie wewnątrz rury jest pomijane; to dolna granica według NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

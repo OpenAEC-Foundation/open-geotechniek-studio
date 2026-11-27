@@ -1,0 +1,104 @@
+{
+  "title": "Messwerte bearbeiten",
+  "close": "Schließen",
+  "noCpt": "Öffnen Sie zuerst eine Sondierung.",
+  "cpt": "Sondierung",
+  "editedShort": "bearbeitet",
+  "chart": {
+    "badge": "bearbeitet ({{n}})"
+  },
+  "kind": {
+    "remove-range": "Tiefenbereich entfernen",
+    "invalidate-range": "Tiefenbereich ungültig setzen",
+    "trim-top": "Oben abschneiden",
+    "trim-bottom": "Unten abschneiden",
+    "zero-shift": "Nullpunktverschiebung",
+    "depth-shift": "Tiefenverschiebung",
+    "set-value": "Messwert korrigieren",
+    "remove-outliers": "Ausreißer entfernen"
+  },
+  "channel": {
+    "qc": "qc",
+    "fs": "fs",
+    "rf": "Rf",
+    "u2": "u2",
+    "inclination": "Neigung",
+    "all": "Alle Kanäle"
+  },
+  "op": {
+    "removeRange": "Bereich {{from}} bis {{to}} m entfernt",
+    "invalidateRange": "{{channels}} ungültig gesetzt von {{from}} bis {{to}} m",
+    "trimTop": "Oben abgeschnitten: alles oberhalb von {{depth}} m entfällt",
+    "trimBottom": "Unten abgeschnitten: alles unterhalb von {{depth}} m entfällt",
+    "zeroShift": "Nullpunktverschiebung {{channel}} {{offset}} {{unit}}",
+    "zeroShiftRange": "Nullpunktverschiebung {{channel}} {{offset}} {{unit}} von {{from}} bis {{to}} m",
+    "depthShift": "Tiefenverschiebung {{offset}} m",
+    "setValue": "{{channel}} bei {{depth}} m korrigiert",
+    "removeOutliers": "Ausreißer in {{channel}} ungültig gesetzt von {{from}} bis {{to}} m (Fenster ±{{window}}, Schwelle {{threshold}})"
+  },
+  "result": {
+    "noValue": "kein Wert",
+    "points": "betroffene Messpunkte: {{n}}"
+  },
+  "status": {
+    "edited": "{{now}} Messpunkte nach Bearbeitung, {{original}} in der Quelldatei. Tiefe {{range}}.",
+    "untouched": "{{now}} Messpunkte, nicht bearbeitet. Tiefe {{range}}.",
+    "kept": "Die ursprünglichen Messwerte bleiben erhalten."
+  },
+  "log": {
+    "title": "Protokoll",
+    "empty": "Noch keine Bearbeitungen an dieser Sondierung.",
+    "time": "Zeitpunkt",
+    "by": "Wer",
+    "what": "Bearbeitung",
+    "result": "Ergebnis",
+    "reason": "Grund",
+    "undoOne": "Rückgängig",
+    "undoOneHint": "Diese Bearbeitung entfällt; die späteren werden erneut angewendet",
+    "undoLast": "Letzte rückgängig machen",
+    "reset": "Alles wiederherstellen",
+    "resetConfirm": "Sicher? Das Protokoll entfällt"
+  },
+  "form": {
+    "title": "Neue Bearbeitung",
+    "kind": "Art",
+    "channel": "Kanal",
+    "from": "Von Tiefe (m)",
+    "to": "Bis Tiefe (m)",
+    "optional": "ganze Reihe",
+    "keepFrom": "Behalten ab Tiefe (m)",
+    "keepTo": "Behalten bis Tiefe (m)",
+    "offsetValue": "Verschiebung ({{unit}})",
+    "offsetDepth": "Verschiebung (m, positiv = tiefer)",
+    "depth": "Tiefe (m)",
+    "newValue": "Neuer Wert ({{unit}})",
+    "emptyIsVoid": "leer = kein Wert",
+    "halfWindow": "Fenster (Punkte je Seite)",
+    "threshold": "Schwelle (× Streuung)",
+    "outlierHint": "Ein Wert ist ein Ausreißer, wenn er um mehr als die Schwelle mal die Streuung (1,4826 × MAD) vom Median seines Fensters abweicht. Der Wert wird ungültig; der Messpunkt bleibt.",
+    "removeHint": "Die Messpunkte im Bereich entfallen ganz. Wählen Sie 'ungültig setzen', um die Punkte zu behalten und nur Werte zu löschen.",
+    "by": "Wer",
+    "byPlaceholder": "Name",
+    "reason": "Grund (Pflichtfeld)",
+    "reasonPlaceholder": "Warum ist diese Bearbeitung nötig?",
+    "apply": "Anwenden"
+  },
+  "problem": {
+    "number": "Geben Sie gültige Zahlen ein.",
+    "range": "Das Ende des Bereichs liegt über dem Anfang.",
+    "noOffset": "Eine Verschiebung von null ändert nichts.",
+    "window": "Das Fenster umfasst mindestens 1 Punkt und die Schwelle ist größer als null.",
+    "negativeDepth": "Mit dieser Verschiebung liegen Messpunkte über der Geländeoberkante."
+  },
+  "preview": {
+    "incomplete": "Füllen Sie die Felder aus, um zu sehen, was die Bearbeitung betrifft.",
+    "point": "Messpunkt bei {{depth}} m, aktueller Wert: {{value}}.",
+    "noPoint": "Kein Messpunkt in dieser Tiefe; der nächste liegt bei {{depth}} m.",
+    "label": "Vorschau",
+    "points": "betrifft {{n}} von {{total}} Messpunkten.",
+    "none": "Diese Bearbeitung betrifft keine Messpunkte.",
+    "unchanged": "Der Messwert steht bereits so; es ändert sich nichts.",
+    "needBy": "Geben Sie an, wer die Bearbeitung vornimmt.",
+    "needReason": "Geben Sie einen Grund an, um die Bearbeitung anzuwenden."
+  }
+}

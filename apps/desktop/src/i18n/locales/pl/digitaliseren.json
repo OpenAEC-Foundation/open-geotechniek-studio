@@ -1,0 +1,177 @@
+{
+  "calibrate": {
+    "depthAxis": "Oś głębokości",
+    "depthMode": "Oś głębokości w",
+    "gridFound": "Znaleziono siatkę: {{rows}} × {{cols}} linii. Punkty kalibracji trafiają na skrajne linie; wpisz ich wartości. Kliknięty punkt kalibracji przyciąga się do siatki.",
+    "gridNone": "Nie znaleziono siatki na podkładzie; kliknij punkty kalibracji samodzielnie.",
+    "hint": "Kliknij dwa punkty na osi głębokości i dwa na osi wartości, możliwie daleko od siebie, i podaj wartość dla każdego punktu. Osie są kalibrowane niezależnie, więc krzywy skan nie przeszkadza.",
+    "ok": "Kalibracja jest poprawna. Sprawdź, czy linie siatki pokrywają się z liniami wykresu.",
+    "pick": "Kliknij: {{label}}",
+    "pickHint": "Następnie kliknij punkt na podkładzie",
+    "repick": "{{label}} ponownie",
+    "shareDepth": "Ta sama oś głębokości co qc",
+    "suggest": "Ustaw punkty kalibracji na siatce",
+    "valueAxis": "Oś wartości {{name}}",
+    "valueOf": "Wartość dla: {{label}}"
+  },
+  "cone": {
+    "electrical": "elektryczne",
+    "mechanical": "mechaniczne",
+    "unknown": "nieznane"
+  },
+  "details": {
+    "coneHint": "Przy zmianie rodzaju sondowania krok zmienia się na 0,2 m (mechaniczne) lub 0,02 m (elektryczne). Rodzaj jest podawany; wartości pomiarowe nie są z tego powodu przeliczane.",
+    "coneKind": "Rodzaj sondowania",
+    "date": "Data sondowania",
+    "groundLevel": "Poziom terenu (m NAP)",
+    "hint": "Podaj dane nagłówka. Pochodzenie jest obowiązkowe i trafia do raportu.",
+    "id": "Nazwa lub numer",
+    "origin": "Pochodzenie (obowiązkowe)",
+    "originExample": "zdigitalizowane z raportu … z dnia …",
+    "x": "X (RD, m), opcjonalnie",
+    "y": "Y (RD, m), opcjonalnie"
+  },
+  "footer": {
+    "accuracy": "Zdigitalizowane sondowanie jest mniej dokładne niż plik pomiarowy.",
+    "cancel": "Anuluj",
+    "confirmClose": "Kliknięte punkty nie zostały jeszcze zapisane. Zamknąć ekran mimo to?",
+    "next": "Dalej",
+    "previous": "Wstecz",
+    "save": "Zapisz"
+  },
+  "label": {
+    "badge": "zdigitalizowane ({{cone}})",
+    "badgePlain": "zdigitalizowane",
+    "note": "Sondowanie {{id}} zostało zdigitalizowane z papieru lub skanu (rodzaj: {{cone}}; pochodzenie: {{origin}}). Dokładność jest niższa niż w przypadku pliku pomiarowego."
+  },
+  "marker": {
+    "depth1": "głębokość 1",
+    "depth2": "głębokość 2",
+    "value1": "wartość 1",
+    "value2": "wartość 2"
+  },
+  "method": {
+    "label": "Metoda",
+    "points": "Klikaj punkty",
+    "trace": "Śledź linię automatycznie"
+  },
+  "points": {
+    "clear": "Wyczyść wszystko",
+    "count": "Liczba punktów dla {{name}}: {{n}}",
+    "duplicates": "Liczba punktów na tej samej głębokości co późniejszy punkt: {{n}}; liczy się ostatnio kliknięty.",
+    "hint": "Klikaj punkty wzdłuż linii, od góry do dołu. Przeciągnij punkt, aby go przesunąć; kliknij prawym przyciskiem myszy, aby go usunąć.",
+    "interpolation": "Między punktami",
+    "linear": "liniowo",
+    "linearHint": "Liniowo: między dwoma punktami wartość przebiega po linii prostej.",
+    "notCalibrated": "Kalibracja nie jest jeszcze kompletna; linia biegnie teraz przez punkty w kolejności klikania.",
+    "removeLast": "Usuń ostatni punkt",
+    "reordered": "Punkty zostały posortowane według głębokości.",
+    "result": "Seria pomiarowa: liczba wartości {{n}}, od {{from}} do {{to}} m poniżej terenu.",
+    "step": "Krok (m)",
+    "stepwise": "schodkowo co odczyt",
+    "stepwiseHint": "Schodkowo: każdy odczyt obowiązuje do następnego odczytu. Pasuje do sondowania mechanicznego odczytywanego co 0,2 m.",
+    "undo": "Cofnij"
+  },
+  "problem": {
+    "depthPoints": "kliknij dwa punkty na osi głębokości, nie w tym samym miejscu",
+    "depthValues": "podaj dla osi głębokości dwie różne wartości",
+    "groundLevel": "Podaj poziom terenu w m NAP.",
+    "id": "Podaj nazwę lub numer sondowania.",
+    "idTaken": "W tym projekcie jest już sondowanie {{id}}; wybierz inną nazwę.",
+    "noImage": "Najpierw wybierz podkład.",
+    "noSeries": "Punkty leżą bliżej siebie niż krok; seria pomiarowa nie powstaje.",
+    "origin": "Podaj pochodzenie; jest obowiązkowe.",
+    "parallel": "oś głębokości i oś wartości są prawie równoległe; kliknij punkty na obu osiach",
+    "position": "Podaj obie współrzędne RD albo żadnej.",
+    "qcCalibration": "Kalibracja qc: {{what}}.",
+    "qcPoints": "Kliknij co najmniej dwa punkty na linii qc.",
+    "qcTrace": "Najpierw prześledź lub narysuj linię qc.",
+    "secondCalibration": "Kalibracja drugiej serii: {{what}}.",
+    "secondPoints": "Kliknij co najmniej dwa punkty na linii drugiej serii albo wyłącz tę serię.",
+    "secondTrace": "Prześledź lub narysuj linię drugiej serii albo wyłącz tę serię.",
+    "step": "Krok musi wynosić od 0,005 do 1 m.",
+    "valuePoints": "kliknij dwa punkty na osi wartości, nie w tym samym miejscu",
+    "valueValues": "podaj dla osi wartości dwie różne wartości"
+  },
+  "ribbon": {
+    "add": "Digitalizuj\nsondowanie",
+    "addTitle": "Utwórz sondowanie z wykresu na papierze, w pliku PDF lub na skanie: skalibruj osie i klikaj wzdłuż linii",
+    "edit": "Aktualizuj\ndigitalizację",
+    "editTitle": "Otwórz ponownie zdigitalizowane sondowanie {{id}}, aby zaktualizować punkty lub dane"
+  },
+  "save": {
+    "add": "Dodaj do projektu",
+    "hintDocument": "Żaden projekt nie jest otwarty: sondowanie otworzy się jako osobny dokument.",
+    "hintProject": "Sondowanie zostanie dodane do projektu i będzie potem używane jak każde inne, także w obliczeniu pala.",
+    "hintUpdate": "Sondowanie {{id}} zostanie zaktualizowane.",
+    "marked": "Na wykresie, w raporcie i w obliczeniu pala jest oznaczane jako zdigitalizowane ({{cone}}).",
+    "open": "Otwórz jako osobny dokument",
+    "points": "Liczba wartości: {{n}}, krok {{step}} m, do {{to}} m poniżej terenu",
+    "qcOnly": "tylko qc; brak fs i Rf",
+    "update": "Aktualizuj sondowanie",
+    "withSecond": "qc i {{name}}"
+  },
+  "second": {
+    "fs": "tarcie na tulei fs (MPa)",
+    "label": "Druga seria",
+    "none": "brak (tylko qc)",
+    "rf": "współczynnik tarcia Rf (%)"
+  },
+  "series": {
+    "choose": "Wybierz serię"
+  },
+  "stage": {
+    "empty": "Wybierz po prawej plik PDF lub obraz z wykresem sondowania.",
+    "fit": "Dopasuj",
+    "label": "Podkład z punktami",
+    "zoomIn": "Powiększ",
+    "zoomOut": "Pomniejsz"
+  },
+  "step": {
+    "calibrate": "Kalibracja",
+    "details": "Dane",
+    "points": "Punkty",
+    "save": "Zapisz",
+    "underlay": "Podkład"
+  },
+  "title": {
+    "edit": "Aktualizacja zdigitalizowanego sondowania {{id}}",
+    "new": "Digitalizacja sondowania"
+  },
+  "trace": {
+    "clear": "Usuń linię",
+    "count": "Linia w {{n}} wierszach obrazu dla {{name}}",
+    "draw": "Rysuj",
+    "drawHint": "Rysuj po linii pomiarowej z wciśniętym przyciskiem myszy. To, co narysujesz, zastępuje linię na tej wysokości.",
+    "erase": "Wymaż",
+    "eraseHint": "Przeciągnij po fragmencie linii, który ma zostać usunięty.",
+    "follow": "Śledź linię",
+    "followHint": "Kliknij początek linii pomiarowej: linia jest śledzona w dół aż do jej końca. Przeciągnij w dół, aby śledzić ją tylko do miejsca zwolnienia przycisku.",
+    "navigate": "Przeciąganie rysuje lub śledzi. Przesuwanie: środkowy przycisk myszy. Powiększanie: kółko myszy. Seria pomiarowa to średnia linii na krok.",
+    "noScan": "Nie ma skanu do śledzenia. Rysowanie i usuwanie jest możliwe.",
+    "notCalibrated": "Kalibracja nie jest jeszcze kompletna; bez kalibracji nie powstaje seria pomiarowa.",
+    "radius": "Usuwanie cienkich linii siatki",
+    "radius0": "wyłączone",
+    "radius1": "lekkie (linie do 2 pikseli)",
+    "radius2": "mocne (linie do 4 pikseli)",
+    "showMask": "Pokaż, co algorytm rozpoznaje jako linię",
+    "threshold": "Zaczernienie linii ({{value}})",
+    "tools": "Narzędzie"
+  },
+  "underlay": {
+    "choose": "Wybierz PDF lub obraz…",
+    "failed": "Nie można odczytać obrazu.",
+    "hint": "Wybierz plik PDF lub obraz (PNG lub JPEG) z wykresem sondowania. W pliku PDF wybierasz stronę; następnie przytnij do wykresu z obiema osiami.",
+    "loaded": "{{name}} ({{w}} × {{h}} px)",
+    "missing": "Podkład nie został zapisany razem z tym sondowaniem. Punkty są na swoich miejscach; wybierz ponownie ten sam obraz, aby zobaczyć je na skanie.",
+    "navigate": "Kółko myszy: powiększanie i pomniejszanie. Przeciąganie: przesuwanie.",
+    "reopen": "Aktualizuj sondowanie {{id}}",
+    "replace": "Wybierz inny podkład…",
+    "synthetic": "To sondowanie zostało wcześniej przejęte ze skanu; skan i kalibracja nie zostały zapisane. Linia znajduje się na pustym arkuszu: uzupełnij ją tam albo wybierz skan ponownie, aby skalibrować i prześledzić linię od nowa.",
+    "unnamed": "podkład"
+  },
+  "unit": {
+    "depth": "m poniżej terenu",
+    "nap": "m NAP"
+  }
+}

@@ -56,9 +56,21 @@ const OFFERTES_EXT: ExtensionMeta = {
   category: "Werkflow",
 };
 
+const SONDEERBEDRIJF_EXT: ExtensionMeta = {
+  id: "sondeerbedrijf",
+  get name() { return extT("sondeerbedrijf.name", "Sondeerbedrijf"); },
+  version: APP_VERSION,
+  get description() {
+    return extT("sondeerbedrijf.description", "Voor sondeerbedrijven: bedrijfsgegevens en logo instellen, coördinaten inlezen en het sondeerrapport in eigen huisstijl maken.");
+  },
+  author: "OpenAEC Foundation",
+  category: "Werkflow",
+};
+
 const INSTALLED_EXTENSIONS: ExtensionMeta[] = [
   TEKENING_EXT,
   OFFERTES_EXT,
+  SONDEERBEDRIJF_EXT,
   ...CALC_REGISTRY.map<ExtensionMeta>((m) => ({
     id: `calc.${m.id}` as ExtensionId,
     // Getters: naam en beschrijving volgen de actieve taal.

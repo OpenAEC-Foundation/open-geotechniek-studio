@@ -1,0 +1,65 @@
+{
+  "background": {
+    "none": "Ingen måleværdier i baggrundens interval.",
+    "value": "Baggrundsfelt (median af {{count}} værdier): {{value}} nT"
+  },
+  "depthAxis": "Dybde under terræn (m)",
+  "disclaimer": "Præsentation af måledata. De markerede zoner følger kun af de indstillede tærskler; dette er ikke en vurdering og erstatter ikke frigivelse eller vurdering af en fagkyndig.",
+  "line": {
+    "declination": "deklination",
+    "inclination": "inklination"
+  },
+  "noTotal": "Ingen total feltstyrke: filen har ingen totalkanal og ikke alle tre komponenter.",
+  "none": "Ingen af de åbne sonderinger har magnetometerkanaler.",
+  "readout": {
+    "depth": "{{depth}} m under terræn",
+    "hint": "Bevæg musen over grafen for værdierne i én dybde.",
+    "title": "Værdier"
+  },
+  "report": {
+    "section": "Magnetometer",
+    "sectionHint": "Én side pr. magnetometersondering med grafer, zoner og indstillinger"
+  },
+  "ribbon": {
+    "group": "Magnetometer",
+    "show": "Magneto-\nmeter",
+    "showHint": "Vis sonderingens magnetometerkanaler mod dybden, ved siden af qc."
+  },
+  "settings": {
+    "analysisFrom": "Zoner fra",
+    "anomaly": "Tærskel afvigelse",
+    "backgroundFrom": "Baggrund fra",
+    "backgroundTo": "Baggrund til",
+    "end": "slut",
+    "gradient": "Tærskel gradient",
+    "mergeGap": "Sammenlæg inden for",
+    "note": "Tærsklerne er egne indstillinger, ikke normværdier.",
+    "start": "start",
+    "title": "Indstillinger"
+  },
+  "side": {
+    "cpt": "Sondering",
+    "title": "Magnetometer"
+  },
+  "totalComputed": "Total feltstyrke beregnet ud fra de tre komponenter: |B| = √(Bx² + By² + Bz²).",
+  "track": {
+    "components": "Komponenter − median",
+    "declination": "Deklination",
+    "gradient": "Gradient d|B|/dz",
+    "inclination": "Inklination",
+    "qc": "qc",
+    "total": "Totalfelt |B|"
+  },
+  "unknownUnit": "Kanal {{channel}} vises ikke: enheden '{{unit}}' er ukendt.",
+  "zones": {
+    "bottom": "Bund (m)",
+    "none": "Intet interval over de indstillede tærskler.",
+    "note": "Topværdi = største afvigelse fra baggrundsfeltet i zonen. Dybder i m under terræn.",
+    "peak": "Topværdi (nT)",
+    "peakDepth": "ved (m)",
+    "peakGradient": "Gradient (nT/m)",
+    "title": "Zoner over tærsklen",
+    "top": "Top (m)",
+    "zoomHint": "Klik for at zoome ind på denne zone"
+  }
+}

@@ -176,7 +176,30 @@
     "type": "Pfahltyp",
     "wallThickness": "Wanddicke",
     "wallThicknessAria": "Wanddicke [mm]",
-    "woodDiameterAtJoint": "Holzdurchmesser am Stoß"
+    "woodDiameterAtJoint": "Holzdurchmesser am Stoß",
+    "system": "Pfahlsystem",
+    "standardSize": "Standardmaß",
+    "woodSection": "Querschnitt",
+    "woodRound": "Rund (Rammpfahl)",
+    "woodSawn": "Quadratisch oder rechteckig a × b (gesägt)",
+    "sideA": "Seite a",
+    "sideB": "Seite b",
+    "rectHint": "Rechteck a ≠ b: Fläche, Umfang und Deq ergeben sich aus a und b; den Formfaktor s für einen rechteckigen Pfahlfuß bestimmt das Programm nicht. Geben Sie s bei Bedarf als Projektfaktor ein.",
+    "timberSpecies": "Holzart",
+    "timberSpeciesOwn": "Eigene Festigkeitsklasse",
+    "timberGrade": "Sortierklasse",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Nur für den Festigkeitsnachweis; Pfahlklassenbeiwerte und Tragfähigkeit folgen aus dem Pfahltyp.",
+    "timberSpeciesNoClass": "Keine eindeutige Festigkeitsklasse in der Quelle: Klasse beim Festigkeitsnachweis wählen. Pfahlklassenbeiwerte und Tragfähigkeit folgen aus dem Pfahltyp.",
+    "species": {
+      "vuren": "Fichte",
+      "grenen": "Kiefer",
+      "lariks": "Lärche",
+      "douglas": "Douglasie",
+      "eiken": "Eiche, mitteleuropäisch",
+      "azobe": "Azobé",
+      "bangkirai": "Bangkirai",
+      "basralocus": "Basralocus"
+    }
   },
   "pilePlan": {
     "button": "Für Pile Plan Studio exportieren (CSV)",
@@ -213,7 +236,8 @@
       "sideA": "Seite a",
       "tapered": "{{size}} mm (konisch)",
       "title": "Annahmen",
-      "woodAtJoint": "Holz am Stoß"
+      "woodAtJoint": "Holz am Stoß",
+      "sidesAB": "Querschnitt a × b"
     },
     "negSkin": {
       "cappedNote": "begrenzt auf ksMin = {{v}}",
@@ -221,7 +245,9 @@
       "extensionAndWood": "(Aufsatz und Holz)",
       "layer": "Schicht",
       "title": "Negative Mantelreibung",
-      "zone": "Zone: Pfahlkopf NAP {{top}} bis NAP {{bottom}} —"
+      "zone": "Zone: Pfahlkopf NAP {{top}} bis NAP {{bottom}} —",
+      "perimeterTitle": "Schaftumfang in dieser Schicht",
+      "perimeterNote": "Os;i ist der mittlere Schaftumfang innerhalb der Schicht: der Betonaufsatz oberhalb des Stoßes, das Holz darunter."
     },
     "pending": {
       "missingEA": "Geben Sie unter <strong>Pfahl</strong> die Axialsteifigkeit <strong>EA</strong> ein. Für diesen Pfahltyp wird EA nicht aus dem Querschnitt abgeleitet; der Wert ergibt sich aus dem gewählten Pfahlsystem.",
@@ -257,6 +283,15 @@
     "title": "Pfahltragfähigkeit",
     "total": {
       "title": "Maximale geotechnische Tragfähigkeit"
+    },
+    "compact": {
+      "remarks": "Anmerkungen",
+      "layers": "Zwischenwerte je Schicht",
+      "results": "Ergebnisse",
+      "formula": "Formel",
+      "value": "Wert",
+      "capacity": "Tragfähigkeit",
+      "settlement": "Setzung"
     }
   },
   "settings": {
@@ -289,7 +324,10 @@
     "sourceAria": "Quelle der Projektfaktoren",
     "table": "Tabelle",
     "timberToe": "Fußdurchmesser Holz",
-    "useTableValues": "Tabellenwerte verwenden"
+    "useTableValues": "Tabellenwerte verwenden",
+    "rectSizes": "Schnittholz a × b",
+    "rectSizesAria": "Reihe Schnittholz a × b [mm]",
+    "rectHint": "Querschnitte als a×b, durch Leerzeichen getrennt; eine einzelne Zahl ist ein Quadrat. Die quadratischen Maße füllen auch die Tragfähigkeitstabelle."
   },
   "shape": {
     "round": "Rund",
@@ -349,6 +387,71 @@
     "notNumber": "Geben Sie Unter- und Obergrenze als Zahl in kN ein.",
     "upper": "Obergrenze [kN]"
   },
+  "view3d": {
+    "aria": "3D-Ansicht der 4D-8D-Methode; Ziehen dreht, Scrollen zoomt",
+    "fit": "In Ansicht einpassen",
+    "focusPile": "Ganzer Pfahl",
+    "focusTip": "Pfahlfuß",
+    "label": {
+      "critical": "kritische Tiefe {{depth}} m = {{ratio}} Deq",
+      "ground": "Geländeoberkante {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "Pfahlfuß {{nap}}",
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "Obergrenze Bereich III {{height}} m = {{ratio}} Deq"
+    },
+    "legend": {
+      "clipped": "Blaugrün: die gekappte qc-Linie der Bereiche II und III.",
+      "critical": "Kritische Tiefe: {{depth}} m unter dem Pfahlfuß ({{ratio}} Deq, Deq = {{deq}} mm). Punktlinien: Suchbereich 0,7 bis 4 Deq.",
+      "negative": "Negative Mantelreibung entlang des Schafts; Fnk;d = {{force}} kN",
+      "positive": "Positive Mantelreibung entlang des Schafts; Rs;cal;max = {{force}} kN",
+      "qc": "Spitzenwiderstand qc neben dem Pfahl; dicke Striche sind die Bereichsmittelwerte.",
+      "slip": "Bruchkörper: Der Boden schert entlang einer logarithmischen Spirale ab, von der kritischen Tiefe unter der Pfahlspitze nach außen und nach oben bis zur Obergrenze von Bereich III, wie die Berechnung sie gewählt hat. Ein Viertel ist weggelassen, damit man hineinsieht; die Pfeile zeigen in Scherrichtung. Die Form ist schematisch.",
+      "zone": "Bereich {{zone}}",
+      "zoneI": "vom Pfahlfuß abwärts bis zur kritischen Tiefe",
+      "zoneII": "von der kritischen Tiefe zurück nach oben zum Pfahlfuß",
+      "zoneIII": "von der Pfahlspitze nach oben bis zur Obergrenze von Bereich III"
+    },
+    "noModel": "Es gibt keine 3D-Ansicht: Verknüpfen Sie eine Drucksondierung mit der Berechnung.",
+    "notComputed": "Es gibt keine 3D-Ansicht, solange die Berechnung kein Ergebnis hat. Passen Sie die Eingabe an oder wechseln Sie zurück zu 2D.",
+    "note": "Höhen und Pfahl sind maßstäblich. Die Breite der Bereiche ist schematisch: Die Methode rechnet nur entlang der Tiefe.",
+    "switch": "Ansicht der Zeichnung",
+    "switch3dTitle": "Der Pfahl in 3D: physisch oder rechnerisch (4D-8D-Verfahren)",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondierung und der Pfahl in 3D nebeneinander",
+    "toolbar": "Ansicht",
+    "unavailable": "3D ist auf diesem Gerät nicht verfügbar (kein WebGL). Verwenden Sie die 2D-Zeichnung.",
+    "viewSwitch": "Art der 3D-Ansicht",
+    "viewPhysical": "Physisch",
+    "viewPhysicalTitle": "Der Pfahl, wie er ist, in den Bodenschichten",
+    "viewCalc": "Rechnerisch",
+    "viewCalcTitle": "Abschnitte I, II und III, Bruchkörper, Mantelreibung und qc",
+    "ariaPhysical": "3D-Ansicht des Pfahls im Boden; Ziehen dreht, Scrollen zoomt",
+    "noPhysical": "Es gibt keine 3D-Ansicht: Die Pfahlmaße oder Höhen sind ungültig.",
+    "notePhysical": "Pfahl, Schichten und Höhen sind maßstäblich; der Bodenblock ist entlang der Pfahlachse aufgeschnitten. Die Schichten sind der Schichtaufbau der Drucksondierung, mit den Anpassungen aus der Schichtinterpretation. Schematisch: Pfahlspitze, Anschlusseisen und Bewehrung, Schraubenblatt, Kernrohr und Schweißring. Wo die Sondierung keine Schicht liefert, ist die nächstgelegene Schicht verlängert.",
+    "material": {
+      "concrete": "Beton",
+      "steel": "Stahl",
+      "wood": "Holz",
+      "grout": "Verpressmörtel",
+      "plug": "Bodenpfropfen"
+    },
+    "soil": {
+      "sand": "Sand",
+      "clay": "Ton",
+      "peat": "Torf"
+    },
+    "physical": {
+      "head": "Pfahlkopf {{nap}}",
+      "water": "Grundwasser {{nap}}",
+      "excavation": "Aushub {{nap}}",
+      "joint": "Stoß {{nap}}",
+      "excavatedLayer": "{{soil}} (ausgehoben)",
+      "adjustedLayer": "{{soil}} (angepasst)"
+    }
+  },
   "types": {
     "add": "Pfahltyp hinzufügen",
     "hint": "Zusätzliche Pfahltypen erscheinen neben dem Haupttyp in der maßgebenden Übersicht und im Lageplan. Die Tabellen je Sondierung bleiben die des Haupttyps.",
@@ -376,7 +479,9 @@
       "prefab": "Fertigteilbeton",
       "steelEA": "Stahlpfahl; projektspezifische EA",
       "steelTube": "Stahlrohrpfahl, betongefüllt",
-      "wood": "Holz, konstanter Querschnitt"
+      "wood": "Holz, konstanter Querschnitt",
+      "steelOpen": "Offenes Stahlrohr, ohne Pfropfen",
+      "steelOpenPlug": "Offenes Stahlrohr, mit Bodenpfropfen"
     },
     "noPoints": "Keine Messwerte in dieser Sondierung",
     "notComputed": "Nicht berechnet: {{error}}. Verschieben Sie die Höhen oder passen Sie die Eingabe an.",
@@ -384,5 +489,147 @@
     "taperLength": "konische Länge ab Kopf",
     "toeSize": "Fußabmessung",
     "wall": "Wand"
+  },
+  "system": {
+    "noTable2025": "Für {{system}} stehen die Pfahlklassenfaktoren der NEN 9997-1:2025 noch nicht in der Tabelle dieses Programms; es wird nichts geschätzt. Das System ist daher bei dieser Ausgabe nicht wählbar. Wählen Sie die Ausgabe 2017 oder rechnen Sie mit Projektfaktoren aus einer Selbsterklärung oder Probebelastung.",
+    "noTableRow": "{{system}} hat keine eigene Zeile in Tabelle 7.c dieser Ausgabe und ist daher nicht mit Tabellenwerten wählbar. Rechnen Sie mit Projektfaktoren aus der Selbsterklärung des Pfahlsystems oder aus einer Probebelastung.",
+    "noTableBadge": "kein Tabellenwert",
+    "useProjectFactors": "Mit Projektfaktoren wählen"
+  },
+  "interp": {
+    "add": "Tiefenbereich anpassen",
+    "bottom": "Unterkante",
+    "bottomAria": "Unterkante des Tiefenbereichs [m NAP]",
+    "cancel": "Abbrechen",
+    "captureTitle": "Von oben nach unten ziehen, um den Tiefenbereich zu wählen",
+    "change": {
+      "noLayer": "keine Schicht",
+      "qcFixed": "{{qc}}: gemessen {{min}}–{{max}} MPa (Mittel {{mean}}) → fester Wert {{top}} MPa",
+      "qcLinear": "{{qc}}: gemessen {{min}}–{{max}} MPa (Mittel {{mean}}) → linear von {{top}} auf {{bottom}} MPa",
+      "soil": "Bodenart: {{before}} → {{after}}"
+    },
+    "colChange": "Änderung (alt → neu)",
+    "colRange": "Tiefenbereich",
+    "comment": "Erläuterung",
+    "commentAria": "Erläuterung zur Anpassung",
+    "commentPlaceholder": "Warum diese Anpassung?",
+    "delete": "Löschen",
+    "deleteAria": "Anpassung A{{n}} löschen",
+    "edit": "Bearbeiten",
+    "editAria": "Anpassung A{{n}} bearbeiten",
+    "editTitle": "Anpassung bearbeiten",
+    "listAria": "Anpassungen dieser Sondierung",
+    "markTitle": "Angepasster Tiefenbereich A{{n}}; zum Bearbeiten klicken",
+    "newTitle": "Neue Anpassung",
+    "notApplied": {
+      "invalid": "Nicht angewendet: ungültiger Tiefenbereich oder keine Änderung angegeben.",
+      "outsideRange": "Nicht angewendet: Der Tiefenbereich liegt außerhalb der Sondierung."
+    },
+    "problem": {
+      "nothing": "Wählen Sie eine Änderung des Spitzenwiderstands oder der Bodenart.",
+      "order": "Die Oberkante muss höher liegen als die Unterkante.",
+      "range": "Wählen Sie einen Tiefenbereich: im Diagramm von oben nach unten ziehen oder beide Höhen eingeben.",
+      "value": "Geben Sie einen festen Spitzenwiderstand von null oder mehr an."
+    },
+    "qc": "Spitzenwiderstand",
+    "qcFixed": "fester Wert",
+    "qcLinear": "linear zwischen den Rändern",
+    "qcNone": "unverändert",
+    "range": "NAP {{top}} bis {{bottom}} m",
+    "report": {
+      "colChange": "Änderung (alt → neu)",
+      "colComment": "Erläuterung",
+      "colCpt": "Sondierung",
+      "colNr": "Nr.",
+      "colRange": "Tiefenbereich [m NAP]",
+      "intro": "In dieser Berechnung weichen die folgenden Tiefenbereiche von der gemessenen Sondierung ab. Die Sondierung selbst wurde nicht geändert; eine Anpassung gilt nur für diese Berechnung und für die genannte Sondierung. Im Diagramm der Sondierung ist die Messung dünn gezeichnet und der angepasste Bereich markiert.",
+      "title": "Anpassungen der Schichtinterpretation"
+    },
+    "resetAll": "Alles zurücksetzen",
+    "resetAllTitle": "Entfernt alle Anpassungen dieser Sondierung in dieser Berechnung; die Messung gilt wieder.",
+    "resultNote": "Diese Berechnung weicht für Sondierung {{cpt}} von der gemessenen Interpretation ab. Die Sondierung selbst ist unverändert.",
+    "resultTitle": "Anpassungen der Schichtinterpretation",
+    "save": "Speichern",
+    "selectHint": "Ziehen Sie im Diagramm von oben nach unten, um den Tiefenbereich zu wählen, oder geben Sie die Höhen ein. Die gemessene Linie bleibt grau sichtbar.",
+    "soilAria": "Bodenart des Tiefenbereichs",
+    "stateChanged": "{{n}} Anpassung(en) für diese Sondierung",
+    "stateMeasured": "wie gemessen",
+    "tableNote": "Schichtinterpretation für diese Sondierung angepasst: {{n}} Tiefenbereich(e). Die Werte unten sind damit berechnet.",
+    "title": "Schichtinterpretation",
+    "top": "Oberkante",
+    "topAria": "Oberkante des Tiefenbereichs [m NAP]",
+    "value": "Wert",
+    "valueAria": "Fester Spitzenwiderstand [MPa]",
+    "warning": {
+      "applied": "Schichtinterpretation angepasst: {{n}} Tiefenbereich(e) der Sondierung {{cpt}} weichen von der Messung ab.",
+      "skipped": "{{n}} Anpassung(en) der Schichtinterpretation wurden nicht angewendet: Der Tiefenbereich liegt außerhalb der Sondierung oder ist ungültig."
+    }
+  },
+  "strength": {
+    "title": "Festigkeit des Pfahls",
+    "enable": "Festigkeit des Pfahls nachweisen",
+    "steelGrade": "Stahlsorte",
+    "timberClass": "Festigkeitsklasse Holz",
+    "ownValue": "Eigener Wert",
+    "timber": "Holz",
+    "concreteClass": "Betonfestigkeitsklasse",
+    "concreteClassExtension": "Betonklasse Aufsatz",
+    "hintTimber": "Druck parallel zur Faser unter N_Ed + F_nk;d (EN 1995-1-1). k_mod und γ_M: Standardwerte für dauerhaft nasses Holz und ständige Last. Knicken wird nicht nachgewiesen.",
+    "hintSteel": "Querschnittsklasse und Normalkraft des Rohrs unter N_Ed + F_nk;d (EN 1993-1-1). Knicken wird nicht nachgewiesen: Das Programm kennt keine freie oder schwach gestützte Länge.",
+    "hintConcrete": "Normalkraft des Betonquerschnitts unter N_Ed + F_nk;d (EN 1992-1-1), ohne Bewehrung. Knicken wird nicht nachgewiesen.",
+    "col": {
+      "article": "Abschnitt",
+      "demand": "Bemessungswert",
+      "resistance": "Widerstand"
+    },
+    "notesTitle": "Annahmen und was nicht nachgewiesen wurde",
+    "status": {
+      "ok": "erfüllt",
+      "fail": "nicht erfüllt",
+      "outside": "außerhalb dieses Nachweises",
+      "na": "nicht nachgewiesen",
+      "info": "zur Information"
+    },
+    "rows": {
+      "steelClass": "Querschnittsklasse Rohr",
+      "steelAxial": "Normalkraft Stahlrohr",
+      "timberAxial": "Holz: Druck parallel zur Faser",
+      "timberToe": "Holz: kleinster Querschnitt am Pfahlfuß",
+      "extensionAxial": "Betonaufsatz: Normalkraft",
+      "concreteAxial": "Normalkraft Betonquerschnitt"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, angesetzt vom Pfahlkopf bis zur Unterkante der negativen Mantelreibung. Darunter nimmt die Normalkraft durch positive Mantelreibung ab; dieser Teil wird nicht nachgewiesen.",
+      "steelNoSection": "Nicht nachgewiesen: Der Stahlquerschnitt (Kernrohr, Wanddicke) ist für dieses Pfahlsystem nicht in der Eingabe enthalten.",
+      "class4": "Querschnittsklasse 4: Lokales Beulen ist maßgebend. Das liegt außerhalb dieses Nachweises (EN 1993-1-6); der Widerstand wurde nicht berechnet.",
+      "class4Short": "Außerhalb dieses Nachweises (Querschnittsklasse 4).",
+      "classIs": "Querschnittsklasse {{cls}}.",
+      "steel": "Stahl: nur das Rohr mit der eingegebenen Wanddicke und f_y für t ≤ 40 mm; eine Betonfüllung wird nicht berücksichtigt. Nicht nachgewiesen: Knicken (Abs. 6.3; das Modul kennt keine freie oder schwach gestützte Länge), Korrosion (Restwanddicke eingeben), Schweißnähte und Kupplungen sowie die Rammspannungen.",
+      "timber": "Holz: Festigkeitsklasse {{cls}} mit f_c,0,k = {{fc}} MPa (EN 338); k_mod und γ_M sind Eingabewerte, Standardwerte für dauerhaft nasses Holz und ständige Last. Nicht nachgewiesen: Knicken (Abs. 6.3.2), der Stoß mit einem Aufsatz, Schädigung des Holzes und die Rammspannungen.",
+      "timberToe": "Zur Information: obere Grenze mit dem vollen N_Ed;max auf dem Fußquerschnitt. Die positive Mantelreibung oberhalb des Pfahlfußes wurde nicht abgezogen; die tatsächliche Kraft am Pfahlfuß ist kleiner.",
+      "concrete": "Beton: N_Rd = A_c · f_cd des Schaftquerschnitts, ohne Bewehrung (sie ist nicht in der Eingabe enthalten). Nicht nachgewiesen: die Mindestausmitte (Abs. 6.1 (4)), Knicken, die Bewehrung und die Rammspannungen.",
+      "concreteInSitu": "Ortbetonpfahl: Der verminderte Bemessungsdurchmesser (Abs. 2.3.4.2) und die Erhöhung von γ_c (Abs. 2.4.2.5) für Pfähle ohne bleibendes Rohr wurden nicht angewendet; rechnen Sie den Widerstand dafür selbst um.",
+      "concreteClassUnknown": "Unbekannte Betonfestigkeitsklasse {{cls}}.",
+      "timberSpecies": "Holzart {{species}}, Sortierklasse {{grade}} → {{cls}} nach {{source}}. Die Holzart bestimmt nur die Festigkeitsklasse; Pfahlklassenbeiwerte und Tragfähigkeit folgen aus dem Pfahltyp.",
+      "timberSpeciesOwn": "Holzart {{species}}: Die Quelle nennt keine eindeutige Festigkeitsklasse; die Klasse wurde vom Benutzer gewählt."
+    }
+  },
+  "report": {
+    "title": "Ausdruck",
+    "detail": "Umfang",
+    "detailAria": "Umfang des Ausdrucks",
+    "compact": "Kurz: Tabellen",
+    "full": "Ausführlich: vollständige Herleitung"
+  },
+  "openTube": {
+    "tip": "Spitze",
+    "noPlug": "Ohne Pfropfen: nur der Stahlring",
+    "plug": "Mit Pfropfen: Stahlring + η × Innenquerschnitt",
+    "plugFactor": "Pfropfenfaktor",
+    "plugFactorAria": "Pfropfenfaktor η [-]",
+    "plugFactorPlaceholder": "eingeben",
+    "plugFactorMissing": "η eingeben (0 bis 1) — ohne η wird nicht gerechnet.",
+    "hintPlug": "Mit Pfropfen zählt der Stahlring plus η mal der Innenquerschnitt; η = 1 ist der volle Querschnitt. Die Norm nennt keinen Wert für η: begründen Sie ihn, etwa mit der Reibung im Rohr (NEN 9997-1 Art. 7.6.2.3(d); über 500 mm auch Art. 7.6.2.1(13)).",
+    "hintNoPlug": "Ohne Pfropfen zählt nur der Stahlring, die Reibung im Rohr bleibt unberücksichtigt; das ist eine Untergrenze nach NEN 9997-1 Art. 7.6.2.3(d)."
   }
 }

@@ -195,6 +195,16 @@
       "z7": "Kiesiger Sand"
     }
   },
+  "overlay": {
+    "hoverHint": "Bewegen Sie die Maus über das Diagramm, um die Werte auf einer Höhe zu sehen.",
+    "legendTitle": "Sondierungen",
+    "levelDepth": "{{level}} m unter Gelände",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Ohne NAP-Geländehöhe, in Tiefe unter Gelände gezeichnet und daher nicht auf NAP: {{names}}",
+    "noNapTag": "kein NAP",
+    "noVisible": "Keine sichtbaren Sondierungen.",
+    "units": "qc und fs in MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} Schichten · {{depth}} m Tiefe",
     "close": "Schließen",
@@ -260,14 +270,6 @@
     "z9": "Sehr steif feinkörnig"
   },
   "dissipation": {
-    "title": "Dissipationsversuche",
-    "chartLabel": "Porenwasserdruck in kPa über der Zeit in Sekunden (logarithmisch)",
-    "timeAxis": "Zeit [s]",
-    "atDepth": "In {{depth}} m",
-    "remove": "Dissipationsversuch entfernen",
-    "uMax": "u max",
-    "uEnd": "u Ende",
-    "noDecay": "kein Abbau",
-    "note": "t50: Zeit bis zur Hälfte des Abbaus zwischen dem höchsten und dem letzten Messwert. Der letzte Messwert nähert das Gleichgewicht an; wurde der Versuch früh beendet, ist t50 ein Richtwert."
+    "title": "Dissipationsversuche"
   }
 }

@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Report",
   "tekeningTab": "Planimetria",
+  "sondeerbedrijfTab": "Impresa di sondaggi",
   "berekeningenTab": "Calcoli",
   "tekening": {
     "info": "Disegno",
@@ -143,12 +144,27 @@
       "sbtLegend": "Legenda indicativa qc/Rf",
       "sbtHint": "Pagina separata con le 9 zone di terreno",
       "metadata": "Riepilogo dei metadati",
-      "metaHint": "#COMPANYID / #PROJECTID / calibrazione completi, ecc."
+      "metaHint": "#COMPANYID / #PROJECTID / calibrazione completi, ecc.",
+      "texts": "Testi",
+      "textsHint": "Introduzione, livellazione e livello di falda subito dopo la copertina",
+      "testReport": "Rapporto di prova",
+      "testReportHint": "Una pagina per prova con i dati richiesti dalla norma EN ISO 22476-1"
     },
     "cptCount": "Prove",
     "openProjectInfo": "Modifica i dati del progetto",
     "openInNewWindow": "Apri il PDF nel visualizzatore di sistema",
-    "openPdf": "Apri PDF"
+    "openPdf": "Apri PDF",
+    "text": {
+      "title": "Testi",
+      "introduction": "Introduzione",
+      "levelling": "Livellazione",
+      "groundwater": "Livello di falda",
+      "sample": "Testo di esempio",
+      "sampleHint": "Inserisce un testo standard con i dati del progetto, da adattare in seguito",
+      "sampleBlocked": "Svuota prima la casella di testo per inserire il testo di esempio",
+      "hint": "Un testo vuoto non compare nel rapporto. I testi vengono salvati con il progetto.",
+      "hintNoProject": "Un testo vuoto non compare nel rapporto. Senza progetto i testi non vengono conservati."
+    }
   },
   "model3dTab": "Modello 3D",
   "model3d": {
@@ -227,6 +243,11 @@
   "openPdf": "Apri PDF",
   "scaleCptColumns": "Ridimensiona colonne prove",
   "scaleCptColumnsHint": "Dopo Adatta, allarga anche le colonne; scorri orizzontalmente per le altre prove.",
+  "cptLayout": "Mostra prove",
+  "cptSideBySide": "Affiancate",
+  "cptSideBySideHint": "Mostra le prove una accanto all'altra, ciascuna nella propria colonna.",
+  "cptOverlay": "Sovrapposte",
+  "cptOverlayHint": "Disegna tutte le prove visibili sovrapposte: un grafico di qc e uno di fs rispetto al NAP.",
   "cptGroup": "Prova CPT",
   "cptFromScan": "Da scansione"
 }

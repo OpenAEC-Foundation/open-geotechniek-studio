@@ -3,29 +3,27 @@
 // Per-sondering visual-blad voor het paaldraagvermogen-rapport, in de
 // stijl van blad 2 van het externe referentierapport (984.pdf):
 //
-//   - qc-grafiek (0–30 MPa) met blauwe meetcurve
+//   - qc-grafiek (0–30 MPa) met de meetcurve in donkergrijs
 //   - Rf-paneel rechts (10% → 0%, geïnverteerd)
 //   - grondlagen-kolom met kleur per grondsoort
-//   - paal-balk links met NEd/Nk-pijl (rood, omlaag) en Rb-pijl (blauw, omhoog)
-//   - rood/blauwe kleef-balk in de grafiek (neg. kleef / pos. wrijving)
+//   - paal-balk links met NEd/Nk-pijl (belasting, omlaag) en Rb-pijl (weerstand, omhoog)
+//   - kleef-balk in de grafiek (neg. kleef / pos. wrijving)
 //   - NAP-niveaulijnen (ontgraving, paalkop, water, kleef-grens, paalpunt)
 //   - 4D/8D-zones + afgeknotte qc-curve (running-min) + qc;I/II/III-legend
 //
 // Alle tekenwerk is jsPDF-vector (geen rasterafbeeldingen) zodat de
-// PDF klein blijft en scherp print.
+// PDF klein blijft en scherp print. Kleuren uit report/reportPalette:
+// belasting in de foutkleur, weerstand in de succeskleur, de afgeknotte
+// curve en de qc-zones in de accentkleur van de huisstijl; alleen de
+// grondsoorten en het paalmateriaal houden hun eigen vaste kleur.
 
 import type { jsPDF } from "jspdf";
 import type { Cpt } from "../../../../types/cpt";
-import type { PileInput, PileResult, SoilKind } from "../types";
+import type { AppliedOverride, PileInput, PileResult, SoilKind } from "../types";
 import { getPileType } from "../catalog";
 import { MATERIAL_COLORS, materialColor } from "./material-colors";
-
-// ─── Kleuren ─────────────────────────────────────────────────────
-const COL_QC: [number, number, number] = [40, 60, 160];      // meetcurve blauw
-const COL_GRID: [number, number, number] = [200, 200, 210];
-const COL_NEG: [number, number, number] = [220, 40, 40];     // neg. kleef rood
-const COL_POS: [number, number, number] = [40, 70, 200];     // pos. wrijving blauw
-const COL_CLIP: [number, number, number] = [120, 20, 60];    // afgeknotte qc
+import { reportPalette } from "../../../../report/reportPalette";
+import { drawSheetTitle } from "../../../../report/reportTitle";
 
 const SOIL_FILL: Record<SoilKind, [number, number, number]> = {
   "sand-dry": [247, 228, 99],
@@ -47,7 +45,12 @@ export interface ChartPageArgs {
   name: string;
   input: PileInput;
   result: PileResult;
+  /** De sondering zoals gemeten. */
   cpt: Cpt;
+  /** De sondering waarmee is gerekend, als de conusweerstand is aangepast. */
+  adjustedCpt?: Cpt;
+  /** Aanpassingen van de grondlaaginterpretatie; de toegepaste krijgen een markering. */
+  adjustments?: AppliedOverride[];
 }
 
 function fmtNap(v: number): string {
@@ -56,8 +59,16 @@ function fmtNap(v: number): string {
 
 /** Render het visual-blad. Gaat uit van een verse pagina met chrome. */
 export function renderSonderingChart(args: ChartPageArgs): void {
-  const { doc, startY, name, input, result, cpt } = args;
+  const { doc, startY, name, input, result, cpt, adjustedCpt, adjustments } = args;
   const D_m = result.base.deqMm / 1000;
+
+  // ─── Kleuren ───────────────────────────────────────────────────
+  const pal = reportPalette();
+  const COL_QC = pal.secondary;      // meetcurve
+  const COL_GRID = pal.rule;
+  const COL_NEG = pal.error;         // belasting en neg. kleef
+  const COL_POS = pal.success;       // weerstand en pos. wrijving
+  const COL_CLIP = pal.accentStrong; // afgeknotte qc
 
   // ─── Layout [mm] ───────────────────────────────────────────────
   const pileX = 22;        // hart van de losse paal-balk links
@@ -88,10 +99,7 @@ export function renderSonderingChart(args: ChartPageArgs): void {
     rfR - (Math.min(rf, rfMax) / rfMax) * (rfR - rfL);
 
   // ─── Titel ─────────────────────────────────────────────────────
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(0);
-  doc.text(`Sondering: ${name}`, 14, startY + 6);
+  drawSheetTitle(doc, `Sondering: ${name}`, 14, startY + 6, 182);
 
   // ─── Grid + assen ──────────────────────────────────────────────
   doc.setLineWidth(0.15);
@@ -129,19 +137,19 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   // ─── 4D/8D zones (vóór de curve zodat de curve eroverheen tekent) ──
   const toe = input.pileToeNap;
   const critBelow = result.base.criticalDepthM; // m onder paalpunt (0,7D..4D)
-  // qc;I/II-zone: paalpunt → kritische diepte eronder (lichtgele vulling,
+  // qc;I/II-zone: paalpunt → kritische diepte eronder (lichte accenttint,
   // matcht de qc;II-legend; qc;I doorloopt dezelfde zone omlaag)
-  doc.setFillColor(248, 240, 180);
+  doc.setFillColor(...pal.accentTint);
   doc.rect(plotL, yOf(toe), plotR - plotL, yOf(toe - critBelow) - yOf(toe), "F");
-  // qc;III-zone: paalpunt → 8D erboven (roze vulling, matcht qc;III-legend)
-  doc.setFillColor(240, 200, 205);
+  // qc;III-zone: paalpunt → 8D erboven (lichtgrijze vulling, matcht qc;III-legend)
+  doc.setFillColor(...pal.neutralTint);
   doc.rect(plotL, yOf(toe + 8 * D_m), plotR - plotL, yOf(toe) - yOf(toe + 8 * D_m), "F");
-  // 4D-grens (rood streep-punt) + 8D-grens (groen gestreept)
+  // 4D-grens (accent, gestreept) + 8D-grens (grijs, gestreept)
   doc.setLineDashPattern([2, 1], 0);
-  doc.setDrawColor(200, 60, 60);
+  doc.setDrawColor(...pal.accentStrong);
   doc.setLineWidth(0.25);
   doc.line(plotL, yOf(toe - 4 * D_m), plotR, yOf(toe - 4 * D_m));
-  doc.setDrawColor(60, 160, 60);
+  doc.setDrawColor(...pal.ruleStrong);
   doc.line(plotL, yOf(toe + 8 * D_m), plotR, yOf(toe + 8 * D_m));
   doc.setLineDashPattern([], 0);
   // Brackets "8D" (boven paalpunt) en "4D" (onder paalpunt), links van plot
@@ -173,7 +181,43 @@ export function renderSonderingChart(args: ChartPageArgs): void {
     prev = pt;
   }
 
-  // ─── Afgeknotte qc-curve (running-min, donkerrood) ─────────────
+  // ─── Aangepaste trajecten: de meting hierboven blijft dun staan, de
+  //     lijn waarmee is gerekend komt er dikker overheen. ──────────
+  const marks = (adjustments ?? []).map((a, i) => ({ a, nr: `A${i + 1}` })).filter((m) => m.a.status === "applied");
+  for (const { a } of marks) {
+    const yT = yOf(Math.min(a.topNap, topNap)), yB = yOf(Math.max(a.bottomNap, bottomNap));
+    if (yB <= yT) continue;
+    doc.setFillColor(...pal.errorTint);
+    doc.rect(plotL, yT, plotR - plotL, yB - yT, "F");
+    if (!a.qc || !adjustedCpt) continue;
+    doc.setDrawColor(...COL_NEG);
+    doc.setLineWidth(0.5);
+    let pa: { x: number; y: number } | null = null;
+    for (const p of adjustedCpt.points) {
+      const nap = groundNap - p.depth;
+      if (nap > a.topNap + 1e-6 || nap < a.bottomNap - 1e-6 || nap > topNap || nap < bottomNap) { pa = null; continue; }
+      const pt = { x: xOfQc(p.qc ?? 0), y: yOf(nap) };
+      if (pa) doc.line(pa.x, pa.y, pt.x, pt.y);
+      pa = pt;
+    }
+  }
+  // De meting opnieuw over de band, zodat hij binnen het traject zichtbaar blijft.
+  if (marks.length) {
+    doc.setDrawColor(...COL_QC);
+    doc.setLineWidth(0.2);
+    for (const { a } of marks) {
+      let pm: { x: number; y: number } | null = null;
+      for (const p of cpt.points) {
+        const nap = groundNap - p.depth;
+        if (nap > a.topNap || nap < a.bottomNap || nap > topNap || nap < bottomNap) { pm = null; continue; }
+        const pt = { x: xOfQc(p.qc ?? 0), y: yOf(nap) };
+        if (pm) doc.line(pm.x, pm.y, pt.x, pt.y);
+        pm = pt;
+      }
+    }
+  }
+
+  // ─── Afgeknotte qc-curve (running-min, donker accent) ──────────
   if (result.base.clippedQcCurve && result.base.clippedQcCurve.length > 1) {
     doc.setDrawColor(...COL_CLIP);
     doc.setLineWidth(0.4);
@@ -223,12 +267,21 @@ export function renderSonderingChart(args: ChartPageArgs): void {
     }
   }
 
+  // Nummer van elk aangepast traject, rechts in de grafiek.
+  doc.setFontSize(6.5);
+  doc.setTextColor(...COL_NEG);
+  for (const { a, nr } of marks) {
+    const yT = yOf(Math.min(a.topNap, topNap)), yB = yOf(Math.max(a.bottomNap, bottomNap));
+    if (yB > yT) doc.text(nr, plotR - 1, Math.min(yB - 0.6, yT + 2.6), { align: "right" });
+  }
+  doc.setTextColor(0);
+
   // ─── NAP-niveaulijnen + labels ─────────────────────────────────
   interface Level { nap: number; label: string; color: [number, number, number]; dash?: boolean }
   const levels: Level[] = [
-    { nap: input.excavationNap, label: fmtNap(input.excavationNap), color: [150, 90, 60] },
+    { nap: input.excavationNap, label: fmtNap(input.excavationNap), color: pal.secondary },
     { nap: input.pileTopNap, label: fmtNap(input.pileTopNap), color: [0, 0, 0] },
-    { nap: input.waterNap, label: fmtNap(input.waterNap), color: [60, 120, 220], dash: true },
+    { nap: input.waterNap, label: fmtNap(input.waterNap), color: pal.info, dash: true },
     { nap: input.negKleefBottomNap, label: fmtNap(input.negKleefBottomNap), color: [0, 0, 0] },
     { nap: input.pileToeNap, label: fmtNap(input.pileToeNap), color: [0, 0, 0] },
   ];
@@ -277,7 +330,7 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   } else {
     doc.rect(pileX - 1.6, pTopY, 3.2, pToeY - pTopY, "FD");
   }
-  // NEd/Nk-pijl boven de paal (rood, omlaag)
+  // NEd/Nk-pijl boven de paal (belasting, omlaag)
   doc.setDrawColor(...COL_NEG);
   doc.setFillColor(...COL_NEG);
   doc.setLineWidth(0.6);
@@ -288,7 +341,7 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   doc.setTextColor(0);
   doc.text(`NEd=${input.nEd} kN`, pileX - 4, pTopY - 12.5);
   doc.text(`Nk=${input.nEk} kN`, pileX - 4, pTopY - 9.5);
-  // Rb-pijl onder paalpunt (blauw, omhoog)
+  // Rb-pijl onder paalpunt (weerstand, omhoog)
   doc.setDrawColor(...COL_POS);
   doc.setFillColor(...COL_POS);
   doc.line(pileX, pToeY + 9, pileX, pToeY + 2.5);
@@ -296,14 +349,14 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   doc.setTextColor(0);
   doc.text(`${result.base.rbCalMax.toFixed(0)} kN`, pileX - 4, pToeY + 13);
 
-  // ─── Kleef-balk in de grafiek (rood = neg, blauw = pos) ────────
+  // ─── Kleef-balk in de grafiek (neg. kleef en pos. wrijving) ────
   const kleefX = plotR + 1.2;
   const kleefY = yOf(input.negKleefBottomNap);
   doc.setFillColor(...COL_NEG);
   doc.rect(kleefX, pTopY, 1.8, kleefY - pTopY, "F");
   doc.setFillColor(...COL_POS);
   doc.rect(kleefX, kleefY, 1.8, pToeY - kleefY, "F");
-  // Labels + pijlen: Fnk (rood omlaag, halverwege neg-zone) en Rs (blauw omhoog)
+  // Labels + pijlen: Fnk (omlaag, halverwege neg-zone) en Rs (omhoog)
   const negMidY = (pTopY + kleefY) / 2;
   doc.setDrawColor(...COL_NEG);
   doc.setFillColor(...COL_NEG);
@@ -323,9 +376,9 @@ export function renderSonderingChart(args: ChartPageArgs): void {
   const legX = plotL + 14;
   const legY = yOf((topNap + input.negKleefBottomNap) / 2) - 6;
   const legend: Array<{ sw: [number, number, number]; txt: string }> = [
-    { sw: [240, 200, 205], txt: `qc;III;gem = ${result.base.qcIIIGemMpa.toFixed(2).replace(".", ",")} MPa` },
-    { sw: [248, 240, 180], txt: `qc;II;gem = ${result.base.qcIIGemMpa.toFixed(2).replace(".", ",")} MPa` },
-    { sw: [216, 232, 160], txt: `qc;I;gem = ${result.base.qcIGemMpa.toFixed(2).replace(".", ",")} MPa` },
+    { sw: pal.neutralTint, txt: `qc;III;gem = ${result.base.qcIIIGemMpa.toFixed(2).replace(".", ",")} MPa` },
+    { sw: pal.accentTint, txt: `qc;II;gem = ${result.base.qcIIGemMpa.toFixed(2).replace(".", ",")} MPa` },
+    { sw: pal.accentTintStrong, txt: `qc;I;gem = ${result.base.qcIGemMpa.toFixed(2).replace(".", ",")} MPa` },
   ];
   doc.setFontSize(7.5);
   legend.forEach((l, i) => {

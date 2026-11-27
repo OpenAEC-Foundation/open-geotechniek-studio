@@ -195,6 +195,16 @@
       "z7": "Piasek żwirowy"
     }
   },
+  "overlay": {
+    "hoverHint": "Przesuń kursor nad wykresem, aby odczytać wartości na jednym poziomie.",
+    "legendTitle": "Sondowania",
+    "levelDepth": "{{level}} m poniżej terenu",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Bez rzędnej terenu w NAP, narysowane według głębokości poniżej terenu, a więc nie w NAP: {{names}}",
+    "noNapTag": "brak NAP",
+    "noVisible": "Brak widocznych sondowań.",
+    "units": "qc i fs w MPa"
+  },
   "projectSettings": {
     "boreMeta": "warstwy: {{layers}} · głębokość {{depth}} m",
     "close": "Zamknij",
@@ -260,14 +270,6 @@
     "z9": "Bardzo sztywny drobnoziarnisty"
   },
   "dissipation": {
-    "title": "Testy dysypacji",
-    "chartLabel": "Ciśnienie porowe w kPa w funkcji czasu w sekundach (logarytmicznie)",
-    "timeAxis": "czas [s]",
-    "atDepth": "Na {{depth}} m",
-    "remove": "Usuń test dysypacji",
-    "uMax": "u maks",
-    "uEnd": "u końcowe",
-    "noDecay": "brak spadku",
-    "note": "t50: czas do połowy spadku między najwyższym a ostatnim odczytem. Ostatni odczyt przybliża stan równowagi; jeśli test przerwano wcześnie, t50 jest orientacyjne."
+    "title": "Testy dysypacji"
   }
 }

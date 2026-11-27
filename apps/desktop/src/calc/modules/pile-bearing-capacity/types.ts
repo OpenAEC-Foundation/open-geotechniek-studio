@@ -1,4 +1,6 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/types.ts
+import type { StrengthResult } from "./parts/strength-check";
+import type { AppliedOverride as SharedAppliedOverride, InterpretationOverride as SharedInterpretationOverride } from "../../shared/interpretation/overrides";
 
 /** Soil-type voor neg.kleef + schachtwrijving. */
 export type SoilKind = "sand-dry" | "sand-wet" | "clay" | "peat";
@@ -33,6 +35,26 @@ export interface PileTypeSpec {
   settlementLine?: 1 | 2 | 3;
   requiresEA?: boolean;
   qcIIIStartCapMpa?: number;
+  /** De tabel van de gekozen editie heeft voor dit type geen (volledige)
+   *  paalklassefactoren; rekenen kan dan alleen met projectfactoren. */
+  factorsMissing?: boolean;
+  /** Met projectfactoren op een type zonder tabelregel: lastzakkingslijn onbekend. */
+  settlementLineUnknown?: boolean;
+  /** Open buis (geen voetplaat): de puntweerstand hangt af van de grondprop, zie `PileInput.openTube`. */
+  openEnd?: boolean;
+}
+
+/**
+ * Open stalen buispaal: hoe de punt wordt gerekend.
+ * - `plug: false` — zonder prop: puntweerstand alleen over de staalring, inwendige
+ *   schachtwrijving niet meegenomen (ondergrens van NEN 9997-1 art. 7.6.2.3(d)).
+ * - `plug: true` — met prop: puntweerstand over de staalring plus `plugFactor` maal de
+ *   binnendoorsnede. De factor (0 < η ≤ 1) vult de gebruiker in en onderbouwt hem; zonder
+ *   factor wordt er niet gerekend.
+ */
+export interface OpenTubeInput {
+  plug: boolean;
+  plugFactor?: number;
 }
 
 /** Betonopzetter op een houten paal: boven de las beton, eronder hout. */
@@ -60,9 +82,40 @@ export interface PilePresets {
   extensions?: Array<{ sizeMm: number; isCircular: boolean }>;
   extensionLengthsM?: number[];
   timberToeMm?: number;
+  /** Gezaagde houten palen: doorsneden a × b [mm]. */
+  rectSizesMm?: Array<[number, number]>;
 }
 
+/** Optionele toets van de paal als constructie-element op de axiale rekenbelasting. */
+export interface StrengthCheckInput {
+  enabled: boolean;
+  /** Staalsoort van de buis, bv. "S355". Standaard S235. */
+  steelGrade?: string;
+  /** Sterkteklasse van het hout (NEN-EN 338), bv. "C18". */
+  timberClass?: string;
+  /** Eigen karakteristieke druksterkte evenwijdig aan de vezel [MPa]; gaat voor de klasse. */
+  timberFc0kMpa?: number;
+  /** Modificatiefactor; standaard 0,50 (klimaatklasse 3, blijvende belasting). */
+  kMod?: number;
+  /** Materiaalfactor hout; standaard 1,3. */
+  gammaMTimber?: number;
+  /** Betonsterkteklasse van paal of opzetter, bv. "C35/45". */
+  concreteClass?: string;
+}
+
+/**
+ * Aanpassing van de grondlaaginterpretatie voor één dieptetraject van één
+ * sondering, met de grondsoorten van de paalberekening. De vorm is gedeeld
+ * met de andere modules: zie calc/shared/interpretation/overrides.ts.
+ */
+export type InterpretationOverride = SharedInterpretationOverride<SoilKind>;
+
+/** Een aanpassing zoals hij in de berekening is verwerkt, voor scherm en uitdraai. */
+export type AppliedOverride = SharedAppliedOverride<SoilKind>;
+
 export interface PileInput {
+  /** Aanpassingen van de grondlaaginterpretatie, per sondering. Ontbrekend = gemeten interpretatie. */
+  interpretationOverrides?: InterpretationOverride[];
   /** Gedeelde invoer met afzonderlijke resultaten per sondering en puntniveau. */
   /** Instellingen van deze berekening: eigen standaardreeksen. Ontbrekend = standaard. */
   presets?: PilePresets;
@@ -80,13 +133,24 @@ export interface PileInput {
     examples?:Array<{cptId:string;sizeMm:number;toeNap:number}>;
   };
   /** Ontbrekend: behoud het bestaande projectmodel. */
-  standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017";
+  standard?: "nen-6743-1991" | "nen-6743-2006" | "nen-9997-2012" | "nen-9997-2017" | "nen-9997-2025";
   cptId: string | null;        // referentie naar CPT in project
   pileTypeId: string;          // "steel-pipe-driven-closed"
   diameterMm: number;          // 219
   wallThicknessMm: number;     // 8.0 — voor EA
   /** Ontbrekend betekent dezelfde maat als de schacht (bestaande projecten). */
   baseDiameterMm?: number;
+  /** Gezaagd hout: tweede zijde b [mm] van een rechthoekige doorsnede; diameterMm
+   *  is dan zijde a. Ontbrekend = vierkant (b = a). */
+  sideBMm?: number;
+  /** Optionele sterktetoets van de paal; ontbrekend of uit = geen toets. */
+  strengthCheck?: StrengthCheckInput;
+  /** Hout: houtsoort en sorteerklasse (parts/timber-species.ts). Bepaalt alleen
+   *  de sterkteklasse in de sterktetoets en de kleur in de tekening, niet de
+   *  paalklassefactoren. Ontbrekend = eigen sterkteklasse. */
+  timberSpecies?: { id: string; gradeId?: string };
+  /** Omvang van rekenblad en uitdraai; ontbrekend = beknopt. */
+  reportDetail?: "compact" | "full";
   /** Hout: lineair verloop vanaf de bovenkant van het hout (paalkop, of de
    *  las bij een betonopzetter) over lengthM, daarna constante puntdiameter. */
   timberTaper?: { toeDiameterMm: number; lengthM: number };
@@ -95,6 +159,8 @@ export interface PileInput {
   concreteExtension?: ConcreteExtension;
   /** Projectspecifieke axiale stijfheid EA, in kN. */
   axialStiffnessKn?: number;
+  /** Open stalen buispaal: met of zonder grondprop. Ontbrekend bij een open buis = zonder prop. */
+  openTube?: OpenTubeInput;
   projectFactors?: ProjectPileFactors;
   pileTopNap: number;          // 0.34
   pileToeNap: number;          // -14.50
@@ -125,6 +191,8 @@ export interface NegKleefLayerResult {
   k0: number;
   delta: number;               // radians
   k0TanDelta: number;          // ≥ ksMinFactor
+  /** Lengtegemiddelde schachtomtrek binnen deze laag [m]. Ontbreekt in oudere resultaten. */
+  perimeterM?: number;
   fsNkRep: number;             // kN
 }
 
@@ -143,6 +211,9 @@ export interface BaseResistanceResult {
   qcIIGemMpa: number;
   qcIIIGemMpa: number;
   criticalDepthM: number;      // 0,7..4 Deq onder paalpunt
+  /** Bovengrens van traject III waarmee is gerekend [m onder maaiveld]: 8 Deq boven
+   *  de paalpunt, begrensd op het maaiveld. Optioneel ivm eerdere PileResult-snapshots. */
+  zoneIIITopDepthM?: number;
   qbMaxMpaRaw: number;         // voor cap
   qbMaxMpa: number;            // na cap op 15 MPa
   abMm2: number;
@@ -154,10 +225,12 @@ export interface BaseResistanceResult {
    *  zodat zichtbaar is hoeveel qc er is "weggesnoept". Optioneel ivm
    *  back-compat met eerdere PileResult-snapshots. */
   clippedQcCurve?: Array<{ depth: number; qcClipped: number }>;
+  /** Open buis: de oppervlakken achter abMm2 [mm²] en de gekozen rekenwijze. */
+  openTube?: { plug: boolean; plugFactor?: number; ringMm2: number; innerMm2: number; fullMm2: number };
 }
 
 export interface ShaftFrictionResult {
-  perLayer: Array<{ layer: SoilLayer; qcGemMpa: number; qsMpa: number; rsLayer: number }>;
+  perLayer: Array<{ layer: SoilLayer; qcGemMpa: number; qsMpa: number; rsLayer: number; perimeterM?: number }>;
   rsCalMax: number;            // kN
 }
 
@@ -208,17 +281,21 @@ export interface SummaryResult {
 }
 
 /** Taalonafhankelijke soort fout, voor de draagvermogentabel (de fouttekst zelf is vertaald). */
-export type PileErrorCode = "cptTooShort" | "kleefLevels" | "eaMissing";
+export type PileErrorCode = "cptTooShort" | "kleefLevels" | "eaMissing" | "factorsMissing";
 
 export interface PileResult {
   ok: boolean;
   error?: string;              // human-readable fout, b.v. "Sondering te ondiep"
   errorCode?: PileErrorCode;
   warnings: string[];          // niet-kritieke meldingen
+  /** Aanpassingen van de grondlaaginterpretatie voor de gebruikte sondering. Ontbreekt zonder aanpassingen. */
+  interpretation?: AppliedOverride[];
   negKleef: NegKleefResult;
   base: BaseResistanceResult;
   shaft: ShaftFrictionResult;
   settlement: SettlementResult;
   spring: SpringStiffnessResult;
   summary: SummaryResult;
+  /** Sterktetoets van de paal; alleen aanwezig als hij is aangevinkt. */
+  strength?: StrengthResult;
 }

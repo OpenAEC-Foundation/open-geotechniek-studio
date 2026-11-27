@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Bericht",
   "tekeningTab": "Lageplan",
+  "sondeerbedrijfTab": "Sondierfirma",
   "berekeningenTab": "Berechnungen",
   "tekening": {
     "info": "Zeichnung",
@@ -143,12 +144,27 @@
       "sbtLegend": "Indikative qc/Rf-Legende",
       "sbtHint": "Eigene Seite mit den 9 Bodenzonen",
       "metadata": "Metadatenübersicht",
-      "metaHint": "Vollständige #COMPANYID / #PROJECTID / Kalibrierung usw."
+      "metaHint": "Vollständige #COMPANYID / #PROJECTID / Kalibrierung usw.",
+      "texts": "Texte",
+      "textsHint": "Einleitung, Nivellement und Grundwasserstand direkt nach dem Deckblatt",
+      "testReport": "Prüfbericht",
+      "testReportHint": "Pro Drucksondierung eine Seite mit den Angaben nach EN ISO 22476-1"
     },
     "cptCount": "Sondierungen",
     "openProjectInfo": "Projektdaten bearbeiten",
     "openInNewWindow": "PDF im Systembetrachter öffnen",
-    "openPdf": "PDF öffnen"
+    "openPdf": "PDF öffnen",
+    "text": {
+      "title": "Texte",
+      "introduction": "Einleitung",
+      "levelling": "Nivellement",
+      "groundwater": "Grundwasserstand",
+      "sample": "Beispieltext",
+      "sampleHint": "Einen Standardtext mit den Projektdaten einfügen und anschließend anpassen",
+      "sampleBlocked": "Leeren Sie zuerst das Textfeld, um den Beispieltext einzufügen",
+      "hint": "Ein leerer Text erscheint nicht im Bericht. Die Texte werden mit dem Projekt gespeichert.",
+      "hintNoProject": "Ein leerer Text erscheint nicht im Bericht. Ohne Projekt werden die Texte nicht gespeichert."
+    }
   },
   "model3dTab": "3D-Modell",
   "model3d": {
@@ -227,6 +243,11 @@
   "openPdf": "PDF öffnen",
   "scaleCptColumns": "Sondierspalten mitskalieren",
   "scaleCptColumnsHint": "Nach „Einpassen“ auch die Spaltenbreite vergrößern; horizontal scrollen für die übrigen Sondierungen.",
+  "cptLayout": "Sondierungen anzeigen",
+  "cptSideBySide": "Nebeneinander",
+  "cptSideBySideHint": "Sondierungen nebeneinander anzeigen, jede in einer eigenen Spalte.",
+  "cptOverlay": "Übereinander",
+  "cptOverlayHint": "Alle sichtbaren Sondierungen übereinander zeichnen: ein Diagramm für qc und eines für fs über NAP.",
   "cptGroup": "Sondierung",
   "cptFromScan": "Aus Scan"
 }

@@ -195,6 +195,16 @@
       "z7": "Grindhoudend zand"
     }
   },
+  "overlay": {
+    "hoverHint": "Beweeg over de grafiek voor de waarden op één niveau.",
+    "legendTitle": "Sonderingen",
+    "levelDepth": "{{level}} m onder maaiveld",
+    "levelNap": "NAP {{level}} m",
+    "noNapNote": "Zonder NAP-maaiveld, getekend op diepte onder maaiveld en dus niet op NAP: {{names}}",
+    "noNapTag": "geen NAP",
+    "noVisible": "Geen zichtbare sonderingen.",
+    "units": "qc en fs in MPa"
+  },
   "projectSettings": {
     "boreMeta": "{{layers}} lagen · {{depth}} m diepte",
     "close": "Sluiten",
@@ -260,14 +270,6 @@
     "z9": "Zeer vast fijnkorrelig"
   },
   "dissipation": {
-    "title": "Dissipatietests",
-    "chartLabel": "Waterspanning in kPa tegen de tijd in seconden (logaritmisch)",
-    "timeAxis": "tijd [s]",
-    "atDepth": "Op {{depth}} m",
-    "remove": "Dissipatietest verwijderen",
-    "uMax": "u max",
-    "uEnd": "u eind",
-    "noDecay": "geen afname",
-    "note": "t50: tijd tot de helft van de afname tussen de hoogste en de laatste meting. De laatste meting benadert het evenwicht; is de test vroeg gestopt, dan is t50 indicatief."
+    "title": "Dissipatietests"
   }
 }

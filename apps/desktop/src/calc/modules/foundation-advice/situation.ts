@@ -2,6 +2,7 @@
 // RD-raster, noordpijl en schaalbalk. Eén indeling voor scherm en PDF.
 import type { jsPDF } from 'jspdf';
 import type { CptSummary } from './analysis';
+import { reportPalette } from '../../../report/reportPalette';
 
 export interface SituationLayout {
   points: Array<{ id: string; x: number; y: number; px: number; py: number; bearingTopNap: number | null }>;
@@ -47,7 +48,7 @@ export function drawSituationPdf(doc: jsPDF, cpts: CptSummary[], x0: number, y0:
   doc.setTextColor(0);
   for (const p of L.points) {
     const px = x0 + p.px, py = y0 + p.py, r = 2;
-    doc.setFillColor(217, 119, 6); doc.setDrawColor(60); doc.setLineWidth(0.25);
+    doc.setFillColor(...reportPalette().accent); doc.setDrawColor(60); doc.setLineWidth(0.25);
     doc.triangle(px, py - r, px - r * 0.9, py + r * 0.6, px + r * 0.9, py + r * 0.6, 'FD');
     doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.text(p.id, px + 2.6, py - 0.6);
     if (p.bearingTopNap !== null) { doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.setTextColor(90); doc.text(`dkl NAP ${p.bearingTopNap.toFixed(1).replace('.', ',')}`, px + 2.6, py + 2.2); doc.setTextColor(0); }
@@ -60,5 +61,5 @@ export function drawSituationPdf(doc: jsPDF, cpts: CptSummary[], x0: number, y0:
   doc.setFillColor(40, 40, 40); doc.rect(bx, by, L.bar.units / 2, 1.4, 'F'); doc.setFillColor(255, 255, 255); doc.rect(bx + L.bar.units / 2, by, L.bar.units / 2, 1.4, 'FD');
   doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5);
   doc.text('0', bx, by - 1); doc.text(`${L.bar.m} m`, bx + L.bar.units, by - 1, { align: 'center' });
-  if (L.missing.length) { doc.setFontSize(6.5); doc.setTextColor(150, 60, 0); doc.text(`Zonder coördinaten: ${L.missing.join(', ')}`, x0 + 2, y0 + 4); doc.setTextColor(0); }
+  if (L.missing.length) { doc.setFontSize(6.5); doc.setTextColor(...reportPalette().accentStrong); doc.text(`Zonder coördinaten: ${L.missing.join(', ')}`, x0 + 2, y0 + 4); doc.setTextColor(0); }
 }

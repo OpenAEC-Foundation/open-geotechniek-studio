@@ -7,8 +7,10 @@ import { MATERIAL_COLORS, materialColor } from "../parts/material-colors";
 import { useCptStore } from "../../../../store/useCptStore";
 import type { PanelProps } from "../../../framework/types";
 import type { Cpt, MeasurementPoint } from "../../../../types/cpt";
-import type { PileInput, PileResult } from "../types";
-import { getPileType } from "../catalog";
+import type { AppliedOverride, PileInput, PileResult, SoilKind } from "../types";
+import { getPileType, soilLabel } from "../catalog";
+import { applyOverrides } from "../parts/interpretation-overrides";
+import { InterpretationPanel, draftOf, type OverrideDraft } from "./InterpretationPanel";
 import { shaftDiameterAtNap } from "../parts/geometry";
 import "./styles.css";
 
@@ -48,6 +50,8 @@ interface ZoomDomain {
 // graphic kolom (rechts) verschuift mee naar rechts zodat hij vast aan
 // de plot-rechterrand blijft kleven. Zie computeGeometry() en useMemo
 // in CptOverlayChart.
+/** Grondprop in een open buis: de kleur van zand. */
+const OPEN_TUBE_PLUG_COLOR = "#e6c93a";
 const VB_W_BASE = 720;     // basis (= unzoomed) viewBox-breedte
 const VB_H = 800;
 const MARGIN = { top: 36, right: 180, bottom: 28, left: 64 };
@@ -509,6 +513,8 @@ interface PileCrossSectionProps {
   material: "steel" | "concrete" | "wood";
   isCircular: boolean;
   hasRebarCage: boolean;
+  /** Open buis: holle staalring, met prop gevuld met grond. */
+  openTube?: { plug: boolean };
 }
 
 function PileCrossSection({
@@ -517,6 +523,7 @@ function PileCrossSection({
   material,
   isCircular,
   hasRebarCage,
+  openTube,
 }: PileCrossSectionProps) {
   const { t } = useTranslation("calcPile");
   const SIZE = 120;
@@ -596,6 +603,10 @@ function PileCrossSection({
           material === "wood" ? <>
             <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.wood.fill} stroke="#374151" strokeWidth={1.5} />
             {[0.72, 0.48, 0.26].map((f) => <circle key={f} cx={CX} cy={CY} r={R * f} fill="none" stroke={MATERIAL_COLORS.wood.dark} strokeWidth={0.6} opacity={0.7} />)}
+          </> : material === "steel" && openTube ? <>
+            <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.steel.fill} stroke="#374151" strokeWidth={1.5} />
+            {/* Open buis: zonder prop leeg, met prop grond in de buis. */}
+            <circle cx={CX} cy={CY} r={innerR} fill={openTube.plug ? OPEN_TUBE_PLUG_COLOR : "var(--theme-bg-lighter, #fff)"} stroke="#374151" strokeWidth={0.8} />
           </> : material === "steel" ? <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.steel.fill} stroke="#374151" strokeWidth={1.5} />
           : <circle cx={CX} cy={CY} r={R} fill="url(#pile-cs-concrete-hatch)" stroke="#374151" strokeWidth={1.5} />
         )
@@ -621,16 +632,29 @@ function PileCrossSection({
 // ─── Sub-component: the actual chart ─────────────────────────────
 
 interface ChartProps {
+  /** De sondering zoals gemeten. */
   cpt: Cpt;
+  /** De sondering waarmee is gerekend; gelijk aan `cpt` zonder aanpassingen. */
+  effCpt: Cpt;
+  /** Aanpassingen van de grondlaaginterpretatie voor deze sondering. */
+  applied: AppliedOverride[];
+  /** Traject in bewerking; aanwezig = slepen in de grafiek kiest een traject. */
+  selection?: { id: string | null; topNap: number | null; bottomNap: number | null } | null;
+  onSelectRange?: (topNap: number, bottomNap: number) => void;
+  onPickOverride?: (id: string) => void;
   input: PileInput;
   result: PileResult;
   onChange?: (next: PileInput) => void;
 }
 
-function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
+/** Kleur van de grondsoort in de markering van een aangepast traject. */
+const SOIL_MARK: Record<SoilKind, string> = { "sand-dry": "#e6c93a", "sand-wet": "#e6c93a", clay: "#7fae5f", peat: "#a9714b" };
+
+function CptOverlayChart({ cpt, effCpt, applied, selection, onSelectRange, onPickOverride, input, result, onChange }: ChartProps) {
   const { t } = useTranslation("calcPile");
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [drag, setDrag] = useState<DragState | null>(null);
+  const [rangeDrag, setRangeDrag] = useState<{ startNap: number; curNap: number } | null>(null);
   const [pan, setPan] = useState<PanState | null>(null);
   const [zoomDomain, setZoomDomain] = useState<ZoomDomain | null>(null);
 
@@ -681,24 +705,45 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
     return () => ro.disconnect();
   }, [vbW]);
 
+  // De as past bij de meting en bij de aangepaste lijn (een vaste waarde kan hoger liggen).
+  const boundsPoints = useMemo(
+    () => (effCpt === cpt ? cpt.points : [...cpt.points, ...effCpt.points]),
+    [cpt, effCpt],
+  );
   const bounds = useMemo(
-    () => buildBounds(cpt.points, fullExtent, zoomDomain, plotW),
-    [cpt.points, fullExtent, zoomDomain, plotW],
+    () => buildBounds(boundsPoints, fullExtent, zoomDomain, plotW),
+    [boundsPoints, fullExtent, zoomDomain, plotW],
+  );
+  const marks = useMemo(
+    () => applied.map((a, i) => ({ a, n: i + 1 })).filter((m) => m.a.status === "applied"),
+    [applied],
   );
   // Volledige qc-puntenlijst (gefilterd + gedownsampled) — basis voor alle
   // qc-curve-segmenten. We splitsen later op NAP-range zodat we per zone
   // (8D / dc / 4D-max / overig) een andere kleur kunnen geven, conform de
   // norm-visualisatie zoals in externe referentie-berekeningen.
+  // De gekleurde segmenten volgen de lijn waarmee is gerekend. Binnen een
+  // aangepast traject blijven alle punten staan, zodat een sprong naar een
+  // vaste waarde scherp blijft.
   const qcPoints = useMemo(() => {
-    const filtered = cpt.points.filter(
+    const filtered = effCpt.points.filter(
       (p) => typeof p.qc === "number" && Number.isFinite(p.qc),
     );
-    const sample = downsample(filtered, 500);
-    return sample.map((p) => ({
-      nap: p.depth_nap ?? -p.depth,
-      qc: p.qc as number,
-    }));
-  }, [cpt.points]);
+    const napOf = (p: MeasurementPoint) => p.depth_nap ?? -p.depth;
+    const ranges = marks.filter((m) => m.a.qc).map((m) => m.a);
+    const sampled = downsample(filtered, 500);
+    const kept = ranges.length ? new Set(sampled) : null;
+    const sample = kept
+      ? filtered.filter((p) => kept.has(p) || ranges.some((r) => napOf(p) <= r.topNap + 1e-3 && napOf(p) >= r.bottomNap - 1e-3))
+      : sampled;
+    return sample.map((p) => ({ nap: napOf(p), qc: p.qc as number }));
+  }, [effCpt.points, marks]);
+  // De meting zelf: de dunne grijze lijn die altijd zichtbaar blijft.
+  const measuredPoints = useMemo(() => {
+    if (effCpt === cpt) return qcPoints;
+    const filtered = cpt.points.filter((p) => typeof p.qc === "number" && Number.isFinite(p.qc));
+    return downsample(filtered, 500).map((p) => ({ nap: p.depth_nap ?? -p.depth, qc: p.qc as number }));
+  }, [cpt, effCpt, qcPoints]);
 
   // Bouw een polyline-points-string voor punten waarvan NAP in [napBot, napTop]
   // valt. We snijden ook op de zone-grenzen via lineaire interpolatie zodat
@@ -747,11 +792,16 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
   // origineel maar nu zonder zone-kleuring (die komt eroverheen als
   // afzonderlijke gekleurde segmenten).
   const qcPathFull = useMemo(() => {
-    if (qcPoints.length < 2) return "";
-    return qcPoints
+    if (measuredPoints.length < 2) return "";
+    return measuredPoints
       .map((p) => `${bounds.qcToX(p.qc).toFixed(1)},${bounds.napToY(p.nap).toFixed(1)}`)
       .join(" ");
-  }, [qcPoints, bounds]);
+  }, [measuredPoints, bounds]);
+  // De aangepaste lijn per traject, als markering bovenop de grijze meting.
+  const adjustedPaths = useMemo(
+    () => marks.filter((m) => m.a.qc).map((m) => ({ id: m.a.override.id, points: qcSegmentPoints(m.a.topNap, m.a.bottomNap) })).filter((m) => m.points),
+    [marks, qcSegmentPoints],
+  );
 
   const depthTicks = useMemo(
     () => buildDepthTicks(bounds.napTop, bounds.napBot),
@@ -922,6 +972,63 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
       window.removeEventListener("mouseup", onUp);
     };
   }, [pan, fullExtent.fullNapTop, fullExtent.fullNapBot]);
+
+  // ─── Traject kiezen voor een aanpassing van de interpretatie ───
+  // Schermpositie → niveau in m NAP, op 0,05 m afgerond en binnen de grafiek.
+  const napAtClient = useCallback((clientX: number, clientY: number): number | null => {
+    const svg = svgRef.current;
+    if (!svg) return null;
+    let vbY: number;
+    const ctm = typeof svg.getScreenCTM === "function" ? svg.getScreenCTM() : null;
+    if (ctm) vbY = new DOMPoint(clientX, clientY).matrixTransform(ctm.inverse()).y;
+    else {
+      const rect = svg.getBoundingClientRect();
+      if (rect.height === 0) return null;
+      vbY = (clientY - rect.top) * (VB_H / rect.height);
+    }
+    const ratio = Math.max(0, Math.min(1, (vbY - MARGIN.top) / PLOT_H));
+    const nap = bounds.napTop - ratio * (bounds.napTop - bounds.napBot);
+    return Number((Math.round(nap * 20) / 20).toFixed(2));
+  }, [bounds.napTop, bounds.napBot]);
+
+  const startRangeDrag = (e: ReactMouseEvent<SVGRectElement>) => {
+    const nap = napAtClient(e.clientX, e.clientY);
+    if (nap === null) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setRangeDrag({ startNap: nap, curNap: nap });
+  };
+
+  useEffect(() => {
+    if (!rangeDrag) return;
+    const onMove = (e: MouseEvent) => {
+      const nap = napAtClient(e.clientX, e.clientY);
+      if (nap !== null && nap !== rangeDrag.curNap) setRangeDrag({ startNap: rangeDrag.startNap, curNap: nap });
+    };
+    const onUp = () => {
+      const top = Math.max(rangeDrag.startNap, rangeDrag.curNap), bottom = Math.min(rangeDrag.startNap, rangeDrag.curNap);
+      setRangeDrag(null);
+      if (top - bottom >= 0.05) onSelectRange?.(top, bottom);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [rangeDrag, napAtClient, onSelectRange]);
+
+  // Het traject in bewerking: tijdens het slepen de sleep, anders de getypte niveaus.
+  const draftBand = rangeDrag
+    ? { topNap: Math.max(rangeDrag.startNap, rangeDrag.curNap), bottomNap: Math.min(rangeDrag.startNap, rangeDrag.curNap) }
+    : selection && selection.topNap !== null && selection.bottomNap !== null && selection.topNap > selection.bottomNap
+      ? { topNap: selection.topNap, bottomNap: selection.bottomNap }
+      : null;
+  /** Band binnen het zichtbare deel van de grafiek; null als hij buiten beeld valt. */
+  const bandY = (topNap: number, bottomNap: number) => {
+    const top = Math.min(topNap, bounds.napTop), bottom = Math.max(bottomNap, bounds.napBot);
+    return top > bottom ? { y: bounds.napToY(top), h: bounds.napToY(bottom) - bounds.napToY(top) } : null;
+  };
 
   // Body-cursor lock tijdens drag of pan: voorkomt text-cursor flicker bij
   // snel bewegen over labels of buiten de SVG.
@@ -1112,7 +1219,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
             refY="9"
             markerWidth="7"
             markerHeight="7"
-            orient="auto"
+            orient="0"
           >
             <path d="M0,0 L10,0 L5,10 z" fill="#dc2626" />
           </marker>
@@ -1123,7 +1230,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
             refY="1"
             markerWidth="7"
             markerHeight="7"
-            orient="auto"
+            orient="0"
           >
             <path d="M0,10 L10,10 L5,0 z" fill="#16a34a" />
           </marker>
@@ -1396,6 +1503,14 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
           pointerEvents="none"
         />
       )}
+      {/* Aangepaste conusweerstand: brede gloed met de nieuwe lijn erin. De
+          zonesegmenten hierna volgen dezelfde lijn; de gloed blijft zichtbaar. */}
+      {adjustedPaths.map((m) => (
+        <g key={m.id} pointerEvents="none">
+          <polyline points={m.points} className="pile-cpt-qc-curve pile-cpt-qc-curve--adjusted-halo" fill="none" />
+          <polyline points={m.points} className="pile-cpt-qc-curve pile-cpt-qc-curve--adjusted" fill="none" />
+        </g>
+      ))}
       {qcSeg4DOuter && (
         <polyline
           points={qcSeg4DOuter}
@@ -1636,7 +1751,7 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
         yRebarBot={bounds.napToY(
           Math.max(input.pileToeNap, input.pileTopNap - 4 * (input.diameterMm / 1000)),
         )}
-        hasRebarCage={pileMaterial === "steel" && !pileType?.requiresEA}
+        hasRebarCage={pileMaterial === "steel" && !pileType?.requiresEA && !pileType?.openEnd}
         pileColCenter={pileColCenter}
       />
 
@@ -1745,6 +1860,57 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
       {/* qb;max-label rechts naast paalpunt is verwijderd — de waarde
           staat in de footnote onder de chart en in het ResultPanel. */}
 
+        {/* ─── Aangepaste trajecten van de grondlaaginterpretatie ─── */}
+        {marks.map(({ a, n }) => {
+          const band = bandY(a.topNap, a.bottomNap);
+          if (!band) return null;
+          const active = selection?.id === a.override.id;
+          const label = `A${n}${a.soil ? ` · ${soilLabel(a.soil.after)}` : ""}`;
+          return (
+            <g key={a.override.id} className={`pile-cpt-interp${active ? " pile-cpt-interp--active" : ""}`}>
+              <rect x={MARGIN.left} y={band.y} width={plotW} height={band.h} className="pile-cpt-interp-band" pointerEvents="none" />
+              {a.soil && <rect x={MARGIN.left} y={band.y} width={6} height={band.h} fill={SOIL_MARK[a.soil.after]} pointerEvents="none" />}
+              <line x1={MARGIN.left} x2={MARGIN.left + plotW} y1={band.y} y2={band.y} className="pile-cpt-interp-edge" pointerEvents="none" />
+              <line x1={MARGIN.left} x2={MARGIN.left + plotW} y1={band.y + band.h} y2={band.y + band.h} className="pile-cpt-interp-edge" pointerEvents="none" />
+              <text
+                x={MARGIN.left + 10}
+                y={band.y + Math.min(band.h - 2, 11)}
+                className={`pile-cpt-overlay-label pile-cpt-interp-label${onPickOverride ? " pile-cpt-interp-label--pick" : ""}`}
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={onPickOverride ? () => onPickOverride(a.override.id) : undefined}
+              >
+                <title>{t("interp.markTitle", "Aangepast traject A{{n}}; klik om te bewerken", { n })}</title>
+                {label}
+              </text>
+            </g>
+          );
+        })}
+        {draftBand && (() => {
+          const band = bandY(draftBand.topNap, draftBand.bottomNap);
+          return band && (
+            <g pointerEvents="none">
+              <rect x={MARGIN.left} y={band.y} width={plotW} height={band.h} className="pile-cpt-interp-band pile-cpt-interp-band--draft" />
+              <text x={MARGIN.left + plotW - 4} y={band.y - 3} textAnchor="end" className="pile-cpt-overlay-label pile-cpt-interp-label">
+                {formatNap(draftBand.topNap)} / {formatNap(draftBand.bottomNap)}
+              </text>
+            </g>
+          );
+        })()}
+        {/* Tijdens het kiezen van een traject vangt dit vlak het slepen op;
+            niveaulijnen verslepen en verschuiven staan dan even uit. */}
+        {selection && onSelectRange && (
+          <rect
+            x={MARGIN.left}
+            y={MARGIN.top}
+            width={plotW}
+            height={PLOT_H}
+            className="pile-cpt-interp-capture"
+            onMouseDown={startRangeDrag}
+          >
+            <title>{t("interp.captureTitle", "Sleep van boven naar onder om het traject te kiezen")}</title>
+          </rect>
+        )}
+
         {/* ─── Plot border ─── */}
         <rect
           x={MARGIN.left}
@@ -1765,6 +1931,19 @@ function CptOverlayChart({ cpt, input, result, onChange }: ChartProps) {
 export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, PileResult>) {
   const cpt = useCptStore((s) => (input.cptId ? s.cpts.get(input.cptId) : null));
   const { t } = useTranslation("calcPile");
+  // De sondering in het project blijft de meting; de aanpassingen uit de
+  // invoer worden hier op een kopie gelegd, net als in de berekening.
+  const eff = useMemo(
+    () => applyOverrides(cpt, input.soilProfile, input.interpretationOverrides),
+    [cpt, input.soilProfile, input.interpretationOverrides],
+  );
+  const [draft, setDraft] = useState<OverrideDraft | null>(null);
+  useEffect(() => setDraft(null), [input.cptId]);
+  const selectRange = useCallback((topNap: number, bottomNap: number) => setDraft((d) => (d ? { ...d, topNap, bottomNap } : d)), []);
+  const pickOverride = useCallback((id: string) => {
+    const hit = input.interpretationOverrides?.find((o) => o.id === id);
+    if (hit) setDraft(draftOf(hit));
+  }, [input.interpretationOverrides]);
 
   if (!cpt) {
     return (
@@ -1793,7 +1972,8 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
   const csIsCircular = pileType?.isCircular ?? true;
   // Wapeningskorf alleen voor stalen buispalen (betongevulde composiet);
   // bij prefab voorgespannen beton zien we voorspandraden i.p.v. korf.
-  const csHasRebar = csMaterial === "steel" && !pileType?.requiresEA;
+  const csHasRebar = csMaterial === "steel" && !pileType?.requiresEA && !pileType?.openEnd;
+  const csOpenTube = pileType?.openEnd ? { plug: !!input.openTube?.plug } : undefined;
   // Korf-lengte in mm voor de info-tekst — 4·D vanaf paalkop, geclampt op
   // paallengte zodat we geen onzin-getal tonen voor korte palen.
   const pileLengthMm = Math.max(0, (input.pileTopNap - input.pileToeNap) * 1000);
@@ -1804,8 +1984,19 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
       <h3>{t("visual.cptHeading", "Sondering: {{id}}", { id: cpt.id })}</h3>
       {/* Bij een fout blijft de tekening staan, zodat je de niveaus kunt terugslepen. */}
       {!result.ok && <div className="pile-visual-error" role="alert">{t("visual.notComputed", "Niet berekend: {{error}}. Versleep de niveaus of pas de invoer aan.", { error: result.error })}</div>}
+      <InterpretationPanel cptId={cpt.id} input={input} applied={eff.applied} draft={draft} setDraft={setDraft} onChange={onChange} />
       <div className="pile-cpt-chart">
-        <CptOverlayChart cpt={cpt} input={input} result={result} onChange={onChange} />
+        <CptOverlayChart
+          cpt={cpt}
+          effCpt={eff.cpt ?? cpt}
+          applied={eff.applied}
+          selection={draft}
+          onSelectRange={onChange ? selectRange : undefined}
+          onPickOverride={onChange ? pickOverride : undefined}
+          input={input}
+          result={result}
+          onChange={onChange}
+        />
       </div>
       <div className="pile-cross-section-row">
         <PileCrossSection
@@ -1814,6 +2005,7 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
           material={csMaterial}
           isCircular={csIsCircular}
           hasRebarCage={csHasRebar}
+          openTube={csOpenTube}
         />
         <div className="pile-cross-section-info">
           <div className="pile-cross-section-title">{t("visual.crossSection", "Doorsnede")}</div>
@@ -1841,7 +2033,7 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
                 <td>{t("visual.material", "materiaal")}</td>
                 <td>
                   {csMaterial === "wood" ? t("visual.materials.wood", "Hout, constante doorsnede") : csMaterial === "steel"
-                    ? (pileType?.requiresEA ? t("visual.materials.steelEA", "Stalen paal; projectspecifieke EA") : t("visual.materials.steelTube", "Stalen buispaal, betongevuld"))
+                    ? (pileType?.requiresEA ? t("visual.materials.steelEA", "Stalen paal; projectspecifieke EA") : csOpenTube ? (csOpenTube.plug ? t("visual.materials.steelOpenPlug", "Open stalen buis, met grondprop") : t("visual.materials.steelOpen", "Open stalen buis, zonder prop")) : t("visual.materials.steelTube", "Stalen buispaal, betongevuld"))
                     : (pileType?.requiresEA ? t("visual.materials.castInSitu", "In de grond gevormd beton") : t("visual.materials.prefab", "Prefab beton"))}
                 </td>
               </tr>

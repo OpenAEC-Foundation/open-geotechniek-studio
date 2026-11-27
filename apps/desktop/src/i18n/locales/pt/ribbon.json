@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Relatório",
   "tekeningTab": "Planta de localização",
+  "sondeerbedrijfTab": "Empresa de sondagens",
   "berekeningenTab": "Cálculos",
   "tekening": {
     "info": "Desenho",
@@ -143,12 +144,27 @@
       "sbtLegend": "Legenda indicativa qc/Rf",
       "sbtHint": "Página separada com as 9 zonas de solo",
       "metadata": "Resumo de metadados",
-      "metaHint": "#COMPANYID / #PROJECTID / calibração completos, etc."
+      "metaHint": "#COMPANYID / #PROJECTID / calibração completos, etc.",
+      "texts": "Textos",
+      "textsHint": "Introdução, nivelamento e nível freático logo após a capa",
+      "testReport": "Relatório de ensaio",
+      "testReportHint": "Uma página por sondagem com os dados exigidos pela norma EN ISO 22476-1"
     },
     "cptCount": "Ensaios",
     "openProjectInfo": "Editar dados do projeto",
     "openInNewWindow": "Abrir o PDF no visualizador do sistema",
-    "openPdf": "Abrir PDF"
+    "openPdf": "Abrir PDF",
+    "text": {
+      "title": "Textos",
+      "introduction": "Introdução",
+      "levelling": "Nivelamento",
+      "groundwater": "Nível freático",
+      "sample": "Texto de exemplo",
+      "sampleHint": "Insere um texto padrão com os dados do projeto, para adaptar em seguida",
+      "sampleBlocked": "Esvazie primeiro a caixa de texto para inserir o texto de exemplo",
+      "hint": "Um texto vazio não aparece no relatório. Os textos são guardados com o projeto.",
+      "hintNoProject": "Um texto vazio não aparece no relatório. Sem projeto, os textos não são guardados."
+    }
   },
   "model3dTab": "Modelo 3D",
   "model3d": {
@@ -227,6 +243,11 @@
   "openPdf": "Abrir PDF",
   "scaleCptColumns": "Escalar colunas de ensaios",
   "scaleCptColumnsHint": "Após Ajustar, alarga também as colunas; desloque na horizontal para os restantes ensaios.",
+  "cptLayout": "Mostrar ensaios",
+  "cptSideBySide": "Lado a lado",
+  "cptSideBySideHint": "Mostra os ensaios lado a lado, cada um na sua própria coluna.",
+  "cptOverlay": "Sobrepostos",
+  "cptOverlayHint": "Desenha todos os ensaios visíveis sobrepostos: um gráfico de qc e outro de fs em função do NAP.",
   "cptGroup": "Sondagem",
   "cptFromScan": "A partir de digitalização"
 }

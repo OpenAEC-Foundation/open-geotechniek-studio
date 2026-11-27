@@ -4,6 +4,7 @@
   "ifcTab": "IFC",
   "rapportTab": "Rapport",
   "tekeningTab": "Situationsplan",
+  "sondeerbedrijfTab": "Sonderingsföretag",
   "berekeningenTab": "Beräkningar",
   "tekening": {
     "info": "Ritning",
@@ -143,12 +144,27 @@
       "sbtLegend": "Vägledande qc/Rf-förklaring",
       "sbtHint": "Separat sida med de 9 jordartszonerna",
       "metadata": "Metadataöversikt",
-      "metaHint": "Fullständig #COMPANYID / #PROJECTID / kalibrering m.m."
+      "metaHint": "Fullständig #COMPANYID / #PROJECTID / kalibrering m.m.",
+      "texts": "Texter",
+      "textsHint": "Inledning, avvägning och grundvattennivå direkt efter försättsbladet",
+      "testReport": "Provningsrapport",
+      "testReportHint": "En sida per sondering med de uppgifter som EN ISO 22476-1 kräver"
     },
     "cptCount": "Sonderingar",
     "openProjectInfo": "Redigera projektuppgifter",
     "openInNewWindow": "Öppna PDF:en i systemets visare",
-    "openPdf": "Öppna PDF"
+    "openPdf": "Öppna PDF",
+    "text": {
+      "title": "Texter",
+      "introduction": "Inledning",
+      "levelling": "Avvägning",
+      "groundwater": "Grundvattennivå",
+      "sample": "Exempeltext",
+      "sampleHint": "Infoga en standardtext med projektets uppgifter och anpassa den sedan",
+      "sampleBlocked": "Töm först textrutan för att infoga exempeltexten",
+      "hint": "En tom text kommer inte med i rapporten. Texterna sparas tillsammans med projektet.",
+      "hintNoProject": "En tom text kommer inte med i rapporten. Utan projekt sparas texterna inte."
+    }
   },
   "model3dTab": "3D-modell",
   "model3d": {
@@ -227,6 +243,11 @@
   "openPdf": "Öppna PDF",
   "scaleCptColumns": "Skala sonderingskolumner",
   "scaleCptColumnsHint": "Efter Anpassa breddas även kolumnerna; rulla vågrätt för övriga sonderingar.",
+  "cptLayout": "Visa sonderingar",
+  "cptSideBySide": "Sida vid sida",
+  "cptSideBySideHint": "Visa sonderingarna sida vid sida, var och en i sin egen kolumn.",
+  "cptOverlay": "Ovanpå varandra",
+  "cptOverlayHint": "Rita alla synliga sonderingar ovanpå varandra: ett diagram för qc och ett för fs mot NAP.",
   "cptGroup": "Sondering",
   "cptFromScan": "Från skanning"
 }

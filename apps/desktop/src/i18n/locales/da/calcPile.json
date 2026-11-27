@@ -176,7 +176,30 @@
     "type": "Pæletype",
     "wallThickness": "Godstykkelse",
     "wallThicknessAria": "Godstykkelse [mm]",
-    "woodDiameterAtJoint": "Trædiameter ved samlingen"
+    "woodDiameterAtJoint": "Trædiameter ved samlingen",
+    "system": "Pælesystem",
+    "standardSize": "Standardmål",
+    "woodSection": "Tværsnit",
+    "woodRound": "Rund (rammet pæl)",
+    "woodSawn": "Kvadratisk eller rektangulær a × b (savet)",
+    "sideA": "Side a",
+    "sideB": "Side b",
+    "rectHint": "Rektangel a ≠ b: areal, omkreds og Deq følger af a og b; programmet bestemmer ikke formfaktoren s for en rektangulær pælespids. Angiv om nødvendigt s som projektfaktor.",
+    "timberSpecies": "Træart",
+    "timberSpeciesOwn": "Egen styrkeklasse",
+    "timberGrade": "Sorteringsklasse",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Kun til styrkeeftervisningen; pæleklassefaktorer og bæreevne følger af pæletypen.",
+    "timberSpeciesNoClass": "Kilden giver ingen entydig styrkeklasse: vælg klassen i styrkeeftervisningen. Pæleklassefaktorer og bæreevne følger af pæletypen.",
+    "species": {
+      "vuren": "rødgran",
+      "grenen": "skovfyr",
+      "lariks": "lærk",
+      "douglas": "douglasgran",
+      "eiken": "eg, mellemeuropæisk",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Eksportér til Pile Plan Studio (CSV)",
@@ -213,7 +236,8 @@
       "sideA": "Side a",
       "tapered": "{{size}} mm (konisk)",
       "title": "Grundlæggende forudsætninger",
-      "woodAtJoint": "Træ ved samlingen"
+      "woodAtJoint": "Træ ved samlingen",
+      "sidesAB": "Tværsnit a × b"
     },
     "negSkin": {
       "cappedNote": "begrænset til ksMin = {{v}}",
@@ -221,7 +245,9 @@
       "extensionAndWood": "(forlænger og træ)",
       "layer": "Lag",
       "title": "Negativ overflademodstand",
-      "zone": "Zone: pælehoved NAP {{top}} til NAP {{bottom}} —"
+      "zone": "Zone: pælehoved NAP {{top}} til NAP {{bottom}} —",
+      "perimeterTitle": "Skaftets omkreds i dette lag",
+      "perimeterNote": "Os;i er skaftets middelomkreds i laget: betonforlængeren over samlingen, træet under."
     },
     "pending": {
       "missingEA": "Indtast den aksiale stivhed <strong>EA</strong> under <strong>Pæl</strong>. For denne pæletype udledes EA ikke af tværsnittet; værdien følger af det valgte pælesystem.",
@@ -257,6 +283,15 @@
     "title": "Pælebæreevne",
     "total": {
       "title": "Maksimal geoteknisk bæreevne"
+    },
+    "compact": {
+      "remarks": "Bemærkninger",
+      "layers": "Mellemværdier pr. lag",
+      "results": "Resultater",
+      "formula": "Formel",
+      "value": "Værdi",
+      "capacity": "Bæreevne",
+      "settlement": "Sætning"
     }
   },
   "settings": {
@@ -289,7 +324,10 @@
     "sourceAria": "Kilde til projektfaktorer",
     "table": "Tabel",
     "timberToe": "Træets spidsdiameter",
-    "useTableValues": "Brug tabelværdier"
+    "useTableValues": "Brug tabelværdier",
+    "rectSizes": "Savet træ a × b",
+    "rectSizesAria": "Række af savet træ a × b [mm]",
+    "rectHint": "Tværsnit som a×b, adskilt af mellemrum; et enkelt tal er et kvadrat. De kvadratiske mål udfylder også bæreevnetabellen."
   },
   "shape": {
     "round": "Rund",
@@ -349,6 +387,71 @@
     "notNumber": "Indtast nedre og øvre grænse som et tal i kN.",
     "upper": "Øvre grænse [kN]"
   },
+  "view3d": {
+    "aria": "3D-visning af 4D-8D-metoden; træk for at dreje, rul for at zoome",
+    "fit": "Tilpas til visning",
+    "focusPile": "Hele pælen",
+    "focusTip": "Pælespids",
+    "label": {
+      "critical": "kritisk dybde {{depth}} m = {{ratio}} Deq",
+      "ground": "terræn {{nap}}",
+      "negative": "Fnk;d = {{force}}",
+      "positive": "Rs;cal;max = {{force}}",
+      "qcAxis": "qc 0 – {{max}} MPa",
+      "toe": "pælespids {{nap}}",
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "overgrænse for zone III {{height}} m = {{ratio}} Deq"
+    },
+    "legend": {
+      "clipped": "Blågrøn: den afskårne qc-linje for strækning II og III.",
+      "critical": "Kritisk dybde: {{depth}} m under pælespidsen ({{ratio}} Deq, Deq = {{deq}} mm). Stiplede linjer: søgeområde 0,7 til 4 Deq.",
+      "negative": "Negativ overflademodstand langs skaftet; Fnk;d = {{force}} kN",
+      "positive": "Positiv overflademodstand langs skaftet; Rs;cal;max = {{force}} kN",
+      "qc": "Spidsmodstand qc ved siden af pælen; tykke streger er gennemsnittene for strækningerne.",
+      "slip": "Brudlegeme: jorden glider langs en logaritmisk spiral, fra den kritiske dybde under pælespidsen udad og op til overgrænsen for zone III, som beregningen har valgt dem. En fjerdedel er udeladt, så du kan se ind; pilene viser forskydningsretningen. Formen er skematisk.",
+      "zone": "Strækning {{zone}}",
+      "zoneI": "fra pælespidsen nedad til den kritiske dybde",
+      "zoneII": "fra den kritiske dybde tilbage op til pælespidsen",
+      "zoneIII": "fra pælespidsen op til overgrænsen for zone III"
+    },
+    "noModel": "Der er ingen 3D-visning: knyt en CPT-sondering til beregningen.",
+    "notComputed": "Der er ingen 3D-visning, så længe beregningen ikke har et resultat. Tilpas inddata, eller gå tilbage til 2D.",
+    "note": "Niveauer og pælen er i målestok. Bredden af strækningerne er skematisk: metoden regner kun langs dybden.",
+    "switch": "Visning af tegningen",
+    "switch3dTitle": "Pælen i 3D: fysisk eller beregningsmæssig (4D-8D-metoden)",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondering og pælen i 3D side om side",
+    "toolbar": "Visning",
+    "unavailable": "3D er ikke tilgængelig på denne enhed (ingen WebGL). Brug 2D-tegningen.",
+    "viewSwitch": "Type 3D-visning",
+    "viewPhysical": "Fysisk",
+    "viewPhysicalTitle": "Pælen som den er, i jordlagene",
+    "viewCalc": "Beregning",
+    "viewCalcTitle": "Strækning I, II og III, brudfigur, overflademodstand og qc",
+    "ariaPhysical": "3D-visning af pælen i jorden; træk for at dreje, rul for at zoome",
+    "noPhysical": "Der er ingen 3D-visning: pælemålene eller niveauerne er ugyldige.",
+    "notePhysical": "Pæl, lag og niveauer er i skala; jordblokken er skåret op langs pæleaksen. Lagene er sonderingens lagfølge med justeringerne fra laginterpretationen. Skematisk: pælespidsen, stikjern og armering, skruebladet, kernerøret og svejseringen. Hvor sonderingen ikke giver et lag, er det nærmeste lag forlænget.",
+    "material": {
+      "concrete": "Beton",
+      "steel": "Stål",
+      "wood": "Træ",
+      "grout": "Grout",
+      "plug": "Jordprop"
+    },
+    "soil": {
+      "sand": "Sand",
+      "clay": "Ler",
+      "peat": "Tørv"
+    },
+    "physical": {
+      "head": "pæletop {{nap}}",
+      "water": "grundvand {{nap}}",
+      "excavation": "udgravning {{nap}}",
+      "joint": "samling {{nap}}",
+      "excavatedLayer": "{{soil}} (udgravet)",
+      "adjustedLayer": "{{soil}} (justeret)"
+    }
+  },
   "types": {
     "add": "Tilføj pæletype",
     "hint": "Ekstra pæletyper vises ved siden af hovedtypen i den dimensionsgivende oversigt og på planen. Tabellerne pr. sondering forbliver hovedtypens.",
@@ -376,7 +479,9 @@
       "prefab": "Præfabrikeret beton",
       "steelEA": "Stålpæl; projektspecifik EA",
       "steelTube": "Stålrørspæl, betonfyldt",
-      "wood": "Træ, konstant tværsnit"
+      "wood": "Træ, konstant tværsnit",
+      "steelOpen": "Åbent stålrør, uden prop",
+      "steelOpenPlug": "Åbent stålrør, med jordprop"
     },
     "noPoints": "Ingen målinger i denne sondering",
     "notComputed": "Ikke beregnet: {{error}}. Træk i koterne eller justér inputtet.",
@@ -384,5 +489,147 @@
     "taperLength": "konisk længde fra hoved",
     "toeSize": "spidsstørrelse",
     "wall": "væg"
+  },
+  "system": {
+    "noTable2025": "For {{system}} er pæleklassefaktorerne i NEN 9997-1:2025 endnu ikke med i programmets tabel; intet skønnes. Systemet kan derfor ikke vælges for denne udgave. Vælg 2017-udgaven, eller regn med projektfaktorer fra en egenerklæring eller prøvebelastning.",
+    "noTableRow": "{{system}} har ingen egen række i tabel 7.c i denne udgave og kan derfor ikke vælges med tabelværdier. Regn med projektfaktorer fra pælesystemets egenerklæring eller fra en prøvebelastning.",
+    "noTableBadge": "ingen tabelværdi",
+    "useProjectFactors": "Vælg med projektfaktorer"
+  },
+  "interp": {
+    "add": "Tilpas et dybdeinterval",
+    "bottom": "Underkant",
+    "bottomAria": "Underkant af dybdeintervallet [m NAP]",
+    "cancel": "Annuller",
+    "captureTitle": "Træk oppefra og ned for at vælge dybdeintervallet",
+    "change": {
+      "noLayer": "intet lag",
+      "qcFixed": "{{qc}}: målt {{min}}–{{max}} MPa (middel {{mean}}) → fast værdi {{top}} MPa",
+      "qcLinear": "{{qc}}: målt {{min}}–{{max}} MPa (middel {{mean}}) → lineært fra {{top}} til {{bottom}} MPa",
+      "soil": "Jordart: {{before}} → {{after}}"
+    },
+    "colChange": "Ændring (før → efter)",
+    "colRange": "Dybdeinterval",
+    "comment": "Kommentar",
+    "commentAria": "Kommentar til tilpasningen",
+    "commentPlaceholder": "Hvorfor denne tilpasning?",
+    "delete": "Slet",
+    "deleteAria": "Slet tilpasning A{{n}}",
+    "edit": "Rediger",
+    "editAria": "Rediger tilpasning A{{n}}",
+    "editTitle": "Rediger tilpasning",
+    "listAria": "Tilpasninger af denne sondering",
+    "markTitle": "Tilpasset dybdeinterval A{{n}}; klik for at redigere",
+    "newTitle": "Ny tilpasning",
+    "notApplied": {
+      "invalid": "Ikke anvendt: ugyldigt dybdeinterval eller ingen ændring angivet.",
+      "outsideRange": "Ikke anvendt: dybdeintervallet ligger uden for sonderingen."
+    },
+    "problem": {
+      "nothing": "Vælg en ændring af konusmodstanden eller af jordarten.",
+      "order": "Overkanten skal ligge højere end underkanten.",
+      "range": "Vælg et dybdeinterval: træk i grafen oppefra og ned, eller skriv begge niveauer.",
+      "value": "Angiv en fast konusmodstand på nul eller mere."
+    },
+    "qc": "Konusmodstand",
+    "qcFixed": "fast værdi",
+    "qcLinear": "lineært mellem kanterne",
+    "qcNone": "uændret",
+    "range": "NAP {{top}} til {{bottom}} m",
+    "report": {
+      "colChange": "Ændring (før → efter)",
+      "colComment": "Kommentar",
+      "colCpt": "Sondering",
+      "colNr": "Nr.",
+      "colRange": "Dybdeinterval [m NAP]",
+      "intro": "I denne beregning afviger dybdeintervallerne nedenfor fra den målte sondering. Selve sonderingen er ikke ændret; en tilpasning gælder kun for denne beregning og for den nævnte sondering. I grafen for sonderingen er målingen tegnet tyndt, og det tilpassede interval er markeret.",
+      "title": "Tilpasninger af laginterpretationen"
+    },
+    "resetAll": "Nulstil alt",
+    "resetAllTitle": "Fjerner alle tilpasninger af denne sondering i denne beregning; målingen gælder igen.",
+    "resultNote": "For sondering {{cpt}} afviger denne beregning fra den målte interpretation. Selve sonderingen er uændret.",
+    "resultTitle": "Tilpasninger af laginterpretationen",
+    "save": "Gem",
+    "selectHint": "Træk i grafen oppefra og ned for at vælge dybdeintervallet, eller skriv niveauerne. Den målte linje forbliver synlig i gråt.",
+    "soilAria": "Jordart i dybdeintervallet",
+    "stateChanged": "{{n}} tilpasning(er) for denne sondering",
+    "stateMeasured": "som målt",
+    "tableNote": "Laginterpretationen er tilpasset for denne sondering: {{n}} dybdeinterval(ler). Værdierne nedenfor er beregnet med den.",
+    "title": "Laginterpretation",
+    "top": "Overkant",
+    "topAria": "Overkant af dybdeintervallet [m NAP]",
+    "value": "Værdi",
+    "valueAria": "Fast konusmodstand [MPa]",
+    "warning": {
+      "applied": "Laginterpretationen er tilpasset: {{n}} dybdeinterval(ler) i sondering {{cpt}} afviger fra målingen.",
+      "skipped": "{{n}} tilpasning(er) af laginterpretationen er ikke anvendt: dybdeintervallet ligger uden for sonderingen eller er ugyldigt."
+    }
+  },
+  "strength": {
+    "title": "Pælens styrke",
+    "enable": "Eftervis pælens styrke",
+    "steelGrade": "Stålkvalitet",
+    "timberClass": "Styrkeklasse træ",
+    "ownValue": "Egen værdi",
+    "timber": "træ",
+    "concreteClass": "Betonstyrkeklasse",
+    "concreteClassExtension": "Betonklasse forlængelse",
+    "hintTimber": "Tryk parallelt med fibrene for N_Ed + F_nk;d (EN 1995-1-1). k_mod og γ_M: standard for permanent vådt træ og permanent last. Søjlevirkning er ikke eftervist.",
+    "hintSteel": "Tværsnitsklasse og normalkraft i røret for N_Ed + F_nk;d (EN 1993-1-1). Søjlevirkning er ikke eftervist: programmet kender ingen fri eller svagt understøttet længde.",
+    "hintConcrete": "Normalkraft i betontværsnittet for N_Ed + F_nk;d (EN 1992-1-1), uden armering. Søjlevirkning er ikke eftervist.",
+    "col": {
+      "article": "Afsnit",
+      "demand": "Regningsmæssig værdi",
+      "resistance": "Bæreevne"
+    },
+    "notesTitle": "Forudsætninger og hvad der ikke er eftervist",
+    "status": {
+      "ok": "opfyldt",
+      "fail": "ikke opfyldt",
+      "outside": "uden for denne eftervisning",
+      "na": "ikke eftervist",
+      "info": "til orientering"
+    },
+    "rows": {
+      "steelClass": "Tværsnitsklasse rør",
+      "steelAxial": "Normalkraft stålrør",
+      "timberAxial": "Træ: tryk parallelt med fibrene",
+      "timberToe": "Træ: mindste tværsnit ved spidsen",
+      "extensionAxial": "Betonforlængelse: normalkraft",
+      "concreteAxial": "Normalkraft betontværsnit"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, regnet fra pæletoppen til underkanten af den negative overflademodstand. Derunder aftager normalkraften ved positiv overflademodstand; den del er ikke eftervist.",
+      "steelNoSection": "Ikke eftervist: ståltværsnittet (kernerør, godstykkelse) indgår ikke i inddata for dette pælesystem.",
+      "class4": "Tværsnitsklasse 4: lokal foldning er dimensionsgivende. Det ligger uden for denne eftervisning (EN 1993-1-6); bæreevnen er ikke beregnet.",
+      "class4Short": "Uden for denne eftervisning (tværsnitsklasse 4).",
+      "classIs": "Tværsnitsklasse {{cls}}.",
+      "steel": "Stål: kun røret med den indtastede godstykkelse og f_y for t ≤ 40 mm; en betonfyldning er ikke medregnet. Ikke eftervist: søjlevirkning (afsnit 6.3; modulet kender ingen fri eller svagt understøttet længde), korrosion (indtast den resterende godstykkelse), svejsninger og samlinger samt rammespændingerne.",
+      "timber": "Træ: styrkeklasse {{cls}} med f_c,0,k = {{fc}} MPa (EN 338); k_mod og γ_M er inddata, standard for permanent vådt træ og permanent last. Ikke eftervist: søjlevirkning (afsnit 6.3.2), samlingen med en forlængelse, nedbrydning af træet og rammespændingerne.",
+      "timberToe": "Til orientering: øvre grænse med den fulde N_Ed;max på spidstværsnittet. Den positive overflademodstand over spidsen er ikke fratrukket; den faktiske kraft ved spidsen er mindre.",
+      "concrete": "Beton: N_Rd = A_c · f_cd for skafttværsnittet, uden armering (den indgår ikke i inddata). Ikke eftervist: den mindste excentricitet (afsnit 6.1 (4)), søjlevirkning, armeringen og rammespændingerne.",
+      "concreteInSitu": "Pladsstøbt pæl: den reducerede regningsmæssige diameter (afsnit 2.3.4.2) og forhøjelsen af γ_c (afsnit 2.4.2.5) for pæle uden blivende rør er ikke anvendt; omregn selv bæreevnen herfor.",
+      "concreteClassUnknown": "Ukendt betonstyrkeklasse {{cls}}.",
+      "timberSpecies": "Træart {{species}}, sorteringsklasse {{grade}} → {{cls}} ifølge {{source}}. Træarten bestemmer kun styrkeklassen; pæleklassefaktorer og bæreevne følger af pæletypen.",
+      "timberSpeciesOwn": "Træart {{species}}: kilden giver ingen entydig styrkeklasse; klassen er valgt af brugeren."
+    }
+  },
+  "report": {
+    "title": "Udskrift",
+    "detail": "Omfang",
+    "detailAria": "Udskriftens omfang",
+    "compact": "Kort: tabeller",
+    "full": "Udførlig: fuld udledning"
+  },
+  "openTube": {
+    "tip": "Spids",
+    "noPlug": "Uden prop: kun stålringen",
+    "plug": "Med prop: stålring + η × indre tværsnit",
+    "plugFactor": "Propfaktor",
+    "plugFactorAria": "Propfaktor η [-]",
+    "plugFactorPlaceholder": "indtast",
+    "plugFactorMissing": "Indtast η (0 til 1) — uden η regnes der ikke.",
+    "hintPlug": "Med prop tæller stålringen plus η gange det indre tværsnit; η = 1 er det fulde tværsnit. Normen angiver ingen værdi for η: begrund den, fx med friktionen inde i røret (NEN 9997-1 art. 7.6.2.3(d); over 500 mm også art. 7.6.2.1(13)).",
+    "hintNoPlug": "Uden prop tæller kun stålringen, og friktionen inde i røret ses bort fra; det er en nedre grænse efter NEN 9997-1 art. 7.6.2.3(d)."
   }
 }
