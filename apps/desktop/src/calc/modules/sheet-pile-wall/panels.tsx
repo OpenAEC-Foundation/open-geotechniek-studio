@@ -10,12 +10,14 @@ import { SOIL_TYPES, getSoilType } from "../spread-foundation/catalog";
 import type { BlumCase } from "./blum";
 import { CorrosionFaceInput } from "../../shared/CorrosionFace";
 import { CorrosionVerification } from "../../shared/CorrosionVerification";
-import { DEFAULT_CORROSION, DEFAULT_FACTORS, FACTOR_SETS, GAMMA_WATER, TENDON_GRADES, TIMBER_CLASSES, normalizeWallInput, revetmentExample, wallExample, wallLayersFromCpt, type WallCheck, type WallCorrosion, type WallFactors, type WallInput, type WallLayer, type WallOk, type WallResult, type WallRun } from "./compute";
+import { DEFAULT_CORROSION, DEFAULT_FACTORS, FACTOR_SETS, GAMMA_WATER, TENDON_GRADES, TIMBER_CLASSES, normalizeWallInput, revetmentExample, wallExample, type WallCheck, type WallCorrosion, type WallFactors, type WallInput, type WallLayer, type WallOk, type WallResult, type WallRun } from "./compute";
 import { ProfileDetail } from "./ProfileDetail";
-import { SectionDrawing } from "./SectionDrawing";
+import { SectionDrawing, type QcTrace } from "./SectionDrawing";
 import { WallScene3D } from "./WallScene3D";
 import { envelopeLines, phaseOf, wallScene } from "./scene";
 import { CurBlock, ExtraChecksBlock, GeometryBlock, PhasesBlock, StageOverview, SupportsBlock, caseLabel } from "./stage-panels";
+import { TABLE_2B } from "./cpt-layers";
+import { LayerSources, SoilProfileBlock, tableRowValues } from "./soil-profile-panel";
 import "./styles.css";
 
 type Props = PanelProps<WallInput, WallResult>;
@@ -40,7 +42,7 @@ function ExcessTable({ layers, onChange, caption }: { layers: WallLayer[]; onCha
 function LayerTable({ layers, onChange, caption }: { layers: WallLayer[]; onChange: (next: WallLayer[]) => void; caption: string }) {
   const { t } = useTranslation("calcWall");
   const set = (k: number, patch: Partial<WallLayer>) => onChange(layers.map((l, j) => (j === k ? { ...l, ...patch } : l)));
-  const setSoil = (k: number, id: string) => { const s = getSoilType(id); if (s) set(k, { soilId: s.id, name: s.name, gamma: s.gamma, gammaSat: s.gammaSat, phi: s.phi, c: s.c, cu: s.cu, delta: Math.round((s.phi * 2) / 3 * 10) / 10 }); };
+  const setSoil = (k: number, id: string) => { const s = getSoilType(id), row = tableRowValues(id); if (row) set(k, row); else if (s) set(k, { soilId: s.id, name: s.name, zone: undefined, source: undefined, gamma: s.gamma, gammaSat: s.gammaSat, phi: s.phi, c: s.c, cu: s.cu, delta: Math.round((s.phi * 2) / 3 * 10) / 10 }); };
   const add = () => { const last = layers[layers.length - 1], s = SOIL_TYPES[1]; onChange([...layers, { topNap: round2((last?.topNap ?? 0) - 2), name: s.name, soilId: s.id, gamma: s.gamma, gammaSat: s.gammaSat, phi: s.phi, c: s.c, delta: Math.round((s.phi * 2) / 3 * 10) / 10, undrained: false, cu: s.cu, kh: 0 }]); };
   const cell = (k: number, key: "topNap" | "gamma" | "gammaSat" | "phi" | "c" | "delta" | "cu" | "kh", name: string, min?: number) =>
     <td><NumberInput label={`${name} ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} min={min} value={layers[k][key]} onChange={(v) => set(k, { [key]: v })} /></td>;
@@ -52,7 +54,7 @@ function LayerTable({ layers, onChange, caption }: { layers: WallLayer[]; onChan
         <th><abbr title={t("input.col.undrainedTitle", "Reken deze laag ongedraineerd met cu")}>{t("input.col.undrained", "ongedr.")}</abbr></th><th>cu<small>kPa</small></th><th><abbr title={t("input.col.khTitle", "Horizontale beddingsconstante; eigen invoer")}>kh1</abbr><small>kN/m³</small></th><th><abbr title={t("input.col.kh2Title", "Tweede en derde tak van de veer (tot 80 % en tot 100 % van passief min actief); leeg = één tak")}>kh2</abbr><small>kN/m³</small></th><th>kh3<small>kN/m³</small></th><th /></tr></thead>
       <tbody>{layers.map((l, k) => <tr key={k}>
         {cell(k, "topNap", t("input.col.top", "Bovenkant"))}
-        <td><select aria-label={`${t("input.col.soil", "Grondsoort")} ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} value={l.soilId ?? ""} onChange={(e) => setSoil(k, e.target.value)}>{!l.soilId && <option value="">{l.name || t("input.ownValues", "Eigen waarden")}</option>}{SOIL_TYPES.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></td>
+        <td><select aria-label={`${t("input.col.soil", "Grondsoort")} ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} value={l.soilId ?? ""} onChange={(e) => setSoil(k, e.target.value)}>{!l.soilId && <option value="">{l.name || t("input.ownValues", "Eigen waarden")}</option>}<optgroup label={t("soilProfile.table2b", "NEN 9997-1 tabel 2.b")}>{TABLE_2B.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</optgroup><optgroup label={t("soilProfile.startValues", "Startwaarden")}>{SOIL_TYPES.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</optgroup></select></td>
         {cell(k, "gamma", "γ", 0)}{cell(k, "gammaSat", "γsat", 0)}{cell(k, "phi", "φ′", 0)}{cell(k, "c", "c′", 0)}{cell(k, "delta", "δ", 0)}
         <td><input type="checkbox" aria-label={`${t("input.col.undrained", "ongedr.")} ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} checked={l.undrained} onChange={(e) => set(k, { undrained: e.target.checked })} /></td>
         {cell(k, "cu", "cu", 0)}{cell(k, "kh", "kh1", 0)}{optional(k, "kh2", "kh2")}{optional(k, "kh3", "kh3")}
@@ -65,11 +67,9 @@ function LayerTable({ layers, onChange, caption }: { layers: WallLayer[]; onChan
 export function InputPanel({ input: raw, result: r, onChange }: Props) {
   const i = normalizeWallInput(raw), sheet = i.construction === "sheet-pile", posts = i.construction === "posts";
   const { t } = useTranslation("calcWall");
-  const cpts = useCptStore((s) => s.cpts);
   const change = (patch: Partial<WallInput>) => onChange?.({ ...i, ...patch });
   const catalog = useMemo(() => sheetPileCatalog(), []);
   const profiles = [...(catalog.get(i.manufacturer)?.values() ?? [])].flat().filter((p) => p.iCm4PerM !== null);
-  const cpt = i.cptId ? cpts.get(i.cptId) : undefined;
   const f = { ...DEFAULT_FACTORS, ...i.factors }, a = i.anchor;
   const setAnchor = (patch: Partial<WallInput["anchor"]>) => change({ anchor: { ...a, ...patch } });
   const kind = a.kind ?? "tie", g = a.grout!;
@@ -177,14 +177,14 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
       <PhasesBlock input={i} onChange={change} />
     </Section>
     <Section title={t("input.layers", "Grondlagen (representatieve waarden)")}>
-      <Row label={t("input.cpt", "Sondering")}><select aria-label={t("input.cptAria", "Sondering voor het laagvoorstel")} value={i.cptId ?? ""} onChange={(e) => change({ cptId: e.target.value || null })}>
-        <option value="">{t("input.none", "Geen")}</option>{[...cpts.keys()].map((id) => <option key={id} value={id}>{id}</option>)}</select></Row>
-      <div className="sw-buttons"><button type="button" disabled={!cpt} onClick={() => { if (!cpt) return; const layers = wallLayersFromCpt(cpt); if (layers.length) change({ layersHigh: layers }); }}>{t("input.proposal", "Voorstel uit sondering")}</button></div>
+      <SoilProfileBlock input={i} onChange={change} />
       <LayerTable layers={i.layersHigh} caption={t("input.layersHigh", "hoge zijde")} onChange={(layersHigh) => change({ layersHigh })} />
+      <LayerSources layers={i.layersHigh} caption={t("input.layersHigh", "hoge zijde")} />
       <label className="cs-check"><input type="checkbox" checked={i.lowSameAsHigh} onChange={(e) => change({ lowSameAsHigh: e.target.checked, layersLow: e.target.checked || i.layersLow.length ? i.layersLow : i.layersHigh.map((l) => ({ ...l })) })} /> {t("input.lowSame", "Lage zijde heeft dezelfde lagen")}</label>
       {!i.lowSameAsHigh && <LayerTable layers={i.layersLow} caption={t("input.layersLow", "lage zijde")} onChange={(layersLow) => change({ layersLow })} />}
+      {!i.lowSameAsHigh && <LayerSources layers={i.layersLow} caption={t("input.layersLow", "lage zijde")} />}
       <GeometryBlock input={i} onChange={change} />
-      <Hint>{t("input.layersHint", "De bovenste laag loopt door tot het maaiveld, de onderste tot onbeperkte diepte. De beddingsconstanten vult u zelf in, bijvoorbeeld uit CUR 166 tabel 3.3: dit rekenblad levert daarvoor geen tabelwaarden. Met alleen kh1 rekent het met één tak; met kh2 en kh3 erbij met de drietakkige veer van CUR 166. Een voorstel uit de sondering is indicatief en laat de beddingsconstanten open.")}</Hint>
+      <Hint>{t("soilProfile.hint", "De bovenste laag loopt door tot het maaiveld, de onderste tot onbeperkte diepte. Het voorstel uit de sondering neemt de laagindeling van het paneel Grondopbouw, voegt gelijke lagen samen en lagen dunner dan de kleinste dikte bij de dikste buurlaag, en vult per laag de lage karakteristieke waarden van NEN 9997-1 tabel 2.b in (vastheid uit de gemiddelde qc, bij zand omgerekend naar σ′v = 100 kPa) en kh uit CUR 166 tabel 3.3 (laag gemiddelde). Bij zand blijven kh2 en kh3 open, bij leem ook kh1. Met alleen kh1 rekent het met één tak; met kh2 en kh3 erbij met de drietakkige veer. Het voorstel is indicatief: controleer en overschrijf de waarden.")}</Hint>
     </Section>
     <More title={t("input.pressure", "Gronddruk, water en stijfheid")}>
       <Row label={t("input.passiveMethod", "Passieve gronddruk")}><select aria-label={t("input.passiveMethod", "Passieve gronddruk")} value={i.passiveMethod} onChange={(e) => change({ passiveMethod: e.target.value as WallInput["passiveMethod"] })}>
@@ -242,6 +242,18 @@ export function VisualPanel({ input: i, result: r }: Props) {
   const { t } = useTranslation("calcWall");
   const [view, setView] = useState<"section" | "3d">("section");
   const [pick, setPick] = useState("uls");
+  const [showQc, setShowQc] = useState(false);
+  const cpts = useCptStore((s) => s.cpts);
+  const traces = useMemo(() => {
+    const out: QcTrace[] = [];
+    for (const [side, id] of [["high", i.cptId], ["low", i.cptIdLow]] as const) {
+      const cpt = id ? cpts.get(id) : undefined;
+      if (!cpt || !id) continue;
+      const ground = cpt.metadata.ground_level_nap ?? 0;
+      out.push({ side, cptId: id, points: cpt.points.filter((p) => typeof p.qc === "number" && Number.isFinite(p.qc) && Number.isFinite(p.depth)).map((p) => ({ nap: ground - Math.abs(p.depth), qc: p.qc as number })) });
+    }
+    return out;
+  }, [cpts, i.cptId, i.cptIdLow]);
   if (!r.ok) return <p className="cs-hint">{t("visual.pending", "De tekening verschijnt zodra de invoer compleet is en er evenwicht is.")}</p>;
   // Keuze: de omhullende van de rekenwaarden, de maatgevende representatieve berekening, of één fase en stap.
   const many = r.cases.length > 2, chosen = pick.startsWith("c") ? r.cases[Number(pick.slice(1))] : undefined;
@@ -256,7 +268,8 @@ export function VisualPanel({ input: i, result: r }: Props) {
         {many && r.cases.map((c, k) => <option key={k} value={`c${k}`}>{caseLabel(c, r.phases.length, t)}</option>)}</select>
     </div>
     {view === "section" ? <>
-      <SectionDrawing input={i} result={r} run={run} phase={phase} envelope={envelope} />
+      {traces.length > 0 && <div className="sw-visual-options"><label><input type="checkbox" checked={showQc} onChange={(e) => setShowQc(e.target.checked)} /> {t("soilProfile.showQc", "qc van de sondering naast de doorsnede")}</label></div>}
+      <SectionDrawing input={i} result={r} run={run} phase={phase} envelope={envelope} qc={showQc ? traces : undefined} />
       <p className="cs-hint">{t("visual.sectionHint", "Op schaal. Tegen de wand staat de druk op de wand: bruin de korreldruk, blauw de waterdruk erbovenop; de streeplijnen zijn de actieve grens aan de hoge zijde en de passieve grens aan de lage zijde. Rechts de verplaatsing (positief naar de lage zijde), het moment en de dwarskracht over dezelfde hoogte; de stip is de grootste waarde.")}{envelope ? ` ${t("stage.envelopeHint", "De band is de omhullende over alle fasen en stappen.")}` : ""}</p>
     </> : <WallScene3D scene={wallScene(i, r, chosen ? chosen.run : r.sls, chosen ? phase : undefined)} />}
   </div>;

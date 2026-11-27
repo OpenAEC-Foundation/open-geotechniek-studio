@@ -112,7 +112,6 @@
       "undrainedTitle": "Regn dette lag udrænet med cu"
     },
     "construction": "Konstruktionstype",
-    "cpt": "CPT",
     "cptAria": "CPT til lagforslaget",
     "customEi": "Bøjningsstivhed EI pr. m væg",
     "customEiPost": "Bøjningsstivhed EI pr. pæl",
@@ -170,7 +169,6 @@
     "layerN": "lag {{n}}",
     "layers": "Jordlag (karakteristiske værdier)",
     "layersHigh": "høj side",
-    "layersHint": "Det øverste lag går op til terræn, det nederste til ubegrænset dybde. Ballasttallene angiver I selv, for eksempel fra CUR 166 tabel 3.3: dette beregningsark giver ingen tabelværdier for dem. Med kun kh1 regner det med én gren; med kh2 og kh3 oveni med den tredelte fjeder fra CUR 166. Et forslag ud fra CPT'en er vejledende og lader ballasttallene stå tomme.",
     "layersLow": "lav side",
     "lowSame": "Lav side har de samme lag",
     "manufacturer": "Producent",
@@ -538,5 +536,29 @@
     "waterLow": "Lavt vand",
     "waterLowShort": "lavt vand",
     "waterUp": "op"
+  },
+  "soilProfile": {
+    "confirm": "De indtastede lag erstattes af forslaget fra CPT-sonderingen. Fortsæt?",
+    "cptHigh": "Sondering høj side",
+    "cptLow": "Sondering lav side",
+    "sameCpt": "Som høj side",
+    "minThickness": "Mindste lagtykkelse",
+    "sources": "Oprindelse",
+    "layer": "Lag",
+    "depth": "Dybde",
+    "zone": "Sonderingszone",
+    "sigmaTitle": "Lodret effektiv spænding midt i laget, til omregning af qc (NEN 9997-1 tabel 2.b, fodnote g)",
+    "qcEntryTitle": "qc brugt som indgang i tabel 2.b: for sand og grus omregnet til σ′v = 100 kPa",
+    "row": "Tabel 2.b",
+    "khRow": "Tabel 3.3",
+    "own": "Egen indtastning",
+    "noKh": "ingen række: indtast kh selv",
+    "manual": "manuelt",
+    "hint": "Det øverste lag går op til terræn, det nederste til ubegrænset dybde. Forslaget fra sonderingen bruger lagdelingen fra panelet Jordprofil, slår ens lag sammen, lægger lag tyndere end mindste tykkelse til det tykkeste nabolag og udfylder pr. lag de lave karakteristiske værdier fra NEN 9997-1 tabel 2.b (lejringstæthed ud fra middel-qc, for sand omregnet til σ′v = 100 kPa) og kh fra CUR 166 tabel 3.3 (lavt gennemsnit). For sand forbliver kh2 og kh3 tomme, for silt også kh1. Med kun kh1 regnes med én gren; med kh2 og kh3 med den tregrenede fjeder. Forslaget er vejledende: kontroller og overskriv værdierne.",
+    "table2b": "NEN 9997-1 tabel 2.b",
+    "startValues": "Startværdier",
+    "showQc": "qc fra sonderingen ved siden af snittet",
+    "clear": "Gennemsigtig jord",
+    "noLayers": "Sonderingen giver ingen lagdeling (ingen qc og Rf)."
   }
 }

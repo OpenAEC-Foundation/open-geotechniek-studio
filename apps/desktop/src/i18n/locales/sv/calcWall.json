@@ -112,7 +112,6 @@
       "undrainedTitle": "Räkna det här lagret odränerat med cu"
     },
     "construction": "Typ av konstruktion",
-    "cpt": "CPT-sondering",
     "cptAria": "CPT-sondering för lagerförslaget",
     "customEi": "Böjstyvhet EI per m vägg",
     "customEiPost": "Böjstyvhet EI per påle",
@@ -170,7 +169,6 @@
     "layerN": "lager {{n}}",
     "layers": "Jordlager (karakteristiska värden)",
     "layersHigh": "hög sida",
-    "layersHint": "Det översta lagret går upp till markytan, det understa till obegränsat djup. Bäddmodulerna anger ni själv, till exempel ur CUR 166 tabell 3.3: det här beräkningsbladet ger inga tabellvärden för dem. Med enbart kh1 räknar det med en gren; med kh2 och kh3 därtill med den tredelade fjädern i CUR 166. Ett förslag från CPT-sonderingen är vägledande och lämnar bäddmodulerna tomma.",
     "layersLow": "låg sida",
     "lowSame": "Låg sida har samma lager",
     "manufacturer": "Tillverkare",
@@ -538,5 +536,29 @@
     "waterLow": "Lågt vatten",
     "waterLowShort": "lågt vatten",
     "waterUp": "upp"
+  },
+  "soilProfile": {
+    "confirm": "De inmatade lagren ersätts av förslaget från CPT-sonderingen. Fortsätta?",
+    "cptHigh": "Sondering hög sida",
+    "cptLow": "Sondering låg sida",
+    "sameCpt": "Samma som hög sida",
+    "minThickness": "Minsta lagertjocklek",
+    "sources": "Ursprung",
+    "layer": "Lager",
+    "depth": "Djup",
+    "zone": "Sonderingszon",
+    "sigmaTitle": "Vertikal effektivspänning mitt i lagret, för omräkning av qc (NEN 9997-1 tabell 2.b, fotnot g)",
+    "qcEntryTitle": "qc som används som ingång i tabell 2.b: för sand och grus omräknat till σ′v = 100 kPa",
+    "row": "Tabell 2.b",
+    "khRow": "Tabell 3.3",
+    "own": "Egen inmatning",
+    "noKh": "ingen rad: ange kh själv",
+    "manual": "manuellt",
+    "hint": "Det översta lagret går upp till markytan, det understa till obegränsat djup. Förslaget från sonderingen tar lagerindelningen från panelen Jordprofil, slår ihop lika lager, lägger lager tunnare än minsta tjockleken till det tjockaste grannlagret och fyller per lager i de låga karakteristiska värdena i NEN 9997-1 tabell 2.b (lagringstäthet från medel-qc, för sand omräknat till σ′v = 100 kPa) och kh från CUR 166 tabell 3.3 (lågt medelvärde). För sand förblir kh2 och kh3 tomma, för silt även kh1. Med bara kh1 räknas med en gren; med kh2 och kh3 med den tregrenade fjädern. Förslaget är vägledande: kontrollera och skriv över värdena.",
+    "table2b": "NEN 9997-1 tabell 2.b",
+    "startValues": "Startvärden",
+    "showQc": "qc från sonderingen bredvid sektionen",
+    "clear": "Genomskinlig jord",
+    "noLayers": "Sonderingen ger ingen lagerindelning (inget qc och Rf)."
   }
 }

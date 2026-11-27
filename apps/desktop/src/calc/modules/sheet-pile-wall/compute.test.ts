@@ -185,9 +185,10 @@ describe("toetsen", () => {
 });
 
 describe("laagvoorstel", () => {
-  it("uit een sondering: wandwrijving ⅔·φ′ en een open beddingsconstante", () => {
+  it("uit een sondering: wandwrijving ⅔·φ′ en kh1 uit CUR 166 tabel 3.3 (details in cpt-layers.test.ts)", () => {
     const cpt = { metadata: { ground_level_nap: 1 }, points: Array.from({ length: 80 }, (_, k) => ({ depth: 0.1 * k, qc: 8, fs: 0.05, rf: 0.6 })) } as never;
     const layers = wallLayersFromCpt(cpt);
-    for (const l of layers) { expect(l.kh).toBe(0); expect(l.delta).toBeCloseTo((2 * l.phi) / 3, 1); expect(l.undrained).toBe(false); }
+    expect(layers.length).toBeGreaterThan(0);
+    for (const l of layers) { expect([12000, 20000, 40000]).toContain(l.kh); expect(l.delta).toBeCloseTo((2 * l.phi) / 3, 1); expect(l.undrained).toBe(false); }
   });
 });

@@ -112,7 +112,6 @@
       "undrainedTitle": "Diese Schicht undräniert mit cu berechnen"
     },
     "construction": "Art der Konstruktion",
-    "cpt": "Drucksondierung",
     "cptAria": "Drucksondierung für den Schichtvorschlag",
     "customEi": "Biegesteifigkeit EI je m Wand",
     "customEiPost": "Biegesteifigkeit EI je Pfahl",
@@ -170,7 +169,6 @@
     "layerN": "Schicht {{n}}",
     "layers": "Bodenschichten (charakteristische Werte)",
     "layersHigh": "hohe Seite",
-    "layersHint": "Die oberste Schicht reicht bis zur Geländeoberkante, die unterste bis in unbegrenzte Tiefe. Die Bettungsmoduln geben Sie selbst ein, zum Beispiel aus CUR 166 Tabelle 3.3: Dieses Rechenblatt liefert dafür keine Tabellenwerte. Nur mit kh1 rechnet es mit einem Ast; mit kh2 und kh3 dazu mit der dreiteiligen Feder nach CUR 166. Ein Vorschlag aus der Drucksondierung ist indikativ und lässt die Bettungsmoduln offen.",
     "layersLow": "tiefe Seite",
     "lowSame": "Tiefe Seite hat dieselben Schichten",
     "manufacturer": "Hersteller",
@@ -538,5 +536,29 @@
     "waterLow": "Wasser niedrig",
     "waterLowShort": "Wasser niedrig",
     "waterUp": "angehoben"
+  },
+  "soilProfile": {
+    "confirm": "Die eingegebenen Schichten werden durch den Vorschlag aus der Drucksondierung ersetzt. Fortfahren?",
+    "cptHigh": "Sondierung hohe Seite",
+    "cptLow": "Sondierung tiefe Seite",
+    "sameCpt": "Wie hohe Seite",
+    "minThickness": "Kleinste Schichtdicke",
+    "sources": "Herkunft",
+    "layer": "Schicht",
+    "depth": "Tiefe",
+    "zone": "Zone Sondierung",
+    "sigmaTitle": "Vertikale effektive Spannung in der Schichtmitte, für die Umrechnung von qc (NEN 9997-1 Tabelle 2.b, Fußnote g)",
+    "qcEntryTitle": "qc als Eingang in Tabelle 2.b: bei Sand und Kies auf σ′v = 100 kPa umgerechnet",
+    "row": "Tabelle 2.b",
+    "khRow": "Tabelle 3.3",
+    "own": "Eigene Eingabe",
+    "noKh": "keine Zeile: kh selbst eingeben",
+    "manual": "manuell",
+    "hint": "Die oberste Schicht reicht bis zur Geländeoberfläche, die unterste bis in unbegrenzte Tiefe. Der Vorschlag aus der Sondierung übernimmt die Schichteinteilung des Panels Bodenaufbau, fasst gleiche Schichten zusammen, schlägt Schichten dünner als die kleinste Dicke der dicksten Nachbarschicht zu und setzt je Schicht die unteren charakteristischen Werte aus NEN 9997-1 Tabelle 2.b ein (Lagerungsdichte aus dem mittleren qc, bei Sand auf σ′v = 100 kPa umgerechnet) sowie kh aus CUR 166 Tabelle 3.3 (unterer Mittelwert). Bei Sand bleiben kh2 und kh3 leer, bei Lehm auch kh1. Nur mit kh1 rechnet es mit einem Ast, mit kh2 und kh3 mit der dreiästigen Feder. Der Vorschlag ist ein Richtwert: Werte prüfen und überschreiben.",
+    "table2b": "NEN 9997-1 Tabelle 2.b",
+    "startValues": "Startwerte",
+    "showQc": "qc der Sondierung neben dem Schnitt",
+    "clear": "Boden durchsichtig",
+    "noLayers": "Die Sondierung liefert keine Schichteinteilung (kein qc und Rf)."
   }
 }

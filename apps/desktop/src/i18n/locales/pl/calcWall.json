@@ -112,7 +112,6 @@
       "undrainedTitle": "Licz tę warstwę bez odpływu, z cu"
     },
     "construction": "Rodzaj konstrukcji",
-    "cpt": "Sondowanie CPT",
     "cptAria": "Sondowanie CPT do propozycji warstw",
     "customEi": "Sztywność na zginanie EI na m ścianki",
     "customEiPost": "Sztywność na zginanie EI na pal",
@@ -170,7 +169,6 @@
     "layerN": "warstwa {{n}}",
     "layers": "Warstwy gruntu (wartości charakterystyczne)",
     "layersHigh": "strona wyższa",
-    "layersHint": "Najwyższa warstwa sięga do poziomu terenu, najniższa do nieograniczonej głębokości. Moduły reakcji podłoża podajesz samodzielnie, na przykład z CUR 166 tablica 3.3: ten arkusz nie podaje dla nich wartości tablicowych. Przy samym kh1 liczy z jednym odcinkiem; po dodaniu kh2 i kh3 ze sprężyną trójodcinkową z CUR 166. Propozycja z sondowania CPT jest orientacyjna i pozostawia moduły reakcji podłoża puste.",
     "layersLow": "strona niższa",
     "lowSame": "Strona niższa ma te same warstwy",
     "manufacturer": "Producent",
@@ -538,5 +536,29 @@
     "waterLow": "Woda niska",
     "waterLowShort": "woda niska",
     "waterUp": "w górę"
+  },
+  "soilProfile": {
+    "confirm": "Wprowadzone warstwy zostaną zastąpione propozycją z sondowania CPT. Kontynuować?",
+    "cptHigh": "Sondowanie strona wysoka",
+    "cptLow": "Sondowanie strona niska",
+    "sameCpt": "Jak strona wysoka",
+    "minThickness": "Najmniejsza grubość warstwy",
+    "sources": "Pochodzenie",
+    "layer": "Warstwa",
+    "depth": "Głębokość",
+    "zone": "Strefa sondowania",
+    "sigmaTitle": "Pionowe naprężenie efektywne w środku warstwy, do przeliczenia qc (NEN 9997-1 tablica 2.b, przypis g)",
+    "qcEntryTitle": "qc, z którym wchodzi się do tablicy 2.b: dla piasku i żwiru przeliczone na σ′v = 100 kPa",
+    "row": "Tablica 2.b",
+    "khRow": "Tablica 3.3",
+    "own": "Własne dane",
+    "noKh": "brak wiersza: wpisz kh samodzielnie",
+    "manual": "ręcznie",
+    "hint": "Górna warstwa sięga do powierzchni terenu, dolna do nieograniczonej głębokości. Propozycja z sondowania przejmuje podział z panelu Profil gruntu, łączy jednakowe warstwy, warstwy cieńsze od najmniejszej grubości dołącza do najgrubszej sąsiedniej i wpisuje dla każdej warstwy dolne wartości charakterystyczne z tablicy 2.b NEN 9997-1 (stan ze średniego qc, dla piasku przeliczonego na σ′v = 100 kPa) oraz kh z tablicy 3.3 CUR 166 (niska średnia). Dla piasku kh2 i kh3 pozostają puste, dla pyłu także kh1. Tylko z kh1 liczy z jedną gałęzią; z kh2 i kh3 ze sprężyną trójgałęziową. Propozycja jest orientacyjna: sprawdź i nadpisz wartości.",
+    "table2b": "NEN 9997-1 tablica 2.b",
+    "startValues": "Wartości początkowe",
+    "showQc": "qc sondowania obok przekroju",
+    "clear": "Przezroczysty grunt",
+    "noLayers": "Sondowanie nie daje podziału na warstwy (brak qc i Rf)."
   }
 }

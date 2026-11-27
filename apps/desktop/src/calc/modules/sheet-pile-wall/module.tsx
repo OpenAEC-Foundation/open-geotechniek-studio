@@ -11,8 +11,8 @@ function defaultInput(ctx: ProjectContext): WallInput {
   const cpt = ctx.activeCptId ? ctx.cpts.get(ctx.activeCptId) : null;
   const input = wallExample(cpt?.metadata.ground_level_nap ?? 0);
   if (!cpt) return input;
-  // Met een sondering: haar laagindeling als voorstel. De beddingsconstanten blijven dan open voor de gebruiker.
-  try { const layers = wallLayersFromCpt(cpt); if (layers.length) return { ...input, cptId: ctx.activeCptId, layersHigh: layers }; } catch { /* het voorbeeld blijft staan */ }
+  // Met een sondering: haar laagindeling als voorstel. Met de waarden van tabel 2.b en tabel 3.3 (cpt-layers.ts).
+  try { const layers = wallLayersFromCpt(cpt, { waterNap: input.waterHighNap }); if (layers.length) return { ...input, cptId: ctx.activeCptId, layersHigh: layers }; } catch { /* het voorbeeld blijft staan */ }
   return input;
 }
 

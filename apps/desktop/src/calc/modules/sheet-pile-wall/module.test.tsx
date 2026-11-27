@@ -43,7 +43,7 @@ describe("module", () => {
     expect(onChange.mock.lastCall?.[0].factors.gammaPhi).toBe(1.2);
     expect(screen.getByRole("button", { name: "Voorstel uit sondering" })).toBeDisabled();
     expect(screen.getByText(/niet tegen de tekst van NEN 9997-1 en CUR 166 gelegd/)).toBeInTheDocument();
-    expect(screen.getByText(/levert daarvoor geen tabelwaarden/)).toBeInTheDocument();
+    expect(screen.getByText(/lage karakteristieke waarden van NEN 9997-1 tabel 2.b/)).toBeInTheDocument();
   });
 
   it("invoer beschoeiing: soort constructie, hout of eigen waarden, palen met schotten zonder anker", () => {
