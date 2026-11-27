@@ -10,6 +10,7 @@ import { NO_CORROSION, corrodedSheetPile, faceSourceText, requireLoss, type Corr
 import { blum, type BlumResult } from "./blum";
 import { coefficients, type PassiveMethod, type PressureCoefficients } from "./earth-pressure";
 import { solveSpringWall, type SideSpring, type SpringState, type WallElement } from "./spring-model";
+import { extraVerticalStress, profileStrips, type LineLoad, type Strip, type SurfaceLoad, type SurfacePoint } from "./surface-loads";
 
 /** Volumegewicht van water [kN/m³]. */
 export const GAMMA_WATER = 10;
@@ -117,6 +118,8 @@ export interface WallPhase {
   /** Steunpunten (id) die in deze fase worden aangebracht en die worden verwijderd. */
   install?: string[];
   remove?: string[];
+  /** Belastingen op afstand (id) die in deze fase werken; leeg = als de vorige fase (de eerste: alle). */
+  loadIds?: string[];
 }
 
 export interface WallFactors {
@@ -223,6 +226,11 @@ export interface WallInput {
   phases?: WallPhase[];
   /** Stappenplan van CUR 166 (stap 6.1 tot en met 6.5); uit = één berekening met rekenwaarden en één representatief. */
   cur?: CurSetup;
+  /** Maaiveld dat van de wand af niet vlak is (talud, aflopende waterbodem), per zijde ten opzichte van het maaiveld bij de wand. */
+  profileHigh?: SurfacePoint[];
+  profileLow?: SurfacePoint[];
+  /** Strook- en lijnlasten op afstand van de wand, naast de gelijkmatige bovenbelasting. */
+  loads?: SurfaceLoad[];
   passiveMethod: PassiveMethod;
   factors: WallFactors;
   /** Reductiefactor op de buigstijfheid (U-planken zonder volledige schuifkrachtoverdracht in de sloten). */
@@ -368,13 +376,18 @@ export interface ResolvedPhase {
   /** Werkende steunpunten, en welke daarvan in deze fase zijn aangebracht. */
   supports: WallAnchor[];
   installed: string[];
+  /** Belastingen op afstand die in deze fase werken. */
+  loadIds: string[];
 }
+
+/** Belastingen op afstand met hun id ("B1", "B2", …). */
+export const wallLoads = (i: WallInput): SurfaceLoad[] => (i.loads ?? []).map((l, k) => ({ ...l, id: l.id || `B${k + 1}` }));
 
 /** Fasen met de geërfde waarden; zonder fasen één fase met alle steunpunten. */
 export function resolvePhases(i: WallInput): ResolvedPhase[] {
-  const all = wallSupports(i);
-  if (!i.phases?.length) return [{ index: 0, name: "", excavationNap: i.excavationNap, waterHighNap: i.waterHighNap, waterLowNap: i.waterLowNap, surchargeKpa: i.surchargeKpa, supports: all, installed: all.map((a) => a.id!) }];
-  let prev = { excavationNap: i.excavationNap, waterHighNap: i.waterHighNap, waterLowNap: i.waterLowNap, surchargeKpa: i.surchargeKpa };
+  const all = wallSupports(i), loads = wallLoads(i).map((l) => l.id!);
+  if (!i.phases?.length) return [{ index: 0, name: "", excavationNap: i.excavationNap, waterHighNap: i.waterHighNap, waterLowNap: i.waterLowNap, surchargeKpa: i.surchargeKpa, supports: all, installed: all.map((a) => a.id!), loadIds: loads }];
+  let prev = { excavationNap: i.excavationNap, waterHighNap: i.waterHighNap, waterLowNap: i.waterLowNap, surchargeKpa: i.surchargeKpa }, loadIds = loads;
   const active = new Set<string>();
   return i.phases.map((ph, index) => {
     const cur = { excavationNap: ph.excavationNap ?? prev.excavationNap, waterHighNap: ph.waterHighNap ?? prev.waterHighNap, waterLowNap: ph.waterLowNap ?? prev.waterLowNap, surchargeKpa: ph.surchargeKpa ?? prev.surchargeKpa };
@@ -382,12 +395,13 @@ export function resolvePhases(i: WallInput): ResolvedPhase[] {
     const installed = (ph.install ?? []).filter((id) => all.some((a) => a.id === id) && !active.has(id));
     for (const id of installed) active.add(id);
     prev = cur;
-    return { index, name: ph.name || String(index + 1), ...cur, supports: all.filter((a) => active.has(a.id!)), installed };
+    if (ph.loadIds) loadIds = ph.loadIds.filter((id) => loads.includes(id));
+    return { index, name: ph.name || String(index + 1), ...cur, supports: all.filter((a) => active.has(a.id!)), installed, loadIds };
   });
 }
 
 /** De invoer zoals die in één fase geldt: niveau lage zijde, waterstanden en bovenbelasting van die fase. */
-export const phaseInput = (i: WallInput, ph: ResolvedPhase): WallInput => ({ ...i, excavationNap: ph.excavationNap, waterHighNap: ph.waterHighNap, waterLowNap: ph.waterLowNap, surchargeKpa: ph.surchargeKpa });
+export const phaseInput = (i: WallInput, ph: ResolvedPhase): WallInput => ({ ...i, excavationNap: ph.excavationNap, waterHighNap: ph.waterHighNap, waterLowNap: ph.waterLowNap, surchargeKpa: ph.surchargeKpa, loads: wallLoads(i).filter((l) => ph.loadIds.includes(l.id!)) });
 
 // ─── Scenario: de invoer na het toepassen van de factoren ─────────
 
@@ -416,6 +430,9 @@ export interface Side {
   surchargeKpa: number;
   gammaWater: number;
   layers: ScenarioLayer[];
+  /** Strooklasten (belastingen op afstand en het maaiveldprofiel) en lijnlasten, met hun factor; leeg bij een vlak, onbelast maaiveld. */
+  strips?: Strip[];
+  lines?: LineLoad[];
 }
 
 export interface Scenario {
@@ -440,10 +457,21 @@ export function buildScenario(i: WallInput, f: WallFactors, supportLevels: numbe
   const from = supportLevels.length ? Math.min(...supportLevels, i.groundHighNap) : i.groundHighNap;
   const deltaA = Math.min((f.deltaAPct / 100) * Math.max(0, from - i.excavationNap), f.deltaAMaxM);
   const high = scenarioLayers(i.layersHigh, f, i.passiveMethod), gw = i.gammaWater ?? GAMMA_WATER;
+  const low = i.lowSameAsHigh ? high : scenarioLayers(i.layersLow, f, i.passiveMethod);
+  const sides = { high: { surfaceNap: i.groundHighNap, waterNap: i.waterHighNap + f.deltaWaterHighM, layers: high }, low: { surfaceNap: i.excavationNap - deltaA, waterNap: i.waterLowNap - f.deltaWaterLowM, layers: low } };
+  // Belastingen op afstand (maal de factor op de bovenbelasting) en het maaiveldprofiel als strooklasten; het profiel van de
+  // lage zijde zakt met de toeslag op de kerende hoogte evenwijdig mee.
+  const extra = (side: "high" | "low") => {
+    const sd = sides[side], top = sd.layers[0];
+    const gammaAt = (dz: number) => (sd.surfaceNap + dz / 2 > sd.waterNap ? top.gamma : top.gammaSat - gw);
+    const strips: Strip[] = [...profileStrips((side === "high" ? i.profileHigh : i.profileLow) ?? [], gammaAt), ...(i.loads ?? []).filter((l) => l.side === side && l.kind === "strip").map((l) => ({ q: l.value * f.gammaQ, x1: Math.max(0, l.fromM), x2: l.toM }))];
+    const lines: LineLoad[] = (i.loads ?? []).filter((l) => l.side === side && l.kind === "line").map((l) => ({ p: l.value * f.gammaQ, x: Math.max(0, l.fromM) }));
+    return strips.length || lines.length ? { strips, lines } : {};
+  };
   return {
     factors: f, deltaAM: deltaA,
-    high: { surfaceNap: i.groundHighNap, waterNap: i.waterHighNap + f.deltaWaterHighM, surchargeKpa: i.surchargeKpa * f.gammaQ, gammaWater: gw, layers: high },
-    low: { surfaceNap: i.excavationNap - deltaA, waterNap: i.waterLowNap - f.deltaWaterLowM, surchargeKpa: 0, gammaWater: gw, layers: i.lowSameAsHigh ? high : scenarioLayers(i.layersLow, f, i.passiveMethod) },
+    high: { ...sides.high, surchargeKpa: i.surchargeKpa * f.gammaQ, gammaWater: gw, ...extra("high") },
+    low: { ...sides.low, surchargeKpa: 0, gammaWater: gw, ...extra("low") },
   };
 }
 
@@ -482,6 +510,8 @@ export function sidePoint(side: Side, nap: number): SidePoint {
     const l = layerAt(side.layers, mid);
     sigmaV += (mid < side.waterNap ? l.gammaSat : l.gamma) * (a - b);
   }
+  // Belastingen op afstand en het maaiveldprofiel; de korrelspanning wordt daardoor niet negatief.
+  if (side.strips?.length || side.lines?.length) sigmaV = Math.max(sigmaV + extraVerticalStress(side.strips ?? [], side.lines ?? [], side.surfaceNap - nap), Math.min(sigmaV, u));
   const eff = sigmaV - u, layer = layerAt(side.layers, nap), k = layer.coef;
   let pa: number, pp: number;
   if (layer.undrained) {
@@ -897,6 +927,8 @@ function validate(i: WallInput): string | null {
     const lowest = Math.min(...phases.filter((ph) => ph.supports.some((b) => b.id === a.id)).map((ph) => ph.excavationNap), Infinity);
     if (a.levelNap > i.wallTopNap || a.levelNap <= i.toeNap || (Number.isFinite(lowest) && a.levelNap <= lowest)) return t("errors.anchorLevel", "Het anker ligt tussen de bovenkant van de wand en het niveau aan de lage zijde.");
   }
+  for (const l of i.loads ?? []) if (![l.value, l.fromM].every(Number.isFinite) || l.fromM < 0 || (l.kind === "strip" && !(l.toM > l.fromM))) return t("stage.errors.load", "Belasting op afstand: vul de grootte en de afstand tot de wand in; een strook loopt van een kleinere naar een grotere afstand.");
+  for (const p of [...(i.profileHigh ?? []), ...(i.profileLow ?? [])]) if (![p.xM, p.dzM].every(Number.isFinite) || p.xM < 0) return t("stage.errors.profile", "Maaiveld: vul per punt de afstand tot de wand (niet negatief) en de hoogte in.");
   if (i.cur?.enabled && !i.cur.steps.every((x) => Number.isFinite(x.khFactor) && x.khFactor > 0 && Number.isFinite(x.resultFactor) && x.resultFactor >= 0)) return t("stage.errors.steps", "Stappenplan: de factoren op de beddingsconstante zijn groter dan 0 en die op de uitkomst niet negatief.");
   const f = i.factors;
   if (![f.gammaPhi, f.gammaC, f.gammaCu, f.gammaGamma, f.gammaK, f.gammaM0].every((v) => Number.isFinite(v) && v > 0) || ![f.gammaQ, f.deltaAPct, f.deltaAMaxM, f.deltaWaterHighM, f.deltaWaterLowM].every((v) => Number.isFinite(v) && v >= 0))
