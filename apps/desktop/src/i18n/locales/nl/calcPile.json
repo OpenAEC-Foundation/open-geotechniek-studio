@@ -338,6 +338,8 @@
     "note": "Hoogten en de paal zijn op schaal. De breedte van de trajecten is schematisch: de methode rekent alleen langs de diepte.",
     "switch": "Weergave van de tekening",
     "switch3dTitle": "4D-8D-methode in 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondering en de paal in 3D naast elkaar",
     "toolbar": "Beeld",
     "unavailable": "3D is op dit apparaat niet beschikbaar (geen WebGL). Gebruik de 2D-tekening."
   },

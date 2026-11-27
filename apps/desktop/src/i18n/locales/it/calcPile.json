@@ -338,6 +338,8 @@
     "note": "Le quote e il palo sono in scala. La larghezza dei tratti è schematica: il metodo calcola solo lungo la profondità.",
     "switch": "Vista del disegno",
     "switch3dTitle": "Metodo 4D-8D in 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Prova e palo in 3D affiancati",
     "toolbar": "Vista",
     "unavailable": "Il 3D non è disponibile su questo dispositivo (WebGL assente). Usare il disegno 2D."
   },

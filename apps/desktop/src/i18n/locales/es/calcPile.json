@@ -338,6 +338,8 @@
     "note": "Los niveles y el pilote están a escala. La anchura de los tramos es esquemática: el método solo calcula a lo largo de la profundidad.",
     "switch": "Vista del dibujo",
     "switch3dTitle": "Método 4D-8D en 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondeo y pilote en 3D uno junto al otro",
     "toolbar": "Vista",
     "unavailable": "El 3D no está disponible en este dispositivo (sin WebGL). Use el dibujo 2D."
   },

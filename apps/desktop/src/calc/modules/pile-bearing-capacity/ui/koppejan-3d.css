@@ -26,3 +26,7 @@
 .pile-3d-note,
 .pile-3d-message { margin: 0; font: 500 0.78rem "Inter", sans-serif; color: var(--theme-text-secondary, #71717a); line-height: 1.5; }
 .pile-3d-message { padding: 48px 24px 24px; text-align: center; font-size: 0.85rem; }
+
+/* Sondering en de paal in 3D naast elkaar; onder elkaar als het paneel smal is. */
+.pile-drawing-split { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 12px; align-items: start; flex: 1 1 auto; min-width: 0; }
+.pile-drawing-split > * { min-width: 0; }

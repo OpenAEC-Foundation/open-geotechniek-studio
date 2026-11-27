@@ -338,6 +338,8 @@
     "note": "Levels and the pile are to scale. The width of the trajectories is schematic: the method only works along the depth.",
     "switch": "Drawing view",
     "switch3dTitle": "4D-8D method in 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "CPT and the pile in 3D side by side",
     "toolbar": "View",
     "unavailable": "3D is not available on this device (no WebGL). Use the 2D drawing."
   },

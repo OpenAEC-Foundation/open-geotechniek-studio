@@ -338,6 +338,8 @@
     "note": "Os níveis e a estaca estão à escala. A largura dos troços é esquemática: o método só calcula ao longo da profundidade.",
     "switch": "Vista do desenho",
     "switch3dTitle": "Método 4D-8D em 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondagem e estaca em 3D lado a lado",
     "toolbar": "Vista",
     "unavailable": "O 3D não está disponível neste dispositivo (sem WebGL). Use o desenho 2D."
   },

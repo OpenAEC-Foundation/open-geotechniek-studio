@@ -338,6 +338,8 @@
     "note": "Nivåer och pålen är skalenliga. Sträckornas bredd är schematisk: metoden räknar bara längs djupet.",
     "switch": "Vy av ritningen",
     "switch3dTitle": "4D-8D-metoden i 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondering och pålen i 3D sida vid sida",
     "toolbar": "Vy",
     "unavailable": "3D är inte tillgängligt på den här enheten (ingen WebGL). Använd 2D-ritningen."
   },

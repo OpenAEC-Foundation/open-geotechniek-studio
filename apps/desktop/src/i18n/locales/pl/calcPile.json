@@ -338,6 +338,8 @@
     "note": "Poziomy i pal są w skali. Szerokość odcinków jest schematyczna: metoda liczy tylko wzdłuż głębokości.",
     "switch": "Widok rysunku",
     "switch3dTitle": "Metoda 4D-8D w 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondowanie i pal w 3D obok siebie",
     "toolbar": "Widok",
     "unavailable": "3D nie jest dostępne na tym urządzeniu (brak WebGL). Użyj rysunku 2D."
   },

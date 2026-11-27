@@ -338,6 +338,8 @@
     "note": "Niveauer og pælen er i målestok. Bredden af strækningerne er skematisk: metoden regner kun langs dybden.",
     "switch": "Visning af tegningen",
     "switch3dTitle": "4D-8D-metoden i 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondering og pælen i 3D side om side",
     "toolbar": "Visning",
     "unavailable": "3D er ikke tilgængelig på denne enhed (ingen WebGL). Brug 2D-tegningen."
   },

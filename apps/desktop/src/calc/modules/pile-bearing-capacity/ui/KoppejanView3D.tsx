@@ -22,7 +22,7 @@ interface Rig { fit: (focus: Focus) => void }
 /** Camerastand ten opzichte van de paalpunt, zodat hij een herberekening overleeft. */
 interface Pose { offset: THREE.Vector3; target: THREE.Vector3 }
 
-export function KoppejanView3D({ input, result }: { input: PileInput; result: PileResult }) {
+export function KoppejanView3D({ input, result, initialFocus = "tip" }: { input: PileInput; result: PileResult; initialFocus?: Focus }) {
   const { t } = useTranslation("calcPile");
   const measured = useCptStore((s) => (input.cptId ? s.cpts.get(input.cptId) : null));
   // Dezelfde qc-lijn als waarmee is gerekend, dus met de aanpassingen van de interpretatie.
@@ -31,8 +31,8 @@ export function KoppejanView3D({ input, result }: { input: PileInput; result: Pi
   const host = useRef<HTMLDivElement>(null);
   const rig = useRef<Rig | null>(null);
   const pose = useRef<Pose | null>(null);
-  const focusRef = useRef<Focus>("tip");
-  const [focus, setFocus] = useState<Focus>("tip");
+  const focusRef = useRef<Focus>(initialFocus);
+  const [focus, setFocus] = useState<Focus>(initialFocus);
   const [unavailable, setUnavailable] = useState(false);
   const [theme, setTheme] = useState(0);
   const sceneLabel = t("view3d.aria", "3D-weergave van de 4D-8D-methode; slepen draait, scrollen zoomt");

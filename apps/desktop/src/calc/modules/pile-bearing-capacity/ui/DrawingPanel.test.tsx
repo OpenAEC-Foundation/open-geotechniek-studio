@@ -24,13 +24,13 @@ const result = computePile(input, cpt);
 it("schakelt tussen 2D en 3D en meldt het als WebGL ontbreekt", () => {
   useCptStore.setState({ cpts: new Map([[cpt.id, cpt]]) });
   render(<DrawingPanel input={input} result={result} />);
-  expect(screen.getByRole("button", { name: "2D" })).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getByRole("button", { name: "2D + 3D" })).toHaveAttribute("aria-pressed", "true");
   expect(screen.getByText(`Sondering: ${cpt.id}`)).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "3D" }));
   expect(screen.getByRole("button", { name: "3D" })).toHaveAttribute("aria-pressed", "true");
   // jsdom heeft geen WebGL: de weergave valt terug op een melding.
   expect(screen.getByRole("status")).toHaveTextContent("3D is op dit apparaat niet beschikbaar");
-  fireEvent.click(screen.getByRole("button", { name: "2D" }));
+  fireEvent.click(screen.getByRole("button", { name: "2D", exact: true }));
   expect(screen.getByText(`Sondering: ${cpt.id}`)).toBeInTheDocument();
 });
 

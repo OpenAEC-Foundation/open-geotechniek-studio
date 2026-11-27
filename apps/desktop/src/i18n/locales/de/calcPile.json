@@ -338,6 +338,8 @@
     "note": "Höhen und Pfahl sind maßstäblich. Die Breite der Bereiche ist schematisch: Die Methode rechnet nur entlang der Tiefe.",
     "switch": "Ansicht der Zeichnung",
     "switch3dTitle": "4D-8D-Methode in 3D",
+    "switchBoth": "2D + 3D",
+    "switchBothTitle": "Sondierung und der Pfahl in 3D nebeneinander",
     "toolbar": "Ansicht",
     "unavailable": "3D ist auf diesem Gerät nicht verfügbar (kein WebGL). Verwenden Sie die 2D-Zeichnung."
   },
