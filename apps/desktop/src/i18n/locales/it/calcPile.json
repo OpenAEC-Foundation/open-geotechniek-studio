@@ -419,7 +419,8 @@
       "concrete": "Calcestruzzo",
       "steel": "Acciaio",
       "wood": "Legno",
-      "grout": "Boiacca"
+      "grout": "Boiacca",
+      "plug": "Tappo di terreno"
     },
     "soil": {
       "sand": "Sabbia",
@@ -461,7 +462,9 @@
       "prefab": "Calcestruzzo prefabbricato",
       "steelEA": "Palo in acciaio; EA specifica del progetto",
       "steelTube": "Palo tubolare in acciaio, riempito di calcestruzzo",
-      "wood": "Legno, sezione costante"
+      "wood": "Legno, sezione costante",
+      "steelOpen": "Tubo d'acciaio aperto, senza tappo",
+      "steelOpenPlug": "Tubo d'acciaio aperto, con tappo di terreno"
     },
     "noPoints": "Nessuna misura in questa prova CPT",
     "notComputed": "Non calcolato: {{error}}. Trascina le quote o modifica i dati di input.",
@@ -598,5 +601,16 @@
     "detailAria": "Estensione della stampa",
     "compact": "Sintetico: tabelle",
     "full": "Esteso: derivazione completa"
+  },
+  "openTube": {
+    "tip": "Punta",
+    "noPlug": "Senza tappo: solo l'anello d'acciaio",
+    "plug": "Con tappo: anello + η × sezione interna",
+    "plugFactor": "Fattore di tappo",
+    "plugFactorAria": "Fattore di tappo η [-]",
+    "plugFactorPlaceholder": "inserire",
+    "plugFactorMissing": "Inserire η (da 0 a 1) — senza η non si calcola.",
+    "hintPlug": "Con tappo conta l'anello d'acciaio più η volte la sezione interna; η = 1 è la sezione piena. La norma non fornisce un valore per η: lo giustifichi, ad esempio con l'attrito all'interno del tubo (NEN 9997-1 art. 7.6.2.3(d); oltre 500 mm anche art. 7.6.2.1(13)).",
+    "hintNoPlug": "Senza tappo conta solo l'anello d'acciaio e l'attrito interno è trascurato; è un limite inferiore di NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

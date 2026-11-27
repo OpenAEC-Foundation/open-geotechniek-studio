@@ -14,6 +14,7 @@ import { getStandard, usesHistoricalProcedure } from "./standards";
 import { applyOverrides } from "./parts/interpretation-overrides";
 import { digitizedNote } from "../../../digitaliseren/record";
 import { strengthCheck } from "./parts/strength-check";
+import { applyOpenTube, openTubeAreas, validPlugFactor } from "./parts/open-tube";
 
 // E-moduli [N/mm²] voor de axiale paalstijfheid EA.
 //  - Staal: 210 000 (EN 1993-1-1)
@@ -31,6 +32,7 @@ function computeEA_N(
   material: "steel" | "concrete",
   isCircular: boolean,
   sideBMm?: number,
+  openEnd = false,
 ): number {
   const D = diameterMm;
   if (material === "concrete") {
@@ -43,6 +45,8 @@ function computeEA_N(
   const innerD = Math.max(0, D - 2 * wallMm);
   const aRing_mm2 = (Math.PI / 4) * (D * D - innerD * innerD);
   const aCore_mm2 = (Math.PI / 4) * innerD * innerD;
+  // Open buis: niet met beton gevuld; de grondprop draagt niet bij aan EA.
+  if (openEnd) return E_STEEL * aRing_mm2;
   return E_STEEL * aRing_mm2 + E_CONCRETE_FILL * aCore_mm2;
 }
 
@@ -142,6 +146,8 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   const baseDiameterMm = taper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm;
   if (!Number.isFinite(baseDiameterMm) || baseDiameterMm <= 0) return emptyResult(msg("errors.toeSizeInvalid", "Puntafmeting moet positief en eindig zijn"));
   if (pileType.id === "steel-pipe-driven-closed-2017" && baseDiameterMm - input.diameterMm > 20) return emptyResult(msg("errors.footPlateTooWide", "De voetplaat mag voor dit paaltype maximaal 10 mm per zijde uitsteken"));
+  if (pileType.openEnd && baseDiameterMm !== input.diameterMm) return emptyResult(msg("errors.openTubeNoBase", "Een open buis heeft geen voetplaat of afwijkende puntmaat"));
+  if (pileType.openEnd && input.openTube?.plug && !validPlugFactor(input.openTube.plugFactor)) return emptyResult(msg("errors.openTubePlugFactor", "Open buis met prop: vul de propfactor η in (groter dan 0, ten hoogste 1) en onderbouw hem. Zonder factor wordt er niet gerekend."));
   if (pileType.id === "steel-screw-grout" && input.diameterMm < 300) return emptyResult(msg("errors.groutScrewMinDiameter", "Deze groutschroefpreset vereist een schachtdiameter van ten minste 300 mm"));
   if (pileType.material === "wood" && !taper && baseDiameterMm !== input.diameterMm) return emptyResult(msg("errors.timberConstantSection", "Dit houten paaltype vereist een constante doorsnede zonder oplanger"));
   if (input.axialStiffnessKn !== undefined && (!Number.isFinite(input.axialStiffnessKn) || input.axialStiffnessKn <= 0)) return emptyResult(msg("errors.eaInvalid", "EA moet positief en eindig zijn"));
@@ -214,13 +220,15 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   }
 
   const negKleef = computeNegKleef(input);
-  const base = computeBaseResistance(cpt, {
+  const closedBase = computeBaseResistance(cpt, {
     method: historical ? "minimum-qb" : "legacy-qci",
     pileToeDepth,
     diameterMm: baseDiameterMm,
     sideBMm: sideB,
     pileType,
   });
+  // Open buis: zelfde q_b;max, oppervlak staalring (met prop plus η · binnendoorsnede).
+  const base = pileType.openEnd ? applyOpenTube(closedBase, openTubeAreas(input.diameterMm, input.wallThicknessMm), input.openTube) : closedBase;
   // Positief schachtwrijvings-traject: van posKleefTopNap (boven, default
   // = negKleefBottomNap) tot pileToeNap (onder, ALTIJD paalpunt — geen
   // exclusion-zone bij paalpunt per gebruikers-wens). Engineer kan de
@@ -245,6 +253,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     pileType.material === "concrete" ? "concrete" : "steel",
     pileType.isCircular,
     sideB,
+    !!pileType.openEnd,
   );
   const L = input.pileTopNap - input.pileToeNap;
   // ΔL = lengte van het positieve schachtwrijvings-traject; λ (ell) =
@@ -304,6 +313,14 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   if (sideB !== undefined && sideB !== input.diameterMm) warnings.push(msg("warnings.rectShape", "Rechthoekige doorsnede {{a}} × {{b}} mm: gerekend met A = a · b, omtrek 2 (a + b) en Deq = √(4 · a · b / π). De factor s voor de vorm van een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet; gerekend is met s = {{s}}. Bepaal s volgens de norm en vul hem zo nodig in als projectfactor.", {
     a: fmtNumber(Math.min(input.diameterMm, sideB), 0), b: fmtNumber(Math.max(input.diameterMm, sideB), 0), s: fmtNumber(pileType.s, 2) }));
   if (!taper && baseDiameterMm !== input.diameterMm) warnings.push(msg("warnings.deviatingToeSize", "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering."));
+  if (base.openTube) {
+    const o = base.openTube, mm2 = (v: number) => fmtNumber(v, 0);
+    warnings.push(o.plug
+      ? msg("warnings.openTubePlug", "Open buis met prop: punt over de staalring ({{ring}} mm²) plus η = {{factor}} × de binnendoorsnede ({{inner}} mm²), samen {{area}} mm². De propfactor η is uw aanname: toon aan dat de prop zich vormt, dus dat de wrijving binnen in de buis ten minste de puntweerstand over de binnendoorsnede haalt (NEN 9997-1 art. 7.6.2.3(d)). De binnenwrijving rekent het programma niet.", { ring: mm2(o.ringMm2), factor: fmtNumber(o.plugFactor ?? 0, 2), inner: mm2(o.innerMm2), area: mm2(base.abMm2) })
+      : msg("warnings.openTubeNoPlug", "Open buis zonder prop: punt alleen over de staalring ({{ring}} mm²); de wrijving binnen in de buis is niet meegenomen. Volgens NEN 9997-1 art. 7.6.2.3(d) mag die wel tellen, begrensd op de puntweerstand met een vaste prop; dit is dus een ondergrens.", { ring: mm2(o.ringMm2) }));
+    if (o.plug && input.diameterMm > 500) warnings.push(msg("warnings.openTubeLarge", "Buis groter dan 500 mm: zonder voorzieningen voor propvorming is de puntweerstand begrensd op de kleinste van de binnenwrijving tegen de prop en de puntweerstand over de volle doorsnede (NEN 9997-1 art. 7.6.2.1(13)). Onderbouw η daarop, of reken zonder prop."));
+    warnings.push(msg("warnings.openTubeCoarse", "Open buis in grof zand (d50 ≥ 600 μm) of grind (d50 ≥ 2 mm): de conusweerstand voor de schachtwrijving moet vóór het afsnuiten worden verlaagd tot 80 % (zand) of 70 % (grind); bij intrillen 70 % of 50 % (NEN 9997-1 art. 7.6.2.3(i)). Het programma past dit niet toe; controleer de korrelgrootte."));
+  }
   if (base.qbMaxMpaRaw > 15) {
     warnings.push(msg("warnings.qbMaxCapped", "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)", { raw: base.qbMaxMpaRaw.toFixed(2) }));
   }

@@ -43,7 +43,9 @@
     "historicalGroupAnalysis": "Historische paalgroepanalyse is nog niet geverifieerd; gebruik één sondering",
     "factorsMissing2025": "Voor dit paaltype zijn de paalklassefactoren van NEN 9997-1:2025 nog niet in de tabel opgenomen. Kies de editie 2017 of vul projectfactoren in (zelfverklaring of proefbelasting).",
     "factorsMissingNoRow": "Dit paalsysteem heeft geen eigen rij in tabel 7.c van deze editie. Vul projectfactoren in (zelfverklaring of proefbelasting).",
-    "rectInvalid": "Een rechthoekige doorsnede a × b vereist een gezaagde houten paal met positieve zijden, zonder tapsheid of losse voetmaat"
+    "rectInvalid": "Een rechthoekige doorsnede a × b vereist een gezaagde houten paal met positieve zijden, zonder tapsheid of losse voetmaat",
+    "openTubeNoBase": "Een open buis heeft geen voetplaat of afwijkende puntmaat",
+    "openTubePlugFactor": "Open buis met prop: vul de propfactor η in (groter dan 0, ten hoogste 1) en onderbouw hem. Zonder factor wordt er niet gerekend."
   },
   "warnings": {
     "factors": "Factoren: {{edition}}; {{source}}.",
@@ -60,7 +62,11 @@
     "deviatingToeSize": "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering.",
     "qbMaxCapped": "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)",
     "settlementLineUnknown": "Voor dit paaltype is geen lastzakkingslijn uit de tabel bekend: zakking en veerwaarden worden niet bepaald.",
-    "rectShape": "Rechthoekige doorsnede {{a}} × {{b}} mm: gerekend met A = a · b, omtrek 2 (a + b) en Deq = √(4 · a · b / π). De factor s voor de vorm van een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet; gerekend is met s = {{s}}. Bepaal s volgens de norm en vul hem zo nodig in als projectfactor."
+    "rectShape": "Rechthoekige doorsnede {{a}} × {{b}} mm: gerekend met A = a · b, omtrek 2 (a + b) en Deq = √(4 · a · b / π). De factor s voor de vorm van een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet; gerekend is met s = {{s}}. Bepaal s volgens de norm en vul hem zo nodig in als projectfactor.",
+    "openTubePlug": "Open buis met prop: punt over de staalring ({{ring}} mm²) plus η = {{factor}} × de binnendoorsnede ({{inner}} mm²), samen {{area}} mm². De propfactor η is uw aanname: toon aan dat de prop zich vormt, dus dat de wrijving binnen in de buis ten minste de puntweerstand over de binnendoorsnede haalt (NEN 9997-1 art. 7.6.2.3(d)). De binnenwrijving rekent het programma niet.",
+    "openTubeNoPlug": "Open buis zonder prop: punt alleen over de staalring ({{ring}} mm²); de wrijving binnen in de buis is niet meegenomen. Volgens NEN 9997-1 art. 7.6.2.3(d) mag die wel tellen, begrensd op de puntweerstand met een vaste prop; dit is dus een ondergrens.",
+    "openTubeLarge": "Buis groter dan 500 mm: zonder voorzieningen voor propvorming is de puntweerstand begrensd op de kleinste van de binnenwrijving tegen de prop en de puntweerstand over de volle doorsnede (NEN 9997-1 art. 7.6.2.1(13)). Onderbouw η daarop, of reken zonder prop.",
+    "openTubeCoarse": "Open buis in grof zand (d50 ≥ 600 μm) of grind (d50 ≥ 2 mm): de conusweerstand voor de schachtwrijving moet vóór het afsnuiten worden verlaagd tot 80 % (zand) of 70 % (grind); bij intrillen 70 % of 50 % (NEN 9997-1 art. 7.6.2.3(i)). Het programma past dit niet toe; controleer de korrelgrootte."
   },
   "table": {
     "errors": {
@@ -177,6 +183,11 @@
     "timber-square": {
       "name": "Houten heipaal — vierkant of rechthoekig, met of zonder betonopzetter",
       "conditions": "Gezaagde houten doorsnede a × b, constant over de lengte; optioneel met betonopzetter tot de las. Paalklassefactoren als de ronde houten paal. De vormfactor s voor een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet."
+    },
+    "steel-pipe-driven-open": {
+      "name": "Stalen buispaal — open punt (tabel 2017)",
+      "shortName": "Stalen buispaal — open punt",
+      "conditions": "Open buis zonder voetplaat. Punt: staalring, of met prop de staalring plus een door u onderbouwd deel van de binnendoorsnede (art. 7.6.2.3(d) en 7.6.2.1(13)). Schachtwrijving alleen aan de buitenzijde; de stijfheid EA rekent alleen met de staalring."
     }
   },
   "soil": {
@@ -197,6 +208,7 @@
     "auger-cased": "DPA-paal",
     "bored": "Boorpaal",
     "timber": "Houten paal",
-    "timber-extension": "Houten paal met betonopzetter"
+    "timber-extension": "Houten paal met betonopzetter",
+    "steel-tube-open": "Stalen buispaal, open punt"
   }
 }

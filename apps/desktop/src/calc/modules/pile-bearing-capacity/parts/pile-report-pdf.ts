@@ -100,6 +100,15 @@ export const HEADER_BOTTOM = 43;
 export const TOTAL_PAGES_TOKEN = "{tp}";
 
 // ─── Getal-notatie (NL: decimaal-komma) ──────────────────────────
+/** Punt van een open buis voor de uitdraai: de keuze en het oppervlak. */
+function openTubeText(base: PileResult["base"]): string | undefined {
+  const o = base.openTube;
+  if (!o) return undefined;
+  return o.plug
+    ? `open buis met prop: A_b = A_ring + η · A_binnen = ${nl(o.ringMm2, 0)} + ${nl(o.plugFactor ?? 0, 2)} · ${nl(o.innerMm2, 0)} = ${nl(base.abMm2, 0)} mm²; η door gebruiker aangenomen`
+    : `open buis zonder prop: A_b = A_ring = ${nl(o.ringMm2, 0)} mm²; binnenwrijving niet meegenomen`;
+}
+
 export function nl(v: number, dec = 2): string {
   return v.toFixed(dec).replace(".", ",");
 }
@@ -496,6 +505,8 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
     const isCircular = resolvePileType(inp)?.isCircular ?? true;
     kv(c, inp.concreteExtension ? "Hout bij de las" : inp.timberTaper ? "Kopdiameter" : isCircular ? "Diameter" : inp.sideBMm !== undefined ? "Doorsnede" : "Zijlengte", `: ${isCircular ? "D" : inp.sideBMm !== undefined ? "a × b" : "a"} = ${inp.diameterMm}${!isCircular && inp.sideBMm !== undefined ? ` × ${inp.sideBMm}` : ""} mm  (D_eq = ${nl(first.result.base.deqMm, 1)} mm)`);
     if (resolvePileType(inp)?.material === "steel" && !resolvePileType(inp)?.requiresEA) kv(c, "Wanddikte", `: ${nl(inp.wallThicknessMm, 1)} mm`);
+    const openTube = openTubeText(first.result.base);
+    if (openTube) kv(c, "Punt", `: ${openTube}`);
     kv(c, "Paalkopniveau", `: ${nlNap(inp.pileTopNap)}`);
     kv(c, "Paalpuntniveau", `: ${nlNap(inp.pileToeNap)}`);
     kv(c, "Waterniveau", `: ${nlNap(inp.waterNap)}`);
@@ -578,7 +589,7 @@ function renderProjectBladCompact(c: Cursor, inputs: PileReportInputs): void {
     ["Paaltype", inputs.pileTypeName],
     ["Sonderingen", inputs.sonderingen.map((s) => s.name).join(", ")],
     [ext ? "Hout bij de las" : inp.timberTaper ? "Kopmaat" : "Doorsnede", `${sizeOf(inp, circular)}; D_eq = ${nl(first.result.base.deqMm, 0)} mm`],
-    ["Punt", inp.timberTaper ? `Ø${inp.timberTaper.toeDiameterMm} mm, taps over ${nl(inp.timberTaper.lengthM, 2)} m` : inp.baseDiameterMm ? `${inp.baseDiameterMm} mm` : "gelijk aan schacht"],
+    ["Punt", openTubeText(first.result.base) ?? (inp.timberTaper ? `Ø${inp.timberTaper.toeDiameterMm} mm, taps over ${nl(inp.timberTaper.lengthM, 2)} m` : inp.baseDiameterMm ? `${inp.baseDiameterMm} mm` : "gelijk aan schacht")],
     ...(ext ? [["Betonopzetter", `${ext.isCircular ? "Ø" : `${ext.sizeMm} × `}${ext.sizeMm} mm tot las ${nlNap(ext.jointNap)}`] as [string, string]] : []),
     ...(type?.material === "steel" && !type.requiresEA ? [["Wanddikte", `${nl(inp.wallThicknessMm, 1)} mm`] as [string, string]] : []),
     ["Paalkop / paalpunt", `${nlNap(inp.pileTopNap)} / ${nlNap(inp.pileToeNap)}; L = ${nl(inp.pileTopNap - inp.pileToeNap, 2)} m`],

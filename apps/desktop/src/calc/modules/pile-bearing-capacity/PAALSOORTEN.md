@@ -1,11 +1,12 @@
 # Paalsoorten in de draagvermogenmodule
 
-De invoer begint bij het paalsysteem (`pile-systems.ts`): prefab betonpaal, stalen buispaal met gesloten punt, schroefinjectiepaal, schroefpaal met verloren punt met blijvende of met getrokken buis, grondverdringende schroefpaal, vibropaal, avegaarpaal, DPA-paal (verbuisde avegaarpaal), boorpaal en de houten paal met of zonder betonopzetter. Een systeem verwijst naar een of meer tabelrijen uit de catalogus en bepaalt de vorm: de doorsnede, of de schachtmaat constant is of verloopt, de standaardmaten en de velden in het invoerscherm.
+De invoer begint bij het paalsysteem (`pile-systems.ts`): prefab betonpaal, stalen buispaal met gesloten of open punt, schroefinjectiepaal, schroefpaal met verloren punt met blijvende of met getrokken buis, grondverdringende schroefpaal, vibropaal, avegaarpaal, DPA-paal (verbuisde avegaarpaal), boorpaal en de houten paal met of zonder betonopzetter. Een systeem verwijst naar een of meer tabelrijen uit de catalogus en bepaalt de vorm: de doorsnede, of de schachtmaat constant is of verloopt, de standaardmaten en de velden in het invoerscherm.
 
 | Paalsysteem | Tabelrijen (`pileTypeId`) | Schachtomtrek per niveau |
 |---|---|---|
 | Prefab betonpaal | `concrete-prefab-prestressed-driven`, `concrete-prefab-round` | constant: 4 × zijde, of π × diameter |
 | Stalen buispaal, gesloten punt | `steel-pipe-driven-closed-2017`, `steel-pipe-driven-closed` | constant: π × buisdiameter |
+| Stalen buispaal, open punt | `steel-pipe-driven-open` | constant: π × buisdiameter (alleen buitenzijde) |
 | Schroefinjectiepaal | `steel-screw-grout` | constant: π × groutschacht |
 | Schroefpaal, blijvende buis | `steel-screw-permanent-casing` | constant: π × buisdiameter; de schroefpunt telt alleen voor de punt |
 | Schroefpaal, getrokken buis | `concrete-screw-displacement` | constant: π × schachtdiameter |
@@ -21,7 +22,7 @@ Opgeslagen invoer houdt de bestaande `pileTypeId`-waarden; het systeem wordt daa
 
 Negatieve kleef en positieve schachtwrijving rekenen per grondlaag met de lengtegemiddelde omtrek binnen die laag; resultaat en uitdraai tonen die omtrek per laag. Bij een constante doorsnede is dat de ene schachtomtrek en verandert er niets. Bij taps hout of een betonopzetter over meerdere grondlagen wijkt de negatieve kleef af van eerdere versies, die één gemiddelde omtrek over de hele kleefzone gebruikten.
 
-De catalogus bevat veertien varianten: het behouden stalen-buisprojectmodel, vierkante en ronde prefab betonpalen, een gesloten stalen buispaal volgens tabel 2017, twee typen betonpalen met teruggewonnen mantelbuis, een betonschroefpaal, een stalen schroefpaal met groutinjectie, een avegaarpaal, een boorpaal met steunvloeistof en een houten paal met constante of taps verlopende ronde doorsnede.
+De catalogus bevat onder meer: het behouden stalen-buisprojectmodel, vierkante en ronde prefab betonpalen, een gesloten en een open stalen buispaal volgens tabel 2017, twee typen betonpalen met teruggewonnen mantelbuis, een betonschroefpaal, een stalen schroefpaal met groutinjectie, een avegaarpaal, een boorpaal met steunvloeistof en een houten paal met constante of taps verlopende ronde doorsnede.
 
 ## Bronbasis
 
@@ -43,6 +44,29 @@ Projectfactoren worden met bron en editie in de berekeningsinvoer opgeslagen. Ed
 
 Een typewissel verwijdert projectspecifieke factoren, puntmaat en EA. Deze mogen niet ongemerkt naar een ander paalsysteem worden overgenomen. Ontbrekende optionele invoer behoudt het gedrag van bestaande projectbestanden.
 
+## Open stalen buispaal
+
+Normregels, gelezen in NEN 9997-1:2016+C2:2017 (lokale afdruk, PDF-pagina's 189, 195, 197–202):
+
+| Onderwerp | Wat de norm zegt | Vindplaats | In het programma |
+|---|---|---|---|
+| Paalklassefactoren | Stalen paal, constante dwarsafmeting, open buis, geheid: α_p = 0,70, α_s = 0,006, α_t = 0,004, lastzakkingslijn 1 | tabel 7.c | catalogusrij `steel-pipe-driven-open`; geen invoer, wel projectfactoren mogelijk |
+| Draagkracht | Som van schachtwrijving op buiten- en binnenwand en de draagkracht van de onderrand; de binnenwrijving is begrensd op de puntdraagkracht met een vaste prop | art. 7.6.2.3(d) | zie de keuze hieronder |
+| Grote buizen | Openingen > 500 mm zonder voorzieningen voor propvorming: puntweerstand ≤ kleinste van binnenwrijving tegen de prop en puntweerstand over de volle doorsnede (incl. prop) | art. 7.6.2.1(13) | melding bij "met prop" en D > 500 mm |
+| Grof zand en grind | Open buis- en kokerpalen: qc voor de schachtwrijving vóór het afsnuiten verlagen tot 80 % (d50 ≥ 600 μm) en 70 % (grind d50 ≥ 2 mm); getrild 70 % en 50 % | art. 7.6.2.3(i) | niet toegepast; melding |
+| Klei, leem, veen | α_s volgens tabel 7.d, onafhankelijk van het paaltype | tabel 7.d | ongewijzigd |
+
+De lengte van de prop en dus de binnenwrijving volgen niet uit de invoer, en de norm geeft geen getal voor het deel van de binnendoorsnede dat meedraagt. Er staan ook geen voorwaarden in voor inheidiepte of wanddikte waaronder een prop mag worden aangenomen. Het programma geeft daarom twee keuzes:
+
+- **Zonder prop** (standaard): R_b = q_b;max · A_ring; de binnenwrijving telt niet mee. Dat is een ondergrens van art. 7.6.2.3(d).
+- **Met prop**: R_b = q_b;max · (A_ring + η · A_binnen). De propfactor η (0 < η ≤ 1) vult de gebruiker in; zolang η leeg is wordt er niet gerekend. η = 1 is de volle doorsnede, de bovengrens van art. 7.6.2.3(d).
+
+q_b;max is die van een gesloten paal met dezelfde buitendiameter (D_eq = D, β = s = 1). Schachtwrijving en negatieve kleef rekenen met de buitenomtrek. EA = E_staal · A_ring (geen betonvulling, de prop draagt niet bij). De uitdraai en de meldingen noemen de keuze, de oppervlakken en η. Voor de editie 2025 staat de rij niet in `factors-2025.ts` en voor de historische normversies zijn er geen factoren; het type is daar niet te rekenen.
+
+Een openbare presentatie over de herziening van de richtlijn voor open stalen buispalen (Profittlich, Geotechniekdag 11 november 2025) beschrijft de normmethode op dezelfde manier: buiten- plus binnenwrijving plus rand, of buitenwrijving plus punt, zonder randvoorwaarden voor indringing, slankheid of wanddikte. De alternatieve methode uit CUR 2001-8 (onder meer heien in de draagkrachtige zandlaag, t/D > 1/60, ten minste 8D in zand) en de herziene richtlijn zijn niet ingebouwd. Een gepubliceerd rekenvoorbeeld van een open buispaal volgens de norm is niet gevonden; de controles zijn handberekeningen (zie [NUMERIEKE-VERIFICATIE.md](NUMERIEKE-VERIFICATIE.md)).
+
+In de horizontale berekening is de open buis een holle buis (alleen doorsnede `steel-tube`) en krijgt de invoer het kenmerk `openEnd`: de binnenzijde staat ook in grond, zodat afroesting standaard aan twee kanten hoort.
+
 ## Implementatiegrenzen
 
 - De module blijft experimenteel. De presets maken de bestaande volledige grond- en rekenmethode niet normgevalideerd.
@@ -50,7 +74,7 @@ Een typewissel verwijdert projectspecifieke factoren, puntmaat en EA. Deze mogen
 - De avegaarvariant uit 2017 begrenst de start van qc;III op 2 MPa; er is geen vrijstelling voor nasonderingen ingevoerd. Bij expliciete projectfactoren 2025 vervalt deze oude begrenzing volgens de toelichting van NEN.
 - De gesloten buispreset uit 2017 accepteert maximaal 10 mm uitsteken van de voetplaat per zijde. De groutschroefpreset vereist minimaal 300 mm schachtdiameter.
 - Hout ondersteunt een constante of lineair taps verlopende ronde doorsnede, optioneel met een betonopzetter (vierkant of rond) van paalkop tot de las. Boven de las geldt de omtrek van de opzetter, eronder die van het hout; de tapsheid telt vanaf de bovenkant van het hout. Negatieve en positieve kleef rekenen per laag met de lengtegemiddelde omtrek binnen die laag. Zakking en veerwaarden voor taps hout en voor hout met opzetter (verschillende EA) zijn niet geverifieerd en worden niet bepaald.
-- Open stalen buizen, profielen, micropalen, trek, horizontale belasting en wapening zijn niet toegevoegd. De daarvoor vereiste aanvullende rekenmodellen zijn niet uitwisselbaar met de huidige drukpaalberekening.
+- Stalen profielen, micropalen, trek, horizontale belasting en wapening zijn niet toegevoegd. De daarvoor vereiste aanvullende rekenmodellen zijn niet uitwisselbaar met de huidige drukpaalberekening.
 - Bij afwijkende voetmaten blijven de projectspecifieke beta-factor en het toegestane schachtwrijvingstraject te controleren. De app leidt beta niet automatisch af uit voethoogte.
 
 ## Tapse houten palen

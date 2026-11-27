@@ -419,7 +419,8 @@
       "concrete": "Betong",
       "steel": "Stål",
       "wood": "Trä",
-      "grout": "Injekteringsbruk"
+      "grout": "Injekteringsbruk",
+      "plug": "Jordpropp"
     },
     "soil": {
       "sand": "Sand",
@@ -461,7 +462,9 @@
       "prefab": "Prefabricerad betong",
       "steelEA": "Stålpåle; projektspecifik EA",
       "steelTube": "Stålrörspåle, betongfylld",
-      "wood": "Trä, konstant tvärsnitt"
+      "wood": "Trä, konstant tvärsnitt",
+      "steelOpen": "Öppet stålrör, utan propp",
+      "steelOpenPlug": "Öppet stålrör, med jordpropp"
     },
     "noPoints": "Inga mätvärden i denna CPT-sondering",
     "notComputed": "Ej beräknad: {{error}}. Dra nivåerna eller justera indata.",
@@ -598,5 +601,16 @@
     "detailAria": "Utskriftens omfattning",
     "compact": "Kortfattad: tabeller",
     "full": "Utförlig: fullständig härledning"
+  },
+  "openTube": {
+    "tip": "Spets",
+    "noPlug": "Utan propp: bara stålringen",
+    "plug": "Med propp: stålring + η × inre tvärsektion",
+    "plugFactor": "Proppfaktor",
+    "plugFactorAria": "Proppfaktor η [-]",
+    "plugFactorPlaceholder": "ange",
+    "plugFactorMissing": "Ange η (0 till 1) — utan η räknas inget.",
+    "hintPlug": "Med propp räknas stålringen plus η gånger den inre tvärsektionen; η = 1 är hela tvärsektionen. Normen ger inget värde för η: motivera det, t.ex. med friktionen inne i röret (NEN 9997-1 art. 7.6.2.3(d); över 500 mm även art. 7.6.2.1(13)).",
+    "hintNoPlug": "Utan propp räknas bara stålringen och friktionen inne i röret bortses från; det är en undre gräns enligt NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

@@ -43,7 +43,9 @@
     "historicalGroupAnalysis": "A análise histórica com vários CPT ainda não está verificada; utilize um único CPT",
     "factorsMissing2025": "Os fatores de classe de estaca da NEN 9997-1:2025 para este tipo de estaca ainda não constam da tabela. Escolha a edição de 2017 ou introduza fatores de projeto (autodeclaração ou ensaio de carga).",
     "factorsMissingNoRow": "Este sistema de estacas não tem linha própria na tabela 7.c desta edição. Introduza fatores de projeto (autodeclaração ou ensaio de carga).",
-    "rectInvalid": "Uma secção retangular a × b exige uma estaca de madeira serrada com lados positivos, sem conicidade nem dimensão de ponta separada"
+    "rectInvalid": "Uma secção retangular a × b exige uma estaca de madeira serrada com lados positivos, sem conicidade nem dimensão de ponta separada",
+    "openTubeNoBase": "Um tubo aberto não tem placa de base nem dimensão de ponta diferente",
+    "openTubePlugFactor": "Tubo aberto com tampão: introduza o fator de tampão η (maior que 0, no máximo 1) e justifique-o. Sem fator não se calcula."
   },
   "warnings": {
     "factors": "Coeficientes: {{edition}}; {{source}}.",
@@ -60,7 +62,11 @@
     "deviatingToeSize": "Dimensão da ponta divergente: verifique o fator de forma da base da estaca β e o troço de atrito lateral admissível para este método de execução.",
     "qbMaxCapped": "qb;max limitado a 15 MPa (valor bruto {{raw}} MPa)",
     "settlementLineUnknown": "Não é conhecida nenhuma curva carga-assentamento da tabela para este tipo de estaca: o assentamento e as rigidezes não são determinados.",
-    "rectShape": "Secção retangular {{a}} × {{b}} mm: calculada com A = a · b, perímetro 2 (a + b) e Deq = √(4 · a · b / π). O programa não determina o fator s para a forma de uma ponta de estaca retangular (a ≠ b); calculou-se com s = {{s}}. Determine s de acordo com a norma e introduza-o como fator de projeto, se necessário."
+    "rectShape": "Secção retangular {{a}} × {{b}} mm: calculada com A = a · b, perímetro 2 (a + b) e Deq = √(4 · a · b / π). O programa não determina o fator s para a forma de uma ponta de estaca retangular (a ≠ b); calculou-se com s = {{s}}. Determine s de acordo com a norma e introduza-o como fator de projeto, se necessário.",
+    "openTubePlug": "Tubo aberto com tampão: ponta sobre o anel de aço ({{ring}} mm²) mais η = {{factor}} × a secção interior ({{inner}} mm²), no total {{area}} mm². O fator η é a sua hipótese: demonstre que o tampão se forma, ou seja, que o atrito dentro do tubo atinge pelo menos a resistência de ponta sobre a secção interior (NEN 9997-1 art. 7.6.2.3(d)). O programa não calcula o atrito interior.",
+    "openTubeNoPlug": "Tubo aberto sem tampão: ponta só sobre o anel de aço ({{ring}} mm²); o atrito dentro do tubo não é considerado. Segundo a NEN 9997-1 art. 7.6.2.3(d) pode contar, limitado à resistência de ponta com tampão firme; isto é, portanto, um limite inferior.",
+    "openTubeLarge": "Tubo maior que 500 mm: sem medidas para a formação do tampão, a resistência de ponta é limitada ao menor valor entre o atrito interior contra o tampão e a resistência de ponta sobre a secção cheia (NEN 9997-1 art. 7.6.2.1(13)). Justifique η com base nisso, ou calcule sem tampão.",
+    "openTubeCoarse": "Tubo aberto em areia grossa (d50 ≥ 600 μm) ou seixo (d50 ≥ 2 mm): a resistência de cone para o atrito lateral deve ser reduzida a 80 % (areia) ou 70 % (seixo) antes do corte; com vibração 70 % ou 50 % (NEN 9997-1 art. 7.6.2.3(i)). O programa não aplica isto; verifique a granulometria."
   },
   "table": {
     "errors": {
@@ -177,6 +183,11 @@
     "timber-square": {
       "name": "Estaca cravada de madeira — quadrada ou retangular, com ou sem prolongamento de betão",
       "conditions": "Secção de madeira serrada a × b, constante ao longo do comprimento; opcionalmente com prolongamento de betão até à junta. Fatores de classe de estaca como os da estaca de madeira redonda. O programa não determina o fator de forma s para uma ponta de estaca retangular (a ≠ b)."
+    },
+    "steel-pipe-driven-open": {
+      "name": "Estaca tubular de aço — ponta aberta (tabela 2017)",
+      "shortName": "Estaca tubular de aço — ponta aberta",
+      "conditions": "Tubo aberto sem placa de base. Ponta: anel de aço, ou com tampão o anel mais uma parte da secção interior que justifica (art. 7.6.2.3(d) e 7.6.2.1(13)). Atrito lateral só no exterior; a rigidez EA conta só o anel de aço."
     }
   },
   "soil": {
@@ -197,6 +208,7 @@
     "auger-cased": "Estaca DPA (trado entubado)",
     "bored": "Estaca moldada",
     "timber": "Estaca de madeira",
-    "timber-extension": "Estaca de madeira com prolongamento em betão"
+    "timber-extension": "Estaca de madeira com prolongamento em betão",
+    "steel-tube-open": "Estaca tubular de aço, ponta aberta"
   }
 }

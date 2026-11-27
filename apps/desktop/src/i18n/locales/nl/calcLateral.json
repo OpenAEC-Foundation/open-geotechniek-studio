@@ -235,7 +235,8 @@
     "widthLabel": "Werkende breedte grondveren [m]",
     "widthPile": "= paal",
     "widthPileTitle": "Gelijk aan de paalbreedte",
-    "withH": "Met H mee"
+    "withH": "Met H mee",
+    "openTubeHint": "Open buis: gerekend als holle buis; de grond in de buis draagt niet bij aan de stijfheid. De binnenzijde staat ook in de grond."
   },
   "inspector": {
     "aria": "Veerinspectie",

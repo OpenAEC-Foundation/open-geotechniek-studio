@@ -12,7 +12,7 @@ export const EXCAVATION_COLOR = "#8a5a2b";
 export const GROUT_COLOR = "#c9c6bd";
 const GROUND_COLOR = "#7c8f4e";
 
-export const partColor = (material: PhysicalPart["material"]) => (material === "grout" ? GROUT_COLOR : MATERIAL_COLORS[material].fill);
+export const partColor = (material: PhysicalPart["material"]) => (material === "grout" ? GROUT_COLOR : material === "plug" ? SOIL_COLORS.sand : MATERIAL_COLORS[material].fill);
 
 function partMaterial(part: PhysicalPart, flat: boolean): THREE.MeshStandardMaterial {
   const steel = part.material === "steel";
@@ -66,7 +66,9 @@ function partObject(part: PhysicalPart): THREE.Object3D {
   if (s.wallM && s.wallM < Math.min(ro0, ro1)) {
     // Holle buis: de wand als omwentelingslichaam, zodat de wanddikte aan de kop te zien is.
     const profile = [[ro0 - s.wallM, s.bottomNap], [ro0, s.bottomNap], [ro1, s.topNap], [ro1 - s.wallM, s.topNap], [ro0 - s.wallM, s.bottomNap]].map(([r, level]) => new THREE.Vector2(r, level));
-    return new THREE.Mesh(new THREE.LatheGeometry(profile, 48), partMaterial(part, false));
+    // Open buis: het voorste kwart (naar de kijker, +z) weggelaten, zodat de binnenkant te zien is.
+    const geometry = s.cutAway ? new THREE.LatheGeometry(profile, 36, Math.PI / 4, 1.5 * Math.PI) : new THREE.LatheGeometry(profile, 48);
+    return new THREE.Mesh(geometry, partMaterial(part, false));
   }
   const geometry = new THREE.CylinderGeometry(ro1, ro0, h, 40);
   geometry.translate(0, y, 0);

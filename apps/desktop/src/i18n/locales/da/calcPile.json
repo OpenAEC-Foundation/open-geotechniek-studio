@@ -419,7 +419,8 @@
       "concrete": "Beton",
       "steel": "Stål",
       "wood": "Træ",
-      "grout": "Grout"
+      "grout": "Grout",
+      "plug": "Jordprop"
     },
     "soil": {
       "sand": "Sand",
@@ -461,7 +462,9 @@
       "prefab": "Præfabrikeret beton",
       "steelEA": "Stålpæl; projektspecifik EA",
       "steelTube": "Stålrørspæl, betonfyldt",
-      "wood": "Træ, konstant tværsnit"
+      "wood": "Træ, konstant tværsnit",
+      "steelOpen": "Åbent stålrør, uden prop",
+      "steelOpenPlug": "Åbent stålrør, med jordprop"
     },
     "noPoints": "Ingen målinger i denne sondering",
     "notComputed": "Ikke beregnet: {{error}}. Træk i koterne eller justér inputtet.",
@@ -598,5 +601,16 @@
     "detailAria": "Udskriftens omfang",
     "compact": "Kort: tabeller",
     "full": "Udførlig: fuld udledning"
+  },
+  "openTube": {
+    "tip": "Spids",
+    "noPlug": "Uden prop: kun stålringen",
+    "plug": "Med prop: stålring + η × indre tværsnit",
+    "plugFactor": "Propfaktor",
+    "plugFactorAria": "Propfaktor η [-]",
+    "plugFactorPlaceholder": "indtast",
+    "plugFactorMissing": "Indtast η (0 til 1) — uden η regnes der ikke.",
+    "hintPlug": "Med prop tæller stålringen plus η gange det indre tværsnit; η = 1 er det fulde tværsnit. Normen angiver ingen værdi for η: begrund den, fx med friktionen inde i røret (NEN 9997-1 art. 7.6.2.3(d); over 500 mm også art. 7.6.2.1(13)).",
+    "hintNoPlug": "Uden prop tæller kun stålringen, og friktionen inde i røret ses bort fra; det er en nedre grænse efter NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

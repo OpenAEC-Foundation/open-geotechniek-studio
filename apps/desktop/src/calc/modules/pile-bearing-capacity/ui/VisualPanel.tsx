@@ -50,6 +50,8 @@ interface ZoomDomain {
 // graphic kolom (rechts) verschuift mee naar rechts zodat hij vast aan
 // de plot-rechterrand blijft kleven. Zie computeGeometry() en useMemo
 // in CptOverlayChart.
+/** Grondprop in een open buis: de kleur van zand. */
+const OPEN_TUBE_PLUG_COLOR = "#e6c93a";
 const VB_W_BASE = 720;     // basis (= unzoomed) viewBox-breedte
 const VB_H = 800;
 const MARGIN = { top: 36, right: 180, bottom: 28, left: 64 };
@@ -511,6 +513,8 @@ interface PileCrossSectionProps {
   material: "steel" | "concrete" | "wood";
   isCircular: boolean;
   hasRebarCage: boolean;
+  /** Open buis: holle staalring, met prop gevuld met grond. */
+  openTube?: { plug: boolean };
 }
 
 function PileCrossSection({
@@ -519,6 +523,7 @@ function PileCrossSection({
   material,
   isCircular,
   hasRebarCage,
+  openTube,
 }: PileCrossSectionProps) {
   const { t } = useTranslation("calcPile");
   const SIZE = 120;
@@ -598,6 +603,10 @@ function PileCrossSection({
           material === "wood" ? <>
             <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.wood.fill} stroke="#374151" strokeWidth={1.5} />
             {[0.72, 0.48, 0.26].map((f) => <circle key={f} cx={CX} cy={CY} r={R * f} fill="none" stroke={MATERIAL_COLORS.wood.dark} strokeWidth={0.6} opacity={0.7} />)}
+          </> : material === "steel" && openTube ? <>
+            <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.steel.fill} stroke="#374151" strokeWidth={1.5} />
+            {/* Open buis: zonder prop leeg, met prop grond in de buis. */}
+            <circle cx={CX} cy={CY} r={innerR} fill={openTube.plug ? OPEN_TUBE_PLUG_COLOR : "var(--theme-bg-lighter, #fff)"} stroke="#374151" strokeWidth={0.8} />
           </> : material === "steel" ? <circle cx={CX} cy={CY} r={R} fill={MATERIAL_COLORS.steel.fill} stroke="#374151" strokeWidth={1.5} />
           : <circle cx={CX} cy={CY} r={R} fill="url(#pile-cs-concrete-hatch)" stroke="#374151" strokeWidth={1.5} />
         )
@@ -1742,7 +1751,7 @@ function CptOverlayChart({ cpt, effCpt, applied, selection, onSelectRange, onPic
         yRebarBot={bounds.napToY(
           Math.max(input.pileToeNap, input.pileTopNap - 4 * (input.diameterMm / 1000)),
         )}
-        hasRebarCage={pileMaterial === "steel" && !pileType?.requiresEA}
+        hasRebarCage={pileMaterial === "steel" && !pileType?.requiresEA && !pileType?.openEnd}
         pileColCenter={pileColCenter}
       />
 
@@ -1963,7 +1972,8 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
   const csIsCircular = pileType?.isCircular ?? true;
   // Wapeningskorf alleen voor stalen buispalen (betongevulde composiet);
   // bij prefab voorgespannen beton zien we voorspandraden i.p.v. korf.
-  const csHasRebar = csMaterial === "steel" && !pileType?.requiresEA;
+  const csHasRebar = csMaterial === "steel" && !pileType?.requiresEA && !pileType?.openEnd;
+  const csOpenTube = pileType?.openEnd ? { plug: !!input.openTube?.plug } : undefined;
   // Korf-lengte in mm voor de info-tekst — 4·D vanaf paalkop, geclampt op
   // paallengte zodat we geen onzin-getal tonen voor korte palen.
   const pileLengthMm = Math.max(0, (input.pileTopNap - input.pileToeNap) * 1000);
@@ -1995,6 +2005,7 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
           material={csMaterial}
           isCircular={csIsCircular}
           hasRebarCage={csHasRebar}
+          openTube={csOpenTube}
         />
         <div className="pile-cross-section-info">
           <div className="pile-cross-section-title">{t("visual.crossSection", "Doorsnede")}</div>
@@ -2022,7 +2033,7 @@ export function VisualPanel({ input, result, onChange }: PanelProps<PileInput, P
                 <td>{t("visual.material", "materiaal")}</td>
                 <td>
                   {csMaterial === "wood" ? t("visual.materials.wood", "Hout, constante doorsnede") : csMaterial === "steel"
-                    ? (pileType?.requiresEA ? t("visual.materials.steelEA", "Stalen paal; projectspecifieke EA") : t("visual.materials.steelTube", "Stalen buispaal, betongevuld"))
+                    ? (pileType?.requiresEA ? t("visual.materials.steelEA", "Stalen paal; projectspecifieke EA") : csOpenTube ? (csOpenTube.plug ? t("visual.materials.steelOpenPlug", "Open stalen buis, met grondprop") : t("visual.materials.steelOpen", "Open stalen buis, zonder prop")) : t("visual.materials.steelTube", "Stalen buispaal, betongevuld"))
                     : (pileType?.requiresEA ? t("visual.materials.castInSitu", "In de grond gevormd beton") : t("visual.materials.prefab", "Prefab beton"))}
                 </td>
               </tr>

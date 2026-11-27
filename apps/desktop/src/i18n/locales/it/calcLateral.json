@@ -235,7 +235,8 @@
     "widthLabel": "Larghezza efficace delle molle del terreno [m]",
     "widthPile": "= palo",
     "widthPileTitle": "Pari alla larghezza del palo",
-    "withH": "Concorde con H"
+    "withH": "Concorde con H",
+    "openTubeHint": "Tubo aperto: calcolato come tubo cavo; il terreno interno non contribuisce alla rigidezza. Anche la faccia interna è a contatto con il terreno."
   },
   "inspector": {
     "aria": "Ispezione della molla",

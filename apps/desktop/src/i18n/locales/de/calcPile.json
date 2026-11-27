@@ -419,7 +419,8 @@
       "concrete": "Beton",
       "steel": "Stahl",
       "wood": "Holz",
-      "grout": "Verpressmörtel"
+      "grout": "Verpressmörtel",
+      "plug": "Bodenpfropfen"
     },
     "soil": {
       "sand": "Sand",
@@ -461,7 +462,9 @@
       "prefab": "Fertigteilbeton",
       "steelEA": "Stahlpfahl; projektspezifische EA",
       "steelTube": "Stahlrohrpfahl, betongefüllt",
-      "wood": "Holz, konstanter Querschnitt"
+      "wood": "Holz, konstanter Querschnitt",
+      "steelOpen": "Offenes Stahlrohr, ohne Pfropfen",
+      "steelOpenPlug": "Offenes Stahlrohr, mit Bodenpfropfen"
     },
     "noPoints": "Keine Messwerte in dieser Sondierung",
     "notComputed": "Nicht berechnet: {{error}}. Verschieben Sie die Höhen oder passen Sie die Eingabe an.",
@@ -598,5 +601,16 @@
     "detailAria": "Umfang des Ausdrucks",
     "compact": "Kurz: Tabellen",
     "full": "Ausführlich: vollständige Herleitung"
+  },
+  "openTube": {
+    "tip": "Spitze",
+    "noPlug": "Ohne Pfropfen: nur der Stahlring",
+    "plug": "Mit Pfropfen: Stahlring + η × Innenquerschnitt",
+    "plugFactor": "Pfropfenfaktor",
+    "plugFactorAria": "Pfropfenfaktor η [-]",
+    "plugFactorPlaceholder": "eingeben",
+    "plugFactorMissing": "η eingeben (0 bis 1) — ohne η wird nicht gerechnet.",
+    "hintPlug": "Mit Pfropfen zählt der Stahlring plus η mal der Innenquerschnitt; η = 1 ist der volle Querschnitt. Die Norm nennt keinen Wert für η: begründen Sie ihn, etwa mit der Reibung im Rohr (NEN 9997-1 Art. 7.6.2.3(d); über 500 mm auch Art. 7.6.2.1(13)).",
+    "hintNoPlug": "Ohne Pfropfen zählt nur der Stahlring, die Reibung im Rohr bleibt unberücksichtigt; das ist eine Untergrenze nach NEN 9997-1 Art. 7.6.2.3(d)."
   }
 }

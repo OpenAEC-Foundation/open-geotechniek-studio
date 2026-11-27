@@ -43,7 +43,9 @@
     "historicalGroupAnalysis": "L'analyse historique sur plusieurs CPT n'est pas encore vérifiée ; utilisez un seul CPT",
     "factorsMissing2025": "Les facteurs de classe de pieu de la NEN 9997-1:2025 pour ce type de pieu ne figurent pas encore dans le tableau. Choisissez l'édition 2017 ou saisissez des facteurs de projet (autodéclaration ou essai de chargement).",
     "factorsMissingNoRow": "Ce système de pieux n'a pas de ligne propre dans le tableau 7.c de cette édition. Saisissez des facteurs de projet (autodéclaration ou essai de chargement).",
-    "rectInvalid": "Une section rectangulaire a × b exige un pieu en bois scié à côtés positifs, sans conicité ni dimension de pointe distincte"
+    "rectInvalid": "Une section rectangulaire a × b exige un pieu en bois scié à côtés positifs, sans conicité ni dimension de pointe distincte",
+    "openTubeNoBase": "Un tube ouvert n'a pas de plaque de pied ni de dimension de pointe différente",
+    "openTubePlugFactor": "Tube ouvert avec bouchon : saisissez le facteur de bouchon η (supérieur à 0, au plus 1) et justifiez-le. Sans facteur, aucun calcul n'est effectué."
   },
   "warnings": {
     "factors": "Facteurs : {{edition}} ; {{source}}.",
@@ -60,7 +62,11 @@
     "deviatingToeSize": "Dimension de pointe différente : vérifiez le facteur de forme de pointe β et la plage de frottement latéral admise pour cette méthode de mise en œuvre.",
     "qbMaxCapped": "qb;max plafonné à 15 MPa (valeur brute {{raw}} MPa)",
     "settlementLineUnknown": "Aucune courbe charge-tassement du tableau n'est connue pour ce type de pieu : le tassement et les raideurs ne sont pas déterminés.",
-    "rectShape": "Section rectangulaire {{a}} × {{b}} mm : calculée avec A = a · b, périmètre 2 (a + b) et Deq = √(4 · a · b / π). Le programme ne détermine pas le facteur s pour la forme d'une pointe de pieu rectangulaire (a ≠ b) ; le calcul a été fait avec s = {{s}}. Déterminez s selon la norme et saisissez-le comme facteur de projet si nécessaire."
+    "rectShape": "Section rectangulaire {{a}} × {{b}} mm : calculée avec A = a · b, périmètre 2 (a + b) et Deq = √(4 · a · b / π). Le programme ne détermine pas le facteur s pour la forme d'une pointe de pieu rectangulaire (a ≠ b) ; le calcul a été fait avec s = {{s}}. Déterminez s selon la norme et saisissez-le comme facteur de projet si nécessaire.",
+    "openTubePlug": "Tube ouvert avec bouchon : pointe sur l'anneau d'acier ({{ring}} mm²) plus η = {{factor}} × la section intérieure ({{inner}} mm²), soit {{area}} mm². Le facteur η est votre hypothèse : montrez que le bouchon se forme, c'est-à-dire que le frottement à l'intérieur du tube atteint au moins la résistance de pointe sur la section intérieure (NEN 9997-1 art. 7.6.2.3(d)). Le programme ne calcule pas le frottement intérieur.",
+    "openTubeNoPlug": "Tube ouvert sans bouchon : pointe sur l'anneau d'acier seul ({{ring}} mm²) ; le frottement à l'intérieur du tube n'est pas pris en compte. Selon NEN 9997-1 art. 7.6.2.3(d) il peut compter, limité à la résistance de pointe avec un bouchon solide ; c'est donc une borne inférieure.",
+    "openTubeLarge": "Tube de plus de 500 mm : sans dispositions pour la formation d'un bouchon, la résistance de pointe est limitée à la plus petite valeur entre le frottement intérieur contre le bouchon et la résistance de pointe sur la section pleine (NEN 9997-1 art. 7.6.2.1(13)). Justifiez η sur cette base, ou calculez sans bouchon.",
+    "openTubeCoarse": "Tube ouvert dans du sable grossier (d50 ≥ 600 μm) ou du gravier (d50 ≥ 2 mm) : la résistance de cône pour le frottement latéral doit être réduite à 80 % (sable) ou 70 % (gravier) avant écrêtage ; en vibrofonçage 70 % ou 50 % (NEN 9997-1 art. 7.6.2.3(i)). Le programme ne l'applique pas ; vérifiez la granulométrie."
   },
   "table": {
     "errors": {
@@ -177,6 +183,11 @@
     "timber-square": {
       "name": "Pieu battu en bois — carré ou rectangulaire, avec ou sans rehausse en béton",
       "conditions": "Section en bois scié a × b, constante sur la longueur ; en option avec rehausse en béton jusqu'au joint. Facteurs de classe de pieu comme pour le pieu en bois rond. Le programme ne détermine pas le facteur de forme s pour une pointe de pieu rectangulaire (a ≠ b)."
+    },
+    "steel-pipe-driven-open": {
+      "name": "Pieu tubulaire en acier — pointe ouverte (tableau 2017)",
+      "shortName": "Pieu tubulaire en acier — pointe ouverte",
+      "conditions": "Tube ouvert sans plaque de pied. Pointe : anneau d'acier, ou avec bouchon l'anneau d'acier plus une part de la section intérieure que vous justifiez (art. 7.6.2.3(d) et 7.6.2.1(13)). Frottement latéral uniquement à l'extérieur ; la rigidité EA ne compte que l'anneau d'acier."
     }
   },
   "soil": {
@@ -197,6 +208,7 @@
     "auger-cased": "Pieu DPA (tarière tubée)",
     "bored": "Pieu foré",
     "timber": "Pieu en bois",
-    "timber-extension": "Pieu en bois avec rehausse en béton"
+    "timber-extension": "Pieu en bois avec rehausse en béton",
+    "steel-tube-open": "Pieu tubulaire en acier, pointe ouverte"
   }
 }

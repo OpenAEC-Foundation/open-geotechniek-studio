@@ -235,7 +235,8 @@
     "widthLabel": "Largeur effective des ressorts de sol [m]",
     "widthPile": "= pieu",
     "widthPileTitle": "Égale à la largeur du pieu",
-    "withH": "Dans le sens de H"
+    "withH": "Dans le sens de H",
+    "openTubeHint": "Tube ouvert : calculé comme tube creux ; le sol à l'intérieur n'apporte pas de rigidité. La face intérieure est aussi en contact avec le sol."
   },
   "inspector": {
     "aria": "Inspection du ressort",

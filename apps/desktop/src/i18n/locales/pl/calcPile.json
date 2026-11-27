@@ -419,7 +419,8 @@
       "concrete": "Beton",
       "steel": "Stal",
       "wood": "Drewno",
-      "grout": "Zaczyn"
+      "grout": "Zaczyn",
+      "plug": "Korek gruntowy"
     },
     "soil": {
       "sand": "Piasek",
@@ -461,7 +462,9 @@
       "prefab": "Beton prefabrykowany",
       "steelEA": "Pal stalowy; EA właściwe dla projektu",
       "steelTube": "Pal stalowy rurowy, wypełniony betonem",
-      "wood": "Drewno, stały przekrój"
+      "wood": "Drewno, stały przekrój",
+      "steelOpen": "Otwarta rura stalowa, bez korka",
+      "steelOpenPlug": "Otwarta rura stalowa, z korkiem gruntowym"
     },
     "noPoints": "Brak pomiarów w tym sondowaniu",
     "notComputed": "Nie obliczono: {{error}}. Przeciągnij poziomy lub zmień dane wejściowe.",
@@ -598,5 +601,16 @@
     "detailAria": "Zakres wydruku",
     "compact": "Skrócony: tabele",
     "full": "Rozszerzony: pełne wyprowadzenie"
+  },
+  "openTube": {
+    "tip": "Podstawa",
+    "noPlug": "Bez korka: tylko pierścień stalowy",
+    "plug": "Z korkiem: pierścień + η × przekrój wewnętrzny",
+    "plugFactor": "Współczynnik korka",
+    "plugFactorAria": "Współczynnik korka η [-]",
+    "plugFactorPlaceholder": "wpisz",
+    "plugFactorMissing": "Wpisz η (od 0 do 1) — bez η obliczenia nie są wykonywane.",
+    "hintPlug": "Z korkiem liczy się pierścień stalowy plus η razy przekrój wewnętrzny; η = 1 to pełny przekrój. Norma nie podaje wartości η: uzasadnij ją, np. tarciem wewnątrz rury (NEN 9997-1 art. 7.6.2.3(d); powyżej 500 mm także art. 7.6.2.1(13)).",
+    "hintNoPlug": "Bez korka liczy się tylko pierścień stalowy, a tarcie wewnątrz rury jest pomijane; to dolna granica według NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

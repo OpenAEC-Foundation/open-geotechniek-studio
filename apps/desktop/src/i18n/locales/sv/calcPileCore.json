@@ -43,7 +43,9 @@
     "historicalGroupAnalysis": "Historisk analys med flera CPT-sonderingar är ännu inte verifierad; använd en enda CPT-sondering",
     "factorsMissing2025": "Pålklassfaktorerna enligt NEN 9997-1:2025 för denna påltyp finns ännu inte i tabellen. Välj 2017 års utgåva eller ange projektfaktorer (egendeklaration eller provbelastning).",
     "factorsMissingNoRow": "Detta pålsystem har ingen egen rad i tabell 7.c i denna utgåva. Ange projektfaktorer (egendeklaration eller provbelastning).",
-    "rectInvalid": "Ett rektangulärt tvärsnitt a × b kräver en sågad träpåle med positiva sidor, utan konicitet eller separat spetsmått"
+    "rectInvalid": "Ett rektangulärt tvärsnitt a × b kräver en sågad träpåle med positiva sidor, utan konicitet eller separat spetsmått",
+    "openTubeNoBase": "Ett öppet rör har ingen fotplatta eller avvikande spetsmått",
+    "openTubePlugFactor": "Öppet rör med propp: ange proppfaktorn η (större än 0, högst 1) och motivera den. Utan faktor räknas inget."
   },
   "warnings": {
     "factors": "Faktorer: {{edition}}; {{source}}.",
@@ -60,7 +62,11 @@
     "deviatingToeSize": "Avvikande spetsdimension: kontrollera formfaktorn för pålfoten β och tillåten mantelzon för denna installationsmetod.",
     "qbMaxCapped": "qb;max begränsad till 15 MPa (ursprungligt värde {{raw}} MPa)",
     "settlementLineUnknown": "Ingen last-sättningskurva från tabellen är känd för denna påltyp: sättning och fjädervärden bestäms inte.",
-    "rectShape": "Rektangulärt tvärsnitt {{a}} × {{b}} mm: beräknat med A = a · b, omkrets 2 (a + b) och Deq = √(4 · a · b / π). Programmet bestämmer inte faktorn s för formen på en rektangulär pålspets (a ≠ b); beräkningen har gjorts med s = {{s}}. Bestäm s enligt standarden och ange den vid behov som projektfaktor."
+    "rectShape": "Rektangulärt tvärsnitt {{a}} × {{b}} mm: beräknat med A = a · b, omkrets 2 (a + b) och Deq = √(4 · a · b / π). Programmet bestämmer inte faktorn s för formen på en rektangulär pålspets (a ≠ b); beräkningen har gjorts med s = {{s}}. Bestäm s enligt standarden och ange den vid behov som projektfaktor.",
+    "openTubePlug": "Öppet rör med propp: spets över stålringen ({{ring}} mm²) plus η = {{factor}} × den inre tvärsektionen ({{inner}} mm²), sammanlagt {{area}} mm². Proppfaktorn η är ditt antagande: visa att proppen bildas, dvs. att friktionen inne i röret når minst spetsmotståndet över den inre tvärsektionen (NEN 9997-1 art. 7.6.2.3(d)). Programmet räknar inte den invändiga friktionen.",
+    "openTubeNoPlug": "Öppet rör utan propp: spets endast över stålringen ({{ring}} mm²); friktionen inne i röret ingår inte. Enligt NEN 9997-1 art. 7.6.2.3(d) får den räknas, begränsad till spetsmotståndet med fast propp; detta är alltså en undre gräns.",
+    "openTubeLarge": "Rör större än 500 mm: utan åtgärder för proppbildning begränsas spetsmotståndet till det minsta av den invändiga friktionen mot proppen och spetsmotståndet över hela tvärsektionen (NEN 9997-1 art. 7.6.2.1(13)). Motivera η utifrån detta, eller räkna utan propp.",
+    "openTubeCoarse": "Öppet rör i grovt sand (d50 ≥ 600 μm) eller grus (d50 ≥ 2 mm): spetstrycket för mantelfriktionen ska före avskärning reduceras till 80 % (sand) eller 70 % (grus); vid vibrering 70 % eller 50 % (NEN 9997-1 art. 7.6.2.3(i)). Programmet tillämpar inte detta; kontrollera kornstorleken."
   },
   "table": {
     "errors": {
@@ -177,6 +183,11 @@
     "timber-square": {
       "name": "Slagen träpåle — kvadratisk eller rektangulär, med eller utan betongförlängning",
       "conditions": "Sågat trätvärsnitt a × b, konstant över längden; valfritt med betongförlängning ned till skarven. Pålklassfaktorer som för den runda träpålen. Programmet bestämmer inte formfaktorn s för en rektangulär pålspets (a ≠ b)."
+    },
+    "steel-pipe-driven-open": {
+      "name": "Stålrörspåle — öppen spets (tabell 2017)",
+      "shortName": "Stålrörspåle — öppen spets",
+      "conditions": "Öppet rör utan fotplatta. Spets: stålring, eller med propp stålringen plus en del av den inre tvärsektionen som du motiverar (art. 7.6.2.3(d) och 7.6.2.1(13)). Mantelfriktion endast utvändigt; styvheten EA räknar bara med stålringen."
     }
   },
   "soil": {
@@ -197,6 +208,7 @@
     "auger-cased": "DPA-påle (fodrad skruvborr)",
     "bored": "Borrad påle",
     "timber": "Träpåle",
-    "timber-extension": "Träpåle med betongförlängning"
+    "timber-extension": "Träpåle med betongförlängning",
+    "steel-tube-open": "Stålrörspåle, öppen spets"
   }
 }

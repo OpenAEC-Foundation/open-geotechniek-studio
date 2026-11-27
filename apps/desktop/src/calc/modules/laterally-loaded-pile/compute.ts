@@ -29,6 +29,8 @@ export interface LateralInput {
   material?:MaterialInput;
   /** Paalsysteem zoals in de module paaldraagvermogen (prefab, vibro, boorpaal, ...); bepaalt welke doorsneden passen. */
   pileSystemId?:string;
+  /** Open stalen buis (paalsysteem 'steel-tube-open'): doorsnede als holle buis; ook de binnenzijde staat in grond, dus afroesting standaard aan twee kanten. */
+  openEnd?:boolean;
   /** Gegevens overgenomen uit een paaldraagvermogenberekening. */
   inherited?:import('./pile-link').InheritedFrom;
 }

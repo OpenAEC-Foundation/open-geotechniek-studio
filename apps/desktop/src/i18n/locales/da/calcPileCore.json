@@ -43,7 +43,9 @@
     "historicalGroupAnalysis": "Historisk analyse med flere sonderinger er endnu ikke verificeret; brug en enkelt sondering",
     "factorsMissing2025": "Pæleklassefaktorerne i NEN 9997-1:2025 for denne pæletype er endnu ikke med i tabellen. Vælg 2017-udgaven, eller angiv projektfaktorer (egenerklæring eller prøvebelastning).",
     "factorsMissingNoRow": "Dette pælesystem har ingen egen række i tabel 7.c i denne udgave. Angiv projektfaktorer (egenerklæring eller prøvebelastning).",
-    "rectInvalid": "Et rektangulært tværsnit a × b kræver en savet træpæl med positive sider, uden konicitet eller særskilt spidsmål"
+    "rectInvalid": "Et rektangulært tværsnit a × b kræver en savet træpæl med positive sider, uden konicitet eller særskilt spidsmål",
+    "openTubeNoBase": "Et åbent rør har ingen fodplade eller afvigende spidsmål",
+    "openTubePlugFactor": "Åbent rør med prop: indtast propfaktoren η (større end 0, højst 1) og begrund den. Uden faktor regnes der ikke."
   },
   "warnings": {
     "factors": "Faktorer: {{edition}}; {{source}}.",
@@ -60,7 +62,11 @@
     "deviatingToeSize": "Afvigende spidsstørrelse: kontrollér pælespidsens formfaktor β og det tilladte område for overflademodstand for denne installationsmetode.",
     "qbMaxCapped": "qb;max begrænset til 15 MPa (råværdi {{raw}} MPa)",
     "settlementLineUnknown": "Der kendes ingen last-sætningskurve fra tabellen for denne pæletype: sætning og fjederværdier bestemmes ikke.",
-    "rectShape": "Rektangulært tværsnit {{a}} × {{b}} mm: regnet med A = a · b, omkreds 2 (a + b) og Deq = √(4 · a · b / π). Programmet bestemmer ikke faktoren s for formen af en rektangulær pælespids (a ≠ b); der er regnet med s = {{s}}. Bestem s efter normen, og angiv den om nødvendigt som projektfaktor."
+    "rectShape": "Rektangulært tværsnit {{a}} × {{b}} mm: regnet med A = a · b, omkreds 2 (a + b) og Deq = √(4 · a · b / π). Programmet bestemmer ikke faktoren s for formen af en rektangulær pælespids (a ≠ b); der er regnet med s = {{s}}. Bestem s efter normen, og angiv den om nødvendigt som projektfaktor.",
+    "openTubePlug": "Åbent rør med prop: spids over stålringen ({{ring}} mm²) plus η = {{factor}} × det indre tværsnit ({{inner}} mm²), i alt {{area}} mm². Propfaktoren η er din antagelse: vis at proppen dannes, dvs. at friktionen inde i røret mindst når spidsmodstanden over det indre tværsnit (NEN 9997-1 art. 7.6.2.3(d)). Programmet beregner ikke den indvendige friktion.",
+    "openTubeNoPlug": "Åbent rør uden prop: spids kun over stålringen ({{ring}} mm²); friktionen inde i røret er ikke medregnet. Ifølge NEN 9997-1 art. 7.6.2.3(d) må den tælle, begrænset til spidsmodstanden med en fast prop; dette er derfor en nedre grænse.",
+    "openTubeLarge": "Rør større end 500 mm: uden foranstaltninger til propdannelse er spidsmodstanden begrænset til den mindste af den indvendige friktion mod proppen og spidsmodstanden over det fulde tværsnit (NEN 9997-1 art. 7.6.2.1(13)). Begrund η herpå, eller regn uden prop.",
+    "openTubeCoarse": "Åbent rør i groft sand (d50 ≥ 600 μm) eller grus (d50 ≥ 2 mm): spidsmodstanden til overfladefriktion skal før afskæring reduceres til 80 % (sand) eller 70 % (grus); ved nedvibrering 70 % eller 50 % (NEN 9997-1 art. 7.6.2.3(i)). Programmet anvender ikke dette; kontroller kornstørrelsen."
   },
   "table": {
     "errors": {
@@ -177,6 +183,11 @@
     "timber-square": {
       "name": "Rammet træpæl — kvadratisk eller rektangulær, med eller uden betonforlængelse",
       "conditions": "Savet trætværsnit a × b, konstant over længden; valgfrit med betonforlængelse ned til samlingen. Pæleklassefaktorer som for den runde træpæl. Programmet bestemmer ikke formfaktoren s for en rektangulær pælespids (a ≠ b)."
+    },
+    "steel-pipe-driven-open": {
+      "name": "Stålrørspæl — åben spids (tabel 2017)",
+      "shortName": "Stålrørspæl — åben spids",
+      "conditions": "Åbent rør uden fodplade. Spids: stålring, eller med prop stålringen plus en del af det indre tværsnit, som du begrunder (art. 7.6.2.3(d) og 7.6.2.1(13)). Overfladefriktion kun udvendigt; stivheden EA regner kun med stålringen."
     }
   },
   "soil": {
@@ -197,6 +208,7 @@
     "auger-cased": "DPA-pæl (foret snegl)",
     "bored": "Boret pæl",
     "timber": "Træpæl",
-    "timber-extension": "Træpæl med betonforlænger"
+    "timber-extension": "Træpæl med betonforlænger",
+    "steel-tube-open": "Stålrørspæl, åben spids"
   }
 }

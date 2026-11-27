@@ -419,7 +419,8 @@
       "concrete": "Hormigón",
       "steel": "Acero",
       "wood": "Madera",
-      "grout": "Lechada"
+      "grout": "Lechada",
+      "plug": "Tapón de suelo"
     },
     "soil": {
       "sand": "Arena",
@@ -461,7 +462,9 @@
       "prefab": "Hormigón prefabricado",
       "steelEA": "Pilote de acero; EA específica del proyecto",
       "steelTube": "Pilote tubular de acero, relleno de hormigón",
-      "wood": "Madera, sección constante"
+      "wood": "Madera, sección constante",
+      "steelOpen": "Tubo de acero abierto, sin tapón",
+      "steelOpenPlug": "Tubo de acero abierto, con tapón de suelo"
     },
     "noPoints": "No hay mediciones en este CPT",
     "notComputed": "No calculado: {{error}}. Arrastre las cotas o ajuste la entrada.",
@@ -598,5 +601,16 @@
     "detailAria": "Alcance de la impresión",
     "compact": "Resumido: tablas",
     "full": "Detallado: desarrollo completo"
+  },
+  "openTube": {
+    "tip": "Punta",
+    "noPlug": "Sin tapón: solo el anillo de acero",
+    "plug": "Con tapón: anillo + η × sección interior",
+    "plugFactor": "Factor de tapón",
+    "plugFactorAria": "Factor de tapón η [-]",
+    "plugFactorPlaceholder": "introducir",
+    "plugFactorMissing": "Introduzca η (0 a 1) — sin η no se calcula.",
+    "hintPlug": "Con tapón cuenta el anillo de acero más η veces la sección interior; η = 1 es la sección completa. La norma no da un valor para η: justifíquelo, por ejemplo con la fricción dentro del tubo (NEN 9997-1 art. 7.6.2.3(d); por encima de 500 mm también art. 7.6.2.1(13)).",
+    "hintNoPlug": "Sin tapón solo cuenta el anillo de acero y se ignora la fricción interior; es un límite inferior de NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

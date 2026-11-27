@@ -235,7 +235,8 @@
     "widthLabel": "Szerokość efektywna sprężyn gruntowych [m]",
     "widthPile": "= pal",
     "widthPileTitle": "Równa szerokości pala",
-    "withH": "Zgodnie z H"
+    "withH": "Zgodnie z H",
+    "openTubeHint": "Otwarta rura: liczona jako rura pusta; grunt wewnątrz nie zwiększa sztywności. Strona wewnętrzna również styka się z gruntem."
   },
   "inspector": {
     "aria": "Inspekcja sprężyny",

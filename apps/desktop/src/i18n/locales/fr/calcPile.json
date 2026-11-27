@@ -419,7 +419,8 @@
       "concrete": "Béton",
       "steel": "Acier",
       "wood": "Bois",
-      "grout": "Coulis"
+      "grout": "Coulis",
+      "plug": "Bouchon de sol"
     },
     "soil": {
       "sand": "Sable",
@@ -461,7 +462,9 @@
       "prefab": "Béton préfabriqué",
       "steelEA": "Pieu acier ; EA spécifique au projet",
       "steelTube": "Pieu tubulaire en acier, rempli de béton",
-      "wood": "Bois, section constante"
+      "wood": "Bois, section constante",
+      "steelOpen": "Tube acier ouvert, sans bouchon",
+      "steelOpenPlug": "Tube acier ouvert, avec bouchon de sol"
     },
     "noPoints": "Aucune mesure dans ce CPT",
     "notComputed": "Non calculé : {{error}}. Déplacez les niveaux ou ajustez la saisie.",
@@ -598,5 +601,16 @@
     "detailAria": "Étendue de l'impression",
     "compact": "Abrégé : tableaux",
     "full": "Détaillé : dérivation complète"
+  },
+  "openTube": {
+    "tip": "Pointe",
+    "noPlug": "Sans bouchon : anneau d'acier seul",
+    "plug": "Avec bouchon : anneau + η × section intérieure",
+    "plugFactor": "Facteur de bouchon",
+    "plugFactorAria": "Facteur de bouchon η [-]",
+    "plugFactorPlaceholder": "à saisir",
+    "plugFactorMissing": "Saisissez η (0 à 1) — sans η, aucun calcul.",
+    "hintPlug": "Avec bouchon, l'anneau d'acier compte plus η fois la section intérieure ; η = 1 correspond à la section pleine. La norme ne donne pas de valeur pour η : justifiez-la, par exemple avec le frottement à l'intérieur du tube (NEN 9997-1 art. 7.6.2.3(d) ; au-delà de 500 mm aussi art. 7.6.2.1(13)).",
+    "hintNoPlug": "Sans bouchon, seul l'anneau d'acier compte et le frottement intérieur est ignoré ; c'est une borne inférieure de NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

@@ -43,7 +43,9 @@
     "historicalGroupAnalysis": "Historical multi-CPT analysis is not yet verified; use a single CPT",
     "factorsMissing2025": "The pile class factors of NEN 9997-1:2025 for this pile type are not yet in the table. Choose the 2017 edition or enter project factors (self-declaration or load test).",
     "factorsMissingNoRow": "This pile system has no row of its own in table 7.c of this edition. Enter project factors (self-declaration or load test).",
-    "rectInvalid": "A rectangular cross-section a × b requires a sawn timber pile with positive sides, without taper or a separate toe dimension"
+    "rectInvalid": "A rectangular cross-section a × b requires a sawn timber pile with positive sides, without taper or a separate toe dimension",
+    "openTubeNoBase": "An open tube has no base plate or deviating base size",
+    "openTubePlugFactor": "Open tube with plug: enter the plug factor η (greater than 0, at most 1) and substantiate it. Without a factor nothing is calculated."
   },
   "warnings": {
     "factors": "Factors: {{edition}}; {{source}}.",
@@ -60,7 +62,11 @@
     "deviatingToeSize": "Deviating toe size: check the pile base shape factor β and the permitted shaft friction range for this installation method.",
     "qbMaxCapped": "qb;max capped at 15 MPa (raw value {{raw}} MPa)",
     "settlementLineUnknown": "No load-settlement curve from the table is known for this pile type: settlement and spring values are not determined.",
-    "rectShape": "Rectangular cross-section {{a}} × {{b}} mm: calculated with A = a · b, perimeter 2 (a + b) and Deq = √(4 · a · b / π). The program does not determine the factor s for the shape of a rectangular pile toe (a ≠ b); s = {{s}} was used. Determine s according to the standard and enter it as a project factor if needed."
+    "rectShape": "Rectangular cross-section {{a}} × {{b}} mm: calculated with A = a · b, perimeter 2 (a + b) and Deq = √(4 · a · b / π). The program does not determine the factor s for the shape of a rectangular pile toe (a ≠ b); s = {{s}} was used. Determine s according to the standard and enter it as a project factor if needed.",
+    "openTubePlug": "Open tube with plug: base over the steel ring ({{ring}} mm²) plus η = {{factor}} × the inner section ({{inner}} mm²), together {{area}} mm². The plug factor η is your assumption: show that the plug forms, i.e. that the friction inside the tube reaches at least the base resistance over the inner section (NEN 9997-1 art. 7.6.2.3(d)). The program does not calculate the inner friction.",
+    "openTubeNoPlug": "Open tube without plug: base over the steel ring only ({{ring}} mm²); the friction inside the tube is not included. According to NEN 9997-1 art. 7.6.2.3(d) it may count, limited to the base resistance with a solid plug; this is therefore a lower bound.",
+    "openTubeLarge": "Tube larger than 500 mm: without provisions for plug formation the base resistance is limited to the smaller of the inner friction against the plug and the base resistance over the full section (NEN 9997-1 art. 7.6.2.1(13)). Base η on that, or calculate without a plug.",
+    "openTubeCoarse": "Open tube in coarse sand (d50 ≥ 600 μm) or gravel (d50 ≥ 2 mm): the cone resistance for shaft friction must be reduced to 80 % (sand) or 70 % (gravel) before cutting off; when vibrated 70 % or 50 % (NEN 9997-1 art. 7.6.2.3(i)). The program does not apply this; check the grain size."
   },
   "table": {
     "errors": {
@@ -177,6 +183,11 @@
     "timber-square": {
       "name": "Driven timber pile — square or rectangular, with or without concrete extension",
       "conditions": "Sawn timber cross-section a × b, constant over the length; optionally with a concrete extension down to the joint. Pile class factors as for the round timber pile. The program does not determine the shape factor s for a rectangular pile toe (a ≠ b)."
+    },
+    "steel-pipe-driven-open": {
+      "name": "Steel tube pile — open end (2017 table)",
+      "shortName": "Steel tube pile — open end",
+      "conditions": "Open tube without base plate. Base: steel ring, or with a plug the steel ring plus a part of the inner section that you substantiate (art. 7.6.2.3(d) and 7.6.2.1(13)). Shaft friction on the outside only; the stiffness EA uses the steel ring only."
     }
   },
   "soil": {
@@ -197,6 +208,7 @@
     "auger-cased": "DPA pile (cased auger)",
     "bored": "Bored pile",
     "timber": "Timber pile",
-    "timber-extension": "Timber pile with concrete extension"
+    "timber-extension": "Timber pile with concrete extension",
+    "steel-tube-open": "Steel tube pile, open end"
   }
 }

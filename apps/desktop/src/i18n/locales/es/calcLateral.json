@@ -235,7 +235,8 @@
     "widthLabel": "Ancho efectivo de los muelles del terreno [m]",
     "widthPile": "= pilote",
     "widthPileTitle": "Igual al ancho del pilote",
-    "withH": "Con H"
+    "withH": "Con H",
+    "openTubeHint": "Tubo abierto: se calcula como tubo hueco; el suelo interior no aporta rigidez. La cara interior también está en contacto con el suelo."
   },
   "inspector": {
     "aria": "Inspección de muelles",

@@ -43,7 +43,9 @@
     "historicalGroupAnalysis": "L'analisi storica con più prove CPT non è ancora verificata; usa una sola prova CPT",
     "factorsMissing2025": "I fattori di classe del palo della NEN 9997-1:2025 per questo tipo di palo non sono ancora nella tabella. Scegliere l'edizione 2017 o inserire fattori di progetto (autodichiarazione o prova di carico).",
     "factorsMissingNoRow": "Questo sistema di pali non ha una riga propria nella tabella 7.c di questa edizione. Inserire fattori di progetto (autodichiarazione o prova di carico).",
-    "rectInvalid": "Una sezione rettangolare a × b richiede un palo in legno segato con lati positivi, senza rastremazione né dimensione di punta separata"
+    "rectInvalid": "Una sezione rettangolare a × b richiede un palo in legno segato con lati positivi, senza rastremazione né dimensione di punta separata",
+    "openTubeNoBase": "Un tubo aperto non ha piastra di base né dimensione di punta diversa",
+    "openTubePlugFactor": "Tubo aperto con tappo: inserire il fattore di tappo η (maggiore di 0, al massimo 1) e giustificarlo. Senza fattore non si calcola."
   },
   "warnings": {
     "factors": "Fattori: {{edition}}; {{source}}.",
@@ -60,7 +62,11 @@
     "deviatingToeSize": "Dimensione della punta diversa: verifica il fattore di forma della base del palo β e il tratto d'attrito laterale ammesso per questo metodo di installazione.",
     "qbMaxCapped": "qb;max limitato a 15 MPa (valore grezzo {{raw}} MPa)",
     "settlementLineUnknown": "Per questo tipo di palo non è nota alcuna curva carico-cedimento dalla tabella: cedimento e rigidezze non vengono determinati.",
-    "rectShape": "Sezione rettangolare {{a}} × {{b}} mm: calcolata con A = a · b, perimetro 2 (a + b) e Deq = √(4 · a · b / π). Il programma non determina il fattore s per la forma di una punta del palo rettangolare (a ≠ b); si è calcolato con s = {{s}}. Determinare s secondo la norma e, se necessario, inserirlo come fattore di progetto."
+    "rectShape": "Sezione rettangolare {{a}} × {{b}} mm: calcolata con A = a · b, perimetro 2 (a + b) e Deq = √(4 · a · b / π). Il programma non determina il fattore s per la forma di una punta del palo rettangolare (a ≠ b); si è calcolato con s = {{s}}. Determinare s secondo la norma e, se necessario, inserirlo come fattore di progetto.",
+    "openTubePlug": "Tubo aperto con tappo: punta sull'anello d'acciaio ({{ring}} mm²) più η = {{factor}} × la sezione interna ({{inner}} mm²), in totale {{area}} mm². Il fattore η è una sua ipotesi: dimostri che il tappo si forma, cioè che l'attrito all'interno del tubo raggiunge almeno la resistenza di punta sulla sezione interna (NEN 9997-1 art. 7.6.2.3(d)). Il programma non calcola l'attrito interno.",
+    "openTubeNoPlug": "Tubo aperto senza tappo: punta solo sull'anello d'acciaio ({{ring}} mm²); l'attrito all'interno del tubo non è considerato. Secondo NEN 9997-1 art. 7.6.2.3(d) può contare, limitato alla resistenza di punta con tappo solido; questo è quindi un limite inferiore.",
+    "openTubeLarge": "Tubo maggiore di 500 mm: senza accorgimenti per la formazione del tappo la resistenza di punta è limitata al minore tra l'attrito interno contro il tappo e la resistenza di punta sulla sezione piena (NEN 9997-1 art. 7.6.2.1(13)). Giustifichi η su questo, oppure calcoli senza tappo.",
+    "openTubeCoarse": "Tubo aperto in sabbia grossa (d50 ≥ 600 μm) o ghiaia (d50 ≥ 2 mm): la resistenza alla punta per l'attrito laterale va ridotta all'80 % (sabbia) o al 70 % (ghiaia) prima del taglio; con vibroinfissione 70 % o 50 % (NEN 9997-1 art. 7.6.2.3(i)). Il programma non lo applica; verificare la granulometria."
   },
   "table": {
     "errors": {
@@ -177,6 +183,11 @@
     "timber-square": {
       "name": "Palo battuto in legno — quadrato o rettangolare, con o senza prolunga in calcestruzzo",
       "conditions": "Sezione in legno segato a × b, costante sulla lunghezza; in opzione con prolunga in calcestruzzo fino al giunto. Fattori di classe del palo come per il palo in legno tondo. Il programma non determina il fattore di forma s per una punta del palo rettangolare (a ≠ b)."
+    },
+    "steel-pipe-driven-open": {
+      "name": "Palo tubolare in acciaio — punta aperta (tabella 2017)",
+      "shortName": "Palo tubolare in acciaio — punta aperta",
+      "conditions": "Tubo aperto senza piastra di base. Punta: anello d'acciaio, oppure con tappo l'anello più una parte della sezione interna da lei giustificata (art. 7.6.2.3(d) e 7.6.2.1(13)). Attrito laterale solo all'esterno; la rigidezza EA considera solo l'anello d'acciaio."
     }
   },
   "soil": {
@@ -197,6 +208,7 @@
     "auger-cased": "Palo DPA (elica intubata)",
     "bored": "Palo trivellato",
     "timber": "Palo in legno",
-    "timber-extension": "Palo in legno con prolunga in calcestruzzo"
+    "timber-extension": "Palo in legno con prolunga in calcestruzzo",
+    "steel-tube-open": "Palo tubolare in acciaio, punta aperta"
   }
 }
