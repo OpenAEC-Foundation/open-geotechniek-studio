@@ -1,11 +1,13 @@
 // De werktoestand van het scherm: wat de gebruiker tot nu toe heeft aangeklikt en ingevuld, met
 // tekstvelden zoals ze getypt zijn. Hieruit volgt het vastgelegde `DigitizedRecord` en omgekeerd.
 import { solveCalibration, toPixel, type Calibration, type Px } from "./calibration";
-import type { ConeKind, DigitizedRecord } from "./record";
+import { methodOf, type ConeKind, type DigitizedRecord, type DigitizedSeries, type SeriesMethod } from "./record";
+import { fromTraceRows, toTraceRows, tracePixels, type Trace } from "./trace";
 import { DEFAULT_STEP, normalizeReadings, readingsFromPixels, type DepthMode, type Interpolation, type SecondKind } from "./series";
 
 export interface AxisWork { a: Px | null; b: Px | null; va: string; vb: string }
-export interface SeriesWork { depth: AxisWork; value: AxisWork; points: Px[] }
+/** `method` en `trace` ontbreken bij aangeklikte punten; een gewijzigde lijn is steeds een nieuwe reeks (ongedaan maken). */
+export interface SeriesWork { depth: AxisWork; value: AxisWork; points: Px[]; method?: SeriesMethod; trace?: Trace | null }
 export type SeriesId = "qc" | "second";
 
 /** Alles wat met ongedaan maken terugkomt. */
@@ -58,14 +60,27 @@ export function toRecord(work: Work, header: Header, image: { name: string; widt
     step: num(header.step),
     interpolation: header.interpolation,
     image,
-    qc: { calibration: calibrationOf(work, "qc"), points: work.qc.points },
-    second: work.secondKind === "none" ? undefined : { kind: work.secondKind, calibration: calibrationOf(work, "second"), points: work.second.points },
+    qc: seriesRecord(work, "qc"),
+    second: work.secondKind === "none" ? undefined : { kind: work.secondKind, ...seriesRecord(work, "second") },
+  };
+}
+
+function seriesRecord(work: Work, id: SeriesId): DigitizedSeries {
+  const s = work[id], rows = s.trace ? toTraceRows(s.trace) : undefined;
+  return {
+    calibration: calibrationOf(work, id), points: s.points,
+    ...(s.method === "trace" ? { method: "trace" as const } : {}),
+    ...(rows ? { trace: rows } : {}),
   };
 }
 
 export function fromRecord(r: DigitizedRecord): { work: Work; header: Header } {
   const axis = (a: Calibration["depth"]): AxisWork => ({ a: a.a, b: a.b, va: text(a.va), vb: text(a.vb) });
-  const series = (s: { calibration: Calibration; points: Px[] }): SeriesWork => ({ depth: axis(s.calibration.depth), value: axis(s.calibration.value), points: s.points });
+  const series = (s: DigitizedSeries): SeriesWork => ({
+    depth: axis(s.calibration.depth), value: axis(s.calibration.value), points: s.points,
+    ...(methodOf(s) === "trace" ? { method: "trace" as const } : {}),
+    ...(s.trace ? { trace: fromTraceRows(s.trace, r.image.height) } : {}),
+  });
   const same = (a: Calibration["depth"], b: Calibration["depth"]) => JSON.stringify(a) === JSON.stringify(b);
   return {
     work: {
@@ -86,6 +101,8 @@ export function fromRecord(r: DigitizedRecord): { work: Work; header: Header } {
  * recht of trapsgewijs. Zonder bruikbare ijking volgt hij de punten in de volgorde van aanklikken.
  */
 export function previewLine(work: Work, series: SeriesId, interpolation: Interpolation): { points: Px[]; calibrated: boolean } {
+  // Een gevolgde lijn ligt al op de scan.
+  if (work[series].method === "trace") return { points: work[series].trace ? tracePixels(work[series].trace!) : [], calibrated: true };
   const m = solveCalibration(calibrationOf(work, series));
   if (!m) return { points: work[series].points, calibrated: false };
   // De omrekening naar diepte onder maaiveld valt hier weg: de lijn gaat terug naar dezelfde as.

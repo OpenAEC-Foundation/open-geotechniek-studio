@@ -3,7 +3,9 @@ import { readSourceFile } from "../utils/sourceEncoding";
 import { withMarkers } from "../components/chart/markers";
 import type { ChartMarker } from "../components/chart/chart-renderer";
 import { looksLikeGefBore, parseGefBore } from "../types/gefBoreParser";
-import { belongsToCpt, looksLikeGefDissipation, parseGefDissipation, withDissipationTest, type DissipationTest } from "../types/gefDissipation";
+import { belongsToCpt, withDissipationTest } from "../dissipatie/cptDissipation";
+import { looksLikeGefDissipation, parseGefDissipation } from "../dissipatie/gefDissipation";
+import type { DissipationTest } from "../dissipatie/types";
 import { parseProjectFile, isProjectFile, readJson } from "../types/projectFile";
 export { serializeActiveProject } from "./projectSerialization";
 import { create } from "zustand";
@@ -907,14 +909,14 @@ export function attachDissipationTest(test: DissipationTest, preferDocId: string
   }
   throw new Error(i18next.t("app:store.dissipationWithoutCpt", {
     defaultValue: "{{file}} is een dissipatietest bij sondering {{parent}}. Open eerst die sondering of het project waar hij in zit, en voeg de dissipatietest daarna toe.",
-    file: test.source_file, parent: test.parent_file ?? test.id,
+    file: test.source_file, parent: test.parent_file ?? test.test_id ?? "?",
   }));
 }
 
 /**
  * Zet een al opgebouwde sondering in het actieve project, of opent haar als
  * losse tab als er geen project actief is. Gebruikt door het inlezen van
- * bestanden en door "Sondering uit scan".
+ * bestanden.
  */
 export function placeCpt(cpt: Cpt, filename: string, targetDocId: string | null = useCptStore.getState().activeDocId): Cpt {
   const state = useCptStore.getState();

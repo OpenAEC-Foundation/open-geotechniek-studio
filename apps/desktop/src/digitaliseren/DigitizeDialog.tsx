@@ -1,5 +1,6 @@
-// Bestaande sondering digitaliseren: links de onderlegger met ijkpunten en aangeklikte punten, rechts
-// de stappen (onderlegger, ijken, punten, gegevens, opslaan).
+// Bestaande sondering digitaliseren: links de onderlegger met ijkpunten en de overgenomen lijn, rechts
+// de stappen (onderlegger, ijken, punten, gegevens, opslaan). Bij de stap "punten" is er de keuze tussen
+// de lijn op de scan automatisch volgen (met overtekenen en wissen) en punten aanklikken.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -8,29 +9,32 @@ import ImageCropDialog from "../components/panels/ImageCropDialog";
 import PdfCropDialog from "../components/panels/PdfCropDialog";
 import { useCptStore } from "../store/useCptStore";
 import { calibrationGrid, calibrationProblem, solveCalibration, type CalibrationProblem, type Px } from "./calibration";
-import { buildDigitizedCpt, digitizedImageOf, digitizedOf, readingsOf, recordProblems, type RecordProblem } from "./record";
+import { buildDigitizedCpt, coneKindLabel, digitizedImageOf, digitizedOf, readingsOf, recordProblems, type RecordProblem, type SeriesMethod } from "./record";
 import { buildPoints, DEFAULT_STEP, type SecondKind } from "./series";
-import Stage, { type Marker, type StageImage } from "./Stage";
+import Stage, { type Marker, type StageImage, type Stroke } from "./Stage";
 import { OPEN_DIGITIZER_EVENT, saveDigitizedCpt } from "./store";
+import { binarize, detectGridLines, drawSegment, eraseRows, removeThinLines, snapToGrid, suggestAxisPoints, traceLine, traceRowCount, type Bitmap, type Trace } from "./trace";
 import { calibrationOf, emptyHeader, emptyWork, fromRecord, previewLine, toRecord, type AxisWork, type Header, type SeriesId, type Work } from "./work";
 import "./digitaliseren.css";
 
-/** Eén exemplaar van het scherm voor de hele app; het lint opent het. */
+/** Eén exemplaar van het scherm voor de hele app; beide lintknoppen (Home en Sondeerbedrijf) openen het. */
 export function DigitizeHost() {
-  const [target, setTarget] = useState<{ cptId?: string; key: number } | null>(null);
+  const [target, setTarget] = useState<{ cptId?: string; method?: SeriesMethod; key: number } | null>(null);
   useEffect(() => {
-    const show = (e: Event) => setTarget({ cptId: (e as CustomEvent<{ cptId?: string }>).detail?.cptId, key: Date.now() });
+    const show = (e: Event) => setTarget({ ...(e as CustomEvent<{ cptId?: string; method?: SeriesMethod }>).detail, key: Date.now() });
     window.addEventListener(OPEN_DIGITIZER_EVENT, show);
     return () => window.removeEventListener(OPEN_DIGITIZER_EVENT, show);
   }, []);
-  return target ? <DigitizeDialog key={target.key} cptId={target.cptId} onClose={() => setTarget(null)} /> : null;
+  return target ? <DigitizeDialog key={target.key} cptId={target.cptId} method={target.method} onClose={() => setTarget(null)} /> : null;
 }
 
 const STEPS = ["underlay", "calibrate", "points", "details", "save"] as const;
 type StepId = (typeof STEPS)[number];
 type Target = "d:a" | "d:b" | "v:a" | "v:b";
 const TARGETS: Target[] = ["d:a", "d:b", "v:a", "v:b"];
-interface Underlay extends StageImage { name: string }
+interface Underlay extends StageImage { name: string; synthetic?: boolean }
+type TraceTool = "follow" | "draw" | "erase";
+const TOOLS: TraceTool[] = ["follow", "draw", "erase"];
 
 /** Langste zijde van de bewaarde onderlegger; groter wordt verkleind zodat het project klein blijft. */
 const MAX_IMAGE_SIDE = 2400;
@@ -58,8 +62,67 @@ function prepareImage(dataUrl: string): Promise<StageImage> {
 }
 
 const path = (points: Px[]) => points.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join("");
+/** De gevolgde lijn als pad; waar geen lijn is, begint een nieuw stuk. */
+function tracePath(trace: Trace): string {
+  let d = "", pen = false;
+  for (let y = 0; y < trace.length; y++) {
+    const x = trace[y];
+    if (!Number.isFinite(x)) { pen = false; continue; }
+    d += `${pen ? "L" : "M"}${x.toFixed(1)} ${y}`;
+    pen = true;
+  }
+  return d;
+}
 
-export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: () => void }) {
+/** De beeldpunten van de onderlegger, voor het zoeken van het raster en de meetlijn; `null` zolang ze er niet zijn. */
+function useUnderlayPixels(image: Underlay | null): ImageData | null {
+  const [pixels, setPixels] = useState<ImageData | null>(null);
+  const src = image?.src, width = image?.width ?? 0, height = image?.height ?? 0;
+  useEffect(() => {
+    setPixels(null);
+    if (!src || !width || !height) return;
+    let alive = true;
+    const img = new Image();
+    img.onload = () => {
+      if (!alive) return;
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        setPixels(ctx.getImageData(0, 0, width, height));
+      } catch { /* geen beeldpunten: volgen kan niet, tekenen wel */ }
+    };
+    img.src = src;
+    return () => { alive = false; };
+  }, [src, width, height]);
+  return pixels;
+}
+
+/** Wat het algoritme als lijn ziet, als doorschijnende laag over de onderlegger. */
+function maskImage(mask: Bitmap): string | null {
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = mask.width; canvas.height = mask.height;
+    const ctx = canvas.getContext("2d")!, img = ctx.createImageData(mask.width, mask.height);
+    for (let i = 0; i < mask.data.length; i++) if (mask.data[i]) { img.data[i * 4] = 37; img.data[i * 4 + 1] = 99; img.data[i * 4 + 2] = 235; img.data[i * 4 + 3] = 150; }
+    ctx.putImageData(img, 0, 0);
+    return canvas.toDataURL("image/png");
+  } catch { return null; }
+}
+
+const startWork = (method?: SeriesMethod): Work => {
+  const work = emptyWork();
+  return method === "trace" ? { ...work, qc: { ...work.qc, method }, second: { ...work.second, method } } : work;
+};
+
+/**
+ * `method` is de werkwijze waarmee een nieuwe sondering begint: de lijn volgen ("Uit scan") of punten
+ * aanklikken. In het scherm is dat per reeks om te zetten.
+ */
+export function DigitizeDialog({ cptId, method: startMethod, onClose }: { cptId?: string; method?: SeriesMethod; onClose: () => void }) {
   const { t } = useTranslation("digitaliseren");
   const tr = useCallback((key: string, nl: string, vars?: Record<string, unknown>) => t(key, nl, vars) as string, [t]);
   const documents = useCptStore((s) => s.documents);
@@ -73,12 +136,12 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
   const [editId, setEditId] = useState<string | null>(() => (cptId && digitizedOf(cpts.get(cptId)) ? cptId : null));
   const initial = useMemo(() => {
     const cpt = editId ? cpts.get(editId) : undefined, record = digitizedOf(cpt);
-    return record ? { ...fromRecord(record), image: { src: digitizedImageOf(cpt), width: record.image.width, height: record.image.height, name: record.image.name } as Underlay } : null;
+    return record ? { ...fromRecord(record), image: { src: digitizedImageOf(cpt), ...record.image } as Underlay } : null;
     // Alleen bij het openen of het kiezen van een sondering om bij te werken.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editId]);
 
-  const [work, setWorkState] = useState<Work>(() => initial?.work ?? emptyWork());
+  const [work, setWorkState] = useState<Work>(() => initial?.work ?? startWork(startMethod));
   // De actuele werktoestand, ook tussen twee tekenbeurten in (slepen geeft veel wijzigingen achter elkaar).
   const workRef = useRef(work);
   const setWork = useCallback((next: Work) => { workRef.current = next; setWorkState(next); }, []);
@@ -89,6 +152,10 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
   const [target, setTarget] = useState<Target | null>("d:a");
   const [pending, setPending] = useState<{ kind: "pdf" | "image"; url: string; name: string } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [tool, setTool] = useState<TraceTool>("follow");
+  const [threshold, setThreshold] = useState(120);
+  const [radius, setRadius] = useState(1);
+  const [showMask, setShowMask] = useState(false);
   const history = useRef<Work[]>([]);
   const [undoCount, setUndoCount] = useState(0);
   const dirty = useRef(false);
@@ -99,7 +166,7 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
     if (!record) return;
     const loaded = fromRecord(record);
     setEditId(id); setWork(loaded.work); setHeader(loaded.header);
-    setImage({ src: digitizedImageOf(cpt), width: record.image.width, height: record.image.height, name: record.image.name });
+    setImage({ src: digitizedImageOf(cpt), ...record.image });
     history.current = []; setUndoCount(0); dirty.current = false; setStep("points");
   };
 
@@ -143,7 +210,15 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
   const confirmPick = (dataUrl: string) => {
     const name = pending?.name ?? "";
     endPick();
-    prepareImage(dataUrl).then((img) => { setImage({ ...img, name }); dirty.current = true; setStep("calibrate"); })
+    prepareImage(dataUrl).then((img) => {
+      // Een lijn hoort bij de beeldrijen van haar blad. Op een andere onderlegger (of na een leeg blad uit de
+      // eerdere werkwijze, waar ook de ijking niet bij de scan past) begint zij opnieuw.
+      const current = workRef.current;
+      if (image?.synthetic) { history.current = []; setUndoCount(0); setWork(startWork("trace")); }
+      else if (image && image.height !== img.height && (current.qc.trace || current.second.trace))
+        setWork({ ...current, qc: { ...current.qc, trace: null }, second: { ...current.second, trace: null } });
+      setImage({ ...img, name }); dirty.current = true; setStep("calibrate");
+    })
       .catch(() => setMessage(tr("underlay.failed", "De afbeelding kan niet worden gelezen.")));
   };
 
@@ -158,7 +233,7 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
     qc: previewLine(work, "qc", header.interpolation),
     second: secondOn ? previewLine(work, "second", header.interpolation) : null,
   };
-  const record = useMemo(() => toRecord(work, header, { name: image?.name ?? "", width: image?.width ?? 0, height: image?.height ?? 0 }), [work, header, image]);
+  const record = useMemo(() => toRecord(work, header, { name: image?.name ?? "", width: image?.width ?? 0, height: image?.height ?? 0, ...(image?.synthetic ? { synthetic: true } : {}) }), [work, header, image]);
   const problems = useMemo(() => recordProblems(record), [record]);
   const idTaken = inProject && !!record.id && record.id !== editId && cpts.has(record.id);
   const result = useMemo(() => {
@@ -172,8 +247,57 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
     return { read, points };
   }, [record]);
 
+  // ── Raster en meetlijn op de scan ──
+  const method: SeriesMethod = work[activeSeries].method ?? "points";
+  const tracing = step === "points" && method === "trace";
+  const pixels = useUnderlayPixels(image);
+  const raw = useMemo(() => (pixels ? binarize(pixels.data, pixels.width, pixels.height, threshold) : null), [pixels, threshold]);
+  const gridLines = useMemo(() => (raw ? detectGridLines(raw) : { rows: [], cols: [] }), [raw]);
+  const suggestion = useMemo(() => suggestAxisPoints(gridLines), [gridLines]);
+  // Het wegpoetsen van het raster kost rekentijd: alleen als de lijn gevolgd wordt.
+  const mask = useMemo(() => (raw && tracing ? (radius > 0 ? removeThinLines(raw, radius) : raw) : null), [raw, tracing, radius]);
+  const maskUrl = useMemo(() => (mask && showMask ? maskImage(mask) : null), [mask, showMask]);
+
+  const setMethod = (next: SeriesMethod) => change((w) => ({ ...w, [activeSeries]: { ...w[activeSeries], method: next } }));
+  /** Wijzigt de lijn van de actieve reeks; `undoable` voor het begin van een streek, anders het vervolg ervan. */
+  const editTrace = (fn: (trace: Trace) => void, undoable: boolean) => {
+    if (!image) return;
+    const apply = (w: Work): Work => {
+      const old = w[activeSeries].trace;
+      const next = old && old.length === image.height ? old.slice() : new Float32Array(image.height).fill(NaN);
+      fn(next);
+      return { ...w, [activeSeries]: { ...w[activeSeries], trace: next } };
+    };
+    if (undoable) change(apply); else adjust(apply);
+  };
+  const stroke: Stroke | undefined = tracing && image ? {
+    onStart: (p) => {
+      if (tool === "draw") editTrace((t) => drawSegment(t, p.x, p.y, p.x, p.y), true);
+      else if (tool === "erase") editTrace((t) => eraseRows(t, p.y, p.y), true);
+    },
+    onMove: (a, b) => {
+      if (tool === "draw") editTrace((t) => drawSegment(t, a.x, a.y, b.x, b.y), false);
+      else if (tool === "erase") editTrace((t) => eraseRows(t, a.y, b.y), false);
+    },
+    // Klik: volgen tot de lijn ophoudt. Slepen: volgen tot waar je loslaat.
+    onEnd: (start, end) => {
+      if (tool !== "follow" || !mask) return;
+      editTrace((t) => { traceLine(mask, start.x, start.y, { xMin: 0, xMax: image.width, yEnd: end.y - start.y > 8 ? end.y : image.height }, t); }, true);
+    },
+  } : undefined;
+
   // ── Punten zetten, slepen en verwijderen ──
   const sharedDepth = activeSeries === "second" && work.shareDepth;
+  /** Zet de vier ijkpunten op het gevonden raster; de waarden vult de gebruiker in. */
+  const applySuggestion = () => {
+    if (!suggestion) return;
+    change((w) => {
+      const s = w[activeSeries], withValue = { ...s, value: { ...s.value, ...suggestion.value } };
+      if (sharedDepth) return { ...w, [activeSeries]: withValue };
+      return { ...w, [activeSeries]: { ...withValue, depth: { ...s.depth, ...suggestion.depth } } };
+    });
+    setTarget(null);
+  };
   const setAxis = (kind: "depth" | "value", patch: Partial<AxisWork>, undoable = true) => {
     const apply = (w: Work): Work => {
       const owner: SeriesId = kind === "depth" && sharedDepth ? "qc" : activeSeries;
@@ -185,12 +309,13 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
     if (step === "calibrate" && target) {
       const [axis, end] = target.split(":") as ["d" | "v", "a" | "b"];
       if (axis === "d" && sharedDepth) return;
-      setAxis(axis === "d" ? "depth" : "value", { [end]: p });
+      // Een ijkpunt klikt vast op het gevonden raster.
+      setAxis(axis === "d" ? "depth" : "value", { [end]: snapToGrid(p, gridLines) });
       // Door naar het volgende ijkpunt dat nog ontbreekt.
       const s = work[activeSeries], depth = sharedDepth ? work.qc.depth : s.depth;
       const filled: Record<Target, boolean> = { "d:a": !!depth.a, "d:b": !!depth.b, "v:a": !!s.value.a, "v:b": !!s.value.b, [target]: true } as Record<Target, boolean>;
       setTarget(TARGETS.find((x) => !filled[x] && !(x.startsWith("d") && sharedDepth)) ?? null);
-    } else if (step === "points" && !onMarker) {
+    } else if (step === "points" && method === "points" && !onMarker) {
       change((w) => ({ ...w, [activeSeries]: { ...w[activeSeries], points: [...w[activeSeries].points, p] } }));
     }
   };
@@ -215,7 +340,7 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
     ];
     for (const [id, p, owner, label] of refs) if (p) markers.push({ id: `${owner}:${id}`, x: p.x, y: p.y, tone: id.startsWith("d") ? "depth" : "value", label: step === "calibrate" ? label : undefined,
       active: step === "calibrate" && target === id, locked: step !== "calibrate" || (id.startsWith("d") && sharedDepth) });
-    if (step !== "calibrate" && step !== "underlay") s.points.forEach((p, i) => markers.push({ id: `${activeSeries}:p:${i}`, x: p.x, y: p.y, tone: "point", locked: step !== "points" }));
+    if (step !== "calibrate" && step !== "underlay" && method === "points") s.points.forEach((p, i) => markers.push({ id: `${activeSeries}:p:${i}`, x: p.x, y: p.y, tone: "point", locked: step !== "points" }));
   }
 
   // ── Opslaan ──
@@ -239,6 +364,8 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
       case "secondCalibration": return tr("problem.secondCalibration", "IJking tweede reeks: {{what}}.", { what: cal(p.problem) });
       case "qcPoints": return tr("problem.qcPoints", "Klik minstens twee punten op de qc-lijn.");
       case "secondPoints": return tr("problem.secondPoints", "Klik minstens twee punten op de lijn van de tweede reeks, of zet die reeks uit.");
+      case "qcTrace": return tr("problem.qcTrace", "Volg of teken eerst de qc-lijn.");
+      case "secondTrace": return tr("problem.secondTrace", "Volg of teken de lijn van de tweede reeks, of zet die reeks uit.");
       case "id": return tr("problem.id", "Vul de naam of het nummer van de sondering in.");
       case "origin": return tr("problem.origin", "Vul de herkomst in; die is verplicht.");
       case "groundLevel": return tr("problem.groundLevel", "Vul de maaiveldhoogte in m NAP in.");
@@ -298,7 +425,8 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
         <button type="button" className="dig-btn dig-btn-primary" onClick={() => fileRef.current?.click()}>
           {image ? tr("underlay.replace", "Andere onderlegger kiezen…") : tr("underlay.choose", "PDF of afbeelding kiezen…")}</button>
         {image && <p className="dig-note">{tr("underlay.loaded", "{{name}} ({{w}} × {{h}} px)", { name: image.name || tr("underlay.unnamed", "onderlegger"), w: image.width, h: image.height })}</p>}
-        {image && !image.src && <p className="dig-warning">{tr("underlay.missing", "De onderlegger is niet bij deze sondering bewaard. De punten staan op hun plek; kies dezelfde afbeelding opnieuw om ze op de scan te zien.")}</p>}
+        {image?.synthetic && <p className="dig-warning">{tr("underlay.synthetic", "Deze sondering is eerder uit een scan overgenomen; de scan en de ijking zijn daarbij niet bewaard. De lijn staat op een leeg blad: teken haar daar bij, of kies de scan opnieuw om opnieuw te ijken en de lijn te volgen.")}</p>}
+        {image && !image.src && !image.synthetic && <p className="dig-warning">{tr("underlay.missing", "De onderlegger is niet bij deze sondering bewaard. De punten staan op hun plek; kies dezelfde afbeelding opnieuw om ze op de scan te zien.")}</p>}
         {candidate && <button type="button" className="dig-btn" onClick={() => loadExisting(candidate)}>{tr("underlay.reopen", "Sondering {{id}} bijwerken", { id: candidate })}</button>}
         <p className="dig-note">{tr("underlay.navigate", "Muiswiel: in- en uitzoomen. Slepen: verschuiven.")}</p>
       </>
@@ -322,6 +450,14 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
         <h4>{tr("calibrate.valueAxis", "Waarde-as {{name}}", { name: activeSeries === "qc" ? "qc" : secondLabel })}</h4>
         {refRow("v:a", tr("marker.value1", "waarde 1"), s.value, "value", "a", valueUnit, false)}
         {refRow("v:b", tr("marker.value2", "waarde 2"), s.value, "value", "b", valueUnit, false)}
+        <div className="dig-row">
+          <button type="button" className="dig-btn" disabled={!suggestion} onClick={applySuggestion}>{tr("calibrate.suggest", "IJkpunten op het raster zetten")}</button>
+        </div>
+        {image?.src && <p className="dig-note">{suggestion
+          ? tr("calibrate.gridFound", "Raster gevonden: {{rows}} × {{cols}} lijnen. De ijkpunten komen op de buitenste lijnen; vul de waarden daarvan in. Een aangeklikt ijkpunt klikt vast op het raster.", { rows: gridLines.rows.length, cols: gridLines.cols.length })
+          : tr("calibrate.gridNone", "Geen raster gevonden op de onderlegger; klik de ijkpunten zelf aan.")}</p>}
+        {pixels && <label className="dig-field"><span>{tr("trace.threshold", "Donkerte van de lijn ({{value}})", { value: threshold })}</span>
+          <input type="range" min={40} max={220} step={5} value={threshold} onChange={(e) => setThreshold(Number(e.target.value))} /></label>}
         {problem
           ? <p className="dig-note">{problemText({ kind: activeSeries === "qc" ? "qcCalibration" : "secondCalibration", problem })}</p>
           : <p className="dig-ok">{tr("calibrate.ok", "De ijking klopt. Controleer of de rasterlijnen over de lijnen van de grafiek vallen.")}</p>}
@@ -329,8 +465,48 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
     ),
     points: (
       <>
-        <p className="dig-hint">{tr("points.hint", "Klik de punten aan langs de lijn, van boven naar beneden. Sleep een punt om het te verplaatsen; klik met de rechtermuisknop om het te verwijderen.")}</p>
+        <div className="dig-toggle" role="group" aria-label={tr("method.label", "Werkwijze")}>
+          <button type="button" className={method === "trace" ? "active" : ""} aria-pressed={method === "trace"} onClick={() => setMethod("trace")}>{tr("method.trace", "Lijn automatisch volgen")}</button>
+          <button type="button" className={method === "points" ? "active" : ""} aria-pressed={method === "points"} onClick={() => setMethod("points")}>{tr("method.points", "Punten aanklikken")}</button>
+        </div>
         {seriesSwitch}
+        {method === "trace" ? (
+          <>
+            <div className="dig-toggle" role="group" aria-label={tr("trace.tools", "Gereedschap")}>
+              {TOOLS.map((id) => (
+                <button key={id} type="button" className={tool === id ? "active" : ""} aria-pressed={tool === id} onClick={() => setTool(id)}>
+                  {id === "follow" ? tr("trace.follow", "Lijn volgen") : id === "draw" ? tr("trace.draw", "Tekenen") : tr("trace.erase", "Wissen")}</button>
+              ))}
+            </div>
+            <p className="dig-hint">{tool === "follow"
+              ? tr("trace.followHint", "Klik op het begin van de meetlijn: de lijn wordt naar beneden gevolgd tot ze ophoudt. Sleep omlaag om alleen tot het loslaatpunt te volgen.")
+              : tool === "draw" ? tr("trace.drawHint", "Teken met ingedrukte muisknop over de meetlijn. Wat je tekent vervangt de lijn op die hoogte.")
+                : tr("trace.eraseHint", "Sleep over het stuk van de lijn dat weg moet.")}</p>
+            {tool === "follow" && !pixels && <p className="dig-warning">{tr("trace.noScan", "Er is geen scan om te volgen. Tekenen en wissen kan wel.")}</p>}
+            <div className="dig-row">
+              <button type="button" className="dig-btn" disabled={!history.current.length} onClick={undo} data-undo={undoCount}>{tr("points.undo", "Ongedaan maken")}</button>
+              <button type="button" className="dig-btn" disabled={!traceRowCount(s.trace)} onClick={() => editTrace((t) => { t.fill(NaN); }, true)}>{tr("trace.clear", "Lijn wissen")}</button>
+            </div>
+            <p className="dig-note" data-testid="dig-count">{tr("trace.count", "Lijn over {{n}} beeldrijen voor {{name}}", { n: traceRowCount(s.trace), name: activeSeries === "qc" ? "qc" : secondLabel })}</p>
+            <label className="dig-field"><span>{tr("trace.threshold", "Donkerte van de lijn ({{value}})", { value: threshold })}</span>
+              <input type="range" min={40} max={220} step={5} value={threshold} onChange={(e) => setThreshold(Number(e.target.value))} /></label>
+            <div className="dig-grid2">
+              <label className="dig-field"><span>{tr("trace.radius", "Dunne rasterlijnen wegpoetsen")}</span>
+                <select value={radius} onChange={(e) => setRadius(Number(e.target.value))}>
+                  <option value={0}>{tr("trace.radius0", "niet")}</option>
+                  <option value={1}>{tr("trace.radius1", "licht (lijnen tot 2 pixels)")}</option>
+                  <option value={2}>{tr("trace.radius2", "sterk (lijnen tot 4 pixels)")}</option>
+                </select></label>
+              <label className="dig-field"><span>{tr("points.step", "Stap (m)")}</span>
+                <input inputMode="decimal" value={header.step} onChange={(e) => setHead({ step: e.target.value })} /></label>
+            </div>
+            <label className="dig-check"><input type="checkbox" checked={showMask} onChange={(e) => setShowMask(e.target.checked)} />{tr("trace.showMask", "Toon wat het algoritme als lijn ziet")}</label>
+            <p className="dig-note">{tr("trace.navigate", "Slepen tekent of volgt. Verschuiven: middelste muisknop. Zoomen: muiswiel. De meetreeks is het gemiddelde van de lijn per stap.")}</p>
+            {problem && <p className="dig-warning">{tr("trace.notCalibrated", "De ijking is nog niet compleet; zonder ijking ontstaat er geen meetreeks.")}</p>}
+            {result.points.length > 0 && <p className="dig-ok">{tr("points.result", "Meetreeks: {{n}} waarden van {{from}} tot {{to}} m onder maaiveld.", { n: result.points.length, from: result.points[0].depth.toFixed(2), to: result.points[result.points.length - 1].depth.toFixed(2) })}</p>}
+          </>
+        ) : (<>
+        <p className="dig-hint">{tr("points.hint", "Klik de punten aan langs de lijn, van boven naar beneden. Sleep een punt om het te verplaatsen; klik met de rechtermuisknop om het te verwijderen.")}</p>
         <div className="dig-row">
           <button type="button" className="dig-btn" disabled={!history.current.length} onClick={undo} data-undo={undoCount}>{tr("points.undo", "Ongedaan maken")}</button>
           <button type="button" className="dig-btn" disabled={!s.points.length} onClick={() => change((w) => ({ ...w, [activeSeries]: { ...w[activeSeries], points: w[activeSeries].points.slice(0, -1) } }))}>{tr("points.removeLast", "Laatste punt weg")}</button>
@@ -353,6 +529,7 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
         {result.read.qc.reordered && <p className="dig-note">{tr("points.reordered", "De punten zijn op diepte gesorteerd.")}</p>}
         {result.read.qc.duplicates > 0 && <p className="dig-warning">{tr("points.duplicates", "{{n}} punten liggen op dezelfde diepte als een later punt; het laatst aangeklikte telt.", { n: result.read.qc.duplicates })}</p>}
         {result.points.length > 0 && <p className="dig-ok">{tr("points.result", "Meetreeks: {{n}} waarden van {{from}} tot {{to}} m onder maaiveld.", { n: result.points.length, from: result.points[0].depth.toFixed(2), to: result.points[result.points.length - 1].depth.toFixed(2) })}</p>}
+        </>)}
       </>
     ),
     details: (
@@ -362,9 +539,10 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
           <label className="dig-field"><span>{tr("details.id", "Naam of nummer")}</span><input value={header.id} onChange={(e) => setHead({ id: e.target.value })} /></label>
           <label className="dig-field"><span>{tr("details.date", "Datum sondering")}</span><input type="date" value={header.date} onChange={(e) => setHead({ date: e.target.value })} /></label>
           <label className="dig-field"><span>{tr("details.coneKind", "Soort sondering")}</span>
-            <select value={header.coneKind} onChange={(e) => { const coneKind = e.target.value as Header["coneKind"]; setHead({ coneKind, step: String(DEFAULT_STEP[coneKind]).replace(".", ",") }); }}>
+            <select value={header.coneKind} onChange={(e) => { const coneKind = e.target.value as Header["coneKind"]; setHead(coneKind === "unknown" ? { coneKind } : { coneKind, step: String(DEFAULT_STEP[coneKind]).replace(".", ",") }); }}>
               <option value="mechanical">{tr("cone.mechanical", "mechanisch")}</option>
               <option value="electrical">{tr("cone.electrical", "elektrisch")}</option>
+              <option value="unknown">{tr("cone.unknown", "onbekend")}</option>
             </select></label>
           <label className="dig-field"><span>{tr("details.groundLevel", "Maaiveld (m NAP)")}</span><input inputMode="decimal" value={header.groundLevel} onChange={(e) => setHead({ groundLevel: e.target.value })} /></label>
           <label className="dig-field"><span>{tr("details.x", "X (RD, m), optioneel")}</span><input inputMode="decimal" value={header.x} onChange={(e) => setHead({ x: e.target.value })} /></label>
@@ -388,7 +566,7 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
           <ul className="dig-summary">
             <li>{tr("save.points", "{{n}} waarden op een stap van {{step}} m, tot {{to}} m onder maaiveld", { n: result.points.length, step: header.step, to: result.points[result.points.length - 1]?.depth.toFixed(2) })}</li>
             <li>{secondOn ? tr("save.withSecond", "qc en {{name}}", { name: secondLabel }) : tr("save.qcOnly", "alleen qc; fs en Rf ontbreken")}</li>
-            <li>{tr("save.marked", "Wordt in de grafiek, het rapport en de paalberekening vermeld als gedigitaliseerd ({{cone}}).", { cone: header.coneKind === "mechanical" ? tr("cone.mechanical", "mechanisch") : tr("cone.electrical", "elektrisch") })}</li>
+            <li>{tr("save.marked", "Wordt in de grafiek, het rapport en de paalberekening vermeld als gedigitaliseerd ({{cone}}).", { cone: coneKindLabel(header.coneKind) })}</li>
           </ul>
         )}
         <button type="button" className="dig-btn dig-btn-primary" disabled={!canSave} onClick={save}>
@@ -410,7 +588,7 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
       </>}>
       <div className="dig-layout">
         <Stage image={image} markers={markers} onPlace={place} emptyText={tr("stage.empty", "Kies rechts een PDF of afbeelding met de sondeergrafiek.")}
-          onDragStart={snapshot} onDrag={moveMarker} onRemove={removeMarker}
+          onDragStart={snapshot} onDrag={moveMarker} onRemove={removeMarker} stroke={stroke} cursor={tracing && tool !== "follow" ? "cell" : undefined}
           labels={{ zoomIn: tr("stage.zoomIn", "Inzoomen"), zoomOut: tr("stage.zoomOut", "Uitzoomen"), fit: tr("stage.fit", "Passend"), stage: tr("stage.label", "Onderlegger met punten") }}>
           {(k) => (
             <>
@@ -424,7 +602,13 @@ export function DigitizeDialog({ cptId, onClose }: { cptId?: string; onClose: ()
                   ))}
                 </g>
               )}
+              {maskUrl && image && <image data-testid="dig-mask" href={maskUrl} x={0} y={0} width={image.width} height={image.height} preserveAspectRatio="none" />}
               {(["qc", "second"] as const).map((id) => {
+                const trace = work[id].method === "trace" && (id === "qc" || secondOn) ? work[id].trace : null;
+                if (work[id].method === "trace")
+                  return trace && traceRowCount(trace) > 1
+                    ? <path key={id} data-testid={`dig-trace-${id}`} className={`dig-line dig-line-${id}${id === activeSeries ? " active" : ""}`} d={tracePath(trace)} strokeWidth={(id === activeSeries ? 2 : 1.4) / k} />
+                    : null;
                 const line = lines[id];
                 return line && line.points.length > 1
                   ? <path key={id} data-testid={`dig-line-${id}`} className={`dig-line dig-line-${id}${id === activeSeries ? " active" : ""}${line.calibrated ? "" : " loose"}`} d={path(line.points)} strokeWidth={(id === activeSeries ? 2 : 1.4) / k} />

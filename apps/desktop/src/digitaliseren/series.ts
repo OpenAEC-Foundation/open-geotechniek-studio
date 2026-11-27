@@ -1,4 +1,4 @@
-// Van aangeklikte punten naar een gewone meetreeks op een vaste stap.
+// Van aangeklikte punten of een gevolgde lijn naar een gewone meetreeks op een vaste stap.
 import type { MeasurementPoint } from "../types/cpt";
 import { toValues, type Affine, type Px } from "./calibration";
 
@@ -25,6 +25,24 @@ export function readingsFromPixels(points: Px[], m: Affine, depthMode: DepthMode
     const r = toValues(m, p);
     return { depth: depthMode === "nap" ? groundLevelNap - r.depth : r.depth, value: r.value };
   });
+}
+
+/**
+ * Aflezingen uit een gevolgde lijn (één pixel per beeldrij): per stap in de diepte het gemiddelde van de
+ * beeldrijen die erbinnen vallen. Een negatieve waarde telt als nul en wat boven het maaiveld ligt,
+ * vervalt. De aflezingen liggen op veelvouden van de stap.
+ */
+export function averageReadings(pixels: Px[], m: Affine, depthMode: DepthMode, groundLevelNap: number, step: number): Reading[] {
+  if (!(step > 0)) return [];
+  const buckets = new Map<number, { sum: number; n: number }>();
+  for (const r of readingsFromPixels(pixels, m, depthMode, groundLevelNap)) {
+    if (!Number.isFinite(r.depth) || !Number.isFinite(r.value) || r.depth < -1e-9) continue;
+    const key = Math.round(r.depth / step + 1e-9);
+    const bucket = buckets.get(key) ?? { sum: 0, n: 0 };
+    bucket.sum += Math.max(0, r.value); bucket.n++;
+    buckets.set(key, bucket);
+  }
+  return [...buckets.entries()].sort((a, b) => a[0] - b[0]).map(([key, b]) => ({ depth: round(key * step, 4), value: b.sum / b.n }));
 }
 
 export interface NormalizedReadings {

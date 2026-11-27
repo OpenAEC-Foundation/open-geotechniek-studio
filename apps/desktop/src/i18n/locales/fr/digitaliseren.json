@@ -2,18 +2,22 @@
   "calibrate": {
     "depthAxis": "Axe des profondeurs",
     "depthMode": "Axe des profondeurs en",
+    "gridFound": "Grille trouvée : {{rows}} × {{cols}} lignes. Les points de calibrage se placent sur les lignes extérieures ; saisissez leurs valeurs. Un point de calibrage cliqué s'accroche à la grille.",
+    "gridNone": "Aucune grille trouvée sur l'image de fond ; cliquez vous-même les points de calibrage.",
     "hint": "Cliquez deux points sur l'axe des profondeurs et deux sur l'axe des valeurs, aussi éloignés que possible, et saisissez la valeur de chaque point. Les axes sont calibrés séparément, un scan de travers n'est donc pas un problème.",
     "ok": "Le calibrage est correct. Vérifiez que les lignes de la grille tombent sur les lignes du graphique.",
     "pick": "Cliquer {{label}}",
     "pickHint": "Cliquez ensuite le point sur l'image de fond",
     "repick": "{{label}} à nouveau",
     "shareDepth": "Même axe des profondeurs que qc",
+    "suggest": "Placer les points de calibrage sur la grille",
     "valueAxis": "Axe des valeurs {{name}}",
     "valueOf": "Valeur à {{label}}"
   },
   "cone": {
     "electrical": "électrique",
-    "mechanical": "mécanique"
+    "mechanical": "mécanique",
+    "unknown": "inconnu"
   },
   "details": {
     "coneHint": "En changeant de type de sondage, le pas passe à 0,2 m (mécanique) ou 0,02 m (électrique). Le type est mentionné ; les valeurs mesurées ne sont pas converties pour autant.",
@@ -37,6 +41,7 @@
   },
   "label": {
     "badge": "numérisé ({{cone}})",
+    "badgePlain": "numérisé",
     "note": "Le sondage {{id}} a été numérisé à partir d'un papier ou d'un scan (type : {{cone}} ; origine : {{origin}}). La précision est inférieure à celle d'un fichier mesuré."
   },
   "marker": {
@@ -44,6 +49,11 @@
     "depth2": "profondeur 2",
     "value1": "valeur 1",
     "value2": "valeur 2"
+  },
+  "method": {
+    "label": "Méthode",
+    "points": "Cliquer des points",
+    "trace": "Suivre la courbe automatiquement"
   },
   "points": {
     "clear": "Tout effacer",
@@ -75,8 +85,10 @@
     "position": "Saisissez les deux coordonnées RD, ou aucune.",
     "qcCalibration": "Calibrage qc : {{what}}.",
     "qcPoints": "Cliquez au moins deux points sur la ligne qc.",
+    "qcTrace": "Suivez ou dessinez d'abord la ligne qc.",
     "secondCalibration": "Calibrage de la deuxième série : {{what}}.",
     "secondPoints": "Cliquez au moins deux points sur la ligne de la deuxième série, ou désactivez cette série.",
+    "secondTrace": "Suivez ou dessinez la ligne de la deuxième série, ou désactivez cette série.",
     "step": "Le pas doit être compris entre 0,005 et 1 m.",
     "valuePoints": "cliquez deux points sur l'axe des valeurs, pas au même endroit",
     "valueValues": "saisissez deux valeurs différentes pour l'axe des valeurs"
@@ -126,6 +138,26 @@
     "edit": "Mettre à jour le sondage numérisé {{id}}",
     "new": "Numériser un sondage"
   },
+  "trace": {
+    "clear": "Effacer la courbe",
+    "count": "Courbe sur {{n}} lignes d'image pour {{name}}",
+    "draw": "Dessiner",
+    "drawHint": "Dessinez sur la courbe de mesure en maintenant le bouton de la souris enfoncé. Votre tracé remplace la courbe à cette hauteur.",
+    "erase": "Effacer",
+    "eraseHint": "Faites glisser sur la partie de la courbe à supprimer.",
+    "follow": "Suivre la courbe",
+    "followHint": "Cliquez sur le début de la courbe de mesure : elle est suivie vers le bas jusqu'à ce qu'elle s'arrête. Faites glisser vers le bas pour ne la suivre que jusqu'au point de relâchement.",
+    "navigate": "Glisser dessine ou suit. Déplacer : bouton central de la souris. Zoom : molette. La série de mesures est la moyenne de la courbe par pas.",
+    "noScan": "Il n'y a pas de scan à suivre. Dessiner et effacer restent possibles.",
+    "notCalibrated": "Le calibrage n'est pas encore complet ; sans calibrage, il n'y a pas de série de mesures.",
+    "radius": "Gommer les lignes fines du quadrillage",
+    "radius0": "non",
+    "radius1": "léger (lignes jusqu'à 2 pixels)",
+    "radius2": "fort (lignes jusqu'à 4 pixels)",
+    "showMask": "Afficher ce que l'algorithme considère comme la courbe",
+    "threshold": "Noirceur de la courbe ({{value}})",
+    "tools": "Outil"
+  },
   "underlay": {
     "choose": "Choisir un PDF ou une image…",
     "failed": "L'image ne peut pas être lue.",
@@ -135,6 +167,7 @@
     "navigate": "Molette : zoom avant et arrière. Glisser : déplacer.",
     "reopen": "Mettre à jour le sondage {{id}}",
     "replace": "Choisir une autre image de fond…",
+    "synthetic": "Ce sondage a été repris d'un scan auparavant ; le scan et le calibrage n'ont pas été conservés. La courbe se trouve sur une feuille vierge : complétez-la à cet endroit, ou choisissez à nouveau le scan pour recalibrer et suivre la courbe.",
     "unnamed": "image de fond"
   },
   "unit": {

@@ -5,9 +5,7 @@
     "openCount": "Badania\ndyssypacji ({{n}})",
     "openHint": "Wykres, t50 i współczynnik konsolidacji badań dyssypacji dla {{cpt}}",
     "none": "Brak badań dyssypacji dla {{cpt}}; dodaj plik GEF z badaniem dyssypacji.",
-    "noCpt": "Najpierw otwórz sondowanie.",
-    "add": "Dodaj\nGEF",
-    "addHint": "Dodaj plik GEF z badaniem dyssypacji (czas w pierwszej kolumnie) do aktywnego sondowania"
+    "noCpt": "Najpierw otwórz sondowanie."
   },
   "dialog": {
     "title": "Badania dyssypacji - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Oś czasu",
     "axisLog": "Logarytmiczna",
     "axisSqrt": "Pierwiastek z czasu"
+  },
+  "panel": {
+    "open": "Analizuj…",
+    "openHint": "Wykres, dane i wynik badań dyssypacji"
   },
   "input": {
     "title": "Dane",

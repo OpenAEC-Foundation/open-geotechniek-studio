@@ -54,28 +54,28 @@ describe("dissipatietest uit een GEF-bestand", () => {
   });
   it("leest tijd, conusweerstand en waterspanning, met de diepte en de sondering uit #PARENT", () => {
     const file = parseGefDissipation(text, "dissipatietest.gef");
-    expect(file.parentFile).toBe("S01.GEF");
-    expect(file.testId).toBe("S01");
-    expect(file.test.depth).toBe(7.52);
-    expect(file.test.start_time).toBe("2024-03-11");
-    expect(file.test.points).toHaveLength(8);
-    expect(file.test.points[1]).toEqual({ time: 2, qc: 0.515, u2: 0.29 });
+    expect(file.parent_file).toBe("S01.GEF");
+    expect(file.test_id).toBe("S01");
+    expect(file.depth).toBe(7.52);
+    expect(file.start_time).toBe("2024-03-11");
+    expect(file.points).toHaveLength(8);
+    expect(file.points[1]).toEqual({ time: 2, qc: 0.515, u2: 0.29 });
     // De ontbrekende conusweerstand (COLUMNVOID) blijft leeg.
-    expect(file.test.points[4]).toEqual({ time: 120, u2: 0.175 });
+    expect(file.points[4]).toEqual({ time: 120, u2: 0.175 });
   });
   it("rekent kPa en minuten om en neemt zonder #PARENT de vaste sondeerlengte", () => {
     const other = text.replace("#PARENT= S01.GEF, 7.52, m\n", "").replace("1, s, tijd", "1, min, tijd").replace("3, MPa, waterspanning", "3, kPa, waterspanning");
     const file = parseGefDissipation(other, "x.gef");
-    expect(file.test.depth).toBeCloseTo(7.52, 10);
-    expect(file.test.points[1].time).toBe(120);
-    expect(file.test.points[1].u2).toBeCloseTo(0.00029, 12);
+    expect(file.depth).toBeCloseTo(7.52, 10);
+    expect(file.points[1].time).toBe(120);
+    expect(file.points[1].u2).toBeCloseTo(0.00029, 12);
   });
   it("weigert een gewoon sondeerbestand", () => {
-    expect(() => parseGefDissipation("#GEFID= 1,1,0\n#COLUMNINFO= 1, m, sondeerlengte, 1\n#COLUMNINFO= 2, MPa, qc, 2\n#EOH=\n1 2\n", "s.gef")).toThrow("tijdkolom");
+    expect(() => parseGefDissipation("#GEFID= 1,1,0\n#COLUMNINFO= 1, m, sondeerlengte, 1\n#COLUMNINFO= 2, MPa, qc, 2\n#EOH=\n1 2\n", "s.gef")).toThrow("tijd- of waterspanningskolom");
   });
   it("komt bij de sondering en vervangt een eerdere test uit hetzelfde bestand", () => {
     const cpt = parseBroCptXml(fixture("sondering-met-dissipatie.xml"), "s.xml");
-    const { test: added } = parseGefDissipation(text, "dissipatietest.gef");
+    const added = parseGefDissipation(text, "dissipatietest.gef");
     const once = withDissipationTest(cpt, added), twice = withDissipationTest(once, added);
     expect(once.dissipation_tests?.map((t) => t.depth)).toEqual([5.34, 7.52, 9.8]);
     expect(twice.dissipation_tests).toHaveLength(3);

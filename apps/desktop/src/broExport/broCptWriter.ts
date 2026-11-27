@@ -11,7 +11,7 @@
  * onderzoek met verwijderde lagen.
  *
  * Wat niet wordt geschreven:
- *  - dissipatietests (de app leest ze niet in; een sondering met dissipatietests wordt geweigerd);
+ *  - dissipatietests (een sondering met dissipatietests wordt geweigerd);
  *  - locaties op zee (ETRS89/WGS84, LAT/MSL) en het kwaliteitsregime IMBRO/A;
  *  - correctieverzoeken (correctionRequest).
  *

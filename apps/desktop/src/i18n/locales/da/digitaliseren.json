@@ -2,18 +2,22 @@
   "calibrate": {
     "depthAxis": "Dybdeakse",
     "depthMode": "Dybdeakse i",
+    "gridFound": "Gitter fundet: {{rows}} × {{cols}} linjer. Kalibreringspunkterne sættes på de yderste linjer; angiv deres værdier. Et klikket kalibreringspunkt fanger gitteret.",
+    "gridNone": "Intet gitter fundet på underlaget; klik selv kalibreringspunkterne.",
     "hint": "Klik på to punkter på dybdeaksen og to på værdiaksen, så langt fra hinanden som muligt, og angiv værdien ved hvert punkt. Akserne kalibreres uafhængigt af hinanden, så en skæv scanning er ikke noget problem.",
     "ok": "Kalibreringen passer. Kontrollér, at gitterlinjerne ligger oven på grafens linjer.",
     "pick": "Klik på {{label}}",
     "pickHint": "Klik derefter på punktet på underlaget",
     "repick": "{{label}} igen",
     "shareDepth": "Samme dybdeakse som qc",
+    "suggest": "Sæt kalibreringspunkterne på gitteret",
     "valueAxis": "Værdiakse {{name}}",
     "valueOf": "Værdi ved {{label}}"
   },
   "cone": {
     "electrical": "elektrisk",
-    "mechanical": "mekanisk"
+    "mechanical": "mekanisk",
+    "unknown": "ukendt"
   },
   "details": {
     "coneHint": "Når sonderingstypen skiftes, springer trinnet til 0,2 m (mekanisk) eller 0,02 m (elektrisk). Typen angives; måleværdierne omregnes ikke af den grund.",
@@ -37,6 +41,7 @@
   },
   "label": {
     "badge": "digitaliseret ({{cone}})",
+    "badgePlain": "digitaliseret",
     "note": "Sondering {{id}} er digitaliseret fra papir eller scanning (type: {{cone}}; oprindelse: {{origin}}). Nøjagtigheden er lavere end for en målt fil."
   },
   "marker": {
@@ -44,6 +49,11 @@
     "depth2": "dybde 2",
     "value1": "værdi 1",
     "value2": "værdi 2"
+  },
+  "method": {
+    "label": "Metode",
+    "points": "Klik punkter",
+    "trace": "Følg linjen automatisk"
   },
   "points": {
     "clear": "Ryd alt",
@@ -75,8 +85,10 @@
     "position": "Angiv begge RD-koordinater eller ingen af dem.",
     "qcCalibration": "Kalibrering qc: {{what}}.",
     "qcPoints": "Klik på mindst to punkter på qc-linjen.",
+    "qcTrace": "Følg eller tegn først qc-linjen.",
     "secondCalibration": "Kalibrering anden serie: {{what}}.",
     "secondPoints": "Klik på mindst to punkter på linjen for den anden serie, eller slå den serie fra.",
+    "secondTrace": "Følg eller tegn linjen for den anden serie, eller slå den serie fra.",
     "step": "Trinnet skal ligge mellem 0,005 og 1 m.",
     "valuePoints": "klik på to punkter på værdiaksen, ikke samme sted",
     "valueValues": "angiv to forskellige værdier for værdiaksen"
@@ -126,6 +138,26 @@
     "edit": "Opdater digitaliseret sondering {{id}}",
     "new": "Digitalisér sondering"
   },
+  "trace": {
+    "clear": "Ryd linje",
+    "count": "Linje over {{n}} billedrækker for {{name}}",
+    "draw": "Tegn",
+    "drawHint": "Tegn hen over målelinjen med museknappen holdt nede. Det, du tegner, erstatter linjen i den højde.",
+    "erase": "Visk ud",
+    "eraseHint": "Træk hen over den del af linjen, der skal fjernes.",
+    "follow": "Følg linje",
+    "followHint": "Klik på målelinjens begyndelse: linjen følges nedad, indtil den slutter. Træk nedad for kun at følge den til det punkt, hvor du slipper.",
+    "navigate": "Træk tegner eller følger. Panorér: midterste museknap. Zoom: musehjul. Måleserien er gennemsnittet af linjen pr. trin.",
+    "noScan": "Der er ingen scanning at følge. Tegning og sletning er stadig muligt.",
+    "notCalibrated": "Kalibreringen er endnu ikke komplet; uden kalibrering opstår der ingen måleserie.",
+    "radius": "Fjern tynde gitterlinjer",
+    "radius0": "fra",
+    "radius1": "let (linjer op til 2 pixels)",
+    "radius2": "kraftigt (linjer op til 4 pixels)",
+    "showMask": "Vis, hvad algoritmen opfatter som linje",
+    "threshold": "Linjens mørkhed ({{value}})",
+    "tools": "Værktøj"
+  },
   "underlay": {
     "choose": "Vælg PDF eller billede…",
     "failed": "Billedet kan ikke læses.",
@@ -135,6 +167,7 @@
     "navigate": "Musehjul: zoom ind og ud. Træk: flyt.",
     "reopen": "Opdater sondering {{id}}",
     "replace": "Vælg et andet underlag…",
+    "synthetic": "Denne sondering er tidligere overtaget fra en scanning; scanningen og kalibreringen blev ikke gemt. Linjen står på et tomt ark: tegn videre på den dér, eller vælg scanningen igen for at kalibrere og følge linjen på ny.",
     "unnamed": "underlag"
   },
   "unit": {

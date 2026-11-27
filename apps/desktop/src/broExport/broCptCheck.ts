@@ -158,7 +158,7 @@ export function checkBroCpt(cpt: Cpt, s: BroCptSupplement, options: BroCheckOpti
   for (const note of table.notes) warning("data", note);
   if (cpt.metadata.extra?.["ogs:bro-outliers"]) warning("data", "Records buiten de oplopende dieptereeks zijn uitgesloten en worden niet weggeschreven (zie Validatie).");
   if (cpt.metadata.quality_regime === "IMBRO/A") warning("data", "De bron is onder IMBRO/A geregistreerd; het verzoek wordt onder IMBRO geschreven en moet aan alle IMBRO-eisen voldoen.");
-  if (cpt.metadata.extra?.dissipationTestPerformed === "ja" || /<(?:[\w.-]+:)?dissipationTest\b/.test(cpt.metadata.extra?.["ogs:source-bro-xml"] ?? ""))
+  if ((cpt.dissipation_tests?.length ?? 0) > 0 || cpt.metadata.extra?.dissipationTestPerformed === "ja" || /<(?:[\w.-]+:)?dissipationTest\b/.test(cpt.metadata.extra?.["ogs:source-bro-xml"] ?? ""))
     error("data", "Bij deze sondering zijn dissipatietests uitgevoerd. Die worden niet weggeschreven, en een verzoek zonder die tests zou onjuist zijn.");
 
   // ── Sondeerapparaat en nulmeting (catalogus 6.3.9 en 6.3.10) ───────────

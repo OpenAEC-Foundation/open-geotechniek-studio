@@ -5,9 +5,7 @@
     "openCount": "Dissipations-\nversuche ({{n}})",
     "openHint": "Diagramm, t50 und Konsolidationsbeiwert der Dissipationsversuche von {{cpt}}",
     "none": "Keine Dissipationsversuche bei {{cpt}}; fügen Sie eine GEF-Dissipationsdatei hinzu.",
-    "noCpt": "Öffnen Sie zuerst eine Drucksondierung.",
-    "add": "GEF\nhinzufügen",
-    "addHint": "Eine GEF-Dissipationsdatei (Zeit in der ersten Spalte) zur aktiven Drucksondierung hinzufügen"
+    "noCpt": "Öffnen Sie zuerst eine Drucksondierung."
   },
   "dialog": {
     "title": "Dissipationsversuche - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Zeitachse",
     "axisLog": "Logarithmisch",
     "axisSqrt": "Wurzel-Zeit"
+  },
+  "panel": {
+    "open": "Auswerten…",
+    "openHint": "Diagramm, Eingabe und Ergebnis der Dissipationsversuche"
   },
   "input": {
     "title": "Eingabe",

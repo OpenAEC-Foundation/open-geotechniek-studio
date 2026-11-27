@@ -270,14 +270,6 @@
     "z9": "Very stiff fine-grained"
   },
   "dissipation": {
-    "title": "Dissipation tests",
-    "chartLabel": "Pore pressure in kPa against time in seconds (logarithmic)",
-    "timeAxis": "time [s]",
-    "atDepth": "At {{depth}} m",
-    "remove": "Remove dissipation test",
-    "uMax": "u max",
-    "uEnd": "u end",
-    "noDecay": "no decay",
-    "note": "t50: time to half of the decay between the highest and the last reading. The last reading approximates equilibrium; if the test stopped early, t50 is indicative."
+    "title": "Dissipation tests"
   }
 }

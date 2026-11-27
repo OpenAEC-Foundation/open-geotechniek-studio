@@ -5,9 +5,7 @@
     "openCount": "Dissipation\ntests ({{n}})",
     "openHint": "Chart, t50 and consolidation coefficient of the dissipation tests of {{cpt}}",
     "none": "No dissipation tests for {{cpt}}; add a GEF dissipation file.",
-    "noCpt": "Open a CPT first.",
-    "add": "Add\nGEF",
-    "addHint": "Add a GEF dissipation file (time in the first column) to the active CPT"
+    "noCpt": "Open a CPT first."
   },
   "dialog": {
     "title": "Dissipation tests - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Time axis",
     "axisLog": "Logarithmic",
     "axisSqrt": "Root time"
+  },
+  "panel": {
+    "open": "Analyse…",
+    "openHint": "Chart, input and result of the dissipation tests"
   },
   "input": {
     "title": "Input",

@@ -2,18 +2,22 @@
   "calibrate": {
     "depthAxis": "Asse della profondità",
     "depthMode": "Asse della profondità in",
+    "gridFound": "Griglia trovata: {{rows}} × {{cols}} linee. I punti di calibrazione vanno sulle linee più esterne; inserisci i loro valori. Un punto di calibrazione cliccato si aggancia alla griglia.",
+    "gridNone": "Nessuna griglia trovata sull'immagine di sfondo; fai clic tu stesso sui punti di calibrazione.",
     "hint": "Fai clic su due punti dell'asse della profondità e su due dell'asse dei valori, il più lontano possibile tra loro, e inserisci il valore di ogni punto. Gli assi sono calibrati separatamente, quindi una scansione storta non è un problema.",
     "ok": "La calibrazione è corretta. Verifica che le linee della griglia cadano sulle linee del grafico.",
     "pick": "Fai clic su {{label}}",
     "pickHint": "Poi fai clic sul punto nell'immagine di sfondo",
     "repick": "{{label}} di nuovo",
     "shareDepth": "Stesso asse della profondità di qc",
+    "suggest": "Posiziona i punti di calibrazione sulla griglia",
     "valueAxis": "Asse dei valori {{name}}",
     "valueOf": "Valore in {{label}}"
   },
   "cone": {
     "electrical": "elettrica",
-    "mechanical": "meccanica"
+    "mechanical": "meccanica",
+    "unknown": "sconosciuta"
   },
   "details": {
     "coneHint": "Cambiando il tipo di prova, il passo passa a 0,2 m (meccanica) o 0,02 m (elettrica). Il tipo viene indicato; i valori misurati non vengono convertiti.",
@@ -37,6 +41,7 @@
   },
   "label": {
     "badge": "digitalizzata ({{cone}})",
+    "badgePlain": "digitalizzata",
     "note": "La prova {{id}} è stata digitalizzata da carta o da scansione (tipo: {{cone}}; origine: {{origin}}). La precisione è inferiore a quella di un file misurato."
   },
   "marker": {
@@ -44,6 +49,11 @@
     "depth2": "profondità 2",
     "value1": "valore 1",
     "value2": "valore 2"
+  },
+  "method": {
+    "label": "Metodo",
+    "points": "Clicca i punti",
+    "trace": "Segui la linea automaticamente"
   },
   "points": {
     "clear": "Cancella tutto",
@@ -75,8 +85,10 @@
     "position": "Inserisci entrambe le coordinate RD, oppure nessuna.",
     "qcCalibration": "Calibrazione qc: {{what}}.",
     "qcPoints": "Fai clic su almeno due punti della linea qc.",
+    "qcTrace": "Segui o disegna prima la linea qc.",
     "secondCalibration": "Calibrazione seconda serie: {{what}}.",
     "secondPoints": "Fai clic su almeno due punti della linea della seconda serie, oppure disattiva quella serie.",
+    "secondTrace": "Segui o disegna la linea della seconda serie, oppure disattiva quella serie.",
     "step": "Il passo deve essere compreso tra 0,005 e 1 m.",
     "valuePoints": "fai clic su due punti dell'asse dei valori, non nello stesso posto",
     "valueValues": "inserisci due valori diversi per l'asse dei valori"
@@ -126,6 +138,26 @@
     "edit": "Aggiorna la prova digitalizzata {{id}}",
     "new": "Digitalizza prova"
   },
+  "trace": {
+    "clear": "Cancella linea",
+    "count": "Linea su {{n}} righe d'immagine per {{name}}",
+    "draw": "Disegna",
+    "drawHint": "Disegna sopra la linea di misura tenendo premuto il pulsante del mouse. Ciò che disegni sostituisce la linea a quella quota.",
+    "erase": "Cancella",
+    "eraseHint": "Trascina sul tratto di linea da eliminare.",
+    "follow": "Segui linea",
+    "followHint": "Fai clic sull'inizio della linea di misura: viene seguita verso il basso finché non termina. Trascina verso il basso per seguirla solo fino al punto di rilascio.",
+    "navigate": "Trascinando si disegna o si segue. Spostare: pulsante centrale del mouse. Zoom: rotellina. La serie di misure è la media della linea per passo.",
+    "noScan": "Non c'è una scansione da seguire. Disegnare e cancellare è comunque possibile.",
+    "notCalibrated": "La calibrazione non è ancora completa; senza calibrazione non c'è una serie di misure.",
+    "radius": "Rimuovi le linee sottili della griglia",
+    "radius0": "no",
+    "radius1": "leggero (linee fino a 2 pixel)",
+    "radius2": "forte (linee fino a 4 pixel)",
+    "showMask": "Mostra ciò che l'algoritmo riconosce come linea",
+    "threshold": "Intensità della linea ({{value}})",
+    "tools": "Strumento"
+  },
   "underlay": {
     "choose": "Scegli PDF o immagine…",
     "failed": "Impossibile leggere l'immagine.",
@@ -135,6 +167,7 @@
     "navigate": "Rotellina del mouse: ingrandisci e riduci. Trascina: sposta.",
     "reopen": "Aggiorna la prova {{id}}",
     "replace": "Scegli un'altra immagine di sfondo…",
+    "synthetic": "Questa prova è stata ricavata in precedenza da una scansione; la scansione e la calibrazione non sono state salvate. La linea si trova su un foglio vuoto: completala lì, oppure scegli di nuovo la scansione per calibrare e seguire di nuovo la linea.",
     "unnamed": "immagine di sfondo"
   },
   "unit": {

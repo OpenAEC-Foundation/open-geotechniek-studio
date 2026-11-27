@@ -1,6 +1,7 @@
 import i18next from "i18next";
 import type { Cpt, ProjectMeta } from "./cpt";
 import type { Bore } from "./bore";
+import { migrateCpt } from "./cptMigration";
 
 const m = (key: string, nl: string, vars?: Record<string, unknown>) =>
   i18next.t(`import:${key}`, { defaultValue: nl, ...vars }) as string;
@@ -77,7 +78,7 @@ function validatePosition(value: unknown): void {
 export function parseCptSnapshot(content: string): Cpt {
   const data = readJson(content);
   validateCpt(data);
-  return data;
+  return migrateCpt(data);
 }
 
 export function parseProjectFile(content: string): ProjectFile {
@@ -99,6 +100,7 @@ export function parseProjectFile(content: string): ProjectFile {
   }
   if (data.cpts !== undefined && !Array.isArray(data.cpts)) throw new Error(m("project.invalidCptList", "Ongeldige sonderingenlijst."));
   for (const cpt of (data.cpts ?? []) as unknown[]) validateCpt(cpt);
+  if (data.cpts) data.cpts = (data.cpts as Cpt[]).map(migrateCpt);
   if (data.bores !== undefined && (!Array.isArray(data.bores) || data.bores.some(b =>
       !object(b) || typeof b.id !== "string" || !b.id || !object(b.metadata) || !Array.isArray(b.layers)))) {
     throw new Error(m("project.invalidBoreList", "Ongeldige boringenlijst."));

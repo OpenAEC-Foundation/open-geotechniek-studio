@@ -5,9 +5,7 @@
     "openCount": "Prove di\ndissipazione ({{n}})",
     "openHint": "Grafico, t50 e coefficiente di consolidazione delle prove di dissipazione di {{cpt}}",
     "none": "Nessuna prova di dissipazione per {{cpt}}; aggiungi un file GEF di dissipazione.",
-    "noCpt": "Apri prima una prova.",
-    "add": "Aggiungi\nGEF",
-    "addHint": "Aggiungi un file GEF di dissipazione (tempo nella prima colonna) alla prova attiva"
+    "noCpt": "Apri prima una prova."
   },
   "dialog": {
     "title": "Prove di dissipazione - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Asse del tempo",
     "axisLog": "Logaritmico",
     "axisSqrt": "Radice del tempo"
+  },
+  "panel": {
+    "open": "Analizza…",
+    "openHint": "Grafico, dati e risultato delle prove di dissipazione"
   },
   "input": {
     "title": "Dati",

@@ -270,14 +270,6 @@
     "z9": "Meget fast finkornet"
   },
   "dissipation": {
-    "title": "Dissipationstest",
-    "chartLabel": "Poretryk i kPa mod tiden i sekunder (logaritmisk)",
-    "timeAxis": "tid [s]",
-    "atDepth": "På {{depth}} m",
-    "remove": "Fjern dissipationstest",
-    "uMax": "u maks",
-    "uEnd": "u slut",
-    "noDecay": "intet fald",
-    "note": "t50: tid til halvdelen af faldet mellem den højeste og den sidste måling. Den sidste måling tilnærmer ligevægten; er testen stoppet tidligt, er t50 vejledende."
+    "title": "Dissipationstest"
   }
 }

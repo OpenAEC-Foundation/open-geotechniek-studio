@@ -5,9 +5,7 @@
     "openCount": "Dissipations-\nförsök ({{n}})",
     "openHint": "Diagram, t50 och konsolideringskoefficient för dissipationsförsöken vid {{cpt}}",
     "none": "Inga dissipationsförsök vid {{cpt}}; lägg till en GEF-dissipationsfil.",
-    "noCpt": "Öppna först en sondering.",
-    "add": "Lägg till\nGEF",
-    "addHint": "Lägg till en GEF-dissipationsfil (tid i första kolumnen) till den aktiva sonderingen"
+    "noCpt": "Öppna först en sondering."
   },
   "dialog": {
     "title": "Dissipationsförsök - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Tidsaxel",
     "axisLog": "Logaritmisk",
     "axisSqrt": "Rot-tid"
+  },
+  "panel": {
+    "open": "Analysera…",
+    "openHint": "Diagram, indata och resultat för dissipationsförsöken"
   },
   "input": {
     "title": "Indata",

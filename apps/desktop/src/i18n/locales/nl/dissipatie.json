@@ -5,9 +5,7 @@
     "openCount": "Dissipatie-\ntests ({{n}})",
     "openHint": "Grafiek, t50 en consolidatiecoëfficiënt van de dissipatietests bij {{cpt}}",
     "none": "Geen dissipatietests bij {{cpt}}; voeg een GEF-dissipatiebestand toe.",
-    "noCpt": "Open eerst een sondering.",
-    "add": "GEF\ntoevoegen",
-    "addHint": "Voeg een GEF-dissipatiebestand (tijd in de eerste kolom) toe aan de actieve sondering"
+    "noCpt": "Open eerst een sondering."
   },
   "dialog": {
     "title": "Dissipatietests - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Tijdas",
     "axisLog": "Logaritmisch",
     "axisSqrt": "Wortel-tijd"
+  },
+  "panel": {
+    "open": "Uitwerken…",
+    "openHint": "Grafiek, invoer en uitkomst van de dissipatietests"
   },
   "input": {
     "title": "Invoer",
