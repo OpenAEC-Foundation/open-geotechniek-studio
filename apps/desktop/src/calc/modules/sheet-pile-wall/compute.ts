@@ -101,7 +101,27 @@ export interface WallAnchor {
   spacingM: number;
   /** Voorspankracht per anker of stempel, axiaal [kN], bij een stempel of ankerstaaf; een groutanker heeft die in `grout`. */
   prestressKn?: number;
+  /** Toets van de ankerstaaf (NEN-EN 1993-5 art. 7.2.3); alleen bij een ankerstaaf. */
+  tie?: TieRod;
+  /** Toets van de gording als ligger langs de wand tussen de ankers of stempels. */
+  waler?: Waler;
 }
+
+/** Ankerstaaf: bruto doorsnede en spanningsdoorsnede van de draad, staalsoort, factoren en de extra factor op de ankerkracht. */
+export interface TieRod { enabled: boolean; grossMm2: number; threadMm2: number; fyMPa: number; fuMPa: number; kt: number; gammaM0: number; gammaM2: number; loadFactor: number }
+export const DEFAULT_TIE: TieRod = { enabled: false, grossMm2: 1257, threadMm2: 1000, fyMPa: 355, fuMPa: 490, kt: 0.6, gammaM0: 1, gammaM2: 1.25, loadFactor: 1.25 };
+/** Gording: weerstandsmoment, staalsoort en de momentcoëfficiënt (q·a²/c; 8 = één veld, 10 = doorgaande ligger als benadering). */
+export interface Waler { enabled: boolean; wCm3: number; fyMPa: number; gammaM0: number; coefficient: number; loadFactor: number }
+export const DEFAULT_WALER: Waler = { enabled: false, wCm3: 1000, fyMPa: 355, gammaM0: 1, coefficient: 10, loadFactor: 1 };
+
+/** Toetsen die een adviesrapport vaak bevat en die u aanzet: de vervormingseis en het verticale evenwicht. */
+export interface WallExtraChecks {
+  /** Grootste verplaatsing (representatief) tegen kerende hoogte / ratio, met een maximum. */
+  deformation: { enabled: boolean; ratio: number; maxMm: number };
+  /** Neerwaartse kracht op de wand tegen de puntweerstand: q_b;max · A_punt / (ξ · γ_b). */
+  vertical: { enabled: boolean; qbMaxMPa: number; xi: number; gammaB: number };
+}
+export const DEFAULT_EXTRA_CHECKS: WallExtraChecks = { deformation: { enabled: false, ratio: 100, maxMm: 50 }, vertical: { enabled: false, qbMaxMPa: 0, xi: 1.39, gammaB: 1.2 } };
 
 /**
  * Bouwfase: wat er ten opzichte van de vorige fase verandert. Een veld dat leeg is houdt de waarde van de vorige fase
@@ -226,6 +246,8 @@ export interface WallInput {
   phases?: WallPhase[];
   /** Stappenplan van CUR 166 (stap 6.1 tot en met 6.5); uit = één berekening met rekenwaarden en één representatief. */
   cur?: CurSetup;
+  /** Vervormingseis en verticaal evenwicht. */
+  extraChecks?: WallExtraChecks;
   /** Maaiveld dat van de wand af niet vlak is (talud, aflopende waterbodem), per zijde ten opzichte van het maaiveld bij de wand. */
   profileHigh?: SurfacePoint[];
   profileLow?: SurfacePoint[];
@@ -345,6 +367,7 @@ export function normalizeWallInput(i: WallInput): WallInput {
   return {
     ...i, construction: i.construction ?? "sheet-pile", material: i.material ?? "timber", timber: { ...DEFAULT_TIMBER, ...i.timber }, plankMm: i.plankMm ?? 50,
     custom: { ...DEFAULT_CUSTOM, ...i.custom }, posts: { ...DEFAULT_POSTS, ...i.posts }, factors: { ...DEFAULT_FACTORS, ...i.factors },
+    extraChecks: { deformation: { ...DEFAULT_EXTRA_CHECKS.deformation, ...i.extraChecks?.deformation }, vertical: { ...DEFAULT_EXTRA_CHECKS.vertical, ...i.extraChecks?.vertical } },
     eiFactor: i.eiFactor ?? 1, gammaWater: i.gammaWater ?? GAMMA_WATER, cur: i.cur ? { ...DEFAULT_CUR, ...i.cur, steps: i.cur.steps?.length ? i.cur.steps : CUR_STEPS } : undefined, corrosion: { ...DEFAULT_CORROSION, ...i.corrosion }, anchor: { ...i.anchor, kind: i.anchor.kind ?? "tie", grout: { ...DEFAULT_GROUT, ...i.anchor.grout } },
   };
 }
@@ -777,7 +800,7 @@ export function resolveSection(i: WallInput): SectionModel | string {
 
 export interface WallStep { symbol: string; formula: string; filled?: string; result: string }
 export interface WallCheck {
-  id: "bending" | "shear" | "normal" | "board" | "boardShear" | "passive" | "embedment" | "tendon" | "pullout" | "freeLength";
+  id: "bending" | "shear" | "normal" | "board" | "boardShear" | "passive" | "embedment" | "tendon" | "pullout" | "freeLength" | "deformation" | "vertical" | "tie" | "waler";
   label: string;
   title: string;
   article: string;
@@ -1053,6 +1076,70 @@ function revetmentChecks(i: WallInput, uls: WallRun): { checks: WallCheck[]; war
   return { checks, warnings };
 }
 
+/** Ankerstaaf (NEN-EN 1993-5 art. 7.2.3) en gording (ligger langs de wand) van één steunpunt, met de ankerkracht uit de omhullende. */
+export function supportChecks(a: WallAnchor, uls: WallRun, suffix = ""): WallCheck[] {
+  const out: WallCheck[] = [], f = uls.supports?.find((x) => x.id === a.id) ?? (a.id === "A1" && uls.anchor ? { ...uls.anchor, id: "A1", levelNap: a.levelNap } : null);
+  if (!f) return out;
+  const tie = a.tie ? { ...DEFAULT_TIE, ...a.tie } : null;
+  if (tie?.enabled && a.kind === "tie") {
+    const fd = tie.loadFactor * Math.abs(f.perAnchorKn), ftt = (tie.kt * tie.fuMPa * tie.threadMm2) / tie.gammaM2 / 1000, ftg = (tie.fyMPa * tie.grossMm2) / tie.gammaM0 / 1000, rd = Math.min(ftt, ftg);
+    out.push({ id: "tie", label: t("stage.checks.tie.label", "ankerstaaf") + suffix, title: t("stage.checks.tie.title", "Ankerstaaf op trek") + suffix, article: "NEN-EN 1993-5 art. 7.2.3", load: fd, resistance: rd, unit: "kN", uc: fd / rd, passes: fd <= rd,
+      steps: [
+        { symbol: "F_t;Ed", formula: t("stage.steps.tieLoad", "extra factor × ankerkracht per anker uit de omhullende"), filled: `${n(tie.loadFactor)} · ${n(Math.abs(f.perAnchorKn), 1)}`, result: `${n(fd, 1)} kN` },
+        { symbol: "F_tt;Rd", formula: "k_t · f_ua · A_s / γ_M2", filled: `${n(tie.kt)} · ${n(tie.fuMPa, 0)} · ${n(tie.threadMm2, 0)} / ${n(tie.gammaM2)}`, result: `${n(ftt, 1)} kN` },
+        { symbol: "F_tg;Rd", formula: "f_y · A_g / γ_M0", filled: `${n(tie.fyMPa, 0)} · ${n(tie.grossMm2, 0)} / ${n(tie.gammaM0)}`, result: `${n(ftg, 1)} kN` },
+        { symbol: "F_t;Rd", formula: "min(F_tt;Rd; F_tg;Rd)", result: `${n(rd, 1)} kN` },
+      ] });
+  }
+  const w = a.waler ? { ...DEFAULT_WALER, ...a.waler } : null;
+  if (w?.enabled) {
+    const q = w.loadFactor * Math.abs(f.horizontalKn), m = (q * a.spacingM ** 2) / w.coefficient, rd = (w.wCm3 * w.fyMPa) / w.gammaM0 / 1000;
+    out.push({ id: "waler", label: t("stage.checks.waler.label", "gording") + suffix, title: t("stage.checks.waler.title", "Gording op buiging tussen de ankers") + suffix, article: "NEN-EN 1993-1-1 art. 6.2.5", load: m, resistance: rd, unit: "kNm", uc: m / rd, passes: m <= rd,
+      steps: [
+        { symbol: "q_d", formula: t("stage.steps.walerLoad", "factor × horizontale ankerkracht per m wand uit de omhullende"), filled: `${n(w.loadFactor)} · ${n(Math.abs(f.horizontalKn), 1)}`, result: `${n(q, 1)} kN/m` },
+        { symbol: "M_Ed", formula: `q_d · a² / ${n(w.coefficient, 0)}`, filled: `${n(q, 1)} · ${n(a.spacingM)}² / ${n(w.coefficient, 0)}`, result: `${n(m, 1)} kNm` },
+        { symbol: "M_Rd", formula: "W · f_y / γ_M0", filled: `${n(w.wCm3, 0)} cm³ · ${n(w.fyMPa, 0)} N/mm² / ${n(w.gammaM0)}`, result: `${n(rd, 1)} kNm` },
+      ] });
+  }
+  return out;
+}
+
+/** Vervormingseis: grootste verplaatsing met representatieve waarden tegen de kerende hoogte gedeeld door de verhouding, met een maximum. */
+export function deformationCheck(i: WallInput, phases: ResolvedPhase[], sls: WallRun, d: WallExtraChecks["deformation"]): WallCheck {
+  const h = i.groundHighNap - Math.min(...phases.map((p) => p.excavationNap)), allowed = Math.min((1000 * h) / d.ratio, d.maxMm), y = Math.abs(sls.maxDisplacement.value) * 1000;
+  return { id: "deformation", label: t("stage.checks.deformation.label", "vervorming"), title: t("stage.checks.deformation.title", "Vervorming tegen de eis"), article: t("stage.checks.deformation.article", "eis van de gebruiker"), load: y, resistance: allowed, unit: "mm", uc: y / allowed, passes: y <= allowed + 1e-9,
+    steps: [
+      { symbol: "u", formula: t("stage.steps.deformation", "grootste verplaatsing met representatieve waarden, op NAP {{nap}} m", { nap: n(sls.maxDisplacement.nap) }), result: `${n(y, 1)} mm` },
+      { symbol: "u_toel", formula: "min(H / r; u_max)", filled: `min(${n(h)} m / ${n(d.ratio, 0)}; ${n(d.maxMm, 0)} mm)`, result: `${n(allowed, 1)} mm` },
+    ] };
+}
+
+/** Wrijving van de korreldruk langs de wand: Σ σ′h · tan δ over de hoogte, aan de hoge zijde (omlaag) [kN/m]. */
+function wallFriction(run: WallRun, side: "high" | "low"): number {
+  return run.rows.reduce((sum, row) => {
+    const r = row[side], mid = (row.topNap + row.bottomNap) / 2;
+    return r ? sum + r.pressureKpa * (row.topNap - row.bottomNap) * Math.tan(rad(layerAt(run.scenario[side].layers, mid).delta)) : sum;
+  }, 0);
+}
+
+/**
+ * Verticaal evenwicht, in de vorm die openbare uitvoer afdrukt (VERIFICATIE.md 15): de neerwaartse kracht uit de wrijving
+ * aan de hoge zijde (Σ σ′h·tan δ), de normaalkracht en de verticale component van de ankers, tegen de puntweerstand
+ * q_b;max · A_punt / (ξ · γ_b). De wrijving aan de lage zijde (omhoog) telt niet mee; dat is aan de veilige kant.
+ */
+export function verticalCheck(i: WallInput, section: SectionModel, list: CaseRun[], v: WallExtraChecks["vertical"]): WallCheck | string {
+  const area = section.profile ? section.profile.areaCm2PerM : i.construction === "plank" ? i.plankMm * 10 : i.posts.shape === "round" ? (Math.PI * (i.posts.sizeMm / 10) ** 2) / 4 / i.posts.spacingM : (i.posts.sizeMm / 10) ** 2 / i.posts.spacingM;
+  if (!(area && area > 0) || !(v.qbMaxMPa >= 0 && v.xi > 0 && v.gammaB > 0)) return t("stage.warnings.vertical", "Verticaal evenwicht niet getoetst: geef de puntweerstand, ξ en γ_b op; de bibliotheek moet een doorsnede A hebben.");
+  const worst = list.map((c) => ({ c, friction: wallFriction(c.run, "high"), anchors: c.run.supports.reduce((sum, x) => sum + Math.max(0, x.verticalKn), 0) })).reduce((a, b) => (b.friction + b.anchors > a.friction + a.anchors ? b : a));
+  const fd = worst.friction + worst.anchors + Math.abs(i.normalForceKn), rb = (v.qbMaxMPa * 1000 * area * 1e-4) / (v.xi * v.gammaB);
+  return { id: "vertical", label: t("stage.checks.vertical.label", "verticaal evenwicht"), title: t("stage.checks.vertical.title", "Verticaal evenwicht van de wand"), article: "CUR 166; NEN 9997-1", load: fd, resistance: rb, unit: "kN/m", uc: rb > 0 ? fd / rb : Infinity, passes: fd <= rb,
+    steps: [
+      { symbol: "F_δ", formula: t("stage.steps.friction", "Σ σ′h · tan δ aan de hoge zijde, representatief{{where}}", { where: worst.c.phaseName ? `, ${t("stage.errors.phaseName", "fase {{name}}", { name: worst.c.phaseName })}` : "" }), result: `${n(worst.friction, 1)} kN/m` },
+      { symbol: "F_v;d", formula: t("stage.steps.verticalSum", "wrijving + verticale component van de ankers + normaalkracht"), filled: `${n(worst.friction, 1)} + ${n(worst.anchors, 1)} + ${n(Math.abs(i.normalForceKn), 1)}`, result: `${n(fd, 1)} kN/m` },
+      { symbol: "R_b;d", formula: "q_b;max · A / (ξ · γ_b)", filled: `${n(v.qbMaxMPa)} MPa · ${n(area, 1)} cm²/m / (${n(v.xi)} · ${n(v.gammaB)})`, result: `${n(rb, 1)} kN/m` },
+    ] };
+}
+
 /** Groutanker: ligging ten opzichte van het actieve glijvlak, trekelement en houdkracht van het groutlichaam. */
 export function groutAnchor(i: WallInput, uls: WallRun, a: WallAnchor = { ...i.anchor, id: i.anchor.id || "A1" }, suffix = ""): { result: GroutResult; checks: WallCheck[]; warnings: string[] } {
   const g = a.grout!, s = uls.scenario, alpha = rad(a.angleDeg), warnings: string[] = [];
@@ -1237,6 +1324,15 @@ export function computeWall(raw: WallInput): WallResult {
   if ([...i.layersHigh, ...(i.lowSameAsHigh ? [] : i.layersLow)].every((l) => !(l.kh2 && l.kh3))) warnings.push(t("warnings.singleBranch", "Er is gerekend met één beddingsconstante per laag. Met de drietakkige veer van CUR 166 (kh1, kh2, kh3) worden de verplaatsingen groter en het moment enkele procenten groter."));
   if (i.construction === "posts") warnings.push(t("warnings.posts", "Palen met schotten: onder de schotten telt de passieve weerstand over {{f}} × de paalbreedte. Die factor voor ruimtelijke werking is invoer; controleer hem bij uw grond en paalafstand.", { f: n(i.posts.spatialFactor, 1) }));
   if (!section.profile && i.material === "timber") warnings.push(t("warnings.timber", "Hout: de verplaatsing is gerekend met E_0;mean zonder kruip (k_def); bij blijvende belasting in natte toepassing wordt de verplaatsing groter."));
+  // Ankerstaaf en gording per steunpunt; vervormingseis en verticaal evenwicht als ze aan staan.
+  for (const a of all) checks.push(...supportChecks(a, uls, all.length > 1 ? ` (${a.id})` : ""));
+  const extra = { ...DEFAULT_EXTRA_CHECKS, ...i.extraChecks };
+  const serviceability = cases.filter((c) => c.serviceability);
+  if (extra.deformation.enabled) checks.push(deformationCheck(i, phases, sls, extra.deformation));
+  if (extra.vertical.enabled) {
+    const v = verticalCheck(i, section, serviceability, extra.vertical);
+    if (typeof v === "string") warnings.push(v); else checks.push(v);
+  }
   const governing = checks.reduce((a, b) => (b.uc > a.uc ? b : a));
   return { ok: true, grout, section, eiKnM2: ei, lengthM: length, sls, uls, cases, phases, coefficients: coefficientRows, levels, blum: blumOut, checks, governing, passes: checks.every((c) => c.passes), warnings,
     corrosion: corroded ? { zones, reducedStiffness: co.reducedStiffness, eiOriginalKnM2: section.eiKnM2 * i.eiFactor! } : null };
