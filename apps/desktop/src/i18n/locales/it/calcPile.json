@@ -184,7 +184,22 @@
     "woodSawn": "Quadrato o rettangolare a × b (segato)",
     "sideA": "Lato a",
     "sideB": "Lato b",
-    "rectHint": "Rettangolo a ≠ b: area, perimetro e Deq derivano da a e b; il programma non determina il fattore di forma s per una punta del palo rettangolare. Se necessario, inserire s come fattore di progetto."
+    "rectHint": "Rettangolo a ≠ b: area, perimetro e Deq derivano da a e b; il programma non determina il fattore di forma s per una punta del palo rettangolare. Se necessario, inserire s come fattore di progetto.",
+    "timberSpecies": "Specie legnosa",
+    "timberSpeciesOwn": "Classe di resistenza propria",
+    "timberGrade": "Categoria di classificazione",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Solo per la verifica di resistenza; i fattori di classe del palo e la portata dipendono dal tipo di palo.",
+    "timberSpeciesNoClass": "Nessuna classe di resistenza univoca nella fonte: scegliere la classe nella verifica di resistenza. I fattori di classe del palo e la portata dipendono dal tipo di palo.",
+    "species": {
+      "vuren": "abete rosso",
+      "grenen": "pino silvestre",
+      "lariks": "larice",
+      "douglas": "douglasia",
+      "eiken": "rovere, Europa centrale",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Esporta per Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "A titolo informativo: limite superiore con l'intero N_Ed;max sulla sezione di punta. L'attrito laterale positivo sopra la punta non è stato detratto; la forza effettiva alla punta è minore.",
       "concrete": "Calcestruzzo: N_Rd = A_c · f_cd della sezione del fusto, senza armatura (non è presente nei dati di ingresso). Non verificati: l'eccentricità minima (punto 6.1 (4)), l'instabilità, l'armatura e le tensioni di battitura.",
       "concreteInSitu": "Palo gettato in opera: il diametro di calcolo ridotto (punto 2.3.4.2) e l'aumento di γ_c (punto 2.4.2.5) per pali senza tubo permanente non sono stati applicati; ricalcolare autonomamente la resistenza.",
-      "concreteClassUnknown": "Classe di resistenza del calcestruzzo sconosciuta {{cls}}."
+      "concreteClassUnknown": "Classe di resistenza del calcestruzzo sconosciuta {{cls}}.",
+      "timberSpecies": "Specie {{species}}, categoria {{grade}} → {{cls}} secondo {{source}}. La specie determina solo la classe di resistenza; i fattori di classe del palo e la portata dipendono dal tipo di palo.",
+      "timberSpeciesOwn": "Specie {{species}}: la fonte non indica una classe di resistenza univoca; la classe è stata scelta dall'utente."
     }
   },
   "report": {

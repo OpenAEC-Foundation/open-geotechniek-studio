@@ -184,7 +184,22 @@
     "woodSawn": "Quadratisch oder rechteckig a × b (gesägt)",
     "sideA": "Seite a",
     "sideB": "Seite b",
-    "rectHint": "Rechteck a ≠ b: Fläche, Umfang und Deq ergeben sich aus a und b; den Formfaktor s für einen rechteckigen Pfahlfuß bestimmt das Programm nicht. Geben Sie s bei Bedarf als Projektfaktor ein."
+    "rectHint": "Rechteck a ≠ b: Fläche, Umfang und Deq ergeben sich aus a und b; den Formfaktor s für einen rechteckigen Pfahlfuß bestimmt das Programm nicht. Geben Sie s bei Bedarf als Projektfaktor ein.",
+    "timberSpecies": "Holzart",
+    "timberSpeciesOwn": "Eigene Festigkeitsklasse",
+    "timberGrade": "Sortierklasse",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Nur für den Festigkeitsnachweis; Pfahlklassenbeiwerte und Tragfähigkeit folgen aus dem Pfahltyp.",
+    "timberSpeciesNoClass": "Keine eindeutige Festigkeitsklasse in der Quelle: Klasse beim Festigkeitsnachweis wählen. Pfahlklassenbeiwerte und Tragfähigkeit folgen aus dem Pfahltyp.",
+    "species": {
+      "vuren": "Fichte",
+      "grenen": "Kiefer",
+      "lariks": "Lärche",
+      "douglas": "Douglasie",
+      "eiken": "Eiche, mitteleuropäisch",
+      "azobe": "Azobé",
+      "bangkirai": "Bangkirai",
+      "basralocus": "Basralocus"
+    }
   },
   "pilePlan": {
     "button": "Für Pile Plan Studio exportieren (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "Zur Information: obere Grenze mit dem vollen N_Ed;max auf dem Fußquerschnitt. Die positive Mantelreibung oberhalb des Pfahlfußes wurde nicht abgezogen; die tatsächliche Kraft am Pfahlfuß ist kleiner.",
       "concrete": "Beton: N_Rd = A_c · f_cd des Schaftquerschnitts, ohne Bewehrung (sie ist nicht in der Eingabe enthalten). Nicht nachgewiesen: die Mindestausmitte (Abs. 6.1 (4)), Knicken, die Bewehrung und die Rammspannungen.",
       "concreteInSitu": "Ortbetonpfahl: Der verminderte Bemessungsdurchmesser (Abs. 2.3.4.2) und die Erhöhung von γ_c (Abs. 2.4.2.5) für Pfähle ohne bleibendes Rohr wurden nicht angewendet; rechnen Sie den Widerstand dafür selbst um.",
-      "concreteClassUnknown": "Unbekannte Betonfestigkeitsklasse {{cls}}."
+      "concreteClassUnknown": "Unbekannte Betonfestigkeitsklasse {{cls}}.",
+      "timberSpecies": "Holzart {{species}}, Sortierklasse {{grade}} → {{cls}} nach {{source}}. Die Holzart bestimmt nur die Festigkeitsklasse; Pfahlklassenbeiwerte und Tragfähigkeit folgen aus dem Pfahltyp.",
+      "timberSpeciesOwn": "Holzart {{species}}: Die Quelle nennt keine eindeutige Festigkeitsklasse; die Klasse wurde vom Benutzer gewählt."
     }
   },
   "report": {

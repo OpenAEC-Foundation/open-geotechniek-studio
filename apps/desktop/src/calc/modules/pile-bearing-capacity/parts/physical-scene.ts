@@ -15,7 +15,8 @@ import { spreadDown } from "./koppejan-scene";
 import { applyOverrides } from "./interpretation-overrides";
 import { analyzeLayers } from "../../../../utils/layerAnalysis";
 import { zoneName, zones } from "../../../../utils/soilZones";
-import type { PileMaterial } from "./material-colors";
+import { WOOD_GROUP_COLORS, type PileMaterial } from "./material-colors";
+import { resolveTimber } from "./timber-species";
 
 export type PhysicalShape =
   /** Omwentelingslichaam met lineair verlopende diameter; met `wallM` een holle buis. */
@@ -39,6 +40,8 @@ export interface PhysicalPart {
   shape: PhysicalShape;
   /** Vorm of maat is niet uit de invoer afgeleid. */
   schematic?: boolean;
+  /** Eigen kleur, bv. hout naar houtsoort; ontbrekend = kleur van het materiaal. */
+  color?: string;
 }
 
 export interface SoilBlockLayer {
@@ -193,7 +196,8 @@ export function pileParts(input: PileInput, type: PileTypeSpec | undefined, syst
       if (material === "concrete") stubs("rebar", d, circular, top);
     }
   }
-  return parts.filter((p) => p.shape.topNap > p.shape.bottomNap);
+  const tint = material === "wood" ? resolveTimber(input.timberSpecies)?.species.group : undefined;
+  return parts.filter((p) => p.shape.topNap > p.shape.bottomNap).map((p) => (tint && p.material === "wood" ? { ...p, color: WOOD_GROUP_COLORS[tint] } : p));
 }
 
 /** Grootste halve breedte van een onderdeel (bij een rechthoek de halve diagonaal). */

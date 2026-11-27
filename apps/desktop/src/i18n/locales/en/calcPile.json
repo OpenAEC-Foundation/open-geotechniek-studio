@@ -184,7 +184,22 @@
     "woodSawn": "Square or rectangular a × b (sawn)",
     "sideA": "Side a",
     "sideB": "Side b",
-    "rectHint": "Rectangle a ≠ b: area, perimeter and Deq follow from a and b; the program does not determine the shape factor s for a rectangular pile toe. Enter s as a project factor if needed."
+    "rectHint": "Rectangle a ≠ b: area, perimeter and Deq follow from a and b; the program does not determine the shape factor s for a rectangular pile toe. Enter s as a project factor if needed.",
+    "timberSpecies": "Timber species",
+    "timberSpeciesOwn": "Own strength class",
+    "timberGrade": "Grade",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Only for the strength check; pile class factors and bearing capacity follow from the pile type.",
+    "timberSpeciesNoClass": "No unambiguous strength class in the source: choose the class in the strength check. Pile class factors and bearing capacity follow from the pile type.",
+    "species": {
+      "vuren": "spruce",
+      "grenen": "Scots pine",
+      "lariks": "larch",
+      "douglas": "Douglas fir",
+      "eiken": "oak, Central European",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Export for Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "For information: upper bound with the full N_Ed;max on the toe cross-section. The positive shaft friction above the toe has not been deducted; the actual force at the toe is smaller.",
       "concrete": "Concrete: N_Rd = A_c · f_cd of the shaft cross-section, without reinforcement (it is not part of the input). Not checked: the minimum eccentricity (cl. 6.1 (4)), buckling, the reinforcement and the driving stresses.",
       "concreteInSitu": "Cast-in-place pile: the reduced design diameter (cl. 2.3.4.2) and the increase of γ_c (cl. 2.4.2.5) for piles without permanent casing have not been applied; convert the resistance for this yourself.",
-      "concreteClassUnknown": "Unknown concrete strength class {{cls}}."
+      "concreteClassUnknown": "Unknown concrete strength class {{cls}}.",
+      "timberSpecies": "Timber species {{species}}, grade {{grade}} → {{cls}} according to {{source}}. The species only sets the strength class; pile class factors and bearing capacity follow from the pile type.",
+      "timberSpeciesOwn": "Timber species {{species}}: the source gives no unambiguous strength class; the class was chosen by the user."
     }
   },
   "report": {

@@ -184,7 +184,22 @@
     "woodSawn": "Kvadratisk eller rektangulær a × b (savet)",
     "sideA": "Side a",
     "sideB": "Side b",
-    "rectHint": "Rektangel a ≠ b: areal, omkreds og Deq følger af a og b; programmet bestemmer ikke formfaktoren s for en rektangulær pælespids. Angiv om nødvendigt s som projektfaktor."
+    "rectHint": "Rektangel a ≠ b: areal, omkreds og Deq følger af a og b; programmet bestemmer ikke formfaktoren s for en rektangulær pælespids. Angiv om nødvendigt s som projektfaktor.",
+    "timberSpecies": "Træart",
+    "timberSpeciesOwn": "Egen styrkeklasse",
+    "timberGrade": "Sorteringsklasse",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Kun til styrkeeftervisningen; pæleklassefaktorer og bæreevne følger af pæletypen.",
+    "timberSpeciesNoClass": "Kilden giver ingen entydig styrkeklasse: vælg klassen i styrkeeftervisningen. Pæleklassefaktorer og bæreevne følger af pæletypen.",
+    "species": {
+      "vuren": "rødgran",
+      "grenen": "skovfyr",
+      "lariks": "lærk",
+      "douglas": "douglasgran",
+      "eiken": "eg, mellemeuropæisk",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Eksportér til Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "Til orientering: øvre grænse med den fulde N_Ed;max på spidstværsnittet. Den positive overflademodstand over spidsen er ikke fratrukket; den faktiske kraft ved spidsen er mindre.",
       "concrete": "Beton: N_Rd = A_c · f_cd for skafttværsnittet, uden armering (den indgår ikke i inddata). Ikke eftervist: den mindste excentricitet (afsnit 6.1 (4)), søjlevirkning, armeringen og rammespændingerne.",
       "concreteInSitu": "Pladsstøbt pæl: den reducerede regningsmæssige diameter (afsnit 2.3.4.2) og forhøjelsen af γ_c (afsnit 2.4.2.5) for pæle uden blivende rør er ikke anvendt; omregn selv bæreevnen herfor.",
-      "concreteClassUnknown": "Ukendt betonstyrkeklasse {{cls}}."
+      "concreteClassUnknown": "Ukendt betonstyrkeklasse {{cls}}.",
+      "timberSpecies": "Træart {{species}}, sorteringsklasse {{grade}} → {{cls}} ifølge {{source}}. Træarten bestemmer kun styrkeklassen; pæleklassefaktorer og bæreevne følger af pæletypen.",
+      "timberSpeciesOwn": "Træart {{species}}: kilden giver ingen entydig styrkeklasse; klassen er valgt af brugeren."
     }
   },
   "report": {

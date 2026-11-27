@@ -184,7 +184,22 @@
     "woodSawn": "Kvadratisk eller rektangulär a × b (sågad)",
     "sideA": "Sida a",
     "sideB": "Sida b",
-    "rectHint": "Rektangel a ≠ b: area, omkrets och Deq följer av a och b; programmet bestämmer inte formfaktorn s för en rektangulär pålspets. Ange vid behov s som projektfaktor."
+    "rectHint": "Rektangel a ≠ b: area, omkrets och Deq följer av a och b; programmet bestämmer inte formfaktorn s för en rektangulär pålspets. Ange vid behov s som projektfaktor.",
+    "timberSpecies": "Träslag",
+    "timberSpeciesOwn": "Egen hållfasthetsklass",
+    "timberGrade": "Sorteringsklass",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Endast för hållfasthetskontrollen; pålklassfaktorer och bärförmåga följer av påltypen.",
+    "timberSpeciesNoClass": "Källan anger ingen entydig hållfasthetsklass: välj klassen i hållfasthetskontrollen. Pålklassfaktorer och bärförmåga följer av påltypen.",
+    "species": {
+      "vuren": "gran",
+      "grenen": "tall",
+      "lariks": "lärk",
+      "douglas": "douglasgran",
+      "eiken": "ek, centraleuropeisk",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Exportera för Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "För information: övre gräns med hela N_Ed;max på spetstvärsnittet. Den positiva mantelfriktionen ovanför spetsen har inte dragits av; den verkliga kraften vid spetsen är mindre.",
       "concrete": "Betong: N_Rd = A_c · f_cd för skafttvärsnittet, utan armering (den ingår inte i indata). Inte kontrollerat: minsta excentricitet (avsnitt 6.1 (4)), knäckning, armeringen och slagningsspänningarna.",
       "concreteInSitu": "Platsgjuten påle: den reducerade dimensionerande diametern (avsnitt 2.3.4.2) och höjningen av γ_c (avsnitt 2.4.2.5) för pålar utan kvarsittande rör har inte tillämpats; räkna själv om bärförmågan för detta.",
-      "concreteClassUnknown": "Okänd betonghållfasthetsklass {{cls}}."
+      "concreteClassUnknown": "Okänd betonghållfasthetsklass {{cls}}.",
+      "timberSpecies": "Träslag {{species}}, sorteringsklass {{grade}} → {{cls}} enligt {{source}}. Träslaget bestämmer endast hållfasthetsklassen; pålklassfaktorer och bärförmåga följer av påltypen.",
+      "timberSpeciesOwn": "Träslag {{species}}: källan anger ingen entydig hållfasthetsklass; klassen har valts av användaren."
     }
   },
   "report": {
