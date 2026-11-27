@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Pæle",
+    "walls": "Spunsvægge",
+    "pit": "Udgravning",
+    "anchors": "Ankre og afstivninger",
+    "footings": "Direkte funderinger",
+    "collapse": "Fold sammen",
+    "expand": "Fold ud",
+    "hint": "Beregninger med en placering i projektet",
+    "title": "Placerede beregninger",
+    "none": "ingen",
+    "empty": "Placer en beregning med knappen Placer i beregningen."
+  },
+  "props": {
+    "top": "Pælehoved",
+    "assumed": "antaget",
+    "toe": "Pælespids",
+    "size": "Mål",
+    "count": "Antal pæle",
+    "wallTop": "Top af væg",
+    "wallToe": "Fod",
+    "excavation": "Udgravning",
+    "profile": "Profil",
+    "perimeter": "Omkreds",
+    "length": "Længde",
+    "supports": "Ankre/afstivninger",
+    "base": "Funderingsniveau",
+    "width": "Bredde",
+    "open": "Åbn beregning"
+  },
+  "bar": {
+    "placeHint": "Placer denne beregning på kortet og i 3D-modellen",
+    "edit": "Placering",
+    "place": "Placer",
+    "notPlaced": "Placer beregningen først",
+    "show3d": "Vis i 3D-model"
+  },
+  "dialog": {
+    "title": "Placering",
+    "close": "Luk",
+    "introPiles": "En eller flere pæle i RD-koordinater. Hoved og spids kommer fra beregningen.",
+    "introWall": "En spunslinje eller en lukket byggegrube i RD. Top, fod, udgravning og ankre kommer fra beregningen.",
+    "introFooting": "Midtpunkt og retning af stribe- eller punktfundamentet. Mål og dybde kommer fra beregningen.",
+    "incomplete": "Beregningens input er endnu ikke komplet; modellen viser den, når hoved/top og spids/fod er kendt.",
+    "drawWall": "Tegn linjen ved at klikke punkter:",
+    "drawPoints": "Klik på placeringen:",
+    "onMap": "På kortet",
+    "onDrawing": "På situationsplanen",
+    "clear": "Ryd placering",
+    "done": "Færdig",
+    "atCpt": "ved {{id}}"
+  },
+  "table": {
+    "pile": "Pæl",
+    "cpt": "Sondering",
+    "remove": "Fjern",
+    "noPiles": "Ingen pæle placeret endnu.",
+    "addCoord": "+ Koordinat",
+    "addAtCpt": "+ Ved sondering…",
+    "point": "Punkt",
+    "noPoints": "Ingen punkter endnu. Tegn linjen eller tilføj punkter.",
+    "addPoint": "+ Punkt",
+    "atCpt": "Ved sondering…"
+  },
+  "wall": {
+    "closed": "Lukket byggegrube",
+    "side": "Udgravning",
+    "inside": "inden for gruben",
+    "outside": "uden for gruben",
+    "left": "til venstre for linjen",
+    "right": "til højre for linjen",
+    "perimeter": "omkreds",
+    "length": "længde",
+    "perSide": "Beregning pr. side",
+    "sideCol": "Side",
+    "lengthCol": "Længde",
+    "calcCol": "Beregning",
+    "thisCalc": "denne beregning"
+  },
+  "footing": {
+    "angle": "Drejning af længdeakse [°]",
+    "angleHint": "fra RD-x, mod uret",
+    "length": "Stribelængde [m]"
+  },
+  "map": {
+    "clickToOpen": "klik for at åbne beregningen"
+  },
+  "draw": {
+    "hintWall": "Klik væggens hjørnepunkter. Dobbeltklik eller Færdig afslutter som linje; Luk gør den til en byggegrube.",
+    "hintPiles": "Klik én placering pr. pæl. Færdig eller Enter afslutter.",
+    "hintFooting": "Klik fundamentets midtpunkt.",
+    "points": "{{n}} punkter",
+    "undo": "Tilbage",
+    "close": "Luk byggegrube",
+    "done": "Færdig",
+    "cancel": "Annuller"
+  }
+}

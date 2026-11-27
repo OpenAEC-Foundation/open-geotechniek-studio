@@ -11,6 +11,7 @@ import type { PileInput } from "../calc/modules/pile-bearing-capacity/types";
 import { zoneName } from "../utils/soilZones";
 import { APP_VERSION } from "../version";
 import { buildProjectIfcx, type IfcxDocument, type PileExport } from "./projectIfcx";
+import { placedIfcx } from "../placement/ifcx";
 
 export interface IfcxSource {
   id: string;
@@ -34,7 +35,8 @@ export function pilesOf(docId: string, cpts: Cpt[]): PileExport[] {
   const calcs = useCalculationsStore.getState().byDoc.get(docId) ?? [];
   const byId = new Map(cpts.map((c) => [c.id, c]));
   return calcs
-    .filter((c) => c.moduleId === "pile-bearing-capacity")
+    // Een geplaatste paal gaat mee als geplaatst element (placedIfcx), niet nog eens naast de sondering.
+    .filter((c) => c.moduleId === "pile-bearing-capacity" && !c.placement)
     .flatMap((c) => {
       const input = c.input as PileInput;
       if (!input.cptId || !Number.isFinite(input.pileTopNap) || !Number.isFinite(input.pileToeNap)) return [];
@@ -69,6 +71,7 @@ export function documentIfcx(source: IfcxSource, timestamp = new Date().toISOStr
     cpts: source.cpts,
     model,
     piles: pilesOf(source.id, source.cpts),
+    placed: placedIfcx(useCalculationsStore.getState().byDoc.get(source.id) ?? [], model?.origin ?? null),
     zoneName: (z) => zoneName(z),
     timestamp,
     version: APP_VERSION,

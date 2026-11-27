@@ -52,11 +52,23 @@ export interface PileExport {
   rcNetDKn?: number;
 }
 
+/** Geplaatst element uit een berekening (src/placement/ifcx.ts): mesh in RD min de oorsprong van het model, z in NAP. */
+export interface PlacedExport {
+  id: string;
+  name: string;
+  ifcClass: "IfcPile" | "IfcWall" | "IfcFooting" | "IfcMember";
+  mesh: { points: [number, number, number][]; faceVertexIndices: number[] };
+  color: [number, number, number];
+  props: { calculationId: string; module: string; topNap: number; bottomNap: number };
+}
+
 export interface ProjectIfcxInput {
   meta: ProjectMeta;
   cpts: Cpt[];
   model: SoilModel | null;
   piles?: PileExport[];
+  /** Geplaatste palen, damwanden en funderingen. */
+  placed?: PlacedExport[];
   /** Weergavenaam van een grondsoortzone (vertaald); standaard de Nederlandse naam. */
   zoneName?: (zone: number) => string;
   author?: string;
@@ -272,6 +284,9 @@ export const IFCX_SCHEMAS: IfcxDocument["schemas"] = {
       method: S("String"), cellSizeX: S("Real", "Length"), cellSizeY: S("Real", "Length"), cellSizeZ: S("Real", "Length"),
       bearingQcMpa: S("Real"), bearingMinThicknessM: S("Real", "Length"), indicative: S("Boolean"),
     }),
+  },
+  "ogs::placement": {
+    value: obj({ calculationId: S("String"), module: S("String"), topNap: S("Real", "Length"), bottomNap: S("Real", "Length") }),
   },
   "ogs::pile": {
     value: obj({ cptId: S("String"), pileType: S("String"), diameterMm: S("Real"), headNap: S("Real", "Length"), toeNap: S("Real", "Length"), rcNetDKn: S("Real") }),
@@ -500,6 +515,15 @@ export function buildProjectIfcx(input: ProjectIfcxInput): IfcxDocument {
         "usd::usdgeom::mesh": cylinderMesh(...xf(col.east - 3 * radius - r, col.north), pile.toeNap, pile.headNap, r, 16),
       },
     });
+  }
+
+  // ─── Geplaatste berekeningen: palen, damwanden, ankers, funderingen ─
+  for (const el of input.placed ?? []) {
+    if (!el.mesh.faceVertexIndices.length) continue;
+    const path = P(`placed:${el.id}`);
+    siteChildren[uniqueName(`${el.ifcClass.replace(/^Ifc/, "")}_${el.name}`)] = path;
+    add({ path, attributes: { "bsi::ifc::class": ifcClass(el.ifcClass), "bsi::ifc::prop::name": el.name, "ogs::placement": { ...el.props, topNap: r3(el.props.topNap), bottomNap: r3(el.props.bottomNap) } } });
+    attachMesh(path, `placed:${el.id}`, el.mesh, material(`placed-${el.color.join("-")}`, el.color));
   }
 
   add({ path: site, attributes: { "bsi::ifc::class": ifcClass("IfcSite"), "bsi::ifc::prop::name": meta.location || "Site" } });

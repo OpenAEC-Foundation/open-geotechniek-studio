@@ -20,7 +20,9 @@ export type Selection =
   | { kind: "water"; point: ModelPoint }
   | { kind: "bearing"; point: ModelPoint }
   | { kind: "ground"; point: ModelPoint }
-  | { kind: "toe"; cptId: string; name: string; toeNap: number; point: ModelPoint };
+  | { kind: "toe"; cptId: string; name: string; toeNap: number; point: ModelPoint }
+  /** Geplaatste berekening (paal, damwand, fundering); de eigenschappen komen uit src/placement. */
+  | { kind: "placed"; calcId: string; name: string; point: ModelPoint };
 
 /** Selectie uit een treffer van de raycaster; null als het object niet selecteerbaar is. */
 export function selectionFromHit(hit: THREE.Intersection, ex: number): Selection | null {
@@ -41,6 +43,7 @@ export function selectionFromHit(hit: THREE.Intersection, ex: number): Selection
     case "bearing": return { kind: "bearing", point };
     case "ground": return { kind: "ground", point };
     case "toe": return { kind: "toe", cptId: String(d.cptId), name: String(d.name), toeNap: Number(d.toeNap), point };
+    case "placed": return { kind: "placed", calcId: String(d.calcId), name: String(d.name), point };
   }
   return null;
 }
@@ -209,6 +212,8 @@ export function describeSelection(sel: Selection, model: SoilModel, sub: Subsurf
       return [{ title: "Bovenkant draagkrachtige laag", subtitle: "Geïnterpoleerd vlak", rows: here }];
     case "ground":
       return [{ title: "Maaiveld", subtitle: "Geïnterpoleerd vlak", rows: here }];
+    case "placed":
+      return [];
     case "toe":
       return [{ title: `Paalpunt ${sel.name}`, subtitle: `bij sondering ${sel.cptId}`, rows: [["Puntniveau", `NAP ${f(sel.toeNap)} m`]] }];
   }

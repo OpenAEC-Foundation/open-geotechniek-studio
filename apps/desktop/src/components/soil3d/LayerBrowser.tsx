@@ -7,6 +7,7 @@ import { useSubsurfaceStore } from "./subsurface/store";
 import { loadAquifers, loadGeotop, loadGroundwater } from "./subsurface/actions";
 import { AquiferList, GeotopLegend, GroundwaterLevels, WellList } from "./subsurface/GroundwaterPanel";
 import { OaIcon } from "../icons/oaIcon";
+import { PlacementLayerRows } from "../../placement/PlacementLayerRows";
 
 interface RowProps {
   label: string;
@@ -98,6 +99,8 @@ export function LayerBrowser({ model, docId, criterion, toeCount }: { model: Soi
 
       <LayerRow label={t("model3d.toes", "Paalpunten")} checked={s.showPileToes} onChange={toggle("showPileToes")}
         status={toeCount ? String(toeCount) : t("model3d.none", "geen")} />
+
+      <PlacementLayerRows docId={docId} />
 
       <LayerRow label={t("model3d.labels", "Labels")} hint={t("model3d.labelsHint", "Namen, NAP-schaal en noordpijl in het model")} checked={s.showLabels} onChange={toggle("showLabels")} />
 

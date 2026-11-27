@@ -12,6 +12,7 @@ import './CalculationsView.css';
 import './Worksheet.css';
 import './CalcSheet.css';
 import { OaIcon } from '../../../components/icons/oaIcon';
+import { PlacementBar } from '../../../placement/PlacementDialog';
 
 /**
  * Werkbalk voor één berekening, opgezet als rekenblad: links het
@@ -76,6 +77,7 @@ export function CalculationsView() {
             {mod.buildReport && <button role="tab" aria-selected={shownView === 'print'} className={shownView === 'print' ? 'active' : ''} onClick={() => setView('print')}>{t('view.tabs.print', 'Afdrukvoorbeeld')}</button>}
             {mod.SettingsPanel && <button role="tab" aria-selected={shownView === 'settings'} className={shownView === 'settings' ? 'active' : ''} onClick={() => setView('settings')}>{t('view.tabs.settings', 'Instellingen')}</button>}
           </div>
+          <PlacementBar calc={active} />
           <span className="cs-viewbar-status"><span className="cs-dot" aria-hidden="true" />{t('view.draft', 'Beta release')}</span>
         </div>
         {(shownView === 'sheet' || shownView === 'model') && <SheetPanes mod={mod} name={active.name} input={input} result={result} ctx={ctx} onChange={onChange} showOutput={shownView === 'sheet'} />}

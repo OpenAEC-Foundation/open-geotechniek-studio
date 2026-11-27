@@ -6,6 +6,7 @@ import type { SectionBox, Soil3DSettings } from "./useSoil3DStore";
 import type { SubsurfaceData } from "./subsurface/store";
 import { aquifers, cellValue } from "./subsurface/regis";
 import { LITHOCLASSES } from "./subsurface/geotop";
+import type { PlacedScene } from "../../placement/scene3d";
 
 export interface PileToe { cptId: string; name: string; toeNap: number }
 export interface Criterion { qcMpa: number; thicknessM: number; source: string | null }
@@ -63,7 +64,7 @@ export function autoCptRadius(model: SoilModel) {
   return Math.max(0.25, model.span / 90);
 }
 
-export function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[], activeId: string | null, textColor: string, sub: SubsurfaceData | null = null, clip: SectionBox | null = null) {
+export function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[], activeId: string | null, textColor: string, sub: SubsurfaceData | null = null, clip: SectionBox | null = null, placed: PlacedScene | null = null) {
   const root = new THREE.Group();
   const ex = s.exaggeration;
   const g = model.grid;
@@ -71,8 +72,10 @@ export function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[
 
   if (s.showModel) {
     const inside = (i: number, j: number, k: number) => {
-      if (!clip) return true;
       const e = g.east0 + (i + 0.5) * g.dx, n = g.north0 + (j + 0.5) * g.dy, z = g.topNap - (k + 0.5) * g.dz;
+      // Ontgraving van een geplaatste bouwkuip: die cellen zijn weg.
+      if (placed?.hideCell?.(e, n, z)) return false;
+      if (!clip) return true;
       return e >= clip.e0 && e <= clip.e1 && n >= clip.n0 && n <= clip.n1 && z >= clip.z0 && z <= clip.z1;
     };
     const cells = exposedCells(g, (z, i, j, k) => !s.hiddenZones.includes(z) && inside(i, j, k));
@@ -137,6 +140,8 @@ export function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[
   if (s.showBearing) { const m = surfaceMesh(model, "bearing", ex, BEARING_COLOR, 0.45); if (m) { m.userData = { kind: "bearing" }; root.add(m); } }
 
   if (sub) addSubsurface(root, model, s, sub, textColor, clip);
+  // Geplaatste berekeningen: palen, damwanden, ankers, funderingen (src/placement).
+  if (placed) root.add(placed.build(ex));
 
   // NAP-schaal op de zuidwesthoek.
   const x0 = g.east0, z0 = -g.north0, bottom = g.topNap - g.nz * g.dz;

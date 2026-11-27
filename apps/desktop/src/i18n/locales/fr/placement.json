@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Pieux",
+    "walls": "Rideaux de palplanches",
+    "pit": "Excavation",
+    "anchors": "Tirants et butons",
+    "footings": "Fondations superficielles",
+    "collapse": "Replier",
+    "expand": "Déplier",
+    "hint": "Calculs avec un emplacement dans le projet",
+    "title": "Calculs placés",
+    "none": "aucun",
+    "empty": "Placez un calcul avec le bouton Placer dans le calcul."
+  },
+  "props": {
+    "top": "Tête de pieu",
+    "assumed": "supposé",
+    "toe": "Pointe de pieu",
+    "size": "Dimension",
+    "count": "Nombre de pieux",
+    "wallTop": "Haut du rideau",
+    "wallToe": "Pied",
+    "excavation": "Excavation",
+    "profile": "Profil",
+    "perimeter": "Périmètre",
+    "length": "Longueur",
+    "supports": "Tirants/butons",
+    "base": "Base de fondation",
+    "width": "Largeur",
+    "open": "Ouvrir le calcul"
+  },
+  "bar": {
+    "placeHint": "Placer ce calcul sur la carte et dans le modèle 3D",
+    "edit": "Placement",
+    "place": "Placer",
+    "notPlaced": "Placez d'abord le calcul",
+    "show3d": "Afficher dans le modèle 3D"
+  },
+  "dialog": {
+    "title": "Placement",
+    "close": "Fermer",
+    "introPiles": "Un ou plusieurs pieux en coordonnées RD. Tête et pointe proviennent du calcul.",
+    "introWall": "Une ligne de palplanches ou une fouille fermée en RD. Haut, pied, excavation et tirants proviennent du calcul.",
+    "introFooting": "Centre et direction de la semelle filante ou isolée. Dimensions et profondeur proviennent du calcul.",
+    "incomplete": "Les données du calcul ne sont pas encore complètes ; le modèle l'affiche dès que tête/haut et pointe/pied sont connus.",
+    "drawWall": "Tracez la ligne en cliquant des points :",
+    "drawPoints": "Cliquez l'emplacement :",
+    "onMap": "Sur la carte",
+    "onDrawing": "Sur le plan de situation",
+    "clear": "Effacer le placement",
+    "done": "Terminé",
+    "atCpt": "près de {{id}}"
+  },
+  "table": {
+    "pile": "Pieu",
+    "cpt": "Sondage",
+    "remove": "Supprimer",
+    "noPiles": "Aucun pieu placé.",
+    "addCoord": "+ Coordonnée",
+    "addAtCpt": "+ Près d'un sondage…",
+    "point": "Point",
+    "noPoints": "Aucun point. Tracez la ligne ou ajoutez des points.",
+    "addPoint": "+ Point",
+    "atCpt": "Près d'un sondage…"
+  },
+  "wall": {
+    "closed": "Fouille fermée",
+    "side": "Excavation",
+    "inside": "à l'intérieur de la fouille",
+    "outside": "à l'extérieur de la fouille",
+    "left": "à gauche de la ligne",
+    "right": "à droite de la ligne",
+    "perimeter": "périmètre",
+    "length": "longueur",
+    "perSide": "Calcul par côté",
+    "sideCol": "Côté",
+    "lengthCol": "Longueur",
+    "calcCol": "Calcul",
+    "thisCalc": "ce calcul"
+  },
+  "footing": {
+    "angle": "Rotation de l'axe long [°]",
+    "angleHint": "depuis l'axe RD x, sens antihoraire",
+    "length": "Longueur de semelle [m]"
+  },
+  "map": {
+    "clickToOpen": "cliquer pour ouvrir le calcul"
+  },
+  "draw": {
+    "hintWall": "Cliquez les sommets du rideau. Double-clic ou Terminé finit une ligne ; Fermer en fait une fouille.",
+    "hintPiles": "Cliquez un emplacement par pieu. Terminé ou Entrée finit.",
+    "hintFooting": "Cliquez le centre de la fondation.",
+    "points": "{{n}} points",
+    "undo": "Retour",
+    "close": "Fermer la fouille",
+    "done": "Terminé",
+    "cancel": "Annuler"
+  }
+}

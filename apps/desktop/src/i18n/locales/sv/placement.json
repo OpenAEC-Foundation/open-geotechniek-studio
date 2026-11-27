@@ -1,0 +1,99 @@
+{
+  "layers": {
+    "piles": "Pålar",
+    "walls": "Spontväggar",
+    "pit": "Schakt",
+    "anchors": "Stag och stämp",
+    "footings": "Plattgrundläggning",
+    "collapse": "Fäll ihop",
+    "expand": "Fäll ut",
+    "hint": "Beräkningar med en plats i projektet",
+    "title": "Placerade beräkningar",
+    "none": "inga",
+    "empty": "Placera en beräkning med knappen Placera i beräkningen."
+  },
+  "props": {
+    "top": "Pålhuvud",
+    "assumed": "antaget",
+    "toe": "Pålspets",
+    "size": "Mått",
+    "count": "Antal pålar",
+    "wallTop": "Överkant vägg",
+    "wallToe": "Fot",
+    "excavation": "Schakt",
+    "profile": "Profil",
+    "perimeter": "Omkrets",
+    "length": "Längd",
+    "supports": "Stag/stämp",
+    "base": "Grundläggningsnivå",
+    "width": "Bredd",
+    "open": "Öppna beräkning"
+  },
+  "bar": {
+    "placeHint": "Placera beräkningen på kartan och i 3D-modellen",
+    "edit": "Placering",
+    "place": "Placera",
+    "notPlaced": "Placera beräkningen först",
+    "show3d": "Visa i 3D-modell"
+  },
+  "dialog": {
+    "title": "Placering",
+    "close": "Stäng",
+    "introPiles": "En eller flera pålar i RD-koordinater. Huvud och spets kommer från beräkningen.",
+    "introWall": "En sponlinje eller en sluten byggrop i RD. Överkant, fot, schakt och stag kommer från beräkningen.",
+    "introFooting": "Mittpunkt och riktning för grundsulan eller plattan. Mått och djup kommer från beräkningen.",
+    "incomplete": "Beräkningens indata är inte fullständiga än; modellen visar den när huvud/överkant och spets/fot är kända.",
+    "drawWall": "Rita linjen genom att klicka punkter:",
+    "drawPoints": "Klicka på platsen:",
+    "onMap": "På kartan",
+    "onDrawing": "På situationsplanen",
+    "clear": "Rensa placering",
+    "done": "Klar",
+    "atCpt": "vid {{id}}"
+  },
+  "table": {
+    "pile": "Påle",
+    "cpt": "Sondering",
+    "remove": "Ta bort",
+    "noPiles": "Inga pålar placerade än.",
+    "addCoord": "+ Koordinat",
+    "addAtCpt": "+ Vid sondering…",
+    "point": "Punkt",
+    "noPoints": "Inga punkter än. Rita linjen eller lägg till punkter.",
+    "addPoint": "+ Punkt",
+    "atCpt": "Vid sondering…"
+  },
+  "wall": {
+    "closed": "Sluten byggrop",
+    "side": "Schakt",
+    "inside": "inuti gropen",
+    "outside": "utanför gropen",
+    "left": "till vänster om linjen",
+    "right": "till höger om linjen",
+    "perimeter": "omkrets",
+    "length": "längd",
+    "perSide": "Beräkning per sida",
+    "sideCol": "Sida",
+    "lengthCol": "Längd",
+    "calcCol": "Beräkning",
+    "thisCalc": "denna beräkning"
+  },
+  "footing": {
+    "angle": "Vridning av längdaxel [°]",
+    "angleHint": "från RD-x, moturs",
+    "length": "Sulans längd [m]"
+  },
+  "map": {
+    "clickToOpen": "klicka för att öppna beräkningen"
+  },
+  "draw": {
+    "hintWall": "Klicka väggens hörnpunkter. Dubbelklick eller Klar avslutar som linje; Stäng gör den till en byggrop.",
+    "hintPiles": "Klicka en plats per påle. Klar eller Enter avslutar.",
+    "hintFooting": "Klicka grundläggningens mittpunkt.",
+    "points": "{{n}} punkter",
+    "undo": "Tillbaka",
+    "close": "Stäng byggrop",
+    "done": "Klar",
+    "cancel": "Avbryt"
+  }
+}

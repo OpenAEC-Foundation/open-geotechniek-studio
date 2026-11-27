@@ -8,6 +8,7 @@ import type { SubsurfaceData } from "./subsurface/store";
 import { aquifers } from "./subsurface/regis";
 import { selectionBox, selectionFromHit, type Selection } from "./selection";
 import { OaIcon } from "../icons/oaIcon";
+import type { PlacedScene } from "../../placement/scene3d";
 import { saveBlobAsFile } from "../../utils/browserSave";
 
 type Face = keyof SectionBox;
@@ -58,6 +59,8 @@ export interface Viewport3DProps {
   cameraRequest: { view: CameraView | null; seq: number };
   /** Teller: het actieve venster bewaart zijn beeld als PNG. */
   exportRequest: number;
+  /** Geplaatste berekeningen (palen, damwanden, funderingen) en de ontgraving. */
+  placed?: PlacedScene | null;
 }
 
 interface Rig {
@@ -173,9 +176,9 @@ export function Viewport3D(p: Viewport3DProps) {
     const r = rig.current;
     if (!r) return;
     if (r.content) { r.scene.remove(r.content); disposeTree(r.content); r.content = null; }
-    r.content = buildContent(p.model, p.settings, p.toes, p.activeCptId, p.textColor, p.subsurface, clip);
+    r.content = buildContent(p.model, p.settings, p.toes, p.activeCptId, p.textColor, p.subsurface, clip, p.placed ?? null);
     r.scene.add(r.content);
-  }, [p.model, p.settings, p.toes, p.activeCptId, p.textColor, p.subsurface, clip]);
+  }, [p.model, p.settings, p.toes, p.activeCptId, p.textColor, p.subsurface, clip, p.placed]);
 
   // Section box (lijnen en grepen) en het selectiekader in de overlay.
   useEffect(() => {
