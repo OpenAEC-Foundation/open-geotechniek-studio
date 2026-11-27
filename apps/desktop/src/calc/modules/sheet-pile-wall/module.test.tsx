@@ -126,7 +126,7 @@ describe("geometrie van de tekeningen", () => {
     expect(profilePlan(z, 1)[2].a1).toBeCloseTo(1, 12);
     const scene = wallScene(wallExample(), ok(wallExample()));
     expect(scene.construction).toBe("sheet-pile"); expect(scene.wallHeightM).toBe(0.42); expect(scene.plates.length).toBeGreaterThan(8); expect(scene.posts).toHaveLength(0);
-    expect(scene.anchors.length).toBeGreaterThan(0); expect(scene.anchors[0]).toMatchObject({ levelNap: -1, angleDeg: 30 });
+    expect(scene.anchors.length).toBeGreaterThan(0); expect(scene.support).toMatchObject({ kind: "tie", levelNap: -1, angleDeg: 30 }); expect(scene.slip).toBeNull();
     expect(scene.high.layers.map((l) => l.name)).toEqual(["Zand, matig", "Zand, vast"]); expect(scene.low.layers[0].topNap).toBe(-4);
     expect(wallScene(wallExample(), ok(wallExample()), ok(wallExample()).uls).low.surfaceNap).toBeCloseTo(-4.3, 12);
   });

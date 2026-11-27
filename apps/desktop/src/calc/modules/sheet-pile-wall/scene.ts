@@ -2,7 +2,7 @@
 // Zuivere functies; de tekening zelf staat in SectionDrawing.tsx, WallScene3D.tsx en report.ts.
 import type { SheetPileProfile } from "../../library/sheetPiles";
 import { getSoilType } from "../spread-foundation/catalog";
-import { hasAnchor, normalizeWallInput, type Construction, type ScenarioLayer, type Side, type WallInput, type WallOk, type WallRun } from "./compute";
+import { anchorAngle, hasAnchor, normalizeWallInput, type AnchorKind, type Construction, type ScenarioLayer, type Side, type WallInput, type WallOk, type WallRun } from "./compute";
 
 /** Eén recht stuk plaat in de plattegrond: van (a, x) naar (a, x) met een dikte; a langs de wand, x dwars erop [m]. */
 export interface PlateSegment { a0: number; x0: number; a1: number; x1: number; thicknessM: number; kind: "flange" | "web" | "plank" }
@@ -67,7 +67,14 @@ export interface WallScene {
   high: { surfaceNap: number; waterNap: number; layers: SceneLayer[] };
   low: { surfaceNap: number; waterNap: number; originalNap: number; layers: SceneLayer[] };
   surchargeKpa: number;
-  anchors: Array<{ alongM: number; levelNap: number; angleDeg: number; lengthM: number }>;
+  /** Breedte van het grondblok aan de hoge zijde [m]; groter dan de halve breedte als een groutanker dat vraagt. */
+  extentHighM: number;
+  /** De steun in de doorsnede: getekende vrije lengte en, bij een groutanker, het groutlichaam op schaal. */
+  support: { kind: AnchorKind; levelNap: number; angleDeg: number; freeM: number; groutM: number; groutDiameterM: number } | null;
+  /** Actief glijvlak vanaf de teen (alleen bij een groutanker): hoek met de horizontaal en het punt op het maaiveld. */
+  slip: { angleDeg: number; reachM: number } | null;
+  /** Plaatsen van de ankers langs de wand [m]. */
+  anchors: number[];
   profileName: string;
 }
 
@@ -85,16 +92,24 @@ export function wallScene(raw: WallInput, r: WallOk, run: WallRun = r.sls): Wall
   const i = normalizeWallInput(raw), s = run.scenario, height = i.wallTopNap - i.toeNap, sec = r.section, kind = sec.construction;
   const b = (sec.profile?.widthMm ?? 600) / 1000, period = kind === "posts" ? i.posts.spacingM : kind === "plank" ? 3 * PLANK_WIDTH_M : sec.profile?.shape === "hat" ? b : 2 * b;
   const length = Math.max(3 * period, Math.min(8, Math.ceil((0.6 * height) / period) * period)), front = kind === "posts" ? period / 2 : period;
-  const bottom = i.toeNap - Math.max(0.5, 0.12 * height), half = Math.max(1.5, Math.min(9, 0.55 * height));
-  const anchors: WallScene["anchors"] = [];
-  if (hasAnchor(i)) for (let a = Math.min(i.anchor.spacingM, length) / 2; a < length; a += i.anchor.spacingM) anchors.push({ alongM: a, levelNap: i.anchor.levelNap, angleDeg: i.anchor.angleDeg, lengthM: half * 0.9 });
+  const bottomWall = i.toeNap - Math.max(0.5, 0.12 * height), half = Math.max(1.5, Math.min(9, 0.55 * height));
+  const anchors: number[] = [], an = i.anchor, anchored = hasAnchor(i), akind = an.kind ?? "tie", g = an.grout!;
+  if (anchored) for (let a = Math.min(an.spacingM, length) / 2; a < length; a += an.spacingM) anchors.push(a);
+  const support: WallScene["support"] = !anchored ? null : akind === "grout"
+    ? { kind: akind, levelNap: an.levelNap, angleDeg: an.angleDeg, freeM: g.freeLengthM, groutM: g.groutLengthM, groutDiameterM: g.diameterMm / 1000 }
+    : { kind: akind, levelNap: an.levelNap, angleDeg: anchorAngle(an), freeM: Math.min(half * 0.9, 3.2), groutM: 0, groutDiameterM: 0 };
+  const reach = support && akind === "grout" ? (support.freeM + support.groutM) * Math.cos((support.angleDeg * Math.PI) / 180) : 0;
+  const deepest = support && akind === "grout" ? an.levelNap - (support.freeM + support.groutM) * Math.sin((support.angleDeg * Math.PI) / 180) : i.toeNap;
+  const bottom = Math.min(bottomWall, deepest - 1);
+  const slip = r.grout ? { angleDeg: r.grout.slipAngleDeg, reachM: (Math.min(i.wallTopNap, s.high.surfaceNap) - i.toeNap) / Math.tan((r.grout.slipAngleDeg * Math.PI) / 180) } : null;
   const posts: WallScene["posts"] = [];
   if (kind === "posts") for (let a = period / 2; a < length + front; a += period) posts.push({ alongM: a, shape: i.posts.shape, sizeM: i.posts.sizeMm / 1000 });
   return {
+    extentHighM: Math.max(half, reach + 1), support, slip,
     construction: kind, halfWidthM: half, lengthM: length, frontM: front, topNap: Math.max(i.wallTopNap, s.high.surfaceNap), bottomNap: bottom, wallTopNap: i.wallTopNap, toeNap: i.toeNap,
     wallHeightM: sec.depthM, plates: kind === "sheet-pile" && sec.profile ? profilePlan(sec.profile, length + front) : kind === "plank" ? plankPlan(sec.depthM, length + front) : [],
     posts, boards: kind === "posts" ? { thicknessM: i.posts.boardMm / 1000, bottomNap: i.posts.boardBottomNap } : null,
-    waling: kind === "plank" && hasAnchor(i) ? { levelNap: i.anchor.levelNap, sizeM: Math.max(0.08, 2 * sec.depthM) } : null,
+    waling: anchored && (kind === "plank" || akind === "grout") ? { levelNap: an.levelNap, sizeM: kind === "plank" ? Math.max(0.08, 2 * sec.depthM) : 0.2 } : null,
     high: { surfaceNap: s.high.surfaceNap, waterNap: s.high.waterNap, layers: sceneLayers(s.high, bottom) },
     low: { surfaceNap: s.low.surfaceNap, waterNap: s.low.waterNap, originalNap: i.groundLowNap, layers: sceneLayers(s.low, bottom) },
     surchargeKpa: s.high.surchargeKpa, anchors, profileName: sec.label,
