@@ -5,6 +5,7 @@ import type {AnalysisMode,LayerCorrection,UltimateProfile,SpringState,Convergenc
 import { sectionCapacity, sectionStiffness, type PileSection } from './section';
 import { springValue } from './soil';
 import { ct } from '../../i18n';
+import { materialCheck, type MaterialInput, type MaterialResult } from './material-check';
 export interface LateralLayer {
   topM:number; bottomM:number; springId:string; manualKhKnM3:number;
   frictionDeg:number; netPressureKpa:number;
@@ -24,6 +25,12 @@ export interface LateralInput {
   puDefaults?:Record<string,UltimateProfile>;
   /** Paaltabel: veel palen met eigen kopbelasting, lengte of maat. */
   pileTable?:import('./pile-table').LateralTableConfig;
+  /** Aanvullende invoer voor de materiaaltoetsing (beugels, boorpaal); zonder deze invoer verandert geen bestaande uitkomst. */
+  material?:MaterialInput;
+  /** Paalsysteem zoals in de module paaldraagvermogen (prefab, vibro, boorpaal, ...); bepaalt welke doorsneden passen. */
+  pileSystemId?:string;
+  /** Gegevens overgenomen uit een paaldraagvermogenberekening. */
+  inherited?:import('./pile-link').InheritedFrom;
 }
 export const lateralExample:LateralInput = {
   lengthM:12,maxElementM:.5,headForceKn:30,headMomentKnM:20,nEdKn:0,
@@ -42,6 +49,8 @@ export type LateralResult = {ok:false;error:string} | {
   maxMomentKnM:number;maxShearKn:number;maxDisplacementMm:number;sectionUtilization:number|null;
   resolvedLayers:Array<LateralLayer & {khKnM3:number;ka:number;lineLoadKnM:number;lineSpringKnM2:number}>;
   analysisMode:AnalysisMode;springs:SpringState[];convergence:ConvergenceInfo;layering:EquivalentLayer[];
+  /** Materiaaltoetsing per paaltype; null met materialError als die niet kon worden opgesteld. */
+  material:MaterialResult|null;materialError:string|null;
 };
 export function computeLateral(input:LateralInput):LateralResult {
   try {
@@ -79,10 +88,14 @@ export function computeLateral(input:LateralInput):LateralResult {
     const maxMomentKnM=Math.max(...beam.samples.map(v=>Math.abs(v.momentKnM)));
     let capacity:ReturnType<typeof sectionCapacity>|null=null,capacityError:string|null=null;
     try {capacity=sectionCapacity(input.section,input.nEdKn);} catch(e){capacityError=e instanceof Error?e.message:String(e);}
-    return {ok:true,beam,section,capacity,capacityError,maxMomentKnM,analysisMode,springs,convergence,layering,
+    const sectionUtilization=capacity?(capacity.mRdKnM>1e-8?maxMomentKnM/capacity.mRdKnM:maxMomentKnM>1e-8?Infinity:0):null;
+    // De materiaaltoetsing leest alleen uit; verplaatsing, snedekrachten en de N–M-toets blijven zoals ze zijn.
+    let material:MaterialResult|null=null,materialError:string|null=null;
+    try {material=materialCheck(input,beam.samples,{uc:sectionUtilization,mRdKnM:capacity?.mRdKnM??null,error:capacityError});} catch(e){materialError=e instanceof Error?e.message:String(e);}
+    return {ok:true,beam,section,capacity,capacityError,maxMomentKnM,analysisMode,springs,convergence,layering,material,materialError,
       maxShearKn:Math.max(...beam.samples.map(v=>Math.abs(v.shearKn))),
       maxDisplacementMm:1000*Math.max(...beam.samples.map(v=>Math.abs(v.yM))),
-      sectionUtilization:capacity?(capacity.mRdKnM>1e-8?maxMomentKnM/capacity.mRdKnM:maxMomentKnM>1e-8?Infinity:0):null,
+      sectionUtilization,
       resolvedLayers};
   } catch(e) {return {ok:false,error:e instanceof Error?e.message:String(e)};}
 }

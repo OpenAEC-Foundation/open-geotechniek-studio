@@ -291,3 +291,62 @@ doorsnedetoets, beddingswaarden uit de tabel, paaltabel) is geen fout gevonden.
   breedte, zonder ruimtelijke correctie) zijn aannames, geen geverifieerde
   uitkomsten.
 - **Grondwaterstand** zit niet in de invoer en dus niet in de 3D-weergave.
+
+## Materiaaltoetsing (material-check.ts)
+
+De materiaaltoetsing leest de snedekrachten uit en verandert verplaatsing,
+snedekrachten en de N–M-toets niet; `material-check.test.ts` legt de waarden
+van vóór de toevoeging vast voor de vijf doorsnedevarianten (tien gevallen).
+
+**Geen van de formules is tegen de normtekst gelegd.** De normen zijn niet
+openbaar; alles komt uit kennis van de norm. Elke toets heeft een geval dat met
+de hand is nagerekend (de handberekening staat als commentaar bij de test), maar
+dat toetst de uitwerking, niet of de formule en de waarden van de Nederlandse
+bijlage juist zijn overgenomen. Vóór gebruik buiten een concept moet iemand de
+onderstaande punten naast de normtekst leggen.
+
+| Toets | Bron zoals gebruikt | Niet gecontroleerd tegen de tekst |
+|---|---|---|
+| Beton: V_Rd,c | NEN-EN 1992-1-1 art. 6.2.2 (1), formule (6.2) | C_Rd,c = 0,18/γc, k_1 = 0,15 en v_min in de Nederlandse bijlage |
+| Beton: V_Rd,s, V_Rd,max | art. 6.2.3 (3), formules (6.8), (6.9) | ν_1, α_cw, grenzen van cot θ in de Nederlandse bijlage |
+| Beton: beugels | art. 9.2.2 (5), (6) | of deze balkregels voor palen gelden; art. 9.5.3 is niet opgenomen |
+| Beton: A_s,min, A_s,max | art. 9.5.2 (2), (3) | waarden in de Nederlandse bijlage |
+| Beton: boorpaal | art. 9.8.5 (3) tabel 9.6N, (4) | waarden in de Nederlandse bijlage; staafafstand niet getoetst |
+| Beton rond: b_w en d | Clarke & Birjandi (1993), Feltham (2004) | de publicaties zelf; staat niet in de norm |
+| Beton rond: beugels π/4 | Priestley, Seible & Calvi (1996) | de publicatie zelf; staat niet in de norm |
+| Buis: klasse | NEN-EN 1993-1-1 tabel 5.2 (50, 70, 90 ε²) | de tabel zelf |
+| Buis: N, M, V | art. 6.2.3–6.2.6, A_v = 2A/π | γ_M0 = 1,0 in de Nederlandse bijlage |
+| Buis: interactie | art. 6.2.8–6.2.10 | de norm van 2005 geeft voor buizen geen formule voor M_N,Rd; gebruikt is de exacte plastische interactie, en (1 − ρ) op de hele doorsnede |
+| Gevulde buis | NEN-EN 1994-1-1 art. 6.7.1, 6.7.3.2, 6.7.3.6, tabel 6.3 | α_M, de grenzen van δ, D/t ≤ 90·235/f_y, 6 % wapening |
+| Damwand | NEN-EN 1993-5 art. 5.2.2, 5.2.3 | A_V per profielvorm, de drempels 0,10 en 0,25 en de factoren 1,11 en 1,33; β_B en β_D zijn invoer |
+| Sterkteklassen | NEN-EN 1992-1-1 tabel 3.1; NEN-EN 1993-1-1 tabel 3.1 | f_y bij wanddikten boven 40 mm |
+
+Keuzes aan de veilige kant: σ_cp alleen als verlaging in α_cw; bij
+V_Ed > 0,5 V_pl,Rd de vloeigrens van de hele staaldoorsnede verlaagd; geen
+omsnoering bij de gevulde buis; damwand zonder bekende klasse of W_pl elastisch.
+
+Niet mogelijk en daarom niet gedaan: de scheurwijdte (art. 7.3). De module kent
+één belastingsgeval, dat als rekenwaarde wordt getoetst; een quasi-blijvende of
+frequente combinatie zit niet in de invoer.
+
+Buiten de toetsing: doorsnedeklasse 4 (buis en damwand), knik, P–Δ, verankering
+en lassen, schuifverbinding van de gevulde buis, plooi van het damwandlijf (de
+lijfhoek staat niet in de bibliotheek) en hout.
+
+## Damwandprofiel en koppeling met het paaldraagvermogen
+
+- **Damwandprofiel.** I, W, A, klasse en staalsoort komen uit
+  `calc/library/sheetPiles`, per m doorgaande wand. De rekenbreedte is 1 m wand
+  of één plankbreedte; EI = β_D·E·I·b. De grondveren gebruiken de werkende
+  breedte: 1,00 m bij een doorgaande wand (geen spreiding opzij), de
+  plankbreedte bij een losse plank. Voor een losse U-plank zijn de
+  wandwaarden te gunstig; dat moet de gebruiker met β_B en β_D of met
+  fabriekswaarden inrekenen. Het is geen damwandberekening: de veren zijn
+  tweezijdig gelijk, zonder actieve en passieve gronddruk, anker of fasering.
+  De tekening en het 3D-beeld zijn schematisch (flensbreedte en lijfhoek staan
+  niet in de bibliotheek).
+- **Overnemen uit een paaldraagvermogenberekening** (`pile-link.ts`). De
+  grondsoort van de verticale berekening zegt niet hoe vast de laag is: zand
+  wordt "matig", klei en veen "slap" (aanname, door de gebruiker na te lopen).
+  De verticale berekening kent geen p_u; de overgenomen berekening rekent
+  daarom lineair. Grondwaterstand en maaiveld worden vermeld maar niet gebruikt.

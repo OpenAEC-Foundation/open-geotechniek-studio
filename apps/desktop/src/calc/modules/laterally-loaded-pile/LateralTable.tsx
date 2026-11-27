@@ -25,7 +25,7 @@ export function LateralTable({ input, onChange, onOpen, focus, onFocus }: TableP
   const [lightest, setLightest] = useState<Record<string, { sizeMm: number; summary: RowSummary } | null> | null>(null);
   const examples = new Set(config.examples ?? []);
   const kind = input.section.kind, sizeWord = kind === 'concrete-square' ? t('table.side', 'Zijde') : t('table.diameter', 'Diameter');
-  const worstUc = Math.max(...results.map((x) => x.summary.uc ?? 0)), worstY = Math.max(...results.map((x) => Math.abs(x.summary.yHeadMm) || 0));
+  const worstUc = Math.max(...results.map((x) => x.summary.ucGov ?? 0)), worstY = Math.max(...results.map((x) => Math.abs(x.summary.yHeadMm) || 0));
   const passing = results.filter((x) => x.summary.passes).length;
   const open = (row: LateralRow) => { onChange({ ...rowInput(input, row), pileTable: { ...config, rows } }); onOpen(); };
 
@@ -54,11 +54,11 @@ export function LateralTable({ input, onChange, onOpen, focus, onFocus }: TableP
         <td><NumberInput label={`M ${row.name} [kNm]`} value={row.headMomentKnM} onChange={(v) => setRow(row.id, { headMomentKnM: v })} /></td>
         <td><NumberInput label={`N ${row.name} [kN]`} value={row.nEdKn} onChange={(v) => setRow(row.id, { nEdKn: v })} /></td>
         {s.ok ? <>
-          <td className={`num ${s.uc !== null && s.uc <= 1 ? 'is-ok' : 'is-bad'}`}>{s.uc === null ? '—' : n(s.uc, 2)}</td>
+          <td className={`num ${s.ucGov !== null && s.ucGov <= 1 ? 'is-ok' : 'is-bad'}`}>{s.ucGov === null ? '—' : n(s.ucGov, 2)}</td>
           <td className={`num${config.maxDisplacementMm ? (Math.abs(s.yHeadMm) <= config.maxDisplacementMm ? ' is-ok' : ' is-bad') : ''}`}>{n(s.yHeadMm, 1)}</td><td className="num">{n(s.mMaxKnM)}</td><td className="num">{n(s.mNap, 2)}</td><td className="num">{n(s.vMaxKn)}</td>
           <td className="num">{s.mobMax === null ? '—' : `${n(s.mobMax * 100, 0)} %`}</td>
         </> : <td colSpan={6} className="lat-table-error" title={s.error}>{s.error}</td>}
-        {lightest && <td className="num">{lightest[row.id] ? <button type="button" className="lat-mini" onClick={(e) => { e.stopPropagation(); setRow(row.id, { diameterMm: lightest[row.id]!.sizeMm }); }} title={`u.c. ${n(lightest[row.id]!.summary.uc ?? NaN, 2)} · y ${n(lightest[row.id]!.summary.yHeadMm)} mm`}>{t('table.adopt', '{{size}} overnemen', { size: lightest[row.id]!.sizeMm })}</button> : t('table.none', 'geen')}</td>}
+        {lightest && <td className="num">{lightest[row.id] ? <button type="button" className="lat-mini" onClick={(e) => { e.stopPropagation(); setRow(row.id, { diameterMm: lightest[row.id]!.sizeMm }); }} title={`u.c. ${n(lightest[row.id]!.summary.ucGov ?? NaN, 2)} · y ${n(lightest[row.id]!.summary.yHeadMm)} mm`}>{t('table.adopt', '{{size}} overnemen', { size: lightest[row.id]!.sizeMm })}</button> : t('table.none', 'geen')}</td>}
         <td><NumberInput label={t('table.countAria', 'Aantal {{name}}', { name: row.name })} value={row.count ?? 1} onChange={(v) => setRow(row.id, { count: Math.max(1, Math.round(v)) })} /></td>
         <td><NumField aria-label={t('table.lengthAria', 'Lengte {{name}} [m]', { name: row.name })} placeholder={n(input.lengthM, 2)} value={row.lengthM ?? ''} onChange={(e) => setRow(row.id, { lengthM: e.target.value === '' ? undefined : Number(e.target.value) })} /></td>
         <td><NumField aria-label={`${sizeWord} ${row.name} [mm]`} placeholder={String(input.section.diameterMm)} value={row.diameterMm ?? ''} onChange={(e) => setRow(row.id, { diameterMm: e.target.value === '' ? undefined : Number(e.target.value) })} /></td>

@@ -132,3 +132,7 @@
 .lateral-nm-area { fill: color-mix(in srgb, var(--oa-info) 12%, transparent); stroke: var(--oa-info); stroke-width: 1.4; }
 .lateral-nm-ok { fill: var(--oa-success); } .lateral-nm-fail { fill: var(--oa-error); }
 .lateral-nm figcaption { font-size: 11px; color: var(--oa-text-secondary); }
+/* Diagrammen als in een constructieberekening: nullijn, arcering, plus en min in een rondje. */
+.pile-diagrams .pile-axis { stroke: var(--oa-text-secondary); stroke-width: .8; }
+.pile-plusminus circle { fill: var(--oa-panel); stroke: var(--oa-text); stroke-width: 1.1; }
+.pile-plusminus line { stroke: var(--oa-text); stroke-width: 1.4; }

@@ -16,10 +16,19 @@ const lateralModuleTyped:CalcModule<LateralInput,LateralResult>={
   norm:'CUR166 initiële bedding · Georgiadis-laagcorrectie · projectveerwet',status:'experimental',
   defaultInput:()=>structuredClone(lateralExample),compute:(input)=>computeLateral(input),InputPanel:LateralInputPanel,VisualPanel:LateralExplorer,ResultPanel:LateralSheet,SettingsPanel:LateralSettingsPanel,
   table:{label:'Paaltabel',Panel:LateralTable,items:(input)=>(input.pileTable?.rows?.length?input.pileTable.rows:defaultRows(input)).map(r=>({id:r.id,label:r.name}))},
-  statusLine:r=>r.ok&&r.sectionUtilization!==null?{text:`u.c. ${f(r.sectionUtilization)}`,ok:r.sectionUtilization<=1}:{text:r.ok?ct('calcLateral','module.statusConcept','Concept · y {{y}} mm',{y:f(r.maxDisplacementMm)}):r.error,ok:false,pending:true},
+  // Statusregel: de maatgevende u.c. van de materiaaltoetsing met de naam van die toets.
+  statusLine:r=>{
+    if(!r.ok)return {text:r.error,ok:false,pending:true};
+    const m=r.material,g=m?.governing;
+    if(m?.outside)return {text:ct('calcLateral','module.statusOutside','Valt buiten de materiaaltoetsing'),ok:false};
+    if(m&&g&&m.ok!==null)return {text:`u.c. ${g.uc===Infinity?'∞':f(g.uc)} · ${ct('calcLateral',`material.rows.${g.id}`,g.label)}`,ok:m.ok};
+    if(r.sectionUtilization!==null)return {text:`u.c. ${f(r.sectionUtilization)}`,ok:r.sectionUtilization<=1};
+    return {text:ct('calcLateral','module.statusConcept','Concept · y {{y}} mm',{y:f(r.maxDisplacementMm)}),ok:false,pending:true};
+  },
   buildReport:(input,r,ctx)=>buildLateralReport(input,r,ctx),reportFileName:()=>lateralReportFileName(),
   checks:(input,r)=>{if(!r.ok)return [];const s=lateralSummary(input,r);return [
     {label:ct('calcLateral','module.checks.yHead','y kop'),value:`${f(s.yHeadMm)} mm`},{label:'M max',value:`${f(s.mEd)} kNm`},{label:'V max',value:`${f(Math.max(Math.abs(s.V.max.v),Math.abs(s.V.min.v)))} kN`},
-    ...(s.uc!==null&&r.capacity?[{label:ct('calcLateral','module.checks.section','doorsnede'),value:`MRd ${f(r.capacity.mRdKnM)} kNm`,uc:s.uc}]:[])];},
+    ...(s.uc!==null&&r.capacity?[{label:ct('calcLateral','module.checks.section','doorsnede'),value:`MRd ${f(r.capacity.mRdKnM)} kNm`,uc:s.uc}]:[]),
+    ...(r.material?.governing&&!r.material.outside?[{label:ct('calcLateral','module.checks.material','materiaal'),value:ct('calcLateral',`material.rows.${r.material.governing.id}`,r.material.governing.label),uc:r.material.governing.uc}]:[])];},
 };
 export const laterallyLoadedPileModule=lateralModuleTyped as unknown as CalcModule;

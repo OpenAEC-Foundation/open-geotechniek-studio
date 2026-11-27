@@ -11,6 +11,8 @@ import { soilColor } from './report-data';
 import { soilKey } from './soil';
 import { SpringLegend } from './SpringLegend';
 import { mobilisation, mobilisationMix, soilStroke, springLength } from './spring-visual';
+import { findSheetPile } from '../../library/sheetPiles';
+import { sheetOutline } from './sheet-shape';
 
 interface Props {
   input:LateralInput;beam:BeamResult;springs:SpringState[];selectedId:string|undefined;
@@ -56,6 +58,21 @@ export function pileGeometry(sourceSamples:BeamResult['samples'],scale:number,ra
   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));geometry.setIndex(indices);
   if(square){const flat=geometry.toNonIndexed();geometry.dispose();flat.computeVertexNormals();return flat;}
   geometry.computeVertexNormals();return geometry;
+}
+
+/** Damwandprofiel: de hartlijn (m; x langs de wand, y in de buigrichting) langs de verplaatsingslijn getrokken. */
+export function sheetGeometry(sourceSamples:BeamResult['samples'],scale:number,outline:Array<{x:number;y:number}>) {
+  const samples:BeamResult['samples']=[];
+  for(const sample of sourceSamples)if(!samples.length||Math.abs(sample.zM-samples[samples.length-1].zM)>1e-10)samples.push(sample);
+  const vertices:number[]=[],indices:number[]=[],n=outline.length;
+  for(let j=0;j<samples.length;j++) {
+    const p=samples[j],before=samples[Math.max(0,j-1)],after=samples[Math.min(samples.length-1,j+1)];
+    const dx=(after.yM-before.yM)*scale,dz=after.zM-before.zM,normal=new THREE.Vector3(dz,dx,0).normalize();
+    for(const o of outline)vertices.push(p.yM*scale+normal.x*o.y,-p.zM+normal.y*o.y,o.x);
+  }
+  for(let j=0;j<samples.length-1;j++)for(let k=0;k<n-1;k++) {const a=j*n+k,b=a+1,c=b+n,d=a+n;indices.push(a,b,d,b,c,d);}
+  const indexed=new THREE.BufferGeometry();indexed.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));indexed.setIndex(indices);
+  const flat=indexed.toNonIndexed();indexed.dispose();flat.computeVertexNormals();return flat;
 }
 
 /** Elke hoeveelste veer zichtbaar is: ~12 bij de startafstand, meer bij inzoomen. */
@@ -104,7 +121,9 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     const steel=new THREE.MeshStandardMaterial({color:new THREE.Color(MATERIAL_COLORS.steel.fill),metalness:.5,roughness:.35,side:THREE.DoubleSide});
     const kind=input.section.kind,tube=kind==='steel-tube'||kind==='filled-tube';
     const inner=Math.max(0,diameter/2-input.section.wallMm/1000);
-    scene.add(new THREE.Mesh(pileGeometry(beam.samples,scale,diameter/2,kind==='concrete-square',tube?inner:0),tube?steel:concrete));
+    const sheetProfile=kind==='sheet-pile'&&input.section.sheet?findSheetPile(input.section.sheet.profileId,input.section.sheet.manufacturer):undefined;
+    if(sheetProfile)scene.add(new THREE.Mesh(sheetGeometry(beam.samples,scale,sheetOutline(sheetProfile,input.section.sheet!.widthMode).points.map(q=>({x:q.x/1000,y:q.y/1000}))),steel));
+    else scene.add(new THREE.Mesh(pileGeometry(beam.samples,scale,diameter/2,kind==='concrete-square',tube?inner:0),tube?steel:concrete));
     if(kind==='filled-tube')scene.add(new THREE.Mesh(pileGeometry(beam.samples,scale,inner,false),concrete));
     const edgeMaterials:THREE.LineBasicMaterial[]=[],accentMaterials:Array<THREE.LineBasicMaterial|THREE.MeshBasicMaterial>=[];
     // Labels als HTML over het beeld: scherp, in het lettertype en de kleuren van het thema.
@@ -210,5 +229,5 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     };
   },[input,beam,springs,scale,unavailable,sceneLabel,t]);
   if(unavailable)return <div><p className="pile-webgl-fallback" role="status">{t('scene.unavailable', '3D is op dit apparaat niet beschikbaar. Gebruik het rekenmodel en de veerinspectie hieronder.')}</p>{fallback}</div>;
-  return <><div className="pile-scene" ref={host}/><SpringLegend layers={input.layers}/><p className="pile-orbit-help">{t('scene.help', 'Sleep om te draaien · scroll om te zoomen · rechtermuis om te verschuiven · klik een veerpunt. De dieptelijst biedt dezelfde selectie met het toetsenbord.')}</p></>;
+  return <><div className="pile-scene" ref={host}/><SpringLegend layers={input.layers}/><p className="pile-orbit-help">{t('scene.helpShort', 'Slepen draait, scrollen zoomt, klik een veerpunt.')}</p></>;
 }
