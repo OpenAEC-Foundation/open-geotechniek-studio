@@ -3,6 +3,7 @@
 import type { SheetPileProfile } from "../../library/sheetPiles";
 import { sheetContour, type ContourBasis } from "../../library/sheetPileContour";
 import { getSoilType } from "../spread-foundation/catalog";
+import { getTableRow, zoneColor, zoneForSoil } from "./cpt-layers";
 import { anchorAngle, normalizeWallInput, resolvePhases, wallLoads, wallSupports, type AnchorKind, type CaseRun, type Construction, type ResolvedPhase, type ScenarioLayer, type Side, type WallInput, type WallOk, type WallRun } from "./compute";
 import type { SurfaceLoad } from "./surface-loads";
 
@@ -103,7 +104,7 @@ export function soilOutline(face: PlanPoint[], farX: number): PlanPoint[] {
   return [{ a: face[0].a, x: farX }, ...face, { a: face[face.length - 1].a, x: farX }];
 }
 
-export interface SceneLayer { name: string; color: string; topNap: number; bottomNap: number }
+export interface SceneLayer { name: string; color: string; topNap: number; bottomNap: number; zone?: number }
 export interface SceneSupport { kind: AnchorKind; levelNap: number; angleDeg: number; freeM: number; groutM: number; groutDiameterM: number }
 export interface WallScene {
   construction: Construction;
@@ -155,12 +156,27 @@ export interface WallScene {
 }
 
 const FALLBACK = "#C9B28A";
-export const layerColor = (l: { soilId?: string }): string => getSoilType(l.soilId)?.color ?? FALLBACK;
+/** Kleur en lichtheid van een kleur in #rrggbb gemengd met wit (f > 0) of zwart (f < 0). */
+function shade(hex: string, f: number): string {
+  const n = parseInt(hex.slice(1), 16), mix = (c: number) => Math.round(f >= 0 ? c + (255 - c) * f : c * (1 + f));
+  return `#${[(n >> 16) & 255, (n >> 8) & 255, n & 255].map((c) => mix(c).toString(16).padStart(2, "0")).join("")}`;
+}
+/**
+ * Kleur van een laag: de kleur van de zone van de sondering, zoals in de sondeergrafiek en het paneel Grondopbouw (bij
+ * een handmatige laag de zone die bij de grondsoort hoort), lichter bij los of slap en donkerder bij vast. Zonder zone
+ * de kleur van de grondsoort.
+ */
+export const layerColor = (l: { soilId?: string; zone?: number }): string => {
+  const base = zoneColor(l.zone ?? zoneForSoil(l.soilId));
+  if (!base) return getSoilType(l.soilId)?.color ?? FALLBACK;
+  const c = getTableRow(l.soilId)?.consistency ?? (/-(loose|soft)$/.test(l.soilId ?? "") ? "los" : /-(dense|stiff)$/.test(l.soilId ?? "") ? "vast" : "matig");
+  return shade(base, c === "los" || c === "slap" ? 0.25 : c === "vast" ? -0.15 : 0);
+};
 
 /** Lagen van één zijde tussen het maaiveld en de onderkant van het blok. */
 export function sceneLayers(side: Side, bottomNap: number): SceneLayer[] {
   const layers = side.layers as ScenarioLayer[];
-  return layers.map((l, k) => ({ name: l.name, color: layerColor(l), topNap: k === 0 ? side.surfaceNap : Math.min(l.topNap, side.surfaceNap), bottomNap: Math.max(bottomNap, k + 1 < layers.length ? Math.min(layers[k + 1].topNap, side.surfaceNap) : bottomNap) }))
+  return layers.map((l, k) => ({ name: l.name, color: layerColor(l), zone: l.zone, topNap: k === 0 ? side.surfaceNap : Math.min(l.topNap, side.surfaceNap), bottomNap: Math.max(bottomNap, k + 1 < layers.length ? Math.min(layers[k + 1].topNap, side.surfaceNap) : bottomNap) }))
     .filter((l) => l.topNap > l.bottomNap);
 }
 

@@ -8,12 +8,15 @@ import { niceTicks, wallScene, type envelopeLines } from "./scene";
 const f = (v: number, d = 1) => v.toLocaleString(numberLocale(), { minimumFractionDigits: d, maximumFractionDigits: d });
 const napText = (v: number) => `NAP ${v >= 0 ? "+" : "−"}${f(Math.abs(v), 2)}`;
 
-export function SectionDrawing({ input: i, result: r, run, phase, envelope }: { input: WallInput; result: WallOk; run: WallRun; phase?: ResolvedPhase; envelope?: ReturnType<typeof envelopeLines> }) {
+/** qc van een sondering over de hoogte [m NAP, MPa], voor de kolom naast de doorsnede. */
+export interface QcTrace { side: "high" | "low"; cptId: string; points: Array<{ nap: number; qc: number }> }
+
+export function SectionDrawing({ input: i, result: r, run, phase, envelope, qc }: { input: WallInput; result: WallOk; run: WallRun; phase?: ResolvedPhase; envelope?: ReturnType<typeof envelopeLines>; qc?: QcTrace[] }) {
   const { t } = useTranslation("calcWall");
   const s = wallScene(i, r, run, phase), top = s.topNap + Math.max(0.3, 0.08 * (s.topNap - s.bottomNap)), bottom = s.bottomNap, half = Math.max(1.2, Math.min(7, 0.42 * (s.topNap - s.toeNap + 1)));
   const hi = s.support?.kind === "grout" ? s.extentHighM : half;
   const secW = 330, padL = 78, padT = 16, k = secW / (hi + half), H = padT + (top - bottom) * k + 22;
-  const colW = 108, gap = 14, W = padL + secW + 3 * (colW + gap) + 8;
+  const colW = 108, gap = 14, qcW = qc?.length ? colW + gap : 0, W = padL + secW + qcW + 3 * (colW + gap) + 8;
   const X = (x: number) => padL + (x + hi) * k, Y = (nap: number) => padT + (top - nap) * k;
   const wallHalf = Math.max(s.wallHeightM / 2, 1.5 / k);
 
@@ -63,6 +66,33 @@ export function SectionDrawing({ input: i, result: r, run, phase, envelope }: { 
   const slip = s.slip ? <g className="sw-slip"><line x1={X(-wallHalf)} y1={Y(s.toeNap)} x2={X(-wallHalf - s.slip.reachM)} y2={Y(Math.min(s.wallTopNap, s.high.surfaceNap))} />
     <text x={X(-wallHalf - s.slip.reachM / 2) - 4} y={Y((s.toeNap + s.high.surfaceNap) / 2)} textAnchor="end">{`${f(s.slip.angleDeg, 1)}°`}</text></g> : null;
 
+  // Grondlagen: elke laag in haar eigen kleur met een grenslijn; de naam alleen als die niet over de vorige valt.
+  const layerBands = (layers: typeof s.high.layers, x0: number, x1: number, tx: number, anchor: "start" | "end", key: string) => {
+    let lastText = -Infinity;
+    return layers.map((l, n) => {
+      const y0 = Y(l.topNap), h = Y(l.bottomNap) - y0, ty = y0 + Math.min(11, h - 1.5), show = h >= 9 && ty - lastText >= 10;
+      if (show) lastText = ty;
+      return <g key={`${key}${n}`} className="sw-layer"><rect x={x0} y={y0} width={x1 - x0} height={h} fill={l.color} opacity={0.4} />
+        {n > 0 && <line className="sw-layer-line" x1={x0} x2={x1} y1={y0} y2={y0} stroke={l.color} />}
+        {show && <text className="sw-layer-name" x={tx} y={ty} textAnchor={anchor}>{l.name}</text>}</g>;
+    });
+  };
+  // qc van de gebruikte sondering(en) in een kolom naast de doorsnede, op dezelfde hoogte, met de lagen van de hoge zijde.
+  const qcColumn = (() => {
+    if (!qc?.length) return null;
+    const x0 = padL + secW + gap, inside = qc.map((q) => ({ ...q, points: q.points.filter((p) => p.nap <= top && p.nap >= bottom) }));
+    const max = Math.max(1, ...inside.flatMap((q) => q.points.map((p) => p.qc))), ticks = niceTicks(0, max, 2), hiT = ticks[ticks.length - 1] || 1, cx = (v: number) => x0 + 6 + (Math.min(v, hiT) / hiT) * (colW - 12);
+    const yTop = Y(Math.min(top, s.high.surfaceNap)), yBot = Y(bottom);
+    return <g className="sw-column sw-qc">
+      <text className="sw-column-title" x={x0 + colW / 2} y={10} textAnchor="middle">{`qc [MPa]`}</text>
+      {s.high.layers.map((l, n) => <rect key={n} x={x0} y={Y(l.topNap)} width={colW} height={Y(l.bottomNap) - Y(l.topNap)} fill={l.color} opacity={0.25} />)}
+      <rect className="sw-column-frame" x={x0} y={yTop} width={colW} height={yBot - yTop} />
+      {ticks.map((v) => <text key={v} className="sw-tick" x={cx(v)} y={yBot + 11} textAnchor="middle">{f(v, 0)}</text>)}
+      {inside.map((q) => <polyline key={q.side} className={`sw-qc-line sw-qc-${q.side}`} points={q.points.map((p) => `${cx(p.qc).toFixed(1)},${Y(p.nap).toFixed(1)}`).join(" ")}><title>{`${q.cptId} (${q.side === "high" ? t("visual.highSide", "hoge zijde") : t("visual.lowSide", "lage zijde")})`}</title></polyline>)}
+      {inside.length > 1 && inside.map((q, n) => <text key={q.side} className={`sw-qc-key sw-qc-${q.side}`} x={x0 + 4} y={yTop + 10 + n * 10}>{q.side === "high" ? t("visual.highSide", "hoge zijde") : t("visual.lowSide", "lage zijde")}</text>)}
+    </g>;
+  })();
+
   const columns: Array<{ key: string; title: string; unit: string; value: (p: RunSample) => number; cls: string }> = [
     { key: "y", title: t("visual.displacement", "Verplaatsing"), unit: "mm", value: (p) => p.yM * 1000, cls: "sw-curve-y" },
     { key: "m", title: t("visual.moment", "Moment"), unit: "kNm/m", value: (p) => p.momentKnM, cls: "sw-curve-m" },
@@ -70,8 +100,8 @@ export function SectionDrawing({ input: i, result: r, run, phase, envelope }: { 
   ];
 
   return <svg className="sw-section" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("visual.sectionAria", "Doorsnede van de damwand met gronddruk, verplaatsing, moment en dwarskracht")}>
-    {s.high.layers.map((l, n) => <g key={`h${n}`}><rect x={X(-hi)} y={Y(l.topNap)} width={X(0) - X(-hi)} height={Y(l.bottomNap) - Y(l.topNap)} fill={l.color} opacity={0.3} /><text className="sw-layer-name" x={X(-hi) + 4} y={Y(l.topNap) + 11}>{l.name}</text></g>)}
-    {s.low.layers.map((l, n) => <g key={`l${n}`}><rect x={X(0)} y={Y(l.topNap)} width={X(half) - X(0)} height={Y(l.bottomNap) - Y(l.topNap)} fill={l.color} opacity={0.3} /><text className="sw-layer-name" x={X(half) - 4} y={Y(l.topNap) + 11} textAnchor="end">{l.name}</text></g>)}
+    {layerBands(s.high.layers, X(-hi), X(0), X(-hi) + 4, "start", "h")}
+    {layerBands(s.low.layers, X(0), X(half), X(half) - 4, "end", "l")}
     {s.high.waterNap > s.high.surfaceNap && <rect className="sw-water-fill" x={X(-hi)} y={Y(s.high.waterNap)} width={X(0) - X(-hi)} height={Y(s.high.surfaceNap) - Y(s.high.waterNap)} />}
     {s.low.waterNap > s.low.surfaceNap && <rect className="sw-water-fill" x={X(0)} y={Y(s.low.waterNap)} width={X(half) - X(0)} height={Y(s.low.surfaceNap) - Y(s.low.waterNap)} />}
     <polyline className="sw-ground" points={ground(-1, s.profileHigh, hi)} />
@@ -103,9 +133,10 @@ export function SectionDrawing({ input: i, result: r, run, phase, envelope }: { 
     <text className="sw-side" x={X(half) - 4} y={H - 6} textAnchor="end">{t("visual.lowSide", "lage zijde")}</text>
     <text className="sw-scale" x={X(0)} y={H - 6} textAnchor="middle">{`${t("visual.pressureScale", "gronddruk")}: ${f(pMax, 0)} kPa = ${f(pMax * pScale / k, 2)} m`}</text>
 
+    {qcColumn}
     {columns.map((c, n) => {
       const band = envelope?.map((e) => ({ nap: e.nap, range: c.key === "y" ? e.y : c.key === "m" ? e.m : e.v }));
-      const x0 = padL + secW + gap + n * (colW + gap), values = [...run.samples.map(c.value), ...(band ?? []).flatMap((e) => e.range)], ticks = niceTicks(Math.min(...values), Math.max(...values), 2);
+      const x0 = padL + secW + qcW + gap + n * (colW + gap), values = [...run.samples.map(c.value), ...(band ?? []).flatMap((e) => e.range)], ticks = niceTicks(Math.min(...values), Math.max(...values), 2);
       const lo = ticks[0], hi = ticks[ticks.length - 1], span = hi - lo || 1, cx = (v: number) => x0 + 6 + ((v - lo) / span) * (colW - 12);
       const peak = run.samples.reduce((best, p) => (Math.abs(c.value(p)) > Math.abs(c.value(best)) ? p : best), run.samples[0]);
       return <g key={c.key} className={`sw-column ${c.cls}`}>

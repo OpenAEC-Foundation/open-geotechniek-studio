@@ -112,7 +112,6 @@
       "undrainedTitle": "Calculer cette couche en conditions non drainées avec cu"
     },
     "construction": "Type d'ouvrage",
-    "cpt": "CPT",
     "cptAria": "CPT pour la proposition de couches",
     "customEi": "Rigidité en flexion EI par m d'écran",
     "customEiPost": "Rigidité en flexion EI par pieu",
@@ -170,7 +169,6 @@
     "layerN": "couche {{n}}",
     "layers": "Couches de sol (valeurs caractéristiques)",
     "layersHigh": "côté haut",
-    "layersHint": "La couche supérieure s'étend jusqu'au terrain naturel, la couche inférieure jusqu'à une profondeur illimitée. Vous saisissez vous-même les coefficients de réaction, par exemple d'après CUR 166 tableau 3.3 : cette feuille de calcul ne fournit pas de valeurs tabulées pour ceux-ci. Avec kh1 seul, elle calcule avec une branche ; avec kh2 et kh3 en plus, avec le ressort à trois branches de CUR 166. Une proposition issue du CPT est indicative et laisse les coefficients de réaction vides.",
     "layersLow": "côté bas",
     "lowSame": "Le côté bas a les mêmes couches",
     "manufacturer": "Fabricant",
@@ -538,5 +536,29 @@
     "waterLow": "Eau basse",
     "waterLowShort": "eau basse",
     "waterUp": "relevée"
+  },
+  "soilProfile": {
+    "confirm": "Les couches saisies seront remplacées par la proposition issue de l'essai CPT. Continuer ?",
+    "cptHigh": "CPT côté haut",
+    "cptLow": "CPT côté bas",
+    "sameCpt": "Identique au côté haut",
+    "minThickness": "Épaisseur minimale de couche",
+    "sources": "Origine",
+    "layer": "Couche",
+    "depth": "Profondeur",
+    "zone": "Zone CPT",
+    "sigmaTitle": "Contrainte verticale effective au milieu de la couche, pour la conversion de qc (NEN 9997-1 tableau 2.b, note g)",
+    "qcEntryTitle": "qc utilisé pour entrer dans le tableau 2.b : pour le sable et le gravier, converti à σ′v = 100 kPa",
+    "row": "Tableau 2.b",
+    "khRow": "Tableau 3.3",
+    "own": "Saisie propre",
+    "noKh": "pas de ligne : saisir kh vous-même",
+    "manual": "manuel",
+    "hint": "La couche supérieure s'étend jusqu'au terrain naturel, la couche inférieure jusqu'à une profondeur illimitée. La proposition issue du CPT reprend le découpage du panneau Profil de sol, fusionne les couches identiques, rattache les couches plus minces que l'épaisseur minimale à la voisine la plus épaisse et remplit par couche les valeurs caractéristiques basses du tableau 2.b de NEN 9997-1 (compacité d'après le qc moyen, pour le sable converti à σ′v = 100 kPa) et kh du tableau 3.3 de CUR 166 (moyenne basse). Pour le sable kh2 et kh3 restent vides, pour le limon aussi kh1. Avec kh1 seul le calcul utilise une branche ; avec kh2 et kh3 le ressort à trois branches. La proposition est indicative : vérifiez et remplacez les valeurs.",
+    "table2b": "NEN 9997-1 tableau 2.b",
+    "startValues": "Valeurs de départ",
+    "showQc": "qc du CPT à côté de la coupe",
+    "clear": "Sol transparent",
+    "noLayers": "Le CPT ne fournit aucun découpage (pas de qc ni de Rf)."
   }
 }

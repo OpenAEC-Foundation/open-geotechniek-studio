@@ -50,6 +50,23 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
   const key = JSON.stringify(latest), s = useMemo(() => latest, [key]); // eslint-disable-line react-hooks/exhaustive-deps
   const host = useRef<HTMLDivElement>(null);
   const [unavailable, setUnavailable] = useState(false);
+  // Grond doorzichtig (0 tot 90 %) en per laag aan of uit; dat past alleen de materialen aan, de camera blijft staan.
+  const [clearPct, setClearPct] = useState(() => (latest.support?.kind === "grout" ? 65 : 0));
+  const [hidden, setHidden] = useState<Set<string>>(() => new Set());
+  const look = useRef({ clearPct, hidden });
+  look.current = { clearPct, hidden };
+  const soil = useRef<{ layers: Map<string, { material: THREE.MeshBasicMaterial; objects: THREE.Object3D[] }>; render: () => void } | null>(null);
+  const applyLook = () => {
+    const at = soil.current;
+    if (!at) return;
+    const opacity = 1 - Math.min(90, Math.max(0, look.current.clearPct)) / 100;
+    for (const [key, { material, objects }] of at.layers) {
+      material.transparent = opacity < 1; material.opacity = opacity; material.depthWrite = opacity >= 1; material.needsUpdate = true;
+      for (const o of objects) o.visible = !look.current.hidden.has(key);
+    }
+    at.render();
+  };
+  useEffect(applyLook, [clearPct, hidden]); // eslint-disable-line react-hooks/exhaustive-deps
   const labels = { ground: t("visual.ground", "mv"), water: t("visual.water", "water"), toe: t("visual.toe", "teen"), aria: t("visual.sceneAria", "3D-weergave van de damwand; draaien met slepen, zoomen met scrollen") };
   const labelKey = JSON.stringify(labels);
   useEffect(() => {
@@ -84,6 +101,7 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
       const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, depthTest: false, transparent: true }));
       const h = 0.05 * size, w = (h * canvas.width) / canvas.height;
       sprite.scale.set(w, h, 1); sprite.center.set(align === "left" ? 0 : 1, 0.5); sprite.position.copy(at); sprite.renderOrder = 5; scene.add(sprite);
+      return sprite;
     };
     const nap = (v: number) => `NAP ${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(2).replace(".", ",")}`;
     // Plattegrond naar scène: x blijft, a langs de wand wordt z = frontM − a (het snijvlak op z = 0).
@@ -92,26 +110,35 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     // kop van de wand is er geen staal: daar lopen beide zijden door tot dezelfde rand, zodat er geen spleet valt.
     const soilPlan = (side: 1 | -1, far: number, zone: "wall" | "below" | "above") =>
       plan(soilOutline(zone === "below" ? s.faceHigh : zone === "above" ? s.faceLow : side < 0 ? s.faceHigh : s.faceLow, far));
-    const block = (l: SceneLayer, side: 1 | -1, nameAt: "left" | "right") => {
-      const far = side < 0 ? -hh : hw, see = side < 0 && s.support?.kind === "grout";
-      const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(l.color).lerp(white, 0.5), polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2, transparent: see, opacity: see ? 0.35 : 1, depthWrite: !see });
+    const layers = new Map<string, { material: THREE.MeshBasicMaterial; objects: THREE.Object3D[] }>();
+    // Per zijde de hoogte van het laatst geplaatste laagnaamlabel: een naam die erover zou vallen, vervalt.
+    const lastName = { left: Infinity, right: Infinity };
+    const block = (l: SceneLayer, side: 1 | -1, nameAt: "left" | "right", key: string) => {
+      const far = side < 0 ? -hh : hw;
+      const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(l.color).lerp(white, 0.35), polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2 });
+      const objects: THREE.Object3D[] = [], add = <T extends THREE.Object3D>(o: T): T => { scene.add(o); objects.push(o); return o; };
+      layers.set(key, { material, objects });
       const line = new THREE.LineBasicMaterial({ color: new THREE.Color(l.color).multiplyScalar(0.55) });
       const zones: Array<["wall" | "below" | "above", number, number]> = [["below", l.bottomNap, Math.min(l.topNap, s.toeNap)], ["wall", Math.max(l.bottomNap, s.toeNap), Math.min(l.topNap, s.wallTopNap)], ["above", Math.max(l.bottomNap, s.wallTopNap), l.topNap]];
       for (const [zone, bottom, top] of zones) if (top - bottom > 1e-6) {
         const outline = soilPlan(side, far, zone);
-        scene.add(new THREE.Mesh(prismGeometry(outline, y(bottom), y(top), 0), material));
+        add(new THREE.Mesh(prismGeometry(outline, y(bottom), y(top), 0), material));
         // Randlijnen: de omtrek van het grondvlak aan de bovenkant (op de wand precies op de contour) en het snijvlak.
         // Alleen aan de grenzen van de laag, niet op de teen of de kop van de wand waar het vlak alleen wordt opgedeeld.
-        if (top === l.topNap) scene.add(outlineLines(outline, y(top), line));
+        if (top === l.topNap) add(outlineLines(outline, y(top), line));
         const n = outline.length, at = (q: THREE.Vector2, h: number) => new THREE.Vector3(q.x, h, -q.y);
         const segments = [outline[0], outline[1], outline[n - 2], outline[n - 1]].flatMap((q) => [at(q, y(bottom)), at(q, y(top))]);
         if (bottom === l.bottomNap) segments.push(at(outline[0], y(bottom)), at(outline[1], y(bottom)));
-        scene.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(segments), line));
+        add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(segments), line));
       }
-      label(l.name, new THREE.Vector3(nameAt === "left" ? -hh + 0.02 * size : hw - 0.02 * size, y(l.topNap) - 0.04 * size, face), ink, nameAt === "left" ? "left" : "right");
+      const at = y(l.topNap) - 0.04 * size, room = 0.05 * size;
+      if (at - y(l.bottomNap) >= room * 0.4 && lastName[nameAt] - at >= room) {
+        const sprite = label(l.name, new THREE.Vector3(nameAt === "left" ? -hh + 0.02 * size : hw - 0.02 * size, at, face), ink, nameAt === "left" ? "left" : "right");
+        if (sprite) { objects.push(sprite); lastName[nameAt] = at; }
+      }
     };
-    for (const l of s.high.layers) block(l, -1, "left");
-    for (const l of s.low.layers) block(l, 1, "right");
+    s.high.layers.forEach((l, k) => block(l, -1, "left", `h${k}`));
+    s.low.layers.forEach((l, k) => block(l, 1, "right", `l${k}`));
 
     // Waterstanden: een doorschijnend vlak boven het maaiveld, en een streeplijn op het snijvlak eronder.
     const water = (level: number, surface: number, x0: number, x1: number) => {
@@ -208,8 +235,11 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     const observer = new ResizeObserver(resize); observer.observe(container);
     controls.addEventListener("change", render);
     renderer.domElement.addEventListener("webglcontextlost", lost);
+    soil.current = { layers, render };
     resize();
+    applyLook();
     return () => {
+      soil.current = null;
       observer.disconnect(); controls.removeEventListener("change", render); controls.dispose();
       renderer.domElement.removeEventListener("webglcontextlost", lost);
       scene.traverse((object) => {
@@ -221,7 +251,15 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     };
   }, [s, unavailable, labelKey]); // eslint-disable-line react-hooks/exhaustive-deps
   if (unavailable) return <p className="cs-hint" role="status">{t("visual.noWebgl", "3D is op dit apparaat niet beschikbaar. De doorsnede toont dezelfde gegevens.")}</p>;
+  const toggle = (key: string) => setHidden((prev) => { const next = new Set(prev); if (next.has(key)) next.delete(key); else next.add(key); return next; });
+  const toggles = (side: "h" | "l", list: SceneLayer[], title: string) => <div className="sw-layer-toggles" role="group" aria-label={title}><span>{title}:</span>
+    {list.map((l, k) => <label key={k}><input type="checkbox" checked={!hidden.has(`${side}${k}`)} onChange={() => toggle(`${side}${k}`)} aria-label={`${l.name}, ${title}`} /><span className="sw-swatch" style={{ background: l.color }} />{l.name}</label>)}</div>;
   return <>
+    <div className="sw-visual-options">
+      <label>{t("soilProfile.clear", "Grond doorzichtig")} <input type="range" min={0} max={90} step={5} value={clearPct} aria-label={t("soilProfile.clear", "Grond doorzichtig")} onChange={(e) => setClearPct(Number(e.target.value))} /> {clearPct} %</label>
+    </div>
+    {toggles("h", s.high.layers, t("visual.highSide", "hoge zijde"))}
+    {toggles("l", s.low.layers, t("visual.lowSide", "lage zijde"))}
     <div className="sw-scene" ref={host} />
     <p className="cs-hint">{s.construction === "sheet-pile"
       ? `${t("visual.sceneHint", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de wand steekt ervoor uit. Plankbreedte, wandhoogte en plaatdikten komen uit de profielbibliotheek. Oranje: anker of stempel. Sleep om te draaien, scroll om te zoomen.")} ${s.contourBasis === "drawing" ? t("visual.contourDrawing", "Profielvorm: contour uit fabrieks-DWG ({{manufacturer}}).", { manufacturer: s.contourManufacturer ?? "" }) : s.contourBasis === "table" ? "" : t("visual.contourSchematic", "Profielvorm schematisch: de fabriekstabellen geven de flensbreedte, de lijfhoek en de slotvorm niet; de flensbreedte is afgeleid uit A en I, het slot is een blokje.")}`

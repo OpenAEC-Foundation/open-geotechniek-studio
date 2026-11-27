@@ -89,3 +89,19 @@
 .sw-overview td.sw-max { font-weight: 700; }
 .sw-overview td:first-child { white-space: nowrap; }
 .sw-support-checks { margin: 6px 0; }
+
+/* Grondlagen uit de sondering: herkomst, kleurvlakjes, laaggrenzen, qc-kolom en de bediening van de 3D-grond. */
+.sw-sources { margin: 2px 0 6px; font-size: 11px; }
+.sw-sources td { white-space: nowrap; }
+.sw-swatch { display: inline-block; width: 9px; height: 9px; margin-right: 4px; border: 1px solid rgba(0, 0, 0, .25); vertical-align: -1px; }
+.sw-layer-line { stroke-width: .8; stroke-opacity: .9; filter: brightness(.6); }
+.sw-qc-line { fill: none; stroke-width: .9; }
+.sw-qc-line.sw-qc-high { stroke: #b91c1c; }
+.sw-qc-line.sw-qc-low { stroke: #1d4ed8; }
+.sw-section .sw-qc-key.sw-qc-high { fill: #b91c1c; }
+.sw-section .sw-qc-key.sw-qc-low { fill: #1d4ed8; }
+.sw-visual-options { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; font-size: 12px; }
+.sw-visual-options label { display: inline-flex; gap: 4px; align-items: center; }
+.sw-visual-options input[type="range"] { width: 120px; }
+.sw-layer-toggles { display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 11px; }
+.sw-layer-toggles label { display: inline-flex; gap: 3px; align-items: center; }

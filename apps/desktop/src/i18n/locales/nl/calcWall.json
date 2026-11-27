@@ -112,7 +112,6 @@
       "undrainedTitle": "Reken deze laag ongedraineerd met cu"
     },
     "construction": "Soort constructie",
-    "cpt": "Sondering",
     "cptAria": "Sondering voor het laagvoorstel",
     "customEi": "Buigstijfheid EI per m wand",
     "customEiPost": "Buigstijfheid EI per paal",
@@ -170,7 +169,6 @@
     "layerN": "laag {{n}}",
     "layers": "Grondlagen (representatieve waarden)",
     "layersHigh": "hoge zijde",
-    "layersHint": "De bovenste laag loopt door tot het maaiveld, de onderste tot onbeperkte diepte. De beddingsconstanten vult u zelf in, bijvoorbeeld uit CUR 166 tabel 3.3: dit rekenblad levert daarvoor geen tabelwaarden. Met alleen kh1 rekent het met één tak; met kh2 en kh3 erbij met de drietakkige veer van CUR 166. Een voorstel uit de sondering is indicatief en laat de beddingsconstanten open.",
     "layersLow": "lage zijde",
     "lowSame": "Lage zijde heeft dezelfde lagen",
     "manufacturer": "Fabrikant",
@@ -538,5 +536,29 @@
     "waterLow": "Water laag",
     "waterLowShort": "water laag",
     "waterUp": "omhoog"
+  },
+  "soilProfile": {
+    "confirm": "De ingevoerde lagen worden vervangen door het voorstel uit de sondering. Doorgaan?",
+    "cptHigh": "Sondering hoge zijde",
+    "cptLow": "Sondering lage zijde",
+    "sameCpt": "Dezelfde als hoge zijde",
+    "minThickness": "Kleinste laagdikte",
+    "sources": "Herkomst",
+    "layer": "Laag",
+    "depth": "Diepte",
+    "zone": "Zone sondering",
+    "sigmaTitle": "Verticale korrelspanning in het midden van de laag, voor de omrekening van qc (NEN 9997-1 tabel 2.b, voetnoot g)",
+    "qcEntryTitle": "qc waarmee tabel 2.b is ingegaan: bij zand en grind omgerekend naar σ′v = 100 kPa",
+    "row": "Tabel 2.b",
+    "khRow": "Tabel 3.3",
+    "own": "Eigen invoer",
+    "noKh": "geen regel: kh zelf invullen",
+    "manual": "handmatig",
+    "hint": "De bovenste laag loopt door tot het maaiveld, de onderste tot onbeperkte diepte. Het voorstel uit de sondering neemt de laagindeling van het paneel Grondopbouw, voegt gelijke lagen samen en lagen dunner dan de kleinste dikte bij de dikste buurlaag, en vult per laag de lage karakteristieke waarden van NEN 9997-1 tabel 2.b in (vastheid uit de gemiddelde qc, bij zand omgerekend naar σ′v = 100 kPa) en kh uit CUR 166 tabel 3.3 (laag gemiddelde). Bij zand blijven kh2 en kh3 open, bij leem ook kh1. Met alleen kh1 rekent het met één tak; met kh2 en kh3 erbij met de drietakkige veer. Het voorstel is indicatief: controleer en overschrijf de waarden.",
+    "table2b": "NEN 9997-1 tabel 2.b",
+    "startValues": "Startwaarden",
+    "showQc": "qc van de sondering naast de doorsnede",
+    "clear": "Grond doorzichtig",
+    "noLayers": "De sondering levert geen laagindeling (geen qc en Rf)."
   }
 }

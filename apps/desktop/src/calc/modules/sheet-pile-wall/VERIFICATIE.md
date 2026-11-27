@@ -859,3 +859,92 @@ over het hele profiel staat in hoofdstuk 8.
 Correcties op de verzameling (uit de bron-pdf's): nr. 13 grootste moment 10,8 kNm/m (de 15,6 is de
 dwarskracht), verplaatsing 14,3 mm, δ = 0; de adressen van nr. 13 en 14 kloppen niet; nr. 16 verplaatsing
 14,0 mm; nr. 20 profiel C grootste ankerkracht 16,65 kN/m (6.4).
+
+## 17. Grondprofiel uit de sondering
+
+Code: `cpt-layers.ts`, invoerblok `soil-profile-panel.tsx`, tests `cpt-layers.test.ts` en `soil-profile-ui.test.tsx`.
+
+### 17.1 Omzetting
+
+1. Laagindeling van de sondering met `analyzeLayers` (zones 1 tot en met 9, met de instellingen of de handmatige
+   indeling van het paneel Grondopbouw). Gaten zonder classificatie gaan op in de laag erboven; de bovenste laag
+   loopt door tot het maaiveld (ook over een voorgeboord stuk).
+2. Binnen elke laag een grens waar de regel van tabel 2.b per meetpunt verandert (bijvoorbeeld slappe en vaste
+   klei in dezelfde zone); daarvoor wordt σ′v geschat met 17 en 9 kN/m³.
+3. Per laag de gemiddelde qc en Rf en de regel van tabel 2.b, van boven naar beneden. σ′v in het midden van de laag
+   volgt uit de gekozen regels erboven met de hoge (rechter) waarde van γ en γsat uit de tabel, de grondwaterstand
+   aan die zijde van de wand en γw van de invoer. De hoge waarde is gekozen omdat een grotere σ′v een kleinere
+   omgerekende qc en dus een lossere regel geeft (voetnoot a: de rechterwaarde waar een hogere waarde ongunstig is).
+4. Gelijke opeenvolgende regels worden één laag; de dunste laag onder de kleinste dikte (standaard 0,30 m) gaat op
+   in de dikste buurlaag en houdt diens zone; daarna stap 3 opnieuw, tot er niets meer verandert.
+
+Grondsoort per zone (keuze van dit rekenblad, niet uit een norm): 1 veen, niet voorbelast; 2 veen bij Rf ≥ 5 %,
+anders organische klei; 3 klei, schoon; 4 klei, zwak zandig; 5 zand, sterk of zwak siltig/kleiig; 6 en 7 zand,
+schoon (grind is uit een sondering niet betrouwbaar te herkennen); 8 zand, zwak siltig, kleiig; 9 klei, schoon.
+
+Vastheid: de hoogste regel van de groep waarvan de tabel-qc niet boven de gemeten gemiddelde qc ligt (onder de
+laagste: de laagste). Bij grind, zand, leem en sterk zandige klei wordt de gemeten qc eerst omgerekend met
+C_qc = (100/σ′v)^0,67 (tabel 2.b, voetnoot g). Er wordt niet geïnterpoleerd: het voorbeeld onder de tabel (9 MPa op
+5 m in schoon zand, σ′v = 50 kPa, qc;tabel = 14,4 MPa) geeft hier de regel "los" (φ′ = 30°), geen tussenwaarde. Een
+gelijke qc in zand wordt dus met de diepte losser; dat volgt uit de voetnoot.
+
+Waarden per laag: de linkerwaarde (lage karakteristieke waarde van het gemiddelde) van γ, γsat, φ′, c′ en cu; cu = 0
+waar de tabel "n.v.t." geeft. δ = ⅔·φ′, bij veen 0 (zoals in de openbare berekeningen, docs/damwand). Ongedraineerd
+staat uit. Elke waarde is te overschrijven; de tabel "Herkomst" toont per laag diepte, zone, qc, Rf, σ′v, qc;tabel,
+de regels van tabel 2.b en 3.3, en welke waarden afwijken van het voorstel (eigen invoer).
+
+Het voorstel overschrijft alleen na de knop "Voorstel uit sondering" en een bevestiging. Handmatige lagen hebben
+geen herkomst en rekenen zoals voorheen; alleen hun kleur in de tekeningen is nu die van de bijbehorende zone.
+
+### 17.2 Tabelwaarden
+
+NEN 9997-1 tabel 2.b, overgenomen uit de geprinte uitgave NEN 9997-1:2012 met C1 (de tabel staat daar als
+afbeelding, pagina 37); de kolommen γ, γsat en qc zijn vergeleken met NEN 9997-1:2016+C2:2017 en gelijk. In de
+geraadpleegde afdruk van 2016+C2 zijn de kolommen φ′, c′ en cu afgesneden; die komen uit de uitgave van 2012. Bij c′
+valt het eerste teken deels onder een markering; gelezen: leem zwak zandig 0 / 1 / 2,5; klei schoon en zwak zandig
+0 / 5 / 13; klei sterk zandig 0; organische klei 0 / 0; veen 1 en 2,5. Te controleren tegen de huidige normtekst.
+Opgenomen regels (links – rechts waar de tabel twee waarden geeft):
+
+| Regel | γ | γsat | qc | φ′ | c′ | cu |
+|---|---|---|---|---|---|---|
+| Grind zwak siltig los / matig / vast | 17 / 18 / 19–20 | 19 / 20 / 21–22 | 15 / 25 / 30 | 32,5 / 35 / 37,5 | 0 | – |
+| Grind sterk siltig los / matig / vast | 18 / 19 / 20–21 | 20 / 21 / 22–22,5 | 10 / 15 / 25 | 30 / 32,5 / 35 | 0 | – |
+| Zand schoon los / matig / vast | 17 / 18 / 19–20 | 19 / 20 / 21–22 | 5 / 15 / 25 | 30 / 32,5 / 35 | 0 | – |
+| Zand zwak siltig, kleiig | 18–19 | 20–21 | 12 | 27 | 0 | – |
+| Zand sterk siltig, kleiig | 18–19 | 20–21 | 8 | 25 | 0 | – |
+| Leem zwak zandig slap / matig / vast | 19 / 20 / 21–22 | 19 / 20 / 21–22 | 1 / 2 / 3 | 27,5 | 0 / 1 / 2,5 | 50 / 100 / 200 |
+| Leem sterk zandig | 19–20 | 19–20 | 2 | 27,5 | 0 | 50 |
+| Klei schoon slap / matig / vast | 14 / 17 / 19–20 | 14 / 17 / 19–20 | 0,5 / 1,0 / 2,0 | 17,5 | 0 / 5 / 13 | 25 / 50 / 100 |
+| Klei zwak zandig slap / matig / vast | 15 / 18 / 20–21 | 15 / 18 / 20–21 | 0,7 / 1,5 / 2,5 | 22,5 | 0 / 5 / 13 | 40 / 80 / 120 |
+| Klei sterk zandig | 18–20 | 18–20 | 1,0 | 27,5 | 0 | 0 |
+| Klei organisch slap / matig | 13 / 15–16 | 13 / 15–16 | 0,2 / 0,5 | 15 | 0 | 10 / 25 |
+| Veen niet voorbelast, slap | 10–12 | 10–12 | 0,1 | 15 | 1 | 10 |
+| Veen matig voorbelast, matig | 12–13 | 12–13 | 0,2 | 15 | 2,5 | 20 |
+
+CUR 166 deel 1, tabel 3.3 (lokale afdruk, PDF-pagina 25), kolom 2): het lage gemiddelde, de invoerwaarde van dit
+rekenblad (het stappenplan rekent zelf met /1,3 en ×2,25, hoofdstuk 13):
+
+| Regel | kh1 | kh2 | kh3 |
+|---|---|---|---|
+| zand los / matig / vast (qc 5 / 15 / 25 MPa) | 12 000 / 20 000 / 40 000 | open | open |
+| klei slap / matig / vast (cu 25 / 50 / 200 kPa) | 2 000 / 4 000 / 6 000 | 800 / 2 000 / 4 000 | 500 / 800 / 2 000 |
+| veen slap / matig (cu 10 / 30 kPa) | 1 000 / 2 000 | 500 / 800 | 250 / 500 |
+
+Bij zand zijn kh2 en kh3 in de afdruk niet eenduidig: in hun kolommen staan bij zand waarden waarbij de "lage"
+groter is dan de "hoge" (bijvoorbeeld 12 000 en 6 000), en de waarde die bij het patroon kh1 = 2·kh2 = 4·kh3 zou
+horen ontbreekt. Daarom blijven kh2 en kh3 bij zand open (één tak), met een melding in de invoer. Keuze van de regel:
+zand en grind op dezelfde qc;tabel als tabel 2.b (zodat los, matig en vast in beide tabellen gelijk zijn), klei en
+organische klei op cu uit tabel 2.b, veen op cu. Leem staat niet in tabel 3.3: daar blijft kh1 open.
+
+### 17.3 Weergave
+
+Doorsnede en 3D tonen alle lagen met de kleur van hun zone (gelijk aan de sondeergrafiek en het paneel
+Grondopbouw), lichter bij los of slap en donkerder bij vast, met een grenslijn. Een naam die over de vorige zou
+vallen of in een te dunne laag staat, vervalt. Naast de doorsnede optioneel een kolom met de qc van de gebruikte
+sondering(en) op dezelfde hoogte. In 3D een schuif "Grond doorzichtig" (0 tot 90 %) en per laag en zijde aan of uit;
+dat past alleen de materialen aan, de camera en het opengewerkte snijvlak (gelijk aan de doorsnede) blijven staan.
+Bij een groutanker begint de schuif op 65 %.
+
+Bekeken in de app met de voorbeeldsondering: negen lagen (organische klei, veen, organische klei, zand sterk
+siltig, zand los en matig afwisselend), de qc-lijn naast de doorsnede, en in 3D de wand en het anker onder het
+maaiveld bij 70 % doorzichtig en met de bovenste veenlaag uit.

@@ -112,7 +112,6 @@
       "undrainedTitle": "Calculate this layer undrained with cu"
     },
     "construction": "Type of structure",
-    "cpt": "CPT",
     "cptAria": "CPT for the layer proposal",
     "customEi": "Bending stiffness EI per m of wall",
     "customEiPost": "Bending stiffness EI per post",
@@ -170,7 +169,6 @@
     "layerN": "layer {{n}}",
     "layers": "Soil layers (characteristic values)",
     "layersHigh": "high side",
-    "layersHint": "The top layer extends up to ground level, the bottom layer to unlimited depth. You enter the moduli of subgrade reaction yourself, for example from CUR 166 table 3.3: this calculation sheet does not provide table values for them. With only kh1 it uses one branch; with kh2 and kh3 added it uses the three-branch spring of CUR 166. A proposal from the CPT is indicative and leaves the moduli of subgrade reaction open.",
     "layersLow": "low side",
     "lowSame": "Low side has the same layers",
     "manufacturer": "Manufacturer",
@@ -538,5 +536,29 @@
     "waterLow": "Low water",
     "waterLowShort": "low water",
     "waterUp": "up"
+  },
+  "soilProfile": {
+    "confirm": "The entered layers will be replaced by the proposal from the CPT. Continue?",
+    "cptHigh": "CPT, retained side",
+    "cptLow": "CPT, excavated side",
+    "sameCpt": "Same as retained side",
+    "minThickness": "Minimum layer thickness",
+    "sources": "Origin",
+    "layer": "Layer",
+    "depth": "Depth",
+    "zone": "CPT zone",
+    "sigmaTitle": "Vertical effective stress at the middle of the layer, for converting qc (NEN 9997-1 table 2.b, footnote g)",
+    "qcEntryTitle": "qc used to enter table 2.b: for sand and gravel converted to σ′v = 100 kPa",
+    "row": "Table 2.b",
+    "khRow": "Table 3.3",
+    "own": "Own input",
+    "noKh": "no row: enter kh yourself",
+    "manual": "manual",
+    "hint": "The top layer extends to the ground surface, the bottom one to unlimited depth. The proposal from the CPT takes the layering of the Soil profile panel, merges equal layers and joins layers thinner than the minimum thickness to the thickest neighbour, and fills in the low characteristic values of NEN 9997-1 table 2.b per layer (density from the mean qc, for sand converted to σ′v = 100 kPa) and kh from CUR 166 table 3.3 (low average). For sand kh2 and kh3 stay empty, for loam kh1 as well. With kh1 only it uses one branch; with kh2 and kh3 the three-branch spring. The proposal is indicative: check and override the values.",
+    "table2b": "NEN 9997-1 table 2.b",
+    "startValues": "Starting values",
+    "showQc": "CPT qc next to the section",
+    "clear": "Transparent soil",
+    "noLayers": "The CPT gives no layering (no qc and Rf)."
   }
 }

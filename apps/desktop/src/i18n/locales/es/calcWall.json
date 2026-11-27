@@ -112,7 +112,6 @@
       "undrainedTitle": "Calcular esta capa como no drenada con cu"
     },
     "construction": "Tipo de estructura",
-    "cpt": "Sondeo CPT",
     "cptAria": "Sondeo CPT para la propuesta de capas",
     "customEi": "Rigidez a flexión EI por m de pantalla",
     "customEiPost": "Rigidez a flexión EI por poste",
@@ -170,7 +169,6 @@
     "layerN": "capa {{n}}",
     "layers": "Capas de suelo (valores característicos)",
     "layersHigh": "lado alto",
-    "layersHint": "La capa superior llega hasta el nivel del terreno, la inferior hasta una profundidad ilimitada. Los coeficientes de balasto los introduce usted, por ejemplo de CUR 166 tabla 3.3: esta hoja de cálculo no proporciona valores de tabla para ello. Solo con kh1 calcula con un tramo; con kh2 y kh3 además, con el muelle de tres tramos de CUR 166. Una propuesta a partir del sondeo CPT es orientativa y deja los coeficientes de balasto sin rellenar.",
     "layersLow": "lado bajo",
     "lowSame": "El lado bajo tiene las mismas capas",
     "manufacturer": "Fabricante",
@@ -538,5 +536,29 @@
     "waterLow": "Agua baja",
     "waterLowShort": "agua baja",
     "waterUp": "subida"
+  },
+  "soilProfile": {
+    "confirm": "Las capas introducidas se sustituirán por la propuesta del ensayo CPT. ¿Continuar?",
+    "cptHigh": "CPT lado alto",
+    "cptLow": "CPT lado bajo",
+    "sameCpt": "Igual que el lado alto",
+    "minThickness": "Espesor mínimo de capa",
+    "sources": "Origen",
+    "layer": "Capa",
+    "depth": "Profundidad",
+    "zone": "Zona CPT",
+    "sigmaTitle": "Tensión vertical efectiva en el centro de la capa, para convertir qc (NEN 9997-1 tabla 2.b, nota g)",
+    "qcEntryTitle": "qc con el que se entra en la tabla 2.b: en arena y grava convertido a σ′v = 100 kPa",
+    "row": "Tabla 2.b",
+    "khRow": "Tabla 3.3",
+    "own": "Entrada propia",
+    "noKh": "sin fila: introduzca kh usted mismo",
+    "manual": "manual",
+    "hint": "La capa superior llega hasta la superficie del terreno y la inferior hasta profundidad ilimitada. La propuesta del CPT toma la división en capas del panel Perfil del suelo, une las capas iguales, añade las capas más delgadas que el espesor mínimo a la vecina más gruesa y rellena por capa los valores característicos bajos de la tabla 2.b de NEN 9997-1 (compacidad según el qc medio, en arena convertido a σ′v = 100 kPa) y kh de la tabla 3.3 de CUR 166 (media baja). En arena kh2 y kh3 quedan vacíos, en limo también kh1. Solo con kh1 calcula con una rama; con kh2 y kh3, con el muelle de tres ramas. La propuesta es orientativa: compruebe y sustituya los valores.",
+    "table2b": "NEN 9997-1 tabla 2.b",
+    "startValues": "Valores iniciales",
+    "showQc": "qc del CPT junto a la sección",
+    "clear": "Suelo transparente",
+    "noLayers": "El CPT no da división en capas (sin qc ni Rf)."
   }
 }

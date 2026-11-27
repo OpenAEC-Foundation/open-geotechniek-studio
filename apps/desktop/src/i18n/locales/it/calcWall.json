@@ -112,7 +112,6 @@
       "undrainedTitle": "Calcola questo strato come non drenato con cu"
     },
     "construction": "Tipo di struttura",
-    "cpt": "Prova CPT",
     "cptAria": "Prova CPT per la proposta di stratigrafia",
     "customEi": "Rigidezza flessionale EI per m di parete",
     "customEiPost": "Rigidezza flessionale EI per palo",
@@ -170,7 +169,6 @@
     "layerN": "strato {{n}}",
     "layers": "Strati di terreno (valori caratteristici)",
     "layersHigh": "lato alto",
-    "layersHint": "Lo strato superiore arriva fino al piano campagna, quello inferiore fino a profondità illimitata. I coefficienti di sottofondo vanno inseriti dall'utente, per esempio da CUR 166 tabella 3.3: questo foglio di calcolo non fornisce valori tabellari per essi. Con il solo kh1 calcola con un ramo; aggiungendo kh2 e kh3 con la molla a tre rami di CUR 166. Una proposta ricavata dalla prova CPT è indicativa e lascia vuoti i coefficienti di sottofondo.",
     "layersLow": "lato basso",
     "lowSame": "Il lato basso ha gli stessi strati",
     "manufacturer": "Produttore",
@@ -538,5 +536,29 @@
     "waterLow": "Acqua bassa",
     "waterLowShort": "acqua bassa",
     "waterUp": "alzata"
+  },
+  "soilProfile": {
+    "confirm": "Gli strati inseriti saranno sostituiti dalla proposta della prova CPT. Continuare?",
+    "cptHigh": "CPT lato alto",
+    "cptLow": "CPT lato basso",
+    "sameCpt": "Uguale al lato alto",
+    "minThickness": "Spessore minimo dello strato",
+    "sources": "Origine",
+    "layer": "Strato",
+    "depth": "Profondità",
+    "zone": "Zona CPT",
+    "sigmaTitle": "Tensione verticale efficace a metà strato, per la conversione di qc (NEN 9997-1 tabella 2.b, nota g)",
+    "qcEntryTitle": "qc con cui si entra nella tabella 2.b: per sabbia e ghiaia convertito a σ′v = 100 kPa",
+    "row": "Tabella 2.b",
+    "khRow": "Tabella 3.3",
+    "own": "Inserimento proprio",
+    "noKh": "nessuna riga: inserire kh manualmente",
+    "manual": "manuale",
+    "hint": "Lo strato superiore arriva fino al piano campagna, quello inferiore a profondità illimitata. La proposta dalla CPT riprende la suddivisione del pannello Stratigrafia, unisce gli strati uguali, accorpa gli strati più sottili dello spessore minimo al vicino più spesso e inserisce per ogni strato i valori caratteristici inferiori della tabella 2.b di NEN 9997-1 (addensamento dal qc medio, per la sabbia convertito a σ′v = 100 kPa) e kh dalla tabella 3.3 di CUR 166 (media bassa). Per la sabbia kh2 e kh3 restano vuoti, per il limo anche kh1. Con solo kh1 calcola con un ramo; con kh2 e kh3 con la molla a tre rami. La proposta è indicativa: controllare e sovrascrivere i valori.",
+    "table2b": "NEN 9997-1 tabella 2.b",
+    "startValues": "Valori iniziali",
+    "showQc": "qc della CPT accanto alla sezione",
+    "clear": "Terreno trasparente",
+    "noLayers": "La CPT non fornisce una suddivisione in strati (nessun qc e Rf)."
   }
 }

@@ -5,7 +5,7 @@
 import type { Cpt } from "../../../types/cpt";
 import { ct } from "../../i18n";
 import { E_STEEL_MPA, findGrade, findSheetPile, wallMomentCapacity, wallStiffness, type SheetPileProfile } from "../../library/sheetPiles";
-import { layersFromCpt } from "../spread-foundation/compute";
+import { DEFAULT_MIN_THICKNESS_M, wallProfileFromCpt, type WallLayerSource } from "./cpt-layers";
 import { NO_CORROSION, corrodedSheetPile, faceSourceText, requireLoss, type CorrodedSheet, type CorrosionFace } from "../../shared/corrosion";
 import { blum, type BlumResult } from "./blum";
 import { coefficients, type PassiveMethod, type PressureCoefficients } from "./earth-pressure";
@@ -47,6 +47,10 @@ export interface WallLayer {
   /** Wateroverspanning boven en onder in de laag [kPa], boven op de hydrostatische druk (stroming, stijghoogte). */
   excessTop?: number;
   excessBottom?: number;
+  /** Zone van de sondering (1 tot en met 9) voor de kleur in de tekeningen; alleen bij een laag uit de sondering. */
+  zone?: number;
+  /** Herkomst van een laag uit "Voorstel uit sondering"; ontbreekt bij handmatige lagen. */
+  source?: WallLayerSource;
 }
 
 export type AnchorKind = "strut" | "tie" | "grout";
@@ -222,6 +226,10 @@ export interface WallInput {
   custom: { eiKnM2: number; mRdKnM: number; vRdKn: number };
   posts: WallPosts;
   cptId: string | null;
+  /** Sondering voor de lage zijde; leeg = dezelfde als de hoge zijde. */
+  cptIdLow?: string | null;
+  /** Kleinste laagdikte bij het voorstel uit de sondering [m]. */
+  layerMinThicknessM?: number;
   groundHighNap: number;
   /** Maaiveld aan de lage zijde vóór het ontgraven; alleen voor de tekening. */
   groundLowNap: number;
@@ -441,6 +449,8 @@ export interface ScenarioLayer {
   topNap: number;
   name: string;
   soilId?: string;
+  /** Zone van de sondering, alleen voor de kleur in de tekeningen. */
+  zone?: number;
   gamma: number;
   gammaSat: number;
   phi: number;
@@ -480,7 +490,7 @@ function scenarioLayers(layers: WallLayer[], f: WallFactors, method: PassiveMeth
     const phi = deg(Math.atan(Math.tan(rad(l.phi)) / f.gammaPhi));
     // De wandwrijving houdt dezelfde verhouding tot φ' als in de invoer.
     const delta = l.phi > 0 ? Math.min(l.delta, l.phi) * (phi / l.phi) : 0;
-    return { topNap: l.topNap, name: l.name, soilId: l.soilId, gamma: l.gamma / f.gammaGamma, gammaSat: l.gammaSat / f.gammaGamma, phi, c: l.c / f.gammaC, delta, undrained: l.undrained, cu: l.cu / f.gammaCu, kh: l.kh / f.gammaK, kh2: l.kh2 ? l.kh2 / f.gammaK : undefined, kh3: l.kh3 ? l.kh3 / f.gammaK : undefined, excessTop: l.excessTop ?? 0, excessBottom: l.excessBottom ?? 0, coef: coefficients(phi, delta, method) };
+    return { topNap: l.topNap, name: l.name, soilId: l.soilId, zone: l.zone, gamma: l.gamma / f.gammaGamma, gammaSat: l.gammaSat / f.gammaGamma, phi, c: l.c / f.gammaC, delta, undrained: l.undrained, cu: l.cu / f.gammaCu, kh: l.kh / f.gammaK, kh2: l.kh2 ? l.kh2 / f.gammaK : undefined, kh3: l.kh3 ? l.kh3 / f.gammaK : undefined, excessTop: l.excessTop ?? 0, excessBottom: l.excessBottom ?? 0, coef: coefficients(phi, delta, method) };
   });
 }
 
@@ -1366,9 +1376,12 @@ export function computeWall(raw: WallInput): WallResult {
 
 // ─── Voorbeelden en laagvoorstel ──────────────────────────────────
 
-/** Laagindeling uit een sondering met startwaarden per grondsoort; de beddingsconstante blijft open. */
-export function wallLayersFromCpt(cpt: Cpt): WallLayer[] {
-  return layersFromCpt(cpt).map((l) => ({ topNap: l.topNap, name: l.name, soilId: l.soilId, gamma: l.gamma, gammaSat: l.gammaSat, phi: l.phi, c: l.c, delta: Math.round((l.phi * 2) / 3 * 10) / 10, undrained: false, cu: l.cu, kh: 0 }));
+/**
+ * Laagindeling uit een sondering met tabel 2.b van NEN 9997-1 en tabel 3.3 van CUR 166 (cpt-layers.ts). De
+ * grondwaterstand voor de omrekening van qc is die aan de hoge zijde, tenzij anders opgegeven.
+ */
+export function wallLayersFromCpt(cpt: Cpt, options: { minThicknessM?: number; waterNap?: number; gammaWater?: number } = {}): WallLayer[] {
+  return wallProfileFromCpt(cpt, { minThicknessM: options.minThicknessM ?? DEFAULT_MIN_THICKNESS_M, waterNap: options.waterNap ?? (cpt.metadata.ground_level_nap ?? 0) - 1.5, gammaWater: options.gammaWater }).layers;
 }
 
 export const E_STEEL = E_STEEL_MPA;

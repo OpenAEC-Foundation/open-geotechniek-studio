@@ -112,7 +112,6 @@
       "undrainedTitle": "Calcular esta camada como não drenada com cu"
     },
     "construction": "Tipo de estrutura",
-    "cpt": "Ensaio CPT",
     "cptAria": "Ensaio CPT para a proposta de camadas",
     "customEi": "Rigidez de flexão EI por m de cortina",
     "customEiPost": "Rigidez de flexão EI por estaca",
@@ -170,7 +169,6 @@
     "layerN": "camada {{n}}",
     "layers": "Camadas de solo (valores característicos)",
     "layersHigh": "lado alto",
-    "layersHint": "A camada superior prolonga-se até ao nível do terreno, a inferior até profundidade ilimitada. Os coeficientes de reação são introduzidos por si, por exemplo de CUR 166 tabela 3.3: esta folha de cálculo não fornece valores de tabela para isso. Só com kh1 calcula com um ramo; com kh2 e kh3 também, com a mola de três ramos de CUR 166. Uma proposta a partir do ensaio CPT é indicativa e deixa os coeficientes de reação por preencher.",
     "layersLow": "lado baixo",
     "lowSame": "O lado baixo tem as mesmas camadas",
     "manufacturer": "Fabricante",
@@ -538,5 +536,29 @@
     "waterLow": "Água baixa",
     "waterLowShort": "água baixa",
     "waterUp": "subida"
+  },
+  "soilProfile": {
+    "confirm": "As camadas introduzidas serão substituídas pela proposta do ensaio CPT. Continuar?",
+    "cptHigh": "CPT lado alto",
+    "cptLow": "CPT lado baixo",
+    "sameCpt": "Igual ao lado alto",
+    "minThickness": "Espessura mínima da camada",
+    "sources": "Origem",
+    "layer": "Camada",
+    "depth": "Profundidade",
+    "zone": "Zona CPT",
+    "sigmaTitle": "Tensão vertical efetiva a meio da camada, para a conversão de qc (NEN 9997-1 tabela 2.b, nota g)",
+    "qcEntryTitle": "qc com que se entra na tabela 2.b: em areia e cascalho convertido para σ′v = 100 kPa",
+    "row": "Tabela 2.b",
+    "khRow": "Tabela 3.3",
+    "own": "Introdução própria",
+    "noKh": "sem linha: introduza kh",
+    "manual": "manual",
+    "hint": "A camada superior vai até à superfície do terreno, a inferior até profundidade ilimitada. A proposta do CPT usa a divisão do painel Perfil do solo, junta camadas iguais, junta camadas mais finas que a espessura mínima à vizinha mais espessa e preenche por camada os valores característicos baixos da tabela 2.b da NEN 9997-1 (compacidade pelo qc médio, em areia convertido para σ′v = 100 kPa) e kh da tabela 3.3 do CUR 166 (média baixa). Em areia kh2 e kh3 ficam vazios, em silte também kh1. Só com kh1 calcula com um ramo; com kh2 e kh3 com a mola de três ramos. A proposta é indicativa: verifique e substitua os valores.",
+    "table2b": "NEN 9997-1 tabela 2.b",
+    "startValues": "Valores iniciais",
+    "showQc": "qc do CPT junto ao corte",
+    "clear": "Solo transparente",
+    "noLayers": "O CPT não dá divisão em camadas (sem qc e Rf)."
   }
 }
