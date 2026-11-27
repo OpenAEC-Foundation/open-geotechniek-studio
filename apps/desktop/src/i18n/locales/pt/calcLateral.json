@@ -535,7 +535,10 @@
     "aria": "Secção {{label}} mm",
     "bars": " com {{count}} varões Ø{{dia}}",
     "figure": "Secção da estaca",
+    "fromDrawing": "contorno do DWG do fabricante",
+    "schematic": "esquemático",
     "sheetAria": "Perfil de estaca-prancha {{id}}, esquemático",
+    "sheetAriaDrawing": "Perfil de estaca-prancha {{id}}, contorno do DWG do fabricante",
     "sheetSingle": "estaca-prancha isolada",
     "sheetWall": "cortina"
   },

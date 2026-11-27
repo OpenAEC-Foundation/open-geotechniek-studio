@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Detail van het profiel {{id}}: twee planken in de plattegrond",
     "derived": "schematisch: flensbreedte en lijfhoek afgeleid uit A en I; slot als blokje",
+    "drawing": "contour uit fabrieks-DWG ({{manufacturer}})",
     "flange": "flens",
     "schematic": "schematisch: alleen b, h en de plaatdikten komen uit de tabel",
     "table": "maten uit de profieltabel; slot schematisch"
@@ -330,6 +331,7 @@
     "vEd": "grootste dwarskracht uit het verenmodel met rekenwaarden, op NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Profielvorm: contour uit fabrieks-DWG ({{manufacturer}}).",
     "contourSchematic": "Profielvorm schematisch: de fabriekstabellen geven de flensbreedte, de lijfhoek en de slotvorm niet; de flensbreedte is afgeleid uit A en I, het slot is een blokje.",
     "displacement": "Verplaatsing",
     "ground": "mv",

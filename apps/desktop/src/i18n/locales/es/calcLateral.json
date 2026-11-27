@@ -535,7 +535,10 @@
     "aria": "Sección {{label}} mm",
     "bars": " con {{count}} barras Ø{{dia}}",
     "figure": "Sección del pilote",
+    "fromDrawing": "contorno del DWG del fabricante",
+    "schematic": "esquemático",
     "sheetAria": "Perfil de tablestaca {{id}}, esquemático",
+    "sheetAriaDrawing": "Perfil de tablestaca {{id}}, contorno del DWG del fabricante",
     "sheetSingle": "tablestaca individual",
     "sheetWall": "pantalla"
   },

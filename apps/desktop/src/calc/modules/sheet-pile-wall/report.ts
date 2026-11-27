@@ -34,8 +34,8 @@ function profileFigure(c: Cursor, p: SheetPileProfile): void {
   doc.setFontSize(6.5); doc.setTextColor(70);
   doc.text(`b = ${nl(g.widthMm, 0)}`, X(g.widthMm / 2), Y(g.heightMm / 2) - 3.2, { align: "center" }); doc.text(`h = ${nl(g.heightMm, 0)}`, X(0) - 4, Y(0) - 0.8, { align: "right" });
   const approx = g.basis === "table" ? "" : "ca. ";
-  doc.text(`t = ${nl(g.flangeThicknessMm, 1)} mm; s = ${nl(g.webThicknessMm, 1)} mm${p.shape === "Z" || p.shape === "U" ? `; flens ${approx}${nl(g.flangeMm, 0)} mm; lijfhoek ${approx}${nl(g.webAngleDeg, 1)} graden` : ""}`, X(contour.widthMm) + 6, Y(0) - 1);
-  doc.text(g.basis === "table" ? "maten uit de profieltabel; slot schematisch" : g.basis === "derived" ? "schematisch: flensbreedte en lijfhoek afgeleid uit A en I; slot als blokje" : "schematisch: alleen b, h en de plaatdikten komen uit de tabel", X(contour.widthMm) + 6, Y(0) + 2.5);
+  doc.text(`t = ${nl(g.flangeThicknessMm, 1)} mm; s = ${nl(g.webThicknessMm, 1)} mm${g.basis !== "drawing" && (p.shape === "Z" || p.shape === "U") ? `; flens ${approx}${nl(g.flangeMm, 0)} mm; lijfhoek ${approx}${nl(g.webAngleDeg, 1)} graden` : ""}`, X(contour.widthMm) + 6, Y(0) - 1);
+  doc.text(g.basis === "drawing" ? `contour uit fabrieks-DWG (${p.manufacturer})` : g.basis === "table" ? "maten uit de profieltabel; slot schematisch" : g.basis === "derived" ? "schematisch: flensbreedte en lijfhoek afgeleid uit A en I; slot als blokje" : "schematisch: alleen b, h en de plaatdikten komen uit de tabel", X(contour.widthMm) + 6, Y(0) + 2.5);
   doc.setTextColor(0); doc.setDrawColor(0); doc.setLineWidth(0.2);
   c.y += h + 2;
 }

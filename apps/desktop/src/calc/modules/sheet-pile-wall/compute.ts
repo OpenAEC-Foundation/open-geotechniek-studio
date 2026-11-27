@@ -618,7 +618,7 @@ function validate(i: WallInput): string | null {
 const mEdStep = (uls: WallRun, value: number, unit: string): WallStep => ({ symbol: "M_Ed", formula: t("steps.mEd", "grootste moment uit het verenmodel met rekenwaarden, op NAP {{nap}} m", { nap: n(uls.maxMoment.nap) }), result: `${n(value, 1)} ${unit}` });
 const vEdStep = (uls: WallRun, value: number, unit: string): WallStep => ({ symbol: "V_Ed", formula: t("steps.vEd", "grootste dwarskracht uit het verenmodel met rekenwaarden, op NAP {{nap}} m", { nap: n(uls.maxShear.nap) }), result: `${n(value, 1)} ${unit}` });
 
-function steelChecks(i: WallInput, p: SheetPileProfile, fy: number, uls: WallRun): { checks: WallCheck[]; warnings: string[] } {
+export function steelChecks(i: WallInput, p: SheetPileProfile, fy: number, uls: WallRun): { checks: WallCheck[]; warnings: string[] } {
   const g = i.factors.gammaM0, checks: WallCheck[] = [], warnings: string[] = [];
   const mEd = Math.abs(uls.maxMoment.value), vEd = Math.abs(uls.maxShear.value), nEd = Math.abs(i.normalForceKn) + (uls.anchor ? Math.abs(uls.anchor.verticalKn) : 0);
   const cap = wallMomentCapacity(p, i.grade, g), cls = p.classes?.[findGrade(i.grade)!.grade];

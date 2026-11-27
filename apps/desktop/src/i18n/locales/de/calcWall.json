@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Detail des Profils {{id}}: zwei Bohlen im Grundriss",
     "derived": "schematisch: Flanschbreite und Stegwinkel aus A und I abgeleitet; Schloss als Block",
+    "drawing": "Kontur aus der Hersteller-DWG ({{manufacturer}})",
     "flange": "Flansch",
     "schematic": "schematisch: nur b, h und die Blechdicken stammen aus der Tabelle",
     "table": "Maße aus der Profiltabelle; Schloss schematisch"
@@ -330,6 +331,7 @@
     "vEd": "größte Querkraft aus dem Federmodell mit Bemessungswerten, auf NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Profilform: Kontur aus der Hersteller-DWG ({{manufacturer}}).",
     "contourSchematic": "Profilform schematisch: die Herstellertabellen geben Flanschbreite, Stegwinkel und Schlossform nicht an; die Flanschbreite ist aus A und I abgeleitet, das Schloss ist ein Block.",
     "displacement": "Verschiebung",
     "ground": "GOK",

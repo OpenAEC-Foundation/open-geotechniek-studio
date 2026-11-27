@@ -120,8 +120,9 @@ describe('damwandprofiel als doorsnede',()=>{
     expect(computeLateral(picked).ok).toBe(true);
     cleanup();
     const next=setup(picked);
-    expect(screen.getByRole('img',{name:/Damwandprofiel .* schematisch/})).toBeInTheDocument();
-    expect(document.querySelectorAll('.lat-sketch-lock').length).toBeGreaterThan(1);
+    // Het gekozen profiel heeft een contour uit de fabriekstekening: platen in plaats van hartlijn en slotpunten.
+    expect(screen.getByRole('img',{name:/Damwandprofiel .* contour uit fabrieks-DWG/})).toBeInTheDocument();
+    expect(document.querySelectorAll('.lat-sketch-plate').length).toBe(2); expect(document.querySelectorAll('.lat-sketch-lock').length).toBe(0);
     fireEvent.change(screen.getByLabelText('Profiel'),{target:{value:'ArcelorMittal|AU 14'}});
     expect(next.mock.lastCall![0].section).toMatchObject({diameterMm:408,sheet:{profileId:'AU 14'}});
     fireEvent.change(screen.getByLabelText('Rekenbreedte'),{target:{value:'single'}});

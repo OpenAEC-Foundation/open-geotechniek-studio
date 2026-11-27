@@ -371,7 +371,7 @@ de wateroverspanning het zwaarst telt.
 | NEN-EN 338 sterkteklassen (fm;k, fv;k, E0;mean) | C18 tot D70 | uit kennis van de norm; aanpasbaar |
 | kmod klimaatklasse 3 (0,50), γM = 1,3, kcr = 0,67 | standaard | uit kennis van NEN-EN 1995-1-1; kcr volgens de nationale bijlage niet nagelopen |
 | Factor ruimtelijke werking 3 (Broms) | standaard, invoer | geldt voor een losse paal in niet-cohesieve grond; voor klei en voor palen dicht bij elkaar niet onderbouwd |
-| Vorm van het stalen profiel in de tekeningen | hoofdstuk 9 | b, h, t en s uit de tabel; flensbreedte en lijfhoek afgeleid uit A en I; slotvorm schematisch |
+| Vorm van het stalen profiel in de tekeningen | hoofdstuk 9 | 122 profielen met de exacte contour uit de fabriekstekening, getoetst op A, I, W_el en W_pl; de overige 62 schematisch: b, h, t en s uit de tabel, flensbreedte en lijfhoek afgeleid uit A en I, slotvorm schematisch |
 
 ## 8. Niet in deze versie
 
@@ -398,6 +398,50 @@ De contour van een stalen damwandprofiel komt uit één functie, `calc/library/s
 die de doorsnede, het detail in de invoer en de uitdraai, de 3D-weergave en de schets in de module
 voor horizontaal belaste palen voedt.
 
+### 9.1 Exacte contour uit de fabriekstekening
+
+Voor 122 van de 184 profielen staat de exacte doorsnede in `calc/library/sheet-pile-contours.json`:
+de omtrek van de planken met de sloten zoals de openbare CAD-tekening van de fabrikant hem geeft
+(meestal een dubbele plank), met per profiel de fabrikant, het bestand, het adres en de
+ophaaldatum (27-11-2026). Bogen zijn opgedeeld met een koordafwijking van ten hoogste 0,05 mm,
+punten afgerond op 0,01 mm; x loopt langs de wand vanaf de linker slotas, y = 0 is de zwaartelijn
+van de getekende planken (de as van de wand). De eenheid van de tekening (mm of inch) volgt uit de
+wandhoogte in de bibliotheek. De tekeningen zelf staan niet in de repo.
+
+| Fabrikant | Reeks | Met contour | Bron |
+|---|---|---|---|
+| ArcelorMittal | AZ, AU, PU, GU, AS 500 | 40 + 6 + 14 + 26 + 6 = 92 (alle) | zip met DXF (en dezelfde tekeningen als DWG), download center, september 2026 |
+| terra infrastructure | TKL | 16 van 55 | DXF per productpagina; de overige 39 varianten hebben geen eigen tekening |
+| Nucor Skyline | NZ, PZ | 10 + 4 = 14 (alle) | zip met DWG (NZ in inch, PZ metrisch), CAD-pagina van de fabrikant |
+| JFE Steel | U en hoed | 0 van 12 | geen openbare CAD-download gevonden |
+| Nippon Steel | U en hoed | 0 van 11 | CAD alleen na een formulier met persoonsgegevens; niet opgehaald |
+
+Controle per profiel (`calc/library/sheetPileDrawings.test.ts`): uit de opgeslagen omtrekken
+(veelhoeken, formules van Green) volgen per m wand A, I om de zwaartelijn, W_el = I / e met e de
+afstand tot de uiterste vezel, en W_pl = S_boven + S_onder om de plastische neutrale lijn (gelijke
+oppervlakken). Eis: A binnen 3 % en I, W_el en W_pl binnen 5 % van de profieltabel. Dit is een
+onafhankelijke controle: de tekening en de tabel komen los van elkaar van de fabrikant. Uitkomst:
+
+- ArcelorMittal: A, I, W_el en W_pl binnen 0,4 %, behalve A van GU 7S (+2,0 %; I, W_el en W_pl
+  binnen 0,3 %). AS 500: de catalogus geeft geen A per m wand; de toets gaat via de massa
+  (A = massa / 7850 kg/m³), binnen 0,7 %. I en W van de vlakke profielen staan niet in de tabel.
+- terra infrastructure: alle vier grootheden binnen 0,1 %.
+- Nucor Skyline: NZ binnen 0,3 %, behalve A van NZ 14 (−0,6 %), NZ 21 (+1,3 %) en NZ 42 (−0,4 %);
+  PZ tot 1,9 % (A), 2,1 % (I), 3,8 % (W_el van PZ 27) en 0,4 % (W_pl). De PZ-tekeningen geven de
+  slotvorm vereenvoudigd.
+- Geen enkel profiel met een tekening viel buiten de grenzen.
+
+Narekenbaar voorbeeld: AZ 18-700 (catalogus A = 139,2 cm²/m, I = 37 800 cm⁴/m, W_el = 1 800 cm³/m,
+W_pl = 2 116 cm³/m) geeft uit de tekening 139,4 cm²/m, 37 805 cm⁴/m, 1 800 cm³/m en 2 116 cm³/m; de
+zwaartelijn en de plastische neutrale lijn liggen op de as van de wand.
+
+In de tekeningen: de platen zijn de getekende planken, per getekende strook herhaald; de sloten
+zitten in de omtrek en worden niet apart getekend. Het detail, de uitdraai en de 3D-weergave
+melden "contour uit fabrieks-DWG" met de fabrikant. De hartlijn (voor de doorsnede) blijft de
+schematische, gespiegeld naar de kant van de tekening.
+
+### 9.2 Schematische vorm (profielen zonder tekening)
+
 Wat maatvast is: de plankbreedte b, de wandhoogte h, de flensdikte t en de lijfdikte s uit de
 profieltabel, en de plaats van het slot per soort (Z: aan de flens op de buitenvezel; U: op de
 neutrale lijn van de wand). De platen zijn getekend met hun dikte en met verstek in de knikken.
@@ -420,12 +464,50 @@ met de afgeleide doorsnede. Hoedprofielen, vlakke profielen en profielen zonder 
 tabelwaarden houden een vaste verhouding (flens 40 % van de plankbreedte).
 
 Controle (`sheetPileContour.test.ts`): voor alle Z- en U-profielen met volledige tabelwaarden
-liggen de A en de I die uit de getekende omtrek volgen (veelhoeken, formules van Green) binnen
+liggen de A en de I die uit de schematische omtrek volgen (veelhoeken, formules van Green) binnen
 2 % van de bibliotheek. Omdat de flens uit dezelfde A en I is afgeleid, toetst dit de
 contourfunctie en het terugrekenen, niet de fabrieksmaten; een tikfout in b, h, t of s vangt de
-test alleen als het platenmodel er niet meer op past. Koudgevormde profielen zitten niet in de
-bibliotheek.
+test alleen als het platenmodel er niet meer op past. Dezelfde vorm geeft W_el en W_pl binnen 10 %
+van de tabel (`sheetPileDrawings.test.ts`); ook dat is **niet onafhankelijk**, want de vorm is uit
+A en I van dezelfde tabel afgeleid. Koudgevormde profielen zitten niet in de bibliotheek.
 
 Beschoeiing: houten planken met messing en groef (een derde van de dikte, schematisch), een
 eigen doorsnede als rechte plank; palen rond of vierkant op hun hart-op-hartafstand met de
 schotten aan de hoge zijde; de gording op het niveau van het anker.
+
+## 10. Profieltoets met profielen uit de fabriekstekening
+
+Openbare berekeningen uit `docs/damwand/referentieberekeningen.md` (de nummers zijn die van dat
+bestand) met een profiel dat nu een exacte contour heeft. De toets is die van de module
+(`steelChecks` in `compute.ts`, NEN-EN 1993-5: buiging art. 5.2.2, dwarskracht art. 5.2.2,
+buiging met normaalkracht art. 5.2.3), met γM0 = 1,0 en βB = 1,0. W_el en W_pl zijn daarnaast uit de
+contour berekend, als controle op de tabelwaarde die de toets gebruikt. Tests:
+`reference-cases.test.ts` (nr. 3) en `profile-check-cases.test.ts` (nr. 1, 26 en 25).
+
+| Nr. | Profiel | Uit de contour | Belasting | Module | Bron |
+|---|---|---|---|---|---|
+| 3 (6.2) | GU 8N, S240GP, klasse 2 | W_el 770, W_pl 937 cm³/m (tabel 770 en 935) | M 87,7 kNm/m en V 48,1 kN/m uit de module (bron 89,75 en 48,93) | M_c;Rd = 935 · 240 = 224,4 kNm/m, u.c. 0,39; V_pl;Rd = 499 kN/m, u.c. 0,10; N = 0 | toelaatbaar 122,46 kNm/m na afroesting, u.c. 0,73 |
+| 1 | AZ 18-700, S240GP, klasse 2 | W_el 1 800, W_pl 2 116 cm³/m | M 410 kNm/m, V 122 kN/m (bron) | M_c;Rd = 2 116 · 240 = 507,8 kNm/m, u.c. 0,81; V_pl;Rd = 732 kN/m, u.c. 0,17 | M_r;d = 432 kNm/m, u.c. 0,95 |
+| 26 (6.1) | AZ 13-770, S355GP, klasse 3 (keuze; de bron geeft geen profiel) | W_el 1 300 cm³/m | M 359,24 kNm/m en anker 172 kN/m onder 10° (bron); V 141,1 kN/m uit Blum | benodigd W_el = 1 012 cm³/m; M_c;Rd = 461,5 kNm/m, u.c. 0,78; N_Ed = 30,3 kN/m, M_N;Rd = 458,4 kNm/m, u.c. 0,78; V_pl;Rd = 803 kN/m, u.c. 0,18 | alleen M_max |
+| 25 | PZ 22, S355GP (bron: 50 ksi), geen klasse in de bibliotheek | W_el 985 cm³/m (tabel 973) | M 34 149 ft-lb/ft = 151,9 kNm/m (bron) | M_c;Rd = 973 · 355 = 345,4 kNm/m, u.c. 0,44 | benodigd S = 16,39 in³/ft = 881 cm³/m bij 0,5·f_y; in die vorm 881 / 985 = 0,89 |
+
+Wat de verschillen verklaart:
+
+- **Nr. 3:** de bron rekent met afroesting (1,2 mm per zijde in 100 jaar): 122,46 kNm/m is 0,55
+  van het plastische moment zonder afroesting. De module kent geen afroesting (hoofdstuk 8); haar
+  unity check (0,39) ligt daarom lager dan die van de bron (0,73). Moment en dwarskracht uit de
+  module liggen binnen 2,5 % van de bron (hoofdstuk 6.2).
+- **Nr. 1:** de bron toetst elastisch: 432 kNm/m is precies W_el · f_y (1 800 · 240). De module
+  rekent bij klasse 2 plastisch en komt hoger uit. Waarom de bron elastisch rekent, staat niet in
+  het uittreksel.
+- **Nr. 26:** de bron geeft alleen het moment en de ankerkracht; het profiel is een keuze om de
+  toets met normaalkracht te laten zien. De normaalkracht is de verticale component van het
+  anker, 172 · tan 10° = 30,3 kN/m.
+- **Nr. 25:** de bron werkt met een toelaatbare spanning van 0,5 · f_y, de module met de
+  rekenwaarde f_y / γM0; de unity checks zijn daarom niet gelijk. De vergelijking van het
+  benodigde met het aanwezige weerstandsmoment (881 tegen 985 cm³/m) is in de vorm van de bron.
+
+Niet opgenomen: nr. 14 (AZ 24-700 en AZ 13-770 in S240GP). De bron geeft M_Rd = 426 en 191 kNm/m;
+uit de tabel volgt 2 430 · 240 = 583 en 1 300 · 240 = 312 kNm/m elastisch. Het verschil komt
+vermoedelijk uit afroesting en een reductie in de bron, maar dat staat niet in het uittreksel en is
+niet nagegaan.

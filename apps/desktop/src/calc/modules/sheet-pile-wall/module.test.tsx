@@ -117,17 +117,20 @@ describe("module", () => {
 });
 
 describe("geometrie van de tekeningen", () => {
-  it("stalen damwand: trapeziumgolf met de plankbreedte, wandhoogte en plaatdikten uit de bibliotheek", () => {
+  it("stalen damwand: de contour uit de fabriekstekening met de plankbreedte en wandhoogte uit de bibliotheek", () => {
     const z = findSheetPile("AZ 18-700")!, plan = profilePlan(z, 2.8);
-    // Vier planken van 700 mm: vier platen en vijf sloten; de hartlijn loopt van 0 tot 2,8 m tussen ± (420 − 9)/2 mm.
-    expect(plan.outlines.filter((o) => o.kind === "plate")).toHaveLength(4); expect(plan.outlines.filter((o) => o.kind === "lock")).toHaveLength(5);
-    expect(plan.line[0]).toEqual({ a: 0, x: 0.2055 }); expect(plan.line[plan.line.length - 1].a).toBeCloseTo(2.8, 12);
-    expect(Math.max(...plan.outlines.flatMap((o) => (o.kind === "plate" ? o.points.map((q) => q.x) : [])))).toBeCloseTo(0.21, 9);
-    expect(plan.basis).toBe("derived");
+    // Vier planken van 700 mm: vier getekende platen met de sloten erin; de hartlijn loopt van 0 tot 2,8 m tussen ± (420 − 9)/2 mm.
+    expect(plan.outlines.filter((o) => o.kind === "plate")).toHaveLength(4); expect(plan.outlines.filter((o) => o.kind === "lock")).toHaveLength(0);
+    expect(plan.line[0].a).toBe(0); expect(Math.abs(plan.line[0].x)).toBeCloseTo(0.2055, 9); expect(plan.line[plan.line.length - 1].a).toBeCloseTo(2.8, 12);
+    expect(Math.max(...plan.outlines.flatMap((o) => (o.kind === "plate" ? o.points.map((q) => q.x) : [])))).toBeCloseTo(0.21, 3);
+    expect(plan.basis).toBe("drawing");
+    // Zonder tekening (een profiel van een fabrikant zonder openbare CAD-download) blijft het de schematische vorm met sloten.
+    const u = profilePlan(findSheetPile("JFESP-2")!, 1.6);
+    expect(u.basis).not.toBe("drawing"); expect(u.outlines.filter((o) => o.kind === "lock").length).toBeGreaterThan(0);
     expect(clipLine(plan.line, 0.35, 1.05).map((q) => +q.x.toFixed(4))).toEqual([expect.any(Number), ...plan.line.filter((q) => q.a > 0.35 && q.a < 1.05).map((q) => +q.x.toFixed(4)), expect.any(Number)]);
     expect(clipLine([{ a: 0, x: 0 }, { a: 2, x: 1 }], 0.5, 1.5)).toEqual([{ a: 0.5, x: 0.25 }, { a: 1.5, x: 0.75 }]);
     const scene = wallScene(wallExample(), ok(wallExample()));
-    expect(scene.construction).toBe("sheet-pile"); expect(scene.wallHeightM).toBe(0.42); expect(scene.outlines.length).toBeGreaterThan(8); expect(scene.contourBasis).toBe("derived"); expect(scene.wallLine.length).toBeGreaterThan(8); expect(scene.posts).toHaveLength(0);
+    expect(scene.construction).toBe("sheet-pile"); expect(scene.wallHeightM).toBe(0.42); expect(scene.outlines.length).toBeGreaterThan(8); expect(scene.contourBasis).toBe("drawing"); expect(scene.contourManufacturer).toBe("ArcelorMittal"); expect(scene.wallLine.length).toBeGreaterThan(8); expect(scene.posts).toHaveLength(0);
     expect(scene.anchors.length).toBeGreaterThan(0); expect(scene.support).toMatchObject({ kind: "tie", levelNap: -1, angleDeg: 30 }); expect(scene.slip).toBeNull();
     expect(scene.high.layers.map((l) => l.name)).toEqual(["Zand, matig", "Zand, vast"]); expect(scene.low.layers[0].topNap).toBe(-4);
     expect(wallScene(wallExample(), ok(wallExample()), ok(wallExample()).uls).low.surfaceNap).toBeCloseTo(-4.3, 12);

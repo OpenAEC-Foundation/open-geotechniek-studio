@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Pormenor do perfil {{id}}: duas estacas-prancha em planta",
     "derived": "esquemático: largura do banzo e ângulo da alma deduzidos de A e I; encaixe representado por um bloco",
+    "drawing": "contorno do DWG do fabricante ({{manufacturer}})",
     "flange": "banzo",
     "schematic": "esquemático: apenas b, h e as espessuras provêm da tabela",
     "table": "dimensões da tabela de perfis; encaixe esquemático"
@@ -330,6 +331,7 @@
     "vEd": "esforço transverso máximo do modelo de molas com valores de cálculo, a NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Forma do perfil: contorno do DWG do fabricante ({{manufacturer}}).",
     "contourSchematic": "Forma do perfil esquemática: as tabelas dos fabricantes não indicam a largura do banzo, o ângulo da alma nem a forma do encaixe; a largura do banzo é deduzida de A e I, o encaixe é um bloco.",
     "displacement": "Deslocamento",
     "ground": "terr.",

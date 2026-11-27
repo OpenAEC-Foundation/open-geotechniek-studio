@@ -535,7 +535,10 @@
     "aria": "Tvärsnitt {{label}} mm",
     "bars": " med {{count}} stänger Ø{{dia}}",
     "figure": "Påltvärsnitt",
+    "fromDrawing": "kontur från tillverkarens DWG",
+    "schematic": "schematisk",
     "sheetAria": "Spontprofil {{id}}, schematisk",
+    "sheetAriaDrawing": "Spontprofil {{id}}, kontur från tillverkarens DWG",
     "sheetSingle": "enskild spontplanka",
     "sheetWall": "vägg"
   },

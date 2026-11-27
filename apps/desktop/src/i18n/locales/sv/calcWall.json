@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Detalj av profil {{id}}: två plankor i plan",
     "derived": "schematisk: flänsbredd och livvinkel härledda ur A och I; låset som ett block",
+    "drawing": "kontur från tillverkarens DWG ({{manufacturer}})",
     "flange": "fläns",
     "schematic": "schematisk: endast b, h och plåttjocklekarna kommer från tabellen",
     "table": "mått från profiltabellen; låset schematiskt"
@@ -330,6 +331,7 @@
     "vEd": "största tvärkraft ur fjädermodellen med dimensionerande värden, på NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Profilform: kontur från tillverkarens DWG ({{manufacturer}}).",
     "contourSchematic": "Profilformen är schematisk: tillverkarnas tabeller anger inte flänsbredd, livvinkel eller låsets form; flänsbredden är härledd ur A och I, låset är ett block.",
     "displacement": "Förskjutning",
     "ground": "my",

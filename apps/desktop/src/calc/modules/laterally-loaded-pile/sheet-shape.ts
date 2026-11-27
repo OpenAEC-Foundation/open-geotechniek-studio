@@ -4,8 +4,10 @@
 // plaats van de sloten per profielvorm. De flensbreedte komt uit de gedeelde contour
 // (library/sheetPileContour.ts): afgeleid uit A en I van de tabel als die er zijn,
 // anders 40 % van de plankbreedte. Zo is het profiel overal hetzelfde.
+// Heeft de bibliotheek de exacte contour uit de CAD-tekening van de fabrikant, dan komen daar ook de
+// omtrekken van de planken bij (`plates`), op dezelfde plaats als de hartlijn.
 import type { SheetPileProfile } from '../../library/sheetPiles';
-import { sheetGeometry } from '../../library/sheetPileContour';
+import { sheetContour, sheetGeometry, type ContourBasis } from '../../library/sheetPileContour';
 
 export interface SheetOutline {
   /** Hartlijn in mm: x langs de wand, y in de buigrichting; gecentreerd op 0. */
@@ -13,9 +15,12 @@ export interface SheetOutline {
   /** Plaats van de sloten. */
   locks: Array<{ x: number; y: number }>;
   widthMm: number; heightMm: number; planks: number;
+  /** Waar de vorm vandaan komt; bij "drawing" de omtrekken van de planken uit de fabriekstekening [mm]. */
+  basis: ContourBasis;
+  plates: Array<Array<{ x: number; y: number }>>;
 }
 
-export function sheetOutline(p: Pick<SheetPileProfile, 'shape' | 'widthMm' | 'wallHeightMm'> & Partial<Pick<SheetPileProfile, 'flangeMm' | 'webMm' | 'areaCm2PerM' | 'iCm4PerM' | 'flangeWidthMm'>>, mode: 'wall' | 'single'): SheetOutline {
+export function sheetOutline(p: Pick<SheetPileProfile, 'shape' | 'widthMm' | 'wallHeightMm'> & Partial<Pick<SheetPileProfile, 'id' | 'manufacturer' | 'flangeMm' | 'webMm' | 'areaCm2PerM' | 'iCm4PerM' | 'flangeWidthMm'>>, mode: 'wall' | 'single'): SheetOutline {
   // Aandeel van de flens in de plankbreedte: bij Z de twee halve flenzen samen.
   const fl = sheetGeometry(p).flangeMm / (p.widthMm ?? 500);
   const b = p.widthMm ?? 500, h = p.shape === 'straight' ? 0 : p.wallHeightMm ?? 0, a = h / 2;
@@ -39,5 +44,12 @@ export function sheetOutline(p: Pick<SheetPileProfile, 'shape' | 'widthMm' | 'wa
   }
   const width = planks * b, ys = pts.map((q) => q.y), yMid = (Math.max(...ys) + Math.min(...ys)) / 2;
   const centre = (q: { x: number; y: number }) => ({ x: q.x - width / 2, y: q.y - yMid });
-  return { points: pts.map(centre), locks: locks.map(centre), widthMm: width, heightMm: Math.max(...ys) - Math.min(...ys), planks };
+  const base = { points: pts.map(centre), locks: locks.map(centre), widthMm: width, heightMm: Math.max(...ys) - Math.min(...ys), planks };
+  const exact = sheetContour(p, planks);
+  if (exact.geometry.basis !== 'drawing') return { ...base, basis: exact.geometry.basis, plates: [] };
+  // Exacte contour: zo gespiegeld dat hij bij de hartlijn hierboven past, en net zo om het midden gelegd.
+  const plain = sheetContour(p, planks, { exact: false }), agree = plain.centerlines.flat().reduce((sum, q, k) => sum + q.y * exact.centerlines.flat()[k].y, 0);
+  const flip = agree < 0 ? -1 : 1, py = exact.plates.flat().map((q) => flip * q.y), mid = (Math.max(...py) + Math.min(...py)) / 2;
+  return { ...base, heightMm: Math.max(...py) - Math.min(...py), basis: 'drawing', plates: exact.plates.map((poly) => poly.map((q) => ({ x: q.x - width / 2, y: flip * q.y - mid }))) };
 }
+

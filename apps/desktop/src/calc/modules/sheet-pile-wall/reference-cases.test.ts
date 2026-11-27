@@ -6,6 +6,8 @@
 // uitkomsten. De module wijkt in de geometrie op één punt af: het maaiveld achter de wand is hier vlak, in de
 // bron loopt het na 2 m af.
 import { describe, expect, it } from "vitest";
+import { contourModuli, drawingContour } from "../../library/sheetPileContour";
+import { findSheetPile } from "../../library/sheetPiles";
 import { FACTOR_SETS, REPRESENTATIVE, buildScenario, computeWall, sidePoint, wallExample, type WallFactors, type WallInput, type WallLayer, type WallOk } from "./compute";
 
 const ok = (i: WallInput): WallOk => { const r = computeWall(i); if (!r.ok) throw new Error(r.error); return r; };
@@ -84,6 +86,20 @@ describe("openbare referentieberekening: onverankerde damwand langs een rivier",
     expect(Math.abs(moment(asSource) / moment(three) - 1)).toBeLessThan(0.03); expect(head(asSource)).toBeGreaterThan(1.3 * head(three));
     // De eerste versie lag met rekenwaarden 15 % onder de bron.
     expect(Math.abs(ok(riverWall({ ...firstVersion, factors: { ...FACTOR_SETS[2].factors } })).uls.maxMoment.value)).toBeLessThan(0.9 * 89.75);
+  });
+
+  it("profieltoets met GU 8N in S240GP uit de bibliotheek (contour uit de fabriekstekening) naast de bron", () => {
+    // Bron: M_s;d = 89,75 kNm/m tegen toelaatbaar 122,46 kNm/m na afroesting (1,2 mm per zijde in 100 jaar): u.c. 0,73.
+    // De module rekent zonder afroesting: klasse 2, W_pl = 935 cm³/m, M_c;Rd = 224,4 kNm/m.
+    const r = ok(riverWall({ ...asSource, factors: designFactors })), by = (id: string) => r.checks.find((c) => c.id === id)!;
+    const p = findSheetPile("GU 8N")!, w = contourModuli(p);
+    expect(drawingContour(p)).toBeDefined(); expect(Math.abs(w.wplCm3PerM / 935 - 1)).toBeLessThan(0.01); expect(Math.abs(w.welCm3PerM / 770 - 1)).toBeLessThan(0.01);
+    expect(by("bending").resistance).toBeCloseTo((935 * 240) / 1000, 6); expect(by("bending").uc).toBeLessThan(89.75 / 122.46);
+    // Wat de afroesting van de bron vraagt: 122,46 / 224,4 = 0,55 van het plastische moment zonder afroesting.
+    expect(122.46 / by("bending").resistance).toBeCloseTo(0.546, 3);
+    // Dwarskracht: A_v = 7,1 · (312 − 7,5) / 0,6 = 3 603 mm²/m, V_pl;Rd = 499 kN/m; normaalkracht 0.
+    expect(by("shear").resistance).toBeCloseTo((((7.1 * 304.5) / 0.6) * 240) / Math.sqrt(3) / 1000, 6); expect(by("shear").uc).toBeLessThan(0.1);
+    expect(by("normal").resistance).toBeCloseTo(by("bending").resistance, 9);
   });
 
   it("met het gekromde glijvlak van de module is er in dit geval met rekenwaarden geen evenwicht: de module is daar strenger dan de bron", () => {

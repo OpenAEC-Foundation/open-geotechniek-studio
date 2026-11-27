@@ -14,7 +14,7 @@ describe("contour van een damwandprofiel", () => {
   });
 
   it("Z-plank: breedte, hoogte en plaatdikten uit de tabel; sloten aan de flens op de buitenvezel, om en om", () => {
-    const p = findSheetPile("AZ 18-700")!, c = sheetContour(p, 2), g = c.geometry;
+    const p = findSheetPile("AZ 18-700")!, c = sheetContour(p, 2, { exact: false }), g = c.geometry;
     expect([g.widthMm, g.heightMm, g.flangeThicknessMm, g.webThicknessMm]).toEqual([700, 420, 9, 9]); expect(c.widthMm).toBe(1400);
     expect(c.lockPoints.map((q) => [q.x, q.y])).toEqual([[0, 205.5], [700, -205.5], [1400, 205.5]]);
     const ys = c.plates.flat().map((q) => q.y), xs = c.plates.flat().map((q) => q.x);
@@ -26,7 +26,7 @@ describe("contour van een damwandprofiel", () => {
   });
 
   it("U-plank: sloten op de neutrale lijn, de flens om en om aan weerszijden", () => {
-    const p = findSheetPile("AU 18")!, c = sheetContour(p, 2);
+    const p = findSheetPile("AU 18")!, c = sheetContour(p, 2, { exact: false });
     expect(c.lockPoints.map((q) => q.y)).toEqual([0, 0, 0]);
     expect(c.centerlines[0][1].y).toBeCloseTo((441 - 10.5) / 2, 9); expect(c.centerlines[1][1].y).toBeCloseTo(-(441 - 10.5) / 2, 9);
     expect(c.centerlines[0][2].x - c.centerlines[0][1].x).toBeCloseTo(c.geometry.flangeMm, 9);
@@ -40,7 +40,7 @@ describe("contour van een damwandprofiel", () => {
     // Het platenmodel past op vrijwel elk profiel; de rest valt terug op de vaste verhouding.
     expect(derived.length).toBeGreaterThan(0.9 * complete.length);
     for (const p of derived) {
-      const out = contourSectionProperties(p), g = sheetGeometry(p);
+      const out = contourSectionProperties(p, { exact: false }), g = sheetGeometry(p);
       expect(Math.abs(out.areaCm2PerM / p.areaCm2PerM! - 1), `${p.id} A`).toBeLessThan(0.02);
       expect(Math.abs(out.iCm4PerM / p.iCm4PerM! - 1), `${p.id} I`).toBeLessThan(0.02);
       expect(g.flangeMm, p.id).toBeGreaterThan(0.05 * p.widthMm!); expect(g.flangeMm, p.id).toBeLessThan(0.95 * p.widthMm!);
@@ -55,6 +55,6 @@ describe("contour van een damwandprofiel", () => {
     const hat = SHEET_PILES.find((x) => x.shape === "hat")!, c = sheetContour(hat, 2);
     expect(c.geometry.basis).toBe("schematic"); expect(c.lockPoints.every((q) => q.y < 0)).toBe(true);
     const flat = SHEET_PILES.find((x) => x.shape === "straight")!;
-    expect(sheetContour(flat, 3).centerlines).toHaveLength(3); expect(sheetContour(flat, 1).lockPoints.map((q) => q.y)).toEqual([0, 0]);
+    expect(sheetContour(flat, 3, { exact: false }).centerlines).toHaveLength(3); expect(sheetContour(flat, 1, { exact: false }).lockPoints.map((q) => q.y)).toEqual([0, 0]);
   });
 });
