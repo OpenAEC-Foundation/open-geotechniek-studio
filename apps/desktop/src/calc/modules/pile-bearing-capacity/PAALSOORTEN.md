@@ -105,6 +105,32 @@ overgang binnen de kleefzone, puntoppervlak, positieve kleef en ongeldige
 geometrie. Dit vervangt geen onafhankelijke validatie van een volledige
 tapse houtberekening.
 
+## Houtsoort
+
+Bij de houten paal (rond en gezaagd) kiest de gebruiker een houtsoort (`timberSpecies`, data in `parts/timber-species.ts`). De houtsoort bepaalt alleen de sterkteklasse in de optionele sterktetoets (f_c,0,k volgens NEN-EN 338:2016) en de kleur van het hout in de tekening. De paalklassefactoren, de negatieve kleef en het draagvermogen uit de sondering volgen uit het paaltype en veranderen niet (test `parts/timber-species.test.ts`). Zonder houtsoort ("eigen sterkteklasse") werkt de toets als voorheen: een klasse uit de lijst of een eigen f_c,0,k. Een volumieke massa is niet opgenomen: de module rekent geen eigen gewicht van de paal.
+
+Bron van de toewijzing: Centrum Hout, Houtwijzer *Sterktegegevens van hout* (Almere, 2007, artikelnummer 100016), tabel "Relaties tussen visuele sorteringen en de sterkteklassen van houtsoorten". Ter controle: houttabellenboek bij NEN-EN 1995 (2011), tabel 1, met als herkomst "het houtblad mei 2006". NEN-EN 1912 en NEN 5499 zelf zijn niet ingezien; de Houtwijzer noemt de sorteernormen NEN 5466 en NEN 5477 en voor tropisch hout NPR 5493; of NEN 5499 dezelfde sorteerklassen en toewijzing geeft, is niet nagegaan.
+
+| Houtsoort | Botanisch | Sorteerklasse (norm) | Sterkteklasse |
+|---|---|---|---|
+| vuren | Picea abies | A/B (NEN 5466) | C24 |
+| grenen | Pinus sylvestris | A/B (NEN 5466) | C24 |
+| lariks | Larix spp. | A/B (NEN 5466) | C24 |
+| eiken, Midden-Europees | Quercus petraea | A/B (NEN 5477) | C20 |
+| azobé | Lophira alata | tropisch (NPR 5493) | D70 |
+| bangkirai | Shorea spp. | tropisch (NPR 5493) | D50 |
+| basralocus | Dicorynia spp. | tropisch (NPR 5493) | C22 |
+| douglas | Pseudotsuga menziesii | geen vaste toewijzing | door de gebruiker |
+
+Niet opgenomen of zonder vaste klasse, omdat de bronnen verschillen:
+
+- Sorteerklasse C van vuren, grenen en lariks: de Houtwijzer geeft C18, het tabellenboek noemt voor grenen ook C16. Kies voor dit hout "eigen sterkteklasse".
+- Douglas: A/B C22 en C C18 volgens de Houtwijzer, C16 voor C volgens het tabellenboek en C24 in een productcertificaat. De gebruiker kiest de klasse.
+- Azobé en bangkirai kennen in het tabellenboek ook een andere sortering (azobé A/B D60, bangkirai HS D70); opgenomen is alleen de sortering die beide bronnen gelijk geven (NPR 5493).
+- Andere tropische soorten uit de tabel (onder meer groenhart, massaranduba, cumaru) zijn weggelaten omdat ze voor funderingspalen weinig voorkomen of de handelsnaam in de bronnen naar verschillende botanische soorten verwijst.
+
+Kleur in de tekening (`parts/material-colors.ts`): naaldhout licht, Europees loofhout en tropisch hout donkerder; zonder houtsoort de bestaande houtkleur.
+
 ## Verificatie
 
 De tests controleren geometrie, factoroverrides, cataloguswaarden, toepassingsgrenzen, EA, avegaarbegrenzing, uitsluiting van niet-ondersteunde lastzakkingslijnen en typewissels. De 100 openbare referentiegevallen blijven componentcontroles met expliciete bronfactoren; zij vormen geen volledige validatie van alle nieuwe paalsoorten.

@@ -18,7 +18,7 @@ export const partColor = (material: PhysicalPart["material"]) => (material === "
 function partMaterial(part: PhysicalPart, flat: boolean): THREE.MeshStandardMaterial {
   const steel = part.material === "steel";
   return new THREE.MeshStandardMaterial({
-    color: partColor(part.material), roughness: steel ? 0.45 : 0.88, metalness: steel ? 0.35 : 0, flatShading: flat,
+    color: part.color ?? partColor(part.material), roughness: steel ? 0.45 : 0.88, metalness: steel ? 0.35 : 0, flatShading: flat,
     side: part.shape.kind === "helix" || (part.shape.kind === "round" && part.shape.wallM) ? THREE.DoubleSide : THREE.FrontSide,
     // De groutschil is doorschijnend, zodat de kernbuis erin te zien blijft.
     ...(part.material === "grout" ? { transparent: true, opacity: 0.55, depthWrite: false } : {}),

@@ -145,6 +145,10 @@ export interface PileInput {
   sideBMm?: number;
   /** Optionele sterktetoets van de paal; ontbrekend of uit = geen toets. */
   strengthCheck?: StrengthCheckInput;
+  /** Hout: houtsoort en sorteerklasse (parts/timber-species.ts). Bepaalt alleen
+   *  de sterkteklasse in de sterktetoets en de kleur in de tekening, niet de
+   *  paalklassefactoren. Ontbrekend = eigen sterkteklasse. */
+  timberSpecies?: { id: string; gradeId?: string };
   /** Omvang van rekenblad en uitdraai; ontbrekend = beknopt. */
   reportDetail?: "compact" | "full";
   /** Hout: lineair verloop vanaf de bovenkant van het hout (paalkop, of de

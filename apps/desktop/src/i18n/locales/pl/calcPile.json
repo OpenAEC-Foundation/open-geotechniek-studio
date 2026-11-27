@@ -184,7 +184,22 @@
     "woodSawn": "Kwadratowy lub prostokątny a × b (tarty)",
     "sideA": "Bok a",
     "sideB": "Bok b",
-    "rectHint": "Prostokąt a ≠ b: pole, obwód i Deq wynikają z a i b; program nie wyznacza współczynnika kształtu s dla prostokątnej podstawy pala. W razie potrzeby wprowadź s jako współczynnik projektowy."
+    "rectHint": "Prostokąt a ≠ b: pole, obwód i Deq wynikają z a i b; program nie wyznacza współczynnika kształtu s dla prostokątnej podstawy pala. W razie potrzeby wprowadź s jako współczynnik projektowy.",
+    "timberSpecies": "Gatunek drewna",
+    "timberSpeciesOwn": "Własna klasa wytrzymałości",
+    "timberGrade": "Klasa sortowania",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Tylko dla sprawdzenia wytrzymałości; współczynniki klasy pala i nośność wynikają z typu pala.",
+    "timberSpeciesNoClass": "Źródło nie podaje jednoznacznej klasy wytrzymałości: wybierz klasę w sprawdzeniu wytrzymałości. Współczynniki klasy pala i nośność wynikają z typu pala.",
+    "species": {
+      "vuren": "świerk",
+      "grenen": "sosna zwyczajna",
+      "lariks": "modrzew",
+      "douglas": "daglezja",
+      "eiken": "dąb, Europa Środkowa",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Eksportuj dla Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "Informacyjnie: górne oszacowanie z pełnym N_Ed;max na przekroju przy podstawie. Dodatniego tarcia na pobocznicy powyżej podstawy nie odjęto; rzeczywista siła przy podstawie jest mniejsza.",
       "concrete": "Beton: N_Rd = A_c · f_cd przekroju trzonu, bez zbrojenia (nie występuje w danych wejściowych). Nie sprawdzono: minimalnego mimośrodu (p. 6.1 (4)), wyboczenia, zbrojenia oraz naprężeń przy wbijaniu.",
       "concreteInSitu": "Pal formowany w gruncie: zmniejszonej średnicy obliczeniowej (p. 2.3.4.2) i zwiększenia γ_c (p. 2.4.2.5) dla pali bez rury traconej nie zastosowano; nośność należy przeliczyć samodzielnie.",
-      "concreteClassUnknown": "Nieznana klasa wytrzymałości betonu {{cls}}."
+      "concreteClassUnknown": "Nieznana klasa wytrzymałości betonu {{cls}}.",
+      "timberSpecies": "Gatunek {{species}}, klasa sortowania {{grade}} → {{cls}} według {{source}}. Gatunek określa tylko klasę wytrzymałości; współczynniki klasy pala i nośność wynikają z typu pala.",
+      "timberSpeciesOwn": "Gatunek {{species}}: źródło nie podaje jednoznacznej klasy wytrzymałości; klasę wybrał użytkownik."
     }
   },
   "report": {

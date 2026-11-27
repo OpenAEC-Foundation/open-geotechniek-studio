@@ -12,6 +12,7 @@ import type { ConcreteExtension, PileInput, PileResult, PileTypeSpec, SoilKind, 
 import { woodTopNap } from "../parts/geometry";
 import { STEEL_TUBE_OD, rectText, seriesFor, sizeText } from "../standard-sizes";
 import { CONCRETE_CLASSES, STEEL_GRADES, STRENGTH_DEFAULTS, TIMBER_CLASSES, defaultConcreteClass } from "../parts/strength-check";
+import { TIMBER_SPECIES, TIMBER_SPECIES_SOURCE, resolveTimber } from "../parts/timber-species";
 import { PILE_STANDARDS, applyStandard, changeStandard, getStandard, standardLabel, usesHistoricalProcedure, type PileStandard } from "../standards";
 import { PILE_SYSTEMS, applyPileSystem, pileSystemIdOf, pileSystemName, switchPileType, type PileSystem } from "../pile-systems";
 import { PileSketch } from "./PileSketch";
@@ -58,6 +59,7 @@ export function InputPanel({ input, onChange }: Props) {
   const changeType = (pileTypeId: string) => onChange?.(switchPileType(input, pileTypeId,
     getPileType(pileTypeId)?.material === "wood" && material === "wood" ? !!input.concreteExtension : true));
   const sawn = material === "wood" && pileType?.isCircular === false;
+  const timber = material === "wood" ? resolveTimber(input.timberSpecies) : null;
   const strength = input.strengthCheck;
   const setStrength = (patch: Partial<NonNullable<PileInput["strengthCheck"]>>) => set("strengthCheck", { enabled: true, ...strength, ...patch });
   const ext = input.concreteExtension;
@@ -168,6 +170,25 @@ export function InputPanel({ input, onChange }: Props) {
             </select>
           </Row>
         )}
+        {material === "wood" && <>
+          <Row label={t("pile.timberSpecies", "Houtsoort")}>
+            <select aria-label={t("pile.timberSpecies", "Houtsoort")} value={timber?.species.id ?? ""}
+              onChange={(e) => set("timberSpecies", e.target.value ? { id: e.target.value } : undefined)}>
+              <option value="">{t("pile.timberSpeciesOwn", "Eigen sterkteklasse")}</option>
+              {TIMBER_SPECIES.map((s) => <option key={s.id} value={s.id}>{t(`pile.species.${s.id}`, s.name)}</option>)}
+            </select>
+          </Row>
+          {timber && timber.species.grades.length > 1 && (
+            <Row label={t("pile.timberGrade", "Sorteerklasse")}>
+              <select aria-label={t("pile.timberGrade", "Sorteerklasse")} value={timber.grade?.id ?? ""} onChange={(e) => set("timberSpecies", { id: timber.species.id, gradeId: e.target.value })}>
+                {timber.species.grades.map((g) => <option key={g.id} value={g.id}>{g.label} → {g.strengthClass}</option>)}
+              </select>
+            </Row>
+          )}
+          {timber && <Hint>{timber.grade
+            ? t("pile.timberSpeciesHint", "{{grade}} → {{cls}} ({{source}}). Alleen voor de sterktetoets; paalklassefactoren en draagvermogen volgen uit het paaltype.", { grade: timber.grade.label, cls: timber.grade.strengthClass, source: TIMBER_SPECIES_SOURCE })
+            : t("pile.timberSpeciesNoClass", "Geen eenduidige sterkteklasse in de bron: kies de klasse bij de sterktetoets. Paalklassefactoren en draagvermogen volgen uit het paaltype.")}</Hint>}
+        </>}
         {sawn && (
           <Row label={t("pile.standardSize", "Standaardmaat")}>
             <select aria-label={t("pile.standardSize", "Standaardmaat")} value={series.rect.some(([a, b]) => a === input.diameterMm && b === (input.sideBMm ?? input.diameterMm)) ? `${input.diameterMm}x${input.sideBMm ?? input.diameterMm}` : ""}
@@ -308,6 +329,9 @@ export function InputPanel({ input, onChange }: Props) {
             </Row>
           )}
           {material === "wood" && <>
+            {timber?.grade ? <Row label={t("strength.timberClass", "Sterkteklasse hout")}>
+              <span>{timber.grade.strengthClass} · {sizeText(TIMBER_CLASSES.find((c) => c.id === timber.grade!.strengthClass)?.fc0kMpa ?? 0)} MPa</span>
+            </Row> : <>
             <Row label={t("strength.timberClass", "Sterkteklasse hout")}>
               <select aria-label={t("strength.timberClass", "Sterkteklasse hout")} value={strength.timberFc0kMpa !== undefined ? "eigen" : strength.timberClass ?? STRENGTH_DEFAULTS.timberClass}
                 onChange={(e) => e.target.value === "eigen" ? setStrength({ timberFc0kMpa: TIMBER_CLASSES.find((c) => c.id === (strength.timberClass ?? STRENGTH_DEFAULTS.timberClass))?.fc0kMpa ?? 18 }) : setStrength({ timberClass: e.target.value, timberFc0kMpa: undefined })}>
@@ -316,6 +340,7 @@ export function InputPanel({ input, onChange }: Props) {
               </select>
             </Row>
             {strength.timberFc0kMpa !== undefined && <Row label={<>f<sub>c,0,k</sub></>} unit="MPa"><NumField aria-label="fc,0,k [MPa]" min="0.1" step="0.5" value={strength.timberFc0kMpa} onChange={(e) => setStrength({ timberFc0kMpa: +e.target.value })} /></Row>}
+            </>}
             <Row label={<>k<sub>mod</sub></>}><NumField aria-label="kmod" min="0.05" max="1.1" step="0.05" value={strength.kMod ?? STRENGTH_DEFAULTS.kMod} onChange={(e) => setStrength({ kMod: +e.target.value })} /></Row>
             <Row label={<>γ<sub>M</sub> {t("strength.timber", "hout")}</>}><NumField aria-label={`γM ${t("strength.timber", "hout")}`} min="1" step="0.05" value={strength.gammaMTimber ?? STRENGTH_DEFAULTS.gammaMTimber} onChange={(e) => setStrength({ gammaMTimber: +e.target.value })} /></Row>
           </>}

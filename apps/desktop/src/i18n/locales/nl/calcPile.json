@@ -184,7 +184,22 @@
     "woodSawn": "Vierkant of rechthoekig a × b (gezaagd)",
     "sideA": "Zijde a",
     "sideB": "Zijde b",
-    "rectHint": "Rechthoek a ≠ b: oppervlak, omtrek en Deq volgen uit a en b; de vormfactor s voor een rechthoekige paalvoet bepaalt het programma niet. Vul s zo nodig in als projectfactor."
+    "rectHint": "Rechthoek a ≠ b: oppervlak, omtrek en Deq volgen uit a en b; de vormfactor s voor een rechthoekige paalvoet bepaalt het programma niet. Vul s zo nodig in als projectfactor.",
+    "timberSpecies": "Houtsoort",
+    "timberSpeciesOwn": "Eigen sterkteklasse",
+    "timberGrade": "Sorteerklasse",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Alleen voor de sterktetoets; paalklassefactoren en draagvermogen volgen uit het paaltype.",
+    "timberSpeciesNoClass": "Geen eenduidige sterkteklasse in de bron: kies de klasse bij de sterktetoets. Paalklassefactoren en draagvermogen volgen uit het paaltype.",
+    "species": {
+      "vuren": "vuren",
+      "grenen": "grenen",
+      "lariks": "lariks",
+      "douglas": "douglas",
+      "eiken": "eiken, Midden-Europees",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Exporteer voor Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "Ter informatie: bovengrens met de volle N_Ed;max op de puntdoorsnede. De positieve schachtwrijving boven de punt is niet afgetrokken; de werkelijke kracht bij de punt is kleiner.",
       "concrete": "Beton: N_Rd = A_c · f_cd van de schachtdoorsnede, zonder wapening (die zit niet in de invoer). Niet getoetst: de minimale excentriciteit (art. 6.1 (4)), knik, de wapening en de heispanningen.",
       "concreteInSitu": "In de grond gevormde paal: de verkleinde rekendiameter (art. 2.3.4.2) en de verhoging van γ_c (art. 2.4.2.5) voor palen zonder blijvende buis zijn niet toegepast; reken de weerstand daarvoor zelf om.",
-      "concreteClassUnknown": "Onbekende betonsterkteklasse {{cls}}."
+      "concreteClassUnknown": "Onbekende betonsterkteklasse {{cls}}.",
+      "timberSpecies": "Houtsoort {{species}}, sorteerklasse {{grade}} → {{cls}} volgens {{source}}. De houtsoort bepaalt alleen de sterkteklasse; paalklassefactoren en draagvermogen volgen uit het paaltype.",
+      "timberSpeciesOwn": "Houtsoort {{species}}: de bron geeft geen eenduidige sterkteklasse; de klasse is door de gebruiker gekozen."
     }
   },
   "report": {

@@ -217,7 +217,7 @@ export function KoppejanView3D({ input, result, initialFocus = "tip", initialVie
       {view === "physical" && physical ? <>
         <ul className="pile-3d-legend pile-3d-legend-row">
           {[...new Set(physical.pile.parts.map((part) => part.material))].map((material) => (
-            <li key={material}><span className="pile-3d-swatch" style={{ background: partColor(material), opacity: 1 }} /><span>{materialName[material]}</span></li>
+            <li key={material}><span className="pile-3d-swatch" style={{ background: physical.pile.parts.find((part) => part.material === material)?.color ?? partColor(material), opacity: 1 }} /><span>{materialName[material]}</span></li>
           ))}
           {[...new Map(physical.block.layers.map((layer) => [layer.zone, layer])).values()].map((layer) => (
             <li key={layer.zone}><span className="pile-3d-swatch" style={{ background: layer.color, opacity: 1 }} /><span>{layer.name}</span></li>

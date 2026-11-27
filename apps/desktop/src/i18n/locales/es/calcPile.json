@@ -184,7 +184,22 @@
     "woodSawn": "Cuadrado o rectangular a × b (aserrado)",
     "sideA": "Lado a",
     "sideB": "Lado b",
-    "rectHint": "Rectángulo a ≠ b: el área, el perímetro y Deq se deducen de a y b; el programa no determina el factor de forma s para una punta de pilote rectangular. Introduzca s como factor de proyecto si es necesario."
+    "rectHint": "Rectángulo a ≠ b: el área, el perímetro y Deq se deducen de a y b; el programa no determina el factor de forma s para una punta de pilote rectangular. Introduzca s como factor de proyecto si es necesario.",
+    "timberSpecies": "Especie de madera",
+    "timberSpeciesOwn": "Clase resistente propia",
+    "timberGrade": "Clase de clasificación",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Solo para la comprobación de resistencia; los factores de clase de pilote y la capacidad portante dependen del tipo de pilote.",
+    "timberSpeciesNoClass": "La fuente no da una clase resistente unívoca: elija la clase en la comprobación de resistencia. Los factores de clase de pilote y la capacidad portante dependen del tipo de pilote.",
+    "species": {
+      "vuren": "abeto rojo",
+      "grenen": "pino silvestre",
+      "lariks": "alerce",
+      "douglas": "abeto de Douglas",
+      "eiken": "roble, Europa central",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Exportar para Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "A título informativo: cota superior con el N_Ed;max completo sobre la sección de la punta. No se ha descontado el rozamiento positivo por fuste por encima de la punta; el esfuerzo real en la punta es menor.",
       "concrete": "Hormigón: N_Rd = A_c · f_cd de la sección del fuste, sin armadura (no figura en los datos de entrada). No comprobado: la excentricidad mínima (apdo. 6.1 (4)), el pandeo, la armadura y las tensiones de hinca.",
       "concreteInSitu": "Pilote hormigonado in situ: no se han aplicado el diámetro de cálculo reducido (apdo. 2.3.4.2) ni el aumento de γ_c (apdo. 2.4.2.5) para pilotes sin entubación permanente; corrija usted mismo la resistencia.",
-      "concreteClassUnknown": "Clase resistente del hormigón desconocida {{cls}}."
+      "concreteClassUnknown": "Clase resistente del hormigón desconocida {{cls}}.",
+      "timberSpecies": "Especie {{species}}, clase de clasificación {{grade}} → {{cls}} según {{source}}. La especie solo fija la clase resistente; los factores de clase de pilote y la capacidad portante dependen del tipo de pilote.",
+      "timberSpeciesOwn": "Especie {{species}}: la fuente no da una clase resistente unívoca; la clase la ha elegido el usuario."
     }
   },
   "report": {

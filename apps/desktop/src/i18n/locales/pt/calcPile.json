@@ -184,7 +184,22 @@
     "woodSawn": "Quadrada ou retangular a × b (serrada)",
     "sideA": "Lado a",
     "sideB": "Lado b",
-    "rectHint": "Retângulo a ≠ b: a área, o perímetro e Deq resultam de a e b; o programa não determina o fator de forma s para uma ponta de estaca retangular. Introduza s como fator de projeto, se necessário."
+    "rectHint": "Retângulo a ≠ b: a área, o perímetro e Deq resultam de a e b; o programa não determina o fator de forma s para uma ponta de estaca retangular. Introduza s como fator de projeto, se necessário.",
+    "timberSpecies": "Espécie de madeira",
+    "timberSpeciesOwn": "Classe de resistência própria",
+    "timberGrade": "Classe de classificação",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Apenas para a verificação de resistência; os fatores de classe da estaca e a capacidade resistente resultam do tipo de estaca.",
+    "timberSpeciesNoClass": "A fonte não indica uma classe de resistência inequívoca: escolha a classe na verificação de resistência. Os fatores de classe da estaca e a capacidade resistente resultam do tipo de estaca.",
+    "species": {
+      "vuren": "espruce",
+      "grenen": "pinho silvestre",
+      "lariks": "lariço",
+      "douglas": "pseudotsuga (Douglas)",
+      "eiken": "carvalho, Europa central",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Exportar para Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "A título informativo: limite superior com a totalidade de N_Ed;max na secção da ponta. O atrito lateral positivo acima da ponta não foi deduzido; a força real na ponta é menor.",
       "concrete": "Betão: N_Rd = A_c · f_cd da secção do fuste, sem armadura (não consta dos dados de entrada). Não verificado: a excentricidade mínima (cl. 6.1 (4)), a encurvadura, a armadura e as tensões de cravação.",
       "concreteInSitu": "Estaca moldada no terreno: o diâmetro de cálculo reduzido (cl. 2.3.4.2) e o aumento de γ_c (cl. 2.4.2.5) para estacas sem tubo permanente não foram aplicados; converta a resistência por si próprio.",
-      "concreteClassUnknown": "Classe de resistência do betão desconhecida {{cls}}."
+      "concreteClassUnknown": "Classe de resistência do betão desconhecida {{cls}}.",
+      "timberSpecies": "Espécie {{species}}, classe {{grade}} → {{cls}} segundo {{source}}. A espécie só define a classe de resistência; os fatores de classe da estaca e a capacidade resistente resultam do tipo de estaca.",
+      "timberSpeciesOwn": "Espécie {{species}}: a fonte não indica uma classe de resistência inequívoca; a classe foi escolhida pelo utilizador."
     }
   },
   "report": {

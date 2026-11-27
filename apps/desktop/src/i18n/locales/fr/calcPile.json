@@ -184,7 +184,22 @@
     "woodSawn": "Carré ou rectangulaire a × b (scié)",
     "sideA": "Côté a",
     "sideB": "Côté b",
-    "rectHint": "Rectangle a ≠ b : l'aire, le périmètre et Deq découlent de a et b ; le programme ne détermine pas le facteur de forme s pour une pointe de pieu rectangulaire. Saisissez s comme facteur de projet si nécessaire."
+    "rectHint": "Rectangle a ≠ b : l'aire, le périmètre et Deq découlent de a et b ; le programme ne détermine pas le facteur de forme s pour une pointe de pieu rectangulaire. Saisissez s comme facteur de projet si nécessaire.",
+    "timberSpecies": "Essence de bois",
+    "timberSpeciesOwn": "Classe de résistance propre",
+    "timberGrade": "Classe de tri",
+    "timberSpeciesHint": "{{grade}} → {{cls}} ({{source}}). Uniquement pour la vérification de résistance ; les facteurs de classe de pieu et la portance découlent du type de pieu.",
+    "timberSpeciesNoClass": "Pas de classe de résistance univoque dans la source : choisissez la classe dans la vérification de résistance. Les facteurs de classe de pieu et la portance découlent du type de pieu.",
+    "species": {
+      "vuren": "épicéa",
+      "grenen": "pin sylvestre",
+      "lariks": "mélèze",
+      "douglas": "douglas",
+      "eiken": "chêne, Europe centrale",
+      "azobe": "azobé",
+      "bangkirai": "bangkirai",
+      "basralocus": "basralocus"
+    }
   },
   "pilePlan": {
     "button": "Exporter pour Pile Plan Studio (CSV)",
@@ -594,7 +609,9 @@
       "timberToe": "Pour information : borne supérieure avec la totalité de N_Ed;max sur la section en pointe. Le frottement latéral positif au-dessus de la pointe n'a pas été déduit ; l'effort réel en pointe est plus faible.",
       "concrete": "Béton : N_Rd = A_c · f_cd de la section du fût, sans armatures (elles ne figurent pas dans les données d'entrée). Non vérifiés : l'excentricité minimale (art. 6.1 (4)), le flambement, les armatures et les contraintes de battage.",
       "concreteInSitu": "Pieu coulé en place : le diamètre de calcul réduit (art. 2.3.4.2) et la majoration de γ_c (art. 2.4.2.5) pour les pieux sans tubage permanent n'ont pas été appliqués ; convertissez vous-même la résistance en conséquence.",
-      "concreteClassUnknown": "Classe de résistance du béton inconnue {{cls}}."
+      "concreteClassUnknown": "Classe de résistance du béton inconnue {{cls}}.",
+      "timberSpecies": "Essence {{species}}, classe de tri {{grade}} → {{cls}} selon {{source}}. L'essence ne fixe que la classe de résistance ; les facteurs de classe de pieu et la portance découlent du type de pieu.",
+      "timberSpeciesOwn": "Essence {{species}} : la source ne donne pas de classe de résistance univoque ; la classe a été choisie par l'utilisateur."
     }
   },
   "report": {

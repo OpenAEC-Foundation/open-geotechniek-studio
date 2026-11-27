@@ -15,6 +15,7 @@
 //   f_c,0,d = k_mod · f_c,0,k / γ_M                                      art. 2.4.1, formule (2.14)
 //   k_mod = 0,50 (gezaagd hout, klimaatklasse 3, blijvend; tabel 3.1), γ_M = 1,3 (tabel 2.3): invoer
 //   f_c,0,k per sterkteklasse: NEN-EN 338:2016, tabel 1 (naaldhout) en tabel 3 (loofhout)
+//   sterkteklasse uit de houtsoort en sorteerklasse waar die vastligt: parts/timber-species.ts
 // Beton, NEN-EN 1992-1-1:
 //   N_Rd = A_c · f_cd, f_cd = α_cc · f_ck / γ_c                           art. 6.1, 3.1.6
 //   wapening niet meegerekend (zit niet in de invoer).
@@ -28,6 +29,7 @@ import { tubeProps } from "../../laterally-loaded-pile/material-steel";
 import { check, noCheck, type CheckRow, type Note } from "../../laterally-loaded-pile/material-types";
 import type { PileInput, PileTypeSpec } from "../types";
 import { pileGeometry, shaftDiameterAtNap, woodTopNap } from "./geometry";
+import { TIMBER_SPECIES_SOURCE, resolveTimber } from "./timber-species";
 
 export type { CheckRow, Note } from "../../laterally-loaded-pile/material-types";
 
@@ -115,8 +117,18 @@ export function strengthCheck(input: PileInput, type: PileTypeSpec, fnkDKn: numb
 
   if (material === "wood") {
     standards.push(`${EN5} met Nederlandse bijlage`);
-    const cls = TIMBER_CLASSES.find((c) => c.id === (s.timberClass ?? STRENGTH_DEFAULTS.timberClass)) ?? TIMBER_CLASSES[2];
-    const own = s.timberFc0kMpa !== undefined && Number.isFinite(s.timberFc0kMpa) && s.timberFc0kMpa > 0;
+    // Houtsoort met een vaste toewijzing: die bepaalt de klasse; anders de gekozen klasse of eigen waarde.
+    const timber = resolveTimber(input.timberSpecies);
+    const fixed = timber?.grade ? TIMBER_CLASSES.find((c) => c.id === timber.grade!.strengthClass) : undefined;
+    const cls = fixed ?? TIMBER_CLASSES.find((c) => c.id === (s.timberClass ?? STRENGTH_DEFAULTS.timberClass)) ?? TIMBER_CLASSES[2];
+    const own = !fixed && s.timberFc0kMpa !== undefined && Number.isFinite(s.timberFc0kMpa) && s.timberFc0kMpa > 0;
+    if (timber) {
+      const species = `${timber.species.name} (${timber.species.botanical})`;
+      notes.push(fixed
+        ? { key: "timberSpecies", nl: "Houtsoort {{species}}, sorteerklasse {{grade}} → {{cls}} volgens {{source}}. De houtsoort bepaalt alleen de sterkteklasse; paalklassefactoren en draagvermogen volgen uit het paaltype.",
+          vars: { species, grade: timber.grade!.label, cls: fixed.id, source: TIMBER_SPECIES_SOURCE } }
+        : { key: "timberSpeciesOwn", nl: "Houtsoort {{species}}: de bron geeft geen eenduidige sterkteklasse; de klasse is door de gebruiker gekozen.", vars: { species } });
+    }
     const fc0k = own ? s.timberFc0kMpa! : cls.fc0kMpa;
     const kMod = positive(s.kMod, STRENGTH_DEFAULTS.kMod), gammaM = positive(s.gammaMTimber, STRENGTH_DEFAULTS.gammaMTimber);
     const fc0d = kMod * fc0k / gammaM, top = woodTopNap(input);
