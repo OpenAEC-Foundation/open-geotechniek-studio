@@ -334,7 +334,9 @@
       "strainMethod": "M_Rd para N_Ed a partir del diagrama de deformaciones: parábola-rectángulo, acortamiento del hormigón 3,5 ‰, tracción del hormigón no considerada.",
       "tubeClassIs": "Clase de sección {{cls}}.",
       "tubeIgnored": "Según los datos, el tubo no colabora: se comprueba el núcleo de hormigón con su armadura, sin el tubo.",
-      "tubeYield": "f_y es el valor de cálculo introducido f_yd del acero del tubo por γ_M0 = 1,0; el espesor de pared es el espesor residual introducido."
+      "tubeYield": "f_y es el valor de cálculo introducido f_yd del acero del tubo por γ_M0 = 1,0; el espesor de pared es el espesor residual introducido.",
+      "corrosionTube": "Comprobado con la sección tras la corrosión, también la clase y D/t. {{stiffness}}",
+      "corrosionSheet": "Comprobado con el perfil tras la corrosión ({{basis}}), con la clase según el espesor de ala reducido. {{stiffness}}"
     },
     "notesTitle": "Bases de la comprobación",
     "rows": {
@@ -358,7 +360,8 @@
       "shearS": "Esfuerzo cortante con estribos",
       "shearSpacing": "Separación máxima de estribos",
       "sheetClass": "Clase de sección",
-      "tubeClass": "Clase de sección y abolladura local"
+      "tubeClass": "Clase de sección y abolladura local",
+      "corrosion": "Corrosión"
     },
     "status": {
       "fail": "no cumple",
@@ -592,5 +595,32 @@
     "tableAria": "Pilotes con cargas en cabeza y resultados",
     "title": "Tabla de pilotes",
     "yHead": "y cabeza"
+  },
+  "corrosion": {
+    "title": "Corrosión",
+    "reducedStiffness": "EI tras la corrosión",
+    "classChoice": "Clase tras la corrosión",
+    "classAuto": "Del catálogo (en caso de duda la más desfavorable)",
+    "classN": "Clase {{cls}}",
+    "side1": "cara 1",
+    "side2": "cara 2",
+    "outer": "cara exterior",
+    "inner": "cara interior",
+    "side1Label": "Cara 1",
+    "side2Label": "Cara 2",
+    "outerLabel": "Cara exterior",
+    "innerLabel": "Cara interior",
+    "sides": "Atacado",
+    "oneSide": "1 cara",
+    "twoSides": "2 caras",
+    "oneTube": "1 cara (exterior)",
+    "twoTube": "2 caras (exterior e interior)",
+    "eiReduced": "El pilote se calcula con la EI tras la corrosión.",
+    "eiOriginal": "El pilote se calcula con la EI sin corrosión.",
+    "basisContour": "a partir del contorno exacto",
+    "basisApprox": "aproximación con los espesores",
+    "tubeSummary": "Tras la corrosión: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Tras la corrosión: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "Con corrosión, introduzca el espesor nominal. Pérdida de espesor por cara; los valores de tabla son los recomendados de NEN-EN 1993-5 tablas 4-1 y 4-2 y no se han contrastado con el texto de la norma ni con el anejo neerlandés. La corrosión cuenta en la comprobación del material y la comprobación N–M, también en la clase y D/t; en la distribución de esfuerzos solo con la casilla marcada. Un tubo relleno solo se corroe por fuera."
   }
 }

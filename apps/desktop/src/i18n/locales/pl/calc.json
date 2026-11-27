@@ -115,5 +115,44 @@
       "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
       "visualLabel": "Przekrój"
     }
+  },
+  "corrosion": {
+    "sourceNone": "Bez korozji",
+    "sourceTable": "Według NEN-EN 1993-5 tablica 4-1 / 4-2",
+    "sourceCustom": "Własna wartość",
+    "environment": "Środowisko",
+    "table41": "Tablica 4-1: w gruncie",
+    "table42": "Tablica 4-2: w wodzie",
+    "life": "Projektowy okres użytkowania",
+    "years": "lat",
+    "loss": "Ubytek grubości",
+    "noValue": "brak wartości w tablicy: wybierz własną wartość",
+    "verification": "Weryfikacja",
+    "verificationOk": "poprawne",
+    "vCase": "Przypadek",
+    "vInput": "Dane",
+    "vQuantity": "Wielkość",
+    "vExpected": "Oczekiwana",
+    "vModule": "Moduł",
+    "vDiff": "Różnica",
+    "env": {
+      "soil-undisturbed": "Nienaruszony grunt rodzimy (piasek, pył, glina)",
+      "soil-polluted": "Zanieczyszczony grunt rodzimy i tereny przemysłowe",
+      "soil-aggressive": "Agresywny grunt rodzimy (bagno, torf)",
+      "fill-loose": "Nasyp niezagęszczony, nieagresywny",
+      "fill-compacted": "Nasyp zagęszczony, nieagresywny",
+      "fill-aggressive-loose": "Nasyp niezagęszczony, agresywny (popiół, żużel)",
+      "fill-aggressive-compacted": "Nasyp zagęszczony, agresywny (popiół, żużel)",
+      "fresh-water": "Woda słodka (rzeka, kanał), strefa silnej korozji (linia wody)",
+      "fresh-water-polluted": "Bardzo zanieczyszczona woda słodka, strefa silnej korozji (linia wody)",
+      "sea-splash": "Woda morska, klimat umiarkowany, strefa silnej korozji (niska woda i strefa rozbryzgów)",
+      "sea-immersion": "Woda morska, klimat umiarkowany, stałe zanurzenie lub strefa pływów"
+    },
+    "errors": {
+      "missing": "Korozja {{where}}: tablica nie ma wartości dla tego wyboru. Podaj własny ubytek grubości.",
+      "negative": "Ubytek grubości na skutek korozji nie może być ujemny.",
+      "noThickness": "Biblioteka nie podaje grubości półki i środnika tego profilu; korozji nie można uwzględnić.",
+      "tooLarge": "Ubytek grubości ({{loss}} mm) to prawie cała grubość ({{t}} mm): przekroju nie można już sprawdzić."
+    }
   }
 }

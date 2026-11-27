@@ -115,5 +115,44 @@
       "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
       "visualLabel": "Secção"
     }
+  },
+  "corrosion": {
+    "sourceNone": "Sem corrosão",
+    "sourceTable": "Segundo NEN-EN 1993-5 quadro 4-1 / 4-2",
+    "sourceCustom": "Valor próprio",
+    "environment": "Ambiente",
+    "table41": "Quadro 4-1: no solo",
+    "table42": "Quadro 4-2: na água",
+    "life": "Tempo de vida útil de projeto",
+    "years": "anos",
+    "loss": "Perda de espessura",
+    "noValue": "sem valor no quadro: escolha um valor próprio",
+    "verification": "Verificação",
+    "verificationOk": "corretas",
+    "vCase": "Caso",
+    "vInput": "Dados",
+    "vQuantity": "Grandeza",
+    "vExpected": "Esperado",
+    "vModule": "Módulo",
+    "vDiff": "Diferença",
+    "env": {
+      "soil-undisturbed": "Solo natural não perturbado (areia, silte, argila)",
+      "soil-polluted": "Solo natural poluído e zonas industriais",
+      "soil-aggressive": "Solo natural agressivo (pântano, turfa)",
+      "fill-loose": "Aterro não compactado, não agressivo",
+      "fill-compacted": "Aterro compactado, não agressivo",
+      "fill-aggressive-loose": "Aterro não compactado, agressivo (cinzas, escórias)",
+      "fill-aggressive-compacted": "Aterro compactado, agressivo (cinzas, escórias)",
+      "fresh-water": "Água doce (rio, canal), zona de forte ataque (linha de água)",
+      "fresh-water-polluted": "Água doce muito poluída, zona de forte ataque (linha de água)",
+      "sea-splash": "Água do mar, clima temperado, zona de forte ataque (baixa-mar e zona de salpicos)",
+      "sea-immersion": "Água do mar, clima temperado, imersão permanente ou zona entre marés"
+    },
+    "errors": {
+      "missing": "Corrosão {{where}}: o quadro não tem valor para esta escolha. Introduza uma perda de espessura própria.",
+      "negative": "A perda de espessura por corrosão não pode ser negativa.",
+      "noThickness": "A biblioteca não indica a espessura do banzo e da alma deste perfil; a corrosão não pode ser aplicada.",
+      "tooLarge": "A perda de espessura ({{loss}} mm) é quase toda a espessura ({{t}} mm): a secção já não pode ser verificada."
+    }
   }
 }

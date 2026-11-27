@@ -115,5 +115,44 @@
       "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
       "visualLabel": "Sección"
     }
+  },
+  "corrosion": {
+    "sourceNone": "Sin corrosión",
+    "sourceTable": "Según NEN-EN 1993-5 tabla 4-1 / 4-2",
+    "sourceCustom": "Valor propio",
+    "environment": "Ambiente",
+    "table41": "Tabla 4-1: en el suelo",
+    "table42": "Tabla 4-2: en el agua",
+    "life": "Vida útil de proyecto",
+    "years": "años",
+    "loss": "Pérdida de espesor",
+    "noValue": "sin valor de tabla: elija un valor propio",
+    "verification": "Verificación",
+    "verificationOk": "correctas",
+    "vCase": "Caso",
+    "vInput": "Entrada",
+    "vQuantity": "Magnitud",
+    "vExpected": "Esperado",
+    "vModule": "Módulo",
+    "vDiff": "Diferencia",
+    "env": {
+      "soil-undisturbed": "Suelo natural inalterado (arena, limo, arcilla)",
+      "soil-polluted": "Suelo natural contaminado y zonas industriales",
+      "soil-aggressive": "Suelo natural agresivo (pantano, turba)",
+      "fill-loose": "Relleno no compactado, no agresivo",
+      "fill-compacted": "Relleno compactado, no agresivo",
+      "fill-aggressive-loose": "Relleno no compactado, agresivo (cenizas, escorias)",
+      "fill-aggressive-compacted": "Relleno compactado, agresivo (cenizas, escorias)",
+      "fresh-water": "Agua dulce (río, canal), zona de ataque intenso (línea de agua)",
+      "fresh-water-polluted": "Agua dulce muy contaminada, zona de ataque intenso (línea de agua)",
+      "sea-splash": "Agua de mar, clima templado, zona de ataque intenso (bajamar y zona de salpicaduras)",
+      "sea-immersion": "Agua de mar, clima templado, inmersión permanente o zona intermareal"
+    },
+    "errors": {
+      "missing": "Corrosión {{where}}: la tabla no tiene valor para esta opción. Introduzca una pérdida de espesor propia.",
+      "negative": "La pérdida de espesor por corrosión no puede ser negativa.",
+      "noThickness": "La biblioteca no da el espesor de ala y alma de este perfil; la corrosión no puede aplicarse.",
+      "tooLarge": "La pérdida de espesor ({{loss}} mm) es casi todo el espesor ({{t}} mm): la sección ya no puede comprobarse."
+    }
   }
 }

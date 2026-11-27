@@ -23,6 +23,7 @@ import type { MaterialInput } from './material-types';
 import { CAST_IN_SITU, SYSTEM_KINDS, systemAvailable, systemOf } from './pile-link';
 import { InheritedNote } from './InheritedNote';
 import { defaultSheet, type SheetSection } from './sheet-section';
+import { LateralCorrosion } from './LateralCorrosion';
 
 type Props = PanelProps<LateralInput, LateralResult>;
 const nl = (v: number, d = 2) => v.toLocaleString(numberLocale(), { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -40,7 +41,7 @@ export function Info({ children }: { children: ReactNode }) {
   return <details className="lat-info"><summary aria-label={t('input.info', 'Toelichting')} title={t('input.info', 'Toelichting')}>i</summary><p>{children}</p></details>;
 }
 
-export function LateralInputPanel({ input: i, onChange }: Props) {
+export function LateralInputPanel({ input: i, result, onChange }: Props) {
   const { t } = useTranslation('calcLateral');
   const change = (patch: Partial<LateralInput>) => onChange?.({ ...i, ...patch });
   const section = (patch: Partial<PileSection>) => change({ section: { ...i.section, ...patch } });
@@ -129,6 +130,7 @@ export function LateralInputPanel({ input: i, onChange }: Props) {
       <Row label={t('input.toe', 'Paalpunt')} unit="m NAP"><NumberInput label={t('input.toeLabel', 'Paalpunt [m NAP]')} value={nap(i.lengthM)} onChange={(v) => setLength(head - v)} /></Row>
       <Hint>{t('input.lengthHint', 'Paallengte {{length}} m.', { length: nl(i.lengthM) })}{i.headNap === undefined ? ` ${t('input.headAssumed', 'Paalkop op NAP 0,00 aangenomen; vul het werkelijke niveau in.')}` : ''}</Hint>
     </Section>
+    <LateralCorrosion input={i} result={result} onChange={onChange} />
 
     <Section title={t('input.headLoad', 'Belasting op de kop')}>
       <Row label={t('input.forceH', 'Horizontale kracht H')} unit="kN"><NumberInput label={t('input.forceHLabel', 'Horizontale kopkracht [kN]')} value={i.headForceKn} onChange={(v) => change({ headForceKn: v })} /></Row>

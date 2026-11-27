@@ -115,5 +115,44 @@
       "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
       "visualLabel": "Querschnitt"
     }
+  },
+  "corrosion": {
+    "sourceNone": "Keine Abrostung",
+    "sourceTable": "Nach NEN-EN 1993-5 Tabelle 4-1 / 4-2",
+    "sourceCustom": "Eigener Wert",
+    "environment": "Umgebung",
+    "table41": "Tabelle 4-1: im Boden",
+    "table42": "Tabelle 4-2: im Wasser",
+    "life": "Nutzungsdauer",
+    "years": "Jahre",
+    "loss": "Dickenverlust",
+    "noValue": "kein Tabellenwert: eigenen Wert wählen",
+    "verification": "Verifikation",
+    "verificationOk": "in Ordnung",
+    "vCase": "Fall",
+    "vInput": "Eingabe",
+    "vQuantity": "Größe",
+    "vExpected": "Erwartet",
+    "vModule": "Modul",
+    "vDiff": "Abweichung",
+    "env": {
+      "soil-undisturbed": "Ungestörter natürlicher Boden (Sand, Schluff, Ton)",
+      "soil-polluted": "Verunreinigter natürlicher Boden und Industriegelände",
+      "soil-aggressive": "Aggressiver natürlicher Boden (Sumpf, Torf)",
+      "fill-loose": "Auffüllung, nicht verdichtet, nicht aggressiv",
+      "fill-compacted": "Auffüllung, verdichtet, nicht aggressiv",
+      "fill-aggressive-loose": "Auffüllung, nicht verdichtet, aggressiv (Asche, Schlacke)",
+      "fill-aggressive-compacted": "Auffüllung, verdichtet, aggressiv (Asche, Schlacke)",
+      "fresh-water": "Süßwasser (Fluss, Kanal), Zone starker Korrosion (Wasserlinie)",
+      "fresh-water-polluted": "Stark verunreinigtes Süßwasser, Zone starker Korrosion (Wasserlinie)",
+      "sea-splash": "Meerwasser, gemäßigtes Klima, Zone starker Korrosion (Niedrigwasser und Spritzzone)",
+      "sea-immersion": "Meerwasser, gemäßigtes Klima, ständig unter Wasser oder Tidezone"
+    },
+    "errors": {
+      "missing": "Abrostung {{where}}: Die Tabelle hat für diese Wahl keinen Wert. Geben Sie einen eigenen Dickenverlust ein.",
+      "negative": "Der Dickenverlust durch Abrostung kann nicht negativ sein.",
+      "noThickness": "Die Bibliothek enthält für dieses Profil keine Flansch- und Stegdicke; die Abrostung kann nicht berücksichtigt werden.",
+      "tooLarge": "Der Dickenverlust ({{loss}} mm) ist fast die ganze Blechdicke ({{t}} mm): der Querschnitt ist so nicht mehr nachweisbar."
+    }
   }
 }

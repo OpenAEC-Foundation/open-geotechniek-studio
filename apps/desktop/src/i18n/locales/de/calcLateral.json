@@ -334,7 +334,9 @@
       "strainMethod": "M_Rd bei N_Ed aus dem Dehnungsdiagramm: Parabel-Rechteck, Betonstauchung 3,5 ‰, Betonzug nicht angesetzt.",
       "tubeClassIs": "Querschnittsklasse {{cls}}.",
       "tubeIgnored": "Das Rohr wirkt laut Eingabe nicht mit: Nachgewiesen ist der Betonkern mit seiner Bewehrung, ohne das Rohr.",
-      "tubeYield": "f_y ist der eingegebene Bemessungswert f_yd des Rohrstahls mal γ_M0 = 1,0; die Wanddicke ist die eingegebene Restwanddicke."
+      "tubeYield": "f_y ist der eingegebene Bemessungswert f_yd des Rohrstahls mal γ_M0 = 1,0; die Wanddicke ist die eingegebene Restwanddicke.",
+      "corrosionTube": "Nachgewiesen mit dem Querschnitt nach Abrostung, auch Querschnittsklasse und D/t. {{stiffness}}",
+      "corrosionSheet": "Nachgewiesen mit dem Profil nach Abrostung ({{basis}}), mit der Querschnittsklasse bei verringerter Flanschdicke. {{stiffness}}"
     },
     "notesTitle": "Grundlagen des Nachweises",
     "rows": {
@@ -358,7 +360,8 @@
       "shearS": "Querkraft mit Bügeln",
       "shearSpacing": "Größter Bügelabstand",
       "sheetClass": "Querschnittsklasse",
-      "tubeClass": "Querschnittsklasse und lokales Beulen"
+      "tubeClass": "Querschnittsklasse und lokales Beulen",
+      "corrosion": "Abrostung"
     },
     "status": {
       "fail": "nicht erfüllt",
@@ -592,5 +595,32 @@
     "tableAria": "Pfähle mit Kopflasten und Ergebnissen",
     "title": "Pfahltabelle",
     "yHead": "y Kopf"
+  },
+  "corrosion": {
+    "title": "Abrostung",
+    "reducedStiffness": "EI nach Abrostung",
+    "classChoice": "Klasse nach Abrostung",
+    "classAuto": "Aus dem Katalog (im Zweifel die ungünstigste)",
+    "classN": "Klasse {{cls}}",
+    "side1": "Seite 1",
+    "side2": "Seite 2",
+    "outer": "Außenseite",
+    "inner": "Innenseite",
+    "side1Label": "Seite 1",
+    "side2Label": "Seite 2",
+    "outerLabel": "Außenseite",
+    "innerLabel": "Innenseite",
+    "sides": "Angegriffen",
+    "oneSide": "1 Seite",
+    "twoSides": "2 Seiten",
+    "oneTube": "1 Seite (außen)",
+    "twoTube": "2 Seiten (außen und innen)",
+    "eiReduced": "Der Pfahl ist mit EI nach Abrostung gerechnet.",
+    "eiOriginal": "Der Pfahl ist mit EI ohne Abrostung gerechnet.",
+    "basisContour": "aus der exakten Kontur",
+    "basisApprox": "Näherung mit den Blechdicken",
+    "tubeSummary": "Nach Abrostung: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Nach Abrostung: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "Bei Abrostung die Nennwanddicke eingeben. Dickenverlust je Seite; die Tabellenwerte sind die empfohlenen Werte von NEN-EN 1993-5 Tabelle 4-1 und 4-2 und wurden nicht gegen den Normtext oder den niederländischen Anhang geprüft. Die Abrostung zählt im Materialnachweis und im N–M-Nachweis, auch in der Querschnittsklasse und D/t; in den Schnittgrößen nur mit dem Häkchen. Ein gefülltes Rohr rostet nur außen."
   }
 }

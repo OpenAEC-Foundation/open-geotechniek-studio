@@ -53,7 +53,11 @@
     "drawing": "contour issu du DWG du fabricant ({{manufacturer}})",
     "flange": "aile",
     "schematic": "schématique : seuls b, h et les épaisseurs proviennent du tableau",
-    "table": "dimensions du tableau des profils ; serrure schématique"
+    "table": "dimensions du tableau des profils ; serrure schématique",
+    "highSide": "côté haut : corrosion {{mm}} mm",
+    "lowSide": "côté bas : corrosion {{mm}} mm",
+    "corroded": "pointillé : sans corrosion",
+    "corrodedApprox": "corrosion approchée, non dessinée"
   },
   "errors": {
     "anchor": "Vérifiez l'ancrage : angle inférieur à 80°, entraxe et raideur du ressort supérieurs à 0.",
@@ -286,8 +290,8 @@
     "method1": "Modèle à ressorts selon CUR 166 : une poutre sur appuis élastiques avec, des deux côtés, des ressorts de sol qui partent de la pression des terres au repos (K0 = 1 − sin φ′) et sont limités par la pression active et la pression passive des terres ; un coefficient de réaction par couche.",
     "method2": "Pression des terres : active avec la surface de glissement plane (Coulomb), passive avec la surface de glissement plane jusqu'à δ = φ′/3 et au-delà avec la surface de glissement courbe selon NEN-EN 1997-1 annexe C.2. Couches non drainées avec σh = σv ∓ 2·cu.",
     "method3": "Sécurité : valeurs de calcul des paramètres du sol, une majoration de la hauteur soutenue et éventuellement des niveaux d'eau ; déplacements avec les valeurs caractéristiques.",
-    "method4": "Acier : flexion, effort tranchant et effort normal selon NEN-EN 1993-5, sans surépaisseur de corrosion. Bois : flexion et cisaillement selon NEN-EN 1995-1-1. Plastique et béton : par rapport au moment résistant que vous saisissez.",
-    "method5": "Non inclus dans cette version : le phasage et la précontrainte, plusieurs lits d'ancrages, la démarche par étapes 6.1 à 6.5 de CUR 166 avec rigidité basse et haute, un calcul de l'écoulement de la nappe (la surpression interstitielle peut en revanche être saisie), la stabilité du plan de glissement profond pour un tirant d'ancrage scellé (Kranz), les charges à distance, un terrain naturel en pente et un fond de cours d'eau en pente, l'équilibre vertical, la stabilité d'ensemble, le dimensionnement de l'ancrage, de la plaque d'ancrage et de la lierne, la corrosion, le voilement local des profilés formés à froid, le fluage du bois et du plastique, la vérification de la déformation par rapport à une exigence, et les protections de berge avec un pieu ancré.",
+    "method4": "Acier : flexion, effort tranchant et effort normal selon NEN-EN 1993-5, avec la corrosion si elle est saisie. Bois : flexion et cisaillement selon NEN-EN 1995-1-1. Plastique et béton : par rapport au moment résistant que vous saisissez.",
+    "method5": "Non inclus dans cette version : le phasage et la précontrainte, plusieurs lits d'ancrages, la démarche par étapes 6.1 à 6.5 de CUR 166 avec rigidité basse et haute, un calcul de l'écoulement de la nappe (la surpression interstitielle peut en revanche être saisie), la stabilité du plan de glissement profond pour un tirant d'ancrage scellé (Kranz), les charges à distance, un terrain naturel en pente et un fond de cours d'eau en pente, l'équilibre vertical, la stabilité d'ensemble, le dimensionnement de l'ancrage, de la plaque d'ancrage et de la lierne, le voilement local des profilés formés à froid, le fluage du bois et du plastique, la vérification de la déformation par rapport à une exigence, et les protections de berge avec un pieu ancré.",
     "method6": "Pieux avec planches : par m d'écran avec la rigidité en flexion du pieu divisée par l'entraxe ; sous les planches, la pression des terres sur la largeur du pieu et la butée sur le facteur d'effet tridimensionnel multiplié par la largeur du pieu. La planche est une poutre sur deux appuis entre les pieux.",
     "mobilised": "Butée mobilisée",
     "notAllPass": "Toutes les vérifications ne sont pas satisfaites.",
@@ -369,5 +373,45 @@
     "singleBranch": "Le calcul a été fait avec un seul coefficient de réaction par couche. Avec le ressort à trois branches de CUR 166 (kh1, kh2, kh3), les déplacements augmentent et le moment augmente de quelques pour cent.",
     "timber": "Bois : le déplacement est calculé avec E_0;mean sans fluage (k_def) ; sous charge permanente en milieu humide, le déplacement augmente.",
     "water": "La pression de l'eau est prise hydrostatique des deux côtés. Si de l'eau s'écoule sous le pied ou si une couche plus profonde a une charge piézométrique plus élevée, la pression de l'eau côté bas est plus élevée et la butée plus faible : dans un cas public recalculé, cela a donné un moment supérieur de 25 %. Saisissez dans ce cas la surpression interstitielle par couche."
+  },
+  "corrosion": {
+    "title": "Corrosion",
+    "reducedStiffness": "EI après corrosion",
+    "classChoice": "Classe après corrosion",
+    "classAuto": "D'après le catalogue (en cas de doute la plus défavorable)",
+    "classN": "Classe {{cls}}",
+    "high": "côté haut",
+    "low": "côté bas",
+    "highSide": "Côté haut",
+    "lowSide": "Côté bas",
+    "above": "au-dessus",
+    "below": "en dessous",
+    "zoneAbove": "au-dessus de NAP {{nap}} m",
+    "zoneBelow": "en dessous de NAP {{nap}} m",
+    "zoned": "Corrosion différente sous un niveau (ligne d'eau)",
+    "zoneNap": "Limite des zones",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm ; A {{a0}} → {{a1}} cm²/m ; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "d'après le contour",
+    "basisApprox": "approximation",
+    "hint": "Perte d'épaisseur par face. Les valeurs tabulées sont les valeurs recommandées de NEN-EN 1993-5 tableaux 4-1 et 4-2 et n'ont pas été vérifiées par rapport au texte de la norme ou à l'annexe néerlandaise ; le remblai compacté vaut la moitié du non compacté. La corrosion intervient dans les vérifications de la section, avec la classe à l'épaisseur de semelle réduite ; pas dans la poussée des terres, et dans la répartition des efforts seulement avec la case cochée. Avec deux zones, chaque zone est vérifiée avec le moment et l'effort tranchant les plus grands de cette zone.",
+    "resultTitle": "Section après corrosion",
+    "zone": "Zone",
+    "class": "classe",
+    "wholeWall": "paroi entière",
+    "eiReduced": "Répartition des efforts avec EI après corrosion : {{ei}} kNm²/m (sans corrosion {{ei0}}).",
+    "eiOriginal": "Répartition des efforts avec l'EI sans corrosion ; la corrosion intervient dans les vérifications de la section.",
+    "steps": {
+      "loss": "corrosion côté haut + côté bas",
+      "thickness": "épaisseurs après corrosion",
+      "wContour": "d'après le contour avec l'épaisseur réduite sur les deux faces",
+      "wApprox": "approximation : W · (t_f − Δt) / t_f",
+      "classShift": "(après corrosion ; sans corrosion classe {{cls}})"
+    },
+    "warnings": {
+      "class4": "Après corrosion{{where}} la section est de classe 4 ou n'a pas de module ; flexion et effort normal n'y sont pas vérifiés.",
+      "approx": "Corrosion sans contour exact de ce profil : I et W sont approchés par (t_f − Δt) / t_f et A par l'épaisseur moyenne. C'est une approximation ; vérifiez les valeurs avec les données du fabricant.",
+      "classUncertain": "Classe de section après corrosion{{where}} pour {{grade}} : le catalogue donne la classe {{from}} ou {{to}} ; calcul avec la classe {{cls}}. Choisissez une classe sous Corrosion si vous pouvez la justifier.",
+      "stiffness": "La répartition des efforts est calculée avec la rigidité sans corrosion ; la corrosion n'intervient que dans les vérifications de la section."
+    }
   }
 }

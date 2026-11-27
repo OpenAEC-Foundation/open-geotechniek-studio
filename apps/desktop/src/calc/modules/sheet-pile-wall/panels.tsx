@@ -8,7 +8,9 @@ import { numberLocale } from "../../i18n";
 import { SHEET_PILE_GRADES, sheetPileCatalog } from "../../library/sheetPiles";
 import { SOIL_TYPES, getSoilType } from "../spread-foundation/catalog";
 import type { BlumCase } from "./blum";
-import { DEFAULT_FACTORS, FACTOR_SETS, GAMMA_WATER, TENDON_GRADES, TIMBER_CLASSES, normalizeWallInput, revetmentExample, wallExample, wallLayersFromCpt, type WallCheck, type WallFactors, type WallInput, type WallLayer, type WallResult, type WallRun } from "./compute";
+import { CorrosionFaceInput } from "../../shared/CorrosionFace";
+import { CorrosionVerification } from "../../shared/CorrosionVerification";
+import { DEFAULT_CORROSION, DEFAULT_FACTORS, FACTOR_SETS, GAMMA_WATER, TENDON_GRADES, TIMBER_CLASSES, normalizeWallInput, revetmentExample, wallExample, wallLayersFromCpt, type WallCheck, type WallCorrosion, type WallFactors, type WallInput, type WallLayer, type WallOk, type WallResult, type WallRun } from "./compute";
 import { ProfileDetail } from "./ProfileDetail";
 import { SectionDrawing } from "./SectionDrawing";
 import { WallScene3D } from "./WallScene3D";
@@ -136,8 +138,9 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
       {num("input.wallTop", "Bovenkant wand", "m NAP", i.wallTopNap, (v) => change({ wallTopNap: v }))}
       {num("input.toe", "Teenniveau", "m NAP", i.toeNap, (v) => change({ toeNap: v }))}
       {r.ok && <Hint>{t("input.wallHint", "{{name}}: lengte {{l}} m; EI = {{ei}} kNm²/m wand; {{props}}.", { name: r.section.label, l: fmt(r.lengthM, 2), ei: fmt(r.eiKnM2, r.eiKnM2 < 100 ? 1 : 0), props: r.section.properties.map(([k, v]) => `${k.replace(/_/g, "")} = ${v}`).join("; ") })}</Hint>}
-      {r.ok && sheet && r.section.profile && <ProfileDetail profile={r.section.profile} />}
+      {r.ok && sheet && r.section.profile && <ProfileDetail profile={r.section.profile} corroded={worstZone(r)?.sheet} />}
     </Section>
+    {sheet && <CorrosionBlock input={i} result={r} onChange={(corrosion) => change({ corrosion })} />}
     {!posts && <Section title={t("input.support", "Anker of stempel")}>
       <label className="cs-check"><input type="checkbox" checked={a.enabled} onChange={(e) => setAnchor({ enabled: e.target.checked })} /> {t("input.supportEnabled", "Eén ankerrij of stempel")}</label>
       {a.enabled && <>
@@ -196,6 +199,36 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
   </div>;
 }
 
+/** De zone met het grootste dikteverlies, voor het plankdetail. */
+const worstZone = (r: WallOk) => r.corrosion?.zones.reduce((a, b) => (b.lossHighMm + b.lossLowMm > a.lossHighMm + a.lossLowMm ? b : a));
+
+/** Invoerblok "Afroesting": per zijde, optioneel in twee zones, met het vinkje voor de buigstijfheid. */
+function CorrosionBlock({ input: i, result: r, onChange }: { input: WallInput; result: WallResult; onChange: (c: WallCorrosion) => void }) {
+  const { t } = useTranslation("calcWall");
+  const c = { ...DEFAULT_CORROSION, ...i.corrosion }, set = (patch: Partial<WallCorrosion>) => onChange({ ...c, ...patch });
+  const zone = (above: boolean) => (c.zoned ? ` (${above ? t("corrosion.above", "boven") : t("corrosion.below", "onder")})` : "");
+  const zones = r.ok ? r.corrosion?.zones ?? [] : [];
+  return <More title={t("corrosion.title", "Afroesting")}>
+    <CorrosionFaceInput label={t("corrosion.highSide", "Hoge zijde") + zone(true)} face={c.high} onChange={(high) => set({ high })} />
+    <CorrosionFaceInput label={t("corrosion.lowSide", "Lage zijde") + zone(true)} face={c.low} onChange={(low) => set({ low })} />
+    <label className="cs-check"><input type="checkbox" checked={c.zoned} onChange={(e) => set({ zoned: e.target.checked, zoneNap: e.target.checked && !i.corrosion?.zoned ? i.waterLowNap : c.zoneNap, highBelow: c.highBelow ?? c.high, lowBelow: c.lowBelow ?? c.low })} /> {t("corrosion.zoned", "Andere afroesting onder een niveau (waterlijn)")}</label>
+    {c.zoned && <>
+      <Row label={t("corrosion.zoneNap", "Grens van de zones")} unit="m NAP"><NumberInput label={`${t("corrosion.zoneNap", "Grens van de zones")} [m NAP]`} value={c.zoneNap} onChange={(v) => set({ zoneNap: v })} /></Row>
+      <CorrosionFaceInput label={t("corrosion.highSide", "Hoge zijde") + zone(false)} face={c.highBelow} onChange={(highBelow) => set({ highBelow })} />
+      <CorrosionFaceInput label={t("corrosion.lowSide", "Lage zijde") + zone(false)} face={c.lowBelow} onChange={(lowBelow) => set({ lowBelow })} />
+    </>}
+    <label className="cs-check"><input type="checkbox" checked={c.reducedStiffness} onChange={(e) => set({ reducedStiffness: e.target.checked })} /> {t("corrosion.reducedStiffness", "EI na afroesting")}</label>
+    <Row label={t("corrosion.classChoice", "Klasse na afroesting")}><select aria-label={t("corrosion.classChoice", "Klasse na afroesting")} value={c.classChoice ?? ""} onChange={(e) => set({ classChoice: e.target.value ? (Number(e.target.value) as 2 | 3 | 4) : undefined })}>
+      <option value="">{t("corrosion.classAuto", "Uit de catalogus (bij twijfel de ongunstigste)")}</option>{[2, 3, 4].map((k) => <option key={k} value={k}>{t("corrosion.classN", "Klasse {{cls}}", { cls: k })}</option>)}</select></Row>
+    {zones.map((z, k) => z.sheet.basis !== "none" && <Hint key={k}>{t("corrosion.summary", "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).", {
+      zone: z.label ? `${z.label}: ` : "", t0: fmt(z.sheet.original.flangeMm ?? 0, 1), t1: fmt(z.sheet.profile.flangeMm ?? 0, 2), s0: fmt(z.sheet.original.webMm ?? 0, 1), s1: fmt(z.sheet.profile.webMm ?? 0, 2),
+      a0: fmt(z.sheet.original.areaCm2PerM ?? 0, 1), a1: fmt(z.sheet.profile.areaCm2PerM ?? 0, 1), w0: fmt(z.sheet.original.welCm3PerM ?? 0, 0), w1: fmt(z.sheet.profile.welCm3PerM ?? 0, 0),
+      basis: z.sheet.basis === "contour" ? t("corrosion.basisContour", "uit de contour") : t("corrosion.basisApprox", "benadering") })}</Hint>)}
+    <Hint>{t("corrosion.hint", "Dikteverlies per zijde. De tabelwaarden zijn de aanbevolen waarden van NEN-EN 1993-5 tabel 4-1 en 4-2 en zijn niet tegen de normtekst of de Nederlandse bijlage gelegd; verdichte aanvulling is de helft van niet verdicht. De afroesting telt in de toetsen van de doorsnede, met de doorsnedeklasse bij de verkleinde flensdikte; in de gronddruk niet, en in de krachtsverdeling alleen met het vinkje. Bij twee zones wordt elke zone getoetst met het grootste moment en de grootste dwarskracht in die zone.")}</Hint>
+    <CorrosionVerification set="sheet" />
+  </More>;
+}
+
 export function VisualPanel({ input: i, result: r }: Props) {
   const { t } = useTranslation("calcWall");
   const [view, setView] = useState<"section" | "3d">("section");
@@ -235,7 +268,7 @@ export function ResultPanel({ input: i, result: r }: Props) {
     <h3>{t("result.checks", "Toetsen")}</h3>
     <table className="cs-layer-table sw-summary" aria-label={t("result.checksAria", "Overzicht van de toetsen")}>
       <thead><tr><th>{t("result.check", "Toets")}</th><th>{t("result.effect", "Optredend")}</th><th>{t("result.resistance", "Weerstand")}</th><th>u.c.</th></tr></thead>
-      <tbody>{r.checks.map((c) => <tr key={c.id} className={c.passes ? "" : "sw-row-fail"}><td>{c.title}</td><td>{fmt(c.load, c.unit === "m" ? 2 : 1)} {c.unit}</td><td>{fmt(c.resistance, c.unit === "m" ? 2 : 1)} {c.unit}</td><td className={c.passes ? "sw-ok" : "sw-fail"}>{fmt(c.uc, 2)}</td></tr>)}</tbody>
+      <tbody>{r.checks.map((c, k) => <tr key={k} className={c.passes ? "" : "sw-row-fail"}><td>{c.title}</td><td>{fmt(c.load, c.unit === "m" ? 2 : 1)} {c.unit}</td><td>{fmt(c.resistance, c.unit === "m" ? 2 : 1)} {c.unit}</td><td className={c.passes ? "sw-ok" : "sw-fail"}>{fmt(c.uc, 2)}</td></tr>)}</tbody>
     </table>
     <p className="cs-hint">{t("result.governing", "Maatgevend: {{title}} (u.c. {{uc}}).", { title: r.governing.title.toLowerCase(), uc: fmt(r.governing.uc, 2) })} {r.passes ? t("result.allPass", "Alle toetsen voldoen.") : t("result.notAllPass", "Niet alle toetsen voldoen.")}</p>
     {r.warnings.map((w) => <p key={w} className="cs-hint cs-hint--warn">{w}</p>)}
@@ -297,16 +330,24 @@ export function ResultPanel({ input: i, result: r }: Props) {
         <td>{fmt(l.low.sigmaVEff)}</td><td>{fmt(l.low.u)}</td><td>{l.low.soil ? fmt(l.low.soil.p0) : "—"}</td><td>{l.low.soil ? fmt(l.low.soil.pp) : "—"}</td></tr>)}</tbody></table></div>
     <p className="cs-hint">{t("result.levelsHint", "h = hoge zijde, l = lage zijde; alle waarden in kPa.")}</p>
 
+    {r.corrosion && <>
+      <h3>{t("corrosion.resultTitle", "Doorsnede na afroesting")}</h3>
+      <div className="cs-table-wrap"><table className="cs-layer-table sw-rows" aria-label={t("corrosion.resultTitle", "Doorsnede na afroesting")}>
+        <thead><tr><th>{t("corrosion.zone", "Zone")}</th><th>Δ {t("corrosion.high", "hoge zijde")}<small>mm</small></th><th>Δ {t("corrosion.low", "lage zijde")}<small>mm</small></th><th>t / s<small>mm</small></th><th>A<small>cm²/m</small></th><th>I<small>cm⁴/m</small></th><th>W_el<small>cm³/m</small></th><th>W_pl<small>cm³/m</small></th><th>{t("corrosion.class", "klasse")}</th></tr></thead>
+        <tbody>{r.corrosion.zones.map((z, k) => { const a = z.sheet.original, b = z.sheet.profile, arrow = (x: number | null, y: number | null, d: number) => (x === null ? "—" : `${fmt(x, d)} → ${fmt(y ?? 0, d)}`), g = i.grade;
+          return <tr key={k}><td>{z.label || t("corrosion.wholeWall", "hele wand")}</td><td>{fmt(z.lossHighMm, 2)}</td><td>{fmt(z.lossLowMm, 2)}</td><td>{`${arrow(a.flangeMm, b.flangeMm, 1)} / ${arrow(a.webMm, b.webMm, 1)}`}</td><td>{arrow(a.areaCm2PerM, b.areaCm2PerM, 1)}</td><td>{arrow(a.iCm4PerM, b.iCm4PerM, 0)}</td><td>{arrow(a.welCm3PerM, b.welCm3PerM, 0)}</td><td>{arrow(a.wplCm3PerM, b.wplCm3PerM, 0)}</td><td>{`${a.classes?.[g] ?? "–"} → ${b.classes?.[g] ?? "–"}`}</td></tr>; })}</tbody></table></div>
+      <p className="cs-hint">{r.corrosion.reducedStiffness ? t("corrosion.eiReduced", "Krachtsverdeling met EI na afroesting: {{ei}} kNm²/m (zonder afroesting {{ei0}}).", { ei: fmt(r.eiKnM2, 0), ei0: fmt(r.corrosion.eiOriginalKnM2, 0) }) : t("corrosion.eiOriginal", "Krachtsverdeling met de EI zonder afroesting; de afroesting telt in de toetsen van de doorsnede.")}</p>
+    </>}
     <h3>{t("result.details", "Uitwerking per toets")}</h3>
-    {r.checks.map((c) => <CheckDetails key={c.id} check={c} />)}
+    {r.checks.map((c, k) => <CheckDetails key={k} check={c} />)}
     <details className="settlement-reference"><summary>{t("result.method", "Methode, uitgangspunten en wat er niet in zit")}</summary>
       <ul>
         <li>{t("result.method1", "Verenmodel volgens CUR 166: een elastisch ondersteunde ligger met aan beide zijden grondveren die bij de neutrale gronddruk (K0 = 1 − sin φ′) beginnen en begrensd zijn door de actieve en de passieve gronddruk; één beddingsconstante per laag.")}</li>
         <li>{t("result.method2", "Gronddruk: actief met het rechte glijvlak (Coulomb), passief met het rechte glijvlak tot δ = φ′/3 en daarboven met het gekromde glijvlak volgens NEN-EN 1997-1 bijlage C.2. Ongedraineerde lagen met σh = σv ∓ 2·cu.")}</li>
         <li>{t("result.method3", "Veiligheid: rekenwaarden van de grondparameters, een toeslag op de kerende hoogte en eventueel op de waterstanden; verplaatsingen met representatieve waarden.")}</li>
-        <li>{t("result.method4", "Staal: buiging, dwarskracht en normaalkracht volgens NEN-EN 1993-5, zonder corrosietoeslag. Hout: buiging en afschuiving volgens NEN-EN 1995-1-1. Kunststof en beton: tegen het opneembare moment dat u invoert.")}</li>
+        <li>{t("result.method4", "Staal: buiging, dwarskracht en normaalkracht volgens NEN-EN 1993-5, met de afroesting als die is ingevoerd. Hout: buiging en afschuiving volgens NEN-EN 1995-1-1. Kunststof en beton: tegen het opneembare moment dat u invoert.")}</li>
         <li>{t("result.method6", "Palen met schotten: per m wand met de buigstijfheid van de paal gedeeld door de hart-op-hartafstand; onder de schotten de gronddruk over de paalbreedte en de passieve weerstand over de factor voor ruimtelijke werking maal de paalbreedte. Het schot is een ligger op twee steunpunten tussen de palen.")}</li>
-        <li>{t("result.method5", "Niet in deze versie: fasering en voorspanning, meer ankerrijen, het stappenplan 6.1 tot en met 6.5 van CUR 166 met lage en hoge stijfheid, een berekening van de grondwaterstroming (wateroverspanning is wel in te voeren), de stabiliteit van het diepe glijvlak bij een groutanker (Kranz), belastingen op afstand, hellend maaiveld en een aflopende waterbodem, verticaal evenwicht, algehele stabiliteit, het ontwerp van anker, ankerschot en gording, corrosie, plooi van koudgevormde profielen, kruip van hout en kunststof, de toets van de vervorming tegen een eis, en beschoeiingen met een verankerde paal.")}</li>
+        <li>{t("result.method5", "Niet in deze versie: fasering en voorspanning, meer ankerrijen, het stappenplan 6.1 tot en met 6.5 van CUR 166 met lage en hoge stijfheid, een berekening van de grondwaterstroming (wateroverspanning is wel in te voeren), de stabiliteit van het diepe glijvlak bij een groutanker (Kranz), belastingen op afstand, hellend maaiveld en een aflopende waterbodem, verticaal evenwicht, algehele stabiliteit, het ontwerp van anker, ankerschot en gording, plooi van koudgevormde profielen, kruip van hout en kunststof, de toets van de vervorming tegen een eis, en beschoeiingen met een verankerde paal.")}</li>
       </ul>
     </details>
   </div>;

@@ -115,5 +115,44 @@
       "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
       "visualLabel": "Tværsnit"
     }
+  },
+  "corrosion": {
+    "sourceNone": "Ingen korrosion",
+    "sourceTable": "Efter NEN-EN 1993-5 tabel 4-1 / 4-2",
+    "sourceCustom": "Egen værdi",
+    "environment": "Miljø",
+    "table41": "Tabel 4-1: i jord",
+    "table42": "Tabel 4-2: i vand",
+    "life": "Dimensioneringslevetid",
+    "years": "år",
+    "loss": "Tykkelsestab",
+    "noValue": "ingen tabelværdi: vælg en egen værdi",
+    "verification": "Verifikation",
+    "verificationOk": "i orden",
+    "vCase": "Tilfælde",
+    "vInput": "Input",
+    "vQuantity": "Størrelse",
+    "vExpected": "Forventet",
+    "vModule": "Modul",
+    "vDiff": "Forskel",
+    "env": {
+      "soil-undisturbed": "Uforstyrret naturlig jord (sand, silt, ler)",
+      "soil-polluted": "Forurenet naturlig jord og industriområder",
+      "soil-aggressive": "Aggressiv naturlig jord (sump, tørv)",
+      "fill-loose": "Fyld, ikke komprimeret, ikke aggressiv",
+      "fill-compacted": "Fyld, komprimeret, ikke aggressiv",
+      "fill-aggressive-loose": "Fyld, ikke komprimeret, aggressiv (aske, slagge)",
+      "fill-aggressive-compacted": "Fyld, komprimeret, aggressiv (aske, slagge)",
+      "fresh-water": "Ferskvand (flod, kanal), zone med kraftig angreb (vandlinje)",
+      "fresh-water-polluted": "Stærkt forurenet ferskvand, zone med kraftigt angreb (vandlinje)",
+      "sea-splash": "Havvand, tempereret klima, zone med kraftigt angreb (lavvande og stænkzone)",
+      "sea-immersion": "Havvand, tempereret klima, permanent neddykket eller tidevandszone"
+    },
+    "errors": {
+      "missing": "Korrosion {{where}}: tabellen har ingen værdi for dette valg. Angiv et eget tykkelsestab.",
+      "negative": "Tykkelsestabet ved korrosion kan ikke være negativt.",
+      "noThickness": "Biblioteket angiver ingen flange- og krops­tykkelse for denne profil; korrosionen kan ikke medtages.",
+      "tooLarge": "Tykkelsestabet ({{loss}} mm) er næsten hele pladetykkelsen ({{t}} mm): tværsnittet kan ikke længere eftervises."
+    }
   }
 }

@@ -53,7 +53,11 @@
     "drawing": "kontur från tillverkarens DWG ({{manufacturer}})",
     "flange": "fläns",
     "schematic": "schematisk: endast b, h och plåttjocklekarna kommer från tabellen",
-    "table": "mått från profiltabellen; låset schematiskt"
+    "table": "mått från profiltabellen; låset schematiskt",
+    "highSide": "hög sida: korrosion {{mm}} mm",
+    "lowSide": "låg sida: korrosion {{mm}} mm",
+    "corroded": "prickad: utan korrosion",
+    "corrodedApprox": "korrosion approximerad, inte ritad"
   },
   "errors": {
     "anchor": "Kontrollera staget: vinkel mindre än 80°, centrumavstånd och fjäderstyvhet större än 0.",
@@ -286,8 +290,8 @@
     "method1": "Fjädermodell enligt CUR 166: en elastiskt upplagd balk med jordfjädrar på båda sidor som börjar vid vilojordtrycket (K0 = 1 − sin φ′) och begränsas av det aktiva och det passiva jordtrycket; en bäddmodul per lager.",
     "method2": "Jordtryck: aktivt med plan glidyta (Coulomb), passivt med plan glidyta upp till δ = φ′/3 och däröver med krökt glidyta enligt NEN-EN 1997-1 bilaga C.2. Odränerade lager med σh = σv ∓ 2·cu.",
     "method3": "Säkerhet: dimensionerande värden för jordparametrarna, ett tillägg på stödhöjden och eventuellt på vattennivåerna; förskjutningar med karakteristiska värden.",
-    "method4": "Stål: böjning, tvärkraft och normalkraft enligt NEN-EN 1993-5, utan korrosionstillägg. Trä: böjning och skjuvning enligt NEN-EN 1995-1-1. Plast och betong: mot den momentkapacitet som ni anger.",
-    "method5": "Ingår inte i den här versionen: etappindelning och förspänning, flera stagrader, stegen 6.1 till och med 6.5 i CUR 166 med låg och hög styvhet, en beräkning av grundvattenströmningen (porövertryck kan däremot anges), stabiliteten i den djupa glidytan vid ett injekterat stag (Kranz), laster på avstånd, lutande markyta och sluttande botten, vertikal jämvikt, totalstabilitet, dimensionering av stag, ankarplatta och hammarband, korrosion, buckling av kallformade profiler, krypning hos trä och plast, kontroll av deformationen mot ett krav samt strandskoningar med förankrad påle.",
+    "method4": "Stål: böjning, tvärkraft och normalkraft enligt NEN-EN 1993-5, med korrosion om den anges. Trä: böjning och skjuvning enligt NEN-EN 1995-1-1. Plast och betong: mot den momentkapacitet som ni anger.",
+    "method5": "Ingår inte i den här versionen: etappindelning och förspänning, flera stagrader, stegen 6.1 till och med 6.5 i CUR 166 med låg och hög styvhet, en beräkning av grundvattenströmningen (porövertryck kan däremot anges), stabiliteten i den djupa glidytan vid ett injekterat stag (Kranz), laster på avstånd, lutande markyta och sluttande botten, vertikal jämvikt, totalstabilitet, dimensionering av stag, ankarplatta och hammarband, buckling av kallformade profiler, krypning hos trä och plast, kontroll av deformationen mot ett krav samt strandskoningar med förankrad påle.",
     "method6": "Pålar med brädor: per m vägg med pålens böjstyvhet delad med centrumavståndet; under brädorna jordtrycket över pålbredden och det passiva mothållet över faktorn för tredimensionell verkan gånger pålbredden. Brädan är en balk på två stöd mellan pålarna.",
     "mobilised": "Mobiliserat passivt mothåll",
     "notAllPass": "Alla kontroller uppfylls inte.",
@@ -369,5 +373,45 @@
     "singleBranch": "Beräkningen har gjorts med en bäddmodul per lager. Med den tredelade fjädern i CUR 166 (kh1, kh2, kh3) blir förskjutningarna större och momentet några procent större.",
     "timber": "Trä: förskjutningen är beräknad med E_0;mean utan krypning (k_def); vid permanent last i våt användning blir förskjutningen större.",
     "water": "Vattentrycket är räknat hydrostatiskt på båda sidor. Om vatten strömmar under foten eller ett djupare lager har en högre trycknivå är vattentrycket på den låga sidan högre och det passiva mothållet lägre: i ett efterräknat offentligt fall gav det ett 25 % större moment. Ange i så fall porövertrycket per lager."
+  },
+  "corrosion": {
+    "title": "Korrosion",
+    "reducedStiffness": "EI efter korrosion",
+    "classChoice": "Klass efter korrosion",
+    "classAuto": "Från katalogen (vid tvekan den ogynnsammaste)",
+    "classN": "Klass {{cls}}",
+    "high": "hög sida",
+    "low": "låg sida",
+    "highSide": "Hög sida",
+    "lowSide": "Låg sida",
+    "above": "över",
+    "below": "under",
+    "zoneAbove": "över NAP {{nap}} m",
+    "zoneBelow": "under NAP {{nap}} m",
+    "zoned": "Annan korrosion under en nivå (vattenlinje)",
+    "zoneNap": "Gräns mellan zonerna",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "från konturen",
+    "basisApprox": "approximation",
+    "hint": "Tjockleksförlust per sida. Tabellvärdena är de rekommenderade värdena i NEN-EN 1993-5 tabell 4-1 och 4-2 och har inte kontrollerats mot standardtexten eller den nederländska bilagan; packad fyllning är hälften av ej packad. Korrosionen räknas i kontrollen av tvärsnittet, med tvärsnittsklassen vid den minskade flänstjockleken; inte i jordtrycket, och i kraftfördelningen bara med kryssrutan. Med två zoner kontrolleras varje zon med det största momentet och den största tvärkraften i zonen.",
+    "resultTitle": "Tvärsnitt efter korrosion",
+    "zone": "Zon",
+    "class": "klass",
+    "wholeWall": "hela väggen",
+    "eiReduced": "Kraftfördelning med EI efter korrosion: {{ei}} kNm²/m (utan korrosion {{ei0}}).",
+    "eiOriginal": "Kraftfördelning med EI utan korrosion; korrosionen räknas i kontrollen av tvärsnittet.",
+    "steps": {
+      "loss": "korrosion hög sida + låg sida",
+      "thickness": "plåttjocklekar efter korrosion",
+      "wContour": "från konturen med plåttjockleken minskad på båda sidor",
+      "wApprox": "approximation: W · (t_f − Δt) / t_f",
+      "classShift": "(efter korrosion; utan korrosion klass {{cls}})"
+    },
+    "warnings": {
+      "class4": "Efter korrosion{{where}} är tvärsnittet klass 4 eller saknar böjmotstånd; böjning och normalkraft kontrolleras inte där.",
+      "approx": "Korrosion utan exakt kontur för denna profil: I och W är approximerade med (t_f − Δt) / t_f och A med medeltjockleken. Det är en approximation; kontrollera värdena mot tillverkarens uppgifter.",
+      "classUncertain": "Tvärsnittsklass efter korrosion{{where}} för {{grade}}: katalogen ger klass {{from}} eller {{to}}; beräknat med klass {{cls}}. Välj en klass under Korrosion om ni kan motivera den.",
+      "stiffness": "Kraftfördelningen är beräknad med böjstyvheten utan korrosion; korrosionen räknas bara i kontrollen av tvärsnittet."
+    }
   }
 }

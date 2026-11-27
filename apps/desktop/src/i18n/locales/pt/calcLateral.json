@@ -334,7 +334,9 @@
       "strainMethod": "M_Rd para N_Ed a partir do diagrama de extensões: parábola-retângulo, extensão de compressão do betão 3,5 ‰, tração do betão não considerada.",
       "tubeClassIs": "Classe da secção {{cls}}.",
       "tubeIgnored": "Segundo os dados, o tubo não colabora: é verificado o núcleo de betão com a sua armadura, sem o tubo.",
-      "tubeYield": "f_y é o valor de cálculo introduzido f_yd do aço do tubo vezes γ_M0 = 1,0; a espessura da parede é a espessura residual introduzida."
+      "tubeYield": "f_y é o valor de cálculo introduzido f_yd do aço do tubo vezes γ_M0 = 1,0; a espessura da parede é a espessura residual introduzida.",
+      "corrosionTube": "Verificado com a secção após corrosão, também a classe e D/t. {{stiffness}}",
+      "corrosionSheet": "Verificado com o perfil após corrosão ({{basis}}), com a classe na espessura de banzo reduzida. {{stiffness}}"
     },
     "notesTitle": "Pressupostos da verificação",
     "rows": {
@@ -358,7 +360,8 @@
       "shearS": "Esforço transverso com estribos",
       "shearSpacing": "Espaçamento máximo dos estribos",
       "sheetClass": "Classe da secção",
-      "tubeClass": "Classe da secção e encurvadura local"
+      "tubeClass": "Classe da secção e encurvadura local",
+      "corrosion": "Corrosão"
     },
     "status": {
       "fail": "não verifica",
@@ -592,5 +595,32 @@
     "tableAria": "Estacas com cargas na cabeça e resultados",
     "title": "Tabela de estacas",
     "yHead": "y cabeça"
+  },
+  "corrosion": {
+    "title": "Corrosão",
+    "reducedStiffness": "EI após corrosão",
+    "classChoice": "Classe após corrosão",
+    "classAuto": "Do catálogo (em caso de dúvida a mais desfavorável)",
+    "classN": "Classe {{cls}}",
+    "side1": "face 1",
+    "side2": "face 2",
+    "outer": "face exterior",
+    "inner": "face interior",
+    "side1Label": "Face 1",
+    "side2Label": "Face 2",
+    "outerLabel": "Face exterior",
+    "innerLabel": "Face interior",
+    "sides": "Atacado",
+    "oneSide": "1 face",
+    "twoSides": "2 faces",
+    "oneTube": "1 face (exterior)",
+    "twoTube": "2 faces (exterior e interior)",
+    "eiReduced": "A estaca é calculada com a EI após corrosão.",
+    "eiOriginal": "A estaca é calculada com a EI sem corrosão.",
+    "basisContour": "a partir do contorno exato",
+    "basisApprox": "aproximação com as espessuras",
+    "tubeSummary": "Após corrosão: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Após corrosão: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "Com corrosão, introduza a espessura nominal. Perda de espessura por face; os valores do quadro são os recomendados de NEN-EN 1993-5 quadros 4-1 e 4-2 e não foram confrontados com o texto da norma nem com o anexo neerlandês. A corrosão conta na verificação do material e na verificação N–M, também na classe e D/t; na distribuição de esforços só com a caixa assinalada. Um tubo cheio só corrói por fora."
   }
 }

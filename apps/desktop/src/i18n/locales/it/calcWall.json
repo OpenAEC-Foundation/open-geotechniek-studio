@@ -53,7 +53,11 @@
     "drawing": "contorno dal DWG del produttore ({{manufacturer}})",
     "flange": "ala",
     "schematic": "schematico: solo b, h e gli spessori provengono dalla tabella",
-    "table": "dimensioni dalla tabella dei profili; gargame schematico"
+    "table": "dimensioni dalla tabella dei profili; gargame schematico",
+    "highSide": "lato alto: corrosione {{mm}} mm",
+    "lowSide": "lato basso: corrosione {{mm}} mm",
+    "corroded": "tratteggio: senza corrosione",
+    "corrodedApprox": "corrosione approssimata, non disegnata"
   },
   "errors": {
     "anchor": "Controllare l'ancoraggio: angolo minore di 80°, interasse e rigidezza della molla maggiori di 0.",
@@ -286,8 +290,8 @@
     "method1": "Modello a molle secondo CUR 166: una trave su appoggi elastici con molle di terreno su entrambi i lati che partono dalla spinta a riposo (K0 = 1 − sin φ′) e sono limitate dalla spinta attiva e da quella passiva; un coefficiente di sottofondo per strato.",
     "method2": "Spinta delle terre: attiva con la superficie di scorrimento piana (Coulomb), passiva con la superficie di scorrimento piana fino a δ = φ′/3 e oltre con la superficie di scorrimento curva secondo NEN-EN 1997-1 appendice C.2. Strati non drenati con σh = σv ∓ 2·cu.",
     "method3": "Sicurezza: valori di progetto dei parametri del terreno, un incremento dell'altezza di ritenuta ed eventualmente dei livelli dell'acqua; spostamenti con i valori caratteristici.",
-    "method4": "Acciaio: flessione, taglio e sforzo normale secondo NEN-EN 1993-5, senza sovraspessore di corrosione. Legno: flessione e taglio secondo NEN-EN 1995-1-1. Plastica e calcestruzzo: rispetto al momento resistente inserito dall'utente.",
-    "method5": "Non incluso in questa versione: fasi costruttive e pretensione, più file di ancoraggi, la procedura per passi da 6.1 a 6.5 di CUR 166 con rigidezza bassa e alta, un calcolo della filtrazione dell'acqua di falda (la sovrappressione interstiziale si può invece inserire), la stabilità del piano di scorrimento profondo con un tirante di ancoraggio iniettato (Kranz), carichi a distanza, piano campagna inclinato e un fondo in pendenza, equilibrio verticale, stabilità globale, il progetto dell'ancoraggio, del blocco di ancoraggio e della trave di ripartizione, corrosione, instabilità locale dei profili formati a freddo, viscosità del legno e della plastica, la verifica della deformazione rispetto a un requisito, e difese spondali con un palo ancorato.",
+    "method4": "Acciaio: flessione, taglio e sforzo normale secondo NEN-EN 1993-5, con la corrosione se inserita. Legno: flessione e taglio secondo NEN-EN 1995-1-1. Plastica e calcestruzzo: rispetto al momento resistente inserito dall'utente.",
+    "method5": "Non incluso in questa versione: fasi costruttive e pretensione, più file di ancoraggi, la procedura per passi da 6.1 a 6.5 di CUR 166 con rigidezza bassa e alta, un calcolo della filtrazione dell'acqua di falda (la sovrappressione interstiziale si può invece inserire), la stabilità del piano di scorrimento profondo con un tirante di ancoraggio iniettato (Kranz), carichi a distanza, piano campagna inclinato e un fondo in pendenza, equilibrio verticale, stabilità globale, il progetto dell'ancoraggio, del blocco di ancoraggio e della trave di ripartizione, instabilità locale dei profili formati a freddo, viscosità del legno e della plastica, la verifica della deformazione rispetto a un requisito, e difese spondali con un palo ancorato.",
     "method6": "Pali con tavole: per m di parete con la rigidezza flessionale del palo divisa per l'interasse; sotto le tavole la spinta delle terre sulla larghezza del palo e la resistenza passiva sul fattore di effetto tridimensionale per la larghezza del palo. La tavola è una trave su due appoggi tra i pali.",
     "mobilised": "Resistenza passiva mobilitata",
     "notAllPass": "Non tutte le verifiche sono soddisfatte.",
@@ -369,5 +373,45 @@
     "singleBranch": "Il calcolo è stato eseguito con un solo coefficiente di sottofondo per strato. Con la molla a tre rami di CUR 166 (kh1, kh2, kh3) gli spostamenti aumentano e il momento aumenta di qualche punto percentuale.",
     "timber": "Legno: lo spostamento è calcolato con E_0;mean senza viscosità (k_def); con carico permanente in ambiente umido lo spostamento aumenta.",
     "water": "La pressione dell'acqua è calcolata idrostatica su entrambi i lati. Se l'acqua filtra sotto il piede o uno strato più profondo ha un carico piezometrico più alto, la pressione dell'acqua sul lato basso è maggiore e la resistenza passiva minore: in un caso pubblico ricalcolato ciò ha dato un momento maggiore del 25 %. In tal caso inserire la sovrappressione interstiziale per strato."
+  },
+  "corrosion": {
+    "title": "Corrosione",
+    "reducedStiffness": "EI dopo la corrosione",
+    "classChoice": "Classe dopo la corrosione",
+    "classAuto": "Dal catalogo (in caso di dubbio la più sfavorevole)",
+    "classN": "Classe {{cls}}",
+    "high": "lato alto",
+    "low": "lato basso",
+    "highSide": "Lato alto",
+    "lowSide": "Lato basso",
+    "above": "sopra",
+    "below": "sotto",
+    "zoneAbove": "sopra NAP {{nap}} m",
+    "zoneBelow": "sotto NAP {{nap}} m",
+    "zoned": "Corrosione diversa sotto un livello (linea d'acqua)",
+    "zoneNap": "Limite delle zone",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "dal contorno",
+    "basisApprox": "approssimazione",
+    "hint": "Perdita di spessore per faccia. I valori in tabella sono quelli raccomandati di NEN-EN 1993-5 tabelle 4-1 e 4-2 e non sono stati confrontati con il testo della norma o con l'appendice olandese; il riporto compattato vale la metà del non compattato. La corrosione conta nelle verifiche della sezione, con la classe allo spessore d'ala ridotto; non nella spinta delle terre, e nella distribuzione delle sollecitazioni solo con la casella spuntata. Con due zone ogni zona è verificata con il momento e il taglio massimi di quella zona.",
+    "resultTitle": "Sezione dopo la corrosione",
+    "zone": "Zona",
+    "class": "classe",
+    "wholeWall": "intera parete",
+    "eiReduced": "Distribuzione delle sollecitazioni con EI dopo la corrosione: {{ei}} kNm²/m (senza corrosione {{ei0}}).",
+    "eiOriginal": "Distribuzione delle sollecitazioni con la EI senza corrosione; la corrosione conta nelle verifiche della sezione.",
+    "steps": {
+      "loss": "corrosione lato alto + lato basso",
+      "thickness": "spessori dopo la corrosione",
+      "wContour": "dal contorno con lo spessore ridotto su entrambe le facce",
+      "wApprox": "approssimazione: W · (t_f − Δt) / t_f",
+      "classShift": "(dopo la corrosione; senza corrosione classe {{cls}})"
+    },
+    "warnings": {
+      "class4": "Dopo la corrosione{{where}} la sezione è di classe 4 o non ha modulo di resistenza; flessione e sforzo normale non sono verificati.",
+      "approx": "Corrosione senza contorno esatto di questo profilo: I e W sono approssimati con (t_f − Δt) / t_f e A con lo spessore medio. È un'approssimazione; verificare i valori con i dati del produttore.",
+      "classUncertain": "Classe della sezione dopo la corrosione{{where}} per {{grade}}: dal catalogo risulta classe {{from}} o {{to}}; calcolato con classe {{cls}}. Scegliere una classe in Corrosione se la si può giustificare.",
+      "stiffness": "La distribuzione delle sollecitazioni è calcolata con la rigidezza senza corrosione; la corrosione conta solo nelle verifiche della sezione."
+    }
   }
 }

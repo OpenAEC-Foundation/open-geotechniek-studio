@@ -334,7 +334,9 @@
       "strainMethod": "M_Rd przy N_Ed z wykresu odkształceń: parabola-prostokąt, skrócenie betonu 3,5 ‰, rozciąganie betonu pominięte.",
       "tubeClassIs": "Klasa przekroju {{cls}}.",
       "tubeIgnored": "Zgodnie z danymi rura nie współpracuje: sprawdzono rdzeń betonowy z jego zbrojeniem, bez rury.",
-      "tubeYield": "f_y to wprowadzona wartość obliczeniowa f_yd stali rury razy γ_M0 = 1,0; grubość ścianki to wprowadzona grubość resztkowa."
+      "tubeYield": "f_y to wprowadzona wartość obliczeniowa f_yd stali rury razy γ_M0 = 1,0; grubość ścianki to wprowadzona grubość resztkowa.",
+      "corrosionTube": "Sprawdzono z przekrojem po korozji, także klasę i D/t. {{stiffness}}",
+      "corrosionSheet": "Sprawdzono z profilem po korozji ({{basis}}), z klasą przy zmniejszonej grubości półki. {{stiffness}}"
     },
     "notesTitle": "Założenia sprawdzenia",
     "rows": {
@@ -358,7 +360,8 @@
       "shearS": "Siła poprzeczna ze strzemionami",
       "shearSpacing": "Największy rozstaw strzemion",
       "sheetClass": "Klasa przekroju",
-      "tubeClass": "Klasa przekroju i niestateczność miejscowa"
+      "tubeClass": "Klasa przekroju i niestateczność miejscowa",
+      "corrosion": "Korozja"
     },
     "status": {
       "fail": "nie spełnia",
@@ -592,5 +595,32 @@
     "tableAria": "Pale z obciążeniami w głowicy i wynikami",
     "title": "Tabela pali",
     "yHead": "y głowicy"
+  },
+  "corrosion": {
+    "title": "Korozja",
+    "reducedStiffness": "EI po korozji",
+    "classChoice": "Klasa po korozji",
+    "classAuto": "Z katalogu (w razie wątpliwości najmniej korzystna)",
+    "classN": "Klasa {{cls}}",
+    "side1": "strona 1",
+    "side2": "strona 2",
+    "outer": "strona zewnętrzna",
+    "inner": "strona wewnętrzna",
+    "side1Label": "Strona 1",
+    "side2Label": "Strona 2",
+    "outerLabel": "Strona zewnętrzna",
+    "innerLabel": "Strona wewnętrzna",
+    "sides": "Narażone",
+    "oneSide": "1 strona",
+    "twoSides": "2 strony",
+    "oneTube": "1 strona (zewnątrz)",
+    "twoTube": "2 strony (zewnątrz i wewnątrz)",
+    "eiReduced": "Pal obliczono z EI po korozji.",
+    "eiOriginal": "Pal obliczono z EI bez korozji.",
+    "basisContour": "z dokładnego konturu",
+    "basisApprox": "przybliżenie z grubościami",
+    "tubeSummary": "Po korozji: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Po korozji: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "Przy korozji podaj nominalną grubość ścianki. Ubytek grubości na stronę; wartości z tablicy to wartości zalecane NEN-EN 1993-5 tablice 4-1 i 4-2, nie sprawdzone z tekstem normy ani z załącznikiem krajowym NL. Korozja jest uwzględniana w sprawdzeniu materiału i sprawdzeniu N–M, także w klasie i D/t; w rozkładzie sił tylko po zaznaczeniu pola. Rura wypełniona koroduje tylko z zewnątrz."
   }
 }

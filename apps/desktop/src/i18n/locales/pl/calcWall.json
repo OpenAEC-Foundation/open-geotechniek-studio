@@ -53,7 +53,11 @@
     "drawing": "kontur z pliku DWG producenta ({{manufacturer}})",
     "flange": "półka",
     "schematic": "schematycznie: tylko b, h i grubości blach pochodzą z tabeli",
-    "table": "wymiary z tabeli profili; zamek schematycznie"
+    "table": "wymiary z tabeli profili; zamek schematycznie",
+    "highSide": "strona wysoka: korozja {{mm}} mm",
+    "lowSide": "strona niska: korozja {{mm}} mm",
+    "corroded": "linia kropkowana: bez korozji",
+    "corrodedApprox": "korozja przybliżona, nie narysowana"
   },
   "errors": {
     "anchor": "Sprawdź kotew: kąt mniejszy niż 80°, rozstaw osiowy i sztywność sprężyny większe od 0.",
@@ -286,8 +290,8 @@
     "method1": "Model sprężynowy według CUR 166: belka na podporach sprężystych, z obu stron sprężyny gruntowe, które zaczynają od parcia spoczynkowego (K0 = 1 − sin φ′) i są ograniczone parciem czynnym i odporem gruntu; jeden moduł reakcji podłoża na warstwę.",
     "method2": "Parcie gruntu: czynne z płaską powierzchnią poślizgu (Coulomb), bierne z płaską powierzchnią poślizgu do δ = φ′/3, a powyżej z zakrzywioną powierzchnią poślizgu według NEN-EN 1997-1 załącznik C.2. Warstwy bez odpływu z σh = σv ∓ 2·cu.",
     "method3": "Bezpieczeństwo: wartości obliczeniowe parametrów gruntu, naddatek do wysokości podparcia i ewentualnie do poziomów wody; przemieszczenia z wartościami charakterystycznymi.",
-    "method4": "Stal: zginanie, siła poprzeczna i siła osiowa według NEN-EN 1993-5, bez naddatku na korozję. Drewno: zginanie i ścinanie według NEN-EN 1995-1-1. Tworzywo sztuczne i beton: względem nośności na zginanie, którą podajesz.",
-    "method5": "Nie w tej wersji: etapowanie i sprężenie, więcej rzędów kotew, schemat postępowania 6.1 do 6.5 z CUR 166 z niską i wysoką sztywnością, obliczenie przepływu wód gruntowych (nadciśnienie wody w porach można natomiast wprowadzić), stateczność w głębokiej płaszczyźnie poślizgu przy kotwi iniekcyjnej (Kranz), obciążenia w odległości od ścianki, nachylony teren i opadające dno, równowaga pionowa, stateczność ogólna, projektowanie kotwi, płyty kotwiącej i kleszczy, korozja, wyboczenie miejscowe profili giętych na zimno, pełzanie drewna i tworzywa sztucznego, sprawdzenie odkształcenia względem wymagania oraz umocnienia brzegu z palem zakotwionym.",
+    "method4": "Stal: zginanie, siła poprzeczna i siła osiowa według NEN-EN 1993-5, z korozją, jeśli ją podano. Drewno: zginanie i ścinanie według NEN-EN 1995-1-1. Tworzywo sztuczne i beton: względem nośności na zginanie, którą podajesz.",
+    "method5": "Nie w tej wersji: etapowanie i sprężenie, więcej rzędów kotew, schemat postępowania 6.1 do 6.5 z CUR 166 z niską i wysoką sztywnością, obliczenie przepływu wód gruntowych (nadciśnienie wody w porach można natomiast wprowadzić), stateczność w głębokiej płaszczyźnie poślizgu przy kotwi iniekcyjnej (Kranz), obciążenia w odległości od ścianki, nachylony teren i opadające dno, równowaga pionowa, stateczność ogólna, projektowanie kotwi, płyty kotwiącej i kleszczy, wyboczenie miejscowe profili giętych na zimno, pełzanie drewna i tworzywa sztucznego, sprawdzenie odkształcenia względem wymagania oraz umocnienia brzegu z palem zakotwionym.",
     "method6": "Pale z opinką: na m ścianki ze sztywnością na zginanie pala podzieloną przez rozstaw osiowy; poniżej opinki parcie gruntu na szerokości pala, a odpór gruntu na szerokości równej współczynnikowi pracy przestrzennej razy szerokość pala. Opinka jest belką na dwóch podporach między palami.",
     "mobilised": "Zmobilizowany odpór gruntu",
     "notAllPass": "Nie wszystkie sprawdzenia są spełnione.",
@@ -369,5 +373,45 @@
     "singleBranch": "Obliczenia wykonano z jednym modułem reakcji podłoża na warstwę. Ze sprężyną trójodcinkową z CUR 166 (kh1, kh2, kh3) przemieszczenia są większe, a moment większy o kilka procent.",
     "timber": "Drewno: przemieszczenie obliczono z E_0;mean bez pełzania (k_def); przy obciążeniu stałym w zastosowaniu mokrym przemieszczenie będzie większe.",
     "water": "Parcie wody przyjęto po obu stronach jako hydrostatyczne. Jeżeli woda przepływa pod stopą albo głębsza warstwa ma wyższą wysokość piezometryczną, parcie wody po stronie niższej jest większe, a odpór gruntu mniejszy: w przeliczonym publicznie dostępnym przypadku dało to moment większy o 25 %. Wprowadź wtedy nadciśnienie wody w porach dla każdej warstwy."
+  },
+  "corrosion": {
+    "title": "Korozja",
+    "reducedStiffness": "EI po korozji",
+    "classChoice": "Klasa po korozji",
+    "classAuto": "Z katalogu (w razie wątpliwości najmniej korzystna)",
+    "classN": "Klasa {{cls}}",
+    "high": "strona wysoka",
+    "low": "strona niska",
+    "highSide": "Strona wysoka",
+    "lowSide": "Strona niska",
+    "above": "powyżej",
+    "below": "poniżej",
+    "zoneAbove": "powyżej NAP {{nap}} m",
+    "zoneBelow": "poniżej NAP {{nap}} m",
+    "zoned": "Inna korozja poniżej poziomu (linia wody)",
+    "zoneNap": "Granica stref",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "z konturu",
+    "basisApprox": "przybliżenie",
+    "hint": "Ubytek grubości na stronę. Wartości z tablicy to wartości zalecane NEN-EN 1993-5 tablice 4-1 i 4-2, nie sprawdzone z tekstem normy ani z załącznikiem krajowym NL; nasyp zagęszczony to połowa niezagęszczonego. Korozja jest uwzględniana w sprawdzeniu przekroju, z klasą przy zmniejszonej grubości półki; nie w parciu gruntu, a w rozkładzie sił tylko po zaznaczeniu pola. Przy dwóch strefach każda strefa jest sprawdzana z największym momentem i siłą poprzeczną w tej strefie.",
+    "resultTitle": "Przekrój po korozji",
+    "zone": "Strefa",
+    "class": "klasa",
+    "wholeWall": "cała ściana",
+    "eiReduced": "Rozkład sił z EI po korozji: {{ei}} kNm²/m (bez korozji {{ei0}}).",
+    "eiOriginal": "Rozkład sił z EI bez korozji; korozja jest uwzględniana w sprawdzeniu przekroju.",
+    "steps": {
+      "loss": "korozja strona wysoka + strona niska",
+      "thickness": "grubości po korozji",
+      "wContour": "z konturu ze zmniejszoną grubością po obu stronach",
+      "wApprox": "przybliżenie: W · (t_f − Δt) / t_f",
+      "classShift": "(po korozji; bez korozji klasa {{cls}})"
+    },
+    "warnings": {
+      "class4": "Po korozji{{where}} przekrój jest klasy 4 lub nie ma wskaźnika wytrzymałości; zginanie i siła osiowa nie są tam sprawdzone.",
+      "approx": "Korozja bez dokładnego konturu tego profilu: I i W przybliżono przez (t_f − Δt) / t_f, a A przez średnią grubość. To przybliżenie; sprawdź wartości z danymi producenta.",
+      "classUncertain": "Klasa przekroju po korozji{{where}} dla {{grade}}: z katalogu wynika klasa {{from}} lub {{to}}; obliczono z klasą {{cls}}. Wybierz klasę w sekcji Korozja, jeśli możesz ją uzasadnić.",
+      "stiffness": "Rozkład sił obliczono ze sztywnością bez korozji; korozja jest uwzględniana tylko w sprawdzeniu przekroju."
+    }
   }
 }

@@ -334,7 +334,9 @@
       "strainMethod": "M_Rd at N_Ed from the strain diagram: parabola-rectangle, concrete compressive strain 3.5 ‰, concrete tension neglected.",
       "tubeClassIs": "Cross-section class {{cls}}.",
       "tubeIgnored": "According to the input the tube does not contribute: the concrete core with its reinforcement is checked, without the tube.",
-      "tubeYield": "f_y is the entered design value f_yd of the tube steel times γ_M0 = 1.0; the wall thickness is the entered residual wall thickness."
+      "tubeYield": "f_y is the entered design value f_yd of the tube steel times γ_M0 = 1.0; the wall thickness is the entered residual wall thickness.",
+      "corrosionTube": "Checked with the section after corrosion, including the section class and D/t. {{stiffness}}",
+      "corrosionSheet": "Checked with the profile after corrosion ({{basis}}), with the section class at the reduced flange thickness. {{stiffness}}"
     },
     "notesTitle": "Basis of the check",
     "rows": {
@@ -358,7 +360,8 @@
       "shearS": "Shear force with stirrups",
       "shearSpacing": "Maximum stirrup spacing",
       "sheetClass": "Cross-section class",
-      "tubeClass": "Cross-section class and local buckling"
+      "tubeClass": "Cross-section class and local buckling",
+      "corrosion": "Corrosion"
     },
     "status": {
       "fail": "does not pass",
@@ -592,5 +595,32 @@
     "tableAria": "Piles with head loads and results",
     "title": "Pile table",
     "yHead": "y head"
+  },
+  "corrosion": {
+    "title": "Corrosion",
+    "reducedStiffness": "EI after corrosion",
+    "classChoice": "Class after corrosion",
+    "classAuto": "From the catalogue (if in doubt the least favourable)",
+    "classN": "Class {{cls}}",
+    "side1": "side 1",
+    "side2": "side 2",
+    "outer": "outside",
+    "inner": "inside",
+    "side1Label": "Side 1",
+    "side2Label": "Side 2",
+    "outerLabel": "Outside",
+    "innerLabel": "Inside",
+    "sides": "Attacked",
+    "oneSide": "1 side",
+    "twoSides": "2 sides",
+    "oneTube": "1 side (outside)",
+    "twoTube": "2 sides (outside and inside)",
+    "eiReduced": "The pile is calculated with EI after corrosion.",
+    "eiOriginal": "The pile is calculated with the EI without corrosion.",
+    "basisContour": "from the exact contour",
+    "basisApprox": "approximation with the plate thicknesses",
+    "tubeSummary": "After corrosion: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "After corrosion: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "With corrosion, enter the nominal wall thickness. Thickness loss per side; the table values are the recommended values of NEN-EN 1993-5 tables 4-1 and 4-2 and have not been checked against the code text or the Dutch annex. Corrosion counts in the material check and the N–M check, including the section class and D/t; in the force distribution only with the tick box. A filled tube only corrodes on the outside."
   }
 }
