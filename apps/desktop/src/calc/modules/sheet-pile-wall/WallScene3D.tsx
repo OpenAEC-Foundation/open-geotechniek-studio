@@ -5,7 +5,44 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { clipLine, type SceneLayer, type WallScene } from "./scene";
+import { soilOutline, type PlanPoint, type SceneLayer, type WallScene } from "./scene";
+
+/**
+ * Prisma van een gesloten omtrek in het vlak (u, v) tussen de hoogten y0 en y1, in scènecoördinaten (u, y, −v).
+ * De zijwanden krijgen gedeelde normalen waar de omtrek minder dan `creaseDeg` knikt (rondingen lezen als één
+ * vlak) en eigen normalen in de scherpe hoeken; de kappen boven en onder zijn getrianguleerd.
+ */
+function prismGeometry(outline: THREE.Vector2[], y0: number, y1: number, creaseDeg: number): THREE.BufferGeometry {
+  let pts = outline.filter((p, k) => p.distanceTo(outline[(k + 1) % outline.length]) > 1e-9);
+  if (THREE.ShapeUtils.isClockWise(pts)) pts = [...pts].reverse();
+  const n = pts.length, position: number[] = [], normal: number[] = [];
+  const vertex = (p: THREE.Vector2, h: number, nx: number, nz: number, ny = 0) => { position.push(p.x, h, -p.y); normal.push(nx, ny, nz); };
+  // Kappen: driehoeken uit de omtrek; in de scène is v = −z, dus de volgorde draait voor een normaal omhoog.
+  for (const [a, b0, c0] of THREE.ShapeUtils.triangulateShape(pts, [])) {
+    const ccw = (pts[b0].x - pts[a].x) * (pts[c0].y - pts[a].y) - (pts[b0].y - pts[a].y) * (pts[c0].x - pts[a].x) > 0, b = ccw ? b0 : c0, c = ccw ? c0 : b0;
+    vertex(pts[a], y1, 0, 0, 1); vertex(pts[b], y1, 0, 0, 1); vertex(pts[c], y1, 0, 0, 1);
+    vertex(pts[a], y0, 0, 0, -1); vertex(pts[c], y0, 0, 0, -1); vertex(pts[b], y0, 0, 0, -1);
+  }
+  // Naar buiten gerichte normaal van stuk k in het vlak (tegen de klok in: rechts van de looprichting).
+  const edgeNormal = (k: number) => { const p = pts[k], q = pts[(k + 1) % n], d = new THREE.Vector2(q.x - p.x, q.y - p.y).normalize(); return new THREE.Vector2(d.y, -d.x); };
+  const cosCrease = Math.cos((creaseDeg * Math.PI) / 180);
+  const cornerNormal = (k: number, own: number) => { const a = edgeNormal((k - 1 + n) % n), b = edgeNormal(k % n); return creaseDeg > 0 && a.dot(b) >= cosCrease ? a.add(b).normalize() : own === k % n ? b : a; };
+  for (let k = 0; k < n; k++) {
+    const p = pts[k], q = pts[(k + 1) % n], np = cornerNormal(k, k), nq = cornerNormal(k + 1, k);
+    // Normaal (u, v) in het vlak wordt (u, 0, −v) in de scène.
+    vertex(p, y0, np.x, -np.y); vertex(q, y0, nq.x, -nq.y); vertex(q, y1, nq.x, -nq.y);
+    vertex(p, y0, np.x, -np.y); vertex(q, y1, nq.x, -nq.y); vertex(p, y1, np.x, -np.y);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(position, 3));
+  geometry.setAttribute("normal", new THREE.Float32BufferAttribute(normal, 3));
+  return geometry;
+}
+
+/** Gesloten randlijn van een omtrek in het vlak (u, v) op hoogte h. */
+function outlineLines(outline: THREE.Vector2[], h: number, material: THREE.LineBasicMaterial): THREE.LineLoop {
+  return new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(outline.map((q) => new THREE.Vector3(q.x, h, -q.y))), material);
+}
 
 export function WallScene3D({ scene: latest }: { scene: WallScene }) {
   const { t } = useTranslation("calcWall");
@@ -30,9 +67,11 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     container.appendChild(renderer.domElement);
     renderer.domElement.setAttribute("aria-label", labels.aria);
-    const render = () => renderer.render(scene, camera);
-    scene.add(new THREE.AmbientLight(0xffffff, 1.6));
-    const light = new THREE.DirectionalLight(0xffffff, 2.2); light.position.set(5, 8, 7); scene.add(light);
+    const render = () => renderer.render(scene, camera);    // Licht van boven en twee zijden, zodat de lijven van de golf aan beide zijden leesbaar blijven.
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x9a8f86, 1.1));
+    const light = new THREE.DirectionalLight(0xffffff, 2.0); light.position.set(5, 8, 7); scene.add(light);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.9); fill.position.set(-6, 4, -3); scene.add(fill);
     const ink = getComputedStyle(container).color || "#222", white = new THREE.Color(0xffffff), face = 0.004 * size;
 
     const label = (text: string, at: THREE.Vector3, color: string, align: "left" | "right") => {
@@ -47,27 +86,39 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
       sprite.scale.set(w, h, 1); sprite.center.set(align === "left" ? 0 : 1, 0.5); sprite.position.copy(at); sprite.renderOrder = 5; scene.add(sprite);
     };
     const nap = (v: number) => `NAP ${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(2).replace(".", ",")}`;
-    const block = (l: SceneLayer, x0: number, x1: number, nameAt: "left" | "right") => {
-      // In de plattegrond: de rand aan de wand volgt de hartlijn van de planken, zodat de grond in de golf sluit.
-      const edgeLine = clipLine(s.wallLine, s.frontM, s.frontM + len), far = nameAt === "left" ? x0 : x1;
-      const shape = new THREE.Shape([new THREE.Vector2(far, 0), ...edgeLine.map((q) => new THREE.Vector2(q.x, q.a - s.frontM)), new THREE.Vector2(far, len)]);
-      const geometry = new THREE.ExtrudeGeometry(shape, { depth: l.topNap - l.bottomNap, bevelEnabled: false });
-      geometry.rotateX(-Math.PI / 2); geometry.translate(0, y(l.bottomNap), 0);
-      const see = nameAt === "left" && s.support?.kind === "grout";
-      const soil = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: new THREE.Color(l.color).lerp(white, 0.5), polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, transparent: see, opacity: see ? 0.35 : 1, depthWrite: !see }));
-      scene.add(soil);
-      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geometry), new THREE.LineBasicMaterial({ color: new THREE.Color(l.color).multiplyScalar(0.55) }));
-      scene.add(edges);
-      label(l.name, new THREE.Vector3(nameAt === "left" ? x0 + 0.02 * size : x1 - 0.02 * size, y(l.topNap) - 0.04 * size, face), ink, nameAt === "left" ? "left" : "right");
+    // Plattegrond naar scène: x blijft, a langs de wand wordt z = frontM − a (het snijvlak op z = 0).
+    const plan = (points: PlanPoint[]) => points.map((q) => new THREE.Vector2(q.x, q.a - s.frontM));
+    // Het grondvlak per zijde sluit precies op de buitenkant van de wand (scene.wallFace). Onder de teen en boven de
+    // kop van de wand is er geen staal: daar lopen beide zijden door tot dezelfde rand, zodat er geen spleet valt.
+    const soilPlan = (side: 1 | -1, far: number, zone: "wall" | "below" | "above") =>
+      plan(soilOutline(zone === "below" ? s.faceHigh : zone === "above" ? s.faceLow : side < 0 ? s.faceHigh : s.faceLow, far));
+    const block = (l: SceneLayer, side: 1 | -1, nameAt: "left" | "right") => {
+      const far = side < 0 ? -hh : hw, see = side < 0 && s.support?.kind === "grout";
+      const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(l.color).lerp(white, 0.5), polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2, transparent: see, opacity: see ? 0.35 : 1, depthWrite: !see });
+      const line = new THREE.LineBasicMaterial({ color: new THREE.Color(l.color).multiplyScalar(0.55) });
+      const zones: Array<["wall" | "below" | "above", number, number]> = [["below", l.bottomNap, Math.min(l.topNap, s.toeNap)], ["wall", Math.max(l.bottomNap, s.toeNap), Math.min(l.topNap, s.wallTopNap)], ["above", Math.max(l.bottomNap, s.wallTopNap), l.topNap]];
+      for (const [zone, bottom, top] of zones) if (top - bottom > 1e-6) {
+        const outline = soilPlan(side, far, zone);
+        scene.add(new THREE.Mesh(prismGeometry(outline, y(bottom), y(top), 0), material));
+        // Randlijnen: de omtrek van het grondvlak aan de bovenkant (op de wand precies op de contour) en het snijvlak.
+        // Alleen aan de grenzen van de laag, niet op de teen of de kop van de wand waar het vlak alleen wordt opgedeeld.
+        if (top === l.topNap) scene.add(outlineLines(outline, y(top), line));
+        const n = outline.length, at = (q: THREE.Vector2, h: number) => new THREE.Vector3(q.x, h, -q.y);
+        const segments = [outline[0], outline[1], outline[n - 2], outline[n - 1]].flatMap((q) => [at(q, y(bottom)), at(q, y(top))]);
+        if (bottom === l.bottomNap) segments.push(at(outline[0], y(bottom)), at(outline[1], y(bottom)));
+        scene.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(segments), line));
+      }
+      label(l.name, new THREE.Vector3(nameAt === "left" ? -hh + 0.02 * size : hw - 0.02 * size, y(l.topNap) - 0.04 * size, face), ink, nameAt === "left" ? "left" : "right");
     };
-    for (const l of s.high.layers) block(l, -hh, 0, "left");
-    for (const l of s.low.layers) block(l, 0, hw, "right");
+    for (const l of s.high.layers) block(l, -1, "left");
+    for (const l of s.low.layers) block(l, 1, "right");
 
     // Waterstanden: een doorschijnend vlak boven het maaiveld, en een streeplijn op het snijvlak eronder.
     const water = (level: number, surface: number, x0: number, x1: number) => {
       if (level > surface) {
-        const body = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, level - surface, len), new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.28, depthWrite: false }));
-        body.position.set((x0 + x1) / 2, y((level + surface) / 2), -len / 2); body.renderOrder = 2; scene.add(body);
+        const side = x0 < 0 ? -1 : 1, outline = soilPlan(side, side < 0 ? x0 : x1, level > s.wallTopNap ? "above" : "wall");
+        const body = new THREE.Mesh(prismGeometry(outline, y(surface), y(level), 0), new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.28, depthWrite: false }));
+        body.renderOrder = 2; scene.add(body);
       } else if (level > s.bottomNap) {
         const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x0, y(level), face), new THREE.Vector3(x1, y(level), face)]);
         const line = new THREE.Line(geometry, new THREE.LineDashedMaterial({ color: 0x2563eb, dashSize: 0.03 * size, gapSize: 0.02 * size }));
@@ -81,18 +132,21 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     label(`${labels.water} ${nap(s.low.waterNap)}`, new THREE.Vector3(hw + 0.03 * size, y(s.low.waterNap) - (Math.abs(s.low.waterNap - s.low.surfaceNap) < 0.06 * size ? 0.06 * size : 0), face), "#2563eb", "left");
     label(`${labels.toe} ${nap(s.toeNap)}`, new THREE.Vector3(-hh - 0.03 * size, y(s.toeNap), face), ink, "right");
 
-    // De planken: elk recht stuk van de plattegrond als plaat over de volle hoogte van de wand.
     const sheet = s.construction === "sheet-pile";
-    const steel = sheet ? new THREE.MeshStandardMaterial({ color: 0x5b6470, roughness: 0.55, metalness: 0.5 }) : new THREE.MeshStandardMaterial({ color: 0x8a6239, roughness: 0.9 }), edge = new THREE.LineBasicMaterial({ color: sheet ? 0x1f2937 : 0x3f2a14 });
+    // De grond ligt in de diepte iets achter de wand (polygonOffset met helling), zodat de wand wint waar de grond er
+    // precies tegenaan ligt. De wand zelf schuift alleen een vaste kleine stap terug (geen helling: anders steken de
+    // lijven bij een scherende blik door het snijvlak), zodat de randlijnen erop zichtbaar blijven.
+    const solid = { polygonOffset: true, polygonOffsetFactor: 0, polygonOffsetUnits: 1 };
+    const steel = sheet ? new THREE.MeshStandardMaterial({ color: 0x6b7581, roughness: 0.5, metalness: 0.35, ...solid }) : new THREE.MeshStandardMaterial({ color: 0x8a6239, roughness: 0.9, ...solid }), edge = new THREE.LineBasicMaterial({ color: sheet ? 0x1f2937 : 0x3f2a14 });
     const wallHeight = s.wallTopNap - s.toeNap;
-    // De planken: de echte omtrek uit de plattegrond, geëxtrudeerd over de hoogte van de wand; de sloten donkerder.
-    const lockMaterial = new THREE.MeshStandardMaterial({ color: 0x374151, roughness: 0.5, metalness: 0.5 });
+    // De planken: de echte gesloten omtrek uit de plattegrond (met de sloten als die erin zitten), als één prisma
+    // over de hoogte van de wand, met vloeiende normalen in de rondingen en een randlijn alleen op de kop.
+    // Schematische sloten (blokjes) alleen als de contour ze niet bevat; die zijn donkerder.
+    const lockMaterial = new THREE.MeshStandardMaterial({ color: 0x404b59, roughness: 0.5, metalness: 0.35, ...solid });
     for (const o of s.outlines) {
-      const shape = new THREE.Shape(o.points.map((q) => new THREE.Vector2(q.x, q.a - s.frontM)));
-      const geometry = new THREE.ExtrudeGeometry(shape, { depth: wallHeight, bevelEnabled: false });
-      geometry.rotateX(-Math.PI / 2); geometry.translate(0, y(s.toeNap), 0);
-      scene.add(new THREE.Mesh(geometry, o.kind === "lock" ? lockMaterial : steel));
-      scene.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 30), edge));
+      const outline = plan(o.points);
+      scene.add(new THREE.Mesh(prismGeometry(outline, y(s.toeNap), y(s.wallTopNap), 35), o.kind === "lock" ? lockMaterial : steel));
+      scene.add(outlineLines(outline, y(s.wallTopNap), edge));
     }
     // Palen met schotten: de palen tot de teen, de schotten aan de hoge zijde tot hun onderkant.
     const body = (geometry: THREE.BufferGeometry, at: THREE.Vector3) => {
@@ -104,24 +158,40 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
       const total = s.wallTopNap - s.boards.bottomNap, count = Math.max(1, Math.round(total / 0.2)), h = total / count;
       for (let n = 0; n < count; n++) body(new THREE.BoxGeometry(s.boards.thicknessM, h - 0.006, s.lengthM + s.frontM), new THREE.Vector3(-s.wallHeightM / 2 - s.boards.thicknessM / 2, y(s.wallTopNap - (n + 0.5) * h), (s.frontM - s.lengthM) / 2));
     }
-    if (s.waling) body(new THREE.BoxGeometry(s.waling.sizeM / 2, s.waling.sizeM, s.lengthM + s.frontM), new THREE.Vector3(s.wallHeightM / 2 + s.waling.sizeM / 4, y(s.waling.levelNap), (s.frontM - s.lengthM) / 2));
     label(s.profileName, new THREE.Vector3(0, y(s.wallTopNap) + 0.05 * size, s.frontM), ink, "left");
 
-    // Ankers of stempels op hun hart-op-hartafstand.
+    // Gording en ankers. De gording ligt horizontaal aan de lage zijde tegen de toppen van de golf (de buitenste
+    // punten van de wand aan die zijde) en volgt de golf niet; bij een stalen damwand ook zonder aparte gording in de
+    // invoer, als drager van de ankerkop. Het anker vertrekt uit het hart van de gording onder de ingestelde hoek.
     const rod = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.6 });
     const groutMaterial = new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.9 });
+    const crestLow = s.outlines.length ? Math.max(...s.faceLow.map((q) => q.x)) : s.wallHeightM / 2;
+    const faceHighX = s.outlines.length ? Math.min(...s.faceHigh.map((q) => q.x)) : -s.wallHeightM / 2;
+    const waling = s.waling ?? (sheet && s.support ? { levelNap: s.support.levelNap, sizeM: 0.2 } : null);
+    const walingDepth = waling ? waling.sizeM / 2 : 0;
+    if (waling) {
+      const geometry = new THREE.BoxGeometry(walingDepth, waling.sizeM, s.lengthM + s.frontM), at = new THREE.Vector3(crestLow + walingDepth / 2, y(waling.levelNap), (s.frontM - s.lengthM) / 2);
+      const mesh = new THREE.Mesh(geometry, sheet ? rod : steel); mesh.position.copy(at); scene.add(mesh);
+      const outline = new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 30), sheet ? new THREE.LineBasicMaterial({ color: 0x7c2d12 }) : edge); outline.position.copy(at); scene.add(outline);
+    }
     if (s.support) for (const along of s.anchors) {
-      const sup = s.support, angle = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, free = strut ? hw : sup.freeM;
-      const at = (length: number) => new THREE.Vector3(dir * (s.wallHeightM / 2 + length * Math.cos(angle)), y(sup.levelNap) - length * Math.sin(angle), -along);
+      const sup = s.support, angle = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, cos = Math.cos(angle), sin = Math.sin(angle);
+      // Hartlijn van het anker door het hart van de gording (of de kop van de paal) op het ankerniveau.
+      const ox = crestLow + walingDepth / 2, oy = y(sup.levelNap), z = -along;
+      const at = (length: number) => new THREE.Vector3(ox + dir * length * cos, oy - length * sin, z);
       const rodBetween = (from: THREE.Vector3, to: THREE.Vector3, radius: number, material: THREE.Material) => {
         const bar = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, from.distanceTo(to), 14), material);
         bar.position.copy(from.clone().add(to).multiplyScalar(0.5));
         bar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize());
         scene.add(bar);
       };
-      rodBetween(at(0), at(free), Math.max(0.012 * size, 0.02), rod);
-      if (sup.groutM > 0) rodBetween(at(free), at(free + sup.groutM), Math.max(sup.groutDiameterM / 2, 0.02 * size), groutMaterial);
-      const plateHead = new THREE.Mesh(new THREE.BoxGeometry(0.02 * size, 0.06 * size, 0.06 * size), rod); plateHead.position.set(-dir * (s.wallHeightM / 2 + 0.01 * size), y(sup.levelNap), -along); scene.add(plateHead);
+      // Begin aan de voorkant van de gording; de vrije lengte telt vanaf de kant van de wand waar het anker uitkomt.
+      const start = strut ? walingDepth / 2 : -(walingDepth / 2 + 0.01 * size) / cos;
+      const end = strut ? (s.wallHeightM / 2 + hw - ox) / cos : (ox - faceHighX) / cos + sup.freeM;
+      rodBetween(at(start), at(end), Math.max(0.012 * size, 0.02), rod);
+      if (sup.groutM > 0) rodBetween(at(end), at(end + sup.groutM), Math.max(sup.groutDiameterM / 2, 0.02 * size), groutMaterial);
+      // Ankerplaat met moer tegen de voorkant van de gording (bij palen zonder gording tegen de paal).
+      if (!strut) { const plateHead = new THREE.Mesh(new THREE.BoxGeometry(0.012 * size, 0.045 * size, 0.045 * size), rod); plateHead.position.set(crestLow + walingDepth + 0.006 * size, oy + (walingDepth / 2 + 0.006 * size) * Math.tan(angle), z); scene.add(plateHead); }
     }
     // Actief glijvlak op het snijvlak, gestippeld.
     if (s.slip) {
