@@ -17,7 +17,10 @@ describe("één fase met één steunpunt: uitkomsten gelijk aan de versie zonder
     cant: [450.218423241, 181.654812095, 0.0828678388889, null, 0.415416044776, 0.88921766044, 5],
     plank: [2.98542550222, -3.85744389785, 0.0167530101376, null, 0.325203999691, 0.638466576057, 4],
     posts: [3.00333696749, -3.86633585041, 0.00796077263824, null, 0.145728368985, 0.554238947606, 6],
-    rigid: [-91.8465533202, -101.597304539, -0.00148324075216, 96.7135760421, 0.501325896174, 0.577457852436, 5],
+    // Starre steun: de grootste dwarskracht was −101,6 kN/m, een piek binnen de band van 4 cm waarover de steun is
+    // uitgesmeerd, groter dan de steunkracht zelf (96,7 kN/m). Binnen de band geldt nu de sprong van boven naar onder;
+    // de grootste dwarskracht ligt dan net onder de steun. De overige uitkomsten zijn gelijk gebleven.
+    rigid: [-91.8465533202, 64.9127253730, -0.00148324075216, 96.7135760421, 0.501325896174, 0.577457852436, 5],
   };
   const base = wallExample();
   const inputs: Record<string, WallInput> = {

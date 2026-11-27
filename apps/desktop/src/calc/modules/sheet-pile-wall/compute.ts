@@ -140,6 +140,10 @@ export interface WallPhase {
   remove?: string[];
   /** Belastingen op afstand (id) die in deze fase werken; leeg = als de vorige fase (de eerste: alle). */
   loadIds?: string[];
+  /** Maaiveld aan de hoge zijde (aanvullen, ophogen) en het maaiveldprofiel per zijde in deze fase. */
+  groundHighNap?: number;
+  profileHigh?: SurfacePoint[];
+  profileLow?: SurfacePoint[];
 }
 
 export interface WallFactors {
@@ -401,6 +405,9 @@ export interface ResolvedPhase {
   installed: string[];
   /** Belastingen op afstand die in deze fase werken. */
   loadIds: string[];
+  groundHighNap: number;
+  profileHigh: SurfacePoint[];
+  profileLow: SurfacePoint[];
 }
 
 /** Belastingen op afstand met hun id ("B1", "B2", …). */
@@ -409,11 +416,13 @@ export const wallLoads = (i: WallInput): SurfaceLoad[] => (i.loads ?? []).map((l
 /** Fasen met de geërfde waarden; zonder fasen één fase met alle steunpunten. */
 export function resolvePhases(i: WallInput): ResolvedPhase[] {
   const all = wallSupports(i), loads = wallLoads(i).map((l) => l.id!);
-  if (!i.phases?.length) return [{ index: 0, name: "", excavationNap: i.excavationNap, waterHighNap: i.waterHighNap, waterLowNap: i.waterLowNap, surchargeKpa: i.surchargeKpa, supports: all, installed: all.map((a) => a.id!), loadIds: loads }];
-  let prev = { excavationNap: i.excavationNap, waterHighNap: i.waterHighNap, waterLowNap: i.waterLowNap, surchargeKpa: i.surchargeKpa }, loadIds = loads;
+  const first = { excavationNap: i.excavationNap, waterHighNap: i.waterHighNap, waterLowNap: i.waterLowNap, surchargeKpa: i.surchargeKpa, groundHighNap: i.groundHighNap, profileHigh: i.profileHigh ?? [], profileLow: i.profileLow ?? [] };
+  if (!i.phases?.length) return [{ index: 0, name: "", ...first, supports: all, installed: all.map((a) => a.id!), loadIds: loads }];
+  let prev = first, loadIds = loads;
   const active = new Set<string>();
   return i.phases.map((ph, index) => {
-    const cur = { excavationNap: ph.excavationNap ?? prev.excavationNap, waterHighNap: ph.waterHighNap ?? prev.waterHighNap, waterLowNap: ph.waterLowNap ?? prev.waterLowNap, surchargeKpa: ph.surchargeKpa ?? prev.surchargeKpa };
+    const cur = { excavationNap: ph.excavationNap ?? prev.excavationNap, waterHighNap: ph.waterHighNap ?? prev.waterHighNap, waterLowNap: ph.waterLowNap ?? prev.waterLowNap, surchargeKpa: ph.surchargeKpa ?? prev.surchargeKpa,
+      groundHighNap: ph.groundHighNap ?? prev.groundHighNap, profileHigh: ph.profileHigh ?? prev.profileHigh, profileLow: ph.profileLow ?? prev.profileLow };
     for (const id of ph.remove ?? []) active.delete(id);
     const installed = (ph.install ?? []).filter((id) => all.some((a) => a.id === id) && !active.has(id));
     for (const id of installed) active.add(id);
@@ -424,7 +433,7 @@ export function resolvePhases(i: WallInput): ResolvedPhase[] {
 }
 
 /** De invoer zoals die in één fase geldt: niveau lage zijde, waterstanden en bovenbelasting van die fase. */
-export const phaseInput = (i: WallInput, ph: ResolvedPhase): WallInput => ({ ...i, excavationNap: ph.excavationNap, waterHighNap: ph.waterHighNap, waterLowNap: ph.waterLowNap, surchargeKpa: ph.surchargeKpa, loads: wallLoads(i).filter((l) => ph.loadIds.includes(l.id!)) });
+export const phaseInput = (i: WallInput, ph: ResolvedPhase): WallInput => ({ ...i, excavationNap: ph.excavationNap, waterHighNap: ph.waterHighNap, waterLowNap: ph.waterLowNap, surchargeKpa: ph.surchargeKpa, groundHighNap: ph.groundHighNap, profileHigh: ph.profileHigh, profileLow: ph.profileLow, loads: wallLoads(i).filter((l) => ph.loadIds.includes(l.id!)) });
 
 // ─── Scenario: de invoer na het toepassen van de factoren ─────────
 
@@ -607,21 +616,30 @@ export interface WallRun {
 
 /** Diepte van het midden van de band waarover een steun in het liggermodel is uitgesmeerd [m vanaf de kop]. */
 const bandCentre = (i: WallInput, levelNap: number) => Math.max(ANCHOR_BAND_M / 2, Math.min(i.wallTopNap - i.toeNap - ANCHOR_BAND_M / 2, i.wallTopNap - levelNap));
+/**
+ * Breedte van de band [m]. Een uitgesmeerde veer houdt de wand ook tegen draaien, met k·b²/12; bij een stijve steun op een
+ * slappe wand (een lichte beschoeiing met een vrijwel star anker) is dat niet meer klein. De band wordt dan smaller, tot die
+ * draaistijfheid hooguit 2 % van EI per meter is: b = √(0,24·EI / k), niet breder dan 4 cm en niet smaller dan 2 mm.
+ */
+const bandWidth = (sup: WallAnchor, eiKnM2?: number) => (eiKnM2 ? Math.max(0.002, Math.min(ANCHOR_BAND_M, Math.sqrt((0.24 * eiKnM2) / supportStiffness(sup)))) : ANCHOR_BAND_M);
 
 /** Elementindeling van de wand: dezelfde voor alle fasen van één berekening, zodat elke fase op de vorige aansluit. */
-export function mesh(i: WallInput, scenarios: Scenario[], supports: WallAnchor[] = wallSupports(i)): number[] {
+export function mesh(i: WallInput, scenarios: Scenario[], supports: WallAnchor[] = wallSupports(i), eiKnM2?: number): number[] {
   const length = i.wallTopNap - i.toeNap, z = (nap: number) => i.wallTopNap - nap;
   const cuts: number[] = [0, length];
   const add = (v: number) => { if (v > 0 && v < length && cuts.every((c) => Math.abs(c - v) >= 0.01)) cuts.push(v); };
+  // De banden van de steunpunten eerst, met hun eigen breedte; een smalle band in vier stukken.
+  const fine: Array<{ a: number; b: number; step: number }> = [];
   for (const sup of supports) {
-    const a = bandCentre(i, sup.levelNap);
-    add(a - ANCHOR_BAND_M / 2); add(a + ANCHOR_BAND_M / 2);
+    const a = bandCentre(i, sup.levelNap), w = bandWidth(sup, eiKnM2);
+    for (const v of [a - w / 2, a + w / 2]) if (v > 0 && v < length && cuts.every((c) => Math.abs(c - v) >= 1e-6)) cuts.push(v);
+    if (w < ANCHOR_BAND_M) fine.push({ a: a - w / 2, b: a + w / 2, step: w / 4 });
   }
   for (const s of scenarios) for (const nap of [...(i.construction === "posts" ? [i.posts.boardBottomNap] : []), s.high.surfaceNap, s.low.surfaceNap, s.high.waterNap, s.low.waterNap, ...s.high.layers.map((l) => l.topNap), ...s.low.layers.map((l) => l.topNap)]) add(z(nap));
   cuts.sort((a, b) => a - b);
   const step = Math.max(0.02, length / 140), out = [0];
   for (let k = 1; k < cuts.length; k++) {
-    const len = cuts[k] - cuts[k - 1], parts = Math.max(1, Math.ceil(len / step - 1e-9));
+    const len = cuts[k] - cuts[k - 1], mid = (cuts[k] + cuts[k - 1]) / 2, own = fine.find((x) => mid > x.a && mid < x.b)?.step ?? step, parts = Math.max(1, Math.ceil(len / Math.min(step, own) - 1e-9));
     for (let j = 1; j <= parts; j++) out.push(j === parts ? cuts[k] : cuts[k - 1] + (len * j) / parts);
   }
   return out;
@@ -661,9 +679,9 @@ export interface SupportForce { id: string; levelNap: number; horizontalKn: numb
  */
 export function runSpringModel(i: WallInput, s: Scenario, eiKnM2: number, opts: { supports?: ActiveSupport[]; previous?: RunState; zs?: number[] } = {}): WallRun {
   const active = opts.supports ?? wallSupports(i).map((support) => ({ support, installYM: 0 }));
-  const zs = opts.zs ?? mesh(i, [s], active.map((a) => a.support)), length = i.wallTopNap - i.toeNap, nap = (z: number) => i.wallTopNap - z;
+  const zs = opts.zs ?? mesh(i, [s], active.map((a) => a.support), eiKnM2), length = i.wallTopNap - i.toeNap, nap = (z: number) => i.wallTopNap - z;
   const prev = opts.previous && opts.previous.zs.length === zs.length ? opts.previous : undefined;
-  const bands = active.map((a) => ({ ...a, z: bandCentre(i, a.support.levelNap), kh: supportStiffness(a.support), preload: supportPreload(a.support) }));
+  const bands = active.map((a) => ({ ...a, z: bandCentre(i, a.support.levelNap), w: bandWidth(a.support, eiKnM2), kh: supportStiffness(a.support), preload: supportPreload(a.support) }));
   const points = zs.slice(0, -1).map((a, k) => { const mid = nap((a + zs[k + 1]) / 2); return { high: sidePoint(s.high, mid), low: sidePoint(s.low, mid), w: widthFactors(i, mid) }; });
   // Een veer die er al was begint op de stand van de vorige fase; nieuwe grond begint neutraal op de vervormde wand.
   const continued = (spring: SideSpring | null, point: SidePoint, w: { soil: number }, before: { p: number; sv: number } | null | undefined, wPrev: number): SideSpring | null => {
@@ -672,14 +690,14 @@ export function runSpringModel(i: WallInput, s: Scenario, eiKnM2: number, opts: 
     const p0 = Math.max(spring.pa, Math.min(spring.pp, before.p + w.soil * point.soil.layer.coef.k0 * (point.sigmaVEff - before.sv)));
     return { ...spring, p0, w0: wPrev };
   };
-  const inBandOf = (mid: number) => bands.filter((x) => mid > x.z - ANCHOR_BAND_M / 2 && mid < x.z + ANCHOR_BAND_M / 2);
+  const inBandOf = (mid: number) => bands.filter((x) => mid > x.z - x.w / 2 && mid < x.z + x.w / 2);
   const elements: WallElement[] = zs.slice(0, -1).map((a, k) => {
     const b = zs[k + 1], p = points[k], inBand = inBandOf((a + b) / 2), yPrev = prev ? prev.yM[k] : 0;
     return {
       topM: a, bottomM: b, left: continued(narrowed(p.high.soil, p.w), p.high, p.w, prev?.high[k], -yPrev), right: continued(narrowed(p.low.soil, p.w), p.low, p.w, prev?.low[k], yPrev), loadKpa: (p.high.u - p.low.u) * p.w.soil,
-      supportKnM2: inBand.reduce((sum, x) => sum + x.kh, 0) / ANCHOR_BAND_M,
+      supportKnM2: inBand.reduce((sum, x) => sum + x.kh / x.w, 0),
       // Kracht = k·(y − y_aangebracht) + voorspanning, als lijnlast geschreven: k·y + (voorspanning − k·y_aangebracht).
-      supportPreloadKnM: inBand.reduce((sum, x) => sum + x.preload - x.kh * x.installYM, 0) / ANCHOR_BAND_M,
+      supportPreloadKnM: inBand.reduce((sum, x) => sum + (x.preload - x.kh * x.installYM) / x.w, 0),
     };
   });
   const solved = solveSpringWall({ lengthM: length, eiKnM2, elements });
@@ -691,10 +709,18 @@ export function runSpringModel(i: WallInput, s: Scenario, eiKnM2: number, opts: 
       spring && res ? { pressureKpa: res.pressureKpa, activeKpa: spring.pa, passiveKpa: spring.pp, neutralKpa: spring.p0, state: res.state } : null;
     const low = side(e.right, r.right);
     if (low) { mobilised += low.pressureKpa * l; max += low.passiveKpa * l; }
-    bands.forEach((x, j) => { if (mid > x.z - ANCHOR_BAND_M / 2 && mid < x.z + ANCHOR_BAND_M / 2) { forces[j].h += ((x.kh * r.yM + x.preload - x.kh * x.installYM) / ANCHOR_BAND_M) * l; forces[j].y += (r.yM * l) / ANCHOR_BAND_M; } });
+    bands.forEach((x, j) => { if (mid > x.z - x.w / 2 && mid < x.z + x.w / 2) { forces[j].h += ((x.kh * r.yM + x.preload - x.kh * x.installYM) / x.w) * l; forces[j].y += (r.yM * l) / x.w; } });
     return { topNap: nap(e.topM), bottomNap: nap(e.bottomM), yM: r.yM, uHighKpa: p.high.u * p.w.soil, uLowKpa: p.low.u * p.w.soil, high: side(e.left, r.left), low, mobilisation: low && low.passiveKpa > 0 ? low.pressureKpa / low.passiveKpa : null };
   });
-  const samples: RunSample[] = solved.beam.samples.map((p) => ({ nap: nap(p.zM), yM: p.yM, momentKnM: p.momentKnM, shearKn: p.shearKn }));
+  // Binnen de band van een steun is de dwarskracht die van de uitgesmeerde veer; daar geldt de sprong van boven naar onder,
+  // lineair over de band (anders kan een smalle, stijve band een piek geven die er bij een puntveer niet is).
+  const raw = solved.beam.samples;
+  const samples: RunSample[] = raw.map((p) => {
+    const band = bands.find((x) => p.zM > x.z - x.w / 2 + 1e-12 && p.zM < x.z + x.w / 2 - 1e-12);
+    if (!band) return { nap: nap(p.zM), yM: p.yM, momentKnM: p.momentKnM, shearKn: p.shearKn };
+    const edge = (zM: number) => raw.reduce((b, q) => (Math.abs(q.zM - zM) < Math.abs(b.zM - zM) ? q : b)).shearKn, a = band.z - band.w / 2, t = (p.zM - a) / band.w;
+    return { nap: nap(p.zM), yM: p.yM, momentKnM: p.momentKnM, shearKn: edge(a) + t * (edge(band.z + band.w / 2) - edge(a)) };
+  });
   const peak = (value: (p: RunSample) => number) => samples.reduce((best, p) => (Math.abs(value(p)) > Math.abs(best.value) ? { value: value(p), nap: p.nap } : best), { value: 0, nap: i.wallTopNap });
   const supports: SupportForce[] = bands.map((x, j) => {
     const angle = rad(anchorAngle(x.support)), cos = Math.cos(angle), h = forces[j].h;
@@ -728,7 +754,7 @@ export interface PhaseRun { phase: ResolvedPhase; scenario: Scenario; run: WallR
 export function runPhases(i: WallInput, phases: ResolvedPhase[], f: WallFactors, eiKnM2: number, scenarioOf: (ph: ResolvedPhase) => Scenario = (ph) => buildScenario(phaseInput(i, ph), f, ph.supports.map((a) => a.levelNap))): PhaseRun[] {
   const scenarios = phases.map(scenarioOf);
   const all = wallSupports(i).filter((a) => phases.some((ph) => ph.supports.some((b) => b.id === a.id)));
-  const zs = mesh(i, scenarios, all);
+  const zs = mesh(i, scenarios, all, eiKnM2);
   let previous: RunState | undefined;
   return phases.map((ph, k) => {
     const supports = ph.supports.map((support) => {
@@ -925,7 +951,7 @@ function validate(i: WallInput): string | null {
     if (!layers.length) return t("errors.noLayers", "Voer minstens één grondlaag in.");
     for (const [k, l] of layers.entries()) {
       const name = l.name || String(k + 1);
-      if (![l.topNap, l.gamma, l.gammaSat, l.phi, l.c, l.delta, l.cu, l.kh].every(Number.isFinite) || l.gamma <= 0 || l.gammaSat <= 0 || l.phi < 0 || l.phi >= 50 || l.c < 0 || l.delta < 0 || l.cu < 0)
+      if (![l.topNap, l.gamma, l.gammaSat, l.phi, l.c, l.delta, l.cu, l.kh].every(Number.isFinite) || l.gamma <= 0 || l.gammaSat <= 0 || l.phi < 0 || l.phi >= 50 || l.c < 0 || (l.delta < 0 && l.delta <= -l.phi) || l.cu < 0)
         return t("errors.layer", "Laag {{name}}: controleer het volumegewicht, φ′, c′, δ en cu.", { name });
       if (l.undrained && l.cu <= 0) return t("errors.cu", "Laag {{name}} is ongedraineerd maar heeft geen cu.", { name });
       if (!l.undrained && l.phi <= 0) return t("errors.phi", "Laag {{name}}: een gedraineerde laag heeft een φ′ groter dan 0.", { name });
@@ -937,7 +963,7 @@ function validate(i: WallInput): string | null {
   const phases = resolvePhases(i);
   for (const ph of phases) {
     if (![ph.excavationNap, ph.waterHighNap, ph.waterLowNap, ph.surchargeKpa].every(Number.isFinite) || ph.surchargeKpa < 0) return t("stage.errors.phase", "Fase {{name}}: vul de niveaus en de belasting in.", { name: ph.name });
-    if (ph.excavationNap >= i.groundHighNap || ph.excavationNap <= i.toeNap) return t("stage.errors.phaseLevel", "Fase {{name}}: het niveau aan de lage zijde ligt onder het maaiveld van de hoge zijde en boven de teen.", { name: ph.name });
+    if (ph.excavationNap >= ph.groundHighNap || ph.excavationNap <= i.toeNap || ph.groundHighNap > i.wallTopNap + 1e-9) return t("stage.errors.phaseLevel", "Fase {{name}}: het niveau aan de lage zijde ligt onder het maaiveld van de hoge zijde en boven de teen.", { name: ph.name });
   }
   for (const a of wallSupports(i)) {
     const g = a.grout!;

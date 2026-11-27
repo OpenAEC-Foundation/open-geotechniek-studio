@@ -51,7 +51,8 @@ export interface PressureCoefficients {
  * δ ≤ φ'/3 en anders met het gekromde (keuze "auto", de regel van CUR 166), of met de opgegeven methode.
  */
 export function coefficients(phiDeg: number, deltaDeg: number, method: PassiveMethod): PressureCoefficients {
-  const delta = Math.max(0, Math.min(deltaDeg, phiDeg));
+  // Een negatieve wandwrijving (de grond beweegt langs de wand de andere kant op) mag, tot −φ′.
+  const delta = Math.max(-0.999 * phiDeg, Math.min(deltaDeg, phiDeg));
   const ka = kaStraight(phiDeg, delta);
   const curved = method === "curved" || (method === "auto" && delta > phiDeg / 3 + 1e-9);
   if (curved) {
