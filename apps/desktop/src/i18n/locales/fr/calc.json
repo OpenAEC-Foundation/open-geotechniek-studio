@@ -108,6 +108,12 @@
       "subtitle": "Nombre de coups attendu d'après l'essai CPT, à côté du nombre compté",
       "norm": "Règle empirique N = intervalle · D² · qc / E",
       "visualLabel": "Nombre de coups"
+    },
+    "sheet-pile-wall": {
+      "name": "Rideau de palplanches et protection de berge",
+      "subtitle": "Palplanches en acier ou protection de berge en bois, plastique ou béton : modèle à ressorts, Blum en contrôle, vérification de la section et de la fiche",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Coupe"
     }
   }
 }

@@ -108,6 +108,12 @@
       "subtitle": "Förväntat antal slag från sonderingen, bredvid det räknade",
       "norm": "Tumregel N = intervall · D² · qc / E",
       "visualLabel": "Antal slag"
+    },
+    "sheet-pile-wall": {
+      "name": "Spont och strandskoning",
+      "subtitle": "Stålspont eller strandskoning av trä, plast eller betong: fjädermodell, Blum som kontroll, kontroll av tvärsnitt och nedslagningsdjup",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Tvärsnitt"
     }
   }
 }

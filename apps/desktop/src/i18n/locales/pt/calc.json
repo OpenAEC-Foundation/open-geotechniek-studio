@@ -108,6 +108,12 @@
       "subtitle": "Pancadas esperadas a partir do ensaio CPT, ao lado das contadas",
       "norm": "Regra empírica N = tramo · D² · qc / E",
       "visualLabel": "Pancadas"
+    },
+    "sheet-pile-wall": {
+      "name": "Cortina de estacas-prancha e proteção de margem",
+      "subtitle": "Estacas-prancha de aço ou proteção de margem em madeira, plástico ou betão: modelo de molas, Blum como controlo, verificação da secção e da ficha",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Secção"
     }
   }
 }

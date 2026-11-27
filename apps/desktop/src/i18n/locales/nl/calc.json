@@ -108,6 +108,12 @@
       "subtitle": "Verwachte kalender uit de sondering, naast de getelde",
       "norm": "Vuistregel N = tocht · D² · qc / E",
       "visualLabel": "Kalender"
+    },
+    "sheet-pile-wall": {
+      "name": "Damwand en beschoeiing",
+      "subtitle": "Stalen damwand of beschoeiing van hout, kunststof of beton: verenmodel, Blum als controle, toets van doorsnede en inheidiepte",
+      "norm": "NEN 9997-1 met CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Doorsnede"
     }
   }
 }
