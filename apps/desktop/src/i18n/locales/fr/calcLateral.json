@@ -335,7 +335,9 @@
       "strainMethod": "M_Rd pour N_Ed à partir du diagramme des déformations : parabole-rectangle, raccourcissement du béton 3,5 ‰, traction du béton négligée.",
       "tubeClassIs": "Classe de section {{cls}}.",
       "tubeIgnored": "Selon la saisie, le tube ne participe pas : le noyau en béton avec ses armatures est vérifié, sans le tube.",
-      "tubeYield": "f_y est la valeur de calcul saisie f_yd de l'acier du tube multipliée par γ_M0 = 1,0 ; l'épaisseur de paroi est l'épaisseur résiduelle saisie."
+      "tubeYield": "f_y est la valeur de calcul saisie f_yd de l'acier du tube multipliée par γ_M0 = 1,0 ; l'épaisseur de paroi est l'épaisseur résiduelle saisie.",
+      "corrosionTube": "Vérifié avec la section après corrosion, y compris la classe et D/t. {{stiffness}}",
+      "corrosionSheet": "Vérifié avec le profil après corrosion ({{basis}}), avec la classe à l'épaisseur de semelle réduite. {{stiffness}}"
     },
     "notesTitle": "Hypothèses de la vérification",
     "rows": {
@@ -359,7 +361,8 @@
       "shearS": "Effort tranchant avec étriers",
       "shearSpacing": "Espacement maximal des étriers",
       "sheetClass": "Classe de section",
-      "tubeClass": "Classe de section et voilement local"
+      "tubeClass": "Classe de section et voilement local",
+      "corrosion": "Corrosion"
     },
     "status": {
       "fail": "ne satisfait pas",
@@ -691,5 +694,32 @@
     "variantName": "Opt. {{n}}",
     "walls": "Paroi [mm]",
     "widthFollows": "Largeur active des ressorts de sol = largeur du pieu"
+  },
+  "corrosion": {
+    "title": "Corrosion",
+    "reducedStiffness": "EI après corrosion",
+    "classChoice": "Classe après corrosion",
+    "classAuto": "D'après le catalogue (en cas de doute la plus défavorable)",
+    "classN": "Classe {{cls}}",
+    "side1": "face 1",
+    "side2": "face 2",
+    "outer": "face extérieure",
+    "inner": "face intérieure",
+    "side1Label": "Face 1",
+    "side2Label": "Face 2",
+    "outerLabel": "Face extérieure",
+    "innerLabel": "Face intérieure",
+    "sides": "Attaqué",
+    "oneSide": "1 face",
+    "twoSides": "2 faces",
+    "oneTube": "1 face (extérieur)",
+    "twoTube": "2 faces (extérieur et intérieur)",
+    "eiReduced": "Le pieu est calculé avec l'EI après corrosion.",
+    "eiOriginal": "Le pieu est calculé avec l'EI sans corrosion.",
+    "basisContour": "d'après le contour exact",
+    "basisApprox": "approximation avec les épaisseurs",
+    "tubeSummary": "Après corrosion : D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Après corrosion : t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "En cas de corrosion, saisissez l'épaisseur nominale. Perte d'épaisseur par face ; les valeurs tabulées sont les valeurs recommandées de NEN-EN 1993-5 tableaux 4-1 et 4-2 et n'ont pas été vérifiées par rapport au texte de la norme ou à l'annexe néerlandaise. La corrosion intervient dans la vérification du matériau et la vérification N–M, y compris la classe et D/t ; dans la répartition des efforts seulement avec la case cochée. Un tube rempli ne se corrode qu'à l'extérieur."
   }
 }

@@ -115,5 +115,44 @@
       "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
       "visualLabel": "Cross-section"
     }
+  },
+  "corrosion": {
+    "sourceNone": "No corrosion",
+    "sourceTable": "According to NEN-EN 1993-5 table 4-1 / 4-2",
+    "sourceCustom": "Own value",
+    "environment": "Environment",
+    "table41": "Table 4-1: in soil",
+    "table42": "Table 4-2: in water",
+    "life": "Design working life",
+    "years": "years",
+    "loss": "Thickness loss",
+    "noValue": "no table value: choose an own value",
+    "verification": "Verification",
+    "verificationOk": "correct",
+    "vCase": "Case",
+    "vInput": "Input",
+    "vQuantity": "Quantity",
+    "vExpected": "Expected",
+    "vModule": "Module",
+    "vDiff": "Difference",
+    "env": {
+      "soil-undisturbed": "Undisturbed natural soil (sand, silt, clay)",
+      "soil-polluted": "Polluted natural soil and industrial sites",
+      "soil-aggressive": "Aggressive natural soil (swamp, peat)",
+      "fill-loose": "Fill, not compacted, non-aggressive",
+      "fill-compacted": "Fill, compacted, non-aggressive",
+      "fill-aggressive-loose": "Fill, not compacted, aggressive (ash, slag)",
+      "fill-aggressive-compacted": "Fill, compacted, aggressive (ash, slag)",
+      "fresh-water": "Fresh water (river, canal), zone of high attack (water line)",
+      "fresh-water-polluted": "Very polluted fresh water, zone of high attack (water line)",
+      "sea-splash": "Sea water, temperate climate, zone of high attack (low water and splash zone)",
+      "sea-immersion": "Sea water, temperate climate, permanent immersion or intertidal zone"
+    },
+    "errors": {
+      "missing": "Corrosion {{where}}: the table has no value for this choice. Enter an own thickness loss.",
+      "negative": "The thickness loss due to corrosion cannot be negative.",
+      "noThickness": "The library gives no flange and web thickness for this profile; the corrosion cannot be applied.",
+      "tooLarge": "The thickness loss ({{loss}} mm) is almost the whole plate thickness ({{t}} mm): the section can no longer be checked."
+    }
   }
 }

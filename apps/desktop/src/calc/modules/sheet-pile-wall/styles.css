@@ -18,6 +18,8 @@
 .sw-detail-axis { stroke: var(--oa-text-secondary, #666); stroke-width: .5; stroke-dasharray: 8 2 2 2; }
 .sw-detail-dim { fill: none; stroke: var(--oa-text-secondary, #666); stroke-width: .6; }
 .sw-detail .sw-detail-note { font-style: italic; font-size: 8px; }
+.sw-detail-orig { fill: none; stroke: #b45309; stroke-width: .6; stroke-dasharray: 2 1.5; }
+.sw-detail .sw-detail-side { fill: #b45309; font-size: 8px; }
 
 .sw-visual { display: flex; flex-direction: column; gap: 6px; padding: 8px; height: 100%; }
 .sw-tabs { display: flex; gap: 4px; align-items: center; }

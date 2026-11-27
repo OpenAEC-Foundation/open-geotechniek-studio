@@ -192,7 +192,7 @@ export function contourSectionProperties(p: ProfileLike, options: { exact?: bool
 }
 
 /** De omtrekken van één herhalende strook wand: de getekende strook, of twee schematische planken met hun sloten. */
-function sectionPolygons(p: ProfileLike, options: { exact?: boolean }): { polygons: Pt[][]; widthMm: number } {
+export function sectionPolygons(p: ProfileLike, options: { exact?: boolean }): { polygons: Pt[][]; widthMm: number } {
   const drawing = options.exact === false ? undefined : drawingContour(p);
   if (drawing) return { polygons: drawing.planks.map(toPts), widthMm: drawing.pitchMm };
   const c = sheetContour(p, 2, { exact: false });
@@ -217,7 +217,17 @@ function clipMoment(poly: Pt[], y0: number, above: boolean): { area: number; mom
  * uiterste vezel, en plastisch W_pl = S_boven + S_onder om de plastische neutrale lijn (gelijke oppervlakken).
  */
 export function contourModuli(p: ProfileLike, options: { exact?: boolean } = {}): { welCm3PerM: number; wplCm3PerM: number; neutralAxisMm: number; plasticAxisMm: number } {
-  const { polygons, widthMm } = sectionPolygons(p, options), width = widthMm / 1000;
+  const { polygons, widthMm } = sectionPolygons(p, options), m = polygonModuli(polygons, widthMm);
+  return { welCm3PerM: m.welCm3PerM, wplCm3PerM: m.wplCm3PerM, neutralAxisMm: m.neutralAxisMm, plasticAxisMm: m.plasticAxisMm };
+}
+
+/**
+ * Doorsnedegrootheden per m wand van gesloten omtrekken over een strook van `widthMm`: A, I om de eigen zwaartelijn,
+ * W_el = I / e en W_pl om de plastische neutrale lijn. Ook voor omtrekken die niet uit de bibliotheek komen, zoals een
+ * contour na afroesting.
+ */
+export function polygonModuli(polygons: Pt[][], widthMm: number): { areaCm2PerM: number; iCm4PerM: number; welCm3PerM: number; wplCm3PerM: number; neutralAxisMm: number; plasticAxisMm: number; extremeMm: number } {
+  const width = widthMm / 1000;
   let area = 0, first = 0, second = 0;
   for (const poly of polygons) {
     let a = 0, s = 0, i = 0;
@@ -228,5 +238,5 @@ export function contourModuli(p: ProfileLike, options: { exact?: boolean } = {})
   let lo = Math.min(...ys), hi = Math.max(...ys);
   for (let k = 0; k < 80; k++) { const mid = (lo + hi) / 2, up = polygons.reduce((s, poly) => s + clipMoment(poly, mid, true).area, 0); if (up > area / 2) lo = mid; else hi = mid; }
   const yp = (lo + hi) / 2, plastic = polygons.reduce((s, poly) => s + clipMoment(poly, yp, true).moment + clipMoment(poly, yp, false).moment, 0);
-  return { welCm3PerM: inertia / e / 1e3 / width, wplCm3PerM: plastic / 1e3 / width, neutralAxisMm: yc, plasticAxisMm: yp };
+  return { areaCm2PerM: area / 100 / width, iCm4PerM: inertia / 1e4 / width, welCm3PerM: inertia / e / 1e3 / width, wplCm3PerM: plastic / 1e3 / width, neutralAxisMm: yc, plasticAxisMm: yp, extremeMm: e };
 }

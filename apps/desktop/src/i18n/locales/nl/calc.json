@@ -115,5 +115,44 @@
       "norm": "NEN 9997-1 met CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
       "visualLabel": "Doorsnede"
     }
+  },
+  "corrosion": {
+    "sourceNone": "Geen afroesting",
+    "sourceTable": "Volgens NEN-EN 1993-5 tabel 4-1 / 4-2",
+    "sourceCustom": "Eigen waarde",
+    "environment": "Milieu",
+    "table41": "Tabel 4-1: in grond",
+    "table42": "Tabel 4-2: in water",
+    "life": "Ontwerplevensduur",
+    "years": "jaar",
+    "loss": "Dikteverlies",
+    "noValue": "geen tabelwaarde: kies een eigen waarde",
+    "verification": "Verificatie",
+    "verificationOk": "in orde",
+    "vCase": "Geval",
+    "vInput": "Invoer",
+    "vQuantity": "Grootheid",
+    "vExpected": "Verwacht",
+    "vModule": "Module",
+    "vDiff": "Verschil",
+    "env": {
+      "soil-undisturbed": "Onverstoorde natuurlijke grond (zand, silt, klei)",
+      "soil-polluted": "Verontreinigde natuurlijke grond en industrieterrein",
+      "soil-aggressive": "Agressieve natuurlijke grond (moeras, veen)",
+      "fill-loose": "Aanvulling, niet verdicht, niet agressief",
+      "fill-compacted": "Aanvulling, verdicht, niet agressief",
+      "fill-aggressive-loose": "Aanvulling, niet verdicht, agressief (as, slakken)",
+      "fill-aggressive-compacted": "Aanvulling, verdicht, agressief (as, slakken)",
+      "fresh-water": "Zoet water (rivier, kanaal), zone van sterke aantasting (waterlijn)",
+      "fresh-water-polluted": "Zeer verontreinigd zoet water, zone van sterke aantasting (waterlijn)",
+      "sea-splash": "Zeewater, gematigd klimaat, zone van sterke aantasting (laagwater en spatzone)",
+      "sea-immersion": "Zeewater, gematigd klimaat, blijvend onder water of getijdezone"
+    },
+    "errors": {
+      "missing": "Afroesting {{where}}: de tabel heeft voor deze keuze geen waarde. Vul een eigen dikteverlies in.",
+      "negative": "Het dikteverlies door afroesting kan niet negatief zijn.",
+      "noThickness": "De bibliotheek geeft voor dit profiel geen flens- en lijfdikte; de afroesting kan niet worden verwerkt.",
+      "tooLarge": "Het dikteverlies ({{loss}} mm) is bijna de hele plaatdikte ({{t}} mm): de doorsnede is daarmee niet meer te toetsen."
+    }
   }
 }

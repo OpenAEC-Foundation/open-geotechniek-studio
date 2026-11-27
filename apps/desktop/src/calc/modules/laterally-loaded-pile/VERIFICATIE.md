@@ -350,3 +350,124 @@ lijfhoek staat niet in de bibliotheek) en hout.
   wordt "matig", klei en veen "slap" (aanname, door de gebruiker na te lopen).
   De verticale berekening kent geen p_u; de overgenomen berekening rekent
   daarom lineair. Grondwaterstand en maaiveld worden vermeld maar niet gebruikt.
+
+## Verificatie afroesting
+
+Rekenkern: `src/calc/shared/corrosion.ts` (gedeeld met de damwand), voor de paal
+`corrosion-section.ts`. Invoerblok "Afroesting" in `LateralCorrosion.tsx`. Tests:
+`corrosion.test.ts` in deze map en `src/calc/shared/corrosion.test.ts`. De tabel hieronder staat ook
+in de app, in het uitklapblok "Verificatie" onder Afroesting, en wordt daar live met de huidige code
+doorgerekend (`corrosion-verification.ts`, `shared/CorrosionVerification.tsx`).
+
+### Wat de module doet
+
+- **Stalen buis, hol**: afroesting "1 kant (buiten)" of "2 kanten (buiten en binnen)". Buiten:
+  D_red = D − 2 Δ_buiten; de wand t_red = t − Δ_buiten − Δ_binnen.
+- **Stalen buis, gevuld**: alleen de buitenzijde roest (de keuze 2 kanten telt niet); de betonkern
+  blijft gelijk (D_red − 2 t_red = D − 2 t).
+- **Damwandprofiel**: 1 zijde (zijde 1) of 2 zijden, met de exacte contour waar die er is, anders de
+  benadering, en de doorsnedeklasse bij de verkleinde flensdikte; zie VERIFICATIE.md van de damwand,
+  hoofdstuk 11.
+- **Dikteverlies**: eigen waarde of NEN-EN 1993-5 tabel 4-1 en 4-2 (aanbevolen waarden, niet tegen de
+  normtekst of de Nederlandse bijlage gelegd), dezelfde tabel als bij de damwand.
+- **Waar het telt**: in de materiaaltoetsing (`material-steel.ts`, `material-sheet.ts`, ook
+  doorsnedeklasse en D/t) en in de N–M-toets. De paal rekent standaard met de EI zonder afroesting;
+  met het vinkje "EI na afroesting" met de EI van de verkleinde doorsnede. Het gewicht blijft altijd
+  nominaal (je koopt de nominale buis of plank). Bovenaan de materiaaltoetsing staat een rij
+  "Afroesting" met D, t en de verkleinde waarden.
+- Met afroesting vult de gebruiker de **nominale** wanddikte in; zonder afroesting blijft het veld de
+  restwanddikte zoals voorheen. **Dikteverlies 0** geeft exact de huidige uitkomsten (test).
+
+### Verificatietabel afgeroeste stalen buizen
+
+Handformules, NEN-EN 1993-1-1: A = π (D² − d²) / 4; I = π (D⁴ − d⁴) / 64; W_el = 2 I / D;
+W_pl = (D³ − d³) / 6 met D = D_red en d = D_red − 2 t_red; klasse volgens tabel 5.2 (D/t ≤ 50 ε²,
+70 ε², 90 ε², ε² = 235 / f_y); M_c,Rd = W_pl f_y (klasse 1 en 2) of W_el f_y (klasse 3), art. 6.2.5;
+N_c,Rd = A f_y, art. 6.2.4; V_pl,Rd = (2 A / π) f_y / √3, art. 6.2.6; interactie klasse 1 en 2
+M_N,Rd = M_pl,Rd · cos(π n / 2) (dunwandige buis), art. 6.2.9.1; klasse 3 σ = N / A + M / W_el,
+art. 6.2.9.2; γ_M0 = 1,0. De verwachte waarden zijn met deze formules apart uitgerekend en staan als
+vaste getallen in `corrosion-verification.ts`.
+
+| Geval | D × t, staal | Afroesting | Klasse voor → na |
+|---|---|---|---|
+| B1 | 323,9 × 10, S355 | 1,2 mm buiten (1 kant) | 1 → 2 |
+| B2 | 323,9 × 10, S355 | 1,2 + 1,2 mm (2 kanten) | 1 → 2 |
+| B3 | 508 × 14,2, S355, N = 1 000 kN | 2,0 mm buiten | 2 → 2 (plastische interactie) |
+| B4 | 610 × 12, S355 | 1,75 + 1,75 mm | 3 → 4 (valt buiten de toetsing) |
+| B5 | 406,4 × 10, S355, N = 500 kN, M = 200 kNm | 1,2 + 1,2 mm | 2 → 3 (elastische interactie) |
+| B6 | 219,1 × 8, S235 | 3,0 mm buiten (zeewater) | 1 → 1 |
+
+| Geval | Invoer | Grootheid | Verwacht | Module | Verschil | Oordeel | Bron of formule |
+|---|---|---|---|---|---|---|---|
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | t_red [mm] | 8,8 | 8,8 | 0,00 % | in orde | t − Δ |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | D_red [mm] | 321,5 | 321,5 | 0,00 % | in orde | D − 2 Δ_buiten |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | A [mm²] | 8644,9 | 8644,91 | 0,00 % | in orde | π (D² − d²) / 4 |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | I [cm⁴] | 10574,7 | 10574,7 | 0,00 % | in orde | π (D⁴ − d⁴) / 64 |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | W_el [cm³] | 657,84 | 657,838 | 0,00 % | in orde | 2 I / D |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | W_pl [cm³] | 860,7 | 860,703 | 0,00 % | in orde | (D³ − d³) / 6 |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | D/t | 36,53 | 36,5341 | 0,01 % | in orde | D_red / t_red |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | klasse | 2 | 2 | 0,00 % | in orde | EN 1993-1-1 tabel 5.2 |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | M_c,Rd [kNm] | 305,55 | 305,549 | 0,00 % | in orde | art. 6.2.5 |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | N_c,Rd [kN] | 3068,9 | 3068,94 | 0,00 % | in orde | art. 6.2.4 |
+| B1 | D 323,9 × 10 mm, S355, Δ 1,2 mm (1 kant) | V_pl,Rd [kN] | 1128 | 1128 | 0,00 % | in orde | art. 6.2.6 |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | t_red [mm] | 7,6 | 7,6 | 0,00 % | in orde | t − Δ |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | D_red [mm] | 321,5 | 321,5 | 0,00 % | in orde | D − 2 Δ_buiten |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | A [mm²] | 7494,7 | 7494,71 | 0,00 % | in orde | π (D² − d²) / 4 |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | I [cm⁴] | 9236,4 | 9236,38 | 0,00 % | in orde | π (D⁴ − d⁴) / 64 |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | W_el [cm³] | 574,58 | 574,581 | 0,00 % | in orde | 2 I / D |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | W_pl [cm³] | 749 | 748,999 | 0,00 % | in orde | (D³ − d³) / 6 |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | D/t | 42,3 | 42,3026 | 0,01 % | in orde | D_red / t_red |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | klasse | 2 | 2 | 0,00 % | in orde | EN 1993-1-1 tabel 5.2 |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | M_c,Rd [kNm] | 265,89 | 265,895 | 0,00 % | in orde | art. 6.2.5 |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | N_c,Rd [kN] | 2660,6 | 2660,62 | 0,00 % | in orde | art. 6.2.4 |
+| B2 | D 323,9 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten) | V_pl,Rd [kN] | 977,9 | 977,918 | 0,00 % | in orde | art. 6.2.6 |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | t_red [mm] | 12,2 | 12,2 | 0,00 % | in orde | t − Δ |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | D_red [mm] | 504 | 504 | 0,00 % | in orde | D − 2 Δ_buiten |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | A [mm²] | 18849,4 | 18849,4 | 0,00 % | in orde | π (D² − d²) / 4 |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | I [cm⁴] | 57023,3 | 57023,3 | 0,00 % | in orde | π (D⁴ − d⁴) / 64 |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | W_el [cm³] | 2262,83 | 2262,83 | 0,00 % | in orde | 2 I / D |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | W_pl [cm³] | 2951,39 | 2951,39 | 0,00 % | in orde | (D³ − d³) / 6 |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | D/t | 41,31 | 41,3115 | 0,00 % | in orde | D_red / t_red |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | klasse | 2 | 2 | 0,00 % | in orde | EN 1993-1-1 tabel 5.2 |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | M_c,Rd [kNm] | 1047,74 | 1047,74 | 0,00 % | in orde | art. 6.2.5 |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | N_c,Rd [kN] | 6691,5 | 6691,55 | 0,00 % | in orde | art. 6.2.4 |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | V_pl,Rd [kN] | 2459,5 | 2459,5 | 0,00 % | in orde | art. 6.2.6 |
+| B3 | D 508 × 14,2 mm, S355, Δ 2 mm (1 kant), N 1000 kN | M_N,Rd [kNm] | 1019,01 | 1019,01 | 0,00 % | in orde | M_pl,Rd cos(π n / 2), art. 6.2.9.1 |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | t_red [mm] | 8,5 | 8,5 | 0,00 % | in orde | t − Δ |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | D_red [mm] | 606,5 | 606,5 | 0,00 % | in orde | D − 2 Δ_buiten |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | A [mm²] | 15968,7 | 15968,7 | 0,00 % | in orde | π (D² − d²) / 4 |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | I [cm⁴] | 71395,4 | 71395,4 | 0,00 % | in orde | π (D⁴ − d⁴) / 64 |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | W_el [cm³] | 2354,34 | 2354,34 | 0,00 % | in orde | 2 I / D |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | W_pl [cm³] | 3039,84 | 3039,84 | 0,00 % | in orde | (D³ − d³) / 6 |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | D/t | 71,35 | 71,3529 | 0,00 % | in orde | D_red / t_red |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | klasse | 4 | 4 | 0,00 % | in orde | EN 1993-1-1 tabel 5.2 |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | buiten de toetsing (klasse 4) | 1 | 1 | 0,00 % | in orde | NEN-EN 1993-1-6 |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | N_c,Rd [kN] | 5668,9 | 5668,89 | 0,00 % | in orde | art. 6.2.4 |
+| B4 | D 610 × 12 mm, S355, Δ 1,75 + 1,75 mm (2 kanten) | V_pl,Rd [kN] | 2083,6 | 2083,62 | 0,00 % | in orde | art. 6.2.6 |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | t_red [mm] | 7,6 | 7,6 | 0,00 % | in orde | t − Δ |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | D_red [mm] | 404 | 404 | 0,00 % | in orde | D − 2 Δ_buiten |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | A [mm²] | 9464,5 | 9464,49 | 0,00 % | in orde | π (D² − d²) / 4 |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | I [cm⁴] | 18596,6 | 18596,6 | 0,00 % | in orde | π (D⁴ − d⁴) / 64 |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | W_el [cm³] | 920,62 | 920,625 | 0,00 % | in orde | 2 I / D |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | W_pl [cm³] | 1194,36 | 1194,36 | 0,00 % | in orde | (D³ − d³) / 6 |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | D/t | 53,16 | 53,1579 | 0,00 % | in orde | D_red / t_red |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | klasse | 3 | 3 | 0,00 % | in orde | EN 1993-1-1 tabel 5.2 |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | M_c,Rd [kNm] | 326,82 | 326,822 | 0,00 % | in orde | art. 6.2.5 |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | N_c,Rd [kN] | 3359,9 | 3359,89 | 0,00 % | in orde | art. 6.2.4 |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | V_pl,Rd [kN] | 1234,9 | 1234,94 | 0,00 % | in orde | art. 6.2.6 |
+| B5 | D 406,4 × 10 mm, S355, Δ 1,2 + 1,2 mm (2 kanten), N 500 kN | σ_x,Ed [MPa] | 270,08 | 270,073 | 0,00 % | in orde | N / A + M / W_el, art. 6.2.9.2 |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | t_red [mm] | 5 | 5 | 0,00 % | in orde | t − Δ |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | D_red [mm] | 213,1 | 213,1 | 0,00 % | in orde | D − 2 Δ_buiten |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | A [mm²] | 3268,8 | 3268,83 | 0,00 % | in orde | π (D² − d²) / 4 |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | I [cm⁴] | 1770,5 | 1770,5 | 0,00 % | in orde | π (D⁴ − d⁴) / 64 |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | W_el [cm³] | 166,17 | 166,166 | 0,00 % | in orde | 2 I / D |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | W_pl [cm³] | 216,57 | 216,57 | 0,00 % | in orde | (D³ − d³) / 6 |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | D/t | 42,62 | 42,62 | 0,00 % | in orde | D_red / t_red |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | klasse | 1 | 1 | 0,00 % | in orde | EN 1993-1-1 tabel 5.2 |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | M_c,Rd [kNm] | 50,89 | 50,8939 | 0,01 % | in orde | art. 6.2.5 |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | N_c,Rd [kN] | 768,2 | 768,174 | 0,00 % | in orde | art. 6.2.4 |
+| B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | V_pl,Rd [kN] | 282,3 | 282,344 | 0,02 % | in orde | art. 6.2.6 |
+
+Een gepubliceerd rekenvoorbeeld van een afgeroeste buispaal als onafhankelijke controle is niet
+opgenomen: er is geen openbaar uitgewerkt voorbeeld gevonden dat hier zelf gelezen kon worden. De
+controle steunt daarom op de handformules hierboven.

@@ -335,7 +335,9 @@
       "strainMethod": "M_Rd per N_Ed dal diagramma delle deformazioni: parabola-rettangolo, accorciamento del calcestruzzo 3,5 ‰, trazione del calcestruzzo trascurata.",
       "tubeClassIs": "Classe della sezione {{cls}}.",
       "tubeIgnored": "Secondo i dati inseriti il tubo non collabora: è verificato il nucleo di calcestruzzo con la sua armatura, senza il tubo.",
-      "tubeYield": "f_y è il valore di progetto inserito f_yd dell'acciaio del tubo per γ_M0 = 1,0; lo spessore della parete è lo spessore residuo inserito."
+      "tubeYield": "f_y è il valore di progetto inserito f_yd dell'acciaio del tubo per γ_M0 = 1,0; lo spessore della parete è lo spessore residuo inserito.",
+      "corrosionTube": "Verificato con la sezione dopo la corrosione, anche la classe e D/t. {{stiffness}}",
+      "corrosionSheet": "Verificato con il profilo dopo la corrosione ({{basis}}), con la classe allo spessore d'ala ridotto. {{stiffness}}"
     },
     "notesTitle": "Ipotesi della verifica",
     "rows": {
@@ -359,7 +361,8 @@
       "shearS": "Taglio con staffe",
       "shearSpacing": "Passo massimo delle staffe",
       "sheetClass": "Classe della sezione",
-      "tubeClass": "Classe della sezione e instabilità locale"
+      "tubeClass": "Classe della sezione e instabilità locale",
+      "corrosion": "Corrosione"
     },
     "status": {
       "fail": "non verificato",
@@ -691,5 +694,32 @@
     "variantName": "Ott. {{n}}",
     "walls": "Parete [mm]",
     "widthFollows": "Larghezza efficace delle molle del terreno = larghezza del palo"
+  },
+  "corrosion": {
+    "title": "Corrosione",
+    "reducedStiffness": "EI dopo la corrosione",
+    "classChoice": "Classe dopo la corrosione",
+    "classAuto": "Dal catalogo (in caso di dubbio la più sfavorevole)",
+    "classN": "Classe {{cls}}",
+    "side1": "faccia 1",
+    "side2": "faccia 2",
+    "outer": "faccia esterna",
+    "inner": "faccia interna",
+    "side1Label": "Faccia 1",
+    "side2Label": "Faccia 2",
+    "outerLabel": "Faccia esterna",
+    "innerLabel": "Faccia interna",
+    "sides": "Attaccato",
+    "oneSide": "1 faccia",
+    "twoSides": "2 facce",
+    "oneTube": "1 faccia (esterna)",
+    "twoTube": "2 facce (esterna e interna)",
+    "eiReduced": "Il palo è calcolato con la EI dopo la corrosione.",
+    "eiOriginal": "Il palo è calcolato con la EI senza corrosione.",
+    "basisContour": "dal contorno esatto",
+    "basisApprox": "approssimazione con gli spessori",
+    "tubeSummary": "Dopo la corrosione: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Dopo la corrosione: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "In caso di corrosione inserire lo spessore nominale. Perdita di spessore per faccia; i valori in tabella sono quelli raccomandati di NEN-EN 1993-5 tabelle 4-1 e 4-2 e non sono stati confrontati con il testo della norma o con l'appendice olandese. La corrosione conta nella verifica del materiale e nella verifica N–M, anche nella classe e D/t; nella distribuzione delle sollecitazioni solo con la casella spuntata. Un tubo riempito si corrode solo all'esterno."
   }
 }

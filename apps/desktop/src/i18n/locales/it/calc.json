@@ -115,5 +115,44 @@
       "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
       "visualLabel": "Sezione"
     }
+  },
+  "corrosion": {
+    "sourceNone": "Nessuna corrosione",
+    "sourceTable": "Secondo NEN-EN 1993-5 tabella 4-1 / 4-2",
+    "sourceCustom": "Valore proprio",
+    "environment": "Ambiente",
+    "table41": "Tabella 4-1: nel terreno",
+    "table42": "Tabella 4-2: in acqua",
+    "life": "Vita nominale",
+    "years": "anni",
+    "loss": "Perdita di spessore",
+    "noValue": "nessun valore in tabella: scegliere un valore proprio",
+    "verification": "Verifica",
+    "verificationOk": "corrette",
+    "vCase": "Caso",
+    "vInput": "Dati",
+    "vQuantity": "Grandezza",
+    "vExpected": "Atteso",
+    "vModule": "Modulo",
+    "vDiff": "Differenza",
+    "env": {
+      "soil-undisturbed": "Terreno naturale indisturbato (sabbia, limo, argilla)",
+      "soil-polluted": "Terreno naturale inquinato e aree industriali",
+      "soil-aggressive": "Terreno naturale aggressivo (palude, torba)",
+      "fill-loose": "Riporto non compattato, non aggressivo",
+      "fill-compacted": "Riporto compattato, non aggressivo",
+      "fill-aggressive-loose": "Riporto non compattato, aggressivo (ceneri, scorie)",
+      "fill-aggressive-compacted": "Riporto compattato, aggressivo (ceneri, scorie)",
+      "fresh-water": "Acqua dolce (fiume, canale), zona di forte attacco (linea d'acqua)",
+      "fresh-water-polluted": "Acqua dolce molto inquinata, zona di forte attacco (linea d'acqua)",
+      "sea-splash": "Acqua di mare, clima temperato, zona di forte attacco (bassa marea e zona di spruzzi)",
+      "sea-immersion": "Acqua di mare, clima temperato, immersione permanente o zona intertidale"
+    },
+    "errors": {
+      "missing": "Corrosione {{where}}: la tabella non ha un valore per questa scelta. Inserire una perdita di spessore propria.",
+      "negative": "La perdita di spessore per corrosione non può essere negativa.",
+      "noThickness": "La libreria non fornisce lo spessore di ala e anima di questo profilo; la corrosione non può essere applicata.",
+      "tooLarge": "La perdita di spessore ({{loss}} mm) è quasi l'intero spessore ({{t}} mm): la sezione non è più verificabile."
+    }
   }
 }

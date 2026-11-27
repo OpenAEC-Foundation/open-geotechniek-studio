@@ -335,7 +335,9 @@
       "strainMethod": "M_Rd ved N_Ed ud fra tøjningsdiagrammet: parabel-rektangel, betontrykstøjning 3,5 ‰, betontræk ikke medregnet.",
       "tubeClassIs": "Tværsnitsklasse {{cls}}.",
       "tubeIgnored": "Røret medvirker ifølge inddata ikke: betonkernen med sin armering er eftervist, uden røret.",
-      "tubeYield": "f_y er den indtastede regningsmæssige værdi f_yd for rørstålet gange γ_M0 = 1,0; vægtykkelsen er den indtastede restvægtykkelse."
+      "tubeYield": "f_y er den indtastede regningsmæssige værdi f_yd for rørstålet gange γ_M0 = 1,0; vægtykkelsen er den indtastede restvægtykkelse.",
+      "corrosionTube": "Eftervist med tværsnittet efter korrosion, også tværsnitsklasse og D/t. {{stiffness}}",
+      "corrosionSheet": "Eftervist med profilen efter korrosion ({{basis}}), med tværsnitsklassen ved den reducerede flangetykkelse. {{stiffness}}"
     },
     "notesTitle": "Forudsætninger for eftervisningen",
     "rows": {
@@ -359,7 +361,8 @@
       "shearS": "Tværkraft med bøjler",
       "shearSpacing": "Største bøjleafstand",
       "sheetClass": "Tværsnitsklasse",
-      "tubeClass": "Tværsnitsklasse og lokal foldning"
+      "tubeClass": "Tværsnitsklasse og lokal foldning",
+      "corrosion": "Korrosion"
     },
     "status": {
       "fail": "ikke overholdt",
@@ -691,5 +694,32 @@
     "variantName": "Opt. {{n}}",
     "walls": "Væg [mm]",
     "widthFollows": "Virksom bredde af jordfjedre = pælebredde"
+  },
+  "corrosion": {
+    "title": "Korrosion",
+    "reducedStiffness": "EI efter korrosion",
+    "classChoice": "Klasse efter korrosion",
+    "classAuto": "Fra kataloget (ved tvivl den mest ugunstige)",
+    "classN": "Klasse {{cls}}",
+    "side1": "side 1",
+    "side2": "side 2",
+    "outer": "yderside",
+    "inner": "inderside",
+    "side1Label": "Side 1",
+    "side2Label": "Side 2",
+    "outerLabel": "Yderside",
+    "innerLabel": "Inderside",
+    "sides": "Angrebet",
+    "oneSide": "1 side",
+    "twoSides": "2 sider",
+    "oneTube": "1 side (udvendig)",
+    "twoTube": "2 sider (udvendig og indvendig)",
+    "eiReduced": "Pælen er beregnet med EI efter korrosion.",
+    "eiOriginal": "Pælen er beregnet med EI uden korrosion.",
+    "basisContour": "fra den eksakte kontur",
+    "basisApprox": "tilnærmelse med pladetykkelserne",
+    "tubeSummary": "Efter korrosion: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Efter korrosion: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "Ved korrosion indtastes den nominelle godstykkelse. Tykkelsestab pr. side; tabelværdierne er de anbefalede værdier i NEN-EN 1993-5 tabel 4-1 og 4-2 og er ikke holdt op mod standardteksten eller det nederlandske anneks. Korrosionen tæller i materialeeftervisningen og N–M-eftervisningen, også i tværsnitsklassen og D/t; i kraftfordelingen kun med fluebenet. Et fyldt rør korroderer kun udvendigt."
   }
 }

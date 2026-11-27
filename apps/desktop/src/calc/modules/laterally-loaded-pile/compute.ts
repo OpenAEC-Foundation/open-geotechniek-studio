@@ -6,6 +6,7 @@ import { sectionCapacity, sectionStiffness, type PileSection } from './section';
 import { springValue } from './soil';
 import { ct } from '../../i18n';
 import { materialCheck, type MaterialInput, type MaterialResult } from './material-check';
+import { corrodePile, corrosionRow, type PileCorrosion, type PileCorrosionInfo } from './corrosion-section';
 export interface LateralLayer {
   topM:number; bottomM:number; springId:string; manualKhKnM3:number;
   frictionDeg:number; netPressureKpa:number;
@@ -33,6 +34,8 @@ export interface LateralInput {
   openEnd?:boolean;
   /** Gegevens overgenomen uit een paaldraagvermogenberekening. */
   inherited?:import('./pile-link').InheritedFrom;
+  /** Afroesting van de stalen buis of het damwandprofiel; zonder deze invoer geen afroesting. */
+  corrosion?:PileCorrosion;
   /** Varianten bij dezelfde grond en belasting, en de laatste optimalisatie; de berekening zelf leest ze niet. */
   variants?:import('./variants').VariantsConfig;
 }
@@ -55,6 +58,8 @@ export type LateralResult = {ok:false;error:string} | {
   analysisMode:AnalysisMode;springs:SpringState[];convergence:ConvergenceInfo;layering:EquivalentLayer[];
   /** Materiaaltoetsing per paaltype; null met materialError als die niet kon worden opgesteld. */
   material:MaterialResult|null;materialError:string|null;
+  /** Afroesting: doorsnede voor en na; null zonder afroesting. */
+  corrosion?:PileCorrosionInfo|null;
 };
 export function computeLateral(input:LateralInput):LateralResult {
   try {
@@ -65,7 +70,9 @@ export function computeLateral(input:LateralInput):LateralResult {
       throw new Error(ct('calcLateral', 'errors.invalidInput', 'Ongeldige grond- of belastingsinvoer.'));
     if(input.surchargeKpa>0&&input.surchargeMode!=='retaining')
       throw new Error(ct('calcLateral', 'errors.surchargeModel', 'Kies een onderbouwd belastingmodel voor de bovenbelasting; q is geen automatische netto paaldruk.'));
-    const section=sectionStiffness(input.section);
+    // Afroesting: de toetsen met de doorsnede na afroesting, de stijfheid alleen met het vinkje.
+    const corrosion=corrodePile(input.section,input.corrosion), checked=corrosion?{...input,section:corrosion.section}:input;
+    const section=sectionStiffness(corrosion?.reducedStiffness?corrosion.section:input.section);
     const analysisMode=input.analysisMode??'linear',correction=input.layerCorrection??'none';
     if(!['linear','nonlinear'].includes(analysisMode)||!['none','georgiadis'].includes(correction))throw new Error(ct('calcLateral', 'errors.unknownAnalysis', 'Onbekende analyse of laagcorrectie.'));
     const resolvedLayers=input.layers.map((layer,inputIndex)=>{
@@ -91,12 +98,12 @@ export function computeLateral(input:LateralInput):LateralResult {
     const {springs:_springStates,convergence,...beam}=solved;
     const maxMomentKnM=Math.max(...beam.samples.map(v=>Math.abs(v.momentKnM)));
     let capacity:ReturnType<typeof sectionCapacity>|null=null,capacityError:string|null=null;
-    try {capacity=sectionCapacity(input.section,input.nEdKn);} catch(e){capacityError=e instanceof Error?e.message:String(e);}
+    try {capacity=sectionCapacity(checked.section,input.nEdKn);} catch(e){capacityError=e instanceof Error?e.message:String(e);}
     const sectionUtilization=capacity?(capacity.mRdKnM>1e-8?maxMomentKnM/capacity.mRdKnM:maxMomentKnM>1e-8?Infinity:0):null;
     // De materiaaltoetsing leest alleen uit; verplaatsing, snedekrachten en de N–M-toets blijven zoals ze zijn.
     let material:MaterialResult|null=null,materialError:string|null=null;
-    try {material=materialCheck(input,beam.samples,{uc:sectionUtilization,mRdKnM:capacity?.mRdKnM??null,error:capacityError});} catch(e){materialError=e instanceof Error?e.message:String(e);}
-    return {ok:true,beam,section,capacity,capacityError,maxMomentKnM,analysisMode,springs,convergence,layering,material,materialError,
+    try {material=materialCheck(checked,beam.samples,{uc:sectionUtilization,mRdKnM:capacity?.mRdKnM??null,error:capacityError});if(corrosion)material={...material,rows:[corrosionRow(corrosion),...material.rows]};} catch(e){materialError=e instanceof Error?e.message:String(e);}
+    return {ok:true,beam,section,capacity,capacityError,maxMomentKnM,analysisMode,springs,convergence,layering,material,materialError,corrosion,
       maxShearKn:Math.max(...beam.samples.map(v=>Math.abs(v.shearKn))),
       maxDisplacementMm:1000*Math.max(...beam.samples.map(v=>Math.abs(v.yM))),
       sectionUtilization,

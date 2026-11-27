@@ -30,6 +30,8 @@ export interface SheetSection {
   widthMode: 'wall' | 'single';
   /** Reductiefactoren voor schuifkrachtoverdracht in de sloten: β_B op W, β_D op I. */
   betaB: number; betaD: number;
+  /** Profiel na afroesting (corrosion-section.ts); in plaats van het profiel uit de bibliotheek. */
+  profileOverride?: SheetPileProfile;
 }
 
 export function defaultSheet(): SheetSection {
@@ -51,7 +53,7 @@ export interface SheetProps {
 }
 
 export function sheetProps(cfg: SheetSection | undefined, eMpa: number): SheetProps {
-  const profile = cfg ? findSheetPile(cfg.profileId, cfg.manufacturer) : undefined, grade = cfg ? findGrade(cfg.grade) : undefined;
+  const profile = cfg ? cfg.profileOverride ?? findSheetPile(cfg.profileId, cfg.manufacturer) : undefined, grade = cfg ? findGrade(cfg.grade) : undefined;
   if (!cfg || !profile || !grade) throw new Error(ct('calcLateral', 'errors.sheetUnknown', 'Kies een damwandprofiel en een staalsoort uit de bibliotheek.'));
   if (profile.iCm4PerM === null || profile.welCm3PerM === null || profile.areaCm2PerM === null || profile.widthMm === null)
     throw new Error(ct('calcLateral', 'errors.sheetNoBending', 'Dit profiel heeft in de bibliotheek geen I, W of A en is niet op buiging te rekenen.'));

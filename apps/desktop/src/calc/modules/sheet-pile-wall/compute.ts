@@ -6,6 +6,7 @@ import type { Cpt } from "../../../types/cpt";
 import { ct } from "../../i18n";
 import { E_STEEL_MPA, findGrade, findSheetPile, wallMomentCapacity, wallStiffness, type SheetPileProfile } from "../../library/sheetPiles";
 import { layersFromCpt } from "../spread-foundation/compute";
+import { NO_CORROSION, corrodedSheetPile, faceSourceText, requireLoss, type CorrodedSheet, type CorrosionFace } from "../../shared/corrosion";
 import { blum, type BlumResult } from "./blum";
 import { coefficients, type PassiveMethod, type PressureCoefficients } from "./earth-pressure";
 import { solveSpringWall, type SideSpring, type SpringState, type WallElement } from "./spring-model";
@@ -201,6 +202,41 @@ export interface WallInput {
   eiFactor?: number;
   /** Volumegewicht van water [kN/m³]; standaard 10. */
   gammaWater?: number;
+  /** Afroesting van de stalen damwand; zonder deze invoer geen afroesting. */
+  corrosion?: WallCorrosion;
+}
+
+/**
+ * Afroesting per zijde van de wand, optioneel in twee zones boven en onder een niveau (bijvoorbeeld de waterlijn).
+ * Alleen in de toetsen van de doorsnede, en in de buigstijfheid als `reducedStiffness` aan staat; niet in de gronddruk.
+ */
+export interface WallCorrosion {
+  /** Hoge en lage zijde, over de hele wand of in de bovenste zone. */
+  high: CorrosionFace;
+  low: CorrosionFace;
+  /** Twee zones: onder `zoneNap` gelden `highBelow` en `lowBelow`. */
+  zoned: boolean;
+  zoneNap: number;
+  highBelow: CorrosionFace;
+  lowBelow: CorrosionFace;
+  /** Rekent de krachtsverdeling met de EI na afroesting (de kleinste over de zones); standaard met de oorspronkelijke. */
+  reducedStiffness: boolean;
+  /** Doorsnedeklasse na afroesting als die uit de catalogus niet vast te stellen is; leeg = de ongunstigste. */
+  classChoice?: 2 | 3 | 4;
+}
+export const DEFAULT_CORROSION: WallCorrosion = { high: NO_CORROSION, low: NO_CORROSION, zoned: false, zoneNap: 0, highBelow: NO_CORROSION, lowBelow: NO_CORROSION, reducedStiffness: false };
+
+/** Een zone van de wand met de doorsnede na afroesting. */
+export interface CorrosionZone {
+  topNap: number;
+  bottomNap: number;
+  /** Aanduiding in de koppen van de toetsen ("boven NAP 18,00 m"); leeg bij één zone. */
+  label: string;
+  lossHighMm: number;
+  lossLowMm: number;
+  sourceHigh: string;
+  sourceLow: string;
+  sheet: CorrodedSheet;
 }
 
 export const REPRESENTATIVE: WallFactors = { gammaPhi: 1, gammaC: 1, gammaCu: 1, gammaGamma: 1, gammaQ: 1, gammaK: 1, deltaAPct: 0, deltaAMaxM: 0, deltaWaterHighM: 0, deltaWaterLowM: 0, gammaM0: 1 };
@@ -222,7 +258,7 @@ export function normalizeWallInput(i: WallInput): WallInput {
   return {
     ...i, construction: i.construction ?? "sheet-pile", material: i.material ?? "timber", timber: { ...DEFAULT_TIMBER, ...i.timber }, plankMm: i.plankMm ?? 50,
     custom: { ...DEFAULT_CUSTOM, ...i.custom }, posts: { ...DEFAULT_POSTS, ...i.posts }, factors: { ...DEFAULT_FACTORS, ...i.factors },
-    eiFactor: i.eiFactor ?? 1, gammaWater: i.gammaWater ?? GAMMA_WATER, anchor: { ...i.anchor, kind: i.anchor.kind ?? "tie", grout: { ...DEFAULT_GROUT, ...i.anchor.grout } },
+    eiFactor: i.eiFactor ?? 1, gammaWater: i.gammaWater ?? GAMMA_WATER, corrosion: { ...DEFAULT_CORROSION, ...i.corrosion }, anchor: { ...i.anchor, kind: i.anchor.kind ?? "tie", grout: { ...DEFAULT_GROUT, ...i.anchor.grout } },
   };
 }
 
@@ -569,6 +605,8 @@ export interface WallOk {
   governing: WallCheck;
   passes: boolean;
   warnings: string[];
+  /** Afroesting per zone; null zonder afroesting of bij een beschoeiing. */
+  corrosion: { zones: CorrosionZone[]; reducedStiffness: boolean; eiOriginalKnM2: number } | null;
 }
 export type WallResult = WallOk | { ok: false; error: string };
 
@@ -615,24 +653,46 @@ function validate(i: WallInput): string | null {
   return null;
 }
 
-const mEdStep = (uls: WallRun, value: number, unit: string): WallStep => ({ symbol: "M_Ed", formula: t("steps.mEd", "grootste moment uit het verenmodel met rekenwaarden, op NAP {{nap}} m", { nap: n(uls.maxMoment.nap) }), result: `${n(value, 1)} ${unit}` });
-const vEdStep = (uls: WallRun, value: number, unit: string): WallStep => ({ symbol: "V_Ed", formula: t("steps.vEd", "grootste dwarskracht uit het verenmodel met rekenwaarden, op NAP {{nap}} m", { nap: n(uls.maxShear.nap) }), result: `${n(value, 1)} ${unit}` });
+const mEdStep = (uls: WallRun, value: number, unit: string, nap = uls.maxMoment.nap): WallStep => ({ symbol: "M_Ed", formula: t("steps.mEd", "grootste moment uit het verenmodel met rekenwaarden, op NAP {{nap}} m", { nap: n(nap) }), result: `${n(value, 1)} ${unit}` });
+const vEdStep = (uls: WallRun, value: number, unit: string, nap = uls.maxShear.nap): WallStep => ({ symbol: "V_Ed", formula: t("steps.vEd", "grootste dwarskracht uit het verenmodel met rekenwaarden, op NAP {{nap}} m", { nap: n(nap) }), result: `${n(value, 1)} ${unit}` });
 
-export function steelChecks(i: WallInput, p: SheetPileProfile, fy: number, uls: WallRun): { checks: WallCheck[]; warnings: string[] } {
+/** Grootste moment en dwarskracht binnen een zone van de wand [kNm/m, kN/m] met hun niveau. */
+function zonePeaks(uls: WallRun, zone: CorrosionZone) {
+  const inside = uls.samples.filter((q) => q.nap <= zone.topNap + 1e-9 && q.nap >= zone.bottomNap - 1e-9);
+  const peak = (value: (q: RunSample) => number) => inside.reduce((best, q) => (Math.abs(value(q)) > Math.abs(best.value) ? { value: value(q), nap: q.nap } : best), { value: 0, nap: zone.topNap });
+  return { moment: peak((q) => q.momentKnM), shear: peak((q) => q.shearKn) };
+}
+
+/**
+ * Toetsen van het stalen profiel (NEN-EN 1993-5). Met een zone: het profiel na afroesting van die zone, met het grootste
+ * moment en de grootste dwarskracht binnen de zone; zonder zone het profiel zoals het is, met de grootste waarden.
+ */
+export function steelChecks(i: WallInput, p: SheetPileProfile, fy: number, uls: WallRun, zone?: CorrosionZone): { checks: WallCheck[]; warnings: string[] } {
   const g = i.factors.gammaM0, checks: WallCheck[] = [], warnings: string[] = [];
-  const mEd = Math.abs(uls.maxMoment.value), vEd = Math.abs(uls.maxShear.value), nEd = Math.abs(i.normalForceKn) + (uls.anchor ? Math.abs(uls.anchor.verticalKn) : 0);
+  const peaks = zone ? zonePeaks(uls, zone) : { moment: uls.maxMoment, shear: uls.maxShear }, corroded = zone && zone.sheet.basis !== "none" ? zone.sheet : null;
+  const mEd = Math.abs(peaks.moment.value), vEd = Math.abs(peaks.shear.value), nEd = Math.abs(i.normalForceKn) + (uls.anchor ? Math.abs(uls.anchor.verticalKn) : 0);
   const cap = wallMomentCapacity(p, i.grade, g), cls = p.classes?.[findGrade(i.grade)!.grade];
+  const where = zone?.label ? ` (${zone.label})` : "";
+  const lossSteps: WallStep[] = corroded && zone ? [
+    { symbol: "Δt", formula: t("corrosion.steps.loss", "afroesting hoge zijde + lage zijde"), filled: `${n(zone.lossHighMm)} + ${n(zone.lossLowMm)} mm`, result: `${n(zone.lossHighMm + zone.lossLowMm)} mm` },
+    { symbol: "t_f; t_w", formula: t("corrosion.steps.thickness", "plaatdikten na afroesting"), filled: `${n(corroded.original.flangeMm ?? 0, 1)} − ${n(zone.lossHighMm + zone.lossLowMm)}; ${n(corroded.original.webMm ?? 0, 1)} − ${n(zone.lossHighMm + zone.lossLowMm)}`, result: `${n(p.flangeMm ?? 0, 2)}; ${n(p.webMm ?? 0, 2)} mm` },
+  ] : [];
   if (!cap) {
+    if (corroded) warnings.push(t("corrosion.warnings.class4", "Na afroesting{{where}} is de doorsnede klasse 4 of heeft zij geen weerstandsmoment; buiging en normaalkracht zijn daar niet getoetst.", { where }));
     warnings.push(t("warnings.noMoment", "Voor dit profiel en deze staalsoort geeft de bibliotheek geen momentcapaciteit (doorsnedeklasse 4 of geen weerstandsmoment); de staaltoetsen ontbreken."));
     return { checks, warnings };
   }
   const plastic = cap.basis === "plastisch", w = plastic ? p.wplCm3PerM! : p.welCm3PerM!, mRd = cap.mRd * i.betaB;
+  const wOriginal = corroded ? (plastic ? corroded.original.wplCm3PerM : corroded.original.welCm3PerM) : null;
+  const wStep: WallStep[] = corroded && wOriginal !== null ? [{ symbol: plastic ? "W_pl;red" : "W_el;red", formula: corroded.basis === "contour" ? t("corrosion.steps.wContour", "uit de contour met de plaatdikte aan beide zijden verkleind") : t("corrosion.steps.wApprox", "benadering: W · (t_f − Δt) / t_f"), filled: `${n(wOriginal, 0)} → ${n(w, 0)} cm³/m`, result: `${n(w, 0)} cm³/m` }] : [];
+  const origCls = corroded ? corroded.original.classes?.[findGrade(i.grade)!.grade] : undefined;
   checks.push({
-    id: "bending", label: t("checks.bending.label", "buiging"), title: t("checks.bending.title", "Buiging van het profiel"), article: "NEN-EN 1993-5 art. 5.2.2", load: mEd, resistance: mRd, unit: "kNm/m", uc: mEd / mRd, passes: mEd <= mRd,
+    id: "bending", label: t("checks.bending.label", "buiging") + where, title: t("checks.bending.title", "Buiging van het profiel") + where, article: "NEN-EN 1993-5 art. 5.2.2", load: mEd, resistance: mRd, unit: "kNm/m", uc: mEd / mRd, passes: mEd <= mRd,
     steps: [
-      mEdStep(uls, mEd, "kNm/m"),
+      mEdStep(uls, mEd, "kNm/m", peaks.moment.nap),
+      ...lossSteps, ...wStep,
       { symbol: "M_c;Rd", formula: `β_B · ${plastic ? "W_pl" : "W_el"} · f_y / γ_M0`, filled: `${n(i.betaB)} · ${n(w, 0)} cm³/m · ${n(fy, 0)} N/mm² / ${n(g)}`, result: `${n(mRd, 1)} kNm/m` },
-      { symbol: "", formula: cls ? t("steps.class", "doorsnedeklasse {{cls}} bij {{grade}}: {{basis}} weerstandsmoment", { cls, grade: i.grade, basis: plastic ? t("steps.plastic", "plastisch") : t("steps.elastic", "elastisch") }) : t("steps.noClass", "geen doorsnedeklasse in de bibliotheek: elastisch weerstandsmoment"), result: `u.c. ${n(mEd / mRd)}` },
+      { symbol: "", formula: (cls ? t("steps.class", "doorsnedeklasse {{cls}} bij {{grade}}: {{basis}} weerstandsmoment", { cls, grade: i.grade, basis: plastic ? t("steps.plastic", "plastisch") : t("steps.elastic", "elastisch") }) : t("steps.noClass", "geen doorsnedeklasse in de bibliotheek: elastisch weerstandsmoment")) + (corroded && origCls !== undefined && cls !== origCls ? ` ${t("corrosion.steps.classShift", "(na afroesting; zonder afroesting klasse {{cls}})", { cls: origCls })}` : ""), result: `u.c. ${n(mEd / mRd)}` },
     ],
   });
   if (p.areaCm2PerM !== null) {
@@ -640,7 +700,7 @@ export function steelChecks(i: WallInput, p: SheetPileProfile, fy: number, uls: 
     // Interactie met de normaalkracht (art. 5.2.3): Z-profielen 1,11·(1 − n), U-profielen 1,33·(1 − n); klasse 3 lineair.
     const reduced = ratio <= limit ? mRd : Math.min(mRd, (plastic ? (z ? 1.11 : 1.33) : 1) * mRd * (1 - ratio));
     checks.push({
-      id: "normal", label: t("checks.normal.label", "normaalkracht"), title: t("checks.normal.title", "Buiging met normaalkracht"), article: "NEN-EN 1993-5 art. 5.2.3", load: mEd, resistance: reduced, unit: "kNm/m", uc: Math.max(ratio, reduced > 0 ? mEd / reduced : Infinity), passes: ratio <= 1 && mEd <= reduced,
+      id: "normal", label: t("checks.normal.label", "normaalkracht") + where, title: t("checks.normal.title", "Buiging met normaalkracht") + where, article: "NEN-EN 1993-5 art. 5.2.3", load: mEd, resistance: reduced, unit: "kNm/m", uc: Math.max(ratio, reduced > 0 ? mEd / reduced : Infinity), passes: ratio <= 1 && mEd <= reduced,
       steps: [
         { symbol: "N_Ed", formula: t("steps.nEd", "invoer plus de verticale component van de ankerkracht"), filled: `${n(Math.abs(i.normalForceKn), 1)} + ${n(uls.anchor ? Math.abs(uls.anchor.verticalKn) : 0, 1)}`, result: `${n(nEd, 1)} kN/m` },
         { symbol: "N_pl;Rd", formula: "A · f_y / γ_M0", filled: `${n(p.areaCm2PerM, 1)} cm²/m · ${n(fy, 0)} N/mm² / ${n(g)}`, result: `${n(nRd, 0)} kN/m` },
@@ -653,9 +713,10 @@ export function steelChecks(i: WallInput, p: SheetPileProfile, fy: number, uls: 
     // Afschuifoppervlak per lijf: tw·(h − tf); per m wand één lijf per plankbreedte.
     const av = (p.webMm * (p.wallHeightMm - p.flangeMm)) / (p.widthMm / 1000), vRd = (av * fy) / Math.sqrt(3) / 1000 / g;
     checks.push({
-      id: "shear", label: t("checks.shear.label", "dwarskracht"), title: t("checks.shear.title", "Dwarskracht in het profiel"), article: "NEN-EN 1993-5 art. 5.2.2", load: vEd, resistance: vRd, unit: "kN/m", uc: vEd / vRd, passes: vEd <= vRd,
+      id: "shear", label: t("checks.shear.label", "dwarskracht") + where, title: t("checks.shear.title", "Dwarskracht in het profiel") + where, article: "NEN-EN 1993-5 art. 5.2.2", load: vEd, resistance: vRd, unit: "kN/m", uc: vEd / vRd, passes: vEd <= vRd,
       steps: [
-        vEdStep(uls, vEd, "kN/m"),
+        vEdStep(uls, vEd, "kN/m", peaks.shear.nap),
+        ...lossSteps,
         { symbol: "A_v", formula: "t_w · (h − t_f) / b", filled: `${n(p.webMm, 1)} · (${n(p.wallHeightMm, 0)} − ${n(p.flangeMm, 1)}) / ${n(p.widthMm / 1000, 3)}`, result: `${n(av, 0)} mm²/m` },
         { symbol: "V_pl;Rd", formula: "A_v · f_y / (√3 · γ_M0)", filled: `${n(av, 0)} · ${n(fy, 0)} / (√3 · ${n(g)})`, result: `${n(vRd, 0)} kN/m` },
       ],
@@ -749,6 +810,40 @@ export function groutAnchor(i: WallInput, uls: WallRun): { result: GroutResult; 
   return { result: { start, end, stiffnessKnPerM: stiffness, horizontalStiffness: supportStiffness(a), slipAngleDeg: slip, phiAvgDeg: phiAvg, requiredFreeM: required, forceKn: force, designForceKn: design, steelRdKn: steelRd, pulloutRkKn: pulloutRk, pulloutRdKn: pulloutRd, elongationMm: (force / stiffness) * 1000, layers }, checks, warnings };
 }
 
+/**
+ * Zones van de wand met het profiel na afroesting: één zone over de hele wand, of twee (boven en onder `zoneNap`). Een
+ * melding als een tabelwaarde ontbreekt of de afroesting niet te verwerken is.
+ */
+export function corrosionZones(i: WallInput, profile: SheetPileProfile): CorrosionZone[] | string {
+  const c = { ...DEFAULT_CORROSION, ...i.corrosion }, split = c.zoned && c.zoneNap < i.wallTopNap && c.zoneNap > i.toeNap;
+  const zoneLabel = (above: boolean) => (!split ? "" : above ? t("corrosion.zoneAbove", "boven NAP {{nap}} m", { nap: n(c.zoneNap) }) : t("corrosion.zoneBelow", "onder NAP {{nap}} m", { nap: n(c.zoneNap) }));
+  const parts: Array<[number, number, CorrosionFace, CorrosionFace, string]> = split
+    ? [[i.wallTopNap, c.zoneNap, c.high, c.low, zoneLabel(true)], [c.zoneNap, i.toeNap, c.highBelow, c.lowBelow, zoneLabel(false)]]
+    : [[i.wallTopNap, i.toeNap, c.high, c.low, ""]];
+  const out: CorrosionZone[] = [];
+  for (const [top, bottom, high, low, label] of parts) {
+    const where = (side: string) => (label ? `${side}, ${label}` : side);
+    const lh = requireLoss(high, where(t("corrosion.high", "hoge zijde"))), ll = requireLoss(low, where(t("corrosion.low", "lage zijde")));
+    if (typeof lh === "string") return lh;
+    if (typeof ll === "string") return ll;
+    // De hoge zijde is zijde 1 van de contour (+y), de lage zijde zijde 2; de doorsnede is daarin symmetrisch.
+    try { out.push({ topNap: top, bottomNap: bottom, label, lossHighMm: lh, lossLowMm: ll, sourceHigh: faceSourceText(high), sourceLow: faceSourceText(low), sheet: corrodedSheetPile(profile, lh, ll, c.classChoice) }); }
+    catch (e) { return e instanceof Error ? e.message : String(e); }
+  }
+  return out;
+}
+
+function corrosionWarnings(i: WallInput, zones: CorrosionZone[]): string[] {
+  const out: string[] = [], grade = findGrade(i.grade)!.grade;
+  if (zones.some((z) => z.sheet.basis === "approx")) out.push(t("corrosion.warnings.approx", "Afroesting zonder exacte contour van dit profiel: I en W zijn benaderd met (t_f − Δt) / t_f en A met de gemiddelde plaatdikte. Dat is een benadering; controleer de waarden met de gegevens van de fabrikant."));
+  for (const z of zones) {
+    const range = z.sheet.classRange[grade], where = z.label ? ` (${z.label})` : "";
+    if (range && range[1] > range[0]) out.push(t("corrosion.warnings.classUncertain", "Doorsnedeklasse na afroesting{{where}} bij {{grade}}: uit de catalogus volgt klasse {{from}} of {{to}}; gerekend met klasse {{cls}}. Kies onder Afroesting een klasse als u die kunt onderbouwen.", { where, grade, from: range[0], to: range[1], cls: z.sheet.profile.classes?.[grade] ?? "–" }));
+  }
+  if (!i.corrosion?.reducedStiffness) out.push(t("corrosion.warnings.stiffness", "De krachtsverdeling is gerekend met de buigstijfheid zonder afroesting; de afroesting telt alleen in de toetsen van de doorsnede."));
+  return out;
+}
+
 export function computeWall(raw: WallInput): WallResult {
   const i = normalizeWallInput(raw);
   const invalid = validate(i);
@@ -756,7 +851,12 @@ export function computeWall(raw: WallInput): WallResult {
   const section = resolveSection(i);
   if (typeof section === "string") return fail(section);
   if (!(i.eiFactor! > 0 && i.eiFactor! <= 1) || !(i.gammaWater! > 0)) return fail(t("errors.eiFactor", "De reductiefactor op EI ligt tussen 0 en 1 en het volumegewicht van water is groter dan 0."));
-  const ei = section.eiKnM2 * i.eiFactor!, length = i.wallTopNap - i.toeNap, anchored = hasAnchor(i);
+  const zones = section.profile ? corrosionZones(i, section.profile) : [];
+  if (typeof zones === "string") return fail(zones);
+  const corroded = zones.some((z) => z.sheet.basis !== "none"), co = i.corrosion!;
+  // Standaard de oorspronkelijke buigstijfheid; met het vinkje de kleinste na afroesting.
+  const eiCorroded = corroded && co.reducedStiffness ? Math.min(...zones.map((z) => wallStiffness(z.sheet.profile) ?? section.eiKnM2)) : section.eiKnM2;
+  const ei = eiCorroded * i.eiFactor!, length = i.wallTopNap - i.toeNap, anchored = hasAnchor(i);
   const ulsScenario = buildScenario(i, i.factors), slsScenario = buildScenario(i, REPRESENTATIVE);
   if (ulsScenario.low.surfaceNap <= i.toeNap) return fail(t("errors.toeAboveDesign", "Met de toeslag op de kerende hoogte komt het niveau aan de lage zijde onder de teen."));
 
@@ -773,7 +873,11 @@ export function computeWall(raw: WallInput): WallResult {
   if (!uls.stable) return fail(t("errors.unstable", "Geen evenwicht met rekenwaarden: de passieve weerstand aan de lage zijde is uitgeput. Vergroot de inheidiepte of voeg een steun toe.") + hint);
   if (!sls.stable) return fail(t("errors.unstableSls", "Geen evenwicht met representatieve waarden; controleer de invoer.") + hint);
 
-  const { checks, warnings } = section.profile ? steelChecks(i, section.profile, section.fyMPa, uls) : revetmentChecks(i, uls);
+  const { checks, warnings } = !section.profile ? revetmentChecks(i, uls) : !corroded ? steelChecks(i, section.profile, section.fyMPa, uls) : zones.reduce<{ checks: WallCheck[]; warnings: string[] }>((acc, z) => {
+    const part = steelChecks(i, z.sheet.profile, section.fyMPa, uls, z);
+    return { checks: [...acc.checks, ...part.checks], warnings: [...acc.warnings, ...part.warnings.filter((w) => !acc.warnings.includes(w))] };
+  }, { checks: [], warnings: [] });
+  if (corroded) warnings.push(...corrosionWarnings(i, zones));
   checks.push({
     id: "passive", label: t("checks.passive.label", "passieve weerstand"), title: t("checks.passive.title", "Aangesproken passieve weerstand"), article: "CUR 166", load: uls.passive.mobilisedKn, resistance: uls.passive.maxKn, unit: "kN/m", uc: uls.passive.ratio, passes: uls.passive.ratio <= 1,
     steps: [
@@ -819,7 +923,8 @@ export function computeWall(raw: WallInput): WallResult {
   if (i.construction === "posts") warnings.push(t("warnings.posts", "Palen met schotten: onder de schotten telt de passieve weerstand over {{f}} × de paalbreedte. Die factor voor ruimtelijke werking is invoer; controleer hem bij uw grond en paalafstand.", { f: n(i.posts.spatialFactor, 1) }));
   if (!section.profile && i.material === "timber") warnings.push(t("warnings.timber", "Hout: de verplaatsing is gerekend met E_0;mean zonder kruip (k_def); bij blijvende belasting in natte toepassing wordt de verplaatsing groter."));
   const governing = checks.reduce((a, b) => (b.uc > a.uc ? b : a));
-  return { ok: true, grout, section, eiKnM2: ei, lengthM: length, sls, uls, coefficients: coefficientRows, levels, blum: blumOut, checks, governing, passes: checks.every((c) => c.passes), warnings };
+  return { ok: true, grout, section, eiKnM2: ei, lengthM: length, sls, uls, coefficients: coefficientRows, levels, blum: blumOut, checks, governing, passes: checks.every((c) => c.passes), warnings,
+    corrosion: corroded ? { zones, reducedStiffness: co.reducedStiffness, eiOriginalKnM2: section.eiKnM2 * i.eiFactor! } : null };
 }
 
 // ─── Voorbeelden en laagvoorstel ──────────────────────────────────

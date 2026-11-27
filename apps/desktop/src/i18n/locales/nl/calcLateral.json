@@ -335,7 +335,9 @@
       "strainMethod": "M_Rd bij N_Ed uit het rekdiagram: parabool-rechthoek, betonstuik 3,5 ‰, betontrek niet meegerekend.",
       "tubeClassIs": "Doorsnedeklasse {{cls}}.",
       "tubeIgnored": "De buis werkt volgens de invoer niet mee: getoetst is de betonkern met zijn wapening, zonder de buis.",
-      "tubeYield": "f_y is de ingevoerde rekenwaarde f_yd van het buisstaal maal γ_M0 = 1,0; de wanddikte is de ingevoerde restwanddikte."
+      "tubeYield": "f_y is de ingevoerde rekenwaarde f_yd van het buisstaal maal γ_M0 = 1,0; de wanddikte is de ingevoerde restwanddikte.",
+      "corrosionTube": "Getoetst met de doorsnede na afroesting, ook de doorsnedeklasse en D/t. {{stiffness}}",
+      "corrosionSheet": "Getoetst met het profiel na afroesting ({{basis}}), met de doorsnedeklasse bij de verkleinde flensdikte. {{stiffness}}"
     },
     "notesTitle": "Uitgangspunten van de toetsing",
     "rows": {
@@ -359,7 +361,8 @@
       "shearS": "Dwarskracht met beugels",
       "shearSpacing": "Grootste beugelafstand",
       "sheetClass": "Doorsnedeklasse",
-      "tubeClass": "Doorsnedeklasse en lokale plooi"
+      "tubeClass": "Doorsnedeklasse en lokale plooi",
+      "corrosion": "Afroesting"
     },
     "status": {
       "fail": "voldoet niet",
@@ -691,5 +694,32 @@
       "stopped": "gestopt",
       "exhausted": "alle varianten doorgerekend"
     }
+  },
+  "corrosion": {
+    "title": "Afroesting",
+    "reducedStiffness": "EI na afroesting",
+    "classChoice": "Klasse na afroesting",
+    "classAuto": "Uit de catalogus (bij twijfel de ongunstigste)",
+    "classN": "Klasse {{cls}}",
+    "side1": "zijde 1",
+    "side2": "zijde 2",
+    "outer": "buitenzijde",
+    "inner": "binnenzijde",
+    "side1Label": "Zijde 1",
+    "side2Label": "Zijde 2",
+    "outerLabel": "Buitenzijde",
+    "innerLabel": "Binnenzijde",
+    "sides": "Aangetast",
+    "oneSide": "1 zijde",
+    "twoSides": "2 zijden",
+    "oneTube": "1 kant (buiten)",
+    "twoTube": "2 kanten (buiten en binnen)",
+    "eiReduced": "De paal is gerekend met EI na afroesting.",
+    "eiOriginal": "De paal is gerekend met de EI zonder afroesting.",
+    "basisContour": "uit de exacte contour",
+    "basisApprox": "benadering met de plaatdikten",
+    "tubeSummary": "Na afroesting: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Na afroesting: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "Vul bij afroesting de nominale wanddikte in. Dikteverlies per kant; de tabelwaarden zijn de aanbevolen waarden van NEN-EN 1993-5 tabel 4-1 en 4-2 en zijn niet tegen de normtekst of de Nederlandse bijlage gelegd. De afroesting telt in de materiaaltoetsing en de N–M-toets, ook in de doorsnedeklasse en D/t; in de krachtsverdeling alleen met het vinkje. Bij een gevulde buis roest alleen de buitenzijde."
   }
 }

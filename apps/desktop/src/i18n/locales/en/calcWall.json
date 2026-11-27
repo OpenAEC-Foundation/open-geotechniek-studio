@@ -53,7 +53,11 @@
     "drawing": "contour from the manufacturer DWG ({{manufacturer}})",
     "flange": "flange",
     "schematic": "schematic: only b, h and the plate thicknesses come from the table",
-    "table": "dimensions from the section table; interlock schematic"
+    "table": "dimensions from the section table; interlock schematic",
+    "highSide": "high side: corrosion {{mm}} mm",
+    "lowSide": "low side: corrosion {{mm}} mm",
+    "corroded": "dotted line: without corrosion",
+    "corrodedApprox": "corrosion approximated, not drawn"
   },
   "errors": {
     "anchor": "Check the anchor: angle smaller than 80°, centre-to-centre spacing and spring stiffness greater than 0.",
@@ -286,8 +290,8 @@
     "method1": "Spring model according to CUR 166: a beam on elastic supports with soil springs on both sides that start at the earth pressure at rest (K0 = 1 − sin φ′) and are limited by the active and the passive earth pressure; one modulus of subgrade reaction per layer.",
     "method2": "Earth pressure: active with the planar slip surface (Coulomb), passive with the planar slip surface up to δ = φ′/3 and above that with the curved slip surface according to NEN-EN 1997-1 annex C.2. Undrained layers with σh = σv ∓ 2·cu.",
     "method3": "Safety: design values of the soil parameters, an allowance on the retained height and optionally on the water levels; displacements with characteristic values.",
-    "method4": "Steel: bending, shear force and axial force according to NEN-EN 1993-5, without corrosion allowance. Timber: bending and shear according to NEN-EN 1995-1-1. Plastic and concrete: against the moment resistance that you enter.",
-    "method5": "Not in this version: staged construction and prestressing, more anchor rows, the step-by-step scheme 6.1 to 6.5 of CUR 166 with low and high stiffness, a calculation of the groundwater flow (excess pore water pressure can be entered), the stability of the deep slip plane for a grout anchor (Kranz), loads at a distance, sloping ground level and a sloping bed of the watercourse, vertical equilibrium, overall stability, the design of anchor, anchor plate and waling, corrosion, local buckling of cold-formed sections, creep of timber and plastic, the check of the deformation against a requirement, and bank revetments with an anchored post.",
+    "method4": "Steel: bending, shear force and axial force according to NEN-EN 1993-5, with corrosion where entered. Timber: bending and shear according to NEN-EN 1995-1-1. Plastic and concrete: against the moment resistance that you enter.",
+    "method5": "Not in this version: staged construction and prestressing, more anchor rows, the step-by-step scheme 6.1 to 6.5 of CUR 166 with low and high stiffness, a calculation of the groundwater flow (excess pore water pressure can be entered), the stability of the deep slip plane for a grout anchor (Kranz), loads at a distance, sloping ground level and a sloping bed of the watercourse, vertical equilibrium, overall stability, the design of anchor, anchor plate and waling, local buckling of cold-formed sections, creep of timber and plastic, the check of the deformation against a requirement, and bank revetments with an anchored post.",
     "method6": "Posts with boards: per m of wall with the bending stiffness of the post divided by the centre-to-centre spacing; below the boards the earth pressure over the post width and the passive resistance over the factor for three-dimensional effect times the post width. The board is a simply supported beam between the posts.",
     "mobilised": "Mobilised passive resistance",
     "notAllPass": "Not all checks pass.",
@@ -369,5 +373,45 @@
     "singleBranch": "The calculation used one modulus of subgrade reaction per layer. With the three-branch spring of CUR 166 (kh1, kh2, kh3) the displacements become larger and the moment a few per cent larger.",
     "timber": "Timber: the displacement is calculated with E_0;mean without creep (k_def); under permanent load in a wet application the displacement becomes larger.",
     "water": "The water pressure is taken as hydrostatic on both sides. If water flows under the toe or a deeper layer has a higher piezometric head, the water pressure on the low side is higher and the passive resistance lower: in a recalculated public case this gave a 25 % larger moment. In that case enter the excess pore water pressure per layer."
+  },
+  "corrosion": {
+    "title": "Corrosion",
+    "reducedStiffness": "EI after corrosion",
+    "classChoice": "Class after corrosion",
+    "classAuto": "From the catalogue (if in doubt the least favourable)",
+    "classN": "Class {{cls}}",
+    "high": "high side",
+    "low": "low side",
+    "highSide": "High side",
+    "lowSide": "Low side",
+    "above": "above",
+    "below": "below",
+    "zoneAbove": "above NAP {{nap}} m",
+    "zoneBelow": "below NAP {{nap}} m",
+    "zoned": "Different corrosion below a level (water line)",
+    "zoneNap": "Boundary between the zones",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "from the contour",
+    "basisApprox": "approximation",
+    "hint": "Thickness loss per side. The table values are the recommended values of NEN-EN 1993-5 tables 4-1 and 4-2 and have not been checked against the code text or the Dutch annex; compacted fill is half of non-compacted. Corrosion counts in the section checks, with the section class at the reduced flange thickness; not in the earth pressure, and in the force distribution only with the tick box. With two zones each zone is checked with the largest moment and shear force in that zone.",
+    "resultTitle": "Section after corrosion",
+    "zone": "Zone",
+    "class": "class",
+    "wholeWall": "whole wall",
+    "eiReduced": "Force distribution with EI after corrosion: {{ei}} kNm²/m (without corrosion {{ei0}}).",
+    "eiOriginal": "Force distribution with the EI without corrosion; corrosion counts in the section checks.",
+    "steps": {
+      "loss": "corrosion high side + low side",
+      "thickness": "plate thicknesses after corrosion",
+      "wContour": "from the contour with the plate thickness reduced on both sides",
+      "wApprox": "approximation: W · (t_f − Δt) / t_f",
+      "classShift": "(after corrosion; without corrosion class {{cls}})"
+    },
+    "warnings": {
+      "class4": "After corrosion{{where}} the section is class 4 or has no section modulus; bending and axial force are not checked there.",
+      "approx": "Corrosion without an exact contour of this profile: I and W are approximated with (t_f − Δt) / t_f and A with the mean plate thickness. This is an approximation; check the values with the manufacturer's data.",
+      "classUncertain": "Section class after corrosion{{where}} for {{grade}}: the catalogue gives class {{from}} or {{to}}; calculated with class {{cls}}. Choose a class under Corrosion if you can substantiate it.",
+      "stiffness": "The force distribution is calculated with the bending stiffness without corrosion; corrosion only counts in the section checks."
+    }
   }
 }

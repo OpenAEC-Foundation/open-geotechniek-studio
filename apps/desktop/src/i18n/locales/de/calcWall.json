@@ -53,7 +53,11 @@
     "drawing": "Kontur aus der Hersteller-DWG ({{manufacturer}})",
     "flange": "Flansch",
     "schematic": "schematisch: nur b, h und die Blechdicken stammen aus der Tabelle",
-    "table": "Maße aus der Profiltabelle; Schloss schematisch"
+    "table": "Maße aus der Profiltabelle; Schloss schematisch",
+    "highSide": "hohe Seite: Abrostung {{mm}} mm",
+    "lowSide": "niedrige Seite: Abrostung {{mm}} mm",
+    "corroded": "gepunktet: ohne Abrostung",
+    "corrodedApprox": "Abrostung genähert, nicht gezeichnet"
   },
   "errors": {
     "anchor": "Prüfen Sie den Anker: Winkel kleiner als 80°, Achsabstand und Federsteifigkeit größer als 0.",
@@ -286,8 +290,8 @@
     "method1": "Federmodell nach CUR 166: ein elastisch gebetteter Balken mit Bodenfedern auf beiden Seiten, die beim Erdruhedruck (K0 = 1 − sin φ′) beginnen und durch den aktiven und den passiven Erddruck begrenzt sind; ein Bettungsmodul je Schicht.",
     "method2": "Erddruck: aktiv mit der ebenen Gleitfläche (Coulomb), passiv mit der ebenen Gleitfläche bis δ = φ′/3 und darüber mit der gekrümmten Gleitfläche nach NEN-EN 1997-1 Anhang C.2. Undränierte Schichten mit σh = σv ∓ 2·cu.",
     "method3": "Sicherheit: Bemessungswerte der Bodenkennwerte, ein Zuschlag auf den Geländesprung und gegebenenfalls auf die Wasserstände; Verschiebungen mit charakteristischen Werten.",
-    "method4": "Stahl: Biegung, Querkraft und Normalkraft nach NEN-EN 1993-5, ohne Korrosionszuschlag. Holz: Biegung und Schub nach NEN-EN 1995-1-1. Kunststoff und Beton: gegen das aufnehmbare Moment, das Sie eingeben.",
-    "method5": "Nicht in dieser Version: Bauphasen und Vorspannung, mehrere Ankerlagen, das Schrittschema 6.1 bis 6.5 von CUR 166 mit niedriger und hoher Steifigkeit, eine Berechnung der Grundwasserströmung (Porenwasserüberdruck kann eingegeben werden), die Standsicherheit in der tiefen Gleitfuge bei einem Verpressanker (Kranz), Lasten in einem Abstand, geneigtes Gelände und eine geneigte Gewässersohle, vertikales Gleichgewicht, Gesamtstandsicherheit, die Bemessung von Anker, Ankerplatte und Gurt, Korrosion, Beulen kaltgeformter Profile, Kriechen von Holz und Kunststoff, der Nachweis der Verformung gegen eine Anforderung und Uferbefestigungen mit einem verankerten Pfahl.",
+    "method4": "Stahl: Biegung, Querkraft und Normalkraft nach NEN-EN 1993-5, mit Abrostung, sofern eingegeben. Holz: Biegung und Schub nach NEN-EN 1995-1-1. Kunststoff und Beton: gegen das aufnehmbare Moment, das Sie eingeben.",
+    "method5": "Nicht in dieser Version: Bauphasen und Vorspannung, mehrere Ankerlagen, das Schrittschema 6.1 bis 6.5 von CUR 166 mit niedriger und hoher Steifigkeit, eine Berechnung der Grundwasserströmung (Porenwasserüberdruck kann eingegeben werden), die Standsicherheit in der tiefen Gleitfuge bei einem Verpressanker (Kranz), Lasten in einem Abstand, geneigtes Gelände und eine geneigte Gewässersohle, vertikales Gleichgewicht, Gesamtstandsicherheit, die Bemessung von Anker, Ankerplatte und Gurt, Beulen kaltgeformter Profile, Kriechen von Holz und Kunststoff, der Nachweis der Verformung gegen eine Anforderung und Uferbefestigungen mit einem verankerten Pfahl.",
     "method6": "Pfähle mit Brettern: je m Wand mit der Biegesteifigkeit des Pfahls geteilt durch den Achsabstand; unter den Brettern der Erddruck über die Pfahlbreite und der passive Widerstand über den Faktor für räumliche Wirkung mal die Pfahlbreite. Das Brett ist ein Einfeldträger zwischen den Pfählen.",
     "mobilised": "Mobilisierter passiver Widerstand",
     "notAllPass": "Nicht alle Nachweise sind erfüllt.",
@@ -369,5 +373,45 @@
     "singleBranch": "Es wurde mit einem Bettungsmodul je Schicht gerechnet. Mit der dreiteiligen Feder nach CUR 166 (kh1, kh2, kh3) werden die Verschiebungen größer und das Moment um einige Prozent größer.",
     "timber": "Holz: Die Verschiebung ist mit E_0;mean ohne Kriechen (k_def) berechnet; bei ständiger Last in nasser Anwendung wird die Verschiebung größer.",
     "water": "Der Wasserdruck ist auf beiden Seiten hydrostatisch angesetzt. Wird der Fuß unterströmt oder hat eine tiefere Schicht eine höhere Standrohrspiegelhöhe, dann ist der Wasserdruck auf der tiefen Seite höher und der passive Widerstand geringer: In einem nachgerechneten öffentlichen Fall ergab das ein um 25 % größeres Moment. Geben Sie in diesem Fall den Porenwasserüberdruck je Schicht ein."
+  },
+  "corrosion": {
+    "title": "Abrostung",
+    "reducedStiffness": "EI nach Abrostung",
+    "classChoice": "Klasse nach Abrostung",
+    "classAuto": "Aus dem Katalog (im Zweifel die ungünstigste)",
+    "classN": "Klasse {{cls}}",
+    "high": "hohe Seite",
+    "low": "niedrige Seite",
+    "highSide": "Hohe Seite",
+    "lowSide": "Niedrige Seite",
+    "above": "oben",
+    "below": "unten",
+    "zoneAbove": "über NAP {{nap}} m",
+    "zoneBelow": "unter NAP {{nap}} m",
+    "zoned": "Andere Abrostung unter einem Niveau (Wasserlinie)",
+    "zoneNap": "Grenze der Zonen",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "aus der Kontur",
+    "basisApprox": "Näherung",
+    "hint": "Dickenverlust je Seite. Die Tabellenwerte sind die empfohlenen Werte von NEN-EN 1993-5 Tabelle 4-1 und 4-2 und wurden nicht gegen den Normtext oder den niederländischen Anhang geprüft; verdichtete Auffüllung ist die Hälfte von nicht verdichtet. Die Abrostung zählt in den Querschnittsnachweisen, mit der Querschnittsklasse bei der verringerten Flanschdicke; nicht im Erddruck, und in der Schnittgrößenverteilung nur mit dem Häkchen. Bei zwei Zonen wird jede Zone mit dem größten Moment und der größten Querkraft in dieser Zone nachgewiesen.",
+    "resultTitle": "Querschnitt nach Abrostung",
+    "zone": "Zone",
+    "class": "Klasse",
+    "wholeWall": "ganze Wand",
+    "eiReduced": "Schnittgrößen mit EI nach Abrostung: {{ei}} kNm²/m (ohne Abrostung {{ei0}}).",
+    "eiOriginal": "Schnittgrößen mit EI ohne Abrostung; die Abrostung zählt in den Querschnittsnachweisen.",
+    "steps": {
+      "loss": "Abrostung hohe Seite + niedrige Seite",
+      "thickness": "Blechdicken nach Abrostung",
+      "wContour": "aus der Kontur mit beidseitig verringerter Blechdicke",
+      "wApprox": "Näherung: W · (t_f − Δt) / t_f",
+      "classShift": "(nach Abrostung; ohne Abrostung Klasse {{cls}})"
+    },
+    "warnings": {
+      "class4": "Nach Abrostung{{where}} ist der Querschnitt Klasse 4 oder hat kein Widerstandsmoment; Biegung und Normalkraft sind dort nicht nachgewiesen.",
+      "approx": "Abrostung ohne exakte Kontur dieses Profils: I und W sind mit (t_f − Δt) / t_f und A mit der mittleren Blechdicke genähert. Das ist eine Näherung; prüfen Sie die Werte mit den Herstellerangaben.",
+      "classUncertain": "Querschnittsklasse nach Abrostung{{where}} bei {{grade}}: aus dem Katalog folgt Klasse {{from}} oder {{to}}; gerechnet mit Klasse {{cls}}. Wählen Sie unter Abrostung eine Klasse, wenn Sie sie begründen können.",
+      "stiffness": "Die Schnittgrößen sind mit der Biegesteifigkeit ohne Abrostung gerechnet; die Abrostung zählt nur in den Querschnittsnachweisen."
+    }
   }
 }

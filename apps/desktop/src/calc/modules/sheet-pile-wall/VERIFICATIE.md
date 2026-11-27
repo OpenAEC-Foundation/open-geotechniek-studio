@@ -371,6 +371,7 @@ de wateroverspanning het zwaarst telt.
 | NEN-EN 338 sterkteklassen (fm;k, fv;k, E0;mean) | C18 tot D70 | uit kennis van de norm; aanpasbaar |
 | kmod klimaatklasse 3 (0,50), γM = 1,3, kcr = 0,67 | standaard | uit kennis van NEN-EN 1995-1-1; kcr volgens de nationale bijlage niet nagelopen |
 | Factor ruimtelijke werking 3 (Broms) | standaard, invoer | geldt voor een losse paal in niet-cohesieve grond; voor klei en voor palen dicht bij elkaar niet onderbouwd |
+| Afroesting: dikteverlies NEN-EN 1993-5 tabel 4-1 en 4-2, doorsnedeklasse met de verkleinde flensdikte (grenzen tabel 5-1: U 37/49, Z 45/66) | hoofdstuk 11 | aanbevolen waarden uit kennis van de norm, niet tegen de normtekst of de Nederlandse bijlage gelegd; de klasse volgt uit de klassen van de catalogus en is bij twijfel de ongunstigste |
 | Vorm van het stalen profiel in de tekeningen | hoofdstuk 9 | 122 profielen met de exacte contour uit de fabriekstekening, getoetst op A, I, W_el en W_pl; de overige 62 schematisch: b, h, t en s uit de tabel, flensbreedte en lijfhoek afgeleid uit A en I, slotvorm schematisch |
 
 ## 8. Niet in deze versie
@@ -384,7 +385,7 @@ de wateroverspanning het zwaarst telt.
 - Een berekening van de grondwaterstroming om de teen: de wateroverspanning per laag is invoer.
 - Verticaal evenwicht, algehele stabiliteit, opbarsten en onderloopsheid.
 - Ontwerp van ankerstaaf, groutlichaam, ankerschot en gording; stabiliteit van het ankerlichaam.
-- Corrosie, plooi en doorsnedeklasse 4 van koudgevormde profielen, reductie van het moment bij
+- Plooi en doorsnedeklasse 4 van koudgevormde profielen, reductie van het moment bij
   hoge dwarskracht, knik.
 - Kruip van hout en kunststof (kdef), aantasting van hout op de waterlijn, de toets van de
   vervorming tegen een eis.
@@ -494,8 +495,9 @@ contour berekend, als controle op de tabelwaarde die de toets gebruikt. Tests:
 Wat de verschillen verklaart:
 
 - **Nr. 3:** de bron rekent met afroesting (1,2 mm per zijde in 100 jaar): 122,46 kNm/m is 0,55
-  van het plastische moment zonder afroesting. De module kent geen afroesting (hoofdstuk 8); haar
-  unity check (0,39) ligt daarom lager dan die van de bron (0,73). Moment en dwarskracht uit de
+  van het plastische moment zonder afroesting. Zonder afroesting ligt de unity check van de module
+  (0,39) daarom lager dan die van de bron (0,73); met afroesting komt de module op 0,70 (hoofdstuk
+  11.3). Moment en dwarskracht uit de
   module liggen binnen 2,5 % van de bron (hoofdstuk 6.2).
 - **Nr. 1:** de bron toetst elastisch: 432 kNm/m is precies W_el · f_y (1 800 · 240). De module
   rekent bij klasse 2 plastisch en komt hoger uit. Waarom de bron elastisch rekent, staat niet in
@@ -511,3 +513,113 @@ Niet opgenomen: nr. 14 (AZ 24-700 en AZ 13-770 in S240GP). De bron geeft M_Rd = 
 uit de tabel volgt 2 430 · 240 = 583 en 1 300 · 240 = 312 kNm/m elastisch. Het verschil komt
 vermoedelijk uit afroesting en een reductie in de bron, maar dat staat niet in het uittreksel en is
 niet nagegaan.
+
+## 11. Verificatie afroesting
+
+Rekenkern: `src/calc/shared/corrosion.ts` (gedeeld met de horizontaal belaste paal). Invoerblok
+"Afroesting" (`panels.tsx`), verwerking in `compute.ts` (`corrosionZones`, `steelChecks` met een
+zone). Tests: `src/calc/shared/corrosion.test.ts`, `corrosion.test.ts` in deze map; de tabel hieronder
+staat ook in de app, in het uitklapblok "Verificatie" onder Afroesting, en wordt daar live met de
+huidige code doorgerekend (`shared/corrosion-verification.ts`, `shared/CorrosionVerification.tsx`).
+
+### 11.1 Wat de module doet
+
+- **Dikteverlies per zijde** (hoge en lage zijde), over de hele wand of in twee zones boven en onder
+  een niveau (bijvoorbeeld de waterlijn). Per zijde: geen, een tabelwaarde of een eigen waarde.
+- **Tabelwaarden**: NEN-EN 1993-5 tabel 4-1 (grond) en 4-2 (water), de aanbevolen waarden, per
+  ontwerplevensduur 5, 25, 50, 75 en 100 jaar:
+
+  | Tabel | Milieu | 5 | 25 | 50 | 75 | 100 |
+  |---|---|---|---|---|---|---|
+  | 4-1 | onverstoorde natuurlijke grond (zand, silt, klei) | 0,00 | 0,30 | 0,60 | 0,90 | 1,20 |
+  | 4-1 | verontreinigde natuurlijke grond en industrieterrein | 0,15 | 0,75 | 1,50 | 2,25 | 3,00 |
+  | 4-1 | agressieve natuurlijke grond (moeras, veen) | 0,20 | 1,00 | 1,75 | 2,50 | 3,25 |
+  | 4-1 | aanvulling, niet verdicht, niet agressief | 0,18 | 0,70 | 1,20 | 1,70 | 2,20 |
+  | 4-1 | aanvulling, niet verdicht, agressief (as, slakken) | 0,50 | 2,00 | 3,25 | 4,50 | 5,75 |
+  | 4-1 | aanvulling, verdicht (niet agressief en agressief) | de helft van niet verdicht (opmerking bij de tabel) | | | | |
+  | 4-2 | zoet water (rivier, kanaal), zone van sterke aantasting (waterlijn) | 0,15 | 0,55 | 0,90 | 1,15 | 1,40 |
+  | 4-2 | zeer verontreinigd zoet water, zone van sterke aantasting (waterlijn) | 0,30 | 1,30 | 2,30 | 3,30 | 4,30 |
+  | 4-2 | zeewater, gematigd klimaat, zone van sterke aantasting (laagwater en spatzone) | 0,55 | 1,90 | 3,75 | 5,60 | 7,50 |
+  | 4-2 | zeewater, gematigd klimaat, blijvend onder water of getijdezone | 0,25 | 0,90 | 1,75 | 2,60 | 3,50 |
+
+  Waarden in mm per blootgestelde zijde. **Uit kennis van de norm overgenomen en niet tegen de
+  normtekst of de Nederlandse bijlage gelegd.** Alle cellen zijn ingevuld omdat de waarden in de
+  openbare literatuur breed zo worden aangehaald; de rij "onverstoorde grond, 100 jaar = 1,20 mm" is
+  bovendien precies de waarde die referentie nr. 3 gebruikt. Niet opgenomen: zoet water blijvend onder
+  water (de tabel geeft daarvoor geen aparte rij) en atmosferische afroesting; gebruik daarvoor een
+  eigen waarde.
+- **Doorsnede met een exacte contour** (122 profielen): elke rand van de omtrek schuift loodrecht naar
+  binnen over het verlies van de zijde waar hij naar toe kijkt (hoge zijde = +y van de contour, lage
+  zijde = −y; een rand precies loodrecht op de as blijft staan). Hoekpunten zijn de snijpunten van de
+  verschoven randen. A, I, W_el en W_pl volgen opnieuw uit de verkleinde omtrek; de verhouding
+  verkleind / onverkleind wordt toegepast op de tabelwaarden, zodat de toets op de profieltabel
+  aansluit. De doorsnede is symmetrisch, dus welke zijde "hoog" is maakt voor A, I en W niet uit.
+- **Zonder exacte contour** (benadering, in de uitdraai en een melding zo genoemd): I, W_el en W_pl
+  maal (t_f − Δt) / t_f, A maal (t_m − Δt) / t_m met t_m = (t_f + t_w) / 2, Δt het verlies van beide
+  zijden samen.
+- **Plaatdikten, hoogte**: t_f en t_w worden Δt kleiner, h ook (beide buitenvezels). Dwarskracht en
+  normaalkracht rekenen met de verkleinde waarden.
+- **Doorsnedeklasse**: bepaald met de verkleinde flensdikte, b / (t_f · ε) volgens NEN-EN 1993-5
+  tabel 5-1. De bibliotheek geeft b niet en de afgeleide of gemeten flensbreedte past niet goed bij de
+  klassen van de catalogus (bij de U-profielen met een contour lag de gemeten b/t steeds 5 tot 15 %
+  boven wat de catalogus toelaat; de definitie van b of de grenzen zijn dus niet met zekerheid na te
+  bootsen). Daarom wordt het bereik van b / t_f afgeleid uit de klassen die de catalogus bij de
+  verschillende staalsoorten geeft (met de grenzen 37/49 voor U en 45/66 voor Z, uit kennis van de
+  norm); na afroesting wordt dat bereik t_f / (t_f − Δt) maal zo groot. Omdat alleen de verhouding van
+  de grenzen telt, maakt een fout in de absolute grenzen weinig uit. Valt het bereik in twee klassen,
+  dan rekent de module met de ongunstigste en meldt zij dat; de gebruiker kan een klasse kiezen
+  ("Klasse na afroesting"). De klasse wordt nooit gunstiger dan die van de catalogus. Dat de klasse
+  met de verkleinde dikte wordt bepaald, volgt de gangbare praktijk; het artikel is niet tegen de
+  normtekst gelegd.
+- **Waar het telt**: alleen in de toetsen van de doorsnede (buiging, buiging met normaalkracht,
+  dwarskracht). Niet in de gronddruk. De krachtsverdeling rekent standaard met de EI zonder
+  afroesting; met het vinkje "EI na afroesting" met de kleinste EI van de zones.
+- **Zones**: elke zone wordt getoetst met het grootste moment en de grootste dwarskracht binnen die
+  zone (de normaalkracht is over de wand gelijk genomen).
+- **Dikteverlies 0** geeft exact de uitkomst zonder afroesting (test).
+
+### 11.2 Verificatietabel
+
+| Geval | Invoer | Grootheid | Verwacht | Module | Verschil | Oordeel | Bron of formule |
+|---|---|---|---|---|---|---|---|
+| D1 | plaat 1000 × 10 mm, Δ 1,0 / 2,0 mm | A [cm²/m] | 70 | 70 | 0,00 % | in orde | 1 000 · 7 mm |
+| D1 | plaat 1000 × 10 mm, Δ 1,0 / 2,0 mm | I [cm⁴/m] | 2,85833 | 2,85833 | 0,00 % | in orde | b · t³ / 12 |
+| D1 | plaat 1000 × 10 mm, Δ 1,0 / 2,0 mm | W_el [cm³/m] | 8,16667 | 8,16667 | 0,00 % | in orde | b · t² / 6 |
+| D1 | plaat 1000 × 10 mm, Δ 1,0 / 2,0 mm | W_pl [cm³/m] | 12,25 | 12,25 | 0,00 % | in orde | b · t² / 4 |
+| D1 | plaat 1000 × 10 mm, Δ 1,0 / 2,0 mm | zwaartelijn [mm] | 0,5 | 0,5 | 0,00 % | in orde | (4 − 3) / 2 |
+| D2 | AZ 18-700, Δ 1,2 / 1,2 mm | A uit de contour [cm²/m] | 104,163 | 104,132 | -0,03 % | in orde | A − Δ₁ L₊ − Δ₂ L₋ |
+| D2 | AZ 18-700, Δ 1,2 / 1,2 mm | t_f [mm] | 6,6 | 6,6 | 0,00 % | in orde | t_f − Δ₁ − Δ₂ |
+| D2 | AZ 18-700, Δ 1,2 / 1,2 mm | W_el [cm³/m] | 1320 | 1363,17 | 3,27 % | in orde | W · (t_f − Δ) / t_f, dunwandig |
+| D3 | PU 18, Δ 2 / 0 mm | A uit de contour [cm²/m] | 131,321 | 131,157 | -0,12 % | in orde | A − Δ₁ L₊ − Δ₂ L₋ |
+| D3 | PU 18, Δ 2 / 0 mm | t_f [mm] | 9,2 | 9,2 | 0,00 % | in orde | t_f − Δ₁ − Δ₂ |
+| D3 | PU 18, Δ 2 / 0 mm | W_el [cm³/m] | 1478,57 | 1480,91 | 0,16 % | in orde | W · (t_f − Δ) / t_f, dunwandig |
+| D4 | GU 8N S240GP, Δ 1,2 / 1,2 mm, klasse 3 | M_c;Rd [kNm/m] | 122,46 | 125,51 | 2,49 % | in orde | referentie nr. 3 (2022) |
+| D4 | GU 8N S240GP, Δ 1,2 / 1,2 mm | klasse na afroesting, laagst | 3 | 3 | 0,00 % | in orde | b/t_f uit de catalogus · 7,5 / 5,1 |
+| D4 | GU 8N S240GP, Δ 1,2 / 1,2 mm | klasse na afroesting, automatisch | 4 | 4 | 0,00 % | in orde | ongunstigste van 3 en 4 |
+| D5 | GU 8N, Δ 0 | W_pl [cm³/m] | 935 | 935 | 0,00 % | in orde | tabel |
+
+D1 is met de hand: de plaat loopt na afroesting van y = −3 tot +4 mm. D2 en D3 toetsen het
+naar binnen schuiven van de exacte contour tegen een handformule (A uit de lengte van de randen per
+zijde maal het verlies) en W tegen de dunwandige vuistregel W · (t_f − Δt) / t_f; die laatste
+verkleint alleen de flens en is daarom een grovere controle (6 %).
+
+### 11.3 Referentie nr. 3 opnieuw gerekend
+
+GU 8N in S240GP, 1,2 mm per zijde in 100 jaar (in de module: tabel 4-1, onverstoorde grond, 100
+jaar), invoer verder als hoofdstuk 6.2 met de rekenwaarden van de bron (`corrosion.test.ts`).
+
+| | Bron | Module |
+|---|---|---|
+| W_el na afroesting | niet gegeven | 770 → 523 cm³/m (uit de contour; benadering 524) |
+| W_pl na afroesting | niet gegeven | 935 → 628 cm³/m |
+| doorsnedeklasse | elastisch getoetst (af te leiden uit 122,46 ≈ W_el · f_y) | catalogus klasse 2; na afroesting 3 of 4 (b/t_f · 7,5 / 5,1) |
+| M_c;Rd | 122,46 kNm/m | 125,5 kNm/m met klasse 3 (+2,5 %); zonder keuze klasse 4: geen buigtoets, wel een melding |
+| u.c. buiging | 89,75 / 122,46 = 0,73 | 87,7 / 125,5 = 0,70 |
+
+Het verschil van 2,5 % komt uit het weerstandsmoment na afroesting: de bron gaat uit van
+122,46 / 240 = 510 cm³/m, de module rekent uit de exacte contour 523 cm³/m. 510 / 770 = 0,663;
+de contour geeft 0,679 en de vuistregel (7,5 − 2,4) / 7,5 = 0,680. Vermoedelijk rekent de bron met
+een vaste of eigen reductie op W_el (of met een iets ander uitgangsprofiel); het uittreksel geeft de
+tussenstap niet, dus dat is niet nagegaan. Dat de bron elastisch rekent past bij klasse 3 na
+afroesting; de module kan uit de catalogus niet vaststellen of het 3 of 4 is en kiest zonder keuze
+van de gebruiker voor 4.

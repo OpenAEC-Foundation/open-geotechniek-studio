@@ -53,7 +53,11 @@
     "drawing": "kontur fra producentens DWG ({{manufacturer}})",
     "flange": "flange",
     "schematic": "skematisk: kun b, h og pladetykkelserne stammer fra tabellen",
-    "table": "mål fra profiltabellen; låsen skematisk"
+    "table": "mål fra profiltabellen; låsen skematisk",
+    "highSide": "høj side: korrosion {{mm}} mm",
+    "lowSide": "lav side: korrosion {{mm}} mm",
+    "corroded": "prikket: uden korrosion",
+    "corrodedApprox": "korrosion tilnærmet, ikke tegnet"
   },
   "errors": {
     "anchor": "Kontrollér ankeret: vinkel mindre end 80°, centerafstand og fjederstivhed større end 0.",
@@ -286,8 +290,8 @@
     "method1": "Fjedermodel efter CUR 166: en elastisk understøttet bjælke med jordfjedre på begge sider, som starter ved hviletrykket (K0 = 1 − sin φ′) og er begrænset af det aktive og det passive jordtryk; ét ballasttal pr. lag.",
     "method2": "Jordtryk: aktivt med plan glideflade (Coulomb), passivt med plan glideflade op til δ = φ′/3 og derover med krum glideflade efter NEN-EN 1997-1 anneks C.2. Udrænede lag med σh = σv ∓ 2·cu.",
     "method3": "Sikkerhed: regningsmæssige værdier for jordparametrene, et tillæg på støttehøjden og eventuelt på vandstandene; flytninger med karakteristiske værdier.",
-    "method4": "Stål: bøjning, forskydningskraft og normalkraft efter NEN-EN 1993-5, uden korrosionstillæg. Træ: bøjning og forskydning efter NEN-EN 1995-1-1. Plast og beton: mod den momentbæreevne, som I angiver.",
-    "method5": "Ikke med i denne version: faseopdeling og forspænding, flere ankerrækker, trinene 6.1 til og med 6.5 i CUR 166 med lav og høj stivhed, en beregning af grundvandsstrømningen (poreovertryk kan derimod angives), stabiliteten af den dybe brudlinje ved et injiceret anker (Kranz), laster på afstand, skrånende terræn og skrånende bund, lodret ligevægt, totalstabilitet, dimensionering af anker, ankerplade og stræk, korrosion, foldning af koldformede profiler, krybning i træ og plast, kontrol af deformationen mod et krav samt bolværker med forankret pæl.",
+    "method4": "Stål: bøjning, forskydningskraft og normalkraft efter NEN-EN 1993-5, med korrosion, hvis den er angivet. Træ: bøjning og forskydning efter NEN-EN 1995-1-1. Plast og beton: mod den momentbæreevne, som I angiver.",
+    "method5": "Ikke med i denne version: faseopdeling og forspænding, flere ankerrækker, trinene 6.1 til og med 6.5 i CUR 166 med lav og høj stivhed, en beregning af grundvandsstrømningen (poreovertryk kan derimod angives), stabiliteten af den dybe brudlinje ved et injiceret anker (Kranz), laster på afstand, skrånende terræn og skrånende bund, lodret ligevægt, totalstabilitet, dimensionering af anker, ankerplade og stræk, foldning af koldformede profiler, krybning i træ og plast, kontrol af deformationen mod et krav samt bolværker med forankret pæl.",
     "method6": "Pæle med brædder: pr. m væg med pælens bøjningsstivhed divideret med centerafstanden; under brædderne jordtrykket over pælebredden og den passive modstand over faktoren for rumlig virkning gange pælebredden. Brættet er en bjælke på to understøtninger mellem pælene.",
     "mobilised": "Mobiliseret passiv modstand",
     "notAllPass": "Ikke alle kontroller er opfyldt.",
@@ -369,5 +373,45 @@
     "singleBranch": "Der er regnet med ét ballasttal pr. lag. Med den tredelte fjeder fra CUR 166 (kh1, kh2, kh3) bliver flytningerne større og momentet nogle få procent større.",
     "timber": "Træ: flytningen er beregnet med E_0;mean uden krybning (k_def); ved permanent last i våd anvendelse bliver flytningen større.",
     "water": "Vandtrykket er regnet hydrostatisk på begge sider. Strømmer der vand under spidsen, eller har et dybere lag et højere trykniveau, er vandtrykket på den lave side højere og den passive modstand lavere: i et efterregnet offentligt tilfælde gav det et 25 % større moment. Angiv i så fald poreovertrykket pr. lag."
+  },
+  "corrosion": {
+    "title": "Korrosion",
+    "reducedStiffness": "EI efter korrosion",
+    "classChoice": "Klasse efter korrosion",
+    "classAuto": "Fra kataloget (ved tvivl den mest ugunstige)",
+    "classN": "Klasse {{cls}}",
+    "high": "høj side",
+    "low": "lav side",
+    "highSide": "Høj side",
+    "lowSide": "Lav side",
+    "above": "over",
+    "below": "under",
+    "zoneAbove": "over NAP {{nap}} m",
+    "zoneBelow": "under NAP {{nap}} m",
+    "zoned": "Anden korrosion under et niveau (vandlinje)",
+    "zoneNap": "Grænse mellem zonerne",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "fra konturen",
+    "basisApprox": "tilnærmelse",
+    "hint": "Tykkelsestab pr. side. Tabelværdierne er de anbefalede værdier i NEN-EN 1993-5 tabel 4-1 og 4-2 og er ikke holdt op mod standardteksten eller det nederlandske anneks; komprimeret fyld er halvdelen af ikke komprimeret. Korrosionen tæller i eftervisningen af tværsnittet, med tværsnitsklassen ved den reducerede flangetykkelse; ikke i jordtrykket, og i kraftfordelingen kun med fluebenet. Med to zoner eftervises hver zone med det største moment og den største forskydningskraft i zonen.",
+    "resultTitle": "Tværsnit efter korrosion",
+    "zone": "Zone",
+    "class": "klasse",
+    "wholeWall": "hele væggen",
+    "eiReduced": "Kraftfordeling med EI efter korrosion: {{ei}} kNm²/m (uden korrosion {{ei0}}).",
+    "eiOriginal": "Kraftfordeling med EI uden korrosion; korrosionen tæller i eftervisningen af tværsnittet.",
+    "steps": {
+      "loss": "korrosion høj side + lav side",
+      "thickness": "pladetykkelser efter korrosion",
+      "wContour": "fra konturen med pladetykkelsen reduceret på begge sider",
+      "wApprox": "tilnærmelse: W · (t_f − Δt) / t_f",
+      "classShift": "(efter korrosion; uden korrosion klasse {{cls}})"
+    },
+    "warnings": {
+      "class4": "Efter korrosion{{where}} er tværsnittet klasse 4 eller har intet modstandsmoment; bøjning og normalkraft er ikke eftervist der.",
+      "approx": "Korrosion uden eksakt kontur af denne profil: I og W er tilnærmet med (t_f − Δt) / t_f og A med den gennemsnitlige pladetykkelse. Det er en tilnærmelse; kontroller værdierne med producentens data.",
+      "classUncertain": "Tværsnitsklasse efter korrosion{{where}} for {{grade}}: kataloget giver klasse {{from}} eller {{to}}; beregnet med klasse {{cls}}. Vælg en klasse under Korrosion, hvis I kan begrunde den.",
+      "stiffness": "Kraftfordelingen er beregnet med bøjningsstivheden uden korrosion; korrosionen tæller kun i eftervisningen af tværsnittet."
+    }
   }
 }

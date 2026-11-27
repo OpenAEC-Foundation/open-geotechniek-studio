@@ -53,7 +53,11 @@
     "drawing": "contour uit fabrieks-DWG ({{manufacturer}})",
     "flange": "flens",
     "schematic": "schematisch: alleen b, h en de plaatdikten komen uit de tabel",
-    "table": "maten uit de profieltabel; slot schematisch"
+    "table": "maten uit de profieltabel; slot schematisch",
+    "highSide": "hoge zijde: afroesting {{mm}} mm",
+    "lowSide": "lage zijde: afroesting {{mm}} mm",
+    "corroded": "stippellijn: zonder afroesting",
+    "corrodedApprox": "afroesting benaderd, niet getekend"
   },
   "errors": {
     "anchor": "Controleer het anker: hoek kleiner dan 80°, hart-op-hartafstand en veerstijfheid groter dan 0.",
@@ -286,8 +290,8 @@
     "method1": "Verenmodel volgens CUR 166: een elastisch ondersteunde ligger met aan beide zijden grondveren die bij de neutrale gronddruk (K0 = 1 − sin φ′) beginnen en begrensd zijn door de actieve en de passieve gronddruk; één beddingsconstante per laag.",
     "method2": "Gronddruk: actief met het rechte glijvlak (Coulomb), passief met het rechte glijvlak tot δ = φ′/3 en daarboven met het gekromde glijvlak volgens NEN-EN 1997-1 bijlage C.2. Ongedraineerde lagen met σh = σv ∓ 2·cu.",
     "method3": "Veiligheid: rekenwaarden van de grondparameters, een toeslag op de kerende hoogte en eventueel op de waterstanden; verplaatsingen met representatieve waarden.",
-    "method4": "Staal: buiging, dwarskracht en normaalkracht volgens NEN-EN 1993-5, zonder corrosietoeslag. Hout: buiging en afschuiving volgens NEN-EN 1995-1-1. Kunststof en beton: tegen het opneembare moment dat u invoert.",
-    "method5": "Niet in deze versie: fasering en voorspanning, meer ankerrijen, het stappenplan 6.1 tot en met 6.5 van CUR 166 met lage en hoge stijfheid, een berekening van de grondwaterstroming (wateroverspanning is wel in te voeren), de stabiliteit van het diepe glijvlak bij een groutanker (Kranz), belastingen op afstand, hellend maaiveld en een aflopende waterbodem, verticaal evenwicht, algehele stabiliteit, het ontwerp van anker, ankerschot en gording, corrosie, plooi van koudgevormde profielen, kruip van hout en kunststof, de toets van de vervorming tegen een eis, en beschoeiingen met een verankerde paal.",
+    "method4": "Staal: buiging, dwarskracht en normaalkracht volgens NEN-EN 1993-5, met de afroesting als die is ingevoerd. Hout: buiging en afschuiving volgens NEN-EN 1995-1-1. Kunststof en beton: tegen het opneembare moment dat u invoert.",
+    "method5": "Niet in deze versie: fasering en voorspanning, meer ankerrijen, het stappenplan 6.1 tot en met 6.5 van CUR 166 met lage en hoge stijfheid, een berekening van de grondwaterstroming (wateroverspanning is wel in te voeren), de stabiliteit van het diepe glijvlak bij een groutanker (Kranz), belastingen op afstand, hellend maaiveld en een aflopende waterbodem, verticaal evenwicht, algehele stabiliteit, het ontwerp van anker, ankerschot en gording, plooi van koudgevormde profielen, kruip van hout en kunststof, de toets van de vervorming tegen een eis, en beschoeiingen met een verankerde paal.",
     "method6": "Palen met schotten: per m wand met de buigstijfheid van de paal gedeeld door de hart-op-hartafstand; onder de schotten de gronddruk over de paalbreedte en de passieve weerstand over de factor voor ruimtelijke werking maal de paalbreedte. Het schot is een ligger op twee steunpunten tussen de palen.",
     "mobilised": "Aangesproken passieve weerstand",
     "notAllPass": "Niet alle toetsen voldoen.",
@@ -369,5 +373,45 @@
     "singleBranch": "Er is gerekend met één beddingsconstante per laag. Met de drietakkige veer van CUR 166 (kh1, kh2, kh3) worden de verplaatsingen groter en het moment enkele procenten groter.",
     "timber": "Hout: de verplaatsing is gerekend met E_0;mean zonder kruip (k_def); bij blijvende belasting in natte toepassing wordt de verplaatsing groter.",
     "water": "De waterdruk is aan beide zijden hydrostatisch gerekend. Stroomt er water onder de teen door of heeft een diepere laag een hogere stijghoogte, dan is de waterdruk aan de lage zijde hoger en de passieve weerstand lager: in een nagerekend openbaar geval gaf dat een 25 % groter moment. Voer in dat geval de wateroverspanning per laag in."
+  },
+  "corrosion": {
+    "title": "Afroesting",
+    "reducedStiffness": "EI na afroesting",
+    "classChoice": "Klasse na afroesting",
+    "classAuto": "Uit de catalogus (bij twijfel de ongunstigste)",
+    "classN": "Klasse {{cls}}",
+    "high": "hoge zijde",
+    "low": "lage zijde",
+    "highSide": "Hoge zijde",
+    "lowSide": "Lage zijde",
+    "above": "boven",
+    "below": "onder",
+    "zoneAbove": "boven NAP {{nap}} m",
+    "zoneBelow": "onder NAP {{nap}} m",
+    "zoned": "Andere afroesting onder een niveau (waterlijn)",
+    "zoneNap": "Grens van de zones",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "uit de contour",
+    "basisApprox": "benadering",
+    "hint": "Dikteverlies per zijde. De tabelwaarden zijn de aanbevolen waarden van NEN-EN 1993-5 tabel 4-1 en 4-2 en zijn niet tegen de normtekst of de Nederlandse bijlage gelegd; verdichte aanvulling is de helft van niet verdicht. De afroesting telt in de toetsen van de doorsnede, met de doorsnedeklasse bij de verkleinde flensdikte; in de gronddruk niet, en in de krachtsverdeling alleen met het vinkje. Bij twee zones wordt elke zone getoetst met het grootste moment en de grootste dwarskracht in die zone.",
+    "resultTitle": "Doorsnede na afroesting",
+    "zone": "Zone",
+    "class": "klasse",
+    "wholeWall": "hele wand",
+    "eiReduced": "Krachtsverdeling met EI na afroesting: {{ei}} kNm²/m (zonder afroesting {{ei0}}).",
+    "eiOriginal": "Krachtsverdeling met de EI zonder afroesting; de afroesting telt in de toetsen van de doorsnede.",
+    "steps": {
+      "loss": "afroesting hoge zijde + lage zijde",
+      "thickness": "plaatdikten na afroesting",
+      "wContour": "uit de contour met de plaatdikte aan beide zijden verkleind",
+      "wApprox": "benadering: W · (t_f − Δt) / t_f",
+      "classShift": "(na afroesting; zonder afroesting klasse {{cls}})"
+    },
+    "warnings": {
+      "class4": "Na afroesting{{where}} is de doorsnede klasse 4 of heeft zij geen weerstandsmoment; buiging en normaalkracht zijn daar niet getoetst.",
+      "approx": "Afroesting zonder exacte contour van dit profiel: I en W zijn benaderd met (t_f − Δt) / t_f en A met de gemiddelde plaatdikte. Dat is een benadering; controleer de waarden met de gegevens van de fabrikant.",
+      "classUncertain": "Doorsnedeklasse na afroesting{{where}} bij {{grade}}: uit de catalogus volgt klasse {{from}} of {{to}}; gerekend met klasse {{cls}}. Kies onder Afroesting een klasse als u die kunt onderbouwen.",
+      "stiffness": "De krachtsverdeling is gerekend met de buigstijfheid zonder afroesting; de afroesting telt alleen in de toetsen van de doorsnede."
+    }
   }
 }

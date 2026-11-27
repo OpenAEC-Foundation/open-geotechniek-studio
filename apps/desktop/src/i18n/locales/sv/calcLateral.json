@@ -335,7 +335,9 @@
       "strainMethod": "M_Rd vid N_Ed ur töjningsdiagrammet: parabel-rektangel, betongstukning 3,5 ‰, betongens dragning medräknas inte.",
       "tubeClassIs": "Tvärsnittsklass {{cls}}.",
       "tubeIgnored": "Röret medverkar enligt indata inte: betongkärnan med sin armering har kontrollerats, utan röret.",
-      "tubeYield": "f_y är det inmatade dimensioneringsvärdet f_yd för rörstålet gånger γ_M0 = 1,0; väggtjockleken är den inmatade kvarvarande väggtjockleken."
+      "tubeYield": "f_y är det inmatade dimensioneringsvärdet f_yd för rörstålet gånger γ_M0 = 1,0; väggtjockleken är den inmatade kvarvarande väggtjockleken.",
+      "corrosionTube": "Kontrollerat med tvärsnittet efter korrosion, även tvärsnittsklass och D/t. {{stiffness}}",
+      "corrosionSheet": "Kontrollerat med profilen efter korrosion ({{basis}}), med tvärsnittsklassen vid minskad flänstjocklek. {{stiffness}}"
     },
     "notesTitle": "Förutsättningar för kontrollen",
     "rows": {
@@ -359,7 +361,8 @@
       "shearS": "Tvärkraft med byglar",
       "shearSpacing": "Största bygelavstånd",
       "sheetClass": "Tvärsnittsklass",
-      "tubeClass": "Tvärsnittsklass och lokal buckling"
+      "tubeClass": "Tvärsnittsklass och lokal buckling",
+      "corrosion": "Korrosion"
     },
     "status": {
       "fail": "ej uppfyllt",
@@ -691,5 +694,32 @@
     "variantName": "Opt. {{n}}",
     "walls": "Vägg [mm]",
     "widthFollows": "Verksam bredd för jordfjädrar = pålbredd"
+  },
+  "corrosion": {
+    "title": "Korrosion",
+    "reducedStiffness": "EI efter korrosion",
+    "classChoice": "Klass efter korrosion",
+    "classAuto": "Från katalogen (vid tvekan den ogynnsammaste)",
+    "classN": "Klass {{cls}}",
+    "side1": "sida 1",
+    "side2": "sida 2",
+    "outer": "utsida",
+    "inner": "insida",
+    "side1Label": "Sida 1",
+    "side2Label": "Sida 2",
+    "outerLabel": "Utsida",
+    "innerLabel": "Insida",
+    "sides": "Angripet",
+    "oneSide": "1 sida",
+    "twoSides": "2 sidor",
+    "oneTube": "1 sida (utsida)",
+    "twoTube": "2 sidor (utsida och insida)",
+    "eiReduced": "Pålen är beräknad med EI efter korrosion.",
+    "eiOriginal": "Pålen är beräknad med EI utan korrosion.",
+    "basisContour": "från den exakta konturen",
+    "basisApprox": "approximation med plåttjocklekarna",
+    "tubeSummary": "Efter korrosion: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
+    "sheetSummary": "Efter korrosion: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
+    "hint": "Vid korrosion anges den nominella godstjockleken. Tjockleksförlust per sida; tabellvärdena är de rekommenderade värdena i NEN-EN 1993-5 tabell 4-1 och 4-2 och har inte kontrollerats mot standardtexten eller den nederländska bilagan. Korrosionen räknas i materialkontrollen och N–M-kontrollen, även i tvärsnittsklassen och D/t; i kraftfördelningen bara med kryssrutan. Ett fyllt rör korroderar bara utvändigt."
   }
 }

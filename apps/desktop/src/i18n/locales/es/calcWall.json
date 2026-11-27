@@ -53,7 +53,11 @@
     "drawing": "contorno del DWG del fabricante ({{manufacturer}})",
     "flange": "ala",
     "schematic": "esquemático: solo b, h y los espesores proceden de la tabla",
-    "table": "dimensiones de la tabla de perfiles; enclavamiento esquemático"
+    "table": "dimensiones de la tabla de perfiles; enclavamiento esquemático",
+    "highSide": "lado alto: corrosión {{mm}} mm",
+    "lowSide": "lado bajo: corrosión {{mm}} mm",
+    "corroded": "punteado: sin corrosión",
+    "corrodedApprox": "corrosión aproximada, no dibujada"
   },
   "errors": {
     "anchor": "Compruebe el anclaje: ángulo menor que 80°, separación entre ejes y rigidez del muelle mayores que 0.",
@@ -286,8 +290,8 @@
     "method1": "Modelo de muelles según CUR 166: una viga sobre apoyos elásticos con muelles de terreno a ambos lados que parten del empuje en reposo (K0 = 1 − sin φ′) y están limitados por el empuje activo y el pasivo; un coeficiente de balasto por capa.",
     "method2": "Empuje de tierras: activo con la superficie de deslizamiento plana (Coulomb), pasivo con la superficie de deslizamiento plana hasta δ = φ′/3 y por encima con la superficie de deslizamiento curva según NEN-EN 1997-1 anexo C.2. Capas no drenadas con σh = σv ∓ 2·cu.",
     "method3": "Seguridad: valores de cálculo de los parámetros del terreno, un incremento de la altura de contención y, en su caso, de los niveles de agua; desplazamientos con valores característicos.",
-    "method4": "Acero: flexión, esfuerzo cortante y esfuerzo axil según NEN-EN 1993-5, sin sobreespesor de corrosión. Madera: flexión y cortante según NEN-EN 1995-1-1. Plástico y hormigón: frente al momento resistente que usted introduce.",
-    "method5": "No incluido en esta versión: fases de ejecución y pretensado, más filas de anclajes, el procedimiento por pasos 6.1 a 6.5 de CUR 166 con rigidez baja y alta, un cálculo del flujo de agua subterránea (la sobrepresión intersticial sí se puede introducir), la estabilidad del plano de deslizamiento profundo con un anclaje inyectado (Kranz), cargas a distancia, terreno inclinado y un lecho en pendiente, equilibrio vertical, estabilidad global, el diseño del anclaje, del muerto de anclaje y de la viga de reparto, corrosión, abolladura de perfiles conformados en frío, fluencia de la madera y del plástico, la comprobación de la deformación frente a un requisito, y defensas de margen con un poste anclado.",
+    "method4": "Acero: flexión, esfuerzo cortante y esfuerzo axil según NEN-EN 1993-5, con la corrosión si se introduce. Madera: flexión y cortante según NEN-EN 1995-1-1. Plástico y hormigón: frente al momento resistente que usted introduce.",
+    "method5": "No incluido en esta versión: fases de ejecución y pretensado, más filas de anclajes, el procedimiento por pasos 6.1 a 6.5 de CUR 166 con rigidez baja y alta, un cálculo del flujo de agua subterránea (la sobrepresión intersticial sí se puede introducir), la estabilidad del plano de deslizamiento profundo con un anclaje inyectado (Kranz), cargas a distancia, terreno inclinado y un lecho en pendiente, equilibrio vertical, estabilidad global, el diseño del anclaje, del muerto de anclaje y de la viga de reparto, abolladura de perfiles conformados en frío, fluencia de la madera y del plástico, la comprobación de la deformación frente a un requisito, y defensas de margen con un poste anclado.",
     "method6": "Postes con tablas: por m de pantalla con la rigidez a flexión del poste dividida por la separación entre ejes; por debajo de las tablas el empuje de tierras sobre el ancho del poste y la resistencia pasiva sobre el factor de efecto tridimensional por el ancho del poste. La tabla es una viga sobre dos apoyos entre los postes.",
     "mobilised": "Resistencia pasiva movilizada",
     "notAllPass": "No todas las comprobaciones cumplen.",
@@ -369,5 +373,45 @@
     "singleBranch": "Se ha calculado con un solo coeficiente de balasto por capa. Con el muelle de tres tramos de CUR 166 (kh1, kh2, kh3) los desplazamientos son mayores y el momento unos pocos por ciento mayor.",
     "timber": "Madera: el desplazamiento se ha calculado con E_0;mean sin fluencia (k_def); con carga permanente en ambiente húmedo el desplazamiento aumenta.",
     "water": "La presión del agua se ha calculado hidrostática a ambos lados. Si fluye agua por debajo del pie o una capa más profunda tiene un nivel piezométrico más alto, la presión del agua en el lado bajo es mayor y la resistencia pasiva menor: en un caso público recalculado eso dio un momento un 25 % mayor. Introduzca en ese caso la sobrepresión intersticial por capa."
+  },
+  "corrosion": {
+    "title": "Corrosión",
+    "reducedStiffness": "EI tras la corrosión",
+    "classChoice": "Clase tras la corrosión",
+    "classAuto": "Del catálogo (en caso de duda la más desfavorable)",
+    "classN": "Clase {{cls}}",
+    "high": "lado alto",
+    "low": "lado bajo",
+    "highSide": "Lado alto",
+    "lowSide": "Lado bajo",
+    "above": "arriba",
+    "below": "abajo",
+    "zoneAbove": "por encima de NAP {{nap}} m",
+    "zoneBelow": "por debajo de NAP {{nap}} m",
+    "zoned": "Corrosión distinta bajo un nivel (línea de agua)",
+    "zoneNap": "Límite de las zonas",
+    "summary": "{{zone}}t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm; A {{a0}} → {{a1}} cm²/m; W_el {{w0}} → {{w1}} cm³/m ({{basis}}).",
+    "basisContour": "a partir del contorno",
+    "basisApprox": "aproximación",
+    "hint": "Pérdida de espesor por cara. Los valores de tabla son los recomendados de NEN-EN 1993-5 tablas 4-1 y 4-2 y no se han contrastado con el texto de la norma ni con el anejo neerlandés; el relleno compactado es la mitad del no compactado. La corrosión cuenta en las comprobaciones de la sección, con la clase según el espesor de ala reducido; no en el empuje de tierras, y en la distribución de esfuerzos solo con la casilla marcada. Con dos zonas cada zona se comprueba con el mayor momento y el mayor cortante de esa zona.",
+    "resultTitle": "Sección tras la corrosión",
+    "zone": "Zona",
+    "class": "clase",
+    "wholeWall": "pantalla completa",
+    "eiReduced": "Distribución de esfuerzos con EI tras la corrosión: {{ei}} kNm²/m (sin corrosión {{ei0}}).",
+    "eiOriginal": "Distribución de esfuerzos con la EI sin corrosión; la corrosión cuenta en las comprobaciones de la sección.",
+    "steps": {
+      "loss": "corrosión lado alto + lado bajo",
+      "thickness": "espesores tras la corrosión",
+      "wContour": "a partir del contorno con el espesor reducido en ambas caras",
+      "wApprox": "aproximación: W · (t_f − Δt) / t_f",
+      "classShift": "(tras la corrosión; sin corrosión clase {{cls}})"
+    },
+    "warnings": {
+      "class4": "Tras la corrosión{{where}} la sección es de clase 4 o no tiene módulo resistente; la flexión y el axil no se comprueban allí.",
+      "approx": "Corrosión sin contorno exacto de este perfil: I y W se aproximan con (t_f − Δt) / t_f y A con el espesor medio. Es una aproximación; compruebe los valores con los datos del fabricante.",
+      "classUncertain": "Clase de sección tras la corrosión{{where}} para {{grade}}: del catálogo resulta clase {{from}} o {{to}}; calculado con clase {{cls}}. Elija una clase en Corrosión si puede justificarla.",
+      "stiffness": "La distribución de esfuerzos se calcula con la rigidez sin corrosión; la corrosión solo cuenta en las comprobaciones de la sección."
+    }
   }
 }
