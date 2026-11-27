@@ -52,3 +52,9 @@
 .lateral-material-steps summary { cursor: pointer; }
 .lateral-material-steps ul { margin: 4px 0 6px; padding-left: 16px; columns: 2; column-gap: 24px; }
 .lateral-material-steps li { break-inside: avoid; margin: 1px 0; }
+
+/* Ménard: E_p met α eronder en de berekende k_h; Brinch Hansen: eenheid onder het veld. */
+.lat-menard { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.lat-menard select { width: 100%; max-width: 5.5em; min-width: 0; font-size: 10px; }
+.lat-menard small, .lat-layers td > small { display: block; color: var(--oa-text-secondary); font-size: 10px; }
+.lat-pu-kind { width: 100%; min-width: 0; }

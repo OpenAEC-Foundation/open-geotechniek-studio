@@ -290,7 +290,145 @@ doorsnedetoets, beddingswaarden uit de tabel, paaltabel) is geen fout gevonden.
   keuze van de beddingswaarde bij een losse paal (wandbedding × werkende
   breedte, zonder ruimtelijke correctie) zijn aannames, geen geverifieerde
   uitkomsten.
-- **Grondwaterstand** zit niet in de invoer en dus niet in de 3D-weergave.
+- **Grondwaterstand** zit niet in de invoer (alleen het waterpeil bij een waterbodem, zie "Meerpaal in open water").
+
+## Meerpaal in open water (verificatiegeval)
+
+**Geval:** meerpaal, open stalen buis Ø914×20, referentierapport 2025. Een funderingsadvies voor meerpalen van
+drijvende woningen, met een externe referentie-berekening (paal als elastoplastisch ondersteunde ligger, veren uit
+de Ménard-modulus, representatieve belasting; momenten en dwarskrachten daarna × 1,5). Test:
+`reference-mooring-pile.test.ts`. De doorsnede na 50 jaar staat als geval B7 ook in het live verificatieblok
+"Verificatie" onder Afroesting.
+
+**Invoer (uit de bron):** buis Ø914×20, S355, vrije kop (verplaatsing en rotatie vrij), bovenkant buis NAP +10,0,
+H = 302 kN representatief (453 kN rekenwaarde) op NAP +9,8, waterpeil +8,8, waterbodem +3,0 (in werkelijkheid
+verlopend), punt −5,0. Zand, γ_n 20 kN/m³ (γ′ = 10), c′ = 0, φ′ 30° in de bovenste laag en 32,5° daaronder.
+E_p van Ménard in kN/m² (700 / 7000 / 10500 bij q_c 1 / 10 / 15 MPa; de verhouding 0,7 · q_c bevestigt de eenheid).
+
+| Bodemopbouw | NAP +3,0 tot 0,0 | 0,0 tot −3,0 | −3,0 tot −5,0 |
+|---|---|---|---|
+| 1 | E_p 700, φ′ 30° | E_p 7000, φ′ 32,5° | E_p 10500, φ′ 32,5° |
+| 2 (zoals gerekend) | E_p 3500, φ′ 30° | E_p 7000, φ′ 32,5° | E_p 10500, φ′ 32,5° |
+
+**Bodemopbouw 2 in de bron:** de tabel van het rapport geeft de laaggrenzen +3,0 / −2,0 / −3,0, maar de figuren van
+de externe berekening tonen +3,0 / 0,0 / −3,0. Met de grenzen van de tabel geeft de module een dwarskracht van
+943 kN en een kopverplaatsing van 373 mm (bron 870 kN en 289 mm); met die van de figuren 882 kN en 299 mm. De bron
+heeft dus met de grenzen van de figuren gerekend; de tabel wijkt daarvan af.
+
+**Afroesting in de bron:** 0,012 mm/jaar aan beide zijden, 50 jaar: 0,6 + 0,6 mm, van NAP +10,0 tot +2,0 (tot ca.
+1 m in de waterbodem), daaronder niet. De tabellen noemen "913,6×18,8" en (in de figuren) "913,4×18,2", maar de
+gebruikte EI = 1 108 260 kNm² en A = 52 801 mm² horen precies bij D 912,8 × t 18,8 (D − 2 · 0,6 en t − 2 · 0,6),
+dezelfde doorsnede als de module. De toets in bijlage B gebruikt D/t = 914 / 18,8 = 48,62.
+
+**Keuze in de module:**
+
+- Bedding **Ménard**: k_h uit E_p met α = 1/3 (zand), R = D/2 = 0,457 m, lijnveer k_h × 0,914 m
+  (700 → 2 482, 7000 → 24 820, 10500 → 37 231 kN/m²).
+- Veerwet **elastoplastisch**: p = min(k0 · y, p_u). De tanh-wet van de module is bij gelijke k0 en p_u slapper
+  (kopverplaatsing bodemopbouw 1: 384 mm in plaats van 319 mm).
+- Grensweerstand **Brinch Hansen** (1961), p_u = K_q(z) · γ′ · z · D met z vanaf de waterbodem en γ′ = 10.
+  Met de passieve druk volgens Rankine (K_p · σ′_v · D) of (K_p − K_a) · σ′_v · D vindt de module geen evenwicht bij
+  302 kN: de bron moet een ruimtelijke grensweerstand hebben gebruikt. Met 3 K_p (Broms) is M 3 % lager, met Brinch
+  Hansen 0,3 %. Welke grensweerstand de bron precies gebruikt, staat niet in het rapport.
+- **Waterbodem** aangevinkt (bodem +3,0, waterpeil +8,8): geen veren tussen kop en bodem, vrije lengte 6,8 m.
+- Geen laagcorrectie (de bron noemt er geen). Elementen 0,1 m.
+- Afroesting 0,6 + 0,6 mm (eigen waarde), "EI na afroesting" tot NAP +2,0.
+- Paalkop in de module op NAP +9,8 (de last grijpt aan de kop aan); de kopverplaatsing op +10,0 is
+  y(+9,8) − θ · 0,2 (het stuk buis erboven is onbelast en recht).
+
+**Vergelijking (representatief; rekenwaarde = × 1,5 zoals de bron):**
+
+| Grootheid | Bron, opbouw 1 | Module, opbouw 1 | Verschil | Bron, opbouw 2 | Module, opbouw 2 | Verschil |
+|---|---|---|---|---|---|---|
+| M_max [kNm] | 2692 (2691,4) | 2699,8 | +0,3 % | 2681 (2681,4) | 2687,3 | +0,2 % |
+| M_Ed = 1,5 M [kNm] | 4038 | 4049,7 | +0,3 % | 4022 | 4031,0 | +0,2 % |
+| niveau M_max [m NAP] | ca. +0,0 | −0,16 | | ca. +0,0 | −0,03 | |
+| V_max [kN] | 892 (891,9) | 912,8 | +2,3 % | 870 (870,0) | 881,8 | +1,4 % |
+| V_Ed = 1,5 V [kN] | 1338 | 1369,2 | +2,3 % | 1305 | 1322,7 | +1,4 % |
+| niveau V_max [m NAP] | ca. −3 (figuur) | −3,04 | | ca. −3 (figuur) | −2,97 | |
+| kop +10,0, 0 jaar [mm] | 303 (302,7) | 319,2 | +5,4 % | 289 (288,9) | 298,8 | +3,4 % |
+| kop +10,0, 50 jaar [mm] | 306 (305,5) | 321,8 | +5,3 % | 292 (291,6) | 301,4 | +3,4 % |
+| toename door afroesting [mm] | 2,8 | 2,6 | | 2,7 | 2,6 | |
+| M_max 50 jaar [kNm] | 2692 | 2699,8 (gelijk aan 0 jaar) | | 2681 | 2687,3 | |
+
+Waarden tussen haakjes: de figuren van de externe berekening.
+
+**Toetsing buis (opbouw 1, M_Ed = 1,5 M):**
+
+| Grootheid | Bron 0 jaar | Module 0 jaar | Bron 50 jaar | Module 50 jaar |
+|---|---|---|---|---|
+| D / t | 45,70 | 45,70 | 48,62 (914 / 18,8) | 48,55 (912,8 / 18,8) |
+| doorsnedeklasse | 2 | 2 | 3 | 3 |
+| M_c,Rd [kNm] | 5675,5 (W_pl) | 5675,5 (W_pl) | 5334,9 (W_pl) | 4104,9 (W_el) |
+| W_el [mm³] | 1,28 · 10⁷ | 1,229 · 10⁷ | 1,21 · 10⁷ | 1,156 · 10⁷ |
+| V_pl,Rd [kN] | 7329,3 | 7329,3 | 6889,6 | 6889,6 |
+| u.c. moment | 0,71 | 0,714 | 0,76 | 0,987 |
+| u.c. dwarskracht | 0,18 | 0,187 | 0,19 | 0,199 |
+
+**Verklaring per verschil, stap voor stap:**
+
+1. *Belasting en aangrijppunt.* Gelijk: H = 302 kN op +9,8, vrije kop, geen moment. Boven de waterbodem is de paal
+   statisch bepaald: M(+3,0) = 302 · 6,8 = 2054 kNm in beide berekeningen.
+2. *Vrije lengte.* Gelijk: 6,8 m in water zonder veren. Het grootste moment ligt waar de opgetelde grondreactie H
+   compenseert (dwarskracht nul): bij een volledig plastische bovenzone M_max = H (e + 2/3 d) met d de diepte van dat
+   punt; 2692 kNm hoort bij d ≈ 3,2 m, dus bij NAP ca. −0,2, zoals de module vindt.
+3. *Veerkarakteristiek.* Bovenin (opbouw 1, E_p 700, k0 = 2 482 kN/m²) zijn de veren tot ver onder de bodem
+   plastisch; het moment volgt dan vrijwel geheel uit de grensweerstand en nauwelijks uit k0 (daarom is M bij 0 en 50
+   jaar gelijk). Het verschil van 0,3 % in M en 1,4 tot 2,3 % in V komt uit de vorm van p_u (Brinch Hansen in de
+   module; de precieze grenswaarde van de bron is onbekend). De verplaatsing hangt het meest af van k0 en van de
+   overgang van elastisch naar plastisch; de module is 3 tot 5 % slapper. Of de bron de Ménard-veer anders opbouwt
+   (b.v. met een andere α of met grond aan twee kanten), is niet na te gaan; met tweemaal k0 wordt de kopverplaatsing
+   juist 25 % kleiner dan in de bron, dus dat is het niet.
+4. *EI.* 0 jaar gelijk (1 179 068 kNm²). 50 jaar: dezelfde 1 108 260 kNm² boven +2,0.
+5. *Afroesting.* Alleen boven +2,0, in beide berekeningen; het grootste moment (−0,2) en de grootste dwarskracht
+   (−3,0) liggen eronder. De toename van de kopverplaatsing komt overeen (2,6 tegen 2,7 à 2,8 mm). De module toetst de
+   afgeroeste doorsnede over de hele paal (veilige kant), net als de bron.
+6. *Toetsing.* 0 jaar gelijk. 50 jaar: D/t valt in klasse 3 (de bron zegt dat zelf), maar de bron rekent met W_pl.
+   Klasse 3 vraagt W_el (NEN-EN 1993-1-1 art. 6.2.5): M_c,Rd = 4104,9 kNm en u.c. 0,99 in plaats van 0,76. Daarnaast
+   rekent de bron W_el = I / (D/2 − t) in plaats van I / (D/2), 4,5 % te hoog (1,28 · 10⁷ tegen 1,229 · 10⁷ mm³);
+   met die waarde zou ook de klasse-3-toets nog te gunstig zijn (4 287 kNm).
+
+**Rekenwaarde direct op de paal.** De bron vermenigvuldigt de representatieve uitkomsten met 1,5. Met H = 453 kN op de
+paal vindt de module geen evenwicht: met deze grensweerstand bezwijkt de grond bij ca. 369 kN (opbouw 1 en 2; met de
+grenzen van de tabel 344 kN). De factor tussen representatieve last en bezwijken is daarmee ca. 1,22. Of de externe
+berekening bij 453 kN wel evenwicht vindt, is niet na te gaan; de module reproduceert die berekening bij 302 kN binnen
+0,3 % in het moment, wat erop wijst dat de grensweerstand vergelijkbaar is. Dit is een punt voor de adviseur: de
+horizontale draagkracht van de grond is met "× 1,5 op de snedekrachten" niet aangetoond.
+
+**Toleranties in de test:** moment 1 % (de bron rondt af en de vorm van p_u is een aanname), niveau van M_max 0,3 m,
+dwarskracht 4 %, kopverplaatsing 8 % (sterk afhankelijk van de veerwet en p_u), toename door afroesting 1,5 tot 4 mm.
+De doorsnedegrootheden exact.
+
+**Nieuw in de module voor dit geval** (tests in `water-springs.test.ts`, elk tegen een handberekening):
+
+- Veerwet *elastoplastisch* p = min(k0 |y|, p_u), naast lineair en tanh. Controle: starre paal met constante p_u,
+  bezwijklast p_u L (√2 − 1) en M_max = H² / (2 p_u) bij 95 % daarvan; met een zeer hoge p_u gelijk aan lineair.
+- Bedding *Ménard*: k_h uit E_p, α en de werkende breedte (CUR 166; de formule is uit kennis overgenomen en niet
+  tegen de publicatie gelegd).
+- Grensweerstand *Brinch Hansen* (1961) per laag (φ′, γ′), naast het lineaire profiel; ook met laagcorrectie
+  Georgiadis (integraal numeriek, inverse door halveren). K_q⁰ en K_q^∞ nagerekend; de oorspronkelijke publicatie
+  is niet geraadpleegd.
+- *Waterbodem*: niveau van bodem en waterpeil; geen grondveren boven de bodem, de grond en z_eq beginnen op de bodem
+  (korrelspanning met γ′, zonder bovenbelasting door het water). Waterbodem op het maaiveld met het waterpeil eronder
+  geeft exact de oude uitkomst; met een vrije lengte e is het moment op de bodem H · e en gedraagt de paal eronder
+  zich als een paal met kopmoment −H · e.
+- *Stroming*: q = ½ ρ C_D D u² van de bodem tot het waterpeil, uniform of u · (h/d)ⁿ, ρ 1000 of 1025, C_D zonder
+  standaardwaarde (verplicht in te vullen), richting met of tegen H, partiële factor (standaard 1,5, rekenwaarde zoals
+  H). Resultante en aangrijppunt worden getoond. Niet meegenomen: golven (Morison, traagheidsterm), wervelafschudding
+  en andere dynamische effecten.
+- *Afroesting tot een niveau*: EI na afroesting van de kop tot een opgegeven niveau, daaronder de oorspronkelijke;
+  met de knop "bodem − 1 m" bij een waterbodem. Controle: uitkraging met twee stijfheden.
+
+**Wat de module nog mist voor dit soort gevallen:**
+
+- De precieze grensweerstand van de externe berekening is niet bekend; Brinch Hansen is de best passende keuze.
+- Afroesting met verschillende snelheden per zone (water, waterlijn, bodem) en een zonegewijze toetsing: de module
+  toetst één afgeroeste doorsnede over de hele paal.
+- Een expliciete toets van de horizontale draagkracht van de grond (bezwijklast en veiligheid); nu volgt alleen
+  "geen evenwicht".
+- Een kopverplaatsing op een ander niveau dan het aangrijppunt van H (hier 0,2 m erboven) en een last die onder de
+  paalkop aangrijpt.
+- Golfbelasting en dynamische effecten.
 
 ## Materiaaltoetsing (material-check.ts)
 
@@ -396,6 +534,7 @@ vaste getallen in `corrosion-verification.ts`.
 | B4 | 610 × 12, S355 | 1,75 + 1,75 mm | 3 → 4 (valt buiten de toetsing) |
 | B5 | 406,4 × 10, S355, N = 500 kN, M = 200 kNm | 1,2 + 1,2 mm | 2 → 3 (elastische interactie) |
 | B6 | 219,1 × 8, S235 | 3,0 mm buiten (zeewater) | 1 → 1 |
+| B7 | 914 × 20, S355 (meerpaal, referentierapport 2025) | 0,6 + 0,6 mm (2 kanten, 50 jaar) | 2 → 3 |
 
 | Geval | Invoer | Grootheid | Verwacht | Module | Verschil | Oordeel | Bron of formule |
 |---|---|---|---|---|---|---|---|
@@ -467,6 +606,17 @@ vaste getallen in `corrosion-verification.ts`.
 | B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | M_c,Rd [kNm] | 50,89 | 50,8939 | 0,01 % | in orde | art. 6.2.5 |
 | B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | N_c,Rd [kN] | 768,2 | 768,174 | 0,00 % | in orde | art. 6.2.4 |
 | B6 | D 219,1 × 8 mm, S235, Δ 3 mm (1 kant) | V_pl,Rd [kN] | 282,3 | 282,344 | 0,02 % | in orde | art. 6.2.6 |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | t_red [mm] | 18,8 | 18,8 | 0,00 % | in orde | t − Δ |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | D_red [mm] | 912,8 | 912,8 | 0,00 % | in orde | D − 2 Δ_buiten |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | A [mm²] | 52801,4 | 52801,4 | 0,00 % | in orde | π (D² − d²) / 4 |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | I [cm⁴] | 527742,8 | 527743 | 0,00 % | in orde | π (D⁴ − d⁴) / 64 |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | W_el [cm³] | 11563,16 | 11563,2 | 0,00 % | in orde | 2 I / D |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | W_pl [cm³] | 15027,85 | 15027,9 | 0,00 % | in orde | (D³ − d³) / 6 |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | D/t | 48,55 | 48,5532 | 0,00 % | in orde | D_red / t_red |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | klasse | 3 | 3 | 0,00 % | in orde | EN 1993-1-1 tabel 5.2 |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | M_c,Rd [kNm] | 4104,92 | 4104,92 | 0,00 % | in orde | art. 6.2.5 |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | N_c,Rd [kN] | 18744,5 | 18744,5 | 0,00 % | in orde | art. 6.2.4 |
+| B7 | D 914 × 20 mm, S355, Δ 0,6 + 0,6 mm (2 kanten) | V_pl,Rd [kN] | 6889,6 | 6889,6 | 0,00 % | in orde | art. 6.2.6 |
 
 Een gepubliceerd rekenvoorbeeld van een afgeroeste buispaal als onafhankelijke controle is niet
 opgenomen: er is geen openbaar uitgewerkt voorbeeld gevonden dat hier zelf gelezen kon worden. De

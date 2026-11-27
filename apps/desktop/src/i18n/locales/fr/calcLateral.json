@@ -61,7 +61,15 @@
     "unknownSpring": "Module de réaction ou scénario inconnu.",
     "unstableSupport": "Modèle instable : appui insuffisant.",
     "unstableTangent": "Rigidité tangente instable.",
-    "zeroStrengthLayer": "Une couche de résistance nulle ne peut pas représenter la résistance ultime des couches sus-jacentes."
+    "zeroStrengthLayer": "Une couche de résistance nulle ne peut pas représenter la résistance ultime des couches sus-jacentes.",
+    "menardInput": "Ménard : saisir un E_p, une largeur de pieu et un α (0 à 1) positifs.",
+    "brinchHansenInput": "Brinch Hansen : saisir φ′ (0 à 50°) et un γ′ positif.",
+    "corrosionZone": "Le niveau jusqu’où le pieu se corrode doit être sous la tête du pieu.",
+    "noSoilBelowBed": "Aucune couche de sol sous le fond.",
+    "waterLevels": "Saisir le niveau du fond et le niveau d’eau.",
+    "bedOutsidePile": "Le fond doit se situer entre la tête et la pointe du pieu.",
+    "currentCd": "Courant : saisir le coefficient de traînée C_D.",
+    "currentInput": "Saisie invalide pour le courant."
   },
   "explorer": {
     "concept": "Brouillon alpha",
@@ -83,7 +91,8 @@
     },
     "title": "Pieu sous charge latérale",
     "trueScale": "Échelle réelle",
-    "views": "Vue du pieu"
+    "views": "Vue du pieu",
+    "elastoplasticModel": "Modèle de sol élastoplastique"
   },
   "field": {
     "aria": "Champ de ressorts le long du pieu",
@@ -236,7 +245,25 @@
     "widthPile": "= pieu",
     "widthPileTitle": "Égale à la largeur du pieu",
     "withH": "Dans le sens de H",
-    "openTubeHint": "Tube ouvert : calculé comme tube creux ; le sol à l'intérieur n'apporte pas de rigidité. La face intérieure est aussi en contact avec le sol."
+    "openTubeHint": "Tube ouvert : calculé comme tube creux ; le sol à l'intérieur n'apporte pas de rigidité. La face intérieure est aussi en contact avec le sol.",
+    "elastoplastic": "Élastoplastique",
+    "layerEp": "E_p couche {{n}} [kN/m²]",
+    "layerAlpha": "α couche {{n}}",
+    "alpha": {
+      "peat": "tourbe",
+      "clay": "argile",
+      "silt": "limon",
+      "sand": "sable",
+      "gravel": "gravier"
+    },
+    "menardTitle": "k_h à partir de E_p (Ménard, CUR 166) pour la largeur active",
+    "layerPhi": "φ′ couche {{n}} [°]",
+    "layerGammaEff": "γ′ couche {{n}} [kN/m³]",
+    "puKind": "Résistance limite couche {{n}}",
+    "puKindTitle": "pu en profil ou selon Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH : pu(z) = K_q(z)·γ′·z·D selon Brinch Hansen (1961), z depuis la surface du sol (en eau depuis le fond), γ′ sous l’eau = γ_sat − 10.",
+    "menardHint": "Ménard : k_h à partir du module pressiométrique E_p et de α (CUR 166)."
   },
   "inspector": {
     "aria": "Inspection du ressort",
@@ -274,7 +301,9 @@
       "tangent": "Rigidité tangente",
       "tributary": "Longueur d'intégration",
       "ultimate": "Résistance ultime pu"
-    }
+    },
+    "modelElastoplastic": "Réaction élastoplastique",
+    "elastoplasticNote": "Élastoplastique : linéaire jusqu’à pu, puis constant ; statique et monotone."
   },
   "legend": {
     "aria": "Légende des couches de sol et des ressorts",
@@ -380,7 +409,10 @@
     "headFixed": "Rotation de la tête bloquée",
     "layer": "Couche {{n}}",
     "toeFixed": "Pointe encastrée",
-    "zFromHead": "z depuis la tête"
+    "zFromHead": "z depuis la tête",
+    "waterLevel": "Niveau d’eau NAP {{nap}}",
+    "waterBed": "Fond NAP {{nap}}",
+    "current": "Courant"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Glisser fait tourner, la molette zoome, cliquez sur un point de ressort.",
     "layerLabel": "{{soil}} · NAP {{top}} à {{bottom}}",
     "surfaceLabel": "Terrain naturel NAP {{nap}}",
-    "unavailable": "La 3D n'est pas disponible sur cet appareil. Utilisez le modèle de calcul et l'inspection des ressorts ci-dessous."
+    "unavailable": "La 3D n'est pas disponible sur cet appareil. Utilisez le modèle de calcul et l'inspection des ressorts ci-dessous.",
+    "waterLabel": "Niveau d’eau NAP {{nap}}",
+    "bedLabel": "Fond NAP {{nap}}",
+    "currentLabel": "Courant"
   },
   "settings": {
     "applyMany": "À {{count}} couches",
@@ -533,7 +568,15 @@
     "wall": "paroi {{wall}} mm",
     "width": "Largeur effective",
     "zeqBottom": "zeq,bottom",
-    "zeqTopBottom": "zeq haut–bas"
+    "zeqTopBottom": "zeq haut–bas",
+    "elastoplasticNote": "; p = min(k₀ y ; pu) (élastoplastique) ; pu en fonction de la profondeur équivalente zeq",
+    "elastoplasticSprings": "ressorts de sol élastoplastiques",
+    "waterBed": "Fond",
+    "waterLevel": "Niveau d’eau",
+    "freeLength": "libre dans l’eau {{l}} m",
+    "current": "Courant",
+    "currentResultant": "résultante {{F}} kN à NAP {{z}} m",
+    "currentNot": "Houle et détachement tourbillonnaire non pris en compte."
   },
   "sketch": {
     "aria": "Section {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Tourbe · molle (cu env. 10 kPa)",
     "sandDense": "Sable · dense (qc env. 25 MPa)",
     "sandLoose": "Sable · lâche (qc env. 5 MPa)",
-    "sandMedium": "Sable · moyennement dense (qc env. 15 MPa)"
+    "sandMedium": "Sable · moyennement dense (qc env. 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "Aucun ressort de sol actif dans ce modèle.",
@@ -720,6 +764,35 @@
     "basisApprox": "approximation avec les épaisseurs",
     "tubeSummary": "Après corrosion : D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Après corrosion : t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "En cas de corrosion, saisissez l'épaisseur nominale. Perte d'épaisseur par face ; les valeurs tabulées sont les valeurs recommandées de NEN-EN 1993-5 tableaux 4-1 et 4-2 et n'ont pas été vérifiées par rapport au texte de la norme ou à l'annexe néerlandaise. La corrosion intervient dans la vérification du matériau et la vérification N–M, y compris la classe et D/t ; dans la répartition des efforts seulement avec la case cochée. Un tube rempli ne se corrode qu'à l'extérieur."
+    "hint": "En cas de corrosion, saisissez l'épaisseur nominale. Perte d'épaisseur par face ; les valeurs tabulées sont les valeurs recommandées de NEN-EN 1993-5 tableaux 4-1 et 4-2 et n'ont pas été vérifiées par rapport au texte de la norme ou à l'annexe néerlandaise. La corrosion intervient dans la vérification du matériau et la vérification N–M, y compris la classe et D/t ; dans la répartition des efforts seulement avec la case cochée. Un tube rempli ne se corrode qu'à l'extérieur.",
+    "zoneBottom": "Corrosion jusqu’à",
+    "zoneBottomLabel": "Corrosion jusqu’au niveau [m NAP] ; vide = tout le pieu",
+    "zoneBedTitle": "Dans l’eau et jusqu’à 1 m dans le fond",
+    "zoneBed": "fond − 1 m",
+    "zoneSummary": "EI après corrosion {{ei}} kNm² de la tête jusqu’à {{depth}} m en dessous ; au-delà l’EI d’origine. Les vérifications utilisent la section corrodée sur tout le pieu (côté sécurité)."
+  },
+  "water": {
+    "enabled": "Fond d’eau (pieu libre dans l’eau)",
+    "bed": "Fond",
+    "bedLabel": "Fond [m NAP]",
+    "level": "Niveau d’eau",
+    "levelLabel": "Niveau d’eau [m NAP]",
+    "hint": "Pas de ressorts de sol entre la tête du pieu et le fond (longueur libre {{free}} m). Le sol commence au fond ; la contrainte effective (Brinch Hansen) part du fond avec γ′, sans surcharge due à l’eau.",
+    "speed": "Vitesse du courant u",
+    "speedLabel": "Vitesse du courant [m/s]",
+    "profile": "Profil de vitesse",
+    "uniform": "Uniforme sur la profondeur",
+    "power": "Loi puissance u·(h/d)ⁿ",
+    "exponent": "Exposant n",
+    "density": "Masse volumique de l’eau",
+    "fresh": "Douce (1000)",
+    "salt": "Salée (1025)",
+    "cdLabel": "Coefficient de traînée C_D",
+    "direction": "Sens",
+    "withH": "Avec H",
+    "againstH": "Contre H",
+    "factor": "Coefficient partiel γ",
+    "formula": "q = ½·ρ·C_D·D·u² par mètre, du fond au niveau d’eau ; valeur de calcul γ·q, comme H. C_D dépend du nombre de Reynolds, de la rugosité et des salissures : saisir une valeur justifiée (pas de valeur par défaut). Non pris en compte : houle (Morison, terme d’inertie) et effets dynamiques (détachement tourbillonnaire).",
+    "result": "C_D {{cd}} : q en surface {{q}} kN/m (caractéristique) ; résultante {{F}} kN (valeur de calcul) à NAP {{z}} m."
   }
 }

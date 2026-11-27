@@ -1,5 +1,6 @@
 // PDF-rapport horizontale paal, met dezelfde kop, voet en opmaak als het
 // paaldraagvermogenrapport en dezelfde onderdelen als de uitdraai op het scherm.
+import { usesUltimate } from './spring-types';
 import { jsPDF } from 'jspdf';
 import type { ProjectContext } from '../../framework/types';
 import type { LateralInput, LateralResult } from './compute';
@@ -72,7 +73,7 @@ function renderTableAppendix(c: Cursor, input: LateralInput, rows: ReturnType<ty
 export function renderCalc(c: Cursor, input: LateralInput, result: Extract<LateralResult, { ok: true }>, heading?: string) {
   const r = result, s = lateralSummary(input, r), d = lateralReportData(input, r);
   const nap = (z: number) => `NAP ${nl(s.head - z, 2)}`;
-  const nonlinear = r.analysisMode === 'nonlinear';
+  const nonlinear = usesUltimate(r.analysisMode);
   if (heading) { c.continuationTitle = heading; sectionTitle(c, heading); }
 
   sectionTitle(c, '1. Uitgangspunten');
@@ -80,7 +81,9 @@ export function renderCalc(c: Cursor, input: LateralInput, result: Extract<Later
   kv(c, 'Paalkop / paalpunt', `${nap(0)} m / ${nap(input.lengthM)} m (lengte ${nl(input.lengthM, 2)} m)`);
   kv(c, 'Belasting op de kop', `H = ${nl(input.headForceKn, 1)} kN, M = ${nl(input.headMomentKnM, 1)} kNm, N = ${nl(input.nEdKn, 1)} kN (druk +)`);
   kv(c, 'Randvoorwaarden', `${input.headFixedRotation ? 'kop ingeklemd' : 'kop vrij draaiend'}${input.toeFixed ? ', voet ingeklemd' : ', voet vrij'}`);
-  kv(c, 'Grondmodel', `${nonlinear ? 'niet-lineair, p = p_u · tanh(k_0 · y / p_u)' : 'lineair, p = k_0 · y'}${input.layerCorrection === 'georgiadis' ? '; laagcorrectie Georgiadis' : ''}; werkende breedte ${nl(input.springWidthM, 2)} m`);
+  if (r.water) kv(c, 'Waterbodem', `waterbodem NAP ${nl(r.water.bedNap, 2)} m, waterpeil NAP ${nl(r.water.waterNap, 2)} m; vrije lengte in water ${nl(r.water.freeLengthM, 2)} m zonder grondveren; korrelspanning vanaf de waterbodem met γ′`);
+  if (r.water?.current) { const w = r.water.current; kv(c, 'Stroming', `q = ½ · ρ · C_D · D · u² = ½ · ${nl(w.densityKgM3, 0)} · ${nl(w.cd, 2)} · ${nl(w.widthM, 3)} · ${nl(w.speedMs, 2)}² = ${nl(w.qMaxKnM, 2)} kN/m (oppervlak, ${w.profile === 'power' ? `machtsprofiel n = ${nl(w.exponent, 3)}` : 'uniform'}); γ = ${nl(w.factor, 2)}, ${w.sign === 1 ? 'met H mee' : 'tegen H in'}; resultante ${nl(w.resultantKn, 1)} kN op NAP ${nl(w.resultantNap, 2)} m. Niet meegenomen: golfbelasting (Morison) en dynamische effecten (wervelafschudding).`); }
+  kv(c, 'Grondmodel', `${r.analysisMode === 'elastoplastic' ? 'elastoplastisch, p = min(k_0 · y; p_u)' : nonlinear ? 'niet-lineair, p = p_u · tanh(k_0 · y / p_u)' : 'lineair, p = k_0 · y'}${input.layerCorrection === 'georgiadis' ? '; laagcorrectie Georgiadis' : ''}; werkende breedte ${nl(input.springWidthM, 2)} m`);
   c.y += 2;
 
   sectionTitle(c, '2. Paaldoorsnede');

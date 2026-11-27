@@ -1,4 +1,5 @@
 import { useId, useState } from 'react';
+import { currentLoadKnM } from './water';
 import type { PanelProps } from '../../framework/types';
 import type { LateralInput, LateralResult } from './compute';
 import type { AnalysisMode, ConvergenceInfo, EquivalentLayer, SpringState, UltimateProfile } from './spring-types';
@@ -33,6 +34,14 @@ export function PileCalculationModel({input:i,beam,springs,selectedId,onSelect,s
   const soilName=(id:string)=>id==='manual'?t('soils.manual','Eigen waarde'):t(soilKey(id),id).split(' (')[0];
   return <div className="pile-model"><svg viewBox="0 0 520 610" aria-label={t('model.aria', 'Rekenmodel met werkelijke integratiepunten')} role="img">
     <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" className="pile-arrow-fill"/></marker></defs>
+    {i.waterBed?.enabled&&(()=>{const w=i.waterBed!,bed=Math.min(i.lengthM,Math.max(0,head-w.bedNap)),top=Math.max(0,Math.min(bed,head-w.waterNap)),c=w.current,d=w.waterNap-w.bedNap;
+      const qs=c&&c.speedMs>0&&c.cd&&d>0?Array.from({length:6},(_,k)=>{const z=top+(bed-top)*(k+.5)/6;return {z,q:currentLoadKnM(c,i.section.kind==='sheet-pile'?i.springWidthM:i.section.diameterMm/1000,bed-z,d)};}):[];
+      const qMax=Math.max(1e-9,...qs.map(v=>v.q)),dir=c?.sign??1;
+      return <g>{bed>top&&<rect className="pile-water" x="90" width="335" y={depth(top)} height={depth(bed)-depth(top)}/>}
+        {head-w.waterNap>=0&&<><line className="pile-water-line" x1="90" x2="425" y1={depth(top)} y2={depth(top)}/><text x="95" y={depth(top)-3} className="pile-layer-label">{t('model.waterLevel','Waterpeil NAP {{nap}}',{nap:f(w.waterNap,2)})}</text></>}
+        <line className="pile-bed-line" x1="90" x2="425" y1={depth(bed)} y2={depth(bed)}/><text x="95" y={depth(bed)-3} className="pile-layer-label">{t('model.waterBed','Waterbodem NAP {{nap}}',{nap:f(w.bedNap,2)})}</text>
+        {qs.map((v,k)=>{const len=10+40*v.q/qMax,x0=dir>0?205-len:215+len,x1=dir>0?205:215;return <line key={k} className="pile-current" x1={x0} x2={x1} y1={depth(v.z)} y2={depth(v.z)} markerEnd={`url(#${arrowId})`}/>;})}
+        {qs.length>0&&<text x="95" y={depth((top+bed)/2)} className="pile-layer-label">{t('model.current','Stroming')}</text>}</g>;})()}
     {i.layers.map((l,k)=><g key={k}><rect className="pile-soil-band" style={{fill:soilColor(l.springId).fill}} x="90" width="335" y={depth(l.topM)} height={depth(l.bottomM)-depth(l.topM)}/>
       <line className="pile-layer-line" x1="90" x2="425" y1={depth(l.topM)} y2={depth(l.topM)}/>
       <text x="420" y={depth(l.topM)+12} textAnchor="end" className="pile-layer-label">{t('model.layer', 'Laag {{n}}', {n:k+1})} · {soilName(l.springId)}</text>
@@ -68,7 +77,7 @@ export function LateralExplorer({input,result}:PanelProps<LateralInput,LateralRe
   const selectedLayer=selected?input.layers[selected.layerIndex] as (LateralInput['layers'][number]&{ultimate?:UltimateProfile})|undefined:undefined;
   const props={input,beam:r.beam,springs,selectedId:selected?.id,onSelect:setSelectedId,scale};
   return <div className="pile-explorer"><header><h2>{t('explorer.title', 'Horizontale paalbelasting')} <span>{t('explorer.concept', 'Concept alpha')}</span></h2>
-    <p>{r.analysisMode==='nonlinear'?t('explorer.nonlinearModel', 'Niet-lineair projectmodel'):t('explorer.linearModel', 'Lineair grondmodel')} · EI {f(r.section.eiKnM2)} kNm² · {t('explorer.counts', '{{elements}} elementen · {{points}} integratiepunten', {elements:r.beam.elements.length,points:springs.length})}</p></header>
+    <p>{r.analysisMode==='elastoplastic'?t('explorer.elastoplasticModel', 'Elastoplastisch grondmodel'):r.analysisMode==='nonlinear'?t('explorer.nonlinearModel', 'Niet-lineair projectmodel'):t('explorer.linearModel', 'Lineair grondmodel')} · EI {f(r.section.eiKnM2)} kNm² · {t('explorer.counts', '{{elements}} elementen · {{points}} integratiepunten', {elements:r.beam.elements.length,points:springs.length})}</p></header>
     <div className="pile-explorer-toolbar"><div className="pile-tabs" role="tablist" aria-label={t('explorer.views', 'Paalweergave')}>{(['3D','Rekenmodel','Veren','Diagrammen'] as const).map(tab=><button key={tab} id={`pile-tab-${tab}`} role="tab" aria-selected={view===tab} aria-controls="pile-active-view" onClick={()=>setView(tab)}>{t(`explorer.tabs.${TAB_KEY[tab]}`,tab)}</button>)}</div>
       <label>{t('explorer.displacement', 'Verplaatsing')} ×<input type="number" min="1" max="1000" step="1" aria-label={t('explorer.magnification', 'Vergroting verplaatsing')} value={scale} onChange={event=>{const v=event.target.valueAsNumber;if(Number.isFinite(v))setScale(Math.max(1,Math.min(1000,v)));}}/></label>
       <button type="button" onClick={()=>setScale(1)}>{t('explorer.trueScale', 'Ware schaal')}</button></div>

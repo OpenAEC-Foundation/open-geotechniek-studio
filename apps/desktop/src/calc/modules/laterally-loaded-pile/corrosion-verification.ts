@@ -34,6 +34,10 @@ export const TUBE_CASES: readonly TubeCase[] = [
   { id: 'B4', D: 610, t: 12, fy: 355, outer: 1.75, inner: 1.75, nKn: 0, mKnM: 0, expect: { t: 8.5, D: 606.5, A: 15968.7, I: 71395.4, wel: 2354.34, wpl: 3039.84, dt: 71.35, cls: 4, mc: null, nc: 5668.9, v: 2083.6 } },
   { id: 'B5', D: 406.4, t: 10, fy: 355, outer: 1.2, inner: 1.2, nKn: 500, mKnM: 200, expect: { t: 7.6, D: 404, A: 9464.5, I: 18596.6, wel: 920.62, wpl: 1194.36, dt: 53.16, cls: 3, mc: 326.82, nc: 3359.9, v: 1234.9, interaction: { s: 'σ_x,Ed [MPa]', v: 270.08 } } },
   { id: 'B6', D: 219.1, t: 8, fy: 235, outer: 3.0, inner: 0, nKn: 0, mKnM: 0, expect: { t: 5.0, D: 213.1, A: 3268.8, I: 1770.5, wel: 166.17, wpl: 216.57, dt: 42.62, cls: 1, mc: 50.89, nc: 768.2, v: 282.3 } },
+  // Meerpaal, open stalen buis Ø914×20, referentierapport 2025 (VERIFICATIE.md, "Meerpaal in open water"): 0,012 mm/jaar
+  // aan beide zijden, 50 jaar. De bron rekent EI = 1 108 260 kNm², A = 52 801 mm² en V_pl,Rd = 6 889,6 kN met dezelfde
+  // doorsnede, maar M_pl,Rd = 5 334,9 kNm met W_pl terwijl D/t in klasse 3 valt.
+  { id: 'B7', D: 914, t: 20, fy: 355, outer: 0.6, inner: 0.6, nKn: 0, mKnM: 0, expect: { t: 18.8, D: 912.8, A: 52801.4, I: 527742.8, wel: 11563.16, wpl: 15027.85, dt: 48.55, cls: 3, mc: 4104.92, nc: 18744.5, v: 6889.6 } },
 ];
 
 export function tubeVerification(): VerificationRow[] {

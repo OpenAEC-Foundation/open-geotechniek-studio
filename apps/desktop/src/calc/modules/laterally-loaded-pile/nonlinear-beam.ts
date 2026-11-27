@@ -1,10 +1,12 @@
-import {gauss,shape,roots,polynomial,solveBeam,type BeamInput,type BeamResult} from './beam';
+import {gauss,shape,roots,polynomial,solveBeam,eiAt,lineLoadAt,type BeamInput,type BeamResult} from './beam';
 import {evaluateSpring,springLawAtDepth,equivalentLayers} from './nonlinear-soil';
 import type {AnalysisMode,LayerCorrection,SoilSpringProfile,EquivalentLayer,SpringState,SpringLaw,ConvergenceInfo} from './spring-types';
 import { ct } from '../../i18n';
 
-type Options={maxIterations?:number;loadSteps?:number;tolerance?:number};
-type Point={z:number;weight:number;n:number[];law:SpringLaw|null;equivalentDepth:number;layer:number};
+type Options={maxIterations?:number;loadSteps?:number;tolerance?:number;
+ /** Diepte waar de grond begint (waterbodem); zonder laagcorrectie de nul van z_eq. */
+ originM?:number};
+type Point={z:number;weight:number;n:number[];law:SpringLaw|null;equivalentDepth:number;layer:number;q:number};
 type Element={a:number;b:number;kb:number[][];q:number;points:Point[]};
 
 /** Symmetrisch geschaalde band-Cholesky; ligger-elementen koppelen maximaal vier opeenvolgende vrijheidsgraden. */
@@ -34,8 +36,8 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
  const maxIterations=options.maxIterations??40,initialSteps=options.loadSteps??8,tol=options.tolerance??1e-7;
  if(!Number.isInteger(maxIterations)||maxIterations<1||maxIterations>200||!Number.isInteger(initialSteps)||initialSteps<1||initialSteps>100||!Number.isFinite(tol)||tol<=0||tol>1e-3)
   throw new Error(ct('calcLateral', 'errors.invalidIteration', 'Ongeldige iteratie-instellingen.'));
- if(!['linear','nonlinear'].includes(mode)||!['none','georgiadis'].includes(correction)||profiles.length!==equivalents.length)throw new Error(ct('calcLateral', 'errors.invalidSoilModel', 'Ongeldig grondmodel.'));
- const orderedLayers=[...input.layers].sort((a,b)=>a.topM-b.topM),expectedEquivalent=equivalentLayers(profiles,correction);
+ if(!['linear','nonlinear','elastoplastic'].includes(mode)||!['none','georgiadis'].includes(correction)||profiles.length!==equivalents.length)throw new Error(ct('calcLateral', 'errors.invalidSoilModel', 'Ongeldig grondmodel.'));
+ const orderedLayers=[...input.layers].sort((a,b)=>a.topM-b.topM),expectedEquivalent=equivalentLayers(profiles,correction,options.originM);
  const close=(a:number,b:number)=>Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=1e-9*Math.max(1,Math.abs(a),Math.abs(b));
  if(orderedLayers.length!==profiles.length||profiles.some((p,i)=>!close(p.topM,orderedLayers[i].topM)||!close(p.bottomM,orderedLayers[i].bottomM)||!close(p.initialKnM2,orderedLayers[i].lineSpringKnM2)))
   throw new Error(ct('calcLateral', 'errors.profileMismatch', 'Grondprofiel en liggerlagen of initiële stijfheid komen niet overeen.'));
@@ -47,11 +49,12 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
  const elements:Element[]=zs.slice(0,-1).map((a,e)=>{
   const b=zs[e+1],l=b-a,mid=(a+b)/2;
   const layer=input.layers.find(v=>v.topM<=mid&&v.bottomM>=mid),layerIndex=profiles.findIndex(v=>v.topM<=mid&&v.bottomM>=mid),q=layer?.lineLoadKnM??0;
-  const kb=[[12,6*l,-12,6*l],[6*l,4*l*l,-6*l,2*l*l],[-12,-6*l,12,-6*l],[6*l,2*l*l,-6*l,4*l*l]].map(r=>r.map(v=>v*input.eiKnM2/l**3));
+  const kb=[[12,6*l,-12,6*l],[6*l,4*l*l,-6*l,2*l*l],[-12,-6*l,12,-6*l],[6*l,2*l*l,-6*l,4*l*l]].map(r=>r.map(v=>v*eiAt(input,mid)/l**3));
   const points=gauss.map(([g,w])=>{
    const t=(g+1)/2,z=a+l*t,weight=w*l/2,n=shape(t,l),model=layerIndex>=0?springLawAtDepth(profiles,equivalents,layerIndex,z,mode):null;
-   for(let i=0;i<4;i++)F[2*e+i]+=n[i]*q*weight;
-   return {z,weight,n,law:model?.law??null,equivalentDepth:model?.equivalentDepthM??z,layer:layerIndex};
+   const qp=q+lineLoadAt(input,z);
+   for(let i=0;i<4;i++)F[2*e+i]+=n[i]*qp*weight;
+   return {z,weight,n,law:model?.law??null,equivalentDepth:model?.equivalentDepthM??z,layer:layerIndex,q:qp};
   });
   return {a,b,kb,q,points};
  });
@@ -71,7 +74,10 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
    }
    for(const p of el.points){if(!p.law)continue;const y=p.n.reduce((s,v,j)=>s+v*u[2*e+j],0),r=evaluateSpring(p.law,y);
     for(let i=0;i<4;i++){residual[2*e+i]+=p.n[i]*r.resistanceKnM*p.weight;
-     if(matrix)for(let j=0;j<=i;j++)band[2*e+i][i-j]+=p.n[i]*p.n[j]*r.tangentKnM2*p.weight;}
+     // Een vloeiende elastoplastische veer heeft tangent 0; de iteratiematrix houdt een kleine rest (1e-4 k0)
+     // zodat een paal met veel vloeiende veren niet singulier wordt. Het residu gebruikt de exacte weerstand.
+     const kt=p.law.kind==='elastoplastic'?Math.max(r.tangentKnM2,1e-4*p.law.initialKnM2):r.tangentKnM2;
+     if(matrix)for(let j=0;j<=i;j++)band[2*e+i][i-j]+=p.n[i]*p.n[j]*kt*p.weight;}
    }
   });
   if(!residual.every(Number.isFinite))throw new Error(ct('calcLateral', 'errors.nonlinearOverflow', 'Numerieke overloop in het niet-lineaire model.'));
@@ -109,17 +115,17 @@ export function solveFoundationBeam(input:BeamInput,profiles:SoilSpringProfile[]
   el.points.forEach((p,g)=>{
    const y=p.n.reduce((s,v,j)=>s+v*ue[j],0),r=p.law?evaluateSpring(p.law,y):{resistanceKnM:0,tangentKnM2:0,secantKnM2:0};
    const df=-r.resistanceKnM*p.weight;reaction+=df;soilMoment+=df*p.z;
-   const net=el.q-r.resistanceKnM;loads.push(net);for(let j=0;j<4;j++)end[j]-=p.n[j]*net*p.weight;
+   const net=p.q-r.resistanceKnM;loads.push(net);for(let j=0;j<4;j++)end[j]-=p.n[j]*net*p.weight;
    if(p.law){
-    const limit=Math.max(.001,Math.abs(y)*1.2,p.law.kind==='hyperbolic'&&p.law.initialKnM2>0?4*(p.law.ultimateKnM??0)/p.law.initialKnM2:0);
+    const limit=Math.max(.001,Math.abs(y)*1.2,p.law.kind!=='linear'&&p.law.initialKnM2>0?4*(p.law.ultimateKnM??0)/p.law.initialKnM2:0);
     springs.push({...r,id:`e${e}:g${g}`,elementIndex:e,gaussIndex:g,layerIndex:p.layer,zM:p.z,equivalentDepthM:p.equivalentDepth,displacementM:y,tributaryLengthM:p.weight,
      initialKnM2:p.law.initialKnM2,ultimateKnM:p.law.ultimateKnM,mode,correction,
-     modelLabel:mode==='linear'?'Lineaire bedding':'Hyperbolisch projectmodel',source:'k0 = kh × werkende breedte; pu-profiel = projectinvoer',
-     formula:mode==='linear'?'p = k0 y':'p = pu tanh(k0 y / pu)',
+     modelLabel:mode==='linear'?'Lineaire bedding':mode==='elastoplastic'?'Elastoplastische bedding':'Hyperbolisch projectmodel',source:'k0 = kh × werkende breedte; pu-profiel = projectinvoer',
+     formula:mode==='linear'?'p = k0 y':mode==='elastoplastic'?'p = min(k0 |y|, pu)':'p = pu tanh(k0 y / pu)',
      curvePoints:Array.from({length:61},(_,j)=>{const yM=limit*(j/30-1);return {yM,pKnM:evaluateSpring(p.law!,yM).resistanceKnM};})});
    }
   });
-  soilForce+=reaction;loadForce+=el.q*l;loadMoment+=el.q*l*(el.a+el.b)/2;
+  soilForce+=reaction;for(const p of el.points){loadForce+=p.q*p.weight;loadMoment+=p.q*p.weight*p.z;}
   const pc=Array(4).fill(0);loads.forEach((p,g)=>lagrange[g].forEach((v,i)=>pc[i]+=p*v));
   const yc=[ue[0],l*ue[1],-3*ue[0]-2*l*ue[1]+3*ue[2]-l*ue[3],2*ue[0]+l*ue[1]-2*ue[2]+l*ue[3]];
   const vc=[-end[0],...pc.map((v,i)=>-l*v/(i+1))],mc=[-end[1],end[0]*l,...pc.map((v,i)=>l*l*v/((i+1)*(i+2)))];

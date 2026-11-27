@@ -61,7 +61,15 @@
     "unknownSpring": "Okänd bäddmodul eller okänt scenario.",
     "unstableSupport": "Instabil modell: otillräckligt stöd.",
     "unstableTangent": "Instabil tangentstyvhet.",
-    "zeroStrengthLayer": "Ett lager med hållfasthet noll kan inte representera brottmotståndet hos de överliggande lagren."
+    "zeroStrengthLayer": "Ett lager med hållfasthet noll kan inte representera brottmotståndet hos de överliggande lagren.",
+    "menardInput": "Ménard: ange positiva E_p, pålbredd och α (0 till 1).",
+    "brinchHansenInput": "Brinch Hansen: ange φ′ (0 till 50°) och ett positivt γ′.",
+    "corrosionZone": "Nivån som pålen korroderar till måste ligga under pålhuvudet.",
+    "noSoilBelowBed": "Det finns inget jordlager under botten.",
+    "waterLevels": "Ange nivå för botten och vattennivå.",
+    "bedOutsidePile": "Botten måste ligga mellan pålhuvud och pålspets.",
+    "currentCd": "Ström: ange motståndskoefficienten C_D.",
+    "currentInput": "Ogiltig indata för strömmen."
   },
   "explorer": {
     "concept": "Utkast alfa",
@@ -83,7 +91,8 @@
     },
     "title": "Horisontellt belastad påle",
     "trueScale": "Verklig skala",
-    "views": "Pålvy"
+    "views": "Pålvy",
+    "elastoplasticModel": "Elastoplastisk jordmodell"
   },
   "field": {
     "aria": "Fjäderfält längs pålen",
@@ -236,7 +245,25 @@
     "widthPile": "= påle",
     "widthPileTitle": "Lika med pålens bredd",
     "withH": "Med H",
-    "openTubeHint": "Öppet rör: räknas som ihåligt rör; jorden inuti bidrar inte till styvheten. Insidan står också i jord."
+    "openTubeHint": "Öppet rör: räknas som ihåligt rör; jorden inuti bidrar inte till styvheten. Insidan står också i jord.",
+    "elastoplastic": "Elastoplastisk",
+    "layerEp": "E_p lager {{n}} [kN/m²]",
+    "layerAlpha": "α lager {{n}}",
+    "alpha": {
+      "peat": "torv",
+      "clay": "lera",
+      "silt": "silt",
+      "sand": "sand",
+      "gravel": "grus"
+    },
+    "menardTitle": "k_h från E_p (Ménard, CUR 166) vid den verksamma bredden",
+    "layerPhi": "φ′ lager {{n}} [°]",
+    "layerGammaEff": "γ′ lager {{n}} [kN/m³]",
+    "puKind": "Brottmotstånd lager {{n}}",
+    "puKindTitle": "pu som profil eller enligt Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D enligt Brinch Hansen (1961), z från markytan (i vatten från botten), γ′ under vatten = γ_m − 10.",
+    "menardHint": "Ménard: k_h från pressometermodulen E_p och α (CUR 166)."
   },
   "inspector": {
     "aria": "Fjäderinspektion",
@@ -274,7 +301,9 @@
       "tangent": "Tangentstyvhet",
       "tributary": "Integrationslängd",
       "ultimate": "Brottmotstånd pu"
-    }
+    },
+    "modelElastoplastic": "Elastoplastisk bädd",
+    "elastoplasticNote": "Elastoplastisk: linjär till pu, sedan konstant; statisk och monoton."
   },
   "legend": {
     "aria": "Teckenförklaring för jordlager och fjädrar",
@@ -380,7 +409,10 @@
     "headFixed": "Huvudets rotation låst",
     "layer": "Lager {{n}}",
     "toeFixed": "Spets inspänd",
-    "zFromHead": "z från huvudet"
+    "zFromHead": "z från huvudet",
+    "waterLevel": "Vattennivå NAP {{nap}}",
+    "waterBed": "Botten NAP {{nap}}",
+    "current": "Ström"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Dra roterar, skrolla zoomar, klicka på en fjäderpunkt.",
     "layerLabel": "{{soil}} · NAP {{top}} till {{bottom}}",
     "surfaceLabel": "Markyta NAP {{nap}}",
-    "unavailable": "3D är inte tillgängligt på denna enhet. Använd beräkningsmodellen och fjäderinspektionen nedan."
+    "unavailable": "3D är inte tillgängligt på denna enhet. Använd beräkningsmodellen och fjäderinspektionen nedan.",
+    "waterLabel": "Vattennivå NAP {{nap}}",
+    "bedLabel": "Botten NAP {{nap}}",
+    "currentLabel": "Ström"
   },
   "settings": {
     "applyMany": "På {{count}} lager",
@@ -533,7 +568,15 @@
     "wall": "gods {{wall}} mm",
     "width": "Effektiv bredd",
     "zeqBottom": "zeq,bottom",
-    "zeqTopBottom": "zeq överkant–underkant"
+    "zeqTopBottom": "zeq överkant–underkant",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (elastoplastisk); pu som funktion av det ekvivalenta djupet zeq",
+    "elastoplasticSprings": "elastoplastiska jordfjädrar",
+    "waterBed": "Botten",
+    "waterLevel": "Vattennivå",
+    "freeLength": "fri i vatten {{l}} m",
+    "current": "Ström",
+    "currentResultant": "resultant {{F}} kN på NAP {{z}} m",
+    "currentNot": "Våglast och virvelavlösning ej medtagna."
   },
   "sketch": {
     "aria": "Tvärsnitt {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Torv · lös (cu ca 10 kPa)",
     "sandDense": "Sand · fast lagrad (qc ca 25 MPa)",
     "sandLoose": "Sand · löst lagrad (qc ca 5 MPa)",
-    "sandMedium": "Sand · medelfast lagrad (qc ca 15 MPa)"
+    "sandMedium": "Sand · medelfast lagrad (qc ca 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "Inga aktiva jordfjädrar i denna modell.",
@@ -720,6 +764,35 @@
     "basisApprox": "approximation med plåttjocklekarna",
     "tubeSummary": "Efter korrosion: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Efter korrosion: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "Vid korrosion anges den nominella godstjockleken. Tjockleksförlust per sida; tabellvärdena är de rekommenderade värdena i NEN-EN 1993-5 tabell 4-1 och 4-2 och har inte kontrollerats mot standardtexten eller den nederländska bilagan. Korrosionen räknas i materialkontrollen och N–M-kontrollen, även i tvärsnittsklassen och D/t; i kraftfördelningen bara med kryssrutan. Ett fyllt rör korroderar bara utvändigt."
+    "hint": "Vid korrosion anges den nominella godstjockleken. Tjockleksförlust per sida; tabellvärdena är de rekommenderade värdena i NEN-EN 1993-5 tabell 4-1 och 4-2 och har inte kontrollerats mot standardtexten eller den nederländska bilagan. Korrosionen räknas i materialkontrollen och N–M-kontrollen, även i tvärsnittsklassen och D/t; i kraftfördelningen bara med kryssrutan. Ett fyllt rör korroderar bara utvändigt.",
+    "zoneBottom": "Korrosion till",
+    "zoneBottomLabel": "Korrosion till nivå [m NAP]; tom = hela pålen",
+    "zoneBedTitle": "I vatten och till 1 m ned i botten",
+    "zoneBed": "botten − 1 m",
+    "zoneSummary": "EI efter korrosion {{ei}} kNm² från huvudet till {{depth}} m därunder; därunder den ursprungliga EI. Kontrollerna använder det korroderade tvärsnittet över hela pålen (på säkra sidan)."
+  },
+  "water": {
+    "enabled": "Vattenbotten (påle fri i vatten)",
+    "bed": "Botten",
+    "bedLabel": "Botten [m NAP]",
+    "level": "Vattennivå",
+    "levelLabel": "Vattennivå [m NAP]",
+    "hint": "Inga jordfjädrar mellan pålhuvud och botten (fri längd {{free}} m). Jorden börjar vid botten; effektivspänningen (Brinch Hansen) räknas från botten med γ′, utan överlast från vattnet.",
+    "speed": "Strömhastighet u",
+    "speedLabel": "Strömhastighet [m/s]",
+    "profile": "Hastighetsprofil",
+    "uniform": "Jämn över djupet",
+    "power": "Potensprofil u·(h/d)ⁿ",
+    "exponent": "Exponent n",
+    "density": "Vattnets densitet",
+    "fresh": "Söt (1000)",
+    "salt": "Salt (1025)",
+    "cdLabel": "Motståndskoefficient C_D",
+    "direction": "Riktning",
+    "withH": "Med H",
+    "againstH": "Mot H",
+    "factor": "Partialkoefficient γ",
+    "formula": "q = ½·ρ·C_D·D·u² per meter, från botten till vattennivån; dimensioneringsvärde γ·q, som H. C_D beror på Reynolds tal, råhet och påväxt: ange ett motiverat värde (inget standardvärde). Ej medtaget: våglast (Morison, tröghetsterm) och dynamiska effekter (virvelavlösning).",
+    "result": "C_D {{cd}}: q vid ytan {{q}} kN/m (karakteristiskt); resultant {{F}} kN (dimensionerande) på NAP {{z}} m."
   }
 }

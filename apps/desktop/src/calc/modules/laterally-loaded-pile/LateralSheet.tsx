@@ -1,6 +1,7 @@
 // Uitdraai horizontale paal: dezelfde opbouw als het rekenblad van het
 // draagvermogen. Eerst de uitgangspunten, dan per stap de uitkomst met de
 // ingevulde formule, en tot slot de toets en de conclusie.
+import { usesUltimate } from './spring-types';
 import type { PanelProps } from '../../framework/types';
 import type { LateralInput, LateralResult } from './compute';
 import { ForceDiagrams, extremes } from './ForceDiagrams';
@@ -66,7 +67,7 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
   const r = result, sum = lateralSummary(i, r), nap = (z: number) => `NAP ${n(sum.head - z, 2)}`, secText = sectionTextT(i.section, t);
   const soilName = (id: string) => id === 'manual' ? t('soils.manual', 'Eigen waarde') : t(soilKey(id), soilLabel(id));
   const soilSource = (id: string) => id === 'manual' ? t('sheet.sourceProject', 'projectwaarde') : i.springOverrides?.[id]?.[i.scenario] !== undefined ? t('sheet.sourceOwn', 'eigen waarde (instellingen berekening)') : t('sheet.sourceTable', 'CUR166 tabel 3.3, {{scenario}} gemiddelde', { scenario: i.scenario === 'low' ? t('sheet.low', 'laag') : t('sheet.high', 'hoog') });
-  const nonlinear = r.analysisMode === 'nonlinear';
+  const nonlinear = usesUltimate(r.analysisMode), plasticLaw = r.analysisMode === 'elastoplastic';
   const mat = r.material, gov = mat?.governing, sheet = i.section.kind === 'sheet-pile' ? sheetInfo(i.section) : null;
   const govLabel = gov ? t(`material.rows.${gov.id}`, gov.label) : '';
   const data = lateralReportData(i, r), sec = r.section, tube = i.section.kind === 'steel-tube' || i.section.kind === 'filled-tube';
@@ -78,7 +79,7 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
   return <div className="pile-result lateral-sheet">
     <header className="pile-sheet-title">
       <h2>{t('sheet.title', 'Horizontale paalbelasting')}</h2>
-      <p>{secText} · {nonlinear ? t('sheet.nonlinearSprings', 'niet-lineaire grondveren') : t('sheet.linearSprings', 'lineaire grondveren')}{i.layerCorrection === 'georgiadis' ? t('sheet.georgiadis', ', laagcorrectie Georgiadis') : ''} · {t('sheet.concept', 'concept')}</p>
+      <p>{secText} · {plasticLaw ? t('sheet.elastoplasticSprings', 'elastoplastische grondveren') : nonlinear ? t('sheet.nonlinearSprings', 'niet-lineaire grondveren') : t('sheet.linearSprings', 'lineaire grondveren')}{i.layerCorrection === 'georgiadis' ? t('sheet.georgiadis', ', laagcorrectie Georgiadis') : ''} · {t('sheet.concept', 'concept')}</p>
     </header>
 
     <section>
@@ -88,6 +89,8 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
       <tr><th scope="row">{t('sheet.head', 'Paalkop')}</th><td>{nap(0)} m</td><th scope="row">{t('sheet.toe', 'Paalpunt')}</th><td>{nap(i.lengthM)} m</td></tr>
       <tr><th scope="row">{t('sheet.length', 'Lengte')}</th><td>{n(i.lengthM, 2)} m</td><th scope="row">{t('sheet.headCondition', 'Kop')}</th><td>{i.headFixedRotation ? t('sheet.fixed', 'ingeklemd') : t('sheet.free', 'vrij draaiend')}{i.toeFixed ? t('sheet.toeFixed', ', voet ingeklemd') : ''}</td></tr>
       <tr><th scope="row">{t('sheet.hHead', 'H op de kop')}</th><td>{n(i.headForceKn)} kN</td><th scope="row">{t('sheet.mHead', 'M op de kop')}</th><td>{n(i.headMomentKnM)} kNm</td></tr>
+      {r.water && <tr><th scope="row">{t('sheet.waterBed', 'Waterbodem')}</th><td>NAP {n(r.water.bedNap, 2)} m</td><th scope="row">{t('sheet.waterLevel', 'Waterpeil')}</th><td>NAP {n(r.water.waterNap, 2)} m · {t('sheet.freeLength', 'vrij in water {{l}} m', { l: n(r.water.freeLengthM, 2) })}</td></tr>}
+      {r.water?.current && <tr><th scope="row">{t('sheet.current', 'Stroming')}</th><td colSpan={3}>q = ½·ρ·C_D·D·u² = {n(r.water.current.qMaxKnM, 2)} kN/m (C_D {n(r.water.current.cd, 2)}, u {n(r.water.current.speedMs, 2)} m/s, γ {n(r.water.current.factor, 2)}); {t('sheet.currentResultant', 'resultante {{F}} kN op NAP {{z}} m', { F: n(r.water.current.resultantKn, 1), z: n(r.water.current.resultantNap, 2) })}. {t('sheet.currentNot', 'Golfbelasting en wervelafschudding niet meegenomen.')}</td></tr>}
       <tr><th scope="row">{t('sheet.nComp', 'N (druk +)')}</th><td>{n(i.nEdKn)} kN</td><th scope="row">{t('sheet.width', 'Werkende breedte')}</th><td>{n(i.springWidthM, 2)} m</td></tr>
     </tbody></table>
     </section>
@@ -126,7 +129,7 @@ export function LateralSheet({ input: i, result }: PanelProps<LateralInput, Late
       <tbody>{data.layers.map((l) => <tr key={l.index}><td>{l.index}</td><td className="num">{n(l.thicknessM, 2)}</td><td className="num">{n(l.frictionDeg, 0)}</td><td className="num">{n(l.ka, 3)}</td>
         <td className="num">{n(l.lineLoadKnM, 1)}</td><td className="num">{n(l.zeqTop, 2)} – {n(l.zeqBottom, 2)}</td>{data.nonlinear && <td className="num">{l.cumulativeKn === null ? '—' : n(l.cumulativeKn, 0)}</td>}</tr>)}</tbody>
     </table>
-    <p className="pile-result-pending-note">{t('sheet.k0Note', 'k₀ = kh × werkende breedte {{width}} m (CUR166 tabel 3.3, eerste secanttraject)', { width: n(i.springWidthM, 2) })}{nonlinear ? t('sheet.nonlinearNote', '; p = pu · tanh(k₀ y / pu); pu als functie van de equivalente diepte zeq') : '; p = k₀ y'}.</p>
+    <p className="pile-result-pending-note">{t('sheet.k0Note', 'k₀ = kh × werkende breedte {{width}} m (CUR166 tabel 3.3, eerste secanttraject)', { width: n(i.springWidthM, 2) })}{nonlinear ? (plasticLaw ? t('sheet.elastoplasticNote', '; p = min(k₀ y; pu) (elastoplastisch); pu als functie van de equivalente diepte zeq') : t('sheet.nonlinearNote', '; p = pu · tanh(k₀ y / pu); pu als functie van de equivalente diepte zeq')) : '; p = k₀ y'}.</p>
     </section>
 
     <section>

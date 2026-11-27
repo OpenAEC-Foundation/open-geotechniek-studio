@@ -136,3 +136,9 @@
 .pile-diagrams .pile-axis { stroke: var(--oa-text-secondary); stroke-width: .8; }
 .pile-plusminus circle { fill: var(--oa-panel); stroke: var(--oa-text); stroke-width: 1.1; }
 .pile-plusminus line { stroke: var(--oa-text); stroke-width: 1.4; }
+
+/* Paal in open water: water boven de waterbodem, de bodem als grondlijn en de stroming als pijlen. */
+.pile-water { fill: color-mix(in srgb, #4a90d9 22%, transparent); }
+.pile-water-line { stroke: #2f74c0; stroke-width: 1.2; stroke-dasharray: 6 3; }
+.pile-bed-line { stroke: #6b5a3a; stroke-width: 2.2; }
+.pile-current { stroke: #2f74c0; stroke-width: 1.6; }

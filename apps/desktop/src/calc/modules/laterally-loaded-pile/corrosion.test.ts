@@ -61,7 +61,7 @@ describe('verificatietabel afgeroeste stalen buizen', () => {
   it('alle regels in orde, ook de verschuiving van de klasse', () => {
     const rows = tubeVerification();
     if (process.env.CORROSION_TABLE) for (const r of rows) appendFileSync(process.env.CORROSION_TABLE, `${r.id}|${r.input}|${r.quantity}|${r.expected}|${r.actual}|${rowDiff(r)}|${rowOk(r)}\n`);
-    expect(rows.filter((r) => r.quantity === 'klasse').map((r) => r.expected)).toEqual([2, 2, 2, 4, 3, 1]);
+    expect(rows.filter((r) => r.quantity === 'klasse').map((r) => r.expected)).toEqual([2, 2, 2, 4, 3, 1, 3]);
     for (const r of rows) expect(rowOk(r), `${r.id} ${r.quantity}: verwacht ${r.expected}, module ${r.actual}`).toBe(true);
   });
 });

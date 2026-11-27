@@ -3,6 +3,7 @@
 // laagcorrectie gebruikt; bij een zuiver lineaire berekening één alinea.
 // Hier staat alleen wat de rekenkern werkelijk doet (nonlinear-beam.ts,
 // nonlinear-soil.ts; zie NONLINEAR-SOIL.md).
+import { usesUltimate } from './spring-types';
 import type { LateralInput, LateralResult } from './compute';
 import { soilColor } from './report-data';
 import { M, formula, kv, nl, paragraph, sectionTitle, winAnsi, type Cursor } from '../pile-bearing-capacity/parts/pile-report-pdf';
@@ -10,7 +11,7 @@ import { M, formula, kv, nl, paragraph, sectionTitle, winAnsi, type Cursor } fro
 type Ok = Extract<LateralResult, { ok: true }>;
 
 /** Volle pagina nodig: niet-lineaire veren of laagcorrectie. */
-export const needsMethodPage = (input: LateralInput, r: Ok) => r.analysisMode === 'nonlinear' || input.layerCorrection === 'georgiadis';
+export const needsMethodPage = (input: LateralInput, r: Ok) => usesUltimate(r.analysisMode) || input.layerCorrection === 'georgiadis';
 
 const BEAM_TEXT = 'De paal is een buigligger op veren haaks op de paal. Elke grondlaag heeft een veer met stijfheid k0 = kh x werkende breedte. Uit het evenwicht volgen verplaatsing, moment, dwarskracht en grondreactie; de normaalkracht telt alleen mee in de toets van de doorsnede.';
 const SIZE = 7.8;
@@ -102,7 +103,7 @@ export function renderMethod(c: Cursor, input: LateralInput, r: Ok): boolean {
     c.y += 2;
     return false;
   }
-  const nonlinear = r.analysisMode === 'nonlinear', georgiadis = input.layerCorrection === 'georgiadis';
+  const nonlinear = usesUltimate(r.analysisMode), plasticLaw = r.analysisMode === 'elastoplastic', georgiadis = input.layerCorrection === 'georgiadis';
   const text = (value: string) => paragraph(c, value, { size: SIZE });
   sectionTitle(c, 'Rekenconcept', nonlinear ? 'Ligger op niet-lineaire grondveren' : 'Ligger op grondveren met laagcorrectie');
 
@@ -111,7 +112,8 @@ export function renderMethod(c: Cursor, input: LateralInput, r: Ok): boolean {
 
   if (nonlinear) {
     sectionTitle(c, 'Waarom de veer niet-lineair is');
-    text('De grondreactie p loopt bij toenemende verplaatsing steeds langzamer op en nadert de grenswaarde pu van de laag. De kracht verhuist dan naar dieper gelegen veren; verplaatsing en moment worden groter dan bij lineaire veren.');
+    text(plasticLaw ? 'Elastoplastische veer: de grondreactie p = k0 · y tot de grenswaarde pu van de laag, daarna blijft p gelijk aan pu. De kracht verhuist dan naar dieper gelegen veren; verplaatsing en moment worden groter dan bij lineaire veren.'
+      : 'De grondreactie p loopt bij toenemende verplaatsing steeds langzamer op en nadert de grenswaarde pu van de laag. De kracht verhuist dan naar dieper gelegen veren; verplaatsing en moment worden groter dan bij lineaire veren.');
     pyFigure(c);
 
     sectionTitle(c, 'Hoe het evenwicht wordt gevonden');

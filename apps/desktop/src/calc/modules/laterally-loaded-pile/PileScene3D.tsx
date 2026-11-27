@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { currentLoadKnM } from './water';
 import { MATERIAL_COLORS } from '../pile-bearing-capacity/parts/material-colors';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -152,7 +153,26 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
       const zTop=ordered0[0].topM,surfaceMaterial=new THREE.LineBasicMaterial({color:token('--oa-text')});accentMaterials.push(surfaceMaterial);
       const corners=[[-1,-1],[1,-1],[1,1],[-1,1],[-1,-1]].map(([a,b])=>new THREE.Vector3(a*reach*1.08,-zTop,b*reach*.66));
       scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(corners),surfaceMaterial));
-      addLabel(t('scene.surfaceLabel','Maaiveld NAP {{nap}}',{nap:napText(zTop)}),new THREE.Vector3(reach*1.08,-zTop,reach*.66),'surface');
+      if(!input.waterBed?.enabled)addLabel(t('scene.surfaceLabel','Maaiveld NAP {{nap}}',{nap:napText(zTop)}),new THREE.Vector3(reach*1.08,-zTop,reach*.66),'surface');
+    }
+    // Paal in open water: water als doorschijnend blok boven de waterbodem, de bodem als grondvlak, stroming als pijlen.
+    if(input.waterBed?.enabled){
+      const w=input.waterBed,bed=Math.min(L,Math.max(0,headNap-w.bedNap)),top=Math.max(0,Math.min(bed,headNap-w.waterNap)),blue=new THREE.Color('#4a90d9');
+      if(bed>top){
+        const waterMaterial=new THREE.MeshBasicMaterial({color:blue,transparent:true,opacity:.18,depthWrite:false,side:THREE.DoubleSide});
+        const water=new THREE.Mesh(new THREE.BoxGeometry(reach*2,bed-top,reach*1.2),waterMaterial);water.position.set(0,-(top+bed)/2,0);scene.add(water);
+        if(headNap-w.waterNap>=0)addLabel(t('scene.waterLabel','Waterpeil NAP {{nap}}',{nap:w.waterNap.toLocaleString(numberLocale(),{minimumFractionDigits:2,maximumFractionDigits:2})}),new THREE.Vector3(reach*1.08,-top,reach*.66),'surface');
+      }
+      const bedMaterial=new THREE.MeshBasicMaterial({color:new THREE.Color('#6b5a3a'),transparent:true,opacity:.45,depthWrite:false,side:THREE.DoubleSide});
+      const plane=new THREE.Mesh(new THREE.PlaneGeometry(reach*2,reach*1.2),bedMaterial);plane.rotation.x=-Math.PI/2;plane.position.set(0,-bed,0);scene.add(plane);
+      addLabel(t('scene.bedLabel','Waterbodem NAP {{nap}}',{nap:w.bedNap.toLocaleString(numberLocale(),{minimumFractionDigits:2,maximumFractionDigits:2})}),new THREE.Vector3(reach*1.08,-bed,reach*.66),'surface');
+      const c=w.current,d=w.waterNap-w.bedNap;
+      if(c&&c.speedMs>0&&c.cd&&d>0&&bed>top){
+        const width=kind==='sheet-pile'?input.springWidthM:diameter,qs=Array.from({length:7},(_,k)=>{const z=top+(bed-top)*(k+.5)/7;return {z,q:currentLoadKnM(c,width,bed-z,d)};});
+        const qMax=Math.max(1e-9,...qs.map(v=>v.q)),dir=c.sign,len=reach*.5;
+        qs.forEach(v=>{const l=len*(.25+.75*v.q/qMax);scene.add(new THREE.ArrowHelper(new THREE.Vector3(dir,0,0),new THREE.Vector3(-dir*(l+diameter*.6),-v.z,0),l,blue.getHex(),l*.25,l*.12));});
+        addLabel(t('scene.currentLabel','Stroming'),new THREE.Vector3(-dir*(len+diameter*.6),-(top+bed)/2,0),'load');
+      }
     }
     // Belasting op de kop: kracht H als pijl, moment M als boog met pijlpunt.
     const loadColor=()=>token('--oa-accent-text'),loadLength=Math.max(reach*.55,diameter*2),headY=beam.samples.length?beam.samples.reduce((a,p)=>p.zM<a.zM?p:a).yM*scale:0;
