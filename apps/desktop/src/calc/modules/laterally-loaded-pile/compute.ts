@@ -31,6 +31,8 @@ export interface LateralInput {
   pileSystemId?:string;
   /** Gegevens overgenomen uit een paaldraagvermogenberekening. */
   inherited?:import('./pile-link').InheritedFrom;
+  /** Varianten bij dezelfde grond en belasting, en de laatste optimalisatie; de berekening zelf leest ze niet. */
+  variants?:import('./variants').VariantsConfig;
 }
 export const lateralExample:LateralInput = {
   lengthM:12,maxElementM:.5,headForceKn:30,headMomentKnM:20,nEdKn:0,

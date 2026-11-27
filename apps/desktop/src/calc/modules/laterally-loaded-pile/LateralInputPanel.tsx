@@ -23,6 +23,7 @@ import type { MaterialInput } from './material-types';
 import { CAST_IN_SITU, SYSTEM_KINDS, systemAvailable, systemOf } from './pile-link';
 import { InheritedNote } from './InheritedNote';
 import { defaultSheet, type SheetSection } from './sheet-section';
+import { VariantsBar } from './VariantsPanel';
 
 type Props = PanelProps<LateralInput, LateralResult>;
 const nl = (v: number, d = 2) => v.toLocaleString(numberLocale(), { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -88,6 +89,7 @@ export function LateralInputPanel({ input: i, onChange }: Props) {
   const stirrups = (i.material?.stirrupDiameterMm ?? 0) > 0;
 
   return <div className="lat-input">
+    <VariantsBar input={i} onChange={onChange} />
     {i.inherited && <InheritedNote input={i} onChange={onChange} />}
     <Section title={t('input.pile', 'Paal')}>
       <div className="cs-tiles pile-system-tiles" role="radiogroup" aria-label={t('input.pileSystem', 'Paalsysteem')}>
