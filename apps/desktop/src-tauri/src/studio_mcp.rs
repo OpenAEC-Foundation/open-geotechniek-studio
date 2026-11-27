@@ -36,6 +36,7 @@ fn allowed_tool(tool: &str) -> bool {
         "studio_get_state"
             | "studio_new_project"
             | "studio_open_file"
+            | "studio_add_cpt"
             | "studio_set_project_meta"
             | "studio_add_calculation"
             | "studio_update_calculation"
@@ -553,23 +554,32 @@ fn read_endpoint() -> Result<Endpoint, String> {
     Ok(endpoint)
 }
 
+/// Werkwijze voor MCP-clients: de Studio is één live sessie met de gebruiker, geen generator van losse bestanden.
+const LIVE_INSTRUCTIONS: &str = "This server controls the running Open Geotechniek Studio window the user is looking at. Read studio_get_state first and keep working in the active project: add calculations and CPTs to it, update them in place and save to the same path. Do not create new projects or reopen files that are already open unless the user asks for it; studio_open_file activates an open file instead of duplicating it. Changes are visible to the user immediately, and the user may change the project between your calls, so read the state again before acting on it.";
+
 fn tool_definitions() -> Value {
     let definitions = [
         (
             "studio_get_state",
-            "Read compact live Studio project state",
+            "Read the live Studio state: the open documents, the active project with its CPTs and calculations. Call this first and keep working in the active project",
             json!({}),
             vec![],
         ),
         (
             "studio_new_project",
-            "Create and activate a new Studio project",
+            "Create and activate a new, empty Studio project. Only when the user asks for a new project; otherwise keep working in the active project",
             json!({"title":{"type":"string"}}),
             vec![],
         ),
         (
             "studio_open_file",
-            "Open a local project or CPT in Studio",
+            "Open a local project or CPT in Studio. A file that is already open is activated instead of opened a second time; reload:true re-reads a project file from disk into the same document",
+            json!({"path":{"type":"string"},"reload":{"type":"boolean"}}),
+            vec!["path"],
+        ),
+        (
+            "studio_add_cpt",
+            "Add a GEF, BRO-XML or ifcgeo CPT file to the active project (no new document)",
             json!({"path":{"type":"string"}}),
             vec!["path"],
         ),
@@ -760,7 +770,7 @@ impl StdioProxy {
         self.client_name = Some(name.clone());
         self.connect_session(endpoint, name).await?;
         Ok(
-            json!({"protocolVersion":"2024-11-05","capabilities":{"tools":{"listChanged":false}},"serverInfo":{"name":"open-geotechniek-studio-live","version":env!("CARGO_PKG_VERSION")}}),
+            json!({"protocolVersion":"2024-11-05","capabilities":{"tools":{"listChanged":false}},"serverInfo":{"name":"open-geotechniek-studio-live","version":env!("CARGO_PKG_VERSION")},"instructions":LIVE_INSTRUCTIONS}),
         )
     }
     async fn ensure_session(&mut self) -> Result<(), String> {
@@ -1098,11 +1108,16 @@ mod transport_tests {
             assert!(proxy.request(&json!({"jsonrpc":"2.0","method":"tools/call","params":{"name":"studio_new_project"}})).await.is_none());
             let response = proxy.request(&json!({"jsonrpc":"2.0","id":7,"method":"tools/list"})).await.unwrap();
             let tools = response["result"]["tools"].as_array().unwrap();
-            assert_eq!(tools.len(), 15);
-            for name in ["studio_get_capacity_table", "studio_export_report", "studio_show_view", "studio_export_ifcx"] {
+            assert_eq!(tools.len(), 16);
+            for name in ["studio_get_capacity_table", "studio_export_report", "studio_show_view", "studio_export_ifcx", "studio_add_cpt"] {
                 assert!(tools.iter().any(|tool| tool["name"] == name), "{name} ontbreekt in de toolcatalogus");
             }
             assert!(tools.iter().all(|tool| tool["name"].as_str().unwrap().starts_with("studio_")));
+            // Werken in het open project: een nieuw project alleen op verzoek, een open bestand niet dubbel.
+            let describe = |name: &str| tools.iter().find(|tool| tool["name"] == name).unwrap()["description"].as_str().unwrap().to_owned();
+            assert!(describe("studio_new_project").contains("Only when the user asks"));
+            assert!(describe("studio_open_file").contains("already open is activated"));
+            assert!(LIVE_INSTRUCTIONS.contains("keep working in the active project"));
             let response = proxy.request(&json!({"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"eval"}})).await.unwrap();
             assert!(response.get("error").is_some());
         });

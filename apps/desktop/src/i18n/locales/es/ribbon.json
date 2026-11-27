@@ -247,5 +247,7 @@
   "cptSideBySide": "En paralelo",
   "cptSideBySideHint": "Muestra los ensayos uno al lado del otro, cada uno en su propia columna.",
   "cptOverlay": "Superpuestos",
-  "cptOverlayHint": "Dibuja todos los ensayos visibles superpuestos: un gráfico de qc y otro de fs respecto al NAP."
+  "cptOverlayHint": "Dibuja todos los ensayos visibles superpuestos: un gráfico de qc y otro de fs respecto al NAP.",
+  "cptGroup": "Sondeo",
+  "cptFromScan": "Desde escaneo"
 }

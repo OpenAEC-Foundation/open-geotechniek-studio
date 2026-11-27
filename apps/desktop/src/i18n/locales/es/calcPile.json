@@ -87,6 +87,20 @@
     "title": "Coeficientes del pilote",
     "useProject": "Usar coeficientes del proyecto / declaración propia"
   },
+  "governing": {
+    "bestLevel": "como máximo {{rc}} kN a {{level}}",
+    "caption": "Cota de punta más alta [m NAP] en la que todos los CPT alcanzan la capacidad portante, con el CPT determinante y su Rc;net;d. Haga clic en una celda para situar el plano en esa cota.",
+    "cellAria": "{{target}} kN con {{size}} mm: NAP {{level}}, determinante {{cpt}}",
+    "cellMissingAria": "{{target}} kN con {{size}} mm: no alcanzado",
+    "noOption": "no alcanzado en todos los CPT con ninguna de las dimensiones",
+    "option": "{{size}} a NAP {{level}}",
+    "or": " o ",
+    "tableAria": "Cota de punta determinante por capacidad portante y dimensión del pilote",
+    "target": "Rc;net;d ≥",
+    "title": "Resumen determinante",
+    "worst": "Determinante con más frecuencia:",
+    "worstCount": "({{n}} de {{total}})"
+  },
   "legend": {
     "chosen": "cota seleccionada",
     "over": "> {{max}} kN, holgado",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "rozamiento negativo",
     "title": "Carga"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "sin resultado",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Cota de punta: NAP {{level}} m",
+    "looseLabel": "Sin posición",
+    "noPositions": "Ningún CPT tiene posición; no se puede dibujar el plano.",
+    "pointNone": "{{cpt}}: sin resultado en esta cota",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Dimensión del pilote",
+    "summary": "Valor más bajo en esta cota: {{cpt}} con {{rc}} kN.",
+    "svgAria": "Plano de los CPT con Rc;net;d para {{size}} a NAP {{level}} m",
+    "target": "Capacidad portante",
+    "title": "CPT en el plano",
+    "type": "Tipo de pilote"
+  },
   "material": {
     "concrete": "Hormigón",
     "steel": "Acero",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Diámetro de la madera en la junta",
     "system": "Sistema de pilotes",
     "standardSize": "Medida estándar"
+  },
+  "pilePlan": {
+    "button": "Exportar para Pile Plan Studio (CSV)",
+    "filter": "CSV para Pile Plan Studio",
+    "hint": "Dos archivos: sonderingen.csv (ID, X, Y en RD, milímetros) y funderingsadvies.csv (ID de CPT, punta en m NAP, dimensión en mm, Rc;net;d en kN) del tipo principal.",
+    "ids": "ID de CPT en ambos archivos: {{list}}",
+    "missing": "{{n}} combinaciones sin resistencia calculada (celda FRD vacía, no cero)",
+    "more": "y {{n}} más",
+    "noPosition": "Sin posición RD, no exportado: {{list}}",
+    "noneWithPosition": "Ningún CPT tiene posición RD; no se ha exportado nada.",
+    "onlyFirst": "Solo se escribió sonderingen.csv; funderingsadvies.csv se canceló.",
+    "written": "Escrito: {{cpts}} CPT y {{rows}} resistencias. X e Y están en RD en milímetros."
   },
   "profile": {
     "bottom": "Inferior",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Diámetro de punta de la madera [mm]"
   },
   "target": {
+    "extra": "Más capacidades portantes para el resumen [kN]",
+    "extraPlaceholder": "p. ej. 160; 280",
     "hint": "Para cada dimensión, la tabla de selección busca el pilote más corto que alcanza el límite inferior. Por encima del límite superior, la dimensión es holgada.",
     "inverted": "El límite superior debe estar por encima del límite inferior; la tabla sigue usando la banda anterior.",
     "legend": "Capacidad portante requerida Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "Sondeo y pilote en 3D uno junto al otro",
     "toolbar": "Vista",
     "unavailable": "El 3D no está disponible en este dispositivo (sin WebGL). Use el dibujo 2D."
+  },
+  "types": {
+    "add": "Añadir tipo de pilote",
+    "hint": "Los tipos de pilote adicionales aparecen junto al tipo principal en el resumen determinante y en el plano. Las tablas por CPT siguen siendo las del tipo principal.",
+    "legend": "Comparar tipos de pilote",
+    "listAria": "Tipos de pilote adicionales",
+    "none": "Ningún otro tipo de pilote puede compararse sin datos adicionales.",
+    "removeAria": "Eliminar el tipo de pilote {{type}}",
+    "sizesAria": "Dimensiones del tipo de pilote adicional [mm]",
+    "typeAria": "Tipo de pilote adicional"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

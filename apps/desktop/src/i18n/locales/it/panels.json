@@ -268,5 +268,16 @@
     "z7": "Sabbia ghiaiosa / ghiaia",
     "z8": "Sabbia/argilla molto rigida",
     "z9": "Fine molto rigido"
+  },
+  "dissipation": {
+    "title": "Prove di dissipazione",
+    "chartLabel": "Pressione interstiziale in kPa rispetto al tempo in secondi (logaritmico)",
+    "timeAxis": "tempo [s]",
+    "atDepth": "A {{depth}} m",
+    "remove": "Rimuovi prova di dissipazione",
+    "uMax": "u max",
+    "uEnd": "u finale",
+    "noDecay": "nessuna dissipazione",
+    "note": "t50: tempo fino a metà della dissipazione tra la lettura più alta e l'ultima. L'ultima lettura approssima l'equilibrio; se la prova è stata interrotta presto, t50 è indicativo."
   }
 }

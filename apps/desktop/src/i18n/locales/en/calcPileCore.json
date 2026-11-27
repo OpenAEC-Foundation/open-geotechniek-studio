@@ -70,7 +70,9 @@
       "levelRangeInvalid": "Enter a finite top and bottom level and a positive step.",
       "tooManyLevels": "At most {{max}} toe levels; choose a larger step.",
       "sizesNotPositive": "Pile sizes must be positive.",
-      "targetRangeInvalid": "The upper limit of the target bearing capacity must be above the lower limit."
+      "targetRangeInvalid": "The upper limit of the target bearing capacity must be above the lower limit.",
+      "targetsInvalid": "Enter unique, positive bearing capacities in kN.",
+      "extraTypesInvalid": "Enter a known type and positive pile sizes for each extra pile type; each type once."
     },
     "notes": {
       "profileAboveToe": "Soil profile ends above the pile toe. Check and extend the soil layers; missing shaft layers do not contribute.",

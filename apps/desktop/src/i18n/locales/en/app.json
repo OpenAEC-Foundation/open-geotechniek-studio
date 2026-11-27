@@ -6,6 +6,7 @@
     "untitled": "Untitled"
   },
   "drop": {
+    "openFailed": "Could not open {{name}}: {{message}}",
     "hint": "Release to open — GEF, BRO XML or .ifcgeo",
     "browserOpenFailed": "Could not open {{name}} in browser mode:\n{{message}}\n\nTip: BHR-GT XML, GMW XML and GEF work in the browser. For BRO CPT XML and project files you need the desktop version."
   },
@@ -69,6 +70,7 @@
   "store": {
     "noProject": "No active project.",
     "noProjectForBro": "No active project — cannot add the BRO CPT.",
+    "dissipationWithoutCpt": "{{file}} is a dissipation test belonging to CPT {{parent}}. Open that CPT or the project containing it first, then add the dissipation test.",
     "targetProjectClosed": "The target project was closed while adding.",
     "gmwParseFailed": "{{filename}}: could not parse a GMW dispatch (no <GMW_PO>/<GMW_O> root or no broId found)",
     "unsupportedBore": "{{filename}}: not a supported BHR XML or GEF borehole"

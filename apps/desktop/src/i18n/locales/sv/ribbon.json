@@ -247,5 +247,7 @@
   "cptSideBySide": "Sida vid sida",
   "cptSideBySideHint": "Visa sonderingarna sida vid sida, var och en i sin egen kolumn.",
   "cptOverlay": "Ovanpå varandra",
-  "cptOverlayHint": "Rita alla synliga sonderingar ovanpå varandra: ett diagram för qc och ett för fs mot NAP."
+  "cptOverlayHint": "Rita alla synliga sonderingar ovanpå varandra: ett diagram för qc och ett för fs mot NAP.",
+  "cptGroup": "Sondering",
+  "cptFromScan": "Från skanning"
 }

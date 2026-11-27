@@ -90,6 +90,10 @@ export interface PileInput {
     sizesMm?:number[];
     /** Gezocht netto draagvermogen Rc;net;d [kN]. */
     targetKn?:{minKn:number;maxKn:number};
+    /** Draagvermogens [kN] voor het maatgevende overzicht; ontbrekend = alleen de ondergrens. */
+    targetsKn?:number[];
+    /** Andere paaltypes voor het maatgevende overzicht, elk met een eigen maatreeks [mm]. */
+    extraTypes?:Array<{pileTypeId:string;sizesMm:number[]}>;
     /** Voorbeeldberekeningen die volledig in de uitdraai komen; daarna alleen de tabellen. */
     examples?:Array<{cptId:string;sizeMm:number;toeNap:number}>;
   };

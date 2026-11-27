@@ -247,5 +247,7 @@
   "cptSideBySide": "Lado a lado",
   "cptSideBySideHint": "Mostra os ensaios lado a lado, cada um na sua própria coluna.",
   "cptOverlay": "Sobrepostos",
-  "cptOverlayHint": "Desenha todos os ensaios visíveis sobrepostos: um gráfico de qc e outro de fs em função do NAP."
+  "cptOverlayHint": "Desenha todos os ensaios visíveis sobrepostos: um gráfico de qc e outro de fs em função do NAP.",
+  "cptGroup": "Sondagem",
+  "cptFromScan": "A partir de digitalização"
 }

@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} ist ein Dissipationsversuch (GEF-DISS), keine Drucksondierung. Fügen Sie ihn der zugehörigen Sondierung{{parent}} hinzu.",
+    "noDepthRecords": "{{file}}: Kein Messdatensatz hat eine Tiefe (Eindringlänge oder korrigierte Tiefe), daher gibt es keine Sondierung zum Einlesen.",
     "bomRemoved": "UTF-8-BOM entfernt.",
     "suspectEncoding": "Möglicherweise falsche Zeichenkodierung; prüfen Sie den Originaltext.",
     "unrecognisedHeaderLine": "Nicht erkannte Kopfzeile beibehalten.",
@@ -40,7 +42,10 @@
     "columnMinMax": "Spalte {{column}}: gemessenes Min./Max. weicht vom Header ab.",
     "preExcavationUnitConversion": "Vorgrabtiefe von {{unit}} in m umgerechnet; Quellwert in den Messvariablen beibehalten.",
     "unknownPreExcavationUnit": "Vorgrabtiefe mit unbekannter Einheit {{unit}} nur als Quellwert beibehalten.",
-    "preExcavated": "Messkanäle im vorgegrabenen Boden maskiert; Originalwerte bleiben in den Parametern."
+    "preExcavated": "Messkanäle im vorgegrabenen Boden maskiert; Originalwerte bleiben in den Parametern.",
+    "dissipationColumns": "{{file}}: Dissipationsversuch ohne Zeit- oder Porenwasserdruckspalte.",
+    "dissipationUnit": "{{file}}: unbekannte Einheit in Spalte {{column}}.",
+    "dissipationEmpty": "{{file}}: Dissipationsversuch ohne Porenwasserdruckmessungen."
   },
   "bro": {
     "xmlParseError": "BRO-Sondierungs-XML-Parserfehler: {{detail}}",

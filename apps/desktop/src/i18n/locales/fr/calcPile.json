@@ -87,6 +87,20 @@
     "title": "Facteurs de pieu",
     "useProject": "Utiliser les facteurs du projet / auto-déclaration"
   },
+  "governing": {
+    "bestLevel": "au plus {{rc}} kN à {{level}}",
+    "caption": "Niveau de pointe le plus haut [m NAP] auquel tous les essais CPT atteignent la capacité portante, avec l’essai CPT déterminant et son Rc;net;d. Cliquez sur une cellule pour régler le plan sur ce niveau.",
+    "cellAria": "{{target}} kN avec {{size}} mm : NAP {{level}}, déterminant {{cpt}}",
+    "cellMissingAria": "{{target}} kN avec {{size}} mm : non atteint",
+    "noOption": "atteint sur tous les essais CPT avec aucune des dimensions",
+    "option": "{{size}} à NAP {{level}}",
+    "or": " ou ",
+    "tableAria": "Niveau de pointe déterminant par capacité portante et dimension de pieu",
+    "target": "Rc;net;d ≥",
+    "title": "Vue d’ensemble déterminante",
+    "worst": "Le plus souvent déterminant :",
+    "worstCount": "({{n}} sur {{total}})"
+  },
   "legend": {
     "chosen": "niveau choisi",
     "over": "> {{max}} kN, large marge",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "frottement négatif",
     "title": "Charge"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "aucun résultat",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Niveau de pointe : NAP {{level}} m",
+    "looseLabel": "Sans position",
+    "noPositions": "Aucun essai CPT n’a de position ; le plan ne peut pas être dessiné.",
+    "pointNone": "{{cpt}} : aucun résultat à ce niveau",
+    "pointTitle": "{{cpt}} : {{rc}} kN",
+    "size": "Dimension de pieu",
+    "summary": "Valeur la plus basse à ce niveau : {{cpt}} avec {{rc}} kN.",
+    "svgAria": "Plan des essais CPT avec Rc;net;d pour {{size}} à NAP {{level}} m",
+    "target": "Capacité portante",
+    "title": "Essais CPT sur le plan",
+    "type": "Type de pieu"
+  },
   "material": {
     "concrete": "Béton",
     "steel": "Acier",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Diamètre du bois à la jonction",
     "system": "Système de pieux",
     "standardSize": "Dimension standard"
+  },
+  "pilePlan": {
+    "button": "Exporter pour Pile Plan Studio (CSV)",
+    "filter": "CSV pour Pile Plan Studio",
+    "hint": "Deux fichiers : sonderingen.csv (ID, X, Y en RD, millimètres) et funderingsadvies.csv (ID CPT, pointe en m NAP, dimension en mm, Rc;net;d en kN) du type principal.",
+    "ids": "ID des essais CPT dans les deux fichiers : {{list}}",
+    "missing": "{{n}} combinaisons sans résistance calculée (cellule FRD vide, pas zéro)",
+    "more": "et {{n}} de plus",
+    "noPosition": "Sans position RD, non exporté : {{list}}",
+    "noneWithPosition": "Aucun essai CPT n’a de position RD ; rien n’a été exporté.",
+    "onlyFirst": "Seul sonderingen.csv a été écrit ; funderingsadvies.csv a été annulé.",
+    "written": "Écrit : {{cpts}} essais CPT et {{rows}} résistances. X et Y sont en RD en millimètres."
   },
   "profile": {
     "bottom": "Base",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Diamètre de pointe du bois [mm]"
   },
   "target": {
+    "extra": "Autres capacités portantes pour la vue d’ensemble [kN]",
+    "extraPlaceholder": "p. ex. 160; 280",
     "hint": "Pour chaque dimension, le tableau de choix recherche le pieu le plus court qui atteint la limite inférieure. Au-delà de la limite supérieure, la dimension offre une large marge.",
     "inverted": "La limite supérieure doit être au-dessus de la limite inférieure ; le tableau utilise encore la plage précédente.",
     "legend": "Capacité portante requise Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "Sondage et pieu en 3D côte à côte",
     "toolbar": "Vue",
     "unavailable": "La 3D n'est pas disponible sur cet appareil (pas de WebGL). Utilisez le dessin 2D."
+  },
+  "types": {
+    "add": "Ajouter un type de pieu",
+    "hint": "Les types de pieux supplémentaires apparaissent à côté du type principal dans la vue d’ensemble déterminante et sur le plan. Les tableaux par essai CPT restent ceux du type principal.",
+    "legend": "Comparer les types de pieux",
+    "listAria": "Types de pieux supplémentaires",
+    "none": "Aucun autre type de pieu ne peut être comparé sans données supplémentaires.",
+    "removeAria": "Supprimer le type de pieu {{type}}",
+    "sizesAria": "Dimensions du type de pieu supplémentaire [mm]",
+    "typeAria": "Type de pieu supplémentaire"
   },
   "visual": {
     "cptHeading": "CPT : {{id}}",

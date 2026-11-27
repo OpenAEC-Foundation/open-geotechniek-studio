@@ -87,6 +87,20 @@
     "title": "Pile factors",
     "useProject": "Use project factors / self-declaration"
   },
+  "governing": {
+    "bestLevel": "at most {{rc}} kN at {{level}}",
+    "caption": "Highest toe level [m NAP] at which all CPTs reach the bearing capacity, with the governing CPT and its Rc;net;d. Click a cell to set the plan to that level.",
+    "cellAria": "{{target}} kN with {{size}} mm: NAP {{level}}, governing {{cpt}}",
+    "cellMissingAria": "{{target}} kN with {{size}} mm: not reached",
+    "noOption": "not reached on all CPTs with any of the sizes",
+    "option": "{{size}} at NAP {{level}}",
+    "or": " or ",
+    "tableAria": "Governing toe level per bearing capacity and pile size",
+    "target": "Rc;net;d ≥",
+    "title": "Governing overview",
+    "worst": "Most often governing:",
+    "worstCount": "({{n}} of {{total}})"
+  },
   "legend": {
     "chosen": "selected level",
     "over": "> {{max}} kN, ample",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "negative skin friction",
     "title": "Load"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "no result",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Toe level: NAP {{level}} m",
+    "looseLabel": "Without position",
+    "noPositions": "None of the CPTs has a position; the plan cannot be drawn.",
+    "pointNone": "{{cpt}}: no result at this level",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Pile size",
+    "summary": "Lowest at this level: {{cpt}} with {{rc}} kN.",
+    "svgAria": "Plan of the CPTs with Rc;net;d for {{size}} at NAP {{level}} m",
+    "target": "Bearing capacity",
+    "title": "CPTs on the plan",
+    "type": "Pile type"
+  },
   "material": {
     "concrete": "Concrete",
     "steel": "Steel",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Timber diameter at the joint",
     "system": "Pile system",
     "standardSize": "Standard size"
+  },
+  "pilePlan": {
+    "button": "Export for Pile Plan Studio (CSV)",
+    "filter": "CSV for Pile Plan Studio",
+    "hint": "Two files: sonderingen.csv (ID, X, Y in RD, millimetres) and funderingsadvies.csv (CPT ID, toe in m NAP, size in mm, Rc;net;d in kN) of the main type.",
+    "ids": "CPT IDs in both files: {{list}}",
+    "missing": "{{n}} combinations without a computed resistance (empty FRD cell, not zero)",
+    "more": "and {{n}} more",
+    "noPosition": "Without RD position, not exported: {{list}}",
+    "noneWithPosition": "None of the CPTs has an RD position; nothing was exported.",
+    "onlyFirst": "Only sonderingen.csv was written; funderingsadvies.csv was cancelled.",
+    "written": "Written: {{cpts}} CPTs and {{rows}} resistances. X and Y are in RD in millimetres."
   },
   "profile": {
     "bottom": "Bottom",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Timber toe diameter [mm]"
   },
   "target": {
+    "extra": "More bearing capacities for the overview [kN]",
+    "extraPlaceholder": "e.g. 160; 280",
     "hint": "For each size, the selection table finds the shortest pile that reaches the lower limit. Above the upper limit the size is ample.",
     "inverted": "The upper limit must be above the lower limit; the table still uses the previous band.",
     "legend": "Required bearing capacity Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "CPT and the pile in 3D side by side",
     "toolbar": "View",
     "unavailable": "3D is not available on this device (no WebGL). Use the 2D drawing."
+  },
+  "types": {
+    "add": "Add pile type",
+    "hint": "Extra pile types appear next to the main type in the governing overview and on the plan. The tables per CPT remain those of the main type.",
+    "legend": "Compare pile types",
+    "listAria": "Extra pile types",
+    "none": "No other pile type can be compared without extra input.",
+    "removeAria": "Remove pile type {{type}}",
+    "sizesAria": "Pile sizes of the extra pile type [mm]",
+    "typeAria": "Extra pile type"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

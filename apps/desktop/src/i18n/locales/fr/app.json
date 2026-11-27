@@ -6,6 +6,7 @@
     "untitled": "Sans titre"
   },
   "drop": {
+    "openFailed": "Impossible d'ouvrir {{name}} : {{message}}",
     "hint": "Relâchez pour ouvrir — GEF, BRO XML ou .ifcgeo",
     "browserOpenFailed": "Impossible d'ouvrir {{name}} en mode navigateur :\n{{message}}\n\nAstuce : BHR-GT XML, GMW XML et GEF fonctionnent dans le navigateur. Pour BRO CPT XML et les fichiers de projet, il faut la version de bureau."
   },
@@ -69,6 +70,7 @@
   "store": {
     "noProject": "Aucun projet actif.",
     "noProjectForBro": "Aucun projet actif — impossible d'ajouter le CPT BRO.",
+    "dissipationWithoutCpt": "{{file}} est un essai de dissipation du CPT {{parent}}. Ouvrez d'abord ce CPT ou le projet qui le contient, puis ajoutez l'essai de dissipation.",
     "targetProjectClosed": "Le projet cible a été fermé pendant l'ajout.",
     "gmwParseFailed": "{{filename}} : impossible d'analyser une livraison GMW (pas de racine <GMW_PO>/<GMW_O> ou aucun broId trouvé)",
     "unsupportedBore": "{{filename}} : pas un forage BHR XML ou GEF pris en charge"

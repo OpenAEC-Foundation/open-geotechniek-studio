@@ -70,7 +70,9 @@
       "levelRangeInvalid": "Introduza uma cota superior e inferior finitas e um passo positivo.",
       "tooManyLevels": "No máximo {{max}} cotas da ponta; escolha um passo maior.",
       "sizesNotPositive": "As dimensões das estacas devem ser positivas.",
-      "targetRangeInvalid": "O limite superior da capacidade de carga pretendida deve ser superior ao limite inferior."
+      "targetRangeInvalid": "O limite superior da capacidade de carga pretendida deve ser superior ao limite inferior.",
+      "targetsInvalid": "Introduza capacidades de carga únicas e positivas em kN.",
+      "extraTypesInvalid": "Indique para cada tipo de estaca adicional um tipo conhecido e dimensões positivas; cada tipo uma só vez."
     },
     "notes": {
       "profileAboveToe": "O perfil do solo termina acima da ponta da estaca. Verifique e prolongue as camadas de solo; as camadas do fuste em falta não contribuem.",

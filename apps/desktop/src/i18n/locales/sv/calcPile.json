@@ -87,6 +87,20 @@
     "title": "Pålfaktorer",
     "useProject": "Använd projektfaktorer / egen deklaration"
   },
+  "governing": {
+    "bestLevel": "högst {{rc}} kN på {{level}}",
+    "caption": "Högsta spetsnivå [m NAP] där alla CPT-sonderingar uppnår bärförmågan, med den dimensionerande sonderingen och dess Rc;net;d. Klicka på en cell för att ställa planen på den nivån.",
+    "cellAria": "{{target}} kN med {{size}} mm: NAP {{level}}, dimensionerande {{cpt}}",
+    "cellMissingAria": "{{target}} kN med {{size}} mm: ej uppnådd",
+    "noOption": "uppnås inte för alla CPT-sonderingar med någon av dimensionerna",
+    "option": "{{size}} på NAP {{level}}",
+    "or": " eller ",
+    "tableAria": "Dimensionerande spetsnivå per bärförmåga och påldimension",
+    "target": "Rc;net;d ≥",
+    "title": "Dimensionerande översikt",
+    "worst": "Oftast dimensionerande:",
+    "worstCount": "({{n}} av {{total}})"
+  },
   "legend": {
     "chosen": "vald nivå",
     "over": "> {{max}} kN, rikligt",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "negativ mantelfriktion",
     "title": "Last"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "inget resultat",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Spetsnivå: NAP {{level}} m",
+    "looseLabel": "Utan position",
+    "noPositions": "Ingen av CPT-sonderingarna har en position; planen kan inte ritas.",
+    "pointNone": "{{cpt}}: inget resultat på denna nivå",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Påldimension",
+    "summary": "Lägst på denna nivå: {{cpt}} med {{rc}} kN.",
+    "svgAria": "Plan över CPT-sonderingarna med Rc;net;d för {{size}} på NAP {{level}} m",
+    "target": "Bärförmåga",
+    "title": "CPT-sonderingar på planen",
+    "type": "Påltyp"
+  },
   "material": {
     "concrete": "Betong",
     "steel": "Stål",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Trädiameter vid skarven",
     "system": "Pålsystem",
     "standardSize": "Standardmått"
+  },
+  "pilePlan": {
+    "button": "Exportera för Pile Plan Studio (CSV)",
+    "filter": "CSV för Pile Plan Studio",
+    "hint": "Två filer: sonderingen.csv (ID, X, Y i RD, millimeter) och funderingsadvies.csv (CPT-ID, spets i m NAP, dimension i mm, Rc;net;d i kN) för huvudtypen.",
+    "ids": "Sonderings-ID i båda filerna: {{list}}",
+    "missing": "{{n}} kombinationer utan beräknad bärförmåga (tom FRD-cell, inte noll)",
+    "more": "och {{n}} till",
+    "noPosition": "Utan RD-position, inte exporterad: {{list}}",
+    "noneWithPosition": "Ingen av CPT-sonderingarna har en RD-position; inget exporterades.",
+    "onlyFirst": "Endast sonderingen.csv skrevs; funderingsadvies.csv avbröts.",
+    "written": "Skrivet: {{cpts}} CPT-sonderingar och {{rows}} bärförmågor. X och Y är i RD i millimeter."
   },
   "profile": {
     "bottom": "Underkant",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Trädiameter vid spetsen [mm]"
   },
   "target": {
+    "extra": "Fler bärförmågor för översikten [kN]",
+    "extraPlaceholder": "t.ex. 160; 280",
     "hint": "För varje dimension söker urvalstabellen den kortaste påle som når den undre gränsen. Över den övre gränsen är dimensionen riklig.",
     "inverted": "Den övre gränsen måste ligga över den undre; tabellen använder fortfarande det föregående intervallet.",
     "legend": "Erforderlig bärförmåga Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "Sondering och pålen i 3D sida vid sida",
     "toolbar": "Vy",
     "unavailable": "3D är inte tillgängligt på den här enheten (ingen WebGL). Använd 2D-ritningen."
+  },
+  "types": {
+    "add": "Lägg till påltyp",
+    "hint": "Extra påltyper visas bredvid huvudtypen i den dimensionerande översikten och på planen. Tabellerna per CPT-sondering förblir huvudtypens.",
+    "legend": "Jämför påltyper",
+    "listAria": "Extra påltyper",
+    "none": "Ingen annan påltyp kan jämföras utan extra indata.",
+    "removeAria": "Ta bort påltyp {{type}}",
+    "sizesAria": "Påldimensioner för den extra påltypen [mm]",
+    "typeAria": "Extra påltyp"
   },
   "visual": {
     "cptHeading": "CPT-sondering: {{id}}",

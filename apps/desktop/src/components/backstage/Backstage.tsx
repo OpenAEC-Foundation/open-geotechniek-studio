@@ -1,3 +1,4 @@
+import { dissipationLast } from "../../types/gefDissipation";
 import { exportGef } from "../../types/gefWriter";
 import { APP_VERSION } from "../../version";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
@@ -262,7 +263,7 @@ export default function Backstage({ open, onClose, onOpenSettings, onOpenFile }:
     const picked = await filesPlatform.pickAndRead(true);
     if (picked.length === 0) return;
     let openedAny = false;
-    for (const f of picked) {
+    for (const f of dissipationLast(picked, (file) => file.name)) {
       try {
         if (f.path) {
           // Desktop: use path-routed loader so de Rust-side weet

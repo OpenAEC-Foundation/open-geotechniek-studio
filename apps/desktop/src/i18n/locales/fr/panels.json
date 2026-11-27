@@ -268,5 +268,16 @@
     "z7": "Sable graveleux / gravier",
     "z8": "Sable/argile très raide",
     "z9": "Fins très raides"
+  },
+  "dissipation": {
+    "title": "Essais de dissipation",
+    "chartLabel": "Pression interstitielle en kPa en fonction du temps en secondes (logarithmique)",
+    "timeAxis": "temps [s]",
+    "atDepth": "À {{depth}} m",
+    "remove": "Supprimer l'essai de dissipation",
+    "uMax": "u max",
+    "uEnd": "u fin",
+    "noDecay": "pas de dissipation",
+    "note": "t50 : temps jusqu'à la moitié de la dissipation entre la mesure la plus haute et la dernière. La dernière mesure approche l'équilibre ; si l'essai a été arrêté tôt, t50 est indicatif."
   }
 }

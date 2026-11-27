@@ -6,6 +6,7 @@
     "untitled": "Namnlös"
   },
   "drop": {
+    "openFailed": "Kunde inte öppna {{name}}: {{message}}",
     "hint": "Släpp för att öppna — GEF, BRO-XML eller .ifcgeo",
     "browserOpenFailed": "Det gick inte att öppna {{name}} i webbläsarläge:\n{{message}}\n\nTips: BHR-GT XML, GMW XML och GEF fungerar i webbläsaren. För BRO CPT-XML och projektfiler behöver du skrivbordsversionen."
   },
@@ -69,6 +70,7 @@
   "store": {
     "noProject": "Inget aktivt projekt.",
     "noProjectForBro": "Inget aktivt projekt — kan inte lägga till BRO-sonderingen.",
+    "dissipationWithoutCpt": "{{file}} är ett dissipationsförsök till CPT {{parent}}. Öppna först den CPT:n eller projektet som innehåller den och lägg sedan till dissipationsförsöket.",
     "targetProjectClosed": "Målprojektet stängdes medan tillägget pågick.",
     "gmwParseFailed": "{{filename}}: kunde inte tolka en GMW-leverans (ingen <GMW_PO>/<GMW_O>-rot eller inget broId hittades)",
     "unsupportedBore": "{{filename}}: inget BHR-XML- eller GEF-borrhål som stöds"

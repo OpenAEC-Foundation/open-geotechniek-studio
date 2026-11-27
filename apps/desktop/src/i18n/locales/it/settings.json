@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Applicazione",
-    "language": "Lingua"
+    "language": "Lingua",
+    "calculations": "Calcoli",
+    "dragSnap": "Passo di aggancio durante il trascinamento",
+    "dragSnapHint": "Le quote trascinate nel grafico CPT dei calcoli dei pali (compressione e trazione) si agganciano a multipli di questa distanza. 0 = nessun aggancio."
   },
   "appearance": {
     "theme": "Tema",

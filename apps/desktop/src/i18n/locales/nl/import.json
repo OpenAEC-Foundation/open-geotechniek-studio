@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} is een dissipatietest (GEF-DISS), geen sondering. Voeg hem toe aan de bijbehorende sondering{{parent}}.",
+    "noDepthRecords": "{{file}}: geen enkel meetrecord heeft een diepte (sondeerlengte of gecorrigeerde diepte), dus er is geen sondering om in te lezen.",
     "bomRemoved": "UTF-8 BOM verwijderd.",
     "suspectEncoding": "Mogelijk onjuiste tekencodering; controleer de oorspronkelijke tekst.",
     "unrecognisedHeaderLine": "Onherkende headerregel bewaard.",
@@ -40,7 +42,10 @@
     "columnMinMax": "Kolom {{column}}: gemeten min/max wijkt af van de header.",
     "preExcavationUnitConversion": "Voorontgravingsdiepte van {{unit}} naar m omgerekend; bronwaarde in meetvariabelen bewaard.",
     "unknownPreExcavationUnit": "Voorontgravingsdiepte met onbekende eenheid {{unit}} alleen als bronwaarde bewaard.",
-    "preExcavated": "Meetkanalen in voorontgraven grond gemaskeerd; oorspronkelijke waarden blijven in parameters."
+    "preExcavated": "Meetkanalen in voorontgraven grond gemaskeerd; oorspronkelijke waarden blijven in parameters.",
+    "dissipationColumns": "{{file}}: dissipatietest zonder tijd- of waterspanningskolom.",
+    "dissipationUnit": "{{file}}: onbekende eenheid in kolom {{column}}.",
+    "dissipationEmpty": "{{file}}: dissipatietest zonder waterspanningsmetingen."
   },
   "bro": {
     "xmlParseError": "BRO CPT XML parse-fout: {{detail}}",

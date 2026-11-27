@@ -148,3 +148,53 @@ it('weigert een voorbeeld dat niet berekenbaar is met een duidelijke melding',()
  const input={...base,capacityTable:{cptIds:['A'],toeNaps:[-30],examples:[{cptId:'A',sizeMm:250,toeNap:-30}]}};
  expect(()=>buildPileReport(input,computePile(base,cpts.get('A')!),{cpts,activeCptId:'A',projectMeta:meta})).toThrow(/Voorbeeld A, 250 mm op -30 m NAP is niet berekenbaar/);
 });
+
+import {governingLevels,governingCount,levelMin,overviewTargets,parseTargets,validateCapacityTable} from './capacity-table';
+
+it('zoekt per draagvermogen en maat het hoogste niveau waarop alle sonderingen voldoen',()=>{
+ const m=computeCapacityMatrix(base,cpts,{cptIds:['A','B'],toeNaps:levelRange(-10,-18,1),sizesMm:[220,290],targetKn:{minKn:500,maxKn:1000}});
+ const a=m.cpts[0].cells[0],b=m.cpts[1].cells[0];
+ // doel tussen de zwakke (A) en de sterke (B) sondering op het hoogste niveau: A bepaalt
+ const target=(a[0].result.summary.rcNetD+b[0].result.summary.rcNetD)/2;
+ const [row]=governingLevels(m,[target]);
+ const cell=row.cells[0];
+ expect(cell.reached).toBe(true);
+ expect(cell.governingCptId).toBe('A');
+ const li=m.toeNaps.indexOf(cell.toeNap!);
+ expect(li).toBeGreaterThan(0);
+ expect(a[li].result.summary.rcNetD).toBeGreaterThanOrEqual(target);
+ expect(cell.rcMinD).toBe(a[li].result.summary.rcNetD);
+ // één niveau hoger voldoet de zwakke sondering nog niet
+ expect(a[li-1].result.summary.rcNetD).toBeLessThan(target);
+ expect(levelMin(m,0,li)).toEqual({rcMinD:a[li].result.summary.rcNetD,cptId:'A',invalid:[]});
+ // de grotere maat haalt hetzelfde draagvermogen niet dieper
+ expect(row.cells[1].toeNap!).toBeGreaterThanOrEqual(cell.toeNap!);
+ expect(governingCount([row])).toEqual([{cptId:'A',count:2}]);
+});
+it('meldt bij een onhaalbaar draagvermogen het beste niveau en de sonderingen die tekortkomen',()=>{
+ const m=computeCapacityMatrix(base,cpts,{cptIds:['A','B'],toeNaps:[-13,-14],sizesMm:[220],targetKn:{minKn:500,maxKn:1000}});
+ const [row]=governingLevels(m,[1e6]);
+ const cell=row.cells[0];
+ expect(cell.reached).toBe(false);
+ expect(cell.failing).toEqual(['A','B']);
+ expect(cell.governingCptId).toBe('A');
+ const best=Math.max(...m.cpts[0].cells[0].map(c=>c.result.summary.rcNetD));
+ expect(cell.rcMinD).toBe(best);
+});
+it('telt een ontbrekende sondering als niet gehaald',()=>{
+ const m=computeCapacityMatrix(base,cpts,{cptIds:['A','weg'],toeNaps:[-13,-14],sizesMm:[220],targetKn:{minKn:1,maxKn:2}});
+ const cell=governingLevels(m,[1])[0].cells[0];
+ expect(cell.reached).toBe(false);
+ expect(cell.failing).toEqual(['weg']);
+ expect(levelMin(m,0,0).invalid).toEqual(['weg']);
+});
+it('leest extra draagvermogens en voegt ze samen met de ondergrens van de zoekband',()=>{
+ expect(parseTargets('280; 160 160')).toEqual([160,280]);
+ expect(parseTargets('')).toEqual([]);
+ expect(()=>parseTargets('160; -5')).toThrow();
+ expect(()=>parseTargets('tekst')).toThrow();
+ expect(overviewTargets({targetKn:{minKn:300,maxKn:600},targetsKn:[160,300]})).toEqual([160,300]);
+ expect(overviewTargets({})).toEqual([]);
+ expect(()=>validateCapacityTable({cptIds:['A'],toeNaps:[-13],targetsKn:[100,100]})).toThrow();
+ expect(defaultCapacityConfig(base,['A']).targetsKn).toEqual([]);
+});

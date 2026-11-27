@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Applicatie",
-    "language": "Taal"
+    "language": "Taal",
+    "calculations": "Berekeningen",
+    "dragSnap": "Snapafstand bij slepen",
+    "dragSnapHint": "Niveaus die je in de sondeergrafiek van de paalberekeningen (druk en trek) versleept, springen naar veelvouden van deze afstand. 0 = niet snappen."
   },
   "appearance": {
     "theme": "Thema",

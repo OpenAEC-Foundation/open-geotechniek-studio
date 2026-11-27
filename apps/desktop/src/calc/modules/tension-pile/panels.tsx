@@ -1,5 +1,6 @@
 // Rekenblad trekpaal: invoer, tekening van sondering en paal, en de uitwerking per laag.
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { snapNap, useDragSnapStore } from "../../../store/useDragSnapStore";
 import type { PanelProps } from "../../framework/types";
 import { Hint, More, NumberInput, Row, Section } from "../../framework/views/SheetForm";
 import { useCptStore } from "../../../store/useCptStore";
@@ -82,6 +83,8 @@ export function InputPanel({ input: i, result, onChange }: Props) {
 
 const SOIL_FILL: Record<TensionSoil, string> = { sand: "#FF9800", clay: "#4CAF50", loam: "#8BC34A", peat: "#795548" };
 
+/** Niveaus die in de tekening te verslepen zijn. */
+type DragField = "pileTopNap" | "pileToeNap" | "waterNap" | "excavationNap";
 type Draft = OverrideDraft<TensionSoil>;
 const NO_APPLIED: TensionAppliedOverride[] = [];
 const qcPoints = (points: Array<{ depth: number; qc?: number }>, ground: number) =>
@@ -98,7 +101,11 @@ export function VisualPanel({ input: i, result, onChange }: Props) {
   const [draft, setDraft] = useState<Draft | null>(null);
   useEffect(() => setDraft(null), [i.cptId]);
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const [drag, setDrag] = useState<{ startNap: number; curNap: number } | null>(null);
+  const snapM = useDragSnapStore((s) => s.snapM);
+  // Twee sleepvormen: een traject voor de aanpassing in bewerking, en een niveau (paalkop, paalpunt, grondwater, ontgraving).
+  const [rangeDrag, setRangeDrag] = useState<{ startNap: number; curNap: number } | null>(null);
+  // Schaal bij het begin van het slepen vastgezet: de tekening schaalt mee met paalkop en -punt.
+  const [levelDrag, setLevelDrag] = useState<{ field: DragField; startY: number; startNap: number; napPerPx: number } | null>(null);
   const view = useMemo(() => {
     if (!cpt || !cpt.points.length) return null;
     const ground = cpt.metadata.ground_level_nap ?? 0;
@@ -108,6 +115,27 @@ export function VisualPanel({ input: i, result, onChange }: Props) {
     const top = Math.max(ground, i.pileTopNap) + 0.5, bottom = Math.min(measured[measured.length - 1].nap, i.pileToeNap - 1);
     return { ground, measured, adjusted, top, bottom };
   }, [cpt, eff, i.pileTopNap, i.pileToeNap]);
+  useEffect(() => {
+    if (!levelDrag || !onChange) return;
+    const move = (e: MouseEvent) => {
+      let nap = snapNap(levelDrag.startNap - (e.clientY - levelDrag.startY) * levelDrag.napPerPx, snapM);
+      // De paal houdt lengte: punt minstens één snapstap onder de kop.
+      const gap = Math.max(snapM, 0.01);
+      if (levelDrag.field === "pileToeNap") nap = Math.min(nap, snapNap(i.pileTopNap - gap, snapM));
+      if (levelDrag.field === "pileTopNap") nap = Math.max(nap, snapNap(i.pileToeNap + gap, snapM));
+      if (nap !== i[levelDrag.field]) onChange({ ...i, [levelDrag.field]: nap });
+    };
+    const up = () => setLevelDrag(null);
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+    return () => { window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up); };
+  }, [levelDrag, onChange, i, snapM]);
+  useEffect(() => {
+    if (!levelDrag) return;
+    const prev = document.body.style.cursor;
+    document.body.style.cursor = "ns-resize";
+    return () => { document.body.style.cursor = prev; };
+  }, [levelDrag]);
   if (!cpt || !view) return <p className="cs-hint">Kies een sondering om de paal te tekenen.</p>;
   const W = 420, H = 620, L = 54, R = 16, T = 22, B = 14, QC_MAX = 30;
   const stripX = L + 250, pileX = stripX + 44, plotW = 240;
@@ -130,34 +158,47 @@ export function VisualPanel({ input: i, result, onChange }: Props) {
     return Math.round(Math.max(view.bottom, Math.min(view.ground, nap)) * 20) / 20;
   };
   const selecting = !!draft && !!onChange;
-  const startDrag = (e: ReactPointerEvent<SVGRectElement>) => {
+  const startRange = (e: ReactPointerEvent<SVGRectElement>) => {
     const nap = napAt(e.clientY);
     if (nap === null) return;
     e.currentTarget.setPointerCapture?.(e.pointerId);
-    setDrag({ startNap: nap, curNap: nap });
+    setRangeDrag({ startNap: nap, curNap: nap });
   };
-  const moveDrag = (e: ReactPointerEvent<SVGRectElement>) => {
-    if (!drag) return;
+  const moveRange = (e: ReactPointerEvent<SVGRectElement>) => {
+    if (!rangeDrag) return;
     const nap = napAt(e.clientY);
-    if (nap !== null && nap !== drag.curNap) setDrag({ startNap: drag.startNap, curNap: nap });
+    if (nap !== null && nap !== rangeDrag.curNap) setRangeDrag({ startNap: rangeDrag.startNap, curNap: nap });
   };
-  const endDrag = () => {
-    if (!drag) return;
-    const top = Math.max(drag.startNap, drag.curNap), bottom = Math.min(drag.startNap, drag.curNap);
-    setDrag(null);
+  const endRange = () => {
+    if (!rangeDrag) return;
+    const top = Math.max(rangeDrag.startNap, rangeDrag.curNap), bottom = Math.min(rangeDrag.startNap, rangeDrag.curNap);
+    setRangeDrag(null);
     if (draft && top - bottom >= 0.05) setDraft({ ...draft, topNap: top, bottomNap: bottom });
   };
-  const band = drag
-    ? { topNap: Math.max(drag.startNap, drag.curNap), bottomNap: Math.min(drag.startNap, drag.curNap) }
+  const band = rangeDrag
+    ? { topNap: Math.max(rangeDrag.startNap, rangeDrag.curNap), bottomNap: Math.min(rangeDrag.startNap, rangeDrag.curNap) }
     : draft && draft.topNap !== null && draft.bottomNap !== null && draft.topNap > draft.bottomNap ? { topNap: draft.topNap, bottomNap: draft.bottomNap } : null;
   const clampY = (nap: number) => y(Math.max(view.bottom, Math.min(view.top, nap)));
   const bandW = stripX + 16 - L;
+
+  const startLevel = (field: DragField, nap: number) => (e: ReactMouseEvent<SVGElement>) => {
+    const svg = svgRef.current;
+    if (!onChange || !svg) return;
+    e.preventDefault(); e.stopPropagation();
+    const rect = svg.getBoundingClientRect();
+    const scale = Math.min(rect.width / W, rect.height / H) || 1;
+    setLevelDrag({ field, startY: e.clientY, startNap: nap, napPerPx: (view.top - view.bottom) / ((H - T - B) * scale) });
+  };
+  // Brede, onzichtbare greep over een niveau; alleen als het rekenblad te bewerken is.
+  // Tijdens het kiezen van een traject begint de greep rechts van het vangvlak: in de grafiek heeft het traject voorrang.
+  const hit = (field: DragField, nap: number, x1 = L, x2 = W - R) => onChange &&
+    <line className={`tp-hit${levelDrag?.field === field ? " tp-hit-active" : ""}`} x1={selecting ? Math.max(x1, L + bandW) : x1} x2={x2} y1={y(nap)} y2={y(nap)} onMouseDown={startLevel(field, nap)}><title>Sleep om te verplaatsen (snapt op {fmt(snapM, 2)} m)</title></line>;
 
   return <div className="tp-visual-wrap">
     <InterpretationEditor<TensionSoil> cptId={cpt.id} overrides={i.interpretationOverrides ?? []} applied={applied} draft={draft} setDraft={setDraft}
       soilKinds={SOILS} soilLabel={soilName}
       onWrite={onChange && ((next) => onChange({ ...i, interpretationOverrides: next.length ? next : undefined }))} />
-    <svg ref={svgRef} className="tp-visual" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Sondering ${i.cptId} met trekpaal van NAP ${fmt(i.pileTopNap, 2)} tot ${fmt(i.pileToeNap, 2)} m`}>
+    <svg ref={svgRef} className={`tp-visual${levelDrag ? " tp-dragging" : ""}`} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Sondering ${i.cptId} met trekpaal van NAP ${fmt(i.pileTopNap, 2)} tot ${fmt(i.pileToeNap, 2)} m`}>
       <text x={L} y={12} className="tp-axis-title">qc [MPa]</text>
       {[0, 10, 20, 30].map((v) => <g key={v} className="tp-grid"><line x1={x(v)} x2={x(v)} y1={T} y2={H - B} /><text x={x(v)} y={T - 4} textAnchor="middle">{v}</text></g>)}
       {ticks.map((v) => <g key={v} className="tp-grid"><line x1={L} x2={L + plotW} y1={y(v)} y2={y(v)} /><text x={L - 6} y={y(v) + 3} textAnchor="end">{fmt(v, 0)}</text></g>)}
@@ -175,6 +216,7 @@ export function VisualPanel({ input: i, result, onChange }: Props) {
       {i.excavationNap !== undefined && i.excavationNap < view.ground - 1e-6 && level(i.excavationNap, "ontgraving", "tp-level tp-level-exc")}
       {level(i.waterNap, "grondwater", "tp-level tp-level-water")}
       {level(i.pileToeNap, "paalpunt", "tp-level")}
+      {onChange && <text className="tp-top-label" x={pileX + pileW + 4} y={y(i.pileTopNap) + 3}>paalkop {fmt(i.pileTopNap, 2)}</text>}
       <g className="tp-legend" transform={`translate(${L + 6} ${H - B - (view.adjusted ? 57 : 44)})`}>
         <rect className="tp-applied" width="12" height="8" /><text x="16" y="8">qc in rekening (na reductie en afsnuiten)</text>
         <line className="tp-qc" x1="0" x2="12" y1="18" y2="18" /><text x="16" y="21">{view.adjusted ? "qc met aanpassingen" : "qc gemeten"}</text>
@@ -183,7 +225,11 @@ export function VisualPanel({ input: i, result, onChange }: Props) {
       </g>
       {band && <rect className="tp-interp-band tp-interp-band--draft" x={L} y={clampY(band.topNap)} width={bandW} height={Math.max(0.5, clampY(band.bottomNap) - clampY(band.topNap))} />}
       {selecting && <rect className="tp-interp-capture" data-testid="tp-interp-capture" x={L} y={T} width={bandW} height={H - T - B}
-        onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={() => setDrag(null)} />}
+        onPointerDown={startRange} onPointerMove={moveRange} onPointerUp={endRange} onPointerCancel={() => setRangeDrag(null)} />}
+      {i.excavationNap !== undefined && i.excavationNap < view.ground - 1e-6 && hit("excavationNap", i.excavationNap)}
+      {hit("waterNap", i.waterNap)}
+      {hit("pileToeNap", i.pileToeNap)}
+      {hit("pileTopNap", i.pileTopNap, pileX - 10, pileX + pileW + 70)}
       {applied.map((a, k) => a.status === "applied" && <text key={a.override.id} className={`tp-interp-label${onChange ? " tp-interp-label--pick" : ""}`} x={L + plotW - 4} y={clampY(a.topNap) + 10} textAnchor="end"
         role={onChange ? "button" : undefined} aria-label={onChange ? `Aanpassing A${k + 1} bewerken in de grafiek` : undefined} onClick={onChange ? () => setDraft(draftOf(a.override)) : undefined}>A{k + 1}</text>)}
     </svg>

@@ -247,5 +247,7 @@
   "cptSideBySide": "Côte à côte",
   "cptSideBySideHint": "Affiche les essais côte à côte, chacun dans sa propre colonne.",
   "cptOverlay": "Superposés",
-  "cptOverlayHint": "Trace tous les essais visibles les uns sur les autres : un graphique de qc et un de fs en fonction du NAP."
+  "cptOverlayHint": "Trace tous les essais visibles les uns sur les autres : un graphique de qc et un de fs en fonction du NAP.",
+  "cptGroup": "Sondage",
+  "cptFromScan": "Depuis un scan"
 }

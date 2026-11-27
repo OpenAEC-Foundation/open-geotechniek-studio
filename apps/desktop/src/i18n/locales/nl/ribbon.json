@@ -247,5 +247,7 @@
   "cptSideBySide": "Naast elkaar",
   "cptSideBySideHint": "Toon de sonderingen naast elkaar, elk in een eigen kolom.",
   "cptOverlay": "Over elkaar",
-  "cptOverlayHint": "Teken alle zichtbare sonderingen over elkaar: één grafiek van qc en één van fs tegen NAP."
+  "cptOverlayHint": "Teken alle zichtbare sonderingen over elkaar: één grafiek van qc en één van fs tegen NAP.",
+  "cptGroup": "Sondering",
+  "cptFromScan": "Uit scan"
 }

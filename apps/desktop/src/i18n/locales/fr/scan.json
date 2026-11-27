@@ -1,0 +1,86 @@
+{
+  "error": {
+    "load": "Ce fichier ne peut pas être lu. Choisissez une image (PNG, JPG) ou un PDF."
+  },
+  "unit": {
+    "nap": "m NAP",
+    "depth": "m sous TN"
+  },
+  "problem": {
+    "scale": "Saisissez une valeur pour les quatre lignes d'étalonnage ; les deux lignes d'un même axe ne peuvent pas avoir la même valeur.",
+    "ground": "Saisissez le niveau du terrain en m NAP ; l'axe du scan est exprimé en NAP.",
+    "trace": "Il n'y a pas encore de courbe. Choisissez « Suivre la courbe » et cliquez sur le début de la courbe de mesure, ou tracez-la à la main.",
+    "name": "Donnez un nom au CPT.",
+    "duplicate": "Le projet contient déjà un CPT portant ce nom."
+  },
+  "meta": {
+    "originKey": "Origine",
+    "originValue": "Retracé d'après un scan ({{file}}) ; résistance au cône uniquement"
+  },
+  "tool": {
+    "calibrate": "Étalonner l'échelle",
+    "follow": "Suivre la courbe",
+    "draw": "Dessiner",
+    "erase": "Effacer"
+  },
+  "hint": {
+    "calibrate": "Faites glisser les quatre lignes pointillées sur des lignes du quadrillage dont vous connaissez la valeur et saisissez ces valeurs à droite. Les lignes s'accrochent au quadrillage.",
+    "follow": "Cliquez sur le début de la courbe de mesure : elle est suivie vers le bas jusqu'à ce qu'elle s'arrête. Faites glisser vers le bas pour ne la suivre que jusqu'au point de relâchement.",
+    "draw": "Dessinez sur la courbe de mesure en maintenant le bouton de la souris enfoncé. Votre tracé remplace la courbe à cette hauteur.",
+    "erase": "Faites glisser sur la partie de la courbe à supprimer.",
+    "start": "Choisissez le scan d'un diagramme de CPT : une image ou une page d'un PDF."
+  },
+  "title": "CPT à partir d'un scan",
+  "cancel": "Annuler",
+  "create": "Créer le CPT",
+  "undo": "Annuler l'action",
+  "clear": "Effacer la courbe",
+  "zoomOut": "Zoom arrière",
+  "zoomIn": "Zoom avant",
+  "loading": "Chargement…",
+  "choose": "Choisir un scan…",
+  "section": {
+    "scan": "1. Scan",
+    "scale": "2. Échelle",
+    "line": "3. Courbe",
+    "cpt": "4. CPT"
+  },
+  "prevPage": "Page précédente",
+  "page": "Page",
+  "nextPage": "Page suivante",
+  "rotateLeft": "↺ Vers la gauche",
+  "rotateRight": "↻ Vers la droite",
+  "axis": {
+    "label": "L'axe des profondeurs indique",
+    "nap": "l'altitude en m NAP",
+    "depth": "la profondeur sous le terrain naturel"
+  },
+  "scale": {
+    "v1": "Ligne du haut [{{unit}}]",
+    "v2": "Ligne du bas [{{unit}}]",
+    "q1": "Ligne de gauche [MPa]",
+    "q2": "Ligne de droite [MPa]",
+    "suggest": "Lignes sur le quadrillage extérieur"
+  },
+  "ground": {
+    "required": "Niveau du terrain [m NAP]",
+    "optional": "Niveau du terrain [m NAP] (facultatif)"
+  },
+  "line": {
+    "threshold": "Noirceur de la courbe ({{value}})",
+    "radius": "Gommer les lignes fines du quadrillage",
+    "radius0": "non",
+    "radius1": "léger (lignes jusqu'à 2 pixels)",
+    "radius2": "fort (lignes jusqu'à 4 pixels)",
+    "showMask": "Afficher ce que l'algorithme considère comme la courbe"
+  },
+  "cpt": {
+    "name": "Nom",
+    "x": "X [m RD] (facultatif)",
+    "y": "Y [m RD] (facultatif)",
+    "date": "Date (facultatif)",
+    "summary": "{{count}} points de mesure de {{from}} à {{to}} m sous le terrain naturel, résistance au cône maximale {{max}} MPa.",
+    "empty": "Pas encore de points de mesure.",
+    "note": "Un CPT retracé ne comporte que la résistance au cône. Vérifiez la courbe par rapport au scan : la précision est celle du papier."
+  }
+}

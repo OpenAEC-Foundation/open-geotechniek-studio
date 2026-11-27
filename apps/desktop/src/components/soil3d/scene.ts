@@ -1,10 +1,10 @@
 // Opbouw van de 3D-scène van het grondmodel; gedeeld door de viewer en het
 // funderingsadviesrapport, zodat beide hetzelfde beeld tonen.
 import * as THREE from "three";
-import { exposedCells, zoneInfo, type SoilModel } from "./soilModel";
+import { exposedCells, fromRd, rdExtent, zoneInfo, type SoilModel } from "./soilModel";
 import type { SectionBox, Soil3DSettings } from "./useSoil3DStore";
 import type { SubsurfaceData } from "./subsurface/store";
-import { aquifers } from "./subsurface/regis";
+import { aquifers, cellValue } from "./subsurface/regis";
 import { LITHOCLASSES } from "./subsurface/geotop";
 
 export interface PileToe { cptId: string; name: string; toeNap: number }
@@ -38,9 +38,11 @@ function surfaceMesh(model: SoilModel, which: "ground" | "bearing", ex: number, 
   const geo = new THREE.BufferGeometry();
   const pos: number[] = [], idx: number[] = [];
   for (let j = 0; j < s.ny; j++) for (let i = 0; i < s.nx; i++)
-    pos.push(s.east0 + (i + 0.5) * s.dx, s.values[i + s.nx * j] * ex, -(s.north0 + (j + 0.5) * s.dy));
+    pos.push(s.east0 + (i + 0.5) * s.dx, (Number.isFinite(s.values[i + s.nx * j]) ? s.values[i + s.nx * j] : 0) * ex, -(s.north0 + (j + 0.5) * s.dy));
   for (let j = 0; j + 1 < s.ny; j++) for (let i = 0; i + 1 < s.nx; i++) {
     const a = i + s.nx * j, b = a + 1, c = a + s.nx, d = c + 1;
+    // Buiten het bereik van de sonderingen (NaN) blijft het vlak open.
+    if (![a, b, c, d].every((v) => Number.isFinite(s.values[v]))) continue;
     idx.push(a, c, b, b, c, d);
   }
   geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
@@ -151,15 +153,23 @@ export function buildContent(model: SoilModel, s: Soil3DSettings, toes: PileToe[
   const napLabel = textSprite("m NAP", textColor, Math.max(0.9, model.span / 32));
   napLabel.position.set(x0 - Math.max(1.5, model.span / 25), g.topNap * ex + Math.max(1.2, model.span / 30), z0);
   root.add(napLabel);
-  const north = textSprite("N ↑", textColor, Math.max(1, model.span / 28));
-  north.position.set(g.east0 + g.nx * g.dx, g.topNap * ex + 1, -(g.north0 + g.ny * g.dy));
+  const rot = model.rotation ?? 0, arrowLen = Math.max(2, model.span / 10);
+  const northDir = new THREE.Vector3(Math.sin(rot), 0, -Math.cos(rot));
+  // Achterhoek links: rechts naast het model staan de peilbuizen.
+  const northAt = new THREE.Vector3(g.east0, g.topNap * ex + 1, -(g.north0 + g.ny * g.dy));
+  const arrow = new THREE.ArrowHelper(northDir, northAt, arrowLen, new THREE.Color(textColor).getHex(), arrowLen * 0.3, arrowLen * 0.18);
+  arrow.userData = { noClip: true };
+  root.add(arrow);
+  const north = textSprite("N", textColor, Math.max(1, model.span / 28));
+  north.position.copy(northAt).addScaledVector(northDir, arrowLen * 1.25);
   root.add(north);
   if (clip) {
     const planes = sectionPlanes(clip, ex);
     // Voxels, pakketten en GeoTOP zijn al per cel binnen de box gehouden; knippen zou op de celgrenzen gaan flikkeren.
-    const cellBased = new Set(["cell", "aquifer", "geotop"]);
+    const cellBased = new Set(["cell", "aquifer", "aquiferEdge", "geotop"]);
+    const skip = (o: THREE.Object3D) => { for (let p: THREE.Object3D | null = o; p; p = p.parent) if (p.userData.noClip || cellBased.has(p.userData.kind as string)) return true; return false; };
     root.traverse((o) => {
-      if (cellBased.has(o.userData.kind as string)) return;
+      if (skip(o)) return;
       const mat = (o as THREE.Mesh).material as THREE.Material | THREE.Material[] | undefined;
       for (const m of Array.isArray(mat) ? mat : mat ? [mat] : []) m.clippingPlanes = planes;
     });
@@ -308,23 +318,177 @@ export function renderSoilModelImage(model: SoilModel, settings: Soil3DSettings,
 }
 
 const AQUIFER_COLORS = [0x38bdf8, 0x818cf8, 0x2dd4bf];
-const HEAD_COLORS = [0x7c3aed, 0xdb2777, 0x0d9488];
+/** Kleur per peilbuis: freatisch, 1e, 2e en 3e watervoerend pakket. */
+export const PIEZO_COLORS = [0x1d4ed8, 0x7c3aed, 0xdb2777, 0x0d9488];
+const hex = (c: number) => `#${c.toString(16).padStart(6, "0")}`;
+const nlNum = (v: number, d = 2) => v.toFixed(d).replace("-", "−").replace(".", ",");
+
+/** Eén schematische peilbuis naast het model: filter in het pakket, stand van het water erin. */
+export interface Piezo {
+  /** 0 = freatisch (deklaag), 1… = watervoerend pakket. */
+  index: number;
+  name: string;
+  head: number;
+  color: number;
+  filterTop: number;
+  filterBottom: number;
+  /** Diepte van het pakket bekend uit REGIS op het modelmidden. */
+  packTop: number | null;
+  packBottom: number | null;
+  /** Bovenkant van de buis [m NAP]. */
+  top: number;
+  /** Lokale positie (oost, noord) van de buis. */
+  east: number;
+  north: number;
+}
+export interface PiezoRow { tubes: Piezo[]; ground: number; r: number; label: number; scaleEast: number; north: number; bottom: number; topNap: number }
+
+/** Bovenkant en onderkant van een pakket op het modelmidden (REGIS, dichtstbijzijnde cel). */
+function packAtCentre(model: SoilModel, sub: SubsurfaceData, index: number): { top: number | null; bottom: number | null } {
+  const reg = sub.regis;
+  const a = reg ? aquifers(reg).find((p) => p.index === index) : undefined;
+  if (!reg || !a) return { top: null, bottom: null };
+  const x = Math.min(Math.max(model.origin.x, reg.x0 + 1), reg.x0 + reg.nx * reg.cell - 1);
+  const y = Math.min(Math.max(model.origin.y, reg.y0 + 1), reg.y0 + reg.ny * reg.cell - 1);
+  return { top: cellValue(reg, a.top, x, y), bottom: cellValue(reg, a.bottom, x, y) };
+}
+
+/**
+ * Plaats en maat van de peilbuizen naast het model: één buis per vastgelegde stand (freatisch en per pakket), op een
+ * rij oostelijk van het model. De buizen worden naar rechts lager, zodat elk label boven de buizen rechts ervan valt
+ * en de waarden niet door elkaar staan. null als er geen stand is vastgelegd.
+ */
+export function piezoLayout(model: SoilModel, sub: SubsurfaceData | null, ex: number): PiezoRow | null {
+  if (!sub) return null;
+  const gw = sub.groundwater;
+  const levels: { index: number; head: number }[] = [];
+  if (gw.phreaticNap !== null) levels.push({ index: 0, head: gw.phreaticNap });
+  gw.heads.slice(0, 3).forEach((h, i) => { if (h !== null && Number.isFinite(h)) levels.push({ index: i + 1, head: h }); });
+  if (!levels.length) return null;
+  const g = model.grid;
+  const placed = model.columns.filter((c) => c.placed);
+  const ground = placed.length ? placed.reduce((s, c) => s + c.groundNap, 0) / placed.length : g.topNap;
+  const label = Math.max(1, model.span / 28), r = Math.max(0.2, model.span / 150);
+  // Duidelijk los van het model, halverwege de oostzijde: vanuit het standaardaanzicht staat de rij rechts ernaast.
+  const gap = Math.max(6, model.span * 0.3), step = label * 1.6;
+  const scaleEast = g.east0 + g.nx * g.dx + gap;
+  const north = g.north0 + (g.ny * g.dy) / 2;
+  const n = levels.length;
+  const tubes = levels.map((l, i): Piezo => {
+    const pack = l.index ? packAtCentre(model, sub, l.index) : { top: null, bottom: null };
+    let filterTop: number, filterBottom: number;
+    if (l.index === 0) { filterTop = Math.min(l.head, ground) - 0.5; filterBottom = filterTop - 1; }
+    else if (pack.top !== null && pack.bottom !== null && pack.top > pack.bottom) {
+      const thick = pack.top - pack.bottom;
+      filterTop = pack.top - Math.min(0.5, thick * 0.2); filterBottom = Math.max(pack.bottom, filterTop - 2);
+    } else { filterTop = Math.min(l.head, ground) - 2 - 2 * l.index; filterBottom = filterTop - 1; }
+    return {
+      index: l.index, name: l.index === 0 ? "Freatisch" : `${l.index}e WVP`, head: l.head, color: PIEZO_COLORS[l.index % PIEZO_COLORS.length],
+      filterTop, filterBottom, packTop: pack.top, packBottom: pack.bottom,
+      top: Math.max(ground, l.head) + 1 + ((n - 1 - i) * step) / ex,
+      east: scaleEast + label * 1.2 + i * step, north,
+    };
+  });
+  return {
+    tubes, ground, r, label, scaleEast, north,
+    bottom: Math.min(...tubes.map((t) => t.filterBottom)), topNap: Math.max(...tubes.map((t) => t.top)),
+  };
+}
+
+/** De rij peilbuizen met een NAP-maat; elke buis is aan te klikken (soort "piezo"). */
+function addPiezometers(root: THREE.Group, model: SoilModel, sub: SubsurfaceData, ex: number, textColor: string) {
+  const row = piezoLayout(model, sub, ex);
+  if (!row) return;
+  const g = model.grid, group = new THREE.Group();
+  group.userData = { noClip: true };
+  const z = -row.north, r = row.r, L = row.label;
+  // NAP-maat links van de buizen.
+  const lo = Math.floor(row.bottom), hi = Math.ceil(row.topNap);
+  const tick = niceStep(hi - lo) / 2 || 1;
+  const axis: THREE.Vector3[] = [new THREE.Vector3(row.scaleEast, lo * ex, z), new THREE.Vector3(row.scaleEast, hi * ex, z)];
+  for (let v = Math.ceil(lo / tick) * tick; v <= hi + 1e-6; v += tick) {
+    const major = Math.abs(v / (tick * 2) - Math.round(v / (tick * 2))) < 1e-6;
+    axis.push(new THREE.Vector3(row.scaleEast, v * ex, z), new THREE.Vector3(row.scaleEast - (major ? L * 0.6 : L * 0.3), v * ex, z));
+    if (major) {
+      const t = textSprite(`${nlNum(v, 0)}`, textColor, L * 0.8);
+      t.center.set(1, 0.5);
+      t.position.set(row.scaleEast - L * 0.8, v * ex, z);
+      group.add(t);
+    }
+  }
+  group.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(axis), new THREE.LineBasicMaterial({ color: textColor })));
+  const nap = textSprite("m NAP", textColor, L * 0.8);
+  nap.center.set(0.5, 0);
+  nap.position.set(row.scaleEast, hi * ex + L * 0.4, z);
+  group.add(nap);
+  // Maaiveld als korte lijn over de rij.
+  const last = row.tubes[row.tubes.length - 1];
+  const mv = [new THREE.Vector3(row.scaleEast, row.ground * ex, z), new THREE.Vector3(last.east + L * 1.2, row.ground * ex, z)];
+  group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(mv), new THREE.LineBasicMaterial({ color: GROUND_COLOR })));
+  const mvLabel = textSprite("mv", hex(GROUND_COLOR), L * 0.7);
+  mvLabel.center.set(0, 0.5);
+  mvLabel.position.set(last.east + L * 1.4, row.ground * ex, z);
+  group.add(mvLabel);
+
+  for (const t of row.tubes) {
+    const tube = new THREE.Group();
+    tube.userData = { kind: "piezo", index: t.index, noClip: true };
+    const x = t.east;
+    const riser = new THREE.Mesh(new THREE.CylinderGeometry(r, r, (t.top - t.filterTop) * ex, 10), new THREE.MeshLambertMaterial({ color: 0x9ca3af }));
+    riser.position.set(x, ((t.top + t.filterTop) / 2) * ex, z);
+    const filter = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.4, r * 1.4, Math.max(0.1, t.filterTop - t.filterBottom) * ex, 12), new THREE.MeshLambertMaterial({ color: t.color }));
+    filter.position.set(x, ((t.filterTop + t.filterBottom) / 2) * ex, z);
+    // Water in de buis tot de stand, met een ▽ erboven.
+    const wTop = Math.min(t.head, t.top), wBottom = t.filterBottom;
+    if (wTop > wBottom) {
+      const water = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.75, r * 0.75, (wTop - wBottom) * ex, 10), new THREE.MeshBasicMaterial({ color: t.color, transparent: true, opacity: 0.55 }));
+      water.position.set(x, ((wTop + wBottom) / 2) * ex, z);
+      tube.add(water);
+    }
+    const mark = new THREE.Mesh(new THREE.ConeGeometry(r * 2.6, r * 3, 3), new THREE.MeshBasicMaterial({ color: t.color }));
+    mark.rotation.x = Math.PI;
+    mark.position.set(x, t.head * ex + r * 1.6, z);
+    const level = [new THREE.Vector3(x - r * 3, t.head * ex, z), new THREE.Vector3(x + r * 3, t.head * ex, z)];
+    tube.add(riser, filter, mark, new THREE.Line(new THREE.BufferGeometry().setFromPoints(level), new THREE.LineBasicMaterial({ color: t.color })));
+    // Stippellijn van de stand naar de rand van het model, op dezelfde hoogte als het vlak in het model.
+    const lead = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(g.east0 + g.nx * g.dx, t.head * ex, z), new THREE.Vector3(x - r * 3, t.head * ex, z)]),
+      new THREE.LineDashedMaterial({ color: t.color, dashSize: L * 0.5, gapSize: L * 0.35, transparent: true, opacity: 0.7 }));
+    lead.computeLineDistances();
+    tube.add(lead);
+    const text = textSprite(`${t.name}  NAP ${nlNum(t.head)}`, hex(t.color), L);
+    text.center.set(0, 0.5);
+    text.position.set(x - r, t.top * ex + L * 0.7, z);
+    tube.add(text);
+    group.add(tube);
+  }
+  group.userData.kind = "piezoRow";
+  root.add(group);
+}
 
 /**
  * Verrijking van buiten in de scène: watervoerende pakketten (REGIS II) en GeoTOP-voxels, beide begrensd tot het
- * modelgebied; het freatisch vlak en de stijghoogte per pakket; peilbuizen met hun filter.
+ * modelgebied; het freatisch vlak en de stijghoogte per pakket; peilbuizen met hun filter. De gegevens staan in RD;
+ * bij een gedraaid model staan de cellen schuin en knippen de randen van het modelgebied ze af.
  */
 function addSubsurface(root: THREE.Group, model: SoilModel, s: Soil3DSettings, sub: SubsurfaceData, textColor: string, clip: SectionBox | null) {
-  const ex = s.exaggeration, g = model.grid, o = model.origin;
-  // Gebied waarbinnen pakketten en voxels getekend worden: het modelgebied, ingeperkt door de section box.
-  const ax0 = o.x + Math.max(g.east0, clip?.e0 ?? -Infinity), ax1 = o.x + Math.min(g.east0 + g.nx * g.dx, clip?.e1 ?? Infinity);
-  const ay0 = o.y + Math.max(g.north0, clip?.n0 ?? -Infinity), ay1 = o.y + Math.min(g.north0 + g.ny * g.dy, clip?.n1 ?? Infinity);
+  const ex = s.exaggeration, g = model.grid, rot = model.rotation ?? 0;
+  // Gebied waarbinnen pakketten en voxels getekend worden: het modelgebied, ingeperkt door de section box (lokaal).
+  const le0 = Math.max(g.east0, clip?.e0 ?? -Infinity), le1 = Math.min(g.east0 + g.nx * g.dx, clip?.e1 ?? Infinity);
+  const ln0 = Math.max(g.north0, clip?.n0 ?? -Infinity), ln1 = Math.min(g.north0 + g.ny * g.dy, clip?.n1 ?? Infinity);
+  const ext = rdExtent(model, le0, le1, ln0, ln1);
+  const ax0 = ext.xmin, ax1 = ext.xmax, ay0 = ext.ymin, ay1 = ext.ymax;
   const zLo = clip?.z0 ?? -Infinity, zHi = clip?.z1 ?? Infinity;
+  // Langs RD vallen de celranden samen met het gebied en volstaat bijsnijden per cel; gedraaid knippen vier vlakken.
+  const sidePlanes = rot ? [
+    new THREE.Plane(new THREE.Vector3(1, 0, 0), -le0), new THREE.Plane(new THREE.Vector3(-1, 0, 0), le1),
+    new THREE.Plane(new THREE.Vector3(0, 0, -1), -ln0), new THREE.Plane(new THREE.Vector3(0, 0, 1), ln1),
+  ] : null;
+  const turn = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -rot);
   const place = (x0: number, x1: number, y0: number, y1: number, z0: number, z1: number) => {
-    const m = new THREE.Matrix4();
-    m.compose(new THREE.Vector3((x0 + x1) / 2 - o.x, ((z0 + z1) / 2) * ex, -((y0 + y1) / 2 - o.y)), new THREE.Quaternion(), new THREE.Vector3(x1 - x0, (z1 - z0) * ex, y1 - y0));
-    return m;
+    const c = fromRd(model, (x0 + x1) / 2, (y0 + y1) / 2);
+    return new THREE.Matrix4().compose(new THREE.Vector3(c.east, ((z0 + z1) / 2) * ex, -c.north), turn, new THREE.Vector3(x1 - x0, (z1 - z0) * ex, y1 - y0));
   };
+  const local = (x: number, y: number) => { const p = fromRd(model, x, y); return new THREE.Vector3(p.east, 0, -p.north); };
   const labelSize = Math.max(1.4, model.span / 18);
   const unit = new THREE.BoxGeometry(1, 1, 1);
 
@@ -343,16 +507,16 @@ function addSubsurface(root: THREE.Group, model: SoilModel, s: Soil3DSettings, s
         if (x1 <= x0 || y1 <= y0) continue;
         boxes.push(place(x0, x1, y0, y1, b, t));
         cellIds.push(c);
-        if (!labelAt) labelAt = new THREE.Vector3(x1 - o.x + labelSize * 4, ((t + b) / 2) * ex, -(y0 - o.y));
+        if (!labelAt) labelAt = new THREE.Vector3(le1 + labelSize * 4, ((t + b) / 2) * ex, -ln0);
       }
       if (!boxes.length) return;
-      const mat = new THREE.MeshLambertMaterial({ color: AQUIFER_COLORS[n % 3], transparent: true, opacity: 0.22, depthWrite: false });
+      const mat = new THREE.MeshLambertMaterial({ color: AQUIFER_COLORS[n % 3], transparent: true, opacity: 0.22, depthWrite: false, clippingPlanes: sidePlanes });
       const mesh = new THREE.InstancedMesh(unit, mat, boxes.length);
       boxes.forEach((m, k) => mesh.setMatrixAt(k, m));
       mesh.userData = { kind: "aquifer", aquifer: a.index, cells: cellIds };
       root.add(mesh);
-      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(unit), new THREE.LineBasicMaterial({ color: AQUIFER_COLORS[n % 3] }));
-      for (const m of boxes) { const e = edges.clone(); e.applyMatrix4(m); root.add(e); }
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(unit), new THREE.LineBasicMaterial({ color: AQUIFER_COLORS[n % 3], clippingPlanes: sidePlanes }));
+      for (const m of boxes) { const e = edges.clone(); e.applyMatrix4(m); e.userData = { kind: "aquiferEdge" }; root.add(e); }
       if (labelAt) {
         const tops = a.top.filter((v): v is number => v !== null), bots = a.bottom.filter((v): v is number => v !== null);
         const label = textSprite(`${a.index}e WVP  NAP ${Math.max(...tops).toFixed(1)} / ${Math.min(...bots).toFixed(1)}`, "#0369a1", labelSize);
@@ -381,7 +545,8 @@ function addSubsurface(root: THREE.Group, model: SoilModel, s: Soil3DSettings, s
       }
     }));
     for (const [lk, boxes] of byClass) {
-      const mat = new THREE.MeshLambertMaterial({ color: LITHOCLASSES[lk]?.color ?? "#999", transparent: s.opacity < 1, opacity: s.opacity * 0.9 });
+      // Gedraaid knippen de randvlakken de voxels open; dubbelzijdig blijven ze dicht ogen.
+      const mat = new THREE.MeshLambertMaterial({ color: LITHOCLASSES[lk]?.color ?? "#999", transparent: s.opacity < 1, opacity: s.opacity * 0.9, clippingPlanes: sidePlanes, side: sidePlanes ? THREE.DoubleSide : THREE.FrontSide });
       const mesh = new THREE.InstancedMesh(unit, mat, boxes.length);
       boxes.forEach((m, k) => mesh.setMatrixAt(k, m));
       mesh.userData = { kind: "geotop", voxels: voxelIds.get(lk) };
@@ -390,8 +555,10 @@ function addSubsurface(root: THREE.Group, model: SoilModel, s: Soil3DSettings, s
   }
 
   if (s.showWater) {
-    const plane = (z: number, color: number, fill: boolean, text: string) => {
-      const w = ax1 - ax0, d = ay1 - ay0, cx = (ax0 + ax1) / 2 - o.x, cz = -((ay0 + ay1) / 2 - o.y);
+    // Vlakken in het model zonder tekst: de waarden staan bij de peilbuizen naast het model.
+    const plane = (z: number, color: number, fill: boolean) => {
+      const w = le1 - le0, d = ln1 - ln0, cx = (le0 + le1) / 2, cz = -(ln0 + ln1) / 2;
+      if (w <= 0 || d <= 0) return;
       if (fill) {
         const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.28, side: THREE.DoubleSide, depthWrite: false }));
         m.rotation.x = -Math.PI / 2;
@@ -403,22 +570,22 @@ function addSubsurface(root: THREE.Group, model: SoilModel, s: Soil3DSettings, s
       const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineDashedMaterial({ color, dashSize: labelSize, gapSize: labelSize * 0.6 }));
       line.computeLineDistances();
       root.add(line);
-      const label = textSprite(text, `#${color.toString(16).padStart(6, "0")}`, labelSize);
-      label.position.set(cx + w / 2 + labelSize * 4, z * ex, cz - d / 2);
-      root.add(label);
     };
     const gw = sub.groundwater;
-    if (gw.phreaticNap !== null) plane(gw.phreaticNap, 0x1d4ed8, true, `▽ GW NAP ${gw.phreaticNap.toFixed(2)}`);
-    gw.heads.forEach((h, i) => { if (h !== null) plane(h, HEAD_COLORS[i % 3], false, `φ${i + 1} NAP ${h.toFixed(2)}`); });
+    if (gw.phreaticNap !== null) plane(gw.phreaticNap, PIEZO_COLORS[0], true);
+    gw.heads.slice(0, 3).forEach((h, i) => { if (h !== null) plane(h, PIEZO_COLORS[i + 1], false); });
+    addPiezometers(root, model, sub, ex, textColor);
   }
 
   if (s.showWells && sub.wells) {
     const r = Math.max(0.2, model.span / 140);
     // Peilbuizen die verder weg gezocht zijn tellen mee voor de grondwaterstand, maar staan niet in beeld.
-    const near = (w: { x: number; y: number }) => w.x >= o.x + g.east0 - 500 && w.x <= o.x + g.east0 + g.nx * g.dx + 500 && w.y >= o.y + g.north0 - 500 && w.y <= o.y + g.north0 + g.ny * g.dy + 500;
+    const near = (p: THREE.Vector3) => p.x >= g.east0 - 500 && p.x <= g.east0 + g.nx * g.dx + 500 && -p.z >= g.north0 - 500 && -p.z <= g.north0 + g.ny * g.dy + 500;
     for (const w of sub.wells) {
-      if (w.screenTop === null || w.screenBottom === null || !near(w)) continue;
-      const x = w.x - o.x, z = -(w.y - o.y);
+      if (w.screenTop === null || w.screenBottom === null) continue;
+      const at = local(w.x, w.y);
+      if (!near(at)) continue;
+      const x = at.x, z = at.z;
       const top = Math.max(w.screenTop + 2, w.stats?.max ?? w.screenTop);
       const pipe = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.5, r * 0.5, (top - w.screenTop) * ex, 8), new THREE.MeshLambertMaterial({ color: 0x6b7280 }));
       pipe.position.set(x, ((top + w.screenTop) / 2) * ex, z);

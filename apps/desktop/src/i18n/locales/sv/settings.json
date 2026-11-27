@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Program",
-    "language": "Språk"
+    "language": "Språk",
+    "calculations": "Beräkningar",
+    "dragSnap": "Fästavstånd vid dragning",
+    "dragSnapHint": "Nivåer som du drar i CPT-diagrammet för pålberäkningarna (tryck och drag) fäster vid multiplar av detta avstånd. 0 = ingen fästning."
   },
   "appearance": {
     "theme": "Tema",

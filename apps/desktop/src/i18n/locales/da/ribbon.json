@@ -247,5 +247,7 @@
   "cptSideBySide": "Side om side",
   "cptSideBySideHint": "Vis sonderingerne side om side, hver i sin egen kolonne.",
   "cptOverlay": "Oven på hinanden",
-  "cptOverlayHint": "Tegn alle synlige sonderinger oven på hinanden: ét diagram for qc og ét for fs mod NAP."
+  "cptOverlayHint": "Tegn alle synlige sonderinger oven på hinanden: ét diagram for qc og ét for fs mod NAP.",
+  "cptGroup": "Sondering",
+  "cptFromScan": "Fra scanning"
 }

@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
-import { markProjectSaved, newProjectDocument, openPathByExtension, useCptStore } from "../store/useCptStore";
+import { markProjectSaved, newProjectDocument, openPathByExtension, addCptToActiveProject, openDocumentForPath, useCptStore } from "../store/useCptStore";
+import { readSourceFile } from "../utils/sourceEncoding";
 import { activeProjectPayload, projectNameFromFilename } from "../store/projectSerialization";
 import { useCalculationsStore } from "../calc/framework/store";
 import { CALC_REGISTRY, getCalcModule } from "../calc/framework/registry";
@@ -102,7 +103,7 @@ function pilePatch(input: unknown, patch: unknown): PileInput {
         return { ...layer };
       });
     } else if (key === 'capacityTable') {
-      const config=object(value,'Draagvermogentabel');keys(config,['cptIds','toeNaps','sizesMm','targetKn','examples']);
+      const config=object(value,'Draagvermogentabel');keys(config,['cptIds','toeNaps','sizesMm','targetKn','targetsKn','extraTypes','examples']);
       validateCapacityTable(config as CapacityTableConfig);
       if(config.sizesMm!==undefined)config.sizesMm=numberList(config.sizesMm,'Paalmaten').map(v=>{if(v<=0)throw new Error('Paalmaten moeten positief zijn');return v;});
       if(config.targetKn!==undefined){const t=object(config.targetKn,'Zoekband');keys(t,['minKn','maxKn']);if(!(number(t.minKn,'minKn')>=0)||!(number(t.maxKn,'maxKn')>Number(t.minKn)))throw new Error('De bovengrens moet boven de ondergrens liggen');}
@@ -277,9 +278,23 @@ export async function executeStudioTool(tool: string, rawArgs: unknown, changeVi
       return snapshot();
     }
     case "studio_open_file": {
+      keys(args, ["path", "reload"]);
+      const path = filePath(args.path, false);
+      const reload = args.reload === undefined ? false : args.reload === true;
+      if (args.reload !== undefined && typeof args.reload !== "boolean") throw new Error("reload moet waar of onwaar zijn");
+      // Al geopend: dat document activeren (of met reload in hetzelfde document herladen), geen tweede kopie.
+      const already = openDocumentForPath(path);
+      if (!await openPathByExtension(path, { reload })) throw new Error("Bestand kon niet worden geopend");
+      changeView("default"); return { ...snapshot(), opened: already ? (reload ? "reloaded" : "already-open") : "opened" };
+    }
+    case "studio_add_cpt": {
       keys(args, ["path"]);
-      if (!await openPathByExtension(filePath(args.path, false))) throw new Error("Bestand kon niet worden geopend");
-      changeView("default"); return snapshot();
+      const doc = project();
+      const path = filePath(args.path, false);
+      if (!/\.(gef|xml|ifcgeo)$/i.test(path)) throw new Error("Alleen GEF-, BRO-XML- of ifcgeo-sonderingen");
+      const { text, diagnostics } = await readSourceFile(path);
+      const cpt = await addCptToActiveProject(text, path.split(/[\\/]/).pop() ?? path, doc.id, diagnostics);
+      return { cptId: cpt.id, ...snapshot() };
     }
     case "studio_set_project_meta": {
       keys(args, ["patch"]); project();

@@ -247,5 +247,7 @@
   "cptSideBySide": "Nebeneinander",
   "cptSideBySideHint": "Sondierungen nebeneinander anzeigen, jede in einer eigenen Spalte.",
   "cptOverlay": "Übereinander",
-  "cptOverlayHint": "Alle sichtbaren Sondierungen übereinander zeichnen: ein Diagramm für qc und eines für fs über NAP."
+  "cptOverlayHint": "Alle sichtbaren Sondierungen übereinander zeichnen: ein Diagramm für qc und eines für fs über NAP.",
+  "cptGroup": "Sondierung",
+  "cptFromScan": "Aus Scan"
 }

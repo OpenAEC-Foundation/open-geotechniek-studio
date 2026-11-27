@@ -247,5 +247,7 @@
   "cptSideBySide": "Side by side",
   "cptSideBySideHint": "Show the CPTs side by side, each in its own column.",
   "cptOverlay": "Overlaid",
-  "cptOverlayHint": "Draw all visible CPTs over each other: one chart of qc and one of fs against NAP."
+  "cptOverlayHint": "Draw all visible CPTs over each other: one chart of qc and one of fs against NAP.",
+  "cptGroup": "CPT",
+  "cptFromScan": "From scan"
 }

@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} to test dysypacji (GEF-DISS), a nie sondowanie CPT. Dodaj go do powiązanego sondowania{{parent}}.",
+    "noDepthRecords": "{{file}}: żaden rekord pomiarowy nie ma głębokości (długości penetracji ani skorygowanej głębokości), więc nie ma sondowania do wczytania.",
     "bomRemoved": "Usunięto UTF-8 BOM.",
     "suspectEncoding": "Możliwe nieprawidłowe kodowanie znaków; sprawdź tekst oryginalny.",
     "unrecognisedHeaderLine": "Zachowano nierozpoznany wiersz nagłówka.",
@@ -40,7 +42,10 @@
     "columnMinMax": "Kolumna {{column}}: zmierzone min/max różni się od nagłówka.",
     "preExcavationUnitConversion": "Głębokość wstępnego wykopu przeliczono z {{unit}} na m; wartość źródłową zachowano w zmiennych pomiarowych.",
     "unknownPreExcavationUnit": "Głębokość wstępnego wykopu z nieznaną jednostką {{unit}} zachowano tylko jako wartość źródłową.",
-    "preExcavated": "Zamaskowano kanały pomiarowe w gruncie wstępnie wykopanym; wartości oryginalne pozostają w parametrach."
+    "preExcavated": "Zamaskowano kanały pomiarowe w gruncie wstępnie wykopanym; wartości oryginalne pozostają w parametrach.",
+    "dissipationColumns": "{{file}}: test dysypacji bez kolumny czasu lub ciśnienia porowego.",
+    "dissipationUnit": "{{file}}: nieznana jednostka w kolumnie {{column}}.",
+    "dissipationEmpty": "{{file}}: test dysypacji bez odczytów ciśnienia porowego."
   },
   "bro": {
     "xmlParseError": "Błąd parsowania BRO CPT XML: {{detail}}",

@@ -57,7 +57,7 @@ Er is nog geen ingebouwde updater: installeer een nieuwe versie over de oude hee
 
 ## Sonderingen en boringen
 
-- **GEF 1.x en BRO-XML.** CPT_O en CPT_O_DP, en boringen uit BHR-GT. Importmeldingen blijven bij het project en zijn als CSV of JSON te exporteren.
+- **GEF 1.x en BRO-XML.** CPT_O en CPT_O_DP, en boringen uit BHR-GT. Dissipatietests (GEF-DISS) komen bij hun sondering, met het verloop van de waterspanning en t50. Importmeldingen blijven bij het project en zijn als CSV of JSON te exporteren.
 - **De sonderingsgrafiek.** Conusweerstand qc, plaatselijke wrijving fs, wrijvingsgetal Rf en waterspanning u2 tegen de diepte in m NAP, met indicatieve qc/Rf-grondzones. De zones zijn indicatief; het is geen genormaliseerde classificatie.
 - **Meerdere sonderingen naast elkaar.** Schaal de kolommen mee met de zoom, of laat ze in het venster passen.
 

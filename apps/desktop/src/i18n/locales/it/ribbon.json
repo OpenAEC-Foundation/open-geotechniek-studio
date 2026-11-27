@@ -247,5 +247,7 @@
   "cptSideBySide": "Affiancate",
   "cptSideBySideHint": "Mostra le prove una accanto all'altra, ciascuna nella propria colonna.",
   "cptOverlay": "Sovrapposte",
-  "cptOverlayHint": "Disegna tutte le prove visibili sovrapposte: un grafico di qc e uno di fs rispetto al NAP."
+  "cptOverlayHint": "Disegna tutte le prove visibili sovrapposte: un grafico di qc e uno di fs rispetto al NAP.",
+  "cptGroup": "Prova CPT",
+  "cptFromScan": "Da scansione"
 }

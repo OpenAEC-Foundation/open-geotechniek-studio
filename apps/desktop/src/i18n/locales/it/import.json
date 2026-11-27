@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} è una prova di dissipazione (GEF-DISS), non una CPT. Aggiungerla alla CPT corrispondente{{parent}}.",
+    "noDepthRecords": "{{file}}: nessun record ha una profondità (lunghezza di penetrazione o profondità corretta), quindi non c'è una CPT da importare.",
     "bomRemoved": "BOM UTF-8 rimosso.",
     "suspectEncoding": "Codifica dei caratteri forse errata; controlla il testo originale.",
     "unrecognisedHeaderLine": "Riga di intestazione non riconosciuta mantenuta.",
@@ -40,7 +42,10 @@
     "columnMinMax": "Colonna {{column}}: min/max misurati diversi dall'intestazione.",
     "preExcavationUnitConversion": "Profondità di prescavo convertita da {{unit}} a m; valore sorgente mantenuto nelle variabili di misura.",
     "unknownPreExcavationUnit": "Profondità di prescavo con unità sconosciuta {{unit}} mantenuta solo come valore sorgente.",
-    "preExcavated": "Canali di misura nel terreno prescavato mascherati; i valori originali restano nei parametri."
+    "preExcavated": "Canali di misura nel terreno prescavato mascherati; i valori originali restano nei parametri.",
+    "dissipationColumns": "{{file}}: prova di dissipazione senza colonna del tempo o della pressione interstiziale.",
+    "dissipationUnit": "{{file}}: unità sconosciuta nella colonna {{column}}.",
+    "dissipationEmpty": "{{file}}: prova di dissipazione senza letture della pressione interstiziale."
   },
   "bro": {
     "xmlParseError": "Errore di parsing BRO CPT XML: {{detail}}",

@@ -70,7 +70,9 @@
       "levelRangeInvalid": "Introduzca una cota superior e inferior finitas y un paso positivo.",
       "tooManyLevels": "Como máximo {{max}} cotas de punta; elija un paso mayor.",
       "sizesNotPositive": "Las dimensiones de pilote deben ser positivas.",
-      "targetRangeInvalid": "El límite superior de la capacidad portante objetivo debe estar por encima del límite inferior."
+      "targetRangeInvalid": "El límite superior de la capacidad portante objetivo debe estar por encima del límite inferior.",
+      "targetsInvalid": "Introduzca capacidades portantes únicas y positivas en kN.",
+      "extraTypesInvalid": "Indique para cada tipo de pilote adicional un tipo conocido y dimensiones positivas; cada tipo una sola vez."
     },
     "notes": {
       "profileAboveToe": "El perfil del terreno termina por encima de la punta del pilote. Compruebe y prolongue las capas del terreno; las capas de fuste que faltan no contribuyen.",

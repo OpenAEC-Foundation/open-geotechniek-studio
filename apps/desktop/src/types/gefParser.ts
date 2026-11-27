@@ -117,6 +117,11 @@ export function parseGef(text: string, filename: string): Cpt {
   if (start < 0)
     throw new Error(m("gef.missingEoh", "GEF parse-fout: ontbrekende #EOH= terminator"));
   const first = (key: string) => header.get(key)?.[0]?.value;
+  // Een dissipatietest (GEF-DISS) meet waterspanning tegen de tijd op één diepte en heeft geen dieptekolom.
+  if (/^\s*GEF-DISS/i.test(first("REPORTCODE") ?? "")) {
+    const parent = first("PARENT")?.split(",")[0]?.trim();
+    throw new Error(m("gef.dissipationTest", "{{file}} is een dissipatietest (GEF-DISS), geen sondering. Voeg hem toe aan de bijbehorende sondering{{parent}}.", { file: filename, parent: parent ? ` (${parent})` : "" }));
+  }
   const extra: Record<string, string> = {};
   if (unparsedHeader.length)
     extra["ogs:unparsed-header"] = unparsedHeader.join("\n");
@@ -526,6 +531,8 @@ export function parseGef(text: string, filename: string): Cpt {
   const methods=[...new Set(report.depthMethods!.map(item=>item.method))];
   report.depthMethod=methods.length===1?methods[0]:methods.length?"mixed":undefined;
   report.points = points.length;
+  if (report.records > 0 && points.length === 0 && report.omittedRecords === report.records)
+    throw new Error(m("gef.noDepthRecords", "{{file}}: geen enkel meetrecord heeft een diepte (sondeerlengte of gecorrigeerde diepte), dus er is geen sondering om in te lezen.", { file: filename }));
   const date = (first("STARTDATE") ?? first("FILEDATE"))
     ?.split(",")
     .map((v) => v.trim().padStart(2, "0"))

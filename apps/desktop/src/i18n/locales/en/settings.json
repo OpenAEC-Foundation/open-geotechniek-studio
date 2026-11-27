@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Application",
-    "language": "Language"
+    "language": "Language",
+    "calculations": "Calculations",
+    "dragSnap": "Snap distance when dragging",
+    "dragSnapHint": "Levels you drag in the CPT chart of the pile calculations (compression and tension) snap to multiples of this distance. 0 = no snapping."
   },
   "appearance": {
     "theme": "Theme",

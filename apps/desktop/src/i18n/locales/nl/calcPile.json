@@ -87,6 +87,20 @@
     "title": "Paalfactoren",
     "useProject": "Projectfactoren / zelfverklaring gebruiken"
   },
+  "governing": {
+    "bestLevel": "hoogstens {{rc}} kN op {{level}}",
+    "caption": "Hoogste puntniveau [m NAP] waarop alle sonderingen het draagvermogen halen, met de maatgevende sondering en haar Rc;net;d. Klik een cel om de plattegrond op dat niveau te zetten.",
+    "cellAria": "{{target}} kN met {{size}} mm: NAP {{level}}, maatgevend {{cpt}}",
+    "cellMissingAria": "{{target}} kN met {{size}} mm: niet gehaald",
+    "noOption": "met geen van de maten gehaald op alle sonderingen",
+    "option": "{{size}} op NAP {{level}}",
+    "or": " of ",
+    "tableAria": "Maatgevend puntniveau per draagvermogen en paalmaat",
+    "target": "Rc;net;d ≥",
+    "title": "Maatgevend overzicht",
+    "worst": "Vaakst maatgevend:",
+    "worstCount": "({{n}} van {{total}})"
+  },
   "legend": {
     "chosen": "gekozen niveau",
     "over": "> {{max}} kN, ruim",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "negatieve kleef",
     "title": "Belasting"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "geen uitkomst",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Puntniveau: NAP {{level}} m",
+    "looseLabel": "Zonder positie",
+    "noPositions": "Geen van de sonderingen heeft een positie; de plattegrond kan niet worden getekend.",
+    "pointNone": "{{cpt}}: geen uitkomst op dit niveau",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Paalmaat",
+    "summary": "Laagste op dit niveau: {{cpt}} met {{rc}} kN.",
+    "svgAria": "Plattegrond van de sonderingen met Rc;net;d voor {{size}} op NAP {{level}} m",
+    "target": "Draagvermogen",
+    "title": "Sonderingen op de plattegrond",
+    "type": "Paaltype"
+  },
   "material": {
     "concrete": "Beton",
     "steel": "Staal",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Houtdiameter bij de las",
     "system": "Paalsysteem",
     "standardSize": "Standaardmaat"
+  },
+  "pilePlan": {
+    "button": "Exporteer voor Pile Plan Studio (CSV)",
+    "filter": "CSV voor Pile Plan Studio",
+    "hint": "Twee bestanden: sonderingen.csv (ID, X, Y in RD, millimeters) en funderingsadvies.csv (CPT ID, punt in m NAP, maat in mm, Rc;net;d in kN) van het hoofdtype.",
+    "ids": "Sonderings-ID’s in beide bestanden: {{list}}",
+    "missing": "{{n}} combinaties zonder berekende weerstand (lege FRD-cel, geen nul)",
+    "more": "en nog {{n}}",
+    "noPosition": "Zonder RD-positie, niet geëxporteerd: {{list}}",
+    "noneWithPosition": "Geen van de sonderingen heeft een RD-positie; er is niets geëxporteerd.",
+    "onlyFirst": "Alleen sonderingen.csv is geschreven; funderingsadvies.csv is geannuleerd.",
+    "written": "Geschreven: {{cpts}} sonderingen en {{rows}} weerstanden. X en Y staan in RD in millimeters."
   },
   "profile": {
     "bottom": "Onder",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Puntdiameter hout [mm]"
   },
   "target": {
+    "extra": "Meer draagvermogens voor het overzicht [kN]",
+    "extraPlaceholder": "bijv. 160; 280",
     "hint": "De keuzetabel zoekt per maat de kortste paal die de ondergrens haalt. Boven de bovengrens is de maat ruim.",
     "inverted": "De bovengrens moet boven de ondergrens liggen; de tabel rekent nog met de vorige band.",
     "legend": "Gezocht draagvermogen Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "Sondering en de paal in 3D naast elkaar",
     "toolbar": "Beeld",
     "unavailable": "3D is op dit apparaat niet beschikbaar (geen WebGL). Gebruik de 2D-tekening."
+  },
+  "types": {
+    "add": "Paaltype toevoegen",
+    "hint": "Extra paaltypes komen naast het hoofdtype in het maatgevende overzicht en op de plattegrond. De tabellen per sondering blijven van het hoofdtype.",
+    "legend": "Paaltypes vergelijken",
+    "listAria": "Extra paaltypes",
+    "none": "Geen ander paaltype is zonder extra invoer te vergelijken.",
+    "removeAria": "Verwijder paaltype {{type}}",
+    "sizesAria": "Paalmaten van het extra paaltype [mm]",
+    "typeAria": "Extra paaltype"
   },
   "visual": {
     "cptHeading": "Sondering: {{id}}",

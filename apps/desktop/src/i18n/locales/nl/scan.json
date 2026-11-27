@@ -1,0 +1,86 @@
+{
+  "error": {
+    "load": "Dit bestand kan niet worden gelezen. Kies een afbeelding (PNG, JPG) of een PDF."
+  },
+  "unit": {
+    "nap": "m NAP",
+    "depth": "m − mv"
+  },
+  "problem": {
+    "scale": "Vul bij alle vier de ijklijnen een waarde in; de twee lijnen van een as mogen niet dezelfde waarde hebben.",
+    "ground": "Vul het maaiveld in m NAP in; de as van de scan staat in NAP.",
+    "trace": "Er is nog geen lijn. Kies ‘Lijn volgen’ en klik op het begin van de meetlijn, of teken haar met de hand.",
+    "name": "Geef de sondering een naam.",
+    "duplicate": "Er is al een sondering met deze naam in het project."
+  },
+  "meta": {
+    "originKey": "Herkomst",
+    "originValue": "Overgetekend van een scan ({{file}}); alleen de conusweerstand"
+  },
+  "tool": {
+    "calibrate": "Schaal ijken",
+    "follow": "Lijn volgen",
+    "draw": "Tekenen",
+    "erase": "Wissen"
+  },
+  "hint": {
+    "calibrate": "Sleep de vier stippellijnen op rasterlijnen waarvan je de waarde kent en vul die waarden rechts in. De lijnen klikken vast op het raster.",
+    "follow": "Klik op het begin van de meetlijn: de lijn wordt naar beneden gevolgd tot ze ophoudt. Sleep omlaag om alleen tot het loslaatpunt te volgen.",
+    "draw": "Teken met ingedrukte muisknop over de meetlijn. Wat je tekent vervangt de lijn op die hoogte.",
+    "erase": "Sleep over het stuk van de lijn dat weg moet.",
+    "start": "Kies een scan van een sondeergrafiek: een afbeelding of een pagina uit een PDF."
+  },
+  "title": "Sondering uit scan",
+  "cancel": "Annuleren",
+  "create": "Sondering maken",
+  "undo": "Ongedaan maken",
+  "clear": "Lijn wissen",
+  "zoomOut": "Uitzoomen",
+  "zoomIn": "Inzoomen",
+  "loading": "Bezig met laden…",
+  "choose": "Scan kiezen…",
+  "section": {
+    "scan": "1. Scan",
+    "scale": "2. Schaal",
+    "line": "3. Lijn",
+    "cpt": "4. Sondering"
+  },
+  "prevPage": "Vorige pagina",
+  "page": "Pagina",
+  "nextPage": "Volgende pagina",
+  "rotateLeft": "↺ Linksom",
+  "rotateRight": "↻ Rechtsom",
+  "axis": {
+    "label": "De diepte-as toont",
+    "nap": "hoogte in m NAP",
+    "depth": "diepte onder maaiveld"
+  },
+  "scale": {
+    "v1": "Bovenste lijn [{{unit}}]",
+    "v2": "Onderste lijn [{{unit}}]",
+    "q1": "Linker lijn [MPa]",
+    "q2": "Rechter lijn [MPa]",
+    "suggest": "Lijnen op het buitenste raster"
+  },
+  "ground": {
+    "required": "Maaiveld [m NAP]",
+    "optional": "Maaiveld [m NAP] (mag leeg)"
+  },
+  "line": {
+    "threshold": "Donkerte van de lijn ({{value}})",
+    "radius": "Dunne rasterlijnen wegpoetsen",
+    "radius0": "niet",
+    "radius1": "licht (lijnen tot 2 pixels)",
+    "radius2": "sterk (lijnen tot 4 pixels)",
+    "showMask": "Toon wat het algoritme als lijn ziet"
+  },
+  "cpt": {
+    "name": "Naam",
+    "x": "X [m RD] (mag leeg)",
+    "y": "Y [m RD] (mag leeg)",
+    "date": "Datum (mag leeg)",
+    "summary": "{{count}} meetpunten van {{from}} tot {{to}} m onder maaiveld, grootste conusweerstand {{max}} MPa.",
+    "empty": "Nog geen meetpunten.",
+    "note": "Een overgetekende sondering heeft alleen een conusweerstand. Controleer de lijn naast de scan: de nauwkeurigheid is die van het papier."
+  }
+}

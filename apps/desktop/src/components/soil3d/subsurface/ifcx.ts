@@ -7,7 +7,7 @@
 // `ogs::ifc4x3::…`, met een schema in dit bestand, omdat IFC5-alfa daar nog geen vaste attributen voor heeft.
 // Coördinaten zijn absoluut: RD (EPSG:28992) en NAP.
 import type { SoilModel } from "../soilModel";
-import { zoneInfo } from "../soilModel";
+import { zoneInfo, rdExtent, toRd } from "../soilModel";
 import { LITHOCLASSES } from "./geotop";
 import { aquifers } from "./regis";
 import type { SubsurfaceData } from "./store";
@@ -38,10 +38,13 @@ const hexRgb = (hex: string): Rgb => {
 
 /** Mesh-opbouw met gedeelde punten. */
 class Mesh {
+  /** Optionele omzetting van de x en y van elk punt (lokaal naar RD). */
+  constructor(private xf?: (x: number, y: number) => { x: number; y: number }) {}
   points: [number, number, number][] = [];
   faceVertexIndices: number[] = [];
   private index = new Map<string, number>();
   private pt(x: number, y: number, z: number) {
+    if (this.xf) ({ x, y } = this.xf(x, y));
     const p: [number, number, number] = [Math.round(x * 1000) / 1000, Math.round(y * 1000) / 1000, Math.round(z * 1000) / 1000];
     const key = p.join(",");
     let i = this.index.get(key);
@@ -76,9 +79,9 @@ export interface IfcxInput {
 export function buildSubsurfaceIfcx({ model, subsurface, project, timestamp }: IfcxInput) {
   const id = makeIds(`${project.number}|${project.title}|${model.columns.map((c) => c.id).join(",")}`);
   const data: Entry[] = [];
-  const X = (east: number) => model.origin.x + east, Y = (north: number) => model.origin.y + north;
   const g = model.grid;
-  const area = { x0: X(g.east0), x1: X(g.east0 + g.nx * g.dx), y0: Y(g.north0), y1: Y(g.north0 + g.ny * g.dy) };
+  const ext = rdExtent(model, g.east0, g.east0 + g.nx * g.dx, g.north0, g.north0 + g.ny * g.dy);
+  const area = { x0: ext.xmin, x1: ext.xmax, y0: ext.ymin, y1: ext.ymax };
 
   const materials = new Map<string, string>();
   const material = (rgb: Rgb) => {
@@ -106,10 +109,10 @@ export function buildSubsurfaceIfcx({ model, subsurface, project, timestamp }: I
   // 1. Grondsoorten uit de sonderingen (geïnterpoleerd voxelmodel): per zone de buitenvlakken.
   const zoneAt = (i: number, j: number, k: number) => (i < 0 || j < 0 || k < 0 || i >= g.nx || j >= g.ny || k >= g.nz ? 0 : g.zone[i + g.nx * (j + g.ny * k)]);
   for (const zone of model.zonesPresent) {
-    const mesh = new Mesh();
+    const mesh = new Mesh((x, y) => toRd(model, x, y));
     for (let k = 0; k < g.nz; k++) for (let j = 0; j < g.ny; j++) for (let i = 0; i < g.nx; i++) {
       if (zoneAt(i, j, k) !== zone) continue;
-      const x0 = X(g.east0 + i * g.dx), y0 = Y(g.north0 + j * g.dy), zt = g.topNap - k * g.dz;
+      const x0 = g.east0 + i * g.dx, y0 = g.north0 + j * g.dy, zt = g.topNap - k * g.dz;
       const nb = [zoneAt(i - 1, j, k), zoneAt(i + 1, j, k), zoneAt(i, j - 1, k), zoneAt(i, j + 1, k), zoneAt(i, j, k + 1), zoneAt(i, j, k - 1)];
       mesh.box(x0, x0 + g.dx, y0, y0 + g.dy, zt - g.dz, zt, (side) => nb[side] !== zone);
     }
@@ -177,7 +180,7 @@ export function buildSubsurfaceIfcx({ model, subsurface, project, timestamp }: I
 
   // 5. Sonderingen als IfcBorehole, met de lagen als waarnemingen.
   for (const c of model.columns) {
-    const bh = id(`borehole ${c.id}`), x = X(c.east), y = Y(c.north);
+    const bh = id(`borehole ${c.id}`), { x, y } = toRd(model, c.east, c.north);
     siteChildren[c.id] = bh;
     const groundDepth = groundwater.phreaticNap === null ? null : c.groundNap - groundwater.phreaticNap;
     data.push({ path: bh, attributes: { ...cls("IfcBorehole"), "bsi::ifc::prop::name": c.id, "ogs::ifc4x3::pset::Pset_BoreholeCommon": { GroundwaterDepth: groundDepth } } });

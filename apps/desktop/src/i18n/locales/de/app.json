@@ -6,6 +6,7 @@
     "untitled": "Unbenannt"
   },
   "drop": {
+    "openFailed": "{{name}} konnte nicht geöffnet werden: {{message}}",
     "hint": "Loslassen zum Öffnen — GEF, BRO-XML oder .ifcgeo",
     "browserOpenFailed": "{{name}} konnte im Browsermodus nicht geöffnet werden:\n{{message}}\n\nTipp: BHR-GT-XML, GMW-XML und GEF funktionieren im Browser. Für BRO-Sondierungs-XML und Projektdateien benötigen Sie die Desktop-Version."
   },
@@ -69,6 +70,7 @@
   "store": {
     "noProject": "Kein aktives Projekt.",
     "noProjectForBro": "Kein aktives Projekt — die BRO-Sondierung kann nicht hinzugefügt werden.",
+    "dissipationWithoutCpt": "{{file}} ist ein Dissipationsversuch zur Sondierung {{parent}}. Öffnen Sie zuerst diese Sondierung oder das Projekt, in dem sie enthalten ist, und fügen Sie dann den Dissipationsversuch hinzu.",
     "targetProjectClosed": "Das Zielprojekt wurde während des Hinzufügens geschlossen.",
     "gmwParseFailed": "{{filename}}: GMW-Lieferung konnte nicht geparst werden (kein <GMW_PO>/<GMW_O>-Wurzelelement oder keine broId gefunden)",
     "unsupportedBore": "{{filename}}: keine unterstützte BHR-XML- oder GEF-Bohrung"

@@ -1,0 +1,86 @@
+{
+  "error": {
+    "load": "No se puede leer este archivo. Elija una imagen (PNG, JPG) o un PDF."
+  },
+  "unit": {
+    "nap": "m NAP",
+    "depth": "m bajo el terreno"
+  },
+  "problem": {
+    "scale": "Introduzca un valor en las cuatro líneas de calibración; las dos líneas de un mismo eje no pueden tener el mismo valor.",
+    "ground": "Introduzca la cota del terreno en m NAP; el eje del escaneo está en NAP.",
+    "trace": "Todavía no hay ninguna línea. Elija «Seguir línea» y haga clic en el inicio de la línea de medida, o dibújela a mano.",
+    "name": "Dé un nombre al CPT.",
+    "duplicate": "Ya existe un CPT con este nombre en el proyecto."
+  },
+  "meta": {
+    "originKey": "Origen",
+    "originValue": "Calcado de un escaneo ({{file}}); solo la resistencia de cono"
+  },
+  "tool": {
+    "calibrate": "Calibrar escala",
+    "follow": "Seguir línea",
+    "draw": "Dibujar",
+    "erase": "Borrar"
+  },
+  "hint": {
+    "calibrate": "Arrastre las cuatro líneas discontinuas sobre líneas de la cuadrícula cuyo valor conozca e introduzca esos valores a la derecha. Las líneas se ajustan a la cuadrícula.",
+    "follow": "Haga clic en el inicio de la línea de medida: se sigue hacia abajo hasta que termina. Arrastre hacia abajo para seguirla solo hasta el punto donde suelte.",
+    "draw": "Dibuje sobre la línea de medida con el botón del ratón pulsado. Lo que dibuje sustituye a la línea a esa altura.",
+    "erase": "Arrastre sobre el tramo de la línea que quiera eliminar.",
+    "start": "Elija un escaneo de un gráfico de CPT: una imagen o una página de un PDF."
+  },
+  "title": "CPT a partir de un escaneo",
+  "cancel": "Cancelar",
+  "create": "Crear CPT",
+  "undo": "Deshacer",
+  "clear": "Borrar línea",
+  "zoomOut": "Alejar",
+  "zoomIn": "Acercar",
+  "loading": "Cargando…",
+  "choose": "Elegir escaneo…",
+  "section": {
+    "scan": "1. Escaneo",
+    "scale": "2. Escala",
+    "line": "3. Línea",
+    "cpt": "4. CPT"
+  },
+  "prevPage": "Página anterior",
+  "page": "Página",
+  "nextPage": "Página siguiente",
+  "rotateLeft": "↺ A la izquierda",
+  "rotateRight": "↻ A la derecha",
+  "axis": {
+    "label": "El eje de profundidad muestra",
+    "nap": "cota en m NAP",
+    "depth": "profundidad bajo el terreno"
+  },
+  "scale": {
+    "v1": "Línea superior [{{unit}}]",
+    "v2": "Línea inferior [{{unit}}]",
+    "q1": "Línea izquierda [MPa]",
+    "q2": "Línea derecha [MPa]",
+    "suggest": "Líneas en la cuadrícula exterior"
+  },
+  "ground": {
+    "required": "Cota del terreno [m NAP]",
+    "optional": "Cota del terreno [m NAP] (opcional)"
+  },
+  "line": {
+    "threshold": "Oscuridad de la línea ({{value}})",
+    "radius": "Eliminar líneas finas de la cuadrícula",
+    "radius0": "no",
+    "radius1": "leve (líneas de hasta 2 píxeles)",
+    "radius2": "fuerte (líneas de hasta 4 píxeles)",
+    "showMask": "Mostrar lo que el algoritmo reconoce como línea"
+  },
+  "cpt": {
+    "name": "Nombre",
+    "x": "X [m RD] (opcional)",
+    "y": "Y [m RD] (opcional)",
+    "date": "Fecha (opcional)",
+    "summary": "{{count}} puntos de medida de {{from}} a {{to}} m bajo el terreno, resistencia de cono máxima {{max}} MPa.",
+    "empty": "Todavía no hay puntos de medida.",
+    "note": "Un CPT calcado solo tiene resistencia de cono. Compruebe la línea junto al escaneo: la precisión es la del papel."
+  }
+}

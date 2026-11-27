@@ -87,6 +87,20 @@
     "title": "Pfahlfaktoren",
     "useProject": "Projektfaktoren / Eigenerklärung verwenden"
   },
+  "governing": {
+    "bestLevel": "höchstens {{rc}} kN auf {{level}}",
+    "caption": "Höchste Pfahlfußtiefe [m NAP], bei der alle Sondierungen die Tragfähigkeit erreichen, mit der maßgebenden Sondierung und ihrem Rc;net;d. Klicken Sie auf eine Zelle, um den Lageplan auf diese Tiefe zu stellen.",
+    "cellAria": "{{target}} kN mit {{size}} mm: NAP {{level}}, maßgebend {{cpt}}",
+    "cellMissingAria": "{{target}} kN mit {{size}} mm: nicht erreicht",
+    "noOption": "mit keiner der Abmessungen bei allen Sondierungen erreicht",
+    "option": "{{size}} auf NAP {{level}}",
+    "or": " oder ",
+    "tableAria": "Maßgebende Pfahlfußtiefe je Tragfähigkeit und Pfahlabmessung",
+    "target": "Rc;net;d ≥",
+    "title": "Maßgebende Übersicht",
+    "worst": "Am häufigsten maßgebend:",
+    "worstCount": "({{n}} von {{total}})"
+  },
   "legend": {
     "chosen": "gewählte Tiefe",
     "over": "> {{max}} kN, reichlich",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "negative Mantelreibung",
     "title": "Last"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "kein Ergebnis",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Pfahlfußtiefe: NAP {{level}} m",
+    "looseLabel": "Ohne Position",
+    "noPositions": "Keine der Sondierungen hat eine Position; der Lageplan kann nicht gezeichnet werden.",
+    "pointNone": "{{cpt}}: kein Ergebnis auf dieser Tiefe",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Pfahlabmessung",
+    "summary": "Niedrigster Wert auf dieser Tiefe: {{cpt}} mit {{rc}} kN.",
+    "svgAria": "Lageplan der Sondierungen mit Rc;net;d für {{size}} auf NAP {{level}} m",
+    "target": "Tragfähigkeit",
+    "title": "Sondierungen im Lageplan",
+    "type": "Pfahltyp"
+  },
   "material": {
     "concrete": "Beton",
     "steel": "Stahl",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Holzdurchmesser am Stoß",
     "system": "Pfahlsystem",
     "standardSize": "Standardmaß"
+  },
+  "pilePlan": {
+    "button": "Für Pile Plan Studio exportieren (CSV)",
+    "filter": "CSV für Pile Plan Studio",
+    "hint": "Zwei Dateien: sonderingen.csv (ID, X, Y in RD, Millimeter) und funderingsadvies.csv (CPT-ID, Pfahlfuß in m NAP, Abmessung in mm, Rc;net;d in kN) des Haupttyps.",
+    "ids": "Sondierungs-IDs in beiden Dateien: {{list}}",
+    "missing": "{{n}} Kombinationen ohne berechneten Widerstand (leere FRD-Zelle, nicht null)",
+    "more": "und {{n}} weitere",
+    "noPosition": "Ohne RD-Position, nicht exportiert: {{list}}",
+    "noneWithPosition": "Keine der Sondierungen hat eine RD-Position; es wurde nichts exportiert.",
+    "onlyFirst": "Nur sonderingen.csv wurde geschrieben; funderingsadvies.csv wurde abgebrochen.",
+    "written": "Geschrieben: {{cpts}} Sondierungen und {{rows}} Widerstände. X und Y sind in RD in Millimetern."
   },
   "profile": {
     "bottom": "Unten",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Fußdurchmesser Holz [mm]"
   },
   "target": {
+    "extra": "Weitere Tragfähigkeiten für die Übersicht [kN]",
+    "extraPlaceholder": "z. B. 160; 280",
     "hint": "Die Auswahltabelle sucht je Abmessung den kürzesten Pfahl, der die Untergrenze erreicht. Oberhalb der Obergrenze ist die Abmessung reichlich bemessen.",
     "inverted": "Die Obergrenze muss über der Untergrenze liegen; die Tabelle rechnet noch mit dem vorherigen Bereich.",
     "legend": "Erforderliche Tragfähigkeit Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "Sondierung und der Pfahl in 3D nebeneinander",
     "toolbar": "Ansicht",
     "unavailable": "3D ist auf diesem Gerät nicht verfügbar (kein WebGL). Verwenden Sie die 2D-Zeichnung."
+  },
+  "types": {
+    "add": "Pfahltyp hinzufügen",
+    "hint": "Zusätzliche Pfahltypen erscheinen neben dem Haupttyp in der maßgebenden Übersicht und im Lageplan. Die Tabellen je Sondierung bleiben die des Haupttyps.",
+    "legend": "Pfahltypen vergleichen",
+    "listAria": "Zusätzliche Pfahltypen",
+    "none": "Kein anderer Pfahltyp lässt sich ohne zusätzliche Eingaben vergleichen.",
+    "removeAria": "Pfahltyp {{type}} entfernen",
+    "sizesAria": "Pfahlabmessungen des zusätzlichen Pfahltyps [mm]",
+    "typeAria": "Zusätzlicher Pfahltyp"
   },
   "visual": {
     "cptHeading": "Sondierung: {{id}}",

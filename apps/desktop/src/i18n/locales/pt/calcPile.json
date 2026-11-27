@@ -87,6 +87,20 @@
     "title": "Coeficientes da estaca",
     "useProject": "Usar coeficientes do projeto / autodeclaração"
   },
+  "governing": {
+    "bestLevel": "no máximo {{rc}} kN a {{level}}",
+    "caption": "Cota da ponta mais alta [m NAP] em que todos os CPT atingem a capacidade de carga, com o CPT determinante e o seu Rc;net;d. Clique numa célula para colocar a planta nessa cota.",
+    "cellAria": "{{target}} kN com {{size}} mm: NAP {{level}}, determinante {{cpt}}",
+    "cellMissingAria": "{{target}} kN com {{size}} mm: não atingido",
+    "noOption": "não atingido em todos os CPT com nenhuma das dimensões",
+    "option": "{{size}} a NAP {{level}}",
+    "or": " ou ",
+    "tableAria": "Cota da ponta determinante por capacidade de carga e dimensão da estaca",
+    "target": "Rc;net;d ≥",
+    "title": "Resumo determinante",
+    "worst": "Mais vezes determinante:",
+    "worstCount": "({{n}} de {{total}})"
+  },
   "legend": {
     "chosen": "cota selecionada",
     "over": "> {{max}} kN, folgado",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "atrito negativo",
     "title": "Carga"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "sem resultado",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Cota da ponta: NAP {{level}} m",
+    "looseLabel": "Sem posição",
+    "noPositions": "Nenhum CPT tem posição; a planta não pode ser desenhada.",
+    "pointNone": "{{cpt}}: sem resultado nesta cota",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Dimensão da estaca",
+    "summary": "Valor mais baixo nesta cota: {{cpt}} com {{rc}} kN.",
+    "svgAria": "Planta dos CPT com Rc;net;d para {{size}} a NAP {{level}} m",
+    "target": "Capacidade de carga",
+    "title": "CPT na planta",
+    "type": "Tipo de estaca"
+  },
   "material": {
     "concrete": "Betão",
     "steel": "Aço",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Diâmetro da madeira na junta",
     "system": "Sistema de estacas",
     "standardSize": "Dimensão padrão"
+  },
+  "pilePlan": {
+    "button": "Exportar para Pile Plan Studio (CSV)",
+    "filter": "CSV para Pile Plan Studio",
+    "hint": "Dois ficheiros: sonderingen.csv (ID, X, Y em RD, milímetros) e funderingsadvies.csv (ID do CPT, ponta em m NAP, dimensão em mm, Rc;net;d em kN) do tipo principal.",
+    "ids": "ID dos CPT em ambos os ficheiros: {{list}}",
+    "missing": "{{n}} combinações sem resistência calculada (célula FRD vazia, não zero)",
+    "more": "e mais {{n}}",
+    "noPosition": "Sem posição RD, não exportado: {{list}}",
+    "noneWithPosition": "Nenhum CPT tem posição RD; nada foi exportado.",
+    "onlyFirst": "Só sonderingen.csv foi escrito; funderingsadvies.csv foi cancelado.",
+    "written": "Escrito: {{cpts}} CPT e {{rows}} resistências. X e Y estão em RD em milímetros."
   },
   "profile": {
     "bottom": "Base",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Diâmetro da ponta da madeira [mm]"
   },
   "target": {
+    "extra": "Mais capacidades de carga para o resumo [kN]",
+    "extraPlaceholder": "p. ex. 160; 280",
     "hint": "Para cada dimensão, a tabela de seleção procura a estaca mais curta que atinge o limite inferior. Acima do limite superior, a dimensão é folgada.",
     "inverted": "O limite superior deve ser superior ao limite inferior; a tabela continua a usar o intervalo anterior.",
     "legend": "Capacidade de carga necessária Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "Sondagem e estaca em 3D lado a lado",
     "toolbar": "Vista",
     "unavailable": "O 3D não está disponível neste dispositivo (sem WebGL). Use o desenho 2D."
+  },
+  "types": {
+    "add": "Adicionar tipo de estaca",
+    "hint": "Os tipos de estaca adicionais aparecem ao lado do tipo principal no resumo determinante e na planta. As tabelas por CPT continuam a ser as do tipo principal.",
+    "legend": "Comparar tipos de estaca",
+    "listAria": "Tipos de estaca adicionais",
+    "none": "Nenhum outro tipo de estaca pode ser comparado sem dados adicionais.",
+    "removeAria": "Remover o tipo de estaca {{type}}",
+    "sizesAria": "Dimensões do tipo de estaca adicional [mm]",
+    "typeAria": "Tipo de estaca adicional"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

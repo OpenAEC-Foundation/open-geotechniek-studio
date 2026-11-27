@@ -87,6 +87,20 @@
     "title": "Fattori del palo",
     "useProject": "Usa fattori di progetto / autodichiarazione"
   },
+  "governing": {
+    "bestLevel": "al massimo {{rc}} kN a {{level}}",
+    "caption": "Quota della punta più alta [m NAP] alla quale tutte le prove CPT raggiungono la capacità portante, con la prova CPT determinante e il suo Rc;net;d. Fare clic su una cella per portare la planimetria a quella quota.",
+    "cellAria": "{{target}} kN con {{size}} mm: NAP {{level}}, determinante {{cpt}}",
+    "cellMissingAria": "{{target}} kN con {{size}} mm: non raggiunto",
+    "noOption": "non raggiunto su tutte le prove CPT con nessuna delle dimensioni",
+    "option": "{{size}} a NAP {{level}}",
+    "or": " oppure ",
+    "tableAria": "Quota della punta determinante per capacità portante e dimensione del palo",
+    "target": "Rc;net;d ≥",
+    "title": "Riepilogo determinante",
+    "worst": "Più spesso determinante:",
+    "worstCount": "({{n}} su {{total}})"
+  },
   "legend": {
     "chosen": "quota selezionata",
     "over": "> {{max}} kN, ampiamente sufficiente",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "attrito negativo",
     "title": "Carico"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "nessun risultato",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Quota della punta: NAP {{level}} m",
+    "looseLabel": "Senza posizione",
+    "noPositions": "Nessuna prova CPT ha una posizione; la planimetria non può essere disegnata.",
+    "pointNone": "{{cpt}}: nessun risultato a questa quota",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Dimensione del palo",
+    "summary": "Valore più basso a questa quota: {{cpt}} con {{rc}} kN.",
+    "svgAria": "Planimetria delle prove CPT con Rc;net;d per {{size}} a NAP {{level}} m",
+    "target": "Capacità portante",
+    "title": "Prove CPT in planimetria",
+    "type": "Tipo di palo"
+  },
   "material": {
     "concrete": "Calcestruzzo",
     "steel": "Acciaio",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Diametro del legno al giunto",
     "system": "Sistema di pali",
     "standardSize": "Misura standard"
+  },
+  "pilePlan": {
+    "button": "Esporta per Pile Plan Studio (CSV)",
+    "filter": "CSV per Pile Plan Studio",
+    "hint": "Due file: sonderingen.csv (ID, X, Y in RD, millimetri) e funderingsadvies.csv (ID CPT, punta in m NAP, dimensione in mm, Rc;net;d in kN) del tipo principale.",
+    "ids": "ID delle prove CPT in entrambi i file: {{list}}",
+    "missing": "{{n}} combinazioni senza resistenza calcolata (cella FRD vuota, non zero)",
+    "more": "e altre {{n}}",
+    "noPosition": "Senza posizione RD, non esportate: {{list}}",
+    "noneWithPosition": "Nessuna prova CPT ha una posizione RD; non è stato esportato nulla.",
+    "onlyFirst": "È stato scritto solo sonderingen.csv; funderingsadvies.csv è stato annullato.",
+    "written": "Scritti: {{cpts}} prove CPT e {{rows}} resistenze. X e Y sono in RD in millimetri."
   },
   "profile": {
     "bottom": "Base",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Diametro di punta del legno [mm]"
   },
   "target": {
+    "extra": "Altre capacità portanti per il riepilogo [kN]",
+    "extraPlaceholder": "ad es. 160; 280",
     "hint": "Per ogni dimensione, la tabella di selezione trova il palo più corto che raggiunge il limite inferiore. Sopra il limite superiore la dimensione è ampiamente sufficiente.",
     "inverted": "Il limite superiore deve essere maggiore del limite inferiore; la tabella usa ancora l'intervallo precedente.",
     "legend": "Capacità portante richiesta Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "Prova e palo in 3D affiancati",
     "toolbar": "Vista",
     "unavailable": "Il 3D non è disponibile su questo dispositivo (WebGL assente). Usare il disegno 2D."
+  },
+  "types": {
+    "add": "Aggiungi tipo di palo",
+    "hint": "I tipi di palo aggiuntivi compaiono accanto al tipo principale nel riepilogo determinante e in planimetria. Le tabelle per prova CPT restano quelle del tipo principale.",
+    "legend": "Confronta tipi di palo",
+    "listAria": "Tipi di palo aggiuntivi",
+    "none": "Nessun altro tipo di palo può essere confrontato senza dati aggiuntivi.",
+    "removeAria": "Rimuovi il tipo di palo {{type}}",
+    "sizesAria": "Dimensioni del tipo di palo aggiuntivo [mm]",
+    "typeAria": "Tipo di palo aggiuntivo"
   },
   "visual": {
     "cptHeading": "CPT: {{id}}",

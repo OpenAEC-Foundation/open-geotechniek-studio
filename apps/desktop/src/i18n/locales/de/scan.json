@@ -1,0 +1,86 @@
+{
+  "error": {
+    "load": "Diese Datei kann nicht gelesen werden. Wählen Sie ein Bild (PNG, JPG) oder eine PDF-Datei."
+  },
+  "unit": {
+    "nap": "m NAP",
+    "depth": "m u. GOK"
+  },
+  "problem": {
+    "scale": "Geben Sie für alle vier Kalibrierlinien einen Wert ein; die beiden Linien einer Achse dürfen nicht denselben Wert haben.",
+    "ground": "Geben Sie die Geländehöhe in m NAP ein; die Achse des Scans ist auf NAP bezogen.",
+    "trace": "Es gibt noch keine Linie. Wählen Sie „Linie verfolgen“ und klicken Sie auf den Anfang der Messlinie, oder zeichnen Sie sie von Hand.",
+    "name": "Geben Sie der Sondierung einen Namen.",
+    "duplicate": "Im Projekt gibt es bereits eine Sondierung mit diesem Namen."
+  },
+  "meta": {
+    "originKey": "Herkunft",
+    "originValue": "Von einem Scan abgezeichnet ({{file}}); nur der Spitzenwiderstand"
+  },
+  "tool": {
+    "calibrate": "Maßstab kalibrieren",
+    "follow": "Linie verfolgen",
+    "draw": "Zeichnen",
+    "erase": "Radieren"
+  },
+  "hint": {
+    "calibrate": "Ziehen Sie die vier gestrichelten Linien auf Rasterlinien, deren Wert Sie kennen, und tragen Sie diese Werte rechts ein. Die Linien rasten am Raster ein.",
+    "follow": "Klicken Sie auf den Anfang der Messlinie: Sie wird nach unten verfolgt, bis sie endet. Ziehen Sie nach unten, um nur bis zum Loslasspunkt zu verfolgen.",
+    "draw": "Zeichnen Sie mit gedrückter Maustaste über die Messlinie. Das Gezeichnete ersetzt die Linie auf dieser Höhe.",
+    "erase": "Ziehen Sie über den Teil der Linie, der entfernt werden soll.",
+    "start": "Wählen Sie einen Scan eines Sondierdiagramms: ein Bild oder eine Seite aus einer PDF-Datei."
+  },
+  "title": "Sondierung aus Scan",
+  "cancel": "Abbrechen",
+  "create": "Sondierung erstellen",
+  "undo": "Rückgängig",
+  "clear": "Linie löschen",
+  "zoomOut": "Verkleinern",
+  "zoomIn": "Vergrößern",
+  "loading": "Wird geladen…",
+  "choose": "Scan wählen…",
+  "section": {
+    "scan": "1. Scan",
+    "scale": "2. Maßstab",
+    "line": "3. Linie",
+    "cpt": "4. Sondierung"
+  },
+  "prevPage": "Vorherige Seite",
+  "page": "Seite",
+  "nextPage": "Nächste Seite",
+  "rotateLeft": "↺ Nach links",
+  "rotateRight": "↻ Nach rechts",
+  "axis": {
+    "label": "Die Tiefenachse zeigt",
+    "nap": "Höhe in m NAP",
+    "depth": "Tiefe unter Geländeoberkante"
+  },
+  "scale": {
+    "v1": "Obere Linie [{{unit}}]",
+    "v2": "Untere Linie [{{unit}}]",
+    "q1": "Linke Linie [MPa]",
+    "q2": "Rechte Linie [MPa]",
+    "suggest": "Linien auf das äußere Raster"
+  },
+  "ground": {
+    "required": "Geländehöhe [m NAP]",
+    "optional": "Geländehöhe [m NAP] (optional)"
+  },
+  "line": {
+    "threshold": "Dunkelheit der Linie ({{value}})",
+    "radius": "Dünne Rasterlinien entfernen",
+    "radius0": "aus",
+    "radius1": "leicht (Linien bis 2 Pixel)",
+    "radius2": "stark (Linien bis 4 Pixel)",
+    "showMask": "Anzeigen, was der Algorithmus als Linie erkennt"
+  },
+  "cpt": {
+    "name": "Name",
+    "x": "X [m RD] (optional)",
+    "y": "Y [m RD] (optional)",
+    "date": "Datum (optional)",
+    "summary": "{{count}} Messpunkte von {{from}} bis {{to}} m unter Geländeoberkante, größter Spitzenwiderstand {{max}} MPa.",
+    "empty": "Noch keine Messpunkte.",
+    "note": "Eine abgezeichnete Sondierung enthält nur den Spitzenwiderstand. Prüfen Sie die Linie anhand des Scans: Die Genauigkeit ist die des Papiers."
+  }
+}

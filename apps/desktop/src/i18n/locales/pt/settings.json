@@ -11,7 +11,10 @@
   },
   "general": {
     "application": "Aplicação",
-    "language": "Idioma"
+    "language": "Idioma",
+    "calculations": "Cálculos",
+    "dragSnap": "Passo de ajuste ao arrastar",
+    "dragSnapHint": "Os níveis que arrasta no gráfico CPT dos cálculos de estacas (compressão e tração) ajustam-se a múltiplos desta distância. 0 = sem ajuste."
   },
   "appearance": {
     "theme": "Tema",

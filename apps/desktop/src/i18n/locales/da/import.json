@@ -1,5 +1,7 @@
 {
   "gef": {
+    "dissipationTest": "{{file}} er en dissipationstest (GEF-DISS), ikke en CPT. Tilføj den til den tilhørende CPT{{parent}}.",
+    "noDepthRecords": "{{file}}: ingen måling har en dybde (nedtrængningslængde eller korrigeret dybde), så der er ingen CPT at indlæse.",
     "bomRemoved": "UTF-8 BOM fjernet.",
     "suspectEncoding": "Muligvis forkert tegnkodning; kontrollér den oprindelige tekst.",
     "unrecognisedHeaderLine": "Ukendt headerlinje bevaret.",
@@ -40,7 +42,10 @@
     "columnMinMax": "Kolonne {{column}}: målt min/maks afviger fra headeren.",
     "preExcavationUnitConversion": "Forudgravningsdybde omregnet fra {{unit}} til m; kildeværdien bevaret i målevariabler.",
     "unknownPreExcavationUnit": "Forudgravningsdybde med ukendt enhed {{unit}} kun bevaret som kildeværdi.",
-    "preExcavated": "Målekanaler i forudgravet jord maskeret; de oprindelige værdier forbliver i parametre."
+    "preExcavated": "Målekanaler i forudgravet jord maskeret; de oprindelige værdier forbliver i parametre.",
+    "dissipationColumns": "{{file}}: dissipationstest uden tids- eller poretrykskolonne.",
+    "dissipationUnit": "{{file}}: ukendt enhed i kolonne {{column}}.",
+    "dissipationEmpty": "{{file}}: dissipationstest uden poretryksmålinger."
   },
   "bro": {
     "xmlParseError": "BRO CPT XML-parsefejl: {{detail}}",

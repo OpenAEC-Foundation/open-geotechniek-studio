@@ -87,6 +87,20 @@
     "title": "Pælefaktorer",
     "useProject": "Brug projektfaktorer / egenerklæring"
   },
+  "governing": {
+    "bestLevel": "højst {{rc}} kN på {{level}}",
+    "caption": "Højeste spidskote [m NAP], hvor alle sonderinger når bæreevnen, med den dimensionsgivende sondering og dens Rc;net;d. Klik på en celle for at sætte planen på den kote.",
+    "cellAria": "{{target}} kN med {{size}} mm: NAP {{level}}, dimensionsgivende {{cpt}}",
+    "cellMissingAria": "{{target}} kN med {{size}} mm: ikke nået",
+    "noOption": "ikke nået for alle sonderinger med nogen af størrelserne",
+    "option": "{{size}} på NAP {{level}}",
+    "or": " eller ",
+    "tableAria": "Dimensionsgivende spidskote pr. bæreevne og pælestørrelse",
+    "target": "Rc;net;d ≥",
+    "title": "Dimensionsgivende oversigt",
+    "worst": "Oftest dimensionsgivende:",
+    "worstCount": "({{n}} af {{total}})"
+  },
   "legend": {
     "chosen": "valgt kote",
     "over": "> {{max}} kN, rigelig",
@@ -119,6 +133,24 @@
     "negativeSkinFriction": "negativ overflademodstand",
     "title": "Last"
   },
+  "map": {
+    "legendAmple": "> {{v}} kN",
+    "legendLow": "< {{v}} kN",
+    "legendNone": "intet resultat",
+    "legendOk": "{{a}}–{{b}} kN",
+    "legendShort": "{{a}}–{{b}} kN",
+    "level": "Spidskote: NAP {{level}} m",
+    "looseLabel": "Uden position",
+    "noPositions": "Ingen af sonderingerne har en position; planen kan ikke tegnes.",
+    "pointNone": "{{cpt}}: intet resultat på denne kote",
+    "pointTitle": "{{cpt}}: {{rc}} kN",
+    "size": "Pælestørrelse",
+    "summary": "Lavest på denne kote: {{cpt}} med {{rc}} kN.",
+    "svgAria": "Plan over sonderingerne med Rc;net;d for {{size}} på NAP {{level}} m",
+    "target": "Bæreevne",
+    "title": "Sonderinger på planen",
+    "type": "Pæletype"
+  },
   "material": {
     "concrete": "Beton",
     "steel": "Stål",
@@ -147,6 +179,18 @@
     "woodDiameterAtJoint": "Trædiameter ved samlingen",
     "system": "Pælesystem",
     "standardSize": "Standardmål"
+  },
+  "pilePlan": {
+    "button": "Eksportér til Pile Plan Studio (CSV)",
+    "filter": "CSV til Pile Plan Studio",
+    "hint": "To filer: sonderingen.csv (ID, X, Y i RD, millimeter) og funderingsadvies.csv (CPT-ID, spids i m NAP, størrelse i mm, Rc;net;d i kN) for hovedtypen.",
+    "ids": "Sonderings-ID i begge filer: {{list}}",
+    "missing": "{{n}} kombinationer uden beregnet bæreevne (tom FRD-celle, ikke nul)",
+    "more": "og {{n}} mere",
+    "noPosition": "Uden RD-position, ikke eksporteret: {{list}}",
+    "noneWithPosition": "Ingen af sonderingerne har en RD-position; intet blev eksporteret.",
+    "onlyFirst": "Kun sonderingen.csv blev skrevet; funderingsadvies.csv blev annulleret.",
+    "written": "Skrevet: {{cpts}} sonderinger og {{rows}} bæreevner. X og Y er i RD i millimeter."
   },
   "profile": {
     "bottom": "Bund",
@@ -300,6 +344,8 @@
     "toeDiameterAria": "Træets spidsdiameter [mm]"
   },
   "target": {
+    "extra": "Flere bæreevner til oversigten [kN]",
+    "extraPlaceholder": "f.eks. 160; 280",
     "hint": "For hver størrelse finder valgtabellen den korteste pæl, der når den nedre grænse. Over den øvre grænse er størrelsen rigelig.",
     "inverted": "Den øvre grænse skal ligge over den nedre grænse; tabellen bruger stadig det forrige bånd.",
     "legend": "Krævet bæreevne Rc;net;d",
@@ -342,6 +388,16 @@
     "switchBothTitle": "Sondering og pælen i 3D side om side",
     "toolbar": "Visning",
     "unavailable": "3D er ikke tilgængelig på denne enhed (ingen WebGL). Brug 2D-tegningen."
+  },
+  "types": {
+    "add": "Tilføj pæletype",
+    "hint": "Ekstra pæletyper vises ved siden af hovedtypen i den dimensionsgivende oversigt og på planen. Tabellerne pr. sondering forbliver hovedtypens.",
+    "legend": "Sammenlign pæletyper",
+    "listAria": "Ekstra pæletyper",
+    "none": "Ingen anden pæletype kan sammenlignes uden ekstra input.",
+    "removeAria": "Fjern pæletype {{type}}",
+    "sizesAria": "Pælestørrelser for den ekstra pæletype [mm]",
+    "typeAria": "Ekstra pæletype"
   },
   "visual": {
     "cptHeading": "Sondering: {{id}}",
