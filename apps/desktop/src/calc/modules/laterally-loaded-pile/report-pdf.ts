@@ -9,6 +9,7 @@ import { lateralReportData, type LayerRow } from './report-data';
 import { computeLateral } from './compute';
 import { computePileTable } from './pile-table';
 import { renderMethod } from './report-method';
+import { renderVariantsAppendix } from './variants-report';
 import { sheetProps } from './sheet-section';
 import type { MaterialResult, Quantity } from './material-types';
 import {
@@ -47,6 +48,7 @@ export function buildLateralReport(input: LateralInput, result: LateralResult, c
     });
     renderTableAppendix(c, input, rows);
   }
+  renderVariantsAppendix(c, input);
   if (typeof doc.putTotalPages === 'function') doc.putTotalPages(TOTAL_PAGES_TOKEN);
   return new Uint8Array(doc.output('arraybuffer'));
 }

@@ -7,6 +7,7 @@ import { rowDiff, rowOk } from '../../shared/corrosion-verification';
 import { computeLateral, lateralExample, type LateralInput } from './compute';
 import { tubeVerification } from './corrosion-verification';
 import { defaultSheet } from './sheet-section';
+import { designOf, evaluateVariant, pileMass } from './variants';
 
 const custom = (mm: number): CorrosionFace => ({ ...NO_CORROSION, source: 'custom', customMm: mm });
 const tube = (kind: 'steel-tube' | 'filled-tube' = 'steel-tube'): LateralInput => ({ ...structuredClone(lateralExample), headForceKn: 150, section: { ...lateralExample.section, kind, diameterMm: 323.9, wallMm: 10, tubeFydMpa: 355, barCount: kind === 'filled-tube' ? 8 : 0, tubeParticipates: kind === 'filled-tube' } });
@@ -41,6 +42,14 @@ describe('afroesting horizontaal belaste paal', () => {
     const m = (r: ReturnType<typeof ok>) => r.material!.rows.find((x) => x.id === 'bending')!.resistance!.v;
     const none = ok(i), one = ok({ ...i, corrosion: { outer: custom(0.3), inner: NO_CORROSION, sides: 1, reducedStiffness: false } }), two = ok({ ...i, corrosion: { outer: custom(0.3), inner: custom(0.3), sides: 2, reducedStiffness: false } });
     expect(m(one)).toBeLessThan(m(none)); expect(m(two)).toBeLessThan(m(one));
+  });
+  it('het gewicht van een variant blijft nominaal, ook met afroesting en EI na afroesting', () => {
+    const i = tube(), corroded = { ...i, corrosion: { outer: custom(1.2), inner: custom(1.2), sides: 2 as const, reducedStiffness: true } };
+    const nominal = pileMass(i.section, i.lengthM).totalKg;
+    expect(evaluateVariant(corroded, designOf(corroded)).mass.totalKg).toBe(nominal);
+    expect(evaluateVariant(corroded, designOf(corroded)).uc).toBeGreaterThan(evaluateVariant(i, designOf(i)).uc!);
+    // Controle: de verkleinde buis zou lichter zijn.
+    expect(pileMass({ ...i.section, diameterMm: 321.5, wallMm: 7.6 }, i.lengthM).totalKg).toBeLessThan(nominal);
   });
   it('ontbrekende tabelwaarde geeft een melding', () => {
     const r = computeLateral({ ...tube(), corrosion: { outer: { ...NO_CORROSION, source: 'table', lifeYears: 30 as 25 }, inner: NO_CORROSION, sides: 1, reducedStiffness: false } });

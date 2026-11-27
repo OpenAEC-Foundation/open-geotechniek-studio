@@ -1,0 +1,40 @@
+/* Varianten en optimalisatie horizontale paal */
+.lat-variants-bar { display: flex; gap: 6px; margin: 0 0 8px; }
+.lat-variants-bar button, .lat-opt-actions button, .lat-opt-result button { padding: 4px 10px; border: 1px solid var(--oa-accent); border-radius: var(--oa-radius-small); background: var(--oa-panel); color: var(--oa-accent-text); cursor: pointer; font: 600 12px var(--oa-font-body); }
+.lat-opt-actions button.is-primary { background: var(--oa-accent); color: var(--oa-on-accent, #fff); }
+.modal-dialog.lat-variants-modal { max-width: calc(100vw - 24px); }
+.lat-variants-modal .modal-body { overflow: auto; padding: 12px 14px; user-select: text; }
+.lat-variants td select { max-width: 130px; padding: 2px 3px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); background: var(--oa-panel); color: var(--oa-text); font: 12px var(--oa-font-body); }
+.lat-variants td.lat-var-detail input:not([type="checkbox"]) { width: 42px; }
+.lat-variants td.lat-var-detail label { display: inline-flex; gap: 3px; align-items: center; }
+.lat-table.lat-variants td input:disabled, .lat-table.lat-variants td select:disabled { border-color: transparent; background: transparent; color: var(--oa-text); opacity: 1; appearance: none; }
+.lat-variants tr.is-current td { background: var(--oa-hover); }
+.lat-variants tr.is-active td:first-child { box-shadow: inset 3px 0 0 var(--oa-accent); }
+.lat-var-name { font-weight: 600; }
+.lat-var-check { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+.lat-table-settings label.lat-var-check-in { flex-direction: row; align-items: center; align-self: center; }
+.lat-table-settings .lat-var-check-in input { width: auto; }
+.lat-var-check-in span { display: inline-flex; gap: 4px; align-items: center; color: var(--oa-text); }
+.lat-opt { display: flex; flex-direction: column; gap: 10px; color: var(--oa-text); font: 12px/1.5 var(--oa-font-body); }
+.lat-opt fieldset { border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); margin: 0; padding: 6px 10px 8px; min-width: 0; }
+.lat-opt legend { font-weight: 600; padding: 0 4px; }
+.lat-opt-row { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: end; }
+.lat-opt-field { display: flex; flex-direction: column; gap: 2px; color: var(--oa-text-secondary); }
+.lat-opt-field input { width: 96px; padding: 3px 6px; border: 1px solid var(--oa-border); border-radius: var(--oa-radius-small); background: var(--oa-panel); color: var(--oa-text); }
+.lat-opt-hint { margin: 4px 0 0; color: var(--oa-text-secondary); }
+.lat-opt-chips { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; margin: 4px 0; }
+.lat-opt-chips > span { min-width: 130px; color: var(--oa-text-secondary); }
+.lat-opt-chips button { padding: 1px 7px; border: 1px solid var(--oa-border); border-radius: 10px; background: var(--oa-panel); color: var(--oa-text-secondary); cursor: pointer; font: 11px var(--oa-font-numbers, inherit); }
+.lat-opt-chips button.is-on { border-color: var(--oa-accent); background: var(--oa-selected); color: var(--oa-text); font-weight: 600; }
+.lat-opt-algo summary { cursor: pointer; font-weight: 600; }
+.lat-opt-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.lat-opt-progress { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.lat-opt-progress progress { width: 160px; }
+.lat-opt-progress small { color: var(--oa-text-secondary); }
+.lat-opt-result p { margin: 4px 0; }
+.lat-opt-best { margin: 4px 0; padding-left: 22px; font-family: var(--oa-font-numbers, inherit); }
+.lat-opt-chart { width: 320px; max-width: 100%; height: auto; display: block; }
+.lat-opt-chart text { font-size: 9px; fill: var(--oa-text-secondary); }
+.lat-opt-axis { stroke: var(--oa-border); }
+.lat-opt-line { fill: none; stroke: var(--oa-accent); stroke-width: 1.5; }
+.lat-opt-dot { fill: var(--oa-accent); }
