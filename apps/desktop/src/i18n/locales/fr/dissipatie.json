@@ -5,9 +5,7 @@
     "openCount": "Essais de\ndissipation ({{n}})",
     "openHint": "Graphique, t50 et coefficient de consolidation des essais de dissipation de {{cpt}}",
     "none": "Aucun essai de dissipation pour {{cpt}} ; ajoutez un fichier GEF de dissipation.",
-    "noCpt": "Ouvrez d'abord un sondage.",
-    "add": "Ajouter\nGEF",
-    "addHint": "Ajouter un fichier GEF de dissipation (temps dans la première colonne) au sondage actif"
+    "noCpt": "Ouvrez d'abord un sondage."
   },
   "dialog": {
     "title": "Essais de dissipation - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Axe du temps",
     "axisLog": "Logarithmique",
     "axisSqrt": "Racine du temps"
+  },
+  "panel": {
+    "open": "Analyser…",
+    "openHint": "Graphique, saisie et résultat des essais de dissipation"
   },
   "input": {
     "title": "Données",

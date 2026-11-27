@@ -16,7 +16,7 @@ import ProjectSettingsDialog from "./components/project/ProjectSettingsDialog";
 import { CompanyDialogHost } from "./sondeerbedrijf/CompanyDialog";
 import { BoreEditorHost } from "./boorstaat/BoreEditorDialog";
 import { DigitizeHost } from "./digitaliseren/DigitizeDialog";
-import ScanCptDialog from "./scan/ScanCptDialog";
+import { DissipationHost } from "./dissipatie/DissipationDialog";
 import ReportPreview from "./components/panels/ReportPreview";
 import ChartView from "./components/panels/ChartView";
 import MapView from "./components/panels/MapView";
@@ -33,7 +33,7 @@ import TekeningProperties from "./components/panels/TekeningProperties";
 import { getDetachedParams, useWindowManager } from "./hooks/useWindowManager";
 import { getSetting, setSetting } from "./store";
 import { openPathByExtension, openContentByFilename, useCptStore } from "./store/useCptStore";
-import { dissipationLast } from "./types/gefDissipation";
+import { dissipationLast } from "./dissipatie/cptDissipation";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { IS_TAURI } from "./utils/platform";
 import "./styles/blueprint/openaec-fonts.css";
@@ -102,7 +102,6 @@ function App() {
   const [backstageOpen, setBackstageOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [projectSettingsOpen, setProjectSettingsOpen] = useState(false);
-  const [scanCptOpen, setScanCptOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [theme, setTheme] = useState("light");
   const [activeView, setActiveView] = useState("default");
@@ -322,11 +321,6 @@ function App() {
     const onOpen = () => setProjectSettingsOpen(true);
     window.addEventListener("ogs:open-project-settings", onOpen);
     return () => window.removeEventListener("ogs:open-project-settings", onOpen);
-  }, []);
-  useEffect(() => {
-    const onOpen = () => setScanCptOpen(true);
-    window.addEventListener("ogs:open-scan-cpt", onOpen);
-    return () => window.removeEventListener("ogs:open-scan-cpt", onOpen);
   }, []);
 
   // Publish the currently active view both as a DOM attribute (so panels
@@ -578,7 +572,7 @@ function App() {
       <CompanyDialogHost />
       <BoreEditorHost />
       <DigitizeHost />
-      {scanCptOpen && <ScanCptDialog open onClose={() => setScanCptOpen(false)} />}
+      <DissipationHost />
       {welcomeOpen && (
         <WelcomeScreen
           onClose={() => setWelcomeOpen(false)}

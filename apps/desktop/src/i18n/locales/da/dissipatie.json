@@ -5,9 +5,7 @@
     "openCount": "Dissipations-\nforsøg ({{n}})",
     "openHint": "Graf, t50 og konsolideringskoefficient for dissipationsforsøgene ved {{cpt}}",
     "none": "Ingen dissipationsforsøg ved {{cpt}}; tilføj en GEF-dissipationsfil.",
-    "noCpt": "Åbn først en sondering.",
-    "add": "Tilføj\nGEF",
-    "addHint": "Tilføj en GEF-dissipationsfil (tid i første kolonne) til den aktive sondering"
+    "noCpt": "Åbn først en sondering."
   },
   "dialog": {
     "title": "Dissipationsforsøg - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Tidsakse",
     "axisLog": "Logaritmisk",
     "axisSqrt": "Rod-tid"
+  },
+  "panel": {
+    "open": "Analysér…",
+    "openHint": "Graf, input og resultat for dissipationsforsøgene"
   },
   "input": {
     "title": "Input",

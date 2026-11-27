@@ -4,6 +4,7 @@ import { loadChartZoomPreference, useChartZoomStore } from "../../store/useChart
 import RibbonGroup from "./RibbonGroup";
 import RibbonButton from "./RibbonButton";
 import DissipationRibbonGroup from "../../dissipatie/DissipationRibbonGroup";
+import { openDigitizer } from "../../digitaliseren/store";
 import MagnetometerRibbonGroup from "../../magnetometer/MagnetometerRibbonGroup";
 
 
@@ -43,7 +44,7 @@ export default function StartTab(props: StartTabProps = {}) {
             icon={scanIcon}
             label={t("cptFromScan", "Uit scan")}
             size="large"
-            onClick={() => window.dispatchEvent(new CustomEvent("ogs:open-scan-cpt"))}
+            onClick={() => openDigitizer(undefined, "trace")}
           />
         </RibbonGroup>
         <RibbonGroup label={t("zoom")}>

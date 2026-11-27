@@ -2,18 +2,22 @@
   "calibrate": {
     "depthAxis": "Eixo da profundidade",
     "depthMode": "Eixo da profundidade em",
+    "gridFound": "Grelha encontrada: {{rows}} × {{cols}} linhas. Os pontos de calibração ficam nas linhas exteriores; introduza os respetivos valores. Um ponto de calibração clicado ajusta-se à grelha.",
+    "gridNone": "Não foi encontrada grelha na imagem de fundo; clique o próprio nos pontos de calibração.",
     "hint": "Clique em dois pontos do eixo da profundidade e em dois do eixo dos valores, o mais afastados possível, e introduza o valor de cada ponto. Os eixos são calibrados separadamente, por isso uma digitalização torta não é problema.",
     "ok": "A calibração está correta. Verifique se as linhas da grelha coincidem com as linhas do gráfico.",
     "pick": "Clicar em {{label}}",
     "pickHint": "Depois clique no ponto sobre a imagem de fundo",
     "repick": "{{label}} de novo",
     "shareDepth": "Mesmo eixo da profundidade que qc",
+    "suggest": "Colocar os pontos de calibração na grelha",
     "valueAxis": "Eixo dos valores {{name}}",
     "valueOf": "Valor em {{label}}"
   },
   "cone": {
     "electrical": "elétrica",
-    "mechanical": "mecânica"
+    "mechanical": "mecânica",
+    "unknown": "desconhecida"
   },
   "details": {
     "coneHint": "Ao mudar o tipo de sondagem, o passo passa para 0,2 m (mecânica) ou 0,02 m (elétrica). O tipo é indicado; os valores medidos não são convertidos por isso.",
@@ -37,6 +41,7 @@
   },
   "label": {
     "badge": "digitalizada ({{cone}})",
+    "badgePlain": "digitalizada",
     "note": "A sondagem {{id}} foi digitalizada a partir de papel ou de uma digitalização (tipo: {{cone}}; origem: {{origin}}). A precisão é inferior à de um ficheiro medido."
   },
   "marker": {
@@ -44,6 +49,11 @@
     "depth2": "profundidade 2",
     "value1": "valor 1",
     "value2": "valor 2"
+  },
+  "method": {
+    "label": "Método",
+    "points": "Clicar em pontos",
+    "trace": "Seguir a linha automaticamente"
   },
   "points": {
     "clear": "Limpar tudo",
@@ -75,8 +85,10 @@
     "position": "Introduza as duas coordenadas RD, ou nenhuma.",
     "qcCalibration": "Calibração de qc: {{what}}.",
     "qcPoints": "Clique em pelo menos dois pontos da linha qc.",
+    "qcTrace": "Siga ou desenhe primeiro a linha qc.",
     "secondCalibration": "Calibração da segunda série: {{what}}.",
     "secondPoints": "Clique em pelo menos dois pontos da linha da segunda série, ou desative essa série.",
+    "secondTrace": "Siga ou desenhe a linha da segunda série, ou desative essa série.",
     "step": "O passo deve estar entre 0,005 e 1 m.",
     "valuePoints": "clique em dois pontos do eixo dos valores, não no mesmo sítio",
     "valueValues": "introduza dois valores diferentes para o eixo dos valores"
@@ -126,6 +138,26 @@
     "edit": "Atualizar a sondagem digitalizada {{id}}",
     "new": "Digitalizar sondagem"
   },
+  "trace": {
+    "clear": "Apagar linha",
+    "count": "Linha em {{n}} linhas de imagem para {{name}}",
+    "draw": "Desenhar",
+    "drawHint": "Desenhe sobre a linha de medição com o botão do rato premido. O que desenhar substitui a linha a essa altura.",
+    "erase": "Apagar",
+    "eraseHint": "Arraste sobre o troço da linha que pretende eliminar.",
+    "follow": "Seguir linha",
+    "followHint": "Clique no início da linha de medição: a linha é seguida para baixo até terminar. Arraste para baixo para a seguir apenas até ao ponto onde soltar.",
+    "navigate": "Arrastar desenha ou segue. Deslocar: botão do meio do rato. Zoom: roda do rato. A série de medições é a média da linha por passo.",
+    "noScan": "Não há digitalização para seguir. Desenhar e apagar continua a ser possível.",
+    "notCalibrated": "A calibração ainda não está completa; sem calibração não há série de medições.",
+    "radius": "Remover linhas finas da grelha",
+    "radius0": "não",
+    "radius1": "ligeiro (linhas até 2 píxeis)",
+    "radius2": "forte (linhas até 4 píxeis)",
+    "showMask": "Mostrar o que o algoritmo reconhece como linha",
+    "threshold": "Escuridão da linha ({{value}})",
+    "tools": "Ferramenta"
+  },
   "underlay": {
     "choose": "Escolher PDF ou imagem…",
     "failed": "Não é possível ler a imagem.",
@@ -135,6 +167,7 @@
     "navigate": "Roda do rato: ampliar e reduzir. Arrastar: deslocar.",
     "reopen": "Atualizar a sondagem {{id}}",
     "replace": "Escolher outra imagem de fundo…",
+    "synthetic": "Esta sondagem foi obtida anteriormente de uma digitalização; a digitalização e a calibração não foram guardadas. A linha está numa folha em branco: complete-a aí, ou escolha de novo a digitalização para calibrar e seguir a linha outra vez.",
     "unnamed": "imagem de fundo"
   },
   "unit": {

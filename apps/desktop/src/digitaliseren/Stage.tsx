@@ -1,9 +1,18 @@
 // De onderlegger met inzoomen en verschuiven. Klikken zet een punt, slepen op een punt verplaatst het,
-// slepen op de onderlegger verschuift het beeld en het muiswiel zoomt op de plek van de muis.
+// slepen op de onderlegger verschuift het beeld en het muiswiel zoomt op de plek van de muis. Met `stroke`
+// tekent slepen met de linkermuisknop een streek (lijn volgen, tekenen, wissen); verschuiven gaat dan
+// met de middelste muisknop.
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Px } from "./calibration";
 
 export interface StageImage { src?: string; width: number; height: number }
+/** Een streek met de linkermuisknop, in beeldcoördinaten. */
+export interface Stroke {
+  onStart?: (p: Px) => void;
+  onMove?: (from: Px, to: Px) => void;
+  /** `moved` is onwaar bij een klik zonder slepen. */
+  onEnd?: (start: Px, end: Px, moved: boolean) => void;
+}
 export interface Marker { id: string; x: number; y: number; tone: "depth" | "value" | "point"; label?: string; active?: boolean; locked?: boolean }
 
 interface Props {
@@ -16,16 +25,19 @@ interface Props {
   onDragStart?: (id: string) => void;
   onDrag?: (id: string, p: Px) => void;
   onRemove?: (id: string) => void;
+  stroke?: Stroke;
+  cursor?: string;
   emptyText: string;
   labels: { zoomIn: string; zoomOut: string; fit: string; stage: string };
 }
 
 interface View { k: number; tx: number; ty: number }
-type Drag = { kind: "marker"; id: string; x: number; y: number; moved: boolean } | { kind: "pan"; x: number; y: number; tx: number; ty: number; moved: boolean; button: number };
+type Drag = { kind: "marker"; id: string; x: number; y: number; moved: boolean } | { kind: "pan"; x: number; y: number; tx: number; ty: number; moved: boolean; button: number }
+  | { kind: "stroke"; x: number; y: number; start: Px; last: Px; moved: boolean };
 
 const MIN_ZOOM = 0.05, MAX_ZOOM = 40;
 
-export default function Stage({ image, markers, children, onPlace, onDragStart, onDrag, onRemove, emptyText, labels }: Props) {
+export default function Stage({ image, markers, children, onPlace, onDragStart, onDrag, onRemove, stroke, cursor, emptyText, labels }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const drag = useRef<Drag | null>(null);
   const [view, setView] = useState<View>({ k: 1, tx: 0, ty: 0 });
@@ -73,6 +85,11 @@ export default function Stage({ image, markers, children, onPlace, onDragStart, 
     if (e.button === 2 || !image) return;
     const id = e.button === 0 ? markerOf(e) : null;
     if (id) drag.current = { kind: "marker", id, x: e.clientX, y: e.clientY, moved: false };
+    else if (stroke && e.button === 0) {
+      const p = clamp(toImage(e));
+      drag.current = { kind: "stroke", x: e.clientX, y: e.clientY, start: p, last: p, moved: false };
+      stroke.onStart?.(p);
+    }
     else drag.current = { kind: "pan", x: e.clientX, y: e.clientY, tx: view.tx, ty: view.ty, moved: false, button: e.button };
     e.preventDefault();
   };
@@ -81,6 +98,13 @@ export default function Stage({ image, markers, children, onPlace, onDragStart, 
     if (!d) return;
     const dx = e.clientX - d.x, dy = e.clientY - d.y;
     if (!d.moved && Math.hypot(dx, dy) < 4) return;
+    if (d.kind === "stroke") {
+      const p = clamp(toImage(e));
+      d.moved = true;
+      stroke?.onMove?.(d.last, p);
+      d.last = p;
+      return;
+    }
     if (d.kind === "marker") {
       // Pas bij echt slepen: een klik op een punt verplaatst het niet.
       if (!d.moved) onDragStart?.(d.id);
@@ -94,6 +118,7 @@ export default function Stage({ image, markers, children, onPlace, onDragStart, 
   const onMouseUp = (e: React.MouseEvent) => {
     const d = drag.current;
     drag.current = null;
+    if (d?.kind === "stroke") { stroke?.onEnd?.(d.start, clamp(toImage(e)), d.moved); return; }
     if (!d || d.moved || (d.kind === "pan" && d.button !== 0)) return;
     const p = toImage(e);
     if (inside(p)) onPlace?.(p, d.kind === "marker" ? d.id : undefined);
@@ -107,7 +132,8 @@ export default function Stage({ image, markers, children, onPlace, onDragStart, 
   return (
     <div className="dig-stage">
       <svg ref={svgRef} className="dig-svg" role="img" aria-label={labels.stage} onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}
-        onMouseLeave={() => { drag.current = null; }} onContextMenu={onContextMenu}>
+        onMouseLeave={() => { const d = drag.current; drag.current = null; if (d?.kind === "stroke") stroke?.onEnd?.(d.start, d.last, d.moved); }} onContextMenu={onContextMenu}
+        style={cursor ? { cursor } : undefined}>
         {image && (
           <g transform={`translate(${view.tx} ${view.ty}) scale(${view.k})`}>
             <rect className="dig-paper" x={0} y={0} width={width} height={height} />

@@ -5,9 +5,7 @@
     "openCount": "Ensayos de\ndisipación ({{n}})",
     "openHint": "Gráfico, t50 y coeficiente de consolidación de los ensayos de disipación de {{cpt}}",
     "none": "No hay ensayos de disipación en {{cpt}}; añada un archivo GEF de disipación.",
-    "noCpt": "Abra primero un sondeo.",
-    "add": "Añadir\nGEF",
-    "addHint": "Añadir un archivo GEF de disipación (tiempo en la primera columna) al sondeo activo"
+    "noCpt": "Abra primero un sondeo."
   },
   "dialog": {
     "title": "Ensayos de disipación - {{cpt}}",
@@ -22,6 +20,10 @@
     "axis": "Eje de tiempo",
     "axisLog": "Logarítmico",
     "axisSqrt": "Raíz del tiempo"
+  },
+  "panel": {
+    "open": "Analizar…",
+    "openHint": "Gráfico, datos y resultado de los ensayos de disipación"
   },
   "input": {
     "title": "Datos",

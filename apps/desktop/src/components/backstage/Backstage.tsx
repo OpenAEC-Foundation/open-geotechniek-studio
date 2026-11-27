@@ -1,4 +1,4 @@
-import { dissipationLast } from "../../types/gefDissipation";
+import { dissipationLast } from "../../dissipatie/cptDissipation";
 import { exportGef } from "../../types/gefWriter";
 import { APP_VERSION } from "../../version";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";

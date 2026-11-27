@@ -37,6 +37,10 @@ export interface DissipationTest {
   depth: number;
   source: "bro" | "gef";
   source_file?: string;
+  /** Bestandsnaam van de sondering waar de test bij hoort (GEF: #PARENT). */
+  parent_file?: string;
+  /** Kenmerk van de test in het bestand (GEF: #TESTID). */
+  test_id?: string;
   /** Begintijdstip van de test, zoals het bestand het geeft. */
   start_time?: string;
   points: DissipationPoint[];

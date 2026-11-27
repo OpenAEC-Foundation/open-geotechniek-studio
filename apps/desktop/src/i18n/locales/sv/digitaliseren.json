@@ -2,18 +2,22 @@
   "calibrate": {
     "depthAxis": "Djupaxel",
     "depthMode": "Djupaxel i",
+    "gridFound": "Rutnät hittat: {{rows}} × {{cols}} linjer. Kalibreringspunkterna hamnar på de yttersta linjerna; ange deras värden. En klickad kalibreringspunkt fäster mot rutnätet.",
+    "gridNone": "Inget rutnät hittades på underlaget; klicka själv ut kalibreringspunkterna.",
     "hint": "Klicka på två punkter på djupaxeln och två på värdeaxeln, så långt från varandra som möjligt, och ange värdet vid varje punkt. Axlarna kalibreras oberoende av varandra, så en sned skanning är inget problem.",
     "ok": "Kalibreringen stämmer. Kontrollera att rutnätslinjerna ligger på diagrammets linjer.",
     "pick": "Klicka på {{label}}",
     "pickHint": "Klicka sedan på punkten på underlaget",
     "repick": "{{label}} igen",
     "shareDepth": "Samma djupaxel som qc",
+    "suggest": "Placera kalibreringspunkterna på rutnätet",
     "valueAxis": "Värdeaxel {{name}}",
     "valueOf": "Värde vid {{label}}"
   },
   "cone": {
     "electrical": "elektrisk",
-    "mechanical": "mekanisk"
+    "mechanical": "mekanisk",
+    "unknown": "okänd"
   },
   "details": {
     "coneHint": "När sonderingstypen byts hoppar steget till 0,2 m (mekanisk) eller 0,02 m (elektrisk). Typen anges; mätvärdena räknas inte om för den.",
@@ -37,6 +41,7 @@
   },
   "label": {
     "badge": "digitaliserad ({{cone}})",
+    "badgePlain": "digitaliserad",
     "note": "Sondering {{id}} är digitaliserad från papper eller skanning (typ: {{cone}}; ursprung: {{origin}}). Noggrannheten är lägre än för en uppmätt fil."
   },
   "marker": {
@@ -44,6 +49,11 @@
     "depth2": "djup 2",
     "value1": "värde 1",
     "value2": "värde 2"
+  },
+  "method": {
+    "label": "Metod",
+    "points": "Klicka punkter",
+    "trace": "Följ linjen automatiskt"
   },
   "points": {
     "clear": "Rensa allt",
@@ -75,8 +85,10 @@
     "position": "Ange båda RD-koordinaterna eller ingen av dem.",
     "qcCalibration": "Kalibrering qc: {{what}}.",
     "qcPoints": "Klicka på minst två punkter på qc-linjen.",
+    "qcTrace": "Följ eller rita qc-linjen först.",
     "secondCalibration": "Kalibrering andra serien: {{what}}.",
     "secondPoints": "Klicka på minst två punkter på linjen för den andra serien, eller stäng av den serien.",
+    "secondTrace": "Följ eller rita linjen för den andra serien, eller stäng av den serien.",
     "step": "Steget måste ligga mellan 0,005 och 1 m.",
     "valuePoints": "klicka på två punkter på värdeaxeln, inte på samma ställe",
     "valueValues": "ange två olika värden för värdeaxeln"
@@ -126,6 +138,26 @@
     "edit": "Uppdatera digitaliserad sondering {{id}}",
     "new": "Digitalisera sondering"
   },
+  "trace": {
+    "clear": "Rensa linje",
+    "count": "Linje över {{n}} bildrader för {{name}}",
+    "draw": "Rita",
+    "drawHint": "Rita över mätlinjen med musknappen nedtryckt. Det du ritar ersätter linjen på den nivån.",
+    "erase": "Sudda",
+    "eraseHint": "Dra över den del av linjen som ska tas bort.",
+    "follow": "Följ linje",
+    "followHint": "Klicka på mätlinjens början: linjen följs nedåt tills den tar slut. Dra nedåt för att bara följa den till punkten där du släpper.",
+    "navigate": "Dra ritar eller följer. Panorera: mittenknappen på musen. Zooma: mushjulet. Mätserien är medelvärdet av linjen per steg.",
+    "noScan": "Det finns ingen skanning att följa. Det går fortfarande att rita och radera.",
+    "notCalibrated": "Kalibreringen är inte klar ännu; utan kalibrering blir det ingen mätserie.",
+    "radius": "Ta bort tunna rutnätslinjer",
+    "radius0": "av",
+    "radius1": "lätt (linjer upp till 2 pixlar)",
+    "radius2": "kraftigt (linjer upp till 4 pixlar)",
+    "showMask": "Visa vad algoritmen uppfattar som linje",
+    "threshold": "Linjens mörkhet ({{value}})",
+    "tools": "Verktyg"
+  },
   "underlay": {
     "choose": "Välj PDF eller bild…",
     "failed": "Bilden kan inte läsas.",
@@ -135,6 +167,7 @@
     "navigate": "Mushjul: zooma in och ut. Dra: panorera.",
     "reopen": "Uppdatera sondering {{id}}",
     "replace": "Välj ett annat underlag…",
+    "synthetic": "Den här sonderingen togs tidigare från en skanning; skanningen och kalibreringen sparades inte. Linjen ligger på ett tomt blad: rita vidare på den där, eller välj skanningen igen för att kalibrera och följa linjen på nytt.",
     "unnamed": "underlag"
   },
   "unit": {

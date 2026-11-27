@@ -6,7 +6,7 @@ import Modal from "../components/Modal";
 import type { Cpt } from "../types/cpt";
 import { useCptStore } from "../store/useCptStore";
 import { analyseDissipation, availableChannels, DEFAULT_CONE_AREA_MM2, DEFAULT_RIGIDITY_INDEX } from "./analysis";
-import { coneAreaFromFile, withDissipationTest, withoutDissipationTest, withTestChange } from "./cptDissipation";
+import { belongsToCpt, coneAreaFromFile, withDissipationTest, withoutDissipationTest, withTestChange } from "./cptDissipation";
 import DissipationChart from "./DissipationChart";
 import { looksLikeGefDissipation, parseGefDissipation } from "./gefDissipation";
 import { FORMULA_SOURCE, FORMULA_TEXT, INDICATIVE_NOTE, summaryRows, WARNING_NL } from "./summary";
@@ -14,7 +14,19 @@ import type { DissipationSettings, EquilibriumMode, PoreChannel } from "./types"
 import "./dissipatie.css";
 
 export const OPEN_DISSIPATION_EVENT = "ogs:open-dissipation";
-export const openDissipationDialog = () => window.dispatchEvent(new Event(OPEN_DISSIPATION_EVENT));
+/** Open het scherm, zo nodig op één test van de actieve sondering. */
+export const openDissipationDialog = (testId?: string) => window.dispatchEvent(new CustomEvent(OPEN_DISSIPATION_EVENT, { detail: { testId } }));
+
+/** Eén exemplaar van het scherm voor de hele app; het lint en het paneel links openen het. */
+export function DissipationHost() {
+  const [target, setTarget] = useState<{ testId?: string; key: number } | null>(null);
+  useEffect(() => {
+    const show = (e: Event) => setTarget({ testId: (e as CustomEvent<{ testId?: string }>).detail?.testId, key: Date.now() });
+    window.addEventListener(OPEN_DISSIPATION_EVENT, show);
+    return () => window.removeEventListener(OPEN_DISSIPATION_EVENT, show);
+  }, []);
+  return target ? <DissipationDialog key={target.key} open initialTestId={target.testId} onClose={() => setTarget(null)} /> : null;
+}
 
 /** De sondering waar het scherm over gaat: de actieve, of de enige. */
 export function useActiveCpt(): Cpt | undefined {
@@ -22,8 +34,6 @@ export function useActiveCpt(): Cpt | undefined {
   const activeCptId = useCptStore((s) => s.activeCptId);
   return (activeCptId ? cpts.get(activeCptId) : undefined) ?? (cpts.size === 1 ? cpts.values().next().value : undefined);
 }
-
-const base = (name: string) => name.split(/[\\/]/).pop()!.replace(/\.[^.]+$/, "").toLowerCase();
 
 /** Kiest een GEF-dissipatiebestand en zet de test bij de sondering. Geeft een melding voor de gebruiker terug. */
 export function pickGefDissipation(cpt: Cpt, t: (key: string, nl: string, vars?: Record<string, unknown>) => string): Promise<{ text: string; error?: boolean; testId?: string } | null> {
@@ -40,13 +50,13 @@ export function pickGefDissipation(cpt: Cpt, t: (key: string, nl: string, vars?:
         try {
           const text = await file.text();
           if (!looksLikeGefDissipation(text)) throw new Error(t("message.notDissipation", "Geen GEF-dissipatiebestand: de eerste kolom moet de tijd zijn."));
-          const parsed = parseGefDissipation(text, file.name);
-          current = withDissipationTest(current, parsed.test);
-          last = parsed.test.id;
-          messages.push(t("message.added", "Dissipatietest op {{depth}} m toegevoegd.", { depth: parsed.test.depth.toFixed(2) }));
-          if (!parsed.test.depth) messages.push(t("message.depthMissing", "De diepte staat niet in het bestand; vul die in."));
-          const named = parsed.parentFile ?? parsed.testId;
-          if (named && ![base(cpt.metadata.source_file ?? ""), cpt.id.toLowerCase()].includes(base(named)))
+          const test = parseGefDissipation(text, file.name);
+          current = withDissipationTest(current, test);
+          last = test.id;
+          messages.push(t("message.added", "Dissipatietest op {{depth}} m toegevoegd.", { depth: test.depth.toFixed(2) }));
+          if (!test.depth) messages.push(t("message.depthMissing", "De diepte staat niet in het bestand; vul die in."));
+          const named = test.parent_file ?? test.test_id;
+          if (named && !belongsToCpt(test, cpt))
             messages.push(t("message.otherCpt", "Het bestand noemt sondering {{parent}}; controleer of het bij {{cpt}} hoort.", { parent: named, cpt: cpt.id }));
         } catch (e) {
           error = true;
@@ -81,12 +91,12 @@ function NumberField({ label, unit, value, placeholder, onChange, hint }: {
   );
 }
 
-export function DissipationDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function DissipationDialog({ open, onClose, initialTestId }: { open: boolean; onClose: () => void; initialTestId?: string }) {
   const { t } = useTranslation("dissipatie");
   const cpt = useActiveCpt();
   const replaceCpt = useCptStore((s) => s.replaceCpt);
   const tests = cpt?.dissipation_tests ?? [];
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(initialTestId ?? null);
   const [message, setMessage] = useState<{ text: string; error?: boolean } | null>(null);
   const test = tests.find((item) => item.id === selectedId) ?? tests[0];
   const fileArea = cpt ? coneAreaFromFile(cpt) : undefined;

@@ -2,18 +2,22 @@
   "calibrate": {
     "depthAxis": "Eje de profundidad",
     "depthMode": "Eje de profundidad en",
+    "gridFound": "Cuadrícula encontrada: {{rows}} × {{cols}} líneas. Los puntos de calibración se colocan en las líneas exteriores; introduzca sus valores. Un punto de calibración marcado se ajusta a la cuadrícula.",
+    "gridNone": "No se encontró cuadrícula en la imagen de fondo; marque usted mismo los puntos de calibración.",
     "hint": "Haga clic en dos puntos del eje de profundidad y en dos del eje de valores, lo más separados posible, e introduzca el valor de cada punto. Los ejes se calibran por separado, así que un escaneo torcido no es un problema.",
     "ok": "La calibración es correcta. Compruebe que las líneas de la cuadrícula coinciden con las líneas del gráfico.",
     "pick": "Hacer clic en {{label}}",
     "pickHint": "Después haga clic en el punto sobre la imagen de fondo",
     "repick": "{{label}} de nuevo",
     "shareDepth": "Mismo eje de profundidad que qc",
+    "suggest": "Colocar los puntos de calibración en la cuadrícula",
     "valueAxis": "Eje de valores {{name}}",
     "valueOf": "Valor en {{label}}"
   },
   "cone": {
     "electrical": "eléctrico",
-    "mechanical": "mecánico"
+    "mechanical": "mecánico",
+    "unknown": "desconocido"
   },
   "details": {
     "coneHint": "Al cambiar el tipo de sondeo, el paso pasa a 0,2 m (mecánico) o 0,02 m (eléctrico). El tipo se indica; los valores medidos no se convierten por ello.",
@@ -37,6 +41,7 @@
   },
   "label": {
     "badge": "digitalizado ({{cone}})",
+    "badgePlain": "digitalizado",
     "note": "El sondeo {{id}} se ha digitalizado a partir de papel o de un escaneo (tipo: {{cone}}; origen: {{origin}}). La precisión es menor que la de un archivo medido."
   },
   "marker": {
@@ -44,6 +49,11 @@
     "depth2": "profundidad 2",
     "value1": "valor 1",
     "value2": "valor 2"
+  },
+  "method": {
+    "label": "Método",
+    "points": "Marcar puntos",
+    "trace": "Seguir la línea automáticamente"
   },
   "points": {
     "clear": "Borrar todo",
@@ -75,8 +85,10 @@
     "position": "Introduzca las dos coordenadas RD, o ninguna.",
     "qcCalibration": "Calibración de qc: {{what}}.",
     "qcPoints": "Haga clic en al menos dos puntos de la línea qc.",
+    "qcTrace": "Siga o dibuje primero la línea qc.",
     "secondCalibration": "Calibración de la segunda serie: {{what}}.",
     "secondPoints": "Haga clic en al menos dos puntos de la línea de la segunda serie, o desactive esa serie.",
+    "secondTrace": "Siga o dibuje la línea de la segunda serie, o desactive esa serie.",
     "step": "El paso debe estar entre 0,005 y 1 m.",
     "valuePoints": "haga clic en dos puntos del eje de valores, no en el mismo sitio",
     "valueValues": "introduzca dos valores distintos para el eje de valores"
@@ -126,6 +138,26 @@
     "edit": "Actualizar el sondeo digitalizado {{id}}",
     "new": "Digitalizar sondeo"
   },
+  "trace": {
+    "clear": "Borrar línea",
+    "count": "Línea en {{n}} filas de imagen para {{name}}",
+    "draw": "Dibujar",
+    "drawHint": "Dibuje sobre la línea de medida con el botón del ratón pulsado. Lo que dibuje sustituye a la línea a esa altura.",
+    "erase": "Borrar",
+    "eraseHint": "Arrastre sobre el tramo de la línea que quiera eliminar.",
+    "follow": "Seguir línea",
+    "followHint": "Haga clic en el inicio de la línea de medida: se sigue hacia abajo hasta que termina. Arrastre hacia abajo para seguirla solo hasta el punto donde suelte.",
+    "navigate": "Arrastrar dibuja o sigue. Desplazar: botón central del ratón. Zoom: rueda del ratón. La serie de medidas es la media de la línea por paso.",
+    "noScan": "No hay escaneo que seguir. Dibujar y borrar sí es posible.",
+    "notCalibrated": "La calibración aún no está completa; sin calibración no hay serie de medidas.",
+    "radius": "Eliminar líneas finas de la cuadrícula",
+    "radius0": "no",
+    "radius1": "leve (líneas de hasta 2 píxeles)",
+    "radius2": "fuerte (líneas de hasta 4 píxeles)",
+    "showMask": "Mostrar lo que el algoritmo reconoce como línea",
+    "threshold": "Oscuridad de la línea ({{value}})",
+    "tools": "Herramienta"
+  },
   "underlay": {
     "choose": "Elegir PDF o imagen…",
     "failed": "No se puede leer la imagen.",
@@ -135,6 +167,7 @@
     "navigate": "Rueda del ratón: acercar y alejar. Arrastrar: desplazar.",
     "reopen": "Actualizar el sondeo {{id}}",
     "replace": "Elegir otra imagen de fondo…",
+    "synthetic": "Este sondeo se tomó antes de un escaneo; el escaneo y la calibración no se guardaron. La línea está en una hoja en blanco: complétela ahí, o elija de nuevo el escaneo para calibrar y seguir la línea otra vez.",
     "unnamed": "imagen de fondo"
   },
   "unit": {

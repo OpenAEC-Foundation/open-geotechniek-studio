@@ -2,18 +2,22 @@
   "calibrate": {
     "depthAxis": "Oś głębokości",
     "depthMode": "Oś głębokości w",
+    "gridFound": "Znaleziono siatkę: {{rows}} × {{cols}} linii. Punkty kalibracji trafiają na skrajne linie; wpisz ich wartości. Kliknięty punkt kalibracji przyciąga się do siatki.",
+    "gridNone": "Nie znaleziono siatki na podkładzie; kliknij punkty kalibracji samodzielnie.",
     "hint": "Kliknij dwa punkty na osi głębokości i dwa na osi wartości, możliwie daleko od siebie, i podaj wartość dla każdego punktu. Osie są kalibrowane niezależnie, więc krzywy skan nie przeszkadza.",
     "ok": "Kalibracja jest poprawna. Sprawdź, czy linie siatki pokrywają się z liniami wykresu.",
     "pick": "Kliknij: {{label}}",
     "pickHint": "Następnie kliknij punkt na podkładzie",
     "repick": "{{label}} ponownie",
     "shareDepth": "Ta sama oś głębokości co qc",
+    "suggest": "Ustaw punkty kalibracji na siatce",
     "valueAxis": "Oś wartości {{name}}",
     "valueOf": "Wartość dla: {{label}}"
   },
   "cone": {
     "electrical": "elektryczne",
-    "mechanical": "mechaniczne"
+    "mechanical": "mechaniczne",
+    "unknown": "nieznane"
   },
   "details": {
     "coneHint": "Przy zmianie rodzaju sondowania krok zmienia się na 0,2 m (mechaniczne) lub 0,02 m (elektryczne). Rodzaj jest podawany; wartości pomiarowe nie są z tego powodu przeliczane.",
@@ -37,6 +41,7 @@
   },
   "label": {
     "badge": "zdigitalizowane ({{cone}})",
+    "badgePlain": "zdigitalizowane",
     "note": "Sondowanie {{id}} zostało zdigitalizowane z papieru lub skanu (rodzaj: {{cone}}; pochodzenie: {{origin}}). Dokładność jest niższa niż w przypadku pliku pomiarowego."
   },
   "marker": {
@@ -44,6 +49,11 @@
     "depth2": "głębokość 2",
     "value1": "wartość 1",
     "value2": "wartość 2"
+  },
+  "method": {
+    "label": "Metoda",
+    "points": "Klikaj punkty",
+    "trace": "Śledź linię automatycznie"
   },
   "points": {
     "clear": "Wyczyść wszystko",
@@ -75,8 +85,10 @@
     "position": "Podaj obie współrzędne RD albo żadnej.",
     "qcCalibration": "Kalibracja qc: {{what}}.",
     "qcPoints": "Kliknij co najmniej dwa punkty na linii qc.",
+    "qcTrace": "Najpierw prześledź lub narysuj linię qc.",
     "secondCalibration": "Kalibracja drugiej serii: {{what}}.",
     "secondPoints": "Kliknij co najmniej dwa punkty na linii drugiej serii albo wyłącz tę serię.",
+    "secondTrace": "Prześledź lub narysuj linię drugiej serii albo wyłącz tę serię.",
     "step": "Krok musi wynosić od 0,005 do 1 m.",
     "valuePoints": "kliknij dwa punkty na osi wartości, nie w tym samym miejscu",
     "valueValues": "podaj dla osi wartości dwie różne wartości"
@@ -126,6 +138,26 @@
     "edit": "Aktualizacja zdigitalizowanego sondowania {{id}}",
     "new": "Digitalizacja sondowania"
   },
+  "trace": {
+    "clear": "Usuń linię",
+    "count": "Linia w {{n}} wierszach obrazu dla {{name}}",
+    "draw": "Rysuj",
+    "drawHint": "Rysuj po linii pomiarowej z wciśniętym przyciskiem myszy. To, co narysujesz, zastępuje linię na tej wysokości.",
+    "erase": "Wymaż",
+    "eraseHint": "Przeciągnij po fragmencie linii, który ma zostać usunięty.",
+    "follow": "Śledź linię",
+    "followHint": "Kliknij początek linii pomiarowej: linia jest śledzona w dół aż do jej końca. Przeciągnij w dół, aby śledzić ją tylko do miejsca zwolnienia przycisku.",
+    "navigate": "Przeciąganie rysuje lub śledzi. Przesuwanie: środkowy przycisk myszy. Powiększanie: kółko myszy. Seria pomiarowa to średnia linii na krok.",
+    "noScan": "Nie ma skanu do śledzenia. Rysowanie i usuwanie jest możliwe.",
+    "notCalibrated": "Kalibracja nie jest jeszcze kompletna; bez kalibracji nie powstaje seria pomiarowa.",
+    "radius": "Usuwanie cienkich linii siatki",
+    "radius0": "wyłączone",
+    "radius1": "lekkie (linie do 2 pikseli)",
+    "radius2": "mocne (linie do 4 pikseli)",
+    "showMask": "Pokaż, co algorytm rozpoznaje jako linię",
+    "threshold": "Zaczernienie linii ({{value}})",
+    "tools": "Narzędzie"
+  },
   "underlay": {
     "choose": "Wybierz PDF lub obraz…",
     "failed": "Nie można odczytać obrazu.",
@@ -135,6 +167,7 @@
     "navigate": "Kółko myszy: powiększanie i pomniejszanie. Przeciąganie: przesuwanie.",
     "reopen": "Aktualizuj sondowanie {{id}}",
     "replace": "Wybierz inny podkład…",
+    "synthetic": "To sondowanie zostało wcześniej przejęte ze skanu; skan i kalibracja nie zostały zapisane. Linia znajduje się na pustym arkuszu: uzupełnij ją tam albo wybierz skan ponownie, aby skalibrować i prześledzić linię od nowa.",
     "unnamed": "podkład"
   },
   "unit": {

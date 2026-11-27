@@ -2,18 +2,22 @@
   "calibrate": {
     "depthAxis": "Tiefenachse",
     "depthMode": "Tiefenachse in",
+    "gridFound": "Raster gefunden: {{rows}} × {{cols}} Linien. Die Kalibrierpunkte kommen auf die äußersten Linien; tragen Sie deren Werte ein. Ein angeklickter Kalibrierpunkt rastet am Raster ein.",
+    "gridNone": "Kein Raster auf der Unterlage gefunden; klicken Sie die Kalibrierpunkte selbst an.",
     "hint": "Klicken Sie zwei Punkte auf der Tiefenachse und zwei auf der Werteachse an, möglichst weit auseinander, und geben Sie zu jedem Punkt den Wert ein. Die Achsen werden unabhängig voneinander kalibriert, ein schiefer Scan ist also kein Problem.",
     "ok": "Die Kalibrierung stimmt. Prüfen Sie, ob die Rasterlinien auf den Linien des Diagramms liegen.",
     "pick": "{{label}} anklicken",
     "pickHint": "Klicken Sie danach den Punkt auf der Unterlage an",
     "repick": "{{label}} erneut",
     "shareDepth": "Gleiche Tiefenachse wie qc",
+    "suggest": "Kalibrierpunkte auf das Raster setzen",
     "valueAxis": "Werteachse {{name}}",
     "valueOf": "Wert bei {{label}}"
   },
   "cone": {
     "electrical": "elektrisch",
-    "mechanical": "mechanisch"
+    "mechanical": "mechanisch",
+    "unknown": "unbekannt"
   },
   "details": {
     "coneHint": "Beim Wechsel der Sondierungsart springt der Schritt auf 0,2 m (mechanisch) oder 0,02 m (elektrisch). Die Art wird angegeben; die Messwerte werden dafür nicht umgerechnet.",
@@ -37,6 +41,7 @@
   },
   "label": {
     "badge": "digitalisiert ({{cone}})",
+    "badgePlain": "digitalisiert",
     "note": "Sondierung {{id}} wurde von Papier oder Scan digitalisiert (Art: {{cone}}; Herkunft: {{origin}}). Die Genauigkeit ist geringer als bei einer gemessenen Datei."
   },
   "marker": {
@@ -44,6 +49,11 @@
     "depth2": "Tiefe 2",
     "value1": "Wert 1",
     "value2": "Wert 2"
+  },
+  "method": {
+    "label": "Arbeitsweise",
+    "points": "Punkte anklicken",
+    "trace": "Linie automatisch verfolgen"
   },
   "points": {
     "clear": "Alles löschen",
@@ -75,8 +85,10 @@
     "position": "Geben Sie beide RD-Koordinaten ein oder keine von beiden.",
     "qcCalibration": "Kalibrierung qc: {{what}}.",
     "qcPoints": "Klicken Sie mindestens zwei Punkte auf der qc-Linie an.",
+    "qcTrace": "Verfolgen oder zeichnen Sie zuerst die qc-Linie.",
     "secondCalibration": "Kalibrierung zweite Reihe: {{what}}.",
     "secondPoints": "Klicken Sie mindestens zwei Punkte auf der Linie der zweiten Reihe an oder schalten Sie diese Reihe aus.",
+    "secondTrace": "Verfolgen oder zeichnen Sie die Linie der zweiten Reihe oder schalten Sie diese Reihe aus.",
     "step": "Der Schritt muss zwischen 0,005 und 1 m liegen.",
     "valuePoints": "klicken Sie zwei Punkte auf der Werteachse an, nicht an derselben Stelle",
     "valueValues": "geben Sie für die Werteachse zwei verschiedene Werte ein"
@@ -126,6 +138,26 @@
     "edit": "Digitalisierte Sondierung {{id}} bearbeiten",
     "new": "Sondierung digitalisieren"
   },
+  "trace": {
+    "clear": "Linie löschen",
+    "count": "Linie über {{n}} Bildzeilen für {{name}}",
+    "draw": "Zeichnen",
+    "drawHint": "Zeichnen Sie mit gedrückter Maustaste über die Messlinie. Das Gezeichnete ersetzt die Linie auf dieser Höhe.",
+    "erase": "Radieren",
+    "eraseHint": "Ziehen Sie über den Teil der Linie, der entfernt werden soll.",
+    "follow": "Linie verfolgen",
+    "followHint": "Klicken Sie auf den Anfang der Messlinie: Sie wird nach unten verfolgt, bis sie endet. Ziehen Sie nach unten, um nur bis zum Loslasspunkt zu verfolgen.",
+    "navigate": "Ziehen zeichnet oder verfolgt. Verschieben: mittlere Maustaste. Zoomen: Mausrad. Die Messreihe ist der Mittelwert der Linie je Schritt.",
+    "noScan": "Es gibt keinen Scan zum Verfolgen. Zeichnen und Löschen ist möglich.",
+    "notCalibrated": "Die Kalibrierung ist noch nicht vollständig; ohne Kalibrierung entsteht keine Messreihe.",
+    "radius": "Dünne Rasterlinien entfernen",
+    "radius0": "aus",
+    "radius1": "leicht (Linien bis 2 Pixel)",
+    "radius2": "stark (Linien bis 4 Pixel)",
+    "showMask": "Anzeigen, was der Algorithmus als Linie erkennt",
+    "threshold": "Dunkelheit der Linie ({{value}})",
+    "tools": "Werkzeug"
+  },
   "underlay": {
     "choose": "PDF oder Bild wählen…",
     "failed": "Das Bild kann nicht gelesen werden.",
@@ -135,6 +167,7 @@
     "navigate": "Mausrad: vergrößern und verkleinern. Ziehen: verschieben.",
     "reopen": "Sondierung {{id}} bearbeiten",
     "replace": "Andere Unterlage wählen…",
+    "synthetic": "Diese Sondierung wurde früher aus einem Scan übernommen; der Scan und die Kalibrierung wurden dabei nicht gespeichert. Die Linie steht auf einem leeren Blatt: ergänzen Sie sie dort, oder wählen Sie den Scan erneut, um neu zu kalibrieren und die Linie zu verfolgen.",
     "unnamed": "Unterlage"
   },
   "unit": {
