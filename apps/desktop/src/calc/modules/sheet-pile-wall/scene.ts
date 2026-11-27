@@ -43,6 +43,65 @@ export function clipLine(line: PlanPoint[], a0: number, a1: number): PlanPoint[]
   return [at(a0), ...line.filter((p) => p.a > a0 + 1e-9 && p.a < a1 - 1e-9), at(a1)];
 }
 
+const EPS = 1e-9;
+
+/**
+ * Buitenkant van de wand aan één zijde in de plattegrond, tussen a0 en a1: per plaats langs de wand het buitenste
+ * staal aan die zijde (side −1: de hoge zijde, kleinste x; +1: de lage zijde, grootste x). Stuksgewijs recht en
+ * exact op de randen van de omtrekken, dus de contour verschoven met de plaatdikte naar die zijde, met de sloten
+ * erin. Daar sluit de grond op aan: geen spleet en geen overlap. Zonder omtrekken (palen) de as x = 0.
+ */
+export function wallFace(outlines: PlanOutline[], side: 1 | -1, a0: number, a1: number): PlanPoint[] {
+  if (!outlines.length) return [{ a: a0, x: 0 }, { a: a1, x: 0 }];
+  const edges: Array<{ a0: number; a1: number; x0: number; x1: number }> = [];
+  for (const o of outlines) for (let k = 0; k < o.points.length; k++) {
+    const p = o.points[k], q = o.points[(k + 1) % o.points.length];
+    if (Math.abs(q.a - p.a) < EPS) continue;
+    const [u, v] = p.a < q.a ? [p, q] : [q, p];
+    if (v.a <= a0 + EPS || u.a >= a1 - EPS) continue;
+    edges.push({ a0: u.a, a1: v.a, x0: u.x, x1: v.x });
+  }
+  edges.sort((p, q) => p.a0 - q.a0);
+  const raw = [a0, a1, ...edges.flatMap((e) => [e.a0, e.a1]).filter((a) => a > a0 && a < a1)].sort((p, q) => p - q);
+  const cuts = raw.filter((a, k) => k === 0 || a - raw[k - 1] > EPS);
+  const xAt = (e: (typeof edges)[number], a: number) => e.x0 + ((e.x1 - e.x0) * (a - e.a0)) / (e.a1 - e.a0);
+  const out: PlanPoint[] = [];
+  let next = 0, active: typeof edges = [];
+  for (let k = 0; k + 1 < cuts.length; k++) {
+    const lo = cuts[k], hi = cuts[k + 1];
+    while (next < edges.length && edges[next].a0 <= lo + EPS) active.push(edges[next++]);
+    active = active.filter((e) => e.a1 > lo + EPS);
+    const here = active.filter((e) => e.a1 >= hi - EPS);
+    if (!here.length) continue;
+    // Het buitenste van rechte stukken: de knikken liggen op de snijpunten van twee ervan.
+    const at = [lo, hi];
+    for (let i = 0; i < here.length; i++) for (let j = i + 1; j < here.length; j++) {
+      const p = here[i], q = here[j], dp = (p.x1 - p.x0) / (p.a1 - p.a0), dq = (q.x1 - q.x0) / (q.a1 - q.a0);
+      if (Math.abs(dp - dq) < 1e-12) continue;
+      const a = lo + (xAt(q, lo) - xAt(p, lo)) / (dp - dq);
+      if (a > lo + EPS && a < hi - EPS) at.push(a);
+    }
+    for (const a of at.sort((p, q) => p - q)) out.push({ a, x: side * Math.max(...here.map((e) => side * xAt(e, a))) });
+  }
+  // Dubbele punten en punten op een rechte lijn eruit.
+  const face: PlanPoint[] = [];
+  for (const p of out) {
+    const last = face[face.length - 1];
+    if (last && Math.abs(last.a - p.a) < EPS && Math.abs(last.x - p.x) < EPS) continue;
+    if (face.length >= 2) {
+      const o = face[face.length - 2], cross = (last.a - o.a) * (p.x - o.x) - (last.x - o.x) * (p.a - o.a);
+      if (Math.abs(cross) < 1e-12 * Math.max(1e-6, Math.hypot(p.a - o.a, p.x - o.x))) face.pop();
+    }
+    face.push(p);
+  }
+  return face;
+}
+
+/** Grondvlak aan één zijde in de plattegrond: de buitenkant van de wand en de rand van het blok op x = farX. */
+export function soilOutline(face: PlanPoint[], farX: number): PlanPoint[] {
+  return [{ a: face[0].a, x: farX }, ...face, { a: face[face.length - 1].a, x: farX }];
+}
+
 export interface SceneLayer { name: string; color: string; topNap: number; bottomNap: number }
 export interface WallScene {
   construction: Construction;
@@ -61,6 +120,9 @@ export interface WallScene {
   outlines: PlanOutline[];
   /** Hartlijn van de wand in de plattegrond: de grond sluit er aan beide zijden tegenaan. */
   wallLine: PlanPoint[];
+  /** Buitenkant van de wand aan de hoge en de lage zijde, van het snijvlak tot de achterkant van het blok (zie wallFace). */
+  faceHigh: PlanPoint[];
+  faceLow: PlanPoint[];
   /** Waar de vorm van het stalen profiel vandaan komt; null bij een beschoeiing. */
   contourBasis: ContourBasis | null;
   /** Fabrikant van de getekende contour, als die uit de CAD-tekening komt. */
@@ -109,12 +171,13 @@ export function wallScene(raw: WallInput, r: WallOk, run: WallRun = r.sls): Wall
   const bottom = Math.min(bottomWall, deepest - 1);
   const slip = r.grout ? { angleDeg: r.grout.slipAngleDeg, reachM: (Math.min(i.wallTopNap, s.high.surfaceNap) - i.toeNap) / Math.tan((r.grout.slipAngleDeg * Math.PI) / 180) } : null;
   const plan = kind === "sheet-pile" && sec.profile ? profilePlan(sec.profile, length + front) : null;
+  const outlines = plan ? plan.outlines : kind === "plank" ? plankPlan(sec.depthM, length + front, i.material === "timber") : [];
   const posts: WallScene["posts"] = [];
   if (kind === "posts") for (let a = period / 2; a < length + front; a += period) posts.push({ alongM: a, shape: i.posts.shape, sizeM: i.posts.sizeMm / 1000 });
   return {
     extentHighM: Math.max(half, reach + 1), support, slip,
     construction: kind, halfWidthM: half, lengthM: length, frontM: front, topNap: Math.max(i.wallTopNap, s.high.surfaceNap), bottomNap: bottom, wallTopNap: i.wallTopNap, toeNap: i.toeNap,
-    wallHeightM: sec.depthM, outlines: plan ? plan.outlines : kind === "plank" ? plankPlan(sec.depthM, length + front, i.material === "timber") : [],
+    wallHeightM: sec.depthM, outlines, faceHigh: wallFace(outlines, -1, front, front + length), faceLow: wallFace(outlines, 1, front, front + length),
     wallLine: plan ? plan.line : [{ a: 0, x: 0 }, { a: length + front, x: 0 }], contourBasis: plan ? plan.basis : null, contourManufacturer: plan && plan.basis === "drawing" ? sec.profile?.manufacturer ?? null : null,
     posts, boards: kind === "posts" ? { thicknessM: i.posts.boardMm / 1000, bottomNap: i.posts.boardBottomNap } : null,
     waling: anchored && (kind === "plank" || akind === "grout") ? { levelNap: an.levelNap, sizeM: kind === "plank" ? Math.max(0.08, 2 * sec.depthM) : 0.2 } : null,
