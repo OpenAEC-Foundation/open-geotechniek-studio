@@ -108,6 +108,12 @@
       "subtitle": "Erwartete Schlagzahl aus der Sondierung, neben der gezählten",
       "norm": "Faustformel N = Intervall · D² · qc / E",
       "visualLabel": "Schlagzahl"
+    },
+    "sheet-pile-wall": {
+      "name": "Spundwand und Uferverbau",
+      "subtitle": "Stahlspundwand oder Uferverbau aus Holz, Kunststoff oder Beton: Federmodell, Blum als Kontrolle, Nachweis von Querschnitt und Einbindetiefe",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Querschnitt"
     }
   }
 }

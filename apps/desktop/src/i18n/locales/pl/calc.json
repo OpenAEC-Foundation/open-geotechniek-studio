@@ -108,6 +108,12 @@
       "subtitle": "Oczekiwana liczba uderzeń z sondowania obok policzonej",
       "norm": "Wzór praktyczny N = odcinek · D² · qc / E",
       "visualLabel": "Liczba uderzeń"
+    },
+    "sheet-pile-wall": {
+      "name": "Ścianka szczelna i umocnienie brzegu",
+      "subtitle": "Stalowa ścianka szczelna lub umocnienie brzegu z drewna, tworzywa lub betonu: model sprężysty, Blum jako kontrola, sprawdzenie przekroju i zagłębienia",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Przekrój"
     }
   }
 }

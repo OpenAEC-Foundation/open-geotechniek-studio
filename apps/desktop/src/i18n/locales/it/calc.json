@@ -108,6 +108,12 @@
       "subtitle": "Colpi attesi dalla prova CPT, accanto a quelli contati",
       "norm": "Regola empirica N = tratto · D² · qc / E",
       "visualLabel": "Colpi"
+    },
+    "sheet-pile-wall": {
+      "name": "Palancolata e difesa di sponda",
+      "subtitle": "Palancole in acciaio o difesa di sponda in legno, plastica o calcestruzzo: modello a molle, Blum come controllo, verifica della sezione e dell'infissione",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Sezione"
     }
   }
 }

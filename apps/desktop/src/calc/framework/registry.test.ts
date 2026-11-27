@@ -4,7 +4,7 @@ import { CALC_REGISTRY, getCalcModule } from "./registry";
 describe("calc registry", () => {
   afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
   it("biedt verticale en horizontale paalberekeningen afzonderlijk aan, plus het funderingsadvies", () => {
-    expect(CALC_REGISTRY.map((module) => module.id)).toEqual(["pile-bearing-capacity", "tension-pile", "laterally-loaded-pile", "driving-assessment", "spread-foundation", "foundation-advice"]);
+    expect(CALC_REGISTRY.map((module) => module.id)).toEqual(["pile-bearing-capacity", "tension-pile", "laterally-loaded-pile", "driving-assessment", "spread-foundation", "sheet-pile-wall", "foundation-advice"]);
     expect(getCalcModule("foundation-advice")?.category).toBe("report");
     expect(getCalcModule("pile-bearing-capacity")?.status).toBe("experimental");
     expect(getCalcModule("laterally-loaded-pile")?.status).toBe("experimental");
@@ -15,7 +15,7 @@ describe("calc registry", () => {
     vi.stubEnv("VITE_PUBLIC_WEB", "1");
     vi.resetModules();
     const { CALC_REGISTRY: publicModules } = await import("./registry");
-    expect(publicModules.map(module => module.id)).toEqual(["pile-bearing-capacity", "tension-pile", "laterally-loaded-pile", "driving-assessment", "spread-foundation", "foundation-advice"]);
+    expect(publicModules.map(module => module.id)).toEqual(["pile-bearing-capacity", "tension-pile", "laterally-loaded-pile", "driving-assessment", "spread-foundation", "sheet-pile-wall", "foundation-advice"]);
   });
 
   it("is a defined array", () => {

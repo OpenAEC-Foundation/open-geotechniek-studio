@@ -108,6 +108,12 @@
       "subtitle": "Forventet antal slag ud fra sonderingen, ved siden af det talte",
       "norm": "Tommelfingerregel N = interval · D² · qc / E",
       "visualLabel": "Antal slag"
+    },
+    "sheet-pile-wall": {
+      "name": "Spunsvæg og bolværk",
+      "subtitle": "Stålspuns eller bolværk af træ, plast eller beton: fjedermodel, Blum som kontrol, eftervisning af tværsnit og rammedybde",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Tværsnit"
     }
   }
 }

@@ -108,6 +108,12 @@
       "subtitle": "Golpes esperados según el ensayo CPT, junto a los contados",
       "norm": "Regla empírica N = tramo · D² · qc / E",
       "visualLabel": "Golpes"
+    },
+    "sheet-pile-wall": {
+      "name": "Tablestacado y defensa de orilla",
+      "subtitle": "Tablestacas de acero o defensa de orilla de madera, plástico u hormigón: modelo de muelles, Blum como comprobación, verificación de la sección y del empotramiento",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Sección"
     }
   }
 }

@@ -108,6 +108,12 @@
       "subtitle": "Expected blow count from the CPT, next to the counted one",
       "norm": "Rule of thumb N = interval · D² · qc / E",
       "visualLabel": "Blow count"
+    },
+    "sheet-pile-wall": {
+      "name": "Sheet pile wall and revetment",
+      "subtitle": "Steel sheet pile wall or bank revetment in timber, plastic or concrete: spring model, Blum as a cross-check, section and embedment checks",
+      "norm": "NEN 9997-1 · CUR 166 · NEN-EN 1993-5 · NEN-EN 1995-1-1",
+      "visualLabel": "Cross-section"
     }
   }
 }
