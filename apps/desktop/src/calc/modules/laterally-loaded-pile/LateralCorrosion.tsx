@@ -14,7 +14,8 @@ export function LateralCorrosion({ input: i, result: r, onChange }: { input: Lat
   const { t } = useTranslation('calcLateral');
   const kind = i.section.kind, sheet = kind === 'sheet-pile', hollow = kind === 'steel-tube';
   if (kind !== 'steel-tube' && kind !== 'filled-tube' && !sheet) return null;
-  const c = { ...DEFAULT_PILE_CORROSION, ...i.corrosion }, set = (patch: Partial<PileCorrosion>) => onChange?.({ ...i, corrosion: { ...c, ...patch } });
+  // Een open buis staat ook binnen in de grond: zolang er nog niets is ingevuld, stelt het blok 2 kanten voor.
+  const c = { ...DEFAULT_PILE_CORROSION, ...(i.openEnd && hollow && !i.corrosion ? { sides: 2 as const } : {}), ...i.corrosion }, set = (patch: Partial<PileCorrosion>) => onChange?.({ ...i, corrosion: { ...c, ...patch } });
   const two = c.sides === 2 && (hollow || sheet), info = r?.ok ? r.corrosion : null;
   return <More title={t('corrosion.title', 'Afroesting')}>
     {(hollow || sheet) && <Row label={t('corrosion.sides', 'Aangetast')}><select aria-label={t('corrosion.sides', 'Aangetast')} value={c.sides} onChange={(e) => set({ sides: Number(e.target.value) as 1 | 2 })}>
