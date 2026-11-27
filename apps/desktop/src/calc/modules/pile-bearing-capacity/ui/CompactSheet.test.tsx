@@ -83,7 +83,7 @@ describe("uitdraai: beknopt of uitgebreid", () => {
   it("is beknopt korter en houdt samenvatting, concept-label en eindtoets", () => {
     expect(pages(compact)).toBeLessThanOrEqual(pages(full));
     expect(compact.length).toBeLessThan(full.length);
-    for (const text of ["SAMENVATTING", "Uitgangspunten", "Uitkomsten", "Opmerkingen", "CONCEPT ALPHA", "Indicatieve rekentoets"]) expect(compact, text).toContain(text);
+    for (const text of ["SAMENVATTING", "Uitgangspunten", "Uitkomsten", "Opmerkingen", "BETA RELEASE", "Indicatieve rekentoets"]) expect(compact, text).toContain(text);
     // De volledige afleiding houdt haar eigen koppen.
     for (const text of ["FUNDERINGSPAAL", "Lastzakkingslijn 1:"]) { expect(full, text).toContain(text); expect(compact, text).not.toContain(text); }
     expect(full).not.toContain("Uitkomsten");

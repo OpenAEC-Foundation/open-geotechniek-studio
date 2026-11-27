@@ -186,7 +186,7 @@ export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8);
     doc.setTextColor(...p.accentStrong);
-    doc.text("CONCEPT ALPHA", PAGE_W - M.right, 9, { align: "right" });
+    doc.text("BETA RELEASE", PAGE_W - M.right, 9, { align: "right" });
 
     const small = { size: 8 };
     const rows: Array<[string, string, number]> = [
@@ -218,7 +218,7 @@ export function makeCursor(doc: jsPDF, project: PileReportProject, startPage = 1
     doc.setTextColor(...p.muted);
     const own = brand.organization !== DEFAULT_BRAND.organization && !brand.pageImage ? `${brand.organization} · ` : "";
     richText(doc, `${own}Open Geotechniek Studio`, PAGE_W - M.right, FOOTER_Y, { size: 7.5, align: "right" });
-    richText(doc, "CONCEPT ALPHA - Indicatieve berekening", M.left, FOOTER_Y, { size: 7.5 });
+    richText(doc, "BETA RELEASE - Indicatieve berekening", M.left, FOOTER_Y, { size: 7.5 });
     doc.setTextColor(...p.ink);
     doc.setFont("helvetica", "normal");
   };
@@ -471,7 +471,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
     { label: "Netto draagvermogen R_c;net;d", value: `${nl(summary.rcNetD,1)} kN` },
     { label: "Benutting N_Ed / R_c;net;d", value: nl(summary.unityCheck,2), tone: summary.unityCheck <= 1 ? "pass" : "fail" },
   ]);
-  paragraph(c,"CONCEPT ALPHA - Resultaten zijn indicatief; niet gebruiken voor vergunning of uitvoering.",{size:8});
+  paragraph(c,"BETA RELEASE - Resultaten zijn indicatief; niet gebruiken voor vergunning of uitvoering.",{size:8});
   c.y += 3;
 
   sectionTitle(c, "ALGEMEEN");
@@ -581,7 +581,7 @@ function renderProjectBladCompact(c: Cursor, inputs: PileReportInputs): void {
     { label: "Netto draagvermogen R_c;net;d", value: `${nl(summary.rcNetD, 1)} kN` },
     { label: "Benutting N_Ed / R_c;net;d", value: nl(summary.unityCheck, 2), tone: summary.unityCheck <= 1 ? "pass" : "fail" },
   ]);
-  paragraph(c, "CONCEPT ALPHA - Resultaten zijn indicatief; niet gebruiken voor vergunning of uitvoering.", { size: 8 });
+  paragraph(c, "BETA RELEASE - Resultaten zijn indicatief; niet gebruiken voor vergunning of uitvoering.", { size: 8 });
   if (!first) return;
   const inp = first.input, type = resolvePileType(inp), circular = type?.isCircular ?? true, ext = inp.concreteExtension;
   const facts: Array<[string, string]> = [

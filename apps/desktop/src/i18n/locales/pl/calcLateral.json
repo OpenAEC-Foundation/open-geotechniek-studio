@@ -72,7 +72,7 @@
     "currentInput": "Nieprawidłowe dane przepływu."
   },
   "explorer": {
-    "concept": "Wersja robocza alfa",
+    "concept": "Wersja beta",
     "converged": "Zbieżność · kroki obciążenia: {{steps}} · iteracje: {{iterations}} · residuum {{residual}} kN · względne {{relative}}",
     "counts": "Elementy: {{elements}} · punkty całkowania: {{points}}",
     "displacement": "Przemieszczenie",

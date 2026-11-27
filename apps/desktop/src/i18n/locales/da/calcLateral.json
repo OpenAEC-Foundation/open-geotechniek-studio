@@ -72,7 +72,7 @@
     "currentInput": "Ugyldigt input for strømmen."
   },
   "explorer": {
-    "concept": "Udkast alfa",
+    "concept": "Betaversion",
     "converged": "Konvergeret · {{steps}} lasttrin · {{iterations}} iterationer · residual {{residual}} kN · relativ {{relative}}",
     "counts": "{{elements}} elementer · {{points}} integrationspunkter",
     "displacement": "Flytning",

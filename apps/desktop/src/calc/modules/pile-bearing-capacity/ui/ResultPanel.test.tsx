@@ -22,7 +22,7 @@ it("neemt projectgegevens mee in het rapport en vermeldt concept op iedere pagin
     expect(text.includes(value), value).toBe(true);
   const pages = Number(text.match(/\/Count (\d+)/)?.[1]);
   expect(pages).toBeGreaterThan(1);
-  expect((text.match(/CONCEPT/g) ?? []).length).toBeGreaterThanOrEqual(pages);
+  expect((text.match(/BETA RELEASE/g) ?? []).length).toBeGreaterThanOrEqual(pages);
   expect((text.match(/re\s+W\s+n/g) ?? []).length).toBeGreaterThanOrEqual(2);
 });
 

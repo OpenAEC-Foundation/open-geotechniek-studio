@@ -72,7 +72,7 @@
     "currentInput": "Invalid input for the current."
   },
   "explorer": {
-    "concept": "Draft alpha",
+    "concept": "Beta release",
     "converged": "Converged · {{steps}} load steps · {{iterations}} iterations · residual {{residual}} kN · relative {{relative}}",
     "counts": "{{elements}} elements · {{points}} integration points",
     "displacement": "Displacement",

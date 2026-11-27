@@ -72,7 +72,7 @@
     "currentInput": "Entrada inválida para a corrente."
   },
   "explorer": {
-    "concept": "Rascunho alfa",
+    "concept": "Versão beta",
     "converged": "Convergiu · {{steps}} incrementos de carga · {{iterations}} iterações · resíduo {{residual}} kN · relativo {{relative}}",
     "counts": "{{elements}} elementos · {{points}} pontos de integração",
     "displacement": "Deslocamento",

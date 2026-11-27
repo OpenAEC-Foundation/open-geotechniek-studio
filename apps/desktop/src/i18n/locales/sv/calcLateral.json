@@ -72,7 +72,7 @@
     "currentInput": "Ogiltig indata för strömmen."
   },
   "explorer": {
-    "concept": "Utkast alfa",
+    "concept": "Betaversion",
     "converged": "Konvergerat · {{steps}} laststeg · {{iterations}} iterationer · residual {{residual}} kN · relativ {{relative}}",
     "counts": "{{elements}} element · {{points}} integrationspunkter",
     "displacement": "Förskjutning",

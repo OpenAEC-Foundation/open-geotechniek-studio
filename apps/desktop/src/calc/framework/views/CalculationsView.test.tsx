@@ -43,7 +43,7 @@ it("toont invoer en sondering naast de uitdraai, met een werkende grafiekkoppeli
   expect(screen.getByRole("region", { name: "Sondering" })).toBeInTheDocument();
   expect(screen.getByRole("region", { name: "Uitdraai" })).toBeInTheDocument();
   expect(screen.getByText("Geotechniek / Paaldraagvermogen")).toBeInTheDocument();
-  expect(screen.getByText("Concept alpha")).toBeInTheDocument();
+  expect(screen.getByText("Beta release")).toBeInTheDocument();
   act(() => fireEvent.click(screen.getByRole("button", { name: "Paalpunt verschuiven" })));
   expect(useCalculationsStore.getState().getList(state.activeDocId!)[0].input).toMatchObject({ pileToeNap: -20 });
 });

@@ -11,7 +11,7 @@
       "settings": "Instellingen"
     },
     "defaultVisual": "Sondering",
-    "draft": "Concept alpha",
+    "draft": "Beta release",
     "input": "Invoer",
     "settings": {
       "title": "Instellingen · {{name}}",
@@ -47,8 +47,8 @@
     "title": "Nieuwe berekening",
     "name": "Naam",
     "namePlaceholder": "Bijvoorbeeld: Zetting ophoging",
-    "alphaTitle": "Alpha — nog in ontwikkeling, niet productie-gereed",
-    "alpha": "CONCEPT ALPHA — in ontwikkeling",
+    "alphaTitle": "Beta release: de berekeningen worden nog gecontroleerd; niet gebruiken zonder eigen controle",
+    "alpha": "BETA RELEASE — testers gezocht",
     "cancel": "Annuleren",
     "add": "Toevoegen"
   },
@@ -82,7 +82,7 @@
     "explanation": "Toelichting",
     "contextTitle": "Geotechnische berekeningen",
     "contextModules": "Zetting · Poer op staal",
-    "draftCalculation": "Conceptberekening (alpha)"
+    "draftCalculation": "Berekening (beta release)"
   },
   "modules": {
     "pile-bearing-capacity": {

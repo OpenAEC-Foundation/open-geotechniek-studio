@@ -72,7 +72,7 @@
     "currentInput": "Ongeldige invoer voor de stroming."
   },
   "explorer": {
-    "concept": "Concept alpha",
+    "concept": "Beta release",
     "converged": "Geconvergeerd · {{steps}} belastingstappen · {{iterations}} iteraties · residu {{residual}} kN · relatief {{relative}}",
     "counts": "{{elements}} elementen · {{points}} integratiepunten",
     "displacement": "Verplaatsing",

@@ -107,7 +107,7 @@ describe("module", () => {
   it("uitdraai: een PDF met invoer, formules, figuur, verloop over de hoogte, Blum en de toetsen", () => {
     const input = wallExample(), pdf = module.buildReport!(input, ok(input), ctx), text = new TextDecoder("latin1").decode(pdf);
     expect(text.startsWith("%PDF-")).toBe(true);
-    for (const part of ["Grondlagen, beide zijden", "Gronddruk", "Spanningen op de kenmerkende niveaus", "Verenmodel", "Verloop over de hoogte", "Controle met de methode van Blum", "Overzicht van de toetsen", "Buiging van het profiel", "Concept alpha"]) expect(text).toContain(part);
+    for (const part of ["Grondlagen, beide zijden", "Gronddruk", "Spanningen op de kenmerkende niveaus", "Verenmodel", "Verloop over de hoogte", "Controle met de methode van Blum", "Overzicht van de toetsen", "Buiging van het profiel", "Beta release"]) expect(text).toContain(part);
     expect(module.reportFileName!(input)).toBe("damwand-az-18-700");
     const posts = revetmentExample("posts"), revetment = new TextDecoder("latin1").decode(module.buildReport!(posts, ok(posts), ctx));
     for (const part of ["Beschoeiing van palen met schotten", "Palen en schotten", "Buiging van het schot tussen de palen"]) expect(revetment).toContain(part);

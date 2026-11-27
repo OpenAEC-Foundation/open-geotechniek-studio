@@ -72,7 +72,7 @@
     "currentInput": "Ungültige Eingabe für die Strömung."
   },
   "explorer": {
-    "concept": "Entwurf alpha",
+    "concept": "Beta-Release",
     "converged": "Konvergiert · {{steps}} Laststufen · {{iterations}} Iterationen · Residuum {{residual}} kN · relativ {{relative}}",
     "counts": "{{elements}} Elemente · {{points}} Integrationspunkte",
     "displacement": "Verschiebung",

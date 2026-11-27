@@ -72,7 +72,7 @@
     "currentInput": "Saisie invalide pour le courant."
   },
   "explorer": {
-    "concept": "Brouillon alpha",
+    "concept": "Version bêta",
     "converged": "Convergé · {{steps}} pas de chargement · {{iterations}} itérations · résidu {{residual}} kN · relatif {{relative}}",
     "counts": "{{elements}} éléments · {{points}} points d'intégration",
     "displacement": "Déplacement",

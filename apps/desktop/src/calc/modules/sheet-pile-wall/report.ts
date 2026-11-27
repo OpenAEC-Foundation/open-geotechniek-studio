@@ -128,7 +128,7 @@ export function buildWallReport(raw: WallInput, r: WallResult, ctx: ProjectConte
   const c = makeCursor(doc, { number: meta.project_number || "-", description: meta.title || subject, norm: sheet ? NORM : NORM_REVETMENT, date: reportDate(meta.date), author: meta.author || "Open Geotechniek Studio", onderdeel: subject });
 
   sectionTitle(c, `${sheet ? "Damwand" : posts ? "Beschoeiing van palen met schotten," : "Beschoeiing van planken,"} ${r.section.label}, ${anchored ? (a.kind === "strut" ? "enkel gestempeld" : a.kind === "grout" ? "met groutankers" : "enkel verankerd") : "onverankerd"}`, sheet ? NORM : NORM_REVETMENT);
-  paragraph(c, "Concept alpha: dit rekenblad is in ontwikkeling en de uitkomsten zijn niet geschikt voor toetsing bij vergunning of uitvoering.", { italic: true, size: 7.5 });
+  paragraph(c, "Beta release: dit rekenblad wordt nog gecontroleerd en de uitkomsten zijn niet geschikt voor toetsing bij vergunning of uitvoering.", { italic: true, size: 7.5 });
   kv(c, "Niveaus", `maaiveld hoge zijde NAP ${nap(i.groundHighNap)} m; ${sheet ? "ontgraving" : "bodem lage zijde"} NAP ${nap(i.excavationNap)} m; kerende hoogte ${nl(i.groundHighNap - i.excavationNap)} m`);
   kv(c, "Waterstanden", `hoge zijde NAP ${nap(i.waterHighNap)} m; lage zijde NAP ${nap(i.waterLowNap)} m; γ_w = ${nl(i.gammaWater ?? GAMMA_WATER, 2)} kN/m³`);
   kv(c, "Bovenbelasting", `q = ${nl(i.surchargeKpa, 1)} kPa op de hoge zijde, gelijkmatig`);

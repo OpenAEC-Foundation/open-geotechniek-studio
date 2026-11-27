@@ -137,7 +137,7 @@ export function renderCalc(c: Cursor, input: LateralInput, result: Extract<Later
     : mat.ok && gov ? `De doorsnede voldoet op alle uitgevoerde toetsen. Maatgevend: ${gov.label.toLowerCase()}, u.c. ${ucPdf(gov.uc)} ≤ 1,00. Kopverplaatsing ${nl(s.yHeadMm, 1)} mm.`
       : `De doorsnede voldoet niet. Maatgevend: ${gov?.label.toLowerCase() ?? '-'}, u.c. ${ucPdf(gov?.uc ?? null)} > 1,00.`);
   // De voorbehouden als één compacte voetregel.
-  if (mat) paragraph(c, `${mat.notChecked.nl} Statische, monotone belasting. Concept alpha: indicatieve berekening.`, { italic: true, size: 6.5 });
+  if (mat) paragraph(c, `${mat.notChecked.nl} Statische, monotone belasting. Beta release: indicatieve berekening.`, { italic: true, size: 6.5 });
 
   c.continuationTitle = undefined;
 }

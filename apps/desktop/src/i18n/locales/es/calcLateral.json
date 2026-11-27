@@ -72,7 +72,7 @@
     "currentInput": "Entrada no válida para la corriente."
   },
   "explorer": {
-    "concept": "Borrador alfa",
+    "concept": "Versión beta",
     "converged": "Convergido · {{steps}} escalones de carga · {{iterations}} iteraciones · residuo {{residual}} kN · relativo {{relative}}",
     "counts": "{{elements}} elementos · {{points}} puntos de integración",
     "displacement": "Desplazamiento",

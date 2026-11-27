@@ -11,7 +11,7 @@
       "settings": "Einstellungen"
     },
     "defaultVisual": "Sondierung",
-    "draft": "Entwurf alpha",
+    "draft": "Beta-Release",
     "input": "Eingabe",
     "settings": {
       "title": "Einstellungen · {{name}}",
@@ -47,8 +47,8 @@
     "title": "Neue Berechnung",
     "name": "Name",
     "namePlaceholder": "Zum Beispiel: Setzung Aufschüttung",
-    "alphaTitle": "Alpha — noch in Entwicklung, nicht produktionsreif",
-    "alpha": "ENTWURF ALPHA — in Entwicklung",
+    "alphaTitle": "Beta-Release: die Berechnungen werden noch geprüft; nicht ohne eigene Prüfung verwenden",
+    "alpha": "BETA-RELEASE — Tester gesucht",
     "cancel": "Abbrechen",
     "add": "Hinzufügen"
   },
@@ -82,7 +82,7 @@
     "explanation": "Erläuterung",
     "contextTitle": "Geotechnische Berechnungen",
     "contextModules": "Setzung · Flachgründung",
-    "draftCalculation": "Entwurfsberechnung (alpha)"
+    "draftCalculation": "Berechnung (Beta-Release)"
   },
   "modules": {
     "pile-bearing-capacity": {

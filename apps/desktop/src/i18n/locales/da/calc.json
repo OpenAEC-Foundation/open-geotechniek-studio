@@ -11,7 +11,7 @@
       "settings": "Indstillinger"
     },
     "defaultVisual": "Sondering",
-    "draft": "Udkast alfa",
+    "draft": "Betaversion",
     "input": "Input",
     "settings": {
       "title": "Indstillinger · {{name}}",
@@ -47,8 +47,8 @@
     "title": "Ny beregning",
     "name": "Navn",
     "namePlaceholder": "For eksempel: Sætning af opfyld",
-    "alphaTitle": "Alfa — stadig under udvikling, ikke klar til produktion",
-    "alpha": "UDKAST ALFA — under udvikling",
+    "alphaTitle": "Betaversion: beregningerne kontrolleres stadig; brug dem ikke uden egen kontrol",
+    "alpha": "BETAVERSION — testere søges",
     "cancel": "Annuller",
     "add": "Tilføj"
   },
@@ -82,7 +82,7 @@
     "explanation": "Forklaring",
     "contextTitle": "Geotekniske beregninger",
     "contextModules": "Sætning · Direkte fundering",
-    "draftCalculation": "Udkast til beregning (alfa)"
+    "draftCalculation": "Beregning (betaversion)"
   },
   "modules": {
     "pile-bearing-capacity": {
