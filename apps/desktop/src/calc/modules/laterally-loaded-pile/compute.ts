@@ -1,16 +1,19 @@
 import type { BeamResult } from './beam';
 import {solveFoundationBeam} from './nonlinear-beam';
 import {equivalentLayers} from './nonlinear-soil';
-import type {AnalysisMode,LayerCorrection,UltimateProfile,SpringState,ConvergenceInfo,EquivalentLayer} from './spring-types';
+import {usesUltimate,type AnalysisMode,type LayerCorrection,type UltimateProfile,type SpringState,type ConvergenceInfo,type EquivalentLayer} from './spring-types';
 import { sectionCapacity, sectionStiffness, type PileSection } from './section';
-import { springValue } from './soil';
+import { menardKh, springValue } from './soil';
 import { ct } from '../../i18n';
 import { materialCheck, type MaterialInput, type MaterialResult } from './material-check';
+import { waterInfo } from './water';
 import { corrodePile, corrosionRow, type PileCorrosion, type PileCorrosionInfo } from './corrosion-section';
 export interface LateralLayer {
   topM:number; bottomM:number; springId:string; manualKhKnM3:number;
   frictionDeg:number; netPressureKpa:number;
   ultimate?:UltimateProfile;
+  /** Bedding 'menard': pressiometermodulus E_p [kN/m²] en reologische factor α; k_h volgt uit menardKh met de werkende breedte. */
+  menardEpKpa?:number; menardAlpha?:number;
 }
 export interface LateralInput {
   lengthM:number; maxElementM:number; headForceKn:number; headMomentKnM:number; nEdKn:number;
@@ -38,6 +41,8 @@ export interface LateralInput {
   corrosion?:PileCorrosion;
   /** Varianten bij dezelfde grond en belasting, en de laatste optimalisatie; de berekening zelf leest ze niet. */
   variants?:import('./variants').VariantsConfig;
+  /** Paal in open water: waterbodem en waterpeil, met optioneel een stroming; zonder deze invoer verandert er niets. */
+  waterBed?:import('./water').WaterBed;
 }
 export const lateralExample:LateralInput = {
   lengthM:12,maxElementM:.5,headForceKn:30,headMomentKnM:20,nEdKn:0,
@@ -60,6 +65,8 @@ export type LateralResult = {ok:false;error:string} | {
   material:MaterialResult|null;materialError:string|null;
   /** Afroesting: doorsnede voor en na; null zonder afroesting. */
   corrosion?:PileCorrosionInfo|null;
+  /** Waterbodem: vrije lengte in water en de stromingslast; null zonder waterbodem. */
+  water?:import('./water').WaterInfo|null;
 };
 export function computeLateral(input:LateralInput):LateralResult {
   try {
@@ -72,29 +79,41 @@ export function computeLateral(input:LateralInput):LateralResult {
       throw new Error(ct('calcLateral', 'errors.surchargeModel', 'Kies een onderbouwd belastingmodel voor de bovenbelasting; q is geen automatische netto paaldruk.'));
     // Afroesting: de toetsen met de doorsnede na afroesting, de stijfheid alleen met het vinkje.
     const corrosion=corrodePile(input.section,input.corrosion), checked=corrosion?{...input,section:corrosion.section}:input;
-    const section=sectionStiffness(corrosion?.reducedStiffness?corrosion.section:input.section);
+    // Afroesting tot een niveau: de EI na afroesting alleen van de kop tot dat niveau, daaronder de oorspronkelijke.
+    const zoneDepth=corrosion?.reducedStiffness&&Number.isFinite(input.corrosion?.zoneBottomNap)?(input.headNap??0)-input.corrosion!.zoneBottomNap!:null;
+    if(zoneDepth!==null&&!(zoneDepth>0))throw new Error(ct('calcLateral', 'errors.corrosionZone', 'Het niveau tot waar de paal roest moet onder de paalkop liggen.'));
+    const zoned=zoneDepth!==null&&zoneDepth<input.lengthM;
+    const section=sectionStiffness(corrosion?.reducedStiffness&&!zoned?corrosion.section:input.section);
+    const eiZones=zoned?[{topM:0,bottomM:zoneDepth,eiKnM2:sectionStiffness(corrosion!.section).eiKnM2}]:undefined;
     const analysisMode=input.analysisMode??'linear',correction=input.layerCorrection??'none';
-    if(!['linear','nonlinear'].includes(analysisMode)||!['none','georgiadis'].includes(correction))throw new Error(ct('calcLateral', 'errors.unknownAnalysis', 'Onbekende analyse of laagcorrectie.'));
+    // Waterbodem: geen grondveren boven de bodem; de grond (en z_eq zonder laagcorrectie) begint op de bodem.
+    const water=waterInfo(input);
+    if(!['linear','nonlinear','elastoplastic'].includes(analysisMode)||!['none','georgiadis'].includes(correction))throw new Error(ct('calcLateral', 'errors.unknownAnalysis', 'Onbekende analyse of laagcorrectie.'));
     const resolvedLayers=input.layers.map((layer,inputIndex)=>{
       if(![layer.manualKhKnM3,layer.frictionDeg,layer.netPressureKpa].every(Number.isFinite)||
         layer.manualKhKnM3<0||layer.frictionDeg<0||layer.frictionDeg>45)
         throw new Error(ct('calcLateral', 'errors.invalidLayer', 'Ongeldige laagparameters.'));
       const own=input.springOverrides?.[layer.springId]?.[input.scenario];
       if(own!==undefined&&!(Number.isFinite(own)&&own>0))throw new Error(ct('calcLateral', 'errors.ownSpringPositive', 'Eigen beddingswaarden in de instellingen moeten positief zijn.'));
-      const khKnM3=layer.springId==='manual'?layer.manualKhKnM3:own??springValue(layer.springId,input.scenario);
+      const khKnM3=layer.springId==='manual'?layer.manualKhKnM3:layer.springId==='menard'?menardKh(layer.menardEpKpa??NaN,input.springWidthM,layer.menardAlpha??1/3):own??springValue(layer.springId,input.scenario);
       const ka=Math.tan((45-layer.frictionDeg/2)*Math.PI/180)**2;
-      return {...layer,inputIndex,khKnM3,ka,lineSpringKnM2:khKnM3*input.springWidthM,
+      const bh=layer.ultimate?.brinchHansen,ultimate=bh?{...layer.ultimate!,brinchHansen:{...bh,widthM:input.springWidthM}}:layer.ultimate;
+      return {...layer,ultimate,topM:water?Math.max(layer.topM,water.bedDepthM):layer.topM,inputIndex,khKnM3,ka,lineSpringKnM2:khKnM3*input.springWidthM,
         lineLoadKnM:layer.netPressureKpa*input.springWidthM+input.surchargeSign*ka*input.surchargeKpa*input.surchargeWidthM};
     }).sort((a,b)=>a.topM-b.topM);
-    const profiles=resolvedLayers.map(layer=>{
-      if(!layer.ultimate&&(analysisMode==='nonlinear'||correction==='georgiadis'))throw new Error(ct('calcLateral', 'errors.missingUltimate', 'Vul de grensweerstand in voor laag {{layer}}.', {layer:layer.inputIndex+1}));
+    // Lagen die geheel boven de waterbodem liggen, dragen niet.
+    const active=resolvedLayers.filter(l=>l.bottomM>l.topM+1e-9);
+    if(active.length===0)throw new Error(ct('calcLateral', 'errors.noSoilBelowBed', 'Er ligt geen grondlaag onder de waterbodem.'));
+    const profiles=active.map(layer=>{
+      if(!layer.ultimate&&(usesUltimate(analysisMode)||correction==='georgiadis'))throw new Error(ct('calcLateral', 'errors.missingUltimate', 'Vul de grensweerstand in voor laag {{layer}}.', {layer:layer.inputIndex+1}));
       return {topM:layer.topM,bottomM:layer.bottomM,initialKnM2:layer.lineSpringKnM2,
         ultimate:analysisMode==='linear'&&correction==='none'?{atSurfaceKnM:0,gradientKnM2:0,capKnM:1}:layer.ultimate??{atSurfaceKnM:0,gradientKnM2:0,capKnM:1}};
     });
-    const equivalents=equivalentLayers(profiles,correction);
-    const solved=solveFoundationBeam({...input,eiKnM2:section.eiKnM2,layers:resolvedLayers},profiles,equivalents,analysisMode,correction);
-    const springs=solved.springs.map(s=>({...s,layerIndex:resolvedLayers[s.layerIndex].inputIndex}));
-    const layering:Array<EquivalentLayer>=Array(input.layers.length);resolvedLayers.forEach((l,j)=>layering[l.inputIndex]=equivalents[j]);
+    const originM=water?.bedDepthM;
+    const equivalents=equivalentLayers(profiles,correction,originM);
+    const solved=solveFoundationBeam({...input,eiKnM2:section.eiKnM2,eiZones,layers:active,lineLoad:water?.lineLoad},profiles,equivalents,analysisMode,correction,{originM});
+    const springs=solved.springs.map(s=>({...s,layerIndex:active[s.layerIndex].inputIndex}));
+    const layering:Array<EquivalentLayer>=Array(input.layers.length).fill(null).map(()=>({topEquivalentM:0,bottomEquivalentM:0,cumulativeUltimateKn:0}));active.forEach((l,j)=>layering[l.inputIndex]=equivalents[j]);
     const {springs:_springStates,convergence,...beam}=solved;
     const maxMomentKnM=Math.max(...beam.samples.map(v=>Math.abs(v.momentKnM)));
     let capacity:ReturnType<typeof sectionCapacity>|null=null,capacityError:string|null=null;
@@ -103,10 +122,11 @@ export function computeLateral(input:LateralInput):LateralResult {
     // De materiaaltoetsing leest alleen uit; verplaatsing, snedekrachten en de N–M-toets blijven zoals ze zijn.
     let material:MaterialResult|null=null,materialError:string|null=null;
     try {material=materialCheck(checked,beam.samples,{uc:sectionUtilization,mRdKnM:capacity?.mRdKnM??null,error:capacityError});if(corrosion)material={...material,rows:[corrosionRow(corrosion),...material.rows]};} catch(e){materialError=e instanceof Error?e.message:String(e);}
-    return {ok:true,beam,section,capacity,capacityError,maxMomentKnM,analysisMode,springs,convergence,layering,material,materialError,corrosion,
+    return {ok:true,beam,section,capacity,capacityError,maxMomentKnM,analysisMode,springs,convergence,layering,material,materialError,
+      corrosion:corrosion&&eiZones?{...corrosion,stiffnessZone:{bottomM:eiZones[0].bottomM,eiKnM2:eiZones[0].eiKnM2}}:corrosion,
       maxShearKn:Math.max(...beam.samples.map(v=>Math.abs(v.shearKn))),
       maxDisplacementMm:1000*Math.max(...beam.samples.map(v=>Math.abs(v.yM))),
-      sectionUtilization,
+      sectionUtilization,water:water?water.info:null,
       resolvedLayers};
   } catch(e) {return {ok:false,error:e instanceof Error?e.message:String(e)};}
 }

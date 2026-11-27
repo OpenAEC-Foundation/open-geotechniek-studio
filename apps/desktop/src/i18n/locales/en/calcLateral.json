@@ -61,7 +61,15 @@
     "unknownSpring": "Unknown subgrade reaction or scenario.",
     "unstableSupport": "Unstable model: insufficient support.",
     "unstableTangent": "Unstable tangent stiffness.",
-    "zeroStrengthLayer": "A layer with zero strength cannot represent the ultimate resistance of the layers above."
+    "zeroStrengthLayer": "A layer with zero strength cannot represent the ultimate resistance of the layers above.",
+    "menardInput": "Ménard: enter a positive E_p, pile width and α (0 to 1).",
+    "brinchHansenInput": "Brinch Hansen: enter φ′ (0 to 50°) and a positive γ′.",
+    "corrosionZone": "The level down to which the pile corrodes must lie below the pile head.",
+    "noSoilBelowBed": "There is no soil layer below the water bed.",
+    "waterLevels": "Enter the level of the water bed and the water level.",
+    "bedOutsidePile": "The water bed must lie between the pile head and the pile toe.",
+    "currentCd": "Current: enter the drag coefficient C_D.",
+    "currentInput": "Invalid input for the current."
   },
   "explorer": {
     "concept": "Draft alpha",
@@ -83,7 +91,8 @@
     },
     "title": "Laterally loaded pile",
     "trueScale": "True scale",
-    "views": "Pile view"
+    "views": "Pile view",
+    "elastoplasticModel": "Elastoplastic soil model"
   },
   "field": {
     "aria": "Spring field along the pile",
@@ -236,7 +245,25 @@
     "widthPile": "= pile",
     "widthPileTitle": "Equal to the pile width",
     "withH": "With H",
-    "openTubeHint": "Open tube: calculated as a hollow tube; the soil inside does not add stiffness. The inner face is also in contact with soil."
+    "openTubeHint": "Open tube: calculated as a hollow tube; the soil inside does not add stiffness. The inner face is also in contact with soil.",
+    "elastoplastic": "Elastoplastic",
+    "layerEp": "E_p layer {{n}} [kN/m²]",
+    "layerAlpha": "α layer {{n}}",
+    "alpha": {
+      "peat": "peat",
+      "clay": "clay",
+      "silt": "silt",
+      "sand": "sand",
+      "gravel": "gravel"
+    },
+    "menardTitle": "k_h from E_p (Ménard, CUR 166) at the working width",
+    "layerPhi": "φ′ layer {{n}} [°]",
+    "layerGammaEff": "γ′ layer {{n}} [kN/m³]",
+    "puKind": "Ultimate resistance layer {{n}}",
+    "puKindTitle": "pu as a profile or after Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D after Brinch Hansen (1961), z from the soil surface (with water from the bed), γ′ under water = γ_sat − 10.",
+    "menardHint": "Ménard: k_h from the pressuremeter modulus E_p and α (CUR 166)."
   },
   "inspector": {
     "aria": "Spring inspection",
@@ -274,7 +301,9 @@
       "tangent": "Tangent stiffness",
       "tributary": "Integration length",
       "ultimate": "Ultimate resistance pu"
-    }
+    },
+    "modelElastoplastic": "Elastoplastic subgrade",
+    "elastoplasticNote": "Elastoplastic: linear up to pu, then constant; static and monotonic."
   },
   "legend": {
     "aria": "Legend for soil layers and springs",
@@ -380,7 +409,10 @@
     "headFixed": "Head rotation fixed",
     "layer": "Layer {{n}}",
     "toeFixed": "Toe fixed",
-    "zFromHead": "z from head"
+    "zFromHead": "z from head",
+    "waterLevel": "Water level NAP {{nap}}",
+    "waterBed": "Water bed NAP {{nap}}",
+    "current": "Current"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Drag rotates, scroll zooms, click a spring point.",
     "layerLabel": "{{soil}} · NAP {{top}} to {{bottom}}",
     "surfaceLabel": "Ground level NAP {{nap}}",
-    "unavailable": "3D is not available on this device. Use the calculation model and the spring inspection below."
+    "unavailable": "3D is not available on this device. Use the calculation model and the spring inspection below.",
+    "waterLabel": "Water level NAP {{nap}}",
+    "bedLabel": "Water bed NAP {{nap}}",
+    "currentLabel": "Current"
   },
   "settings": {
     "applyMany": "To {{count}} layers",
@@ -533,7 +568,15 @@
     "wall": "wall {{wall}} mm",
     "width": "Effective width",
     "zeqBottom": "zeq,bottom",
-    "zeqTopBottom": "zeq top–bottom"
+    "zeqTopBottom": "zeq top–bottom",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (elastoplastic); pu as a function of the equivalent depth zeq",
+    "elastoplasticSprings": "elastoplastic soil springs",
+    "waterBed": "Water bed",
+    "waterLevel": "Water level",
+    "freeLength": "free in water {{l}} m",
+    "current": "Current",
+    "currentResultant": "resultant {{F}} kN at NAP {{z}} m",
+    "currentNot": "Wave loading and vortex shedding not included."
   },
   "sketch": {
     "aria": "Cross-section {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Peat · soft (cu approx. 10 kPa)",
     "sandDense": "Sand · dense (qc approx. 25 MPa)",
     "sandLoose": "Sand · loose (qc approx. 5 MPa)",
-    "sandMedium": "Sand · medium dense (qc approx. 15 MPa)"
+    "sandMedium": "Sand · medium dense (qc approx. 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "No active soil springs in this model.",
@@ -720,6 +764,35 @@
     "basisApprox": "approximation with the plate thicknesses",
     "tubeSummary": "After corrosion: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "After corrosion: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "With corrosion, enter the nominal wall thickness. Thickness loss per side; the table values are the recommended values of NEN-EN 1993-5 tables 4-1 and 4-2 and have not been checked against the code text or the Dutch annex. Corrosion counts in the material check and the N–M check, including the section class and D/t; in the force distribution only with the tick box. A filled tube only corrodes on the outside."
+    "hint": "With corrosion, enter the nominal wall thickness. Thickness loss per side; the table values are the recommended values of NEN-EN 1993-5 tables 4-1 and 4-2 and have not been checked against the code text or the Dutch annex. Corrosion counts in the material check and the N–M check, including the section class and D/t; in the force distribution only with the tick box. A filled tube only corrodes on the outside.",
+    "zoneBottom": "Corrodes down to",
+    "zoneBottomLabel": "Corrosion down to level [m NAP]; empty = whole pile",
+    "zoneBedTitle": "In water and down to 1 m into the bed",
+    "zoneBed": "bed − 1 m",
+    "zoneSummary": "EI after corrosion {{ei}} kNm² from the head to {{depth}} m below it; below that the original EI. The checks use the corroded section over the whole pile (safe side)."
+  },
+  "water": {
+    "enabled": "Water bed (pile free in water)",
+    "bed": "Water bed",
+    "bedLabel": "Water bed [m NAP]",
+    "level": "Water level",
+    "levelLabel": "Water level [m NAP]",
+    "hint": "No soil springs between pile head and water bed (free length {{free}} m). The soil starts at the bed; the effective stress (Brinch Hansen) counts from the bed with γ′, without surcharge from the water.",
+    "speed": "Current velocity u",
+    "speedLabel": "Current velocity [m/s]",
+    "profile": "Velocity profile",
+    "uniform": "Uniform over depth",
+    "power": "Power law u·(h/d)ⁿ",
+    "exponent": "Exponent n",
+    "density": "Water density",
+    "fresh": "Fresh (1000)",
+    "salt": "Salt (1025)",
+    "cdLabel": "Drag coefficient C_D",
+    "direction": "Direction",
+    "withH": "With H",
+    "againstH": "Against H",
+    "factor": "Partial factor γ",
+    "formula": "q = ½·ρ·C_D·D·u² per metre, from the bed to the water level; design value γ·q, like H. C_D depends on the Reynolds number, roughness and marine growth: enter a justified value (there is no default). Not included: wave loading (Morison, inertia term) and dynamic effects (vortex shedding).",
+    "result": "C_D {{cd}}: q at the surface {{q}} kN/m (characteristic); resultant {{F}} kN (design value) at NAP {{z}} m."
   }
 }

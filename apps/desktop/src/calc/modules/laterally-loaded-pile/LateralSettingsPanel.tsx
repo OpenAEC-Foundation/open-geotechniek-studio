@@ -11,7 +11,7 @@ import { OaIcon } from '../../../components/icons/oaIcon';
 import { useTranslation } from 'react-i18next';
 import { numberLocale } from '../../i18n';
 
-const PU_KEYS: Array<[keyof UltimateProfile, string]> = [['atSurfaceKnM', 'pu,0'], ['gradientKnM2', 'g'], ['capKnM', 'pu,max']];
+const PU_KEYS: Array<[Exclude<keyof UltimateProfile, 'brinchHansen'>, string]> = [['atSurfaceKnM', 'pu,0'], ['gradientKnM2', 'g'], ['capKnM', 'pu,max']];
 
 export function LateralSettingsPanel({ input: i, onChange }: PanelProps<LateralInput, LateralResult>) {
   const { t } = useTranslation('calcLateral');

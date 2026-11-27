@@ -61,7 +61,15 @@
     "unknownSpring": "Ukendt ballastkoefficient eller scenarie.",
     "unstableSupport": "Ustabil model: utilstrækkelig understøtning.",
     "unstableTangent": "Ustabil tangentstivhed.",
-    "zeroStrengthLayer": "Et lag med nul styrke kan ikke repræsentere brudmodstanden for de overliggende lag."
+    "zeroStrengthLayer": "Et lag med nul styrke kan ikke repræsentere brudmodstanden for de overliggende lag.",
+    "menardInput": "Ménard: indtast positiv E_p, pælebredde og α (0 til 1).",
+    "brinchHansenInput": "Brinch Hansen: indtast φ′ (0 til 50°) og en positiv γ′.",
+    "corrosionZone": "Koten, som pælen korroderer til, skal ligge under pælehovedet.",
+    "noSoilBelowBed": "Der er intet jordlag under bunden.",
+    "waterLevels": "Indtast kote for bund og vandstand.",
+    "bedOutsidePile": "Bunden skal ligge mellem pælehoved og pælespids.",
+    "currentCd": "Strøm: indtast modstandskoefficienten C_D.",
+    "currentInput": "Ugyldigt input for strømmen."
   },
   "explorer": {
     "concept": "Udkast alfa",
@@ -83,7 +91,8 @@
     },
     "title": "Tværbelastet pæl",
     "trueScale": "Sand skala",
-    "views": "Pælevisning"
+    "views": "Pælevisning",
+    "elastoplasticModel": "Elastoplastisk jordmodel"
   },
   "field": {
     "aria": "Fjederfelt langs pælen",
@@ -236,7 +245,25 @@
     "widthPile": "= pæl",
     "widthPileTitle": "Lig med pælens bredde",
     "withH": "Med H",
-    "openTubeHint": "Åbent rør: regnet som hult rør; jorden inde i røret bidrager ikke til stivheden. Indersiden står også i jord."
+    "openTubeHint": "Åbent rør: regnet som hult rør; jorden inde i røret bidrager ikke til stivheden. Indersiden står også i jord.",
+    "elastoplastic": "Elastoplastisk",
+    "layerEp": "E_p lag {{n}} [kN/m²]",
+    "layerAlpha": "α lag {{n}}",
+    "alpha": {
+      "peat": "tørv",
+      "clay": "ler",
+      "silt": "silt",
+      "sand": "sand",
+      "gravel": "grus"
+    },
+    "menardTitle": "k_h fra E_p (Ménard, CUR 166) ved den virksomme bredde",
+    "layerPhi": "φ′ lag {{n}} [°]",
+    "layerGammaEff": "γ′ lag {{n}} [kN/m³]",
+    "puKind": "Brudmodstand lag {{n}}",
+    "puKindTitle": "pu som profil eller efter Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D efter Brinch Hansen (1961), z fra terræn (i vand fra bunden), γ′ under vand = γ_m − 10.",
+    "menardHint": "Ménard: k_h fra pressiometermodulet E_p og α (CUR 166)."
   },
   "inspector": {
     "aria": "Fjederinspektion",
@@ -274,7 +301,9 @@
       "tangent": "Tangentstivhed",
       "tributary": "Integrationslængde",
       "ultimate": "Brudmodstand pu"
-    }
+    },
+    "modelElastoplastic": "Elastoplastisk underlag",
+    "elastoplasticNote": "Elastoplastisk: lineær til pu, derefter konstant; statisk og monoton."
   },
   "legend": {
     "aria": "Signaturforklaring for jordlag og fjedre",
@@ -380,7 +409,10 @@
     "headFixed": "Hovedrotation fastholdt",
     "layer": "Lag {{n}}",
     "toeFixed": "Spids indspændt",
-    "zFromHead": "z fra hoved"
+    "zFromHead": "z fra hoved",
+    "waterLevel": "Vandstand NAP {{nap}}",
+    "waterBed": "Vandbund NAP {{nap}}",
+    "current": "Strøm"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Træk drejer, scroll zoomer, klik på et fjederpunkt.",
     "layerLabel": "{{soil}} · NAP {{top}} til {{bottom}}",
     "surfaceLabel": "Terræn NAP {{nap}}",
-    "unavailable": "3D er ikke tilgængelig på denne enhed. Brug beregningsmodellen og fjederinspektionen nedenfor."
+    "unavailable": "3D er ikke tilgængelig på denne enhed. Brug beregningsmodellen og fjederinspektionen nedenfor.",
+    "waterLabel": "Vandstand NAP {{nap}}",
+    "bedLabel": "Vandbund NAP {{nap}}",
+    "currentLabel": "Strøm"
   },
   "settings": {
     "applyMany": "På {{count}} lag",
@@ -533,7 +568,15 @@
     "wall": "gods {{wall}} mm",
     "width": "Effektiv bredde",
     "zeqBottom": "zeq,bund",
-    "zeqTopBottom": "zeq top–bund"
+    "zeqTopBottom": "zeq top–bund",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (elastoplastisk); pu som funktion af den ækvivalente dybde zeq",
+    "elastoplasticSprings": "elastoplastiske jordfjedre",
+    "waterBed": "Vandbund",
+    "waterLevel": "Vandstand",
+    "freeLength": "fri i vand {{l}} m",
+    "current": "Strøm",
+    "currentResultant": "resultant {{F}} kN i NAP {{z}} m",
+    "currentNot": "Bølgelast og hvirvelafløsning ikke medtaget."
   },
   "sketch": {
     "aria": "Tværsnit {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Tørv · blød (cu ca. 10 kPa)",
     "sandDense": "Sand · fast (qc ca. 25 MPa)",
     "sandLoose": "Sand · løs (qc ca. 5 MPa)",
-    "sandMedium": "Sand · middelfast (qc ca. 15 MPa)"
+    "sandMedium": "Sand · middelfast (qc ca. 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "Ingen aktive jordfjedre i denne model.",
@@ -720,6 +764,35 @@
     "basisApprox": "tilnærmelse med pladetykkelserne",
     "tubeSummary": "Efter korrosion: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Efter korrosion: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "Ved korrosion indtastes den nominelle godstykkelse. Tykkelsestab pr. side; tabelværdierne er de anbefalede værdier i NEN-EN 1993-5 tabel 4-1 og 4-2 og er ikke holdt op mod standardteksten eller det nederlandske anneks. Korrosionen tæller i materialeeftervisningen og N–M-eftervisningen, også i tværsnitsklassen og D/t; i kraftfordelingen kun med fluebenet. Et fyldt rør korroderer kun udvendigt."
+    "hint": "Ved korrosion indtastes den nominelle godstykkelse. Tykkelsestab pr. side; tabelværdierne er de anbefalede værdier i NEN-EN 1993-5 tabel 4-1 og 4-2 og er ikke holdt op mod standardteksten eller det nederlandske anneks. Korrosionen tæller i materialeeftervisningen og N–M-eftervisningen, også i tværsnitsklassen og D/t; i kraftfordelingen kun med fluebenet. Et fyldt rør korroderer kun udvendigt.",
+    "zoneBottom": "Korrosion til",
+    "zoneBottomLabel": "Korrosion til kote [m NAP]; tom = hele pælen",
+    "zoneBedTitle": "I vand og til 1 m ned i bunden",
+    "zoneBed": "bund − 1 m",
+    "zoneSummary": "EI efter korrosion {{ei}} kNm² fra hovedet til {{depth}} m derunder; derunder den oprindelige EI. Eftervisningerne bruger det korroderede tværsnit over hele pælen (på den sikre side)."
+  },
+  "water": {
+    "enabled": "Vandbund (pæl fri i vand)",
+    "bed": "Vandbund",
+    "bedLabel": "Vandbund [m NAP]",
+    "level": "Vandstand",
+    "levelLabel": "Vandstand [m NAP]",
+    "hint": "Ingen jordfjedre mellem pælehoved og bund (fri længde {{free}} m). Jorden starter ved bunden; effektivspændingen (Brinch Hansen) regnes fra bunden med γ′, uden overlast fra vandet.",
+    "speed": "Strømhastighed u",
+    "speedLabel": "Strømhastighed [m/s]",
+    "profile": "Hastighedsprofil",
+    "uniform": "Ensartet over dybden",
+    "power": "Potensprofil u·(h/d)ⁿ",
+    "exponent": "Eksponent n",
+    "density": "Vandets densitet",
+    "fresh": "Fersk (1000)",
+    "salt": "Salt (1025)",
+    "cdLabel": "Modstandskoefficient C_D",
+    "direction": "Retning",
+    "withH": "Med H",
+    "againstH": "Mod H",
+    "factor": "Partialkoefficient γ",
+    "formula": "q = ½·ρ·C_D·D·u² pr. meter, fra bunden til vandstanden; regningsværdi γ·q, som H. C_D afhænger af Reynolds tal, ruhed og begroning: indtast en begrundet værdi (ingen standardværdi). Ikke medtaget: bølgelast (Morison, inertiled) og dynamiske effekter (hvirvelafløsning).",
+    "result": "C_D {{cd}}: q ved overfladen {{q}} kN/m (karakteristisk); resultant {{F}} kN (regningsværdi) i NAP {{z}} m."
   }
 }

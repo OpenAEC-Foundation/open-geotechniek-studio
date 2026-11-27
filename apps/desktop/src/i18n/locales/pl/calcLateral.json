@@ -61,7 +61,15 @@
     "unknownSpring": "Nieznany współczynnik podatności podłoża lub scenariusz.",
     "unstableSupport": "Model niestateczny: niewystarczające podparcie.",
     "unstableTangent": "Niestateczna sztywność styczna.",
-    "zeroStrengthLayer": "Warstwa o zerowej wytrzymałości nie może odwzorować oporu granicznego warstw nadległych."
+    "zeroStrengthLayer": "Warstwa o zerowej wytrzymałości nie może odwzorować oporu granicznego warstw nadległych.",
+    "menardInput": "Ménard: podaj dodatnie E_p, szerokość pala i α (0 do 1).",
+    "brinchHansenInput": "Brinch Hansen: podaj φ′ (0 do 50°) i dodatnie γ′.",
+    "corrosionZone": "Poziom, do którego pal koroduje, musi leżeć poniżej głowicy.",
+    "noSoilBelowBed": "Pod dnem nie ma warstwy gruntu.",
+    "waterLevels": "Podaj poziom dna i poziom wody.",
+    "bedOutsidePile": "Dno musi leżeć między głowicą a podstawą pala.",
+    "currentCd": "Przepływ: podaj współczynnik oporu C_D.",
+    "currentInput": "Nieprawidłowe dane przepływu."
   },
   "explorer": {
     "concept": "Wersja robocza alfa",
@@ -83,7 +91,8 @@
     },
     "title": "Pal obciążony poprzecznie",
     "trueScale": "Skala rzeczywista",
-    "views": "Widok pala"
+    "views": "Widok pala",
+    "elastoplasticModel": "Sprężysto-plastyczny model gruntu"
   },
   "field": {
     "aria": "Pole sprężyn wzdłuż pala",
@@ -236,7 +245,25 @@
     "widthPile": "= pal",
     "widthPileTitle": "Równa szerokości pala",
     "withH": "Zgodnie z H",
-    "openTubeHint": "Otwarta rura: liczona jako rura pusta; grunt wewnątrz nie zwiększa sztywności. Strona wewnętrzna również styka się z gruntem."
+    "openTubeHint": "Otwarta rura: liczona jako rura pusta; grunt wewnątrz nie zwiększa sztywności. Strona wewnętrzna również styka się z gruntem.",
+    "elastoplastic": "Sprężysto-plastyczny",
+    "layerEp": "E_p warstwa {{n}} [kN/m²]",
+    "layerAlpha": "α warstwa {{n}}",
+    "alpha": {
+      "peat": "torf",
+      "clay": "glina",
+      "silt": "pył",
+      "sand": "piasek",
+      "gravel": "żwir"
+    },
+    "menardTitle": "k_h z E_p (Ménard, CUR 166) przy szerokości czynnej",
+    "layerPhi": "φ′ warstwa {{n}} [°]",
+    "layerGammaEff": "γ′ warstwa {{n}} [kN/m³]",
+    "puKind": "Opór graniczny warstwa {{n}}",
+    "puKindTitle": "pu jako profil lub wg Brinch Hansena",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D wg Brinch Hansena (1961), z od powierzchni gruntu (w wodzie od dna), γ′ pod wodą = γ_sat − 10.",
+    "menardHint": "Ménard: k_h z modułu presjometrycznego E_p i α (CUR 166)."
   },
   "inspector": {
     "aria": "Inspekcja sprężyny",
@@ -274,7 +301,9 @@
       "tangent": "Sztywność styczna",
       "tributary": "Długość całkowania",
       "ultimate": "Opór graniczny pu"
-    }
+    },
+    "modelElastoplastic": "Podłoże sprężysto-plastyczne",
+    "elastoplasticNote": "Sprężysto-plastyczny: liniowy do pu, potem stały; statyczny i monotoniczny."
   },
   "legend": {
     "aria": "Legenda warstw gruntu i sprężyn",
@@ -380,7 +409,10 @@
     "headFixed": "Obrót głowicy zablokowany",
     "layer": "Warstwa {{n}}",
     "toeFixed": "Podstawa utwierdzona",
-    "zFromHead": "z od głowicy"
+    "zFromHead": "z od głowicy",
+    "waterLevel": "Poziom wody NAP {{nap}}",
+    "waterBed": "Dno NAP {{nap}}",
+    "current": "Przepływ"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Przeciąganie obraca, przewijanie powiększa, kliknij punkt sprężyny.",
     "layerLabel": "{{soil}} · NAP {{top}} do {{bottom}}",
     "surfaceLabel": "Poziom terenu NAP {{nap}}",
-    "unavailable": "Widok 3D nie jest dostępny na tym urządzeniu. Użyj modelu obliczeniowego i inspekcji sprężyny poniżej."
+    "unavailable": "Widok 3D nie jest dostępny na tym urządzeniu. Użyj modelu obliczeniowego i inspekcji sprężyny poniżej.",
+    "waterLabel": "Poziom wody NAP {{nap}}",
+    "bedLabel": "Dno NAP {{nap}}",
+    "currentLabel": "Przepływ"
   },
   "settings": {
     "applyMany": "Zastosuj do warstw: {{count}}",
@@ -533,7 +568,15 @@
     "wall": "ścianka {{wall}} mm",
     "width": "Szerokość efektywna",
     "zeqBottom": "zeq,bottom",
-    "zeqTopBottom": "zeq góra–dół"
+    "zeqTopBottom": "zeq góra–dół",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (sprężysto-plastyczny); pu w funkcji głębokości zastępczej zeq",
+    "elastoplasticSprings": "sprężysto-plastyczne sprężyny gruntu",
+    "waterBed": "Dno",
+    "waterLevel": "Poziom wody",
+    "freeLength": "swobodnie w wodzie {{l}} m",
+    "current": "Przepływ",
+    "currentResultant": "wypadkowa {{F}} kN na NAP {{z}} m",
+    "currentNot": "Falowanie i odrywanie wirów nieuwzględnione."
   },
   "sketch": {
     "aria": "Przekrój {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Torf · miękki (cu ok. 10 kPa)",
     "sandDense": "Piasek · zagęszczony (qc ok. 25 MPa)",
     "sandLoose": "Piasek · luźny (qc ok. 5 MPa)",
-    "sandMedium": "Piasek · średnio zagęszczony (qc ok. 15 MPa)"
+    "sandMedium": "Piasek · średnio zagęszczony (qc ok. 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "Brak aktywnych sprężyn gruntowych w tym modelu.",
@@ -720,6 +764,35 @@
     "basisApprox": "przybliżenie z grubościami",
     "tubeSummary": "Po korozji: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Po korozji: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "Przy korozji podaj nominalną grubość ścianki. Ubytek grubości na stronę; wartości z tablicy to wartości zalecane NEN-EN 1993-5 tablice 4-1 i 4-2, nie sprawdzone z tekstem normy ani z załącznikiem krajowym NL. Korozja jest uwzględniana w sprawdzeniu materiału i sprawdzeniu N–M, także w klasie i D/t; w rozkładzie sił tylko po zaznaczeniu pola. Rura wypełniona koroduje tylko z zewnątrz."
+    "hint": "Przy korozji podaj nominalną grubość ścianki. Ubytek grubości na stronę; wartości z tablicy to wartości zalecane NEN-EN 1993-5 tablice 4-1 i 4-2, nie sprawdzone z tekstem normy ani z załącznikiem krajowym NL. Korozja jest uwzględniana w sprawdzeniu materiału i sprawdzeniu N–M, także w klasie i D/t; w rozkładzie sił tylko po zaznaczeniu pola. Rura wypełniona koroduje tylko z zewnątrz.",
+    "zoneBottom": "Korozja do",
+    "zoneBottomLabel": "Korozja do poziomu [m NAP]; puste = cały pal",
+    "zoneBedTitle": "W wodzie i do 1 m w dnie",
+    "zoneBed": "dno − 1 m",
+    "zoneSummary": "EI po korozji {{ei}} kNm² od głowicy do {{depth}} m poniżej; niżej pierwotne EI. Sprawdzenia używają przekroju skorodowanego na całym palu (po stronie bezpiecznej)."
+  },
+  "water": {
+    "enabled": "Dno akwenu (pal swobodny w wodzie)",
+    "bed": "Dno",
+    "bedLabel": "Dno [m NAP]",
+    "level": "Poziom wody",
+    "levelLabel": "Poziom wody [m NAP]",
+    "hint": "Brak sprężyn gruntu między głowicą pala a dnem (długość swobodna {{free}} m). Grunt zaczyna się od dna; naprężenie efektywne (Brinch Hansen) liczone od dna z γ′, bez obciążenia od wody.",
+    "speed": "Prędkość przepływu u",
+    "speedLabel": "Prędkość przepływu [m/s]",
+    "profile": "Profil prędkości",
+    "uniform": "Równomierny po głębokości",
+    "power": "Profil potęgowy u·(h/d)ⁿ",
+    "exponent": "Wykładnik n",
+    "density": "Gęstość wody",
+    "fresh": "Słodka (1000)",
+    "salt": "Słona (1025)",
+    "cdLabel": "Współczynnik oporu C_D",
+    "direction": "Kierunek",
+    "withH": "Zgodnie z H",
+    "againstH": "Przeciwnie do H",
+    "factor": "Współczynnik częściowy γ",
+    "formula": "q = ½·ρ·C_D·D·u² na metr, od dna do poziomu wody; wartość obliczeniowa γ·q, jak H. C_D zależy od liczby Reynoldsa, chropowatości i porostu: wpisz uzasadnioną wartość (brak wartości domyślnej). Nie uwzględniono: falowania (Morison, człon bezwładności) i efektów dynamicznych (odrywanie wirów).",
+    "result": "C_D {{cd}}: q przy powierzchni {{q}} kN/m (charakterystyczne); wypadkowa {{F}} kN (obliczeniowa) na NAP {{z}} m."
   }
 }

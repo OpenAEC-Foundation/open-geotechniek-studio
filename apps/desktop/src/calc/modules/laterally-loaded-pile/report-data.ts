@@ -1,5 +1,7 @@
 // Alle tabellen van de uitgebreide uitdraai horizontale paal, één keer
 // berekend en gedeeld door het rekenblad op het scherm en het PDF-rapport.
+import { ultimateAtDepth } from './nonlinear-soil';
+import { usesUltimate } from './spring-types';
 import type { LateralInput, LateralResult } from './compute';
 import { SOIL_SPRINGS } from './soil';
 import { sectionCapacity } from './section';
@@ -27,20 +29,20 @@ export interface LayerRow {
 export interface DepthRow { z: number; nap: number; yMm: number; rotMrad: number; mKnM: number; vKn: number; pKnM: number }
 
 export function lateralReportData(input: LateralInput, r: Ok) {
-  const head = input.headNap ?? 0, nonlinear = r.analysisMode === 'nonlinear' || input.layerCorrection === 'georgiadis';
+  const head = input.headNap ?? 0, nonlinear = usesUltimate(r.analysisMode) || input.layerCorrection === 'georgiadis';
   const layers: LayerRow[] = input.layers.map((l, k) => {
     const res = r.resolvedLayers.find((x) => x.topM === l.topM && x.bottomM === l.bottomM && x.springId === l.springId) ?? r.resolvedLayers[k];
     const eq = r.layering[k];
     const own = r.springs.filter((s) => s.layerIndex === k);
-    const pu = (zeq: number) => l.ultimate ? Math.min(l.ultimate.capKnM, l.ultimate.atSurfaceKnM + l.ultimate.gradientKnM2 * zeq) : null;
+    const resUlt = res.ultimate, pu = (zeq: number) => { if (!resUlt) return null; try { return ultimateAtDepth(resUlt, Math.max(0, zeq)); } catch { return null; } };
     const mobs = own.map(mobilisation).filter((m): m is number => m !== null);
     const color = soilColor(l.springId);
     return {
       index: k + 1, topNap: head - l.topM, bottomNap: head - l.bottomM, thicknessM: l.bottomM - l.topM, springId: l.springId, label: soilLabel(l.springId),
       color: color.fill, rgb: color.rgb,
-      khKnM3: res.khKnM3, source: l.springId === 'manual' ? 'projectwaarde' : input.springOverrides?.[l.springId]?.[input.scenario] !== undefined ? 'eigen waarde (instellingen berekening)' : `CUR166 tabel 3.3, ${input.scenario === 'low' ? 'laag' : 'hoog'} gemiddelde`,
+      khKnM3: res.khKnM3, source: l.springId === 'manual' ? 'projectwaarde' : l.springId === 'menard' ? `Ménard, E_p = ${l.menardEpKpa} kN/m², α = ${Math.round((l.menardAlpha ?? 1 / 3) * 1000) / 1000}` : input.springOverrides?.[l.springId]?.[input.scenario] !== undefined ? 'eigen waarde (instellingen berekening)' : `CUR166 tabel 3.3, ${input.scenario === 'low' ? 'laag' : 'hoog'} gemiddelde`,
       k0KnM2: res.lineSpringKnM2,
-      ultimate: nonlinear && l.ultimate ? `min(${l.ultimate.capKnM}; ${l.ultimate.atSurfaceKnM} + ${l.ultimate.gradientKnM2}·zeq)` : null,
+      ultimate: nonlinear && l.ultimate?.brinchHansen ? `Brinch Hansen, φ′ = ${l.ultimate.brinchHansen.phiDeg}°, γ′ = ${l.ultimate.brinchHansen.gammaEffKnM3} kN/m³` : nonlinear && l.ultimate ? `min(${l.ultimate.capKnM}; ${l.ultimate.atSurfaceKnM} + ${l.ultimate.gradientKnM2}·zeq)` : null,
       puTop: nonlinear ? pu(eq.topEquivalentM) : null, puBottom: nonlinear ? pu(eq.bottomEquivalentM) : null,
       frictionDeg: l.frictionDeg, ka: res.ka, lineLoadKnM: res.lineLoadKnM,
       zeqTop: eq.topEquivalentM, zeqBottom: eq.bottomEquivalentM, cumulativeKn: nonlinear ? eq.cumulativeUltimateKn : null,

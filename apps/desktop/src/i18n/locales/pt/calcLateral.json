@@ -61,7 +61,15 @@
     "unknownSpring": "Módulo de reação ou cenário desconhecido.",
     "unstableSupport": "Modelo instável: apoio insuficiente.",
     "unstableTangent": "Rigidez tangente instável.",
-    "zeroStrengthLayer": "Uma camada com resistência nula não pode representar a resistência última das camadas sobrejacentes."
+    "zeroStrengthLayer": "Uma camada com resistência nula não pode representar a resistência última das camadas sobrejacentes.",
+    "menardInput": "Ménard: introduza E_p, largura da estaca e α (0 a 1) positivos.",
+    "brinchHansenInput": "Brinch Hansen: introduza φ′ (0 a 50°) e um γ′ positivo.",
+    "corrosionZone": "O nível até onde a estaca corrói deve ficar abaixo da cabeça.",
+    "noSoilBelowBed": "Não há camada de solo abaixo do leito.",
+    "waterLevels": "Introduza o nível do leito e o nível de água.",
+    "bedOutsidePile": "O leito deve ficar entre a cabeça e a ponta da estaca.",
+    "currentCd": "Corrente: introduza o coeficiente de arrasto C_D.",
+    "currentInput": "Entrada inválida para a corrente."
   },
   "explorer": {
     "concept": "Rascunho alfa",
@@ -83,7 +91,8 @@
     },
     "title": "Estaca com carga horizontal",
     "trueScale": "Escala real",
-    "views": "Vista da estaca"
+    "views": "Vista da estaca",
+    "elastoplasticModel": "Modelo de solo elastoplástico"
   },
   "field": {
     "aria": "Campo de molas ao longo da estaca",
@@ -236,7 +245,25 @@
     "widthPile": "= estaca",
     "widthPileTitle": "Igual à largura da estaca",
     "withH": "Com H",
-    "openTubeHint": "Tubo aberto: calculado como tubo oco; o solo no interior não contribui para a rigidez. A face interior também está em contacto com o solo."
+    "openTubeHint": "Tubo aberto: calculado como tubo oco; o solo no interior não contribui para a rigidez. A face interior também está em contacto com o solo.",
+    "elastoplastic": "Elastoplástico",
+    "layerEp": "E_p camada {{n}} [kN/m²]",
+    "layerAlpha": "α camada {{n}}",
+    "alpha": {
+      "peat": "turfa",
+      "clay": "argila",
+      "silt": "silte",
+      "sand": "areia",
+      "gravel": "cascalho"
+    },
+    "menardTitle": "k_h a partir de E_p (Ménard, CUR 166) com a largura ativa",
+    "layerPhi": "φ′ camada {{n}} [°]",
+    "layerGammaEff": "γ′ camada {{n}} [kN/m³]",
+    "puKind": "Resistência última camada {{n}}",
+    "puKindTitle": "pu como perfil ou segundo Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D segundo Brinch Hansen (1961), z a partir do terreno (com água a partir do leito), γ′ submerso = γ_sat − 10.",
+    "menardHint": "Ménard: k_h a partir do módulo pressiométrico E_p e α (CUR 166)."
   },
   "inspector": {
     "aria": "Inspeção da mola",
@@ -274,7 +301,9 @@
       "tangent": "Rigidez tangente",
       "tributary": "Comprimento de integração",
       "ultimate": "Resistência última pu"
-    }
+    },
+    "modelElastoplastic": "Reação elastoplástica",
+    "elastoplasticNote": "Elastoplástico: linear até pu, depois constante; estático e monótono."
   },
   "legend": {
     "aria": "Legenda de camadas de solo e molas",
@@ -380,7 +409,10 @@
     "headFixed": "Rotação da cabeça impedida",
     "layer": "Camada {{n}}",
     "toeFixed": "Ponta encastrada",
-    "zFromHead": "z a partir da cabeça"
+    "zFromHead": "z a partir da cabeça",
+    "waterLevel": "Nível de água NAP {{nap}}",
+    "waterBed": "Leito NAP {{nap}}",
+    "current": "Corrente"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Arrastar roda, a roda do rato faz zoom, clique num ponto de mola.",
     "layerLabel": "{{soil}} · NAP {{top}} a {{bottom}}",
     "surfaceLabel": "Superfície do terreno NAP {{nap}}",
-    "unavailable": "O 3D não está disponível neste dispositivo. Utilize o modelo de cálculo e a inspeção da mola abaixo."
+    "unavailable": "O 3D não está disponível neste dispositivo. Utilize o modelo de cálculo e a inspeção da mola abaixo.",
+    "waterLabel": "Nível de água NAP {{nap}}",
+    "bedLabel": "Leito NAP {{nap}}",
+    "currentLabel": "Corrente"
   },
   "settings": {
     "applyMany": "Para {{count}} camadas",
@@ -533,7 +568,15 @@
     "wall": "parede {{wall}} mm",
     "width": "Largura efetiva",
     "zeqBottom": "zeq,base",
-    "zeqTopBottom": "zeq topo–base"
+    "zeqTopBottom": "zeq topo–base",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (elastoplástico); pu em função da profundidade equivalente zeq",
+    "elastoplasticSprings": "molas de solo elastoplásticas",
+    "waterBed": "Leito",
+    "waterLevel": "Nível de água",
+    "freeLength": "livre na água {{l}} m",
+    "current": "Corrente",
+    "currentResultant": "resultante {{F}} kN a NAP {{z}} m",
+    "currentNot": "Ondas e desprendimento de vórtices não incluídos."
   },
   "sketch": {
     "aria": "Secção {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Turfa · mole (cu aprox. 10 kPa)",
     "sandDense": "Areia · densa (qc aprox. 25 MPa)",
     "sandLoose": "Areia · solta (qc aprox. 5 MPa)",
-    "sandMedium": "Areia · medianamente densa (qc aprox. 15 MPa)"
+    "sandMedium": "Areia · medianamente densa (qc aprox. 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "Sem molas do solo ativas neste modelo.",
@@ -720,6 +764,35 @@
     "basisApprox": "aproximação com as espessuras",
     "tubeSummary": "Após corrosão: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Após corrosão: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "Com corrosão, introduza a espessura nominal. Perda de espessura por face; os valores do quadro são os recomendados de NEN-EN 1993-5 quadros 4-1 e 4-2 e não foram confrontados com o texto da norma nem com o anexo neerlandês. A corrosão conta na verificação do material e na verificação N–M, também na classe e D/t; na distribuição de esforços só com a caixa assinalada. Um tubo cheio só corrói por fora."
+    "hint": "Com corrosão, introduza a espessura nominal. Perda de espessura por face; os valores do quadro são os recomendados de NEN-EN 1993-5 quadros 4-1 e 4-2 e não foram confrontados com o texto da norma nem com o anexo neerlandês. A corrosão conta na verificação do material e na verificação N–M, também na classe e D/t; na distribuição de esforços só com a caixa assinalada. Um tubo cheio só corrói por fora.",
+    "zoneBottom": "Corrosão até",
+    "zoneBottomLabel": "Corrosão até ao nível [m NAP]; vazio = toda a estaca",
+    "zoneBedTitle": "Na água e até 1 m no leito",
+    "zoneBed": "leito − 1 m",
+    "zoneSummary": "EI após corrosão {{ei}} kNm² da cabeça até {{depth}} m abaixo; abaixo disso a EI original. As verificações usam a secção corroída em toda a estaca (lado da segurança)."
+  },
+  "water": {
+    "enabled": "Leito de água (estaca livre na água)",
+    "bed": "Leito",
+    "bedLabel": "Leito [m NAP]",
+    "level": "Nível de água",
+    "levelLabel": "Nível de água [m NAP]",
+    "hint": "Sem molas de solo entre a cabeça da estaca e o leito (comprimento livre {{free}} m). O solo começa no leito; a tensão efetiva (Brinch Hansen) conta a partir do leito com γ′, sem sobrecarga da água.",
+    "speed": "Velocidade da corrente u",
+    "speedLabel": "Velocidade da corrente [m/s]",
+    "profile": "Perfil de velocidade",
+    "uniform": "Uniforme na profundidade",
+    "power": "Lei de potência u·(h/d)ⁿ",
+    "exponent": "Expoente n",
+    "density": "Massa específica da água",
+    "fresh": "Doce (1000)",
+    "salt": "Salgada (1025)",
+    "cdLabel": "Coeficiente de arrasto C_D",
+    "direction": "Sentido",
+    "withH": "Com H",
+    "againstH": "Contra H",
+    "factor": "Coeficiente parcial γ",
+    "formula": "q = ½·ρ·C_D·D·u² por metro, do leito ao nível de água; valor de cálculo γ·q, como H. C_D depende do número de Reynolds, da rugosidade e das incrustações: introduza um valor justificado (não há valor por defeito). Não incluído: ondas (Morison, termo de inércia) e efeitos dinâmicos (desprendimento de vórtices).",
+    "result": "C_D {{cd}}: q à superfície {{q}} kN/m (característico); resultante {{F}} kN (valor de cálculo) a NAP {{z}} m."
   }
 }

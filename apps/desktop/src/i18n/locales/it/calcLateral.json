@@ -61,7 +61,15 @@
     "unknownSpring": "Modulo di reazione o scenario sconosciuto.",
     "unstableSupport": "Modello instabile: vincolo insufficiente.",
     "unstableTangent": "Rigidezza tangente instabile.",
-    "zeroStrengthLayer": "Uno strato con resistenza nulla non può rappresentare la resistenza ultima degli strati sovrastanti."
+    "zeroStrengthLayer": "Uno strato con resistenza nulla non può rappresentare la resistenza ultima degli strati sovrastanti.",
+    "menardInput": "Ménard: inserire E_p, larghezza del palo e α (da 0 a 1) positivi.",
+    "brinchHansenInput": "Brinch Hansen: inserire φ′ (da 0 a 50°) e un γ′ positivo.",
+    "corrosionZone": "La quota fino a cui il palo si corrode deve essere sotto la testa.",
+    "noSoilBelowBed": "Non c’è alcuno strato di terreno sotto il fondale.",
+    "waterLevels": "Inserire la quota del fondale e il livello idrico.",
+    "bedOutsidePile": "Il fondale deve trovarsi tra testa e punta del palo.",
+    "currentCd": "Corrente: inserire il coefficiente di resistenza C_D.",
+    "currentInput": "Input non valido per la corrente."
   },
   "explorer": {
     "concept": "Bozza alpha",
@@ -83,7 +91,8 @@
     },
     "title": "Palo caricato lateralmente",
     "trueScale": "Scala reale",
-    "views": "Vista del palo"
+    "views": "Vista del palo",
+    "elastoplasticModel": "Modello di terreno elastoplastico"
   },
   "field": {
     "aria": "Campo delle molle lungo il palo",
@@ -236,7 +245,25 @@
     "widthPile": "= palo",
     "widthPileTitle": "Pari alla larghezza del palo",
     "withH": "Concorde con H",
-    "openTubeHint": "Tubo aperto: calcolato come tubo cavo; il terreno interno non contribuisce alla rigidezza. Anche la faccia interna è a contatto con il terreno."
+    "openTubeHint": "Tubo aperto: calcolato come tubo cavo; il terreno interno non contribuisce alla rigidezza. Anche la faccia interna è a contatto con il terreno.",
+    "elastoplastic": "Elastoplastico",
+    "layerEp": "E_p strato {{n}} [kN/m²]",
+    "layerAlpha": "α strato {{n}}",
+    "alpha": {
+      "peat": "torba",
+      "clay": "argilla",
+      "silt": "limo",
+      "sand": "sabbia",
+      "gravel": "ghiaia"
+    },
+    "menardTitle": "k_h da E_p (Ménard, CUR 166) con la larghezza attiva",
+    "layerPhi": "φ′ strato {{n}} [°]",
+    "layerGammaEff": "γ′ strato {{n}} [kN/m³]",
+    "puKind": "Resistenza ultima strato {{n}}",
+    "puKindTitle": "pu come profilo o secondo Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D secondo Brinch Hansen (1961), z dal piano campagna (in acqua dal fondale), γ′ sotto falda = γ_sat − 10.",
+    "menardHint": "Ménard: k_h dal modulo pressiometrico E_p e α (CUR 166)."
   },
   "inspector": {
     "aria": "Ispezione della molla",
@@ -274,7 +301,9 @@
       "tangent": "Rigidezza tangente",
       "tributary": "Lunghezza d'integrazione",
       "ultimate": "Resistenza ultima pu"
-    }
+    },
+    "modelElastoplastic": "Reazione elastoplastica",
+    "elastoplasticNote": "Elastoplastico: lineare fino a pu, poi costante; statico e monotono."
   },
   "legend": {
     "aria": "Legenda di strati di terreno e molle",
@@ -380,7 +409,10 @@
     "headFixed": "Rotazione in testa impedita",
     "layer": "Strato {{n}}",
     "toeFixed": "Punta incastrata",
-    "zFromHead": "z dalla testa"
+    "zFromHead": "z dalla testa",
+    "waterLevel": "Livello idrico NAP {{nap}}",
+    "waterBed": "Fondale NAP {{nap}}",
+    "current": "Corrente"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Trascinare ruota, la rotellina ingrandisce, fare clic su un punto molla.",
     "layerLabel": "{{soil}} · NAP da {{top}} a {{bottom}}",
     "surfaceLabel": "Piano campagna NAP {{nap}}",
-    "unavailable": "Il 3D non è disponibile su questo dispositivo. Usa il modello di calcolo e l'ispezione delle molle qui sotto."
+    "unavailable": "Il 3D non è disponibile su questo dispositivo. Usa il modello di calcolo e l'ispezione delle molle qui sotto.",
+    "waterLabel": "Livello idrico NAP {{nap}}",
+    "bedLabel": "Fondale NAP {{nap}}",
+    "currentLabel": "Corrente"
   },
   "settings": {
     "applyMany": "A {{count}} strati",
@@ -533,7 +568,15 @@
     "wall": "parete {{wall}} mm",
     "width": "Larghezza efficace",
     "zeqBottom": "zeq,base",
-    "zeqTopBottom": "zeq tetto–base"
+    "zeqTopBottom": "zeq tetto–base",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (elastoplastico); pu in funzione della profondità equivalente zeq",
+    "elastoplasticSprings": "molle di terreno elastoplastiche",
+    "waterBed": "Fondale",
+    "waterLevel": "Livello idrico",
+    "freeLength": "libero in acqua {{l}} m",
+    "current": "Corrente",
+    "currentResultant": "risultante {{F}} kN a NAP {{z}} m",
+    "currentNot": "Moto ondoso e distacco di vortici non inclusi."
   },
   "sketch": {
     "aria": "Sezione {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Torba · tenera (cu circa 10 kPa)",
     "sandDense": "Sabbia · densa (qc circa 25 MPa)",
     "sandLoose": "Sabbia · sciolta (qc circa 5 MPa)",
-    "sandMedium": "Sabbia · mediamente densa (qc circa 15 MPa)"
+    "sandMedium": "Sabbia · mediamente densa (qc circa 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "Nessuna molla del terreno attiva in questo modello.",
@@ -720,6 +764,35 @@
     "basisApprox": "approssimazione con gli spessori",
     "tubeSummary": "Dopo la corrosione: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Dopo la corrosione: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "In caso di corrosione inserire lo spessore nominale. Perdita di spessore per faccia; i valori in tabella sono quelli raccomandati di NEN-EN 1993-5 tabelle 4-1 e 4-2 e non sono stati confrontati con il testo della norma o con l'appendice olandese. La corrosione conta nella verifica del materiale e nella verifica N–M, anche nella classe e D/t; nella distribuzione delle sollecitazioni solo con la casella spuntata. Un tubo riempito si corrode solo all'esterno."
+    "hint": "In caso di corrosione inserire lo spessore nominale. Perdita di spessore per faccia; i valori in tabella sono quelli raccomandati di NEN-EN 1993-5 tabelle 4-1 e 4-2 e non sono stati confrontati con il testo della norma o con l'appendice olandese. La corrosione conta nella verifica del materiale e nella verifica N–M, anche nella classe e D/t; nella distribuzione delle sollecitazioni solo con la casella spuntata. Un tubo riempito si corrode solo all'esterno.",
+    "zoneBottom": "Corrosione fino a",
+    "zoneBottomLabel": "Corrosione fino alla quota [m NAP]; vuoto = tutto il palo",
+    "zoneBedTitle": "In acqua e fino a 1 m nel fondale",
+    "zoneBed": "fondale − 1 m",
+    "zoneSummary": "EI dopo la corrosione {{ei}} kNm² dalla testa fino a {{depth}} m sotto; più in basso la EI originale. Le verifiche usano la sezione corrosa su tutto il palo (a favore di sicurezza)."
+  },
+  "water": {
+    "enabled": "Fondale (palo libero in acqua)",
+    "bed": "Fondale",
+    "bedLabel": "Fondale [m NAP]",
+    "level": "Livello idrico",
+    "levelLabel": "Livello idrico [m NAP]",
+    "hint": "Nessuna molla di terreno tra testa del palo e fondale (lunghezza libera {{free}} m). Il terreno inizia al fondale; la tensione efficace (Brinch Hansen) parte dal fondale con γ′, senza sovraccarico dell’acqua.",
+    "speed": "Velocità della corrente u",
+    "speedLabel": "Velocità della corrente [m/s]",
+    "profile": "Profilo di velocità",
+    "uniform": "Uniforme sulla profondità",
+    "power": "Legge di potenza u·(h/d)ⁿ",
+    "exponent": "Esponente n",
+    "density": "Densità dell’acqua",
+    "fresh": "Dolce (1000)",
+    "salt": "Salata (1025)",
+    "cdLabel": "Coefficiente di resistenza C_D",
+    "direction": "Verso",
+    "withH": "Concorde a H",
+    "againstH": "Opposto a H",
+    "factor": "Coefficiente parziale γ",
+    "formula": "q = ½·ρ·C_D·D·u² al metro, dal fondale al livello idrico; valore di progetto γ·q, come H. C_D dipende dal numero di Reynolds, dalla rugosità e dalle incrostazioni: inserire un valore motivato (nessun valore predefinito). Non inclusi: moto ondoso (Morison, termine d’inerzia) ed effetti dinamici (distacco di vortici).",
+    "result": "C_D {{cd}}: q in superficie {{q}} kN/m (caratteristico); risultante {{F}} kN (valore di progetto) a NAP {{z}} m."
   }
 }

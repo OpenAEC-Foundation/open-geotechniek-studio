@@ -20,6 +20,11 @@ export interface PileCorrosion {
   sides: 1 | 2;
   /** Rekent de paal met de EI na afroesting; standaard met de oorspronkelijke. */
   reducedStiffness: boolean;
+  /**
+   * Afroesting van de kop tot dit niveau [m NAP] (b.v. tot 1 m in de waterbodem); leeg = de hele paal. Geldt voor de
+   * EI na afroesting; de toetsen gebruiken de afgeroeste doorsnede over de hele paal (veilige kant).
+   */
+  zoneBottomNap?: number;
   /** Doorsnedeklasse van het damwandprofiel na afroesting als die onzeker is; leeg = de ongunstigste. */
   classChoice?: 2 | 3 | 4;
 }
@@ -33,6 +38,8 @@ export interface PileCorrosionInfo {
   sheet?: CorrodedSheet;
   /** De doorsnede na afroesting, voor de toetsen. */
   section: PileSection;
+  /** Afroesting tot een niveau: EI na afroesting van de kop tot diepte bottomM [m]; daaronder de oorspronkelijke EI. */
+  stiffnessZone?: { bottomM: number; eiKnM2: number };
 }
 
 /** Doorsnede na afroesting; null zonder afroesting of bij beton. Gooit een fout bij een ontbrekende tabelwaarde. */

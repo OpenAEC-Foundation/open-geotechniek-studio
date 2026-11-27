@@ -1,7 +1,7 @@
 // Invoerblok "Afroesting" van de horizontaal belaste paal: stalen buis (1 kant buiten of 2 kanten) en damwandprofiel
 // (1 of 2 zijden), met de tabelkeuze van NEN-EN 1993-5, het vinkje "EI na afroesting" en de verificatie.
 import { useTranslation } from 'react-i18next';
-import { Hint, More, Row } from '../../framework/views/SheetForm';
+import { Hint, More, NumberInput, Row } from '../../framework/views/SheetForm';
 import { numberLocale } from '../../i18n';
 import { CorrosionFaceInput } from '../../shared/CorrosionFace';
 import { CorrosionVerification } from '../../shared/CorrosionVerification';
@@ -24,6 +24,9 @@ export function LateralCorrosion({ input: i, result: r, onChange }: { input: Lat
     <CorrosionFaceInput label={sheet ? t('corrosion.side1Label', 'Zijde 1') : t('corrosion.outerLabel', 'Buitenzijde')} face={c.outer} onChange={(outer) => set({ outer })} />
     {two && <CorrosionFaceInput label={sheet ? t('corrosion.side2Label', 'Zijde 2') : t('corrosion.innerLabel', 'Binnenzijde')} face={c.inner} onChange={(inner) => set({ inner })} />}
     <label className="cs-check"><input type="checkbox" checked={c.reducedStiffness} onChange={(e) => set({ reducedStiffness: e.target.checked })} /> {t('corrosion.reducedStiffness', 'EI na afroesting')}</label>
+    {c.reducedStiffness && <Row label={t('corrosion.zoneBottom', 'Roest tot')} unit="m NAP"><NumberInput label={t('corrosion.zoneBottomLabel', 'Afroesting tot niveau [m NAP]; leeg = hele paal')} value={c.zoneBottomNap} onChange={(v) => set({ zoneBottomNap: Number.isFinite(v) ? v : undefined })} />
+      {i.waterBed?.enabled && <button type="button" className="lat-mini" title={t('corrosion.zoneBedTitle', 'In water en tot 1 m in de waterbodem')} onClick={() => set({ zoneBottomNap: Math.round((i.waterBed!.bedNap - 1) * 1000) / 1000 })}>{t('corrosion.zoneBed', 'bodem − 1 m')}</button>}</Row>}
+    {info?.stiffnessZone && <Hint>{t('corrosion.zoneSummary', 'EI na afroesting {{ei}} kNm² van de kop tot {{depth}} m eronder; daaronder de oorspronkelijke EI. De toetsen gebruiken de afgeroeste doorsnede over de hele paal (veilige kant).', { ei: nl(info.stiffnessZone.eiKnM2, 0), depth: nl(info.stiffnessZone.bottomM) })}</Hint>}
     {sheet && <Row label={t('corrosion.classChoice', 'Klasse na afroesting')}><select aria-label={t('corrosion.classChoice', 'Klasse na afroesting')} value={c.classChoice ?? ''} onChange={(e) => set({ classChoice: e.target.value ? Number(e.target.value) as 2 | 3 | 4 : undefined })}>
       <option value="">{t('corrosion.classAuto', 'Uit de catalogus (bij twijfel de ongunstigste)')}</option>{[2, 3, 4].map((k) => <option key={k} value={k}>{t('corrosion.classN', 'Klasse {{cls}}', { cls: k })}</option>)}</select></Row>}
     {info?.tube && <Hint>{t('corrosion.tubeSummary', 'Na afroesting: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.', { d0: nl(info.tube.diameterMm, 1), d1: nl(info.tube.reducedDiameterMm, 1), t0: nl(info.tube.wallMm), t1: nl(info.tube.reducedWallMm) })}</Hint>}

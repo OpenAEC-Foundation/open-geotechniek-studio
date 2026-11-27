@@ -61,7 +61,15 @@
     "unknownSpring": "Onbekende bedding of scenario.",
     "unstableSupport": "Instabiel model: onvoldoende steun.",
     "unstableTangent": "Instabiele tangentstijfheid.",
-    "zeroStrengthLayer": "Een laag met nulsterkte kan de bovenliggende grensweerstand niet vertegenwoordigen."
+    "zeroStrengthLayer": "Een laag met nulsterkte kan de bovenliggende grensweerstand niet vertegenwoordigen.",
+    "menardInput": "Ménard: vul een positieve E_p, paalbreedte en α (0 tot 1) in.",
+    "brinchHansenInput": "Brinch Hansen: vul φ′ (0 tot 50°) en een positieve γ′ in.",
+    "corrosionZone": "Het niveau tot waar de paal roest moet onder de paalkop liggen.",
+    "noSoilBelowBed": "Er ligt geen grondlaag onder de waterbodem.",
+    "waterLevels": "Vul het niveau van de waterbodem en het waterpeil in.",
+    "bedOutsidePile": "De waterbodem moet tussen de paalkop en de paalpunt liggen.",
+    "currentCd": "Stroming: vul de weerstandscoëfficiënt C_D in.",
+    "currentInput": "Ongeldige invoer voor de stroming."
   },
   "explorer": {
     "concept": "Concept alpha",
@@ -83,7 +91,8 @@
     },
     "title": "Horizontale paalbelasting",
     "trueScale": "Ware schaal",
-    "views": "Paalweergave"
+    "views": "Paalweergave",
+    "elastoplasticModel": "Elastoplastisch grondmodel"
   },
   "field": {
     "aria": "Veerveld langs de paal",
@@ -236,7 +245,25 @@
     "widthPile": "= paal",
     "widthPileTitle": "Gelijk aan de paalbreedte",
     "withH": "Met H mee",
-    "openTubeHint": "Open buis: gerekend als holle buis; de grond in de buis draagt niet bij aan de stijfheid. De binnenzijde staat ook in de grond."
+    "openTubeHint": "Open buis: gerekend als holle buis; de grond in de buis draagt niet bij aan de stijfheid. De binnenzijde staat ook in de grond.",
+    "elastoplastic": "Elastoplastisch",
+    "layerEp": "E_p laag {{n}} [kN/m²]",
+    "layerAlpha": "α laag {{n}}",
+    "alpha": {
+      "peat": "veen",
+      "clay": "klei",
+      "silt": "silt",
+      "sand": "zand",
+      "gravel": "grind"
+    },
+    "menardTitle": "k_h uit E_p (Ménard, CUR 166) bij de werkende breedte",
+    "layerPhi": "φ′ laag {{n}} [°]",
+    "layerGammaEff": "γ′ laag {{n}} [kN/m³]",
+    "puKind": "Grensweerstand laag {{n}}",
+    "puKindTitle": "pu als profiel of volgens Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D volgens Brinch Hansen (1961), z vanaf de grond (bij water vanaf de waterbodem), γ′ onder water = γ_n − 10.",
+    "menardHint": "Ménard: k_h uit de pressiometermodulus E_p en α (CUR 166)."
   },
   "inspector": {
     "aria": "Veerinspectie",
@@ -274,7 +301,9 @@
       "tangent": "Tangentstijfheid",
       "tributary": "Integratielengte",
       "ultimate": "Grensweerstand pu"
-    }
+    },
+    "modelElastoplastic": "Elastoplastische bedding",
+    "elastoplasticNote": "Elastoplastisch: lineair tot pu, daarna constant; statisch en monotoon."
   },
   "legend": {
     "aria": "Legenda grondlagen en veren",
@@ -380,7 +409,10 @@
     "headFixed": "Koprotatie vast",
     "layer": "Laag {{n}}",
     "toeFixed": "Punt ingeklemd",
-    "zFromHead": "z vanaf kop"
+    "zFromHead": "z vanaf kop",
+    "waterLevel": "Waterpeil NAP {{nap}}",
+    "waterBed": "Waterbodem NAP {{nap}}",
+    "current": "Stroming"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Slepen draait, scrollen zoomt, klik een veerpunt.",
     "layerLabel": "{{soil}} · NAP {{top}} tot {{bottom}}",
     "surfaceLabel": "Maaiveld NAP {{nap}}",
-    "unavailable": "3D is op dit apparaat niet beschikbaar. Gebruik het rekenmodel en de veerinspectie hieronder."
+    "unavailable": "3D is op dit apparaat niet beschikbaar. Gebruik het rekenmodel en de veerinspectie hieronder.",
+    "waterLabel": "Waterpeil NAP {{nap}}",
+    "bedLabel": "Waterbodem NAP {{nap}}",
+    "currentLabel": "Stroming"
   },
   "settings": {
     "applyMany": "Op {{count}} lagen",
@@ -533,7 +568,15 @@
     "wall": "wand {{wall}} mm",
     "width": "Werkende breedte",
     "zeqBottom": "zeq,onder",
-    "zeqTopBottom": "zeq boven–onder"
+    "zeqTopBottom": "zeq boven–onder",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (elastoplastisch); pu als functie van de equivalente diepte zeq",
+    "elastoplasticSprings": "elastoplastische grondveren",
+    "waterBed": "Waterbodem",
+    "waterLevel": "Waterpeil",
+    "freeLength": "vrij in water {{l}} m",
+    "current": "Stroming",
+    "currentResultant": "resultante {{F}} kN op NAP {{z}} m",
+    "currentNot": "Golfbelasting en wervelafschudding niet meegenomen."
   },
   "sketch": {
     "aria": "Doorsnede {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Veen · slap (cu circa 10 kPa)",
     "sandDense": "Zand · vast (qc circa 25 MPa)",
     "sandLoose": "Zand · los (qc circa 5 MPa)",
-    "sandMedium": "Zand · matig (qc circa 15 MPa)"
+    "sandMedium": "Zand · matig (qc circa 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "Geen actieve grondveren in dit model.",
@@ -720,6 +764,35 @@
     "basisApprox": "benadering met de plaatdikten",
     "tubeSummary": "Na afroesting: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Na afroesting: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "Vul bij afroesting de nominale wanddikte in. Dikteverlies per kant; de tabelwaarden zijn de aanbevolen waarden van NEN-EN 1993-5 tabel 4-1 en 4-2 en zijn niet tegen de normtekst of de Nederlandse bijlage gelegd. De afroesting telt in de materiaaltoetsing en de N–M-toets, ook in de doorsnedeklasse en D/t; in de krachtsverdeling alleen met het vinkje. Bij een gevulde buis roest alleen de buitenzijde."
+    "hint": "Vul bij afroesting de nominale wanddikte in. Dikteverlies per kant; de tabelwaarden zijn de aanbevolen waarden van NEN-EN 1993-5 tabel 4-1 en 4-2 en zijn niet tegen de normtekst of de Nederlandse bijlage gelegd. De afroesting telt in de materiaaltoetsing en de N–M-toets, ook in de doorsnedeklasse en D/t; in de krachtsverdeling alleen met het vinkje. Bij een gevulde buis roest alleen de buitenzijde.",
+    "zoneBottom": "Roest tot",
+    "zoneBottomLabel": "Afroesting tot niveau [m NAP]; leeg = hele paal",
+    "zoneBedTitle": "In water en tot 1 m in de waterbodem",
+    "zoneBed": "bodem − 1 m",
+    "zoneSummary": "EI na afroesting {{ei}} kNm² van de kop tot {{depth}} m eronder; daaronder de oorspronkelijke EI. De toetsen gebruiken de afgeroeste doorsnede over de hele paal (veilige kant)."
+  },
+  "water": {
+    "enabled": "Waterbodem (paal vrij in water)",
+    "bed": "Waterbodem",
+    "bedLabel": "Waterbodem [m NAP]",
+    "level": "Waterpeil",
+    "levelLabel": "Waterpeil [m NAP]",
+    "hint": "Tussen paalkop en waterbodem geen grondveren (vrije lengte {{free}} m). De grond begint op de waterbodem; de korrelspanning (Brinch Hansen) rekent vanaf de bodem met γ′, zonder bovenbelasting door het water.",
+    "speed": "Stroomsnelheid u",
+    "speedLabel": "Stroomsnelheid [m/s]",
+    "profile": "Snelheidsprofiel",
+    "uniform": "Uniform over de diepte",
+    "power": "Machtsprofiel u·(h/d)ⁿ",
+    "exponent": "Exponent n",
+    "density": "Dichtheid water",
+    "fresh": "Zoet (1000)",
+    "salt": "Zout (1025)",
+    "cdLabel": "Weerstandscoëfficiënt C_D",
+    "direction": "Richting",
+    "withH": "Met H mee",
+    "againstH": "Tegen H in",
+    "factor": "Partiële factor γ",
+    "formula": "q = ½·ρ·C_D·D·u² per meter, van de waterbodem tot het waterpeil; rekenwaarde γ·q, net als H. C_D hangt af van het getal van Reynolds, de ruwheid en aangroei: vul een onderbouwde waarde in (er is geen standaardwaarde). Niet meegenomen: golfbelasting (Morison, traagheidsterm) en dynamische effecten (wervelafschudding).",
+    "result": "C_D {{cd}}: q aan het oppervlak {{q}} kN/m (representatief); resultante {{F}} kN (rekenwaarde) op NAP {{z}} m."
   }
 }

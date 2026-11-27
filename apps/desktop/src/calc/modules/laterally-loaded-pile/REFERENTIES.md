@@ -69,3 +69,13 @@ horizontaal maaiveld: Ka = tan²(45° − φ/2), Δp = Ka q. De kerende invloedb
 is afzonderlijke invoer. Voor een vrijstaande paal in doorgaande grond wordt
 geen netto belasting uit q afgeleid; daar is een onderbouwd grondverplaatsings-
 of ander belastingsmodel nodig. Een eindige strookbelasting is niet inbegrepen.
+
+## Ménard, Brinch Hansen en stroming
+
+- Ménard, pressiometermodulus: k_h van een paal uit E_p, R = D/2, R0 = 0,3 m en de reologische factor α, zoals voor
+  palen opgenomen in CUR 166 deel 1. Uit kennis overgenomen, niet tegen de tekst gelegd (`soil.ts`, `menardKh`).
+- Brinch Hansen, J. (1961). The ultimate resistance of rigid piles against transversal forces. Danish Geotechnical
+  Institute, Bulletin 12. K_q(z) voor wrijvingsgrond (`nonlinear-soil.ts`); de oorspronkelijke tekst is niet
+  geraadpleegd, K_q⁰ en K_q^∞ zijn nagerekend.
+- Sleepkracht van een stroming q = ½ ρ C_D D u² (klassieke weerstandsformule); C_D zonder standaardwaarde, de
+  gebruiker vult een onderbouwde waarde in (`water.ts`).

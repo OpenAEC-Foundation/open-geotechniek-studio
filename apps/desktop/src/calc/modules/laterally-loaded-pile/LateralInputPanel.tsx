@@ -7,7 +7,9 @@ import type { PanelProps } from '../../framework/types';
 import { Hint, More, NumberInput, Row, Section } from '../../framework/views/SheetForm';
 import type { LateralInput, LateralLayer, LateralResult } from './compute';
 import type { PileSection, SectionKind } from './section';
-import { SOIL_SPRINGS, soilKey, springValue } from './soil';
+import { MENARD_ALPHAS, SOIL_SPRINGS, menardKh, soilKey, springValue } from './soil';
+import { usesUltimate } from './spring-types';
+import { WaterBedInput } from './WaterBedInput';
 import { SectionSketch } from './SectionSketch';
 import { PREFAB_SQUARE, STEEL_TUBE_OD, nearest, sizeText } from '../pile-bearing-capacity/standard-sizes';
 import { PILE_SYSTEMS, pileSystemName, type PileSystemId } from '../pile-bearing-capacity/pile-systems';
@@ -49,7 +51,7 @@ export function LateralInputPanel({ input: i, result, onChange }: Props) {
   const material = (patch: Partial<MaterialInput>) => change({ material: { ...i.material, ...patch } });
   const s = i.section, sheet = s.kind === 'sheet-pile', tube = s.kind === 'steel-tube' || s.kind === 'filled-tube', hasBars = !sheet && s.kind !== 'steel-tube';
   const system = systemOf(i), kinds = system === 'sheet-pile' ? [] : SYSTEM_KINDS[system];
-  const nonlinear = i.analysisMode === 'nonlinear' || i.layerCorrection === 'georgiadis';
+  const nonlinear = usesUltimate(i.analysisMode) || i.layerCorrection === 'georgiadis';
   // Niveaus in m NAP; de berekening zelf rekent vanaf de paalkop.
   const head = i.headNap ?? 0, nap = (z: number) => r3(head - z), depth = (n: number) => r3(head - n);
   const setLayer = (k: number, patch: Partial<LateralLayer>) => change({ layers: i.layers.map((l, j) => j === k ? { ...l, ...patch } : l) });
@@ -146,13 +148,14 @@ export function LateralInputPanel({ input: i, result, onChange }: Props) {
     </Section>
 
     <Section title={t('input.soil', 'Grond')}>
-      <Row label={t('input.springs', 'Grondveren')}><select aria-label={t('input.springsAnalysis', 'Analyse grondveren')} value={i.analysisMode ?? 'linear'} onChange={(e) => change({ analysisMode: e.target.value as LateralInput['analysisMode'] })}><option value="nonlinear">{t('input.nonlinear', 'Niet-lineair')} (p = pu tanh(k₀y/pu))</option><option value="linear">{t('input.linear', 'Lineair')} (k₀)</option></select></Row>
+      <Row label={t('input.springs', 'Grondveren')}><select aria-label={t('input.springsAnalysis', 'Analyse grondveren')} value={i.analysisMode ?? 'linear'} onChange={(e) => change({ analysisMode: e.target.value as LateralInput['analysisMode'] })}><option value="nonlinear">{t('input.nonlinear', 'Niet-lineair')} (p = pu tanh(k₀y/pu))</option><option value="elastoplastic">{t('input.elastoplastic', 'Elastoplastisch')} (p = min(k₀y; pu))</option><option value="linear">{t('input.linear', 'Lineair')} (k₀)</option></select></Row>
       <Row label={t('input.layerCorrection', 'Laagcorrectie')}><select aria-label={t('input.layerCorrection', 'Laagcorrectie')} value={i.layerCorrection ?? 'none'} onChange={(e) => change({ layerCorrection: e.target.value as LateralInput['layerCorrection'] })}><option value="georgiadis">Georgiadis</option><option value="none">{t('input.none', 'Geen')}</option></select></Row>
       <Row label={t('input.subgrade', 'Bedding CUR166')}><select aria-label={t('input.subgradeScenario', 'Beddingsscenario')} value={i.scenario} onChange={(e) => change({ scenario: e.target.value as LateralInput['scenario'] })}><option value="low">{t('input.lowAverage', 'Laag gemiddelde')}</option><option value="high">{t('input.highAverage', 'Hoog gemiddelde')}</option></select></Row>
       <Row label={t('input.width', 'Werkende breedte')} unit="m">
         <NumberInput label={t('input.widthLabel', 'Werkende breedte grondveren [m]')} value={i.springWidthM} onChange={(v) => change({ springWidthM: v })} />
         {Math.abs(i.springWidthM - pileWidth) > 1e-9 && <button type="button" className="lat-mini" onClick={() => change({ springWidthM: pileWidth })} title={t('input.widthPileTitle', 'Gelijk aan de paalbreedte')}>{t('input.widthPile', '= paal')}</button>}
       </Row>
+      <WaterBedInput input={i} result={result} onChange={onChange} />
       <table className="cs-layer-table lat-layers" aria-label={t('input.layers', 'Grondlagen')}>
         <thead>
           <tr><th>{t('input.from', 'Van')}<small>m NAP</small></th><th>{t('input.to', 'Tot')}<small>m NAP</small></th><th colSpan={2}>{t('input.soil', 'Grond')}</th><th /></tr>
@@ -162,21 +165,32 @@ export function LateralInputPanel({ input: i, result, onChange }: Props) {
           <tr>
             <td><NumberInput label={t('input.layerTop', 'Bovenkant laag {{n}} [m NAP]', { n: k + 1 })} value={nap(l.topM)} onChange={(v) => setLayer(k, { topM: depth(v) })} /></td>
             <td><NumberInput label={t('input.layerBottom', 'Onderkant laag {{n}} [m NAP]', { n: k + 1 })} value={nap(l.bottomM)} onChange={(v) => setLayer(k, { bottomM: depth(v) })} /></td>
-            <td colSpan={2}><select aria-label={t('input.layerSpring', 'Bedding laag {{n}}', { n: k + 1 })} value={l.springId} onChange={(e) => { const id = e.target.value, profile = i.puDefaults?.[id]; setLayer(k, { springId: id, ...(profile && Object.values(profile).every(Number.isFinite) ? { ultimate: { ...profile } } : {}) }); }}>{SOIL_SPRINGS.map((v) => <option key={v.id} value={v.id}>{t(soilKey(v.id), v.label).split(' (')[0]}</option>)}<option value="manual">{t('soils.manual', 'Eigen waarde')}</option></select></td>
+            <td colSpan={2}><select aria-label={t('input.layerSpring', 'Bedding laag {{n}}', { n: k + 1 })} value={l.springId} onChange={(e) => { const id = e.target.value, profile = i.puDefaults?.[id]; setLayer(k, { springId: id, ...(profile && Object.values(profile).every(Number.isFinite) ? { ultimate: { ...profile } } : {}) }); }}>{SOIL_SPRINGS.map((v) => <option key={v.id} value={v.id}>{t(soilKey(v.id), v.label).split(' (')[0]}</option>)}<option value="menard">{t('soils.menard', 'Ménard (E_p)')}</option><option value="manual">{t('soils.manual', 'Eigen waarde')}</option></select></td>
             <td><button type="button" className="lat-mini" aria-label={t('input.removeLayer', 'Laag {{n}} verwijderen', { n: k + 1 })} disabled={i.layers.length < 2} onClick={() => change({ layers: i.layers.filter((_, j) => j !== k) })}><OaIcon id="edit.delete" /></button></td>
           </tr>
           <tr className="lat-layers-sub">
-            <td>{l.springId === 'manual'
+            <td>{l.springId === 'menard'
+              ? <span className="lat-menard"><NumberInput label={t('input.layerEp', 'E_p laag {{n}} [kN/m²]', { n: k + 1 })} value={l.menardEpKpa} onChange={(v) => setLayer(k, { menardEpKpa: v })} />
+                <select aria-label={t('input.layerAlpha', 'α laag {{n}}', { n: k + 1 })} value={String(l.menardAlpha ?? 1 / 3)} onChange={(e) => setLayer(k, { menardAlpha: Number(e.target.value) })}>
+                  {MENARD_ALPHAS.map((a) => <option key={a.id} value={String(a.alpha)}>α {nl(a.alpha)} {t(`input.alpha.${a.id}`, a.id)}</option>)}</select>
+                <small title={t('input.menardTitle', 'k_h uit E_p (Ménard, CUR 166) bij de werkende breedte')}>{(() => { try { return `kh ${Math.round(menardKh(l.menardEpKpa ?? NaN, i.springWidthM, l.menardAlpha ?? 1 / 3)).toLocaleString(numberLocale())}`; } catch { return 'kh —'; } })()}</small></span>
+              : l.springId === 'manual'
               ? <NumberInput label={t('input.layerKh', 'kh laag {{n}} [kN/m³]', { n: k + 1 })} value={l.manualKhKnM3} onChange={(v) => setLayer(k, { manualKhKnM3: v })} />
               : <span className="lat-readonly" title={i.springOverrides?.[l.springId]?.[i.scenario] !== undefined ? t('input.khOwn', 'Eigen waarde uit de instellingen') : t('input.khTable', 'CUR166 tabel 3.3, eerste secanttraject')}>{(i.springOverrides?.[l.springId]?.[i.scenario] ?? springValue(l.springId, i.scenario)).toLocaleString(numberLocale())}{i.springOverrides?.[l.springId]?.[i.scenario] !== undefined ? ' *' : ''}</span>}</td>
-            {nonlinear ? (['atSurfaceKnM', 'gradientKnM2', 'capKnM'] as const).map((key) => <td key={key}><NumberInput label={t('input.layerPu', '{{symbol}} laag {{n}}', { symbol: key === 'atSurfaceKnM' ? 'pu,0' : key === 'gradientKnM2' ? 'g' : 'pu,max', n: k + 1 })} value={l.ultimate?.[key]}
+            {nonlinear && l.ultimate?.brinchHansen ? <>
+              <td><NumberInput label={t('input.layerPhi', 'φ′ laag {{n}} [°]', { n: k + 1 })} value={l.ultimate.brinchHansen.phiDeg} onChange={(v) => setLayer(k, { ultimate: { ...l.ultimate!, brinchHansen: { ...l.ultimate!.brinchHansen!, phiDeg: v } } })} /><small>φ′ [°]</small></td>
+              <td><NumberInput label={t('input.layerGammaEff', 'γ′ laag {{n}} [kN/m³]', { n: k + 1 })} value={l.ultimate.brinchHansen.gammaEffKnM3} onChange={(v) => setLayer(k, { ultimate: { ...l.ultimate!, brinchHansen: { ...l.ultimate!.brinchHansen!, gammaEffKnM3: v } } })} /><small>γ′ [kN/m³]</small></td>
+              <td><span className="lat-readonly">BH</span></td></>
+            : nonlinear ? (['atSurfaceKnM', 'gradientKnM2', 'capKnM'] as const).map((key) => <td key={key}><NumberInput label={t('input.layerPu', '{{symbol}} laag {{n}}', { symbol: key === 'atSurfaceKnM' ? 'pu,0' : key === 'gradientKnM2' ? 'g' : 'pu,max', n: k + 1 })} value={l.ultimate?.[key]}
               onChange={(v) => setLayer(k, { ultimate: { atSurfaceKnM: NaN, gradientKnM2: NaN, capKnM: NaN, ...l.ultimate, [key]: v } })} /></td>) : <td colSpan={3} />}
-            <td />
+            <td>{nonlinear && <select className="lat-pu-kind" aria-label={t('input.puKind', 'Grensweerstand laag {{n}}', { n: k + 1 })} title={t('input.puKindTitle', 'pu als profiel of volgens Brinch Hansen')} value={l.ultimate?.brinchHansen ? 'bh' : 'profile'}
+              onChange={(e) => setLayer(k, { ultimate: e.target.value === 'bh' ? { atSurfaceKnM: 0, gradientKnM2: 0, capKnM: 1, ...l.ultimate, brinchHansen: { phiDeg: l.frictionDeg > 0 ? l.frictionDeg : 30, gammaEffKnM3: 10 } } : { atSurfaceKnM: l.ultimate?.atSurfaceKnM ?? 0, gradientKnM2: l.ultimate?.gradientKnM2 ?? 60, capKnM: l.ultimate?.capKnM ?? 500 } })}>
+              <option value="profile">{t('input.puProfile', 'lin.')}</option><option value="bh">BH</option></select>}</td>
           </tr>
         </tbody>)}
       </table>
       <button type="button" className="lat-add" onClick={addLayer}>{t('input.addLayer', '+ Laag')}</button>
-      <Info>{nonlinear ? `${t('input.puHint', 'pu(z) = min(pu,max; pu,0 + g·z), grensweerstand per meter paal.')} ` : ''}{t('input.k0Hint', 'k₀ = kh × werkende breedte. Tussen lagen zonder bedding draagt de grond niet.')}{sheet ? ` ${t('input.sheetSpringHint', 'Doorgaande wand: werkende breedte 1,00 m, zonder spreiding opzij. Losse plank: de plankbreedte, zoals bij een paal.')}` : ''}</Info>
+      <Info>{nonlinear ? `${t('input.puHint', 'pu(z) = min(pu,max; pu,0 + g·z), grensweerstand per meter paal.')} ${t('input.bhHint', 'BH: pu(z) = K_q(z)·γ′·z·D volgens Brinch Hansen (1961), z vanaf de grond (bij water vanaf de waterbodem), γ′ onder water = γ_n − 10.')} ` : ''}{t('input.menardHint', 'Ménard: k_h uit de pressiometermodulus E_p en α (CUR 166).')} {t('input.k0Hint', 'k₀ = kh × werkende breedte. Tussen lagen zonder bedding draagt de grond niet.')}{sheet ? ` ${t('input.sheetSpringHint', 'Doorgaande wand: werkende breedte 1,00 m, zonder spreiding opzij. Losse plank: de plankbreedte, zoals bij een paal.')}` : ''}</Info>
     </Section>
 
     <More title={t('input.material', 'Materiaal en sterkte')}>

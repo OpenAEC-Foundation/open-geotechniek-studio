@@ -8,6 +8,22 @@ export interface BeamInput {
   lengthM: number; eiKnM2: number; maxElementM: number;
   headForceKn: number; headMomentKnM: number;
   headFixedRotation: boolean; toeFixed: boolean; layers: BeamLayer[];
+  /** Zones met een eigen buigstijfheid [kNm²] (b.v. afroesting tot een niveau); daarbuiten geldt eiKnM2. */
+  eiZones?: EiZone[];
+  /**
+   * Extra verdeelde last [kN/m] als functie van z tussen topM en bottomM (b.v. stroming); alleen de niet-lineaire
+   * rekenkern (solveFoundationBeam) rekent ermee, solveBeam legt er alleen knopen op de grenzen.
+   */
+  lineLoad?: { topM: number; bottomM: number; at: (zM: number) => number };
+}
+export const lineLoadAt = (input: Pick<BeamInput,'lineLoad'>, zM: number) => {
+  const l = input.lineLoad;
+  return l && zM >= l.topM && zM <= l.bottomM ? l.at(zM) : 0;
+};
+export interface EiZone { topM: number; bottomM: number; eiKnM2: number }
+/** Buigstijfheid van het element met middelpunt `mid`. */
+export function eiAt(input: Pick<BeamInput,'eiKnM2'|'eiZones'>, mid: number): number {
+  return input.eiZones?.find(z => z.topM <= mid && z.bottomM >= mid)?.eiKnM2 ?? input.eiKnM2;
 }
 export interface BeamNode { zM: number; yM: number; rotationRad: number }
 export interface BeamElement {
@@ -69,6 +85,8 @@ export function solveBeam(input: BeamInput): BeamResult {
       typeof input.headFixedRotation !== 'boolean' || typeof input.toeFixed !== 'boolean' || !Array.isArray(input.layers))
     throw new Error(ct('calcLateral', 'errors.invalidBeam', 'Ongeldige liggerinvoer.'));
   const layers = [...input.layers].sort((a,b) => a.topM-b.topM);
+  for (const z of input.eiZones ?? []) if (![z.topM,z.bottomM,z.eiKnM2].every(Number.isFinite) || z.topM<0 || z.bottomM>L+1e-9 || z.bottomM<=z.topM || z.eiKnM2<=0)
+    throw new Error(ct('calcLateral', 'errors.invalidBeam', 'Ongeldige liggerinvoer.'));
   layers.forEach((v,i) => {
     if (![v.topM,v.bottomM,v.lineSpringKnM2,v.lineLoadKnM].every(Number.isFinite) ||
         v.topM<0 || v.bottomM>L || v.bottomM<=v.topM || v.lineSpringKnM2<0)
@@ -78,7 +96,7 @@ export function solveBeam(input: BeamInput): BeamResult {
   // Grenzen die op afronding na samenvallen (b.v. 40 × L/40 naast L) geven één knoop;
   // anders ontstaat een element van vrijwel nul lengte en een onoplosbaar stelsel.
   const cuts = [0];
-  for(const c of [L,...layers.flatMap(v => [v.topM,v.bottomM])].sort((a,b)=>a-b)) if(c-cuts[cuts.length-1]>1e-9) cuts.push(c);
+  for(const c of [L,...layers.flatMap(v => [v.topM,v.bottomM]),...(input.eiZones??[]).flatMap(v => [v.topM,Math.min(v.bottomM,L)]),...(input.lineLoad?[input.lineLoad.topM,Math.min(input.lineLoad.bottomM,L)]:[])].filter(c=>c>=0&&c<=L).sort((a,b)=>a-b)) if(c-cuts[cuts.length-1]>1e-9) cuts.push(c);
   if(cuts.length>1) cuts[cuts.length-1]=L;
   const zs = [0];
   for(let i=1;i<cuts.length;i++) {
@@ -92,7 +110,7 @@ export function solveBeam(input: BeamInput): BeamResult {
   const data: Array<{kb:number[][]; ks:number[][]; f:number[]; k:number; q:number}> = [];
   let loadForce=H, loadMoment=M;
   for(let e=0;e<zs.length-1;e++) {
-    const a=zs[e], b=zs[e+1], l=b-a, mid=(a+b)/2;
+    const a=zs[e], b=zs[e+1], l=b-a, mid=(a+b)/2, ei=eiAt(input,mid);
     const layer=layers.find(v=>v.topM<=mid && v.bottomM>=mid), k=layer?.lineSpringKnM2??0, q=layer?.lineLoadKnM??0;
     const kb=[[12,6*l,-12,6*l],[6*l,4*l*l,-6*l,2*l*l],[-12,-6*l,12,-6*l],[6*l,2*l*l,-6*l,4*l*l]].map(r=>r.map(v=>v*ei/l**3));
     const ks=Array.from({length:4},()=>Array(4).fill(0)), f=Array(4).fill(0);

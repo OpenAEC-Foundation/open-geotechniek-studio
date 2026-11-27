@@ -61,7 +61,15 @@
     "unknownSpring": "Unbekannte Bettung oder unbekanntes Szenario.",
     "unstableSupport": "Instabiles Modell: unzureichende Lagerung.",
     "unstableTangent": "Instabile Tangentensteifigkeit.",
-    "zeroStrengthLayer": "Eine Schicht mit Festigkeit null kann den Grenzwiderstand der darüberliegenden Schichten nicht abbilden."
+    "zeroStrengthLayer": "Eine Schicht mit Festigkeit null kann den Grenzwiderstand der darüberliegenden Schichten nicht abbilden.",
+    "menardInput": "Ménard: positives E_p, Pfahlbreite und α (0 bis 1) eingeben.",
+    "brinchHansenInput": "Brinch Hansen: φ′ (0 bis 50°) und ein positives γ′ eingeben.",
+    "corrosionZone": "Das Niveau, bis zu dem der Pfahl korrodiert, muss unter dem Pfahlkopf liegen.",
+    "noSoilBelowBed": "Unter der Gewässersohle liegt keine Bodenschicht.",
+    "waterLevels": "Niveau der Gewässersohle und Wasserstand eingeben.",
+    "bedOutsidePile": "Die Gewässersohle muss zwischen Pfahlkopf und Pfahlfuß liegen.",
+    "currentCd": "Strömung: Widerstandsbeiwert C_D eingeben.",
+    "currentInput": "Ungültige Eingabe für die Strömung."
   },
   "explorer": {
     "concept": "Entwurf alpha",
@@ -83,7 +91,8 @@
     },
     "title": "Horizontal belasteter Pfahl",
     "trueScale": "Maßstabsgetreu",
-    "views": "Pfahlansicht"
+    "views": "Pfahlansicht",
+    "elastoplasticModel": "Elastoplastisches Bodenmodell"
   },
   "field": {
     "aria": "Federfeld entlang des Pfahls",
@@ -236,7 +245,25 @@
     "widthPile": "= Pfahl",
     "widthPileTitle": "Gleich der Pfahlbreite",
     "withH": "Mit H",
-    "openTubeHint": "Offenes Rohr: als Hohlrohr gerechnet; der Boden im Rohr trägt nicht zur Steifigkeit bei. Auch die Innenseite steht im Boden."
+    "openTubeHint": "Offenes Rohr: als Hohlrohr gerechnet; der Boden im Rohr trägt nicht zur Steifigkeit bei. Auch die Innenseite steht im Boden.",
+    "elastoplastic": "Elastoplastisch",
+    "layerEp": "E_p Schicht {{n}} [kN/m²]",
+    "layerAlpha": "α Schicht {{n}}",
+    "alpha": {
+      "peat": "Torf",
+      "clay": "Ton",
+      "silt": "Schluff",
+      "sand": "Sand",
+      "gravel": "Kies"
+    },
+    "menardTitle": "k_h aus E_p (Ménard, CUR 166) bei der wirksamen Breite",
+    "layerPhi": "φ′ Schicht {{n}} [°]",
+    "layerGammaEff": "γ′ Schicht {{n}} [kN/m³]",
+    "puKind": "Grenzwiderstand Schicht {{n}}",
+    "puKindTitle": "pu als Profil oder nach Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D nach Brinch Hansen (1961), z ab Geländeoberfläche (bei Wasser ab Gewässersohle), γ′ unter Wasser = γ_r − 10.",
+    "menardHint": "Ménard: k_h aus dem Pressiometermodul E_p und α (CUR 166)."
   },
   "inspector": {
     "aria": "Federprüfung",
@@ -274,7 +301,9 @@
       "tangent": "Tangentensteifigkeit",
       "tributary": "Integrationslänge",
       "ultimate": "Grenzwiderstand pu"
-    }
+    },
+    "modelElastoplastic": "Elastoplastische Bettung",
+    "elastoplasticNote": "Elastoplastisch: linear bis pu, danach konstant; statisch und monoton."
   },
   "legend": {
     "aria": "Legende zu Bodenschichten und Federn",
@@ -380,7 +409,10 @@
     "headFixed": "Kopfverdrehung behindert",
     "layer": "Schicht {{n}}",
     "toeFixed": "Fuß eingespannt",
-    "zFromHead": "z ab Kopf"
+    "zFromHead": "z ab Kopf",
+    "waterLevel": "Wasserstand NAP {{nap}}",
+    "waterBed": "Gewässersohle NAP {{nap}}",
+    "current": "Strömung"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Ziehen dreht, Scrollen zoomt, Federpunkt anklicken.",
     "layerLabel": "{{soil}} · NAP {{top}} bis {{bottom}}",
     "surfaceLabel": "Geländeoberkante NAP {{nap}}",
-    "unavailable": "3D ist auf diesem Gerät nicht verfügbar. Verwenden Sie das Rechenmodell und die Federprüfung unten."
+    "unavailable": "3D ist auf diesem Gerät nicht verfügbar. Verwenden Sie das Rechenmodell und die Federprüfung unten.",
+    "waterLabel": "Wasserstand NAP {{nap}}",
+    "bedLabel": "Gewässersohle NAP {{nap}}",
+    "currentLabel": "Strömung"
   },
   "settings": {
     "applyMany": "Auf {{count}} Schichten",
@@ -533,7 +568,15 @@
     "wall": "Wand {{wall}} mm",
     "width": "Wirksame Breite",
     "zeqBottom": "zeq,unten",
-    "zeqTopBottom": "zeq oben–unten"
+    "zeqTopBottom": "zeq oben–unten",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (elastoplastisch); pu als Funktion der äquivalenten Tiefe zeq",
+    "elastoplasticSprings": "elastoplastische Bodenfedern",
+    "waterBed": "Gewässersohle",
+    "waterLevel": "Wasserstand",
+    "freeLength": "frei im Wasser {{l}} m",
+    "current": "Strömung",
+    "currentResultant": "Resultierende {{F}} kN auf NAP {{z}} m",
+    "currentNot": "Wellenlast und Wirbelablösung nicht berücksichtigt."
   },
   "sketch": {
     "aria": "Querschnitt {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Torf · weich (cu ca. 10 kPa)",
     "sandDense": "Sand · dicht (qc ca. 25 MPa)",
     "sandLoose": "Sand · locker (qc ca. 5 MPa)",
-    "sandMedium": "Sand · mitteldicht (qc ca. 15 MPa)"
+    "sandMedium": "Sand · mitteldicht (qc ca. 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "Keine aktiven Bodenfedern in diesem Modell.",
@@ -720,6 +764,35 @@
     "basisApprox": "Näherung mit den Blechdicken",
     "tubeSummary": "Nach Abrostung: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Nach Abrostung: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "Bei Abrostung die Nennwanddicke eingeben. Dickenverlust je Seite; die Tabellenwerte sind die empfohlenen Werte von NEN-EN 1993-5 Tabelle 4-1 und 4-2 und wurden nicht gegen den Normtext oder den niederländischen Anhang geprüft. Die Abrostung zählt im Materialnachweis und im N–M-Nachweis, auch in der Querschnittsklasse und D/t; in den Schnittgrößen nur mit dem Häkchen. Ein gefülltes Rohr rostet nur außen."
+    "hint": "Bei Abrostung die Nennwanddicke eingeben. Dickenverlust je Seite; die Tabellenwerte sind die empfohlenen Werte von NEN-EN 1993-5 Tabelle 4-1 und 4-2 und wurden nicht gegen den Normtext oder den niederländischen Anhang geprüft. Die Abrostung zählt im Materialnachweis und im N–M-Nachweis, auch in der Querschnittsklasse und D/t; in den Schnittgrößen nur mit dem Häkchen. Ein gefülltes Rohr rostet nur außen.",
+    "zoneBottom": "Korrosion bis",
+    "zoneBottomLabel": "Korrosion bis Niveau [m NAP]; leer = ganzer Pfahl",
+    "zoneBedTitle": "Im Wasser und bis 1 m in die Sohle",
+    "zoneBed": "Sohle − 1 m",
+    "zoneSummary": "EI nach Korrosion {{ei}} kNm² vom Kopf bis {{depth}} m darunter; darunter die ursprüngliche EI. Die Nachweise verwenden den korrodierten Querschnitt über den ganzen Pfahl (sichere Seite)."
+  },
+  "water": {
+    "enabled": "Gewässersohle (Pfahl frei im Wasser)",
+    "bed": "Gewässersohle",
+    "bedLabel": "Gewässersohle [m NAP]",
+    "level": "Wasserstand",
+    "levelLabel": "Wasserstand [m NAP]",
+    "hint": "Zwischen Pfahlkopf und Sohle keine Bodenfedern (freie Länge {{free}} m). Der Boden beginnt an der Sohle; die effektive Spannung (Brinch Hansen) zählt ab der Sohle mit γ′, ohne Auflast durch das Wasser.",
+    "speed": "Strömungsgeschwindigkeit u",
+    "speedLabel": "Strömungsgeschwindigkeit [m/s]",
+    "profile": "Geschwindigkeitsprofil",
+    "uniform": "Gleichmäßig über die Tiefe",
+    "power": "Potenzprofil u·(h/d)ⁿ",
+    "exponent": "Exponent n",
+    "density": "Dichte Wasser",
+    "fresh": "Süß (1000)",
+    "salt": "Salz (1025)",
+    "cdLabel": "Widerstandsbeiwert C_D",
+    "direction": "Richtung",
+    "withH": "Mit H",
+    "againstH": "Gegen H",
+    "factor": "Teilsicherheitsbeiwert γ",
+    "formula": "q = ½·ρ·C_D·D·u² je Meter, von der Sohle bis zum Wasserstand; Bemessungswert γ·q, wie H. C_D hängt von der Reynoldszahl, der Rauheit und dem Bewuchs ab: begründeten Wert eingeben (kein Standardwert). Nicht berücksichtigt: Wellenlast (Morison, Trägheitsglied) und dynamische Effekte (Wirbelablösung).",
+    "result": "C_D {{cd}}: q an der Oberfläche {{q}} kN/m (charakteristisch); Resultierende {{F}} kN (Bemessungswert) auf NAP {{z}} m."
   }
 }

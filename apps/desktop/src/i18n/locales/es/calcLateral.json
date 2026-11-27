@@ -61,7 +61,15 @@
     "unknownSpring": "Módulo de balasto o escenario desconocido.",
     "unstableSupport": "Modelo inestable: apoyo insuficiente.",
     "unstableTangent": "Rigidez tangente inestable.",
-    "zeroStrengthLayer": "Una capa con resistencia nula no puede representar la resistencia última de las capas superiores."
+    "zeroStrengthLayer": "Una capa con resistencia nula no puede representar la resistencia última de las capas superiores.",
+    "menardInput": "Ménard: introduzca E_p, ancho de pilote y α (0 a 1) positivos.",
+    "brinchHansenInput": "Brinch Hansen: introduzca φ′ (0 a 50°) y un γ′ positivo.",
+    "corrosionZone": "El nivel hasta el que se corroe el pilote debe estar bajo la cabeza.",
+    "noSoilBelowBed": "No hay ninguna capa de suelo bajo el lecho.",
+    "waterLevels": "Introduzca el nivel del lecho y el nivel del agua.",
+    "bedOutsidePile": "El lecho debe estar entre la cabeza y la punta del pilote.",
+    "currentCd": "Corriente: introduzca el coeficiente de arrastre C_D.",
+    "currentInput": "Entrada no válida para la corriente."
   },
   "explorer": {
     "concept": "Borrador alfa",
@@ -83,7 +91,8 @@
     },
     "title": "Pilote con carga horizontal",
     "trueScale": "Escala real",
-    "views": "Vista del pilote"
+    "views": "Vista del pilote",
+    "elastoplasticModel": "Modelo de suelo elastoplástico"
   },
   "field": {
     "aria": "Campo de muelles a lo largo del pilote",
@@ -236,7 +245,25 @@
     "widthPile": "= pilote",
     "widthPileTitle": "Igual al ancho del pilote",
     "withH": "Con H",
-    "openTubeHint": "Tubo abierto: se calcula como tubo hueco; el suelo interior no aporta rigidez. La cara interior también está en contacto con el suelo."
+    "openTubeHint": "Tubo abierto: se calcula como tubo hueco; el suelo interior no aporta rigidez. La cara interior también está en contacto con el suelo.",
+    "elastoplastic": "Elastoplástico",
+    "layerEp": "E_p capa {{n}} [kN/m²]",
+    "layerAlpha": "α capa {{n}}",
+    "alpha": {
+      "peat": "turba",
+      "clay": "arcilla",
+      "silt": "limo",
+      "sand": "arena",
+      "gravel": "grava"
+    },
+    "menardTitle": "k_h a partir de E_p (Ménard, CUR 166) con el ancho activo",
+    "layerPhi": "φ′ capa {{n}} [°]",
+    "layerGammaEff": "γ′ capa {{n}} [kN/m³]",
+    "puKind": "Resistencia última capa {{n}}",
+    "puKindTitle": "pu como perfil o según Brinch Hansen",
+    "puProfile": "lin.",
+    "bhHint": "BH: pu(z) = K_q(z)·γ′·z·D según Brinch Hansen (1961), z desde la superficie del terreno (con agua desde el lecho), γ′ bajo agua = γ_sat − 10.",
+    "menardHint": "Ménard: k_h a partir del módulo presiométrico E_p y α (CUR 166)."
   },
   "inspector": {
     "aria": "Inspección de muelles",
@@ -274,7 +301,9 @@
       "tangent": "Rigidez tangente",
       "tributary": "Longitud de integración",
       "ultimate": "Resistencia última pu"
-    }
+    },
+    "modelElastoplastic": "Balasto elastoplástico",
+    "elastoplasticNote": "Elastoplástico: lineal hasta pu, luego constante; estático y monótono."
   },
   "legend": {
     "aria": "Leyenda de capas de suelo y muelles",
@@ -380,7 +409,10 @@
     "headFixed": "Giro de la cabeza impedido",
     "layer": "Capa {{n}}",
     "toeFixed": "Punta empotrada",
-    "zFromHead": "z desde la cabeza"
+    "zFromHead": "z desde la cabeza",
+    "waterLevel": "Nivel del agua NAP {{nap}}",
+    "waterBed": "Lecho NAP {{nap}}",
+    "current": "Corriente"
   },
   "module": {
     "checks": {
@@ -409,7 +441,10 @@
     "helpShort": "Arrastrar gira, la rueda hace zoom, haga clic en un punto de muelle.",
     "layerLabel": "{{soil}} · NAP {{top}} a {{bottom}}",
     "surfaceLabel": "Superficie del terreno NAP {{nap}}",
-    "unavailable": "La vista 3D no está disponible en este dispositivo. Utilice el modelo de cálculo y la inspección de muelles de abajo."
+    "unavailable": "La vista 3D no está disponible en este dispositivo. Utilice el modelo de cálculo y la inspección de muelles de abajo.",
+    "waterLabel": "Nivel del agua NAP {{nap}}",
+    "bedLabel": "Lecho NAP {{nap}}",
+    "currentLabel": "Corriente"
   },
   "settings": {
     "applyMany": "A {{count}} capas",
@@ -533,7 +568,15 @@
     "wall": "pared {{wall}} mm",
     "width": "Ancho efectivo",
     "zeqBottom": "zeq,base",
-    "zeqTopBottom": "zeq techo–base"
+    "zeqTopBottom": "zeq techo–base",
+    "elastoplasticNote": "; p = min(k₀ y; pu) (elastoplástico); pu en función de la profundidad equivalente zeq",
+    "elastoplasticSprings": "muelles de suelo elastoplásticos",
+    "waterBed": "Lecho",
+    "waterLevel": "Nivel del agua",
+    "freeLength": "libre en el agua {{l}} m",
+    "current": "Corriente",
+    "currentResultant": "resultante {{F}} kN a NAP {{z}} m",
+    "currentNot": "Oleaje y desprendimiento de vórtices no incluidos."
   },
   "sketch": {
     "aria": "Sección {{label}} mm",
@@ -555,7 +598,8 @@
     "peatSoft": "Turba · blanda (cu aprox. 10 kPa)",
     "sandDense": "Arena · densa (qc aprox. 25 MPa)",
     "sandLoose": "Arena · suelta (qc aprox. 5 MPa)",
-    "sandMedium": "Arena · medianamente densa (qc aprox. 15 MPa)"
+    "sandMedium": "Arena · medianamente densa (qc aprox. 15 MPa)",
+    "menard": "Ménard (E_p)"
   },
   "spring": {
     "none": "No hay muelles del terreno activos en este modelo.",
@@ -720,6 +764,35 @@
     "basisApprox": "aproximación con los espesores",
     "tubeSummary": "Tras la corrosión: D {{d0}} → {{d1}} mm, t {{t0}} → {{t1}} mm.",
     "sheetSummary": "Tras la corrosión: t {{t0}} → {{t1}} mm, s {{s0}} → {{s1}} mm, W_el {{w0}} → {{w1}} cm³/m.",
-    "hint": "Con corrosión, introduzca el espesor nominal. Pérdida de espesor por cara; los valores de tabla son los recomendados de NEN-EN 1993-5 tablas 4-1 y 4-2 y no se han contrastado con el texto de la norma ni con el anejo neerlandés. La corrosión cuenta en la comprobación del material y la comprobación N–M, también en la clase y D/t; en la distribución de esfuerzos solo con la casilla marcada. Un tubo relleno solo se corroe por fuera."
+    "hint": "Con corrosión, introduzca el espesor nominal. Pérdida de espesor por cara; los valores de tabla son los recomendados de NEN-EN 1993-5 tablas 4-1 y 4-2 y no se han contrastado con el texto de la norma ni con el anejo neerlandés. La corrosión cuenta en la comprobación del material y la comprobación N–M, también en la clase y D/t; en la distribución de esfuerzos solo con la casilla marcada. Un tubo relleno solo se corroe por fuera.",
+    "zoneBottom": "Corrosión hasta",
+    "zoneBottomLabel": "Corrosión hasta el nivel [m NAP]; vacío = todo el pilote",
+    "zoneBedTitle": "En el agua y hasta 1 m en el lecho",
+    "zoneBed": "lecho − 1 m",
+    "zoneSummary": "EI tras la corrosión {{ei}} kNm² desde la cabeza hasta {{depth}} m por debajo; más abajo la EI original. Las comprobaciones usan la sección corroída en todo el pilote (lado seguro)."
+  },
+  "water": {
+    "enabled": "Lecho de agua (pilote libre en el agua)",
+    "bed": "Lecho",
+    "bedLabel": "Lecho [m NAP]",
+    "level": "Nivel del agua",
+    "levelLabel": "Nivel del agua [m NAP]",
+    "hint": "Sin muelles de suelo entre la cabeza del pilote y el lecho (longitud libre {{free}} m). El suelo empieza en el lecho; la tensión efectiva (Brinch Hansen) cuenta desde el lecho con γ′, sin sobrecarga del agua.",
+    "speed": "Velocidad de corriente u",
+    "speedLabel": "Velocidad de corriente [m/s]",
+    "profile": "Perfil de velocidad",
+    "uniform": "Uniforme en profundidad",
+    "power": "Ley potencial u·(h/d)ⁿ",
+    "exponent": "Exponente n",
+    "density": "Densidad del agua",
+    "fresh": "Dulce (1000)",
+    "salt": "Salada (1025)",
+    "cdLabel": "Coeficiente de arrastre C_D",
+    "direction": "Sentido",
+    "withH": "Con H",
+    "againstH": "Contra H",
+    "factor": "Coeficiente parcial γ",
+    "formula": "q = ½·ρ·C_D·D·u² por metro, del lecho al nivel del agua; valor de cálculo γ·q, como H. C_D depende del número de Reynolds, la rugosidad y las incrustaciones: introduzca un valor justificado (no hay valor por defecto). No incluido: oleaje (Morison, término de inercia) y efectos dinámicos (desprendimiento de vórtices).",
+    "result": "C_D {{cd}}: q en superficie {{q}} kN/m (característico); resultante {{F}} kN (valor de cálculo) a NAP {{z}} m."
   }
 }
