@@ -191,7 +191,7 @@ export function KoppejanView3D({ input, result, initialFocus = "tip", initialVie
     return <p className="pile-3d-message" role="status">{t("view3d.unavailable", "3D is op dit apparaat niet beschikbaar (geen WebGL). Gebruik de 2D-tekening.")}</p>;
   }
   const materialName: Record<string, string> = {
-    concrete: t("view3d.material.concrete", "Beton"), steel: t("view3d.material.steel", "Staal"), wood: t("view3d.material.wood", "Hout"), grout: t("view3d.material.grout", "Grout"),
+    concrete: t("view3d.material.concrete", "Beton"), steel: t("view3d.material.steel", "Staal"), wood: t("view3d.material.wood", "Hout"), grout: t("view3d.material.grout", "Grout"), plug: t("view3d.material.plug", "Grondprop"),
   };
 
   const choose = (next: Focus) => { focusRef.current = next; setFocus(next); rig.current?.fit(next); };

@@ -36,6 +36,8 @@ export const FACTORS_2025: FactorTable2025 = {
   "concrete-prefab-round": {},
   // Stalen buispaal, gesloten punt, geheid
   "steel-pipe-driven-closed-2017": {},
+  // Stalen buispaal, open punt, geheid
+  "steel-pipe-driven-open": {},
   // Vibropaal: mantelbuis terugheiend / trillend getrokken
   "concrete-driven-casing-hammered": {},
   "concrete-driven-casing-vibrated": {},

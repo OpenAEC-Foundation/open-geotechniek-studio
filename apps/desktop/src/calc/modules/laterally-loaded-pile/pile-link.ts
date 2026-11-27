@@ -15,6 +15,8 @@ import type { SectionKind } from './section';
 export const SYSTEM_KINDS: Record<PileSystemId, SectionKind[]> = {
   'prefab-concrete': ['concrete-square', 'concrete-round'],
   'steel-tube-closed': ['steel-tube', 'filled-tube'],
+  // Open buis: constructief een holle buis, de grondprop draagt niet bij aan de stijfheid.
+  'steel-tube-open': ['steel-tube'],
   'screw-injection': ['steel-tube', 'filled-tube'],
   'screw-permanent-casing': ['filled-tube', 'steel-tube'],
   'screw-lost-tip': ['concrete-round'], 'screw-soil-displacing': ['concrete-round'], vibro: ['concrete-round'],
@@ -78,6 +80,7 @@ export function applyPile(current: LateralInput, pile: PileInput, source: { calc
   const inherited: InheritedFrom = { calcId: source.calcId, name: source.name, cptId: pile.cptId, waterNap: pile.waterNap, surfaceNap: surface, at };
   return { ok: true, input: {
     ...current, headNap: head, lengthM, nEdKn: pile.nEd, springWidthM: pile.diameterMm / 1000, pileSystemId: system, inherited,
+    openEnd: type.openEnd || undefined,
     analysisMode: 'linear', layerCorrection: 'none', layers,
     section: { ...current.section, kind, diameterMm: pile.diameterMm, ...(tube ? { wallMm: pile.wallThicknessMm } : {}), barCount: Math.max(4, Math.round(current.section.barCount / barStep) * barStep) },
     material: { ...current.material, ...(CAST_IN_SITU.includes(system) ? { boredPile: true } : {}) },

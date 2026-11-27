@@ -235,7 +235,8 @@
     "widthLabel": "Effektiv bredde af jordfjedre [m]",
     "widthPile": "= pæl",
     "widthPileTitle": "Lig med pælens bredde",
-    "withH": "Med H"
+    "withH": "Med H",
+    "openTubeHint": "Åbent rør: regnet som hult rør; jorden inde i røret bidrager ikke til stivheden. Indersiden står også i jord."
   },
   "inspector": {
     "aria": "Fjederinspektion",

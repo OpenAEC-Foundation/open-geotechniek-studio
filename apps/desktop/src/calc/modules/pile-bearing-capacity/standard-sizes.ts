@@ -49,6 +49,7 @@ export const DEFAULT_SIZES: Record<string, number[]> = {
   "timber-uniform": TIMBER_HEAD,
   "steel-pipe-driven-closed": STEEL_TUBE_OD,
   "steel-pipe-driven-closed-2017": STEEL_TUBE_OD,
+  "steel-pipe-driven-open": STEEL_TUBE_OD,
   "steel-screw-permanent-casing": STEEL_TUBE_OD,
   // In de grond gevormd met een stalen mantelbuis: de buisreeks vanaf Ø323,9.
   "concrete-driven-casing-hammered": CASING_OD,

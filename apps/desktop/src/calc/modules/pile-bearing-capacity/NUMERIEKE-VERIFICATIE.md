@@ -80,3 +80,25 @@ tabel is er niet op nagelezen. De factor s voor de vorm van een rechthoekige
 paalvoet (a ≠ b) zit niet in het programma: er wordt met de s van het paaltype
 (1,0) of de projectfactor gerekend en de uitdraai meldt dat. De beginreeks
 a × b in `standard-sizes.ts` is geen normreeks.
+
+## Open stalen buispaal
+
+Handberekening tegen NEN 9997-1:2016+C2:2017, tabel 7.c en art. 7.6.2.3(d) en (e); getoetst in `open-tube.test.ts`.
+
+Invoer: buis Ø323,9 × 10 mm, paalpunt NAP −14,00, positieve schachtwrijving van NAP −8,00 tot de punt (ΔL = 6 m) in zand, synthetische sondering met overal q_c = 5 MPa, γ_m = 1,2, ξ = 1,39.
+
+- q_b;max = ½ · 0,7 · 1 · 1 · ((5 + 5)/2 + 5) = 3,50 MPa (open en gesloten gelijk).
+- A_vol = π/4 · 323,9² = 82 397,1 mm²; A_binnen = π/4 · 303,9² = 72 535,6 mm²; A_ring = 9 861,5 mm².
+- R_s = π · 0,3239 · 6 · α_s · 5 · 1000 kN, met α_s = 0,006 (open) of 0,010 (gesloten).
+- R_c;cal = R_b + R_s; R_c;d = R_c;cal / 1,39 / 1,2.
+
+| Geval | A_b [mm²] | R_b [kN] | R_s [kN] | R_c;cal [kN] | R_c;d [kN] | Module | Verschil |
+|---|---|---|---|---|---|---|---|
+| Open, zonder prop | 9 861,5 | 34,52 | 183,16 | 217,68 | 130,50 | gelijk | < 0,05 kN |
+| Open, met prop η = 0,5 | 46 129,3 | 161,45 | 183,16 | 344,61 | 206,60 | gelijk | < 0,05 kN |
+| Open, met prop η = 1 | 82 397,1 | 288,39 | 183,16 | 471,55 | 282,70 | gelijk | < 0,05 kN |
+| Gesloten, tabel 2017 (vergelijking) | 82 397,1 | 288,39 | 305,27 | 593,66 | 355,91 | gelijk | < 0,05 kN |
+
+"Gelijk" betekent: de test eist overeenstemming op 0,05 kN (R) en 0,5 mm² (A_b). EA van de open buis: 210 000 · 9 861,5 = 2 070 906 kN (alleen staal); de gesloten buis houdt staal plus betonvulling.
+
+Niet gecontroleerd tegen een externe referentie-berekening of een gepubliceerd rekenvoorbeeld; zo'n voorbeeld voor een open buispaal volgens de norm is niet gevonden.

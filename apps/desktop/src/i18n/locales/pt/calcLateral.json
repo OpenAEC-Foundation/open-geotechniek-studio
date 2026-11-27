@@ -235,7 +235,8 @@
     "widthLabel": "Largura efetiva das molas do solo [m]",
     "widthPile": "= estaca",
     "widthPileTitle": "Igual à largura da estaca",
-    "withH": "Com H"
+    "withH": "Com H",
+    "openTubeHint": "Tubo aberto: calculado como tubo oco; o solo no interior não contribui para a rigidez. A face interior também está em contacto com o solo."
   },
   "inspector": {
     "aria": "Inspeção da mola",

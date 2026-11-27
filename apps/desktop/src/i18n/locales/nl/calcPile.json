@@ -419,7 +419,8 @@
       "concrete": "Beton",
       "steel": "Staal",
       "wood": "Hout",
-      "grout": "Grout"
+      "grout": "Grout",
+      "plug": "Grondprop"
     },
     "soil": {
       "sand": "Zand",
@@ -461,7 +462,9 @@
       "prefab": "Prefab beton",
       "steelEA": "Stalen paal; projectspecifieke EA",
       "steelTube": "Stalen buispaal, betongevuld",
-      "wood": "Hout, constante doorsnede"
+      "wood": "Hout, constante doorsnede",
+      "steelOpen": "Open stalen buis, zonder prop",
+      "steelOpenPlug": "Open stalen buis, met grondprop"
     },
     "noPoints": "Geen meetwaarden in deze CPT",
     "notComputed": "Niet berekend: {{error}}. Versleep de niveaus of pas de invoer aan.",
@@ -598,5 +601,16 @@
     "detailAria": "Omvang van de uitdraai",
     "compact": "Beknopt: tabellen",
     "full": "Uitgebreid: volledige afleiding"
+  },
+  "openTube": {
+    "tip": "Punt",
+    "noPlug": "Zonder prop: alleen de staalring",
+    "plug": "Met prop: staalring + η × binnendoorsnede",
+    "plugFactor": "Propfactor",
+    "plugFactorAria": "Propfactor η [-]",
+    "plugFactorPlaceholder": "invullen",
+    "plugFactorMissing": "Vul η in (0 tot en met 1) — zonder η wordt er niet gerekend.",
+    "hintPlug": "Met prop telt de staalring plus η maal de binnendoorsnede; η = 1 is de volle doorsnede. De norm geeft geen waarde voor η: onderbouw hem, bijvoorbeeld met de wrijving binnen in de buis (NEN 9997-1 art. 7.6.2.3(d); boven 500 mm ook art. 7.6.2.1(13)).",
+    "hintNoPlug": "Zonder prop telt alleen de staalring en blijft de wrijving binnen in de buis buiten beschouwing; dat is een ondergrens van NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

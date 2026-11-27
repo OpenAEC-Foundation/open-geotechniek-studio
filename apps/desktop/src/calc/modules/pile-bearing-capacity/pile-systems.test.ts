@@ -17,7 +17,7 @@ const at = (input: PileInput, nap: number) => shaftPerimeterAtNap(input, circula
 describe("paalsystemen", () => {
   it("biedt de systemen die een constructeur kiest, elk met bestaande tabelrijen", () => {
     expect(PILE_SYSTEMS.map((s) => s.id)).toEqual([
-      "prefab-concrete", "steel-tube-closed", "screw-injection", "screw-permanent-casing", "screw-lost-tip",
+      "prefab-concrete", "steel-tube-closed", "steel-tube-open", "screw-injection", "screw-permanent-casing", "screw-lost-tip",
       "screw-soil-displacing", "vibro", "auger", "auger-cased", "bored", "timber", "timber-extension",
     ]);
     for (const s of PILE_SYSTEMS) for (const id of s.typeIds) expect(getPileType(id), id).toBeDefined();
@@ -27,7 +27,7 @@ describe("paalsystemen", () => {
 
   describe("omtrek per niveau", () => {
     const constant: Array<[PileSystemId, number]> = [
-      ["prefab-concrete", 4], ["steel-tube-closed", Math.PI], ["screw-injection", Math.PI], ["screw-permanent-casing", Math.PI],
+      ["prefab-concrete", 4], ["steel-tube-closed", Math.PI], ["steel-tube-open", Math.PI], ["screw-injection", Math.PI], ["screw-permanent-casing", Math.PI],
       ["screw-lost-tip", Math.PI], ["screw-soil-displacing", Math.PI], ["vibro", Math.PI], ["auger", Math.PI],
       ["auger-cased", Math.PI], ["bored", Math.PI],
     ];

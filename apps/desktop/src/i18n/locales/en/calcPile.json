@@ -419,7 +419,8 @@
       "concrete": "Concrete",
       "steel": "Steel",
       "wood": "Timber",
-      "grout": "Grout"
+      "grout": "Grout",
+      "plug": "Soil plug"
     },
     "soil": {
       "sand": "Sand",
@@ -461,7 +462,9 @@
       "prefab": "Precast concrete",
       "steelEA": "Steel pile; project-specific EA",
       "steelTube": "Steel tube pile, concrete-filled",
-      "wood": "Timber, constant cross-section"
+      "wood": "Timber, constant cross-section",
+      "steelOpen": "Open steel tube, no plug",
+      "steelOpenPlug": "Open steel tube, with soil plug"
     },
     "noPoints": "No measurements in this CPT",
     "notComputed": "Not calculated: {{error}}. Drag the levels or adjust the input.",
@@ -598,5 +601,16 @@
     "detailAria": "Extent of the printout",
     "compact": "Concise: tables",
     "full": "Extended: full derivation"
+  },
+  "openTube": {
+    "tip": "Base",
+    "noPlug": "Without plug: steel ring only",
+    "plug": "With plug: steel ring + η × inner section",
+    "plugFactor": "Plug factor",
+    "plugFactorAria": "Plug factor η [-]",
+    "plugFactorPlaceholder": "enter",
+    "plugFactorMissing": "Enter η (0 to 1) — without η nothing is calculated.",
+    "hintPlug": "With a plug the steel ring counts plus η times the inner section; η = 1 is the full section. The standard gives no value for η: substantiate it, for example with the friction inside the tube (NEN 9997-1 art. 7.6.2.3(d); above 500 mm also art. 7.6.2.1(13)).",
+    "hintNoPlug": "Without a plug only the steel ring counts and the friction inside the tube is ignored; that is a lower bound of NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

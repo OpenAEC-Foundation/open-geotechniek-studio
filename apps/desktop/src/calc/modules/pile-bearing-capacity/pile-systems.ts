@@ -10,7 +10,7 @@ import { STEEL_TUBE_OD, TIMBER_HEAD, nearest, seriesFor } from "./standard-sizes
 import { ct } from "../../i18n";
 
 export type PileSystemId =
-  | "prefab-concrete" | "steel-tube-closed" | "screw-injection" | "screw-permanent-casing"
+  | "prefab-concrete" | "steel-tube-closed" | "steel-tube-open" | "screw-injection" | "screw-permanent-casing"
   | "screw-lost-tip" | "screw-soil-displacing" | "vibro" | "auger" | "auger-cased" | "bored"
   | "timber" | "timber-extension";
 
@@ -32,6 +32,7 @@ export interface PileSystem {
 export const PILE_SYSTEMS: PileSystem[] = [
   { id: "prefab-concrete", label: "Prefab betonpaal", typeIds: ["concrete-prefab-prestressed-driven", "concrete-prefab-round"], profile: "constant", fields: {} },
   { id: "steel-tube-closed", label: "Stalen buispaal, gesloten punt", typeIds: ["steel-pipe-driven-closed-2017", "steel-pipe-driven-closed"], profile: "constant", fields: { wall: true, base: true } },
+  { id: "steel-tube-open", label: "Stalen buispaal, open punt", typeIds: ["steel-pipe-driven-open"], profile: "constant", fields: { wall: true } },
   { id: "screw-injection", label: "Schroefinjectiepaal", typeIds: ["steel-screw-grout"], profile: "constant", fields: {} },
   { id: "screw-permanent-casing", label: "Schroefpaal, blijvende buis", typeIds: ["steel-screw-permanent-casing"], profile: "constant", fields: { wall: true, base: true } },
   { id: "screw-lost-tip", label: "Schroefpaal, getrokken buis", typeIds: ["concrete-screw-displacement"], profile: "constant", fields: { base: true } },
@@ -88,7 +89,7 @@ export function switchPileType(input: PileInput, pileTypeId: string, extension =
     const sides = series.sizes?.length ? series.sizes : [200];
     const wasWood = getPileType(input.pileTypeId)?.material === "wood";
     return { ...input, pileTypeId, diameterMm: sides.includes(input.diameterMm) ? input.diameterMm : nearest(sides, 200), sideBMm: undefined,
-      projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper: undefined,
+      projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper: undefined, openTube: undefined,
       concreteExtension: extension ? (wasWood && input.concreteExtension) || defaultExtension(input) : undefined };
   }
   // Hout: gangbare kopmaat, punt Ø150 over het hele houten deel. Staal: maat uit de buisreeks.
@@ -97,7 +98,9 @@ export function switchPileType(input: PileInput, pileTypeId: string, extension =
   const concreteExtension = wood && extension ? defaultExtension(input) : undefined;
   const woodTop = concreteExtension?.jointNap ?? input.pileTopNap;
   const timberTaper = wood ? { toeDiameterMm: series.timberToeMm, lengthM: +(woodTop - input.pileToeNap).toFixed(2) } : undefined;
-  return { ...input, pileTypeId, diameterMm, sideBMm: undefined, projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper, concreteExtension };
+  // Open buis: standaard zonder prop (alleen de staalring); met prop vraagt een eigen factor.
+  const openTube = getPileType(pileTypeId)?.openEnd ? (input.openTube ?? { plug: false }) : undefined;
+  return { ...input, pileTypeId, diameterMm, sideBMm: undefined, projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper, concreteExtension, openTube };
 }
 
 /** Kies een paalsysteem: de tabelrij `pileTypeId` (standaard de eerste van het systeem) met de bijbehorende vorm. */

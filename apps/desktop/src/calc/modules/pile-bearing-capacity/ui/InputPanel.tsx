@@ -253,6 +253,24 @@ export function InputPanel({ input, onChange }: Props) {
             <NumField aria-label={t("pile.wallThicknessAria", "Wanddikte [mm]")} min="0.1" step="0.1" value={input.wallThicknessMm} onChange={num("wallThicknessMm")} />
           </Row>
         )}
+        {pileType?.openEnd && <>
+          <Row label={t("openTube.tip", "Punt")}>
+            <select aria-label={t("openTube.tip", "Punt")} value={input.openTube?.plug ? "plug" : "ring"} onChange={(e) => set("openTube", e.target.value === "plug" ? { plug: true, plugFactor: input.openTube?.plugFactor } : { plug: false, plugFactor: input.openTube?.plugFactor })}>
+              <option value="ring">{t("openTube.noPlug", "Zonder prop: alleen de staalring")}</option>
+              <option value="plug">{t("openTube.plug", "Met prop: staalring + η × binnendoorsnede")}</option>
+            </select>
+          </Row>
+          {input.openTube?.plug && (
+            <Row label={<>{t("openTube.plugFactor", "Propfactor")} η</>} unit="—"
+              missing={!(input.openTube.plugFactor! > 0 && input.openTube.plugFactor! <= 1) ? t("openTube.plugFactorMissing", "Vul η in (0 tot en met 1) — zonder η wordt er niet gerekend.") : undefined}>
+              <NumField aria-label={t("openTube.plugFactorAria", "Propfactor η [-]")} min="0.01" max="1" step="0.05" placeholder={t("openTube.plugFactorPlaceholder", "invullen")} value={input.openTube.plugFactor ?? ""}
+                onChange={(e) => set("openTube", { plug: true, plugFactor: e.target.value === "" ? undefined : +e.target.value })} />
+            </Row>
+          )}
+          <Hint>{input.openTube?.plug
+            ? t("openTube.hintPlug", "Met prop telt de staalring plus η maal de binnendoorsnede; η = 1 is de volle doorsnede. De norm geeft geen waarde voor η: onderbouw hem, bijvoorbeeld met de wrijving binnen in de buis (NEN 9997-1 art. 7.6.2.3(d); boven 500 mm ook art. 7.6.2.1(13)).")
+            : t("openTube.hintNoPlug", "Zonder prop telt alleen de staalring en blijft de wrijving binnen in de buis buiten beschouwing; dat is een ondergrens van NEN 9997-1 art. 7.6.2.3(d).")}</Hint>
+        </>}
         {!input.timberTaper && !ext && (
           <Row label={<>{t("pile.axialStiffness", "Axiale stijfheid EA")}{pileType?.requiresEA && <span className="cs-required"> · {t("pile.required", "verplicht")}</span>}</>} unit="kN"
             missing={needsEA ? t("pile.eaMissing", "Vereist voor dit paaltype — zonder EA wordt er niet gerekend.") : undefined}>

@@ -235,7 +235,8 @@
     "widthLabel": "Effective width of soil springs [m]",
     "widthPile": "= pile",
     "widthPileTitle": "Equal to the pile width",
-    "withH": "With H"
+    "withH": "With H",
+    "openTubeHint": "Open tube: calculated as a hollow tube; the soil inside does not add stiffness. The inner face is also in contact with soil."
   },
   "inspector": {
     "aria": "Spring inspection",

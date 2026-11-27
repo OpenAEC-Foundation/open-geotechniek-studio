@@ -16,7 +16,9 @@ import type { PileMaterial } from "./material-colors";
 
 export type PhysicalShape =
   /** Omwentelingslichaam met lineair verlopende diameter; met `wallM` een holle buis. */
-  | { kind: "round"; topNap: number; bottomNap: number; topDiameterM: number; bottomDiameterM: number; wallM?: number }
+  | { kind: "round"; topNap: number; bottomNap: number; topDiameterM: number; bottomDiameterM: number; wallM?: number;
+      /** Holle buis met het voorste kwart weggelaten, zodat de binnenkant (leeg of met prop) te zien is. */
+      cutAway?: boolean }
   /** Rechthoekige doorsnede a × b, lineair verlopend. */
   | { kind: "rect"; topNap: number; bottomNap: number; topAM: number; topBM: number; bottomAM: number; bottomBM: number }
   /** Schroefblad: schroefvlak tussen binnen- en buitendiameter. */
@@ -24,12 +26,13 @@ export type PhysicalShape =
   /** Staven evenwijdig aan de paalas; posities [x, z] ten opzichte van de as. */
   | { kind: "bars"; topNap: number; bottomNap: number; diameterM: number; positions: Array<[number, number]> };
 
-export type PhysicalRole = "shaft" | "extension" | "tip" | "footplate" | "blade" | "rebar" | "joint" | "grout" | "core";
+export type PhysicalRole = "shaft" | "extension" | "tip" | "footplate" | "blade" | "rebar" | "joint" | "grout" | "core" | "plug";
 
 export interface PhysicalPart {
   id: string;
   role: PhysicalRole;
-  material: PileMaterial | "grout";
+  /** "plug": grond in een open buis. */
+  material: PileMaterial | "grout" | "plug";
   shape: PhysicalShape;
   /** Vorm of maat is niet uit de invoer afgeleid. */
   schematic?: boolean;
@@ -74,9 +77,9 @@ export interface PhysicalScene {
 
 const FOOT_PLATE_M = 0.025;
 const nap = (v: number) => `NAP ${v >= 0 ? "+" : "−"}${fmtNumber(Math.abs(v), 2)} m`;
-const round = (id: string, role: PhysicalRole, material: PhysicalPart["material"], topNap: number, bottomNap: number, topDiameterM: number, bottomDiameterM = topDiameterM, extra: { wallM?: number; schematic?: boolean } = {}): PhysicalPart => ({
+const round = (id: string, role: PhysicalRole, material: PhysicalPart["material"], topNap: number, bottomNap: number, topDiameterM: number, bottomDiameterM = topDiameterM, extra: { wallM?: number; schematic?: boolean; cutAway?: boolean } = {}): PhysicalPart => ({
   id, role, material, ...(extra.schematic ? { schematic: true } : {}),
-  shape: { kind: "round", topNap, bottomNap, topDiameterM, bottomDiameterM, ...(extra.wallM ? { wallM: extra.wallM } : {}) },
+  shape: { kind: "round", topNap, bottomNap, topDiameterM, bottomDiameterM, ...(extra.wallM ? { wallM: extra.wallM } : {}), ...(extra.cutAway ? { cutAway: true } : {}) },
 });
 const ring = (count: number, radius: number): Array<[number, number]> => Array.from({ length: count }, (_, i) => {
   const a = (i + 0.5) / count * 2 * Math.PI;
@@ -115,6 +118,14 @@ export function pileParts(input: PileInput, type: PileTypeSpec | undefined, syst
       const plate = Math.min(FOOT_PLATE_M, 0.2 * length), wall = Math.max(0, Math.min(input.wallThicknessMm / 1000, d / 2));
       parts.push(round("shaft", "shaft", "steel", top, toe + plate, d, d, { wallM: wall }));
       parts.push(round("footplate", "footplate", "steel", toe + plate, toe, base));
+      break;
+    }
+    case "steel-tube-open": {
+      // Open buis zonder voetplaat. Met prop: grond in de buis vanaf de punt.
+      // De hoogte van de prop volgt niet uit de invoer (schematisch, 4 · binnendiameter).
+      const wall = Math.max(0, Math.min(input.wallThicknessMm / 1000, d / 2)), inner = Math.max(0, d - 2 * wall);
+      parts.push(round("shaft", "shaft", "steel", top, toe, d, d, { wallM: wall, cutAway: true }));
+      if (input.openTube?.plug && inner > 0) parts.push(round("plug", "plug", "plug", Math.min(top, toe + Math.min(4 * inner, 0.5 * length)), toe, inner * 0.995, inner * 0.995, { schematic: true }));
       break;
     }
     case "screw-injection": {

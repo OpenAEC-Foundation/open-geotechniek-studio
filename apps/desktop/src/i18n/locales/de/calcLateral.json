@@ -235,7 +235,8 @@
     "widthLabel": "Wirksame Breite der Bodenfedern [m]",
     "widthPile": "= Pfahl",
     "widthPileTitle": "Gleich der Pfahlbreite",
-    "withH": "Mit H"
+    "withH": "Mit H",
+    "openTubeHint": "Offenes Rohr: als Hohlrohr gerechnet; der Boden im Rohr trägt nicht zur Steifigkeit bei. Auch die Innenseite steht im Boden."
   },
   "inspector": {
     "aria": "Federprüfung",

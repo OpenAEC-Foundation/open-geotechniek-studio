@@ -419,7 +419,8 @@
       "concrete": "Betão",
       "steel": "Aço",
       "wood": "Madeira",
-      "grout": "Calda de cimento"
+      "grout": "Calda de cimento",
+      "plug": "Tampão de solo"
     },
     "soil": {
       "sand": "Areia",
@@ -461,7 +462,9 @@
       "prefab": "Betão pré-fabricado",
       "steelEA": "Estaca de aço; EA específico do projeto",
       "steelTube": "Estaca tubular de aço, cheia de betão",
-      "wood": "Madeira, secção constante"
+      "wood": "Madeira, secção constante",
+      "steelOpen": "Tubo de aço aberto, sem tampão",
+      "steelOpenPlug": "Tubo de aço aberto, com tampão de solo"
     },
     "noPoints": "Sem medições neste CPT",
     "notComputed": "Não calculado: {{error}}. Arraste as cotas ou ajuste os dados.",
@@ -598,5 +601,16 @@
     "detailAria": "Extensão da impressão",
     "compact": "Resumido: tabelas",
     "full": "Detalhado: dedução completa"
+  },
+  "openTube": {
+    "tip": "Ponta",
+    "noPlug": "Sem tampão: só o anel de aço",
+    "plug": "Com tampão: anel + η × secção interior",
+    "plugFactor": "Fator de tampão",
+    "plugFactorAria": "Fator de tampão η [-]",
+    "plugFactorPlaceholder": "introduzir",
+    "plugFactorMissing": "Introduza η (0 a 1) — sem η não se calcula.",
+    "hintPlug": "Com tampão conta o anel de aço mais η vezes a secção interior; η = 1 é a secção cheia. A norma não dá valor para η: justifique-o, por exemplo com o atrito dentro do tubo (NEN 9997-1 art. 7.6.2.3(d); acima de 500 mm também art. 7.6.2.1(13)).",
+    "hintNoPlug": "Sem tampão conta só o anel de aço e o atrito interior é ignorado; é um limite inferior da NEN 9997-1 art. 7.6.2.3(d)."
   }
 }

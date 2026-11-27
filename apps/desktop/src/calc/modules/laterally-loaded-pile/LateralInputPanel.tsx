@@ -74,14 +74,14 @@ export function LateralInputPanel({ input: i, onChange }: Props) {
   };
   const pickSystem = (id: PileSystemId) => {
     const kind = SYSTEM_KINDS[id].includes(s.kind) ? s.kind : SYSTEM_KINDS[id][0];
-    onChange?.({ ...i, pileSystemId: id, section: { ...s, ...kindPatch(kind) }, material: { ...i.material, boredPile: CAST_IN_SITU.includes(id) || undefined } });
+    onChange?.({ ...i, pileSystemId: id, openEnd: id === 'steel-tube-open' || undefined, section: { ...s, ...kindPatch(kind) }, material: { ...i.material, boredPile: CAST_IN_SITU.includes(id) || undefined } });
   };
   const sheetCfg: SheetSection = s.sheet ?? defaultSheet(), profile = findSheetPile(sheetCfg.profileId, sheetCfg.manufacturer);
   const sheetWidth = (cfg: SheetSection) => cfg.widthMode === 'wall' ? 1 : (findSheetPile(cfg.profileId, cfg.manufacturer)?.widthMm ?? 1000) / 1000;
   /** Damwand: de hoogte van het profiel als maat, en de grondveren over de rekenbreedte. */
   const setSheet = (patch: Partial<SheetSection>) => {
     const cfg = { ...sheetCfg, ...patch }, p = findSheetPile(cfg.profileId, cfg.manufacturer);
-    onChange?.({ ...i, pileSystemId: undefined, springWidthM: sheetWidth(cfg), section: { ...s, kind: 'sheet-pile', sheet: cfg, diameterMm: p?.wallHeightMm ?? s.diameterMm } });
+    onChange?.({ ...i, pileSystemId: undefined, openEnd: undefined, springWidthM: sheetWidth(cfg), section: { ...s, kind: 'sheet-pile', sheet: cfg, diameterMm: p?.wallHeightMm ?? s.diameterMm } });
   };
   const pileWidth = sheet ? sheetWidth(sheetCfg) : s.diameterMm / 1000;
   const sizes = s.kind === 'concrete-square' ? PREFAB_SQUARE : tube ? STEEL_TUBE_OD : null;
@@ -126,6 +126,7 @@ export function LateralInputPanel({ input: i, onChange }: Props) {
         <SectionSketch section={s} />
       </div>
       {sheet && <Info>{t('input.sheetHint', 'I, W en A komen uit de profielbibliotheek, per m doorgaande wand. Per m wand gelden H, M en N per strekkende meter en grijpen de grondveren aan over 1,00 m. Een losse plank rekent over de plankbreedte, als een smalle paal. β_B (op W) en β_D (op I) verlagen de waarden als de sloten geen schuifkracht overdragen: 1,0 voor Z-profielen en voor U-profielen met gefixeerde sloten; lager voor losse of niet-gefixeerde U-planken, volgens de nationale bijlage van NEN-EN 1993-5. Dit is geen damwandberekening: geen gronddruk aan weerszijden, verankering of fasering.')}{profile?.note ? ` ${profile.note}` : ''}</Info>}
+      {system === 'steel-tube-open' && <Hint>{t('input.openTubeHint', 'Open buis: gerekend als holle buis; de grond in de buis draagt niet bij aan de stijfheid. De binnenzijde staat ook in de grond.')}</Hint>}
       {s.kind === 'filled-tube' && <label className="cs-check"><input type="checkbox" checked={s.tubeParticipates} onChange={(e) => section({ tubeParticipates: e.target.checked })} /> {t('input.tubeParticipates', 'Buis werkt mee (samengestelde werking aangetoond)')}</label>}
       <Row label={t('input.head', 'Paalkop')} unit="m NAP"><NumberInput label={t('input.headLabel', 'Paalkop [m NAP]')} value={head} onChange={(v) => change({ headNap: r3(v) })} /></Row>
       <Row label={t('input.toe', 'Paalpunt')} unit="m NAP"><NumberInput label={t('input.toeLabel', 'Paalpunt [m NAP]')} value={nap(i.lengthM)} onChange={(v) => setLength(head - v)} /></Row>

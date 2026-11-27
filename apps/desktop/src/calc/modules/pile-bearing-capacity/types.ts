@@ -40,6 +40,21 @@ export interface PileTypeSpec {
   factorsMissing?: boolean;
   /** Met projectfactoren op een type zonder tabelregel: lastzakkingslijn onbekend. */
   settlementLineUnknown?: boolean;
+  /** Open buis (geen voetplaat): de puntweerstand hangt af van de grondprop, zie `PileInput.openTube`. */
+  openEnd?: boolean;
+}
+
+/**
+ * Open stalen buispaal: hoe de punt wordt gerekend.
+ * - `plug: false` — zonder prop: puntweerstand alleen over de staalring, inwendige
+ *   schachtwrijving niet meegenomen (ondergrens van NEN 9997-1 art. 7.6.2.3(d)).
+ * - `plug: true` — met prop: puntweerstand over de staalring plus `plugFactor` maal de
+ *   binnendoorsnede. De factor (0 < η ≤ 1) vult de gebruiker in en onderbouwt hem; zonder
+ *   factor wordt er niet gerekend.
+ */
+export interface OpenTubeInput {
+  plug: boolean;
+  plugFactor?: number;
 }
 
 /** Betonopzetter op een houten paal: boven de las beton, eronder hout. */
@@ -140,6 +155,8 @@ export interface PileInput {
   concreteExtension?: ConcreteExtension;
   /** Projectspecifieke axiale stijfheid EA, in kN. */
   axialStiffnessKn?: number;
+  /** Open stalen buispaal: met of zonder grondprop. Ontbrekend bij een open buis = zonder prop. */
+  openTube?: OpenTubeInput;
   projectFactors?: ProjectPileFactors;
   pileTopNap: number;          // 0.34
   pileToeNap: number;          // -14.50
@@ -201,6 +218,8 @@ export interface BaseResistanceResult {
    *  zodat zichtbaar is hoeveel qc er is "weggesnoept". Optioneel ivm
    *  back-compat met eerdere PileResult-snapshots. */
   clippedQcCurve?: Array<{ depth: number; qcClipped: number }>;
+  /** Open buis: de oppervlakken achter abMm2 [mm²] en de gekozen rekenwijze. */
+  openTube?: { plug: boolean; plugFactor?: number; ringMm2: number; innerMm2: number; fullMm2: number };
 }
 
 export interface ShaftFrictionResult {

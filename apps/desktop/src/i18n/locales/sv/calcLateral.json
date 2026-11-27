@@ -235,7 +235,8 @@
     "widthLabel": "Effektiv bredd för jordfjädrar [m]",
     "widthPile": "= påle",
     "widthPileTitle": "Lika med pålens bredd",
-    "withH": "Med H"
+    "withH": "Med H",
+    "openTubeHint": "Öppet rör: räknas som ihåligt rör; jorden inuti bidrar inte till styvheten. Insidan står också i jord."
   },
   "inspector": {
     "aria": "Fjäderinspektion",

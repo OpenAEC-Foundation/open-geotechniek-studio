@@ -19,6 +19,8 @@ const SKETCHES: Record<PileSystemId, ReactNode> = {
   "prefab-concrete": <><path d="M11 3h9v27l-4.5 6-4.5-6z" {...solid} /><rect x="23" y="4" width="6" height="6" {...solid} strokeWidth={1} /></>,
   // Holle buis met voetplaat.
   "steel-tube-closed": <><path d="M11 3v30M21 3v30" {...line} /><path d="M13.5 3v30M18.5 3v30" {...thin} /><path d="M10 34h12" {...line} strokeWidth={3} /><circle cx="26" cy="7" r="3" {...line} strokeWidth={1} /></>,
+  // Holle buis zonder voetplaat: de onderkant staat open, met grond (stippels) erin.
+  "steel-tube-open": <><path d="M11 3v32M21 3v32" {...line} /><path d="M13.5 3v32M18.5 3v32" {...thin} /><path d="M14.5 29h3M15 32h2M14.5 35h3" {...thin} strokeDasharray="1 1.5" /><circle cx="26" cy="7" r="3" {...line} strokeWidth={1} /><circle cx="26" cy="7" r="1.6" {...thin} /></>,
   // Buis met groutschil (stippellijn) en schroefpunt.
   "screw-injection": <><path d="M13 3v28M19 3v28" {...line} /><path d="M10 5v27M22 5v27" {...thin} strokeDasharray="2 2" />{blade(33, 7)}<path d="M16 31v6" {...line} /></>,
   // Blijvende stalen buis op een bredere schroefpunt.
