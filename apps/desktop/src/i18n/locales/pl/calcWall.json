@@ -47,6 +47,13 @@
       "title": "Cięgno kotwi iniekcyjnej"
     }
   },
+  "detail": {
+    "aria": "Szczegół profilu {{id}}: dwie grodzice w rzucie",
+    "derived": "schematycznie: szerokość półki i kąt środnika wyznaczone z A i I; zamek jako blok",
+    "flange": "półka",
+    "schematic": "schematycznie: tylko b, h i grubości blach pochodzą z tabeli",
+    "table": "wymiary z tabeli profili; zamek schematycznie"
+  },
   "errors": {
     "anchor": "Sprawdź kotew: kąt mniejszy niż 80°, rozstaw osiowy i sztywność sprężyny większe od 0.",
     "anchorLevel": "Kotew leży między wierzchem ścianki a poziomem po stronie niższej.",
@@ -323,6 +330,7 @@
     "vEd": "największa siła poprzeczna z modelu sprężynowego z wartościami obliczeniowymi, na NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Kształt profilu schematyczny: tabele producentów nie podają szerokości półki, kąta środnika ani kształtu zamka; szerokość półki wyznaczono z A i I, zamek jest blokiem.",
     "displacement": "Przemieszczenie",
     "ground": "p.t.",
     "highSide": "strona wyższa",
@@ -335,7 +343,7 @@
     "runSls": "Wartości charakterystyczne",
     "runUls": "Wartości obliczeniowe",
     "sceneAria": "Widok 3D ścianki szczelnej; obracanie przez przeciąganie, powiększanie przez przewijanie",
-    "sceneHint": "Blok gruntu jest rozcięty: płaszczyzna cięcia to przekrój, ścianka wystaje przed nią. Szerokość grodzicy, wysokość ścianki i grubości blach pochodzą z biblioteki profili; szerokość półki jest oszacowana, a zamków nie narysowano. Pomarańczowy: kotew lub rozpora. Przeciągnij, aby obrócić, przewiń, aby powiększyć.",
+    "sceneHint": "Blok gruntu jest przecięty: płaszczyzna cięcia to przekrój, ścianka wystaje przed nią. Szerokość grodzicy, wysokość ścianki i grubości blach pochodzą z biblioteki profili. Pomarańczowy: kotew lub rozpora. Przeciągnij, aby obrócić, przewiń, aby powiększyć.",
     "sceneHintRevetment": "Blok gruntu jest rozcięty: płaszczyzna cięcia to przekrój, umocnienie brzegu wystaje przed nią. Grubość deski, wymiar pala, rozstaw osiowy i opinka są w skali; szerokość deski jest wymiarem rysunkowym. Pomarańczowy: kotew z kleszczami. Przeciągnij, aby obrócić, przewiń, aby powiększyć.",
     "section": "Przekrój",
     "sectionAria": "Przekrój ścianki szczelnej z parciem gruntu, przemieszczeniem, momentem i siłą poprzeczną",

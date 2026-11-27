@@ -4,6 +4,8 @@ import type { ProjectContext } from "../../framework/types";
 import { M, TOTAL_PAGES_TOKEN, type Cursor, formula, kv, makeCursor, nl, paragraph, sectionTitle, table } from "../pile-bearing-capacity/parts/pile-report-pdf";
 import type { BlumCase } from "./blum";
 import { DEFAULT_FACTORS, GAMMA_WATER, anchorAngle, anchorStiffness, hasAnchor, normalizeWallInput, supportStiffness, type RunSample, type WallInput, type WallResult, type WallRun } from "./compute";
+import { sheetContour } from "../../library/sheetPileContour";
+import type { SheetPileProfile } from "../../library/sheetPiles";
 import { niceTicks, wallScene } from "./scene";
 
 const NORM = "NEN 9997-1 met CUR 166; NEN-EN 1993-5";
@@ -17,6 +19,25 @@ const rgb = (hex: string, mix: number): Rgb => [1, 3, 5].map((o) => Math.round(p
 
 export function wallReportFileName(input: WallInput): string {
   return (input.construction ?? "sheet-pile") === "sheet-pile" ? `damwand-${input.profileId.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}` : input.construction === "posts" ? "beschoeiing-palen-met-schotten" : "beschoeiing-planken";
+}
+
+/** Detail van één dubbele plank in de plattegrond, op schaal, met de maten uit de profieltabel. */
+function profileFigure(c: Cursor, p: SheetPileProfile): void {
+  const doc = c.doc, contour = sheetContour(p, 2), g = contour.geometry, k = Math.min(80 / contour.widthMm, 30 / Math.max(g.heightMm, 1)), h = Math.max(g.heightMm, 24) * k + 12;
+  c.reserve(h + 2);
+  const x0 = M.left + 30, y0 = c.y + 5 + (Math.max(g.heightMm, 24) * k) / 2, X = (x: number) => x0 + x * k, Y = (y: number) => y0 - y * k;
+  const poly = (pts: Array<{ x: number; y: number }>, fill: Rgb) => { doc.setFillColor(...fill); doc.setDrawColor(31, 41, 55); doc.setLineWidth(0.1); doc.lines(pts.slice(1).map((q, n) => [(q.x - pts[n].x) * k, -(q.y - pts[n].y) * k]), X(pts[0].x), Y(pts[0].y), [1, 1], "FD", true); };
+  doc.setDrawColor(120); doc.setLineWidth(0.1); doc.setLineDashPattern([2, 0.6, 0.4, 0.6], 0); doc.line(X(0) - 3, Y(0), X(contour.widthMm) + 3, Y(0)); doc.setLineDashPattern([], 0);
+  for (const pts of contour.plates) poly(pts, [91, 100, 112]);
+  for (const pts of contour.locks) poly(pts, [31, 41, 55]);
+  doc.setDrawColor(110); doc.line(X(0), Y(g.heightMm / 2) - 2.5, X(g.widthMm), Y(g.heightMm / 2) - 2.5); doc.line(X(0) - 3, Y(g.heightMm / 2), X(0) - 3, Y(-g.heightMm / 2));
+  doc.setFontSize(6.5); doc.setTextColor(70);
+  doc.text(`b = ${nl(g.widthMm, 0)}`, X(g.widthMm / 2), Y(g.heightMm / 2) - 3.2, { align: "center" }); doc.text(`h = ${nl(g.heightMm, 0)}`, X(0) - 4, Y(0) - 0.8, { align: "right" });
+  const approx = g.basis === "table" ? "" : "ca. ";
+  doc.text(`t = ${nl(g.flangeThicknessMm, 1)} mm; s = ${nl(g.webThicknessMm, 1)} mm${p.shape === "Z" || p.shape === "U" ? `; flens ${approx}${nl(g.flangeMm, 0)} mm; lijfhoek ${approx}${nl(g.webAngleDeg, 1)} graden` : ""}`, X(contour.widthMm) + 6, Y(0) - 1);
+  doc.text(g.basis === "table" ? "maten uit de profieltabel; slot schematisch" : g.basis === "derived" ? "schematisch: flensbreedte en lijfhoek afgeleid uit A en I; slot als blokje" : "schematisch: alleen b, h en de plaatdikten komen uit de tabel", X(contour.widthMm) + 6, Y(0) + 2.5);
+  doc.setTextColor(0); doc.setDrawColor(0); doc.setLineWidth(0.2);
+  c.y += h + 2;
 }
 
 /** Doorsnede op schaal met de druk op de wand, en ernaast verplaatsing, moment en dwarskracht. */
@@ -113,6 +134,7 @@ export function buildWallReport(raw: WallInput, r: WallResult, ctx: ProjectConte
   kv(c, "Bovenbelasting", `q = ${nl(i.surchargeKpa, 1)} kPa op de hoge zijde, gelijkmatig`);
   kv(c, sheet ? "Wand" : posts ? "Paal" : "Plank", `${sheet && r.section.profile ? `${r.section.profile.manufacturer} ` : ""}${r.section.label}; bovenkant NAP ${nap(i.wallTopNap)} m, teen NAP ${nap(i.toeNap)} m, lengte ${nl(r.lengthM)} m`);
   kv(c, "Doorsnede", `EI = ${nl(r.eiKnM2, r.eiKnM2 < 100 ? 1 : 0)} kNm² per m wand; ${r.section.properties.map(([k, v]) => `${k} = ${v}`).join("; ")}${r.section.massKgPerM2 ? `; ${nl(r.section.massKgPerM2, 1)} kg/m²` : ""}`);
+  if (sheet && r.section.profile) profileFigure(c, r.section.profile);
   if (posts) kv(c, "Palen en schotten", `h.o.h. ${nl(i.posts.spacingM)} m; schotten ${nl(i.posts.boardMm, 0)} mm tot NAP ${nap(i.posts.boardBottomNap)} m; onder de schotten gronddruk over ${nl(i.posts.sizeMm, 0)} mm en passieve weerstand en bedding over ${nl(i.posts.spatialFactor, 1)} × de paalbreedte (factor voor ruimtelijke werking, invoer)`);
   if (!sheet && (i.material === "timber" || posts)) kv(c, "Hout", `${i.timber.classId}: f_m;k = ${nl(i.timber.fmK, 1)} N/mm²; f_v;k = ${nl(i.timber.fvK, 1)} N/mm²; E_0;mean = ${nl(i.timber.eMeanMPa, 0)} N/mm²; k_mod = ${nl(i.timber.kmod)}; γ_M = ${nl(i.timber.gammaM)}; k_cr = ${nl(i.timber.kcr)}`);
   kv(c, "Steun", !anchored ? "geen" : `${a.kind === "strut" ? "stempel" : a.kind === "grout" ? "groutanker" : "ankerstaaf naar ankerschot of ankerpaal"} op NAP ${nap(a.levelNap)} m, ${nl(anchorAngle(a), 1)}° met de horizontaal, h.o.h. ${nl(a.spacingM)} m; ${a.rigid && a.kind !== "grout" ? "star" : `veerstijfheid ${nl(anchorStiffness(a), 0)} kN/m per anker, horizontaal ${nl(supportStiffness(a), 0)} kN/m per m wand`}`);

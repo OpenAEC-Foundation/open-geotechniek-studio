@@ -47,6 +47,13 @@
       "title": "Tendon of the grout anchor"
     }
   },
+  "detail": {
+    "aria": "Detail of section {{id}}: two piles in plan",
+    "derived": "schematic: flange width and web angle derived from A and I; interlock as a block",
+    "flange": "flange",
+    "schematic": "schematic: only b, h and the plate thicknesses come from the table",
+    "table": "dimensions from the section table; interlock schematic"
+  },
   "errors": {
     "anchor": "Check the anchor: angle smaller than 80°, centre-to-centre spacing and spring stiffness greater than 0.",
     "anchorLevel": "The anchor lies between the top of the wall and the level on the low side.",
@@ -323,6 +330,7 @@
     "vEd": "largest shear force from the spring model with design values, at NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Section shape schematic: the manufacturers' tables do not give the flange width, the web angle or the interlock shape; the flange width is derived from A and I, the interlock is a block.",
     "displacement": "Displacement",
     "ground": "GL",
     "highSide": "high side",
@@ -335,7 +343,7 @@
     "runSls": "Characteristic values",
     "runUls": "Design values",
     "sceneAria": "3D view of the sheet pile wall; drag to rotate, scroll to zoom",
-    "sceneHint": "The soil block is cut open: the cut plane is the cross-section, the wall projects in front of it. Pile width, wall height and plate thicknesses come from the section library; the flange width is estimated and the interlocks are not drawn. Orange: anchor or strut. Drag to rotate, scroll to zoom.",
+    "sceneHint": "The soil block is cut open: the cut face is the cross-section and the wall extends in front of it. Pile width, wall height and plate thicknesses come from the section library. Orange: anchor or strut. Drag to rotate, scroll to zoom.",
     "sceneHintRevetment": "The soil block is cut open: the cut plane is the cross-section, the bank revetment projects in front of it. Plank thickness, post size, centre-to-centre spacing and boards are to scale; the plank width is a drawing dimension. Orange: anchor with waling. Drag to rotate, scroll to zoom.",
     "section": "Cross-section",
     "sectionAria": "Cross-section of the sheet pile wall with earth pressure, displacement, moment and shear force",

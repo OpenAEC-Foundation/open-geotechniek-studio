@@ -47,6 +47,13 @@
       "title": "Armatura del tirante di ancoraggio iniettato"
     }
   },
+  "detail": {
+    "aria": "Dettaglio del profilo {{id}}: due palancole in pianta",
+    "derived": "schematico: larghezza dell'ala e angolo dell'anima ricavati da A e I; gargame come blocco",
+    "flange": "ala",
+    "schematic": "schematico: solo b, h e gli spessori provengono dalla tabella",
+    "table": "dimensioni dalla tabella dei profili; gargame schematico"
+  },
   "errors": {
     "anchor": "Controllare l'ancoraggio: angolo minore di 80°, interasse e rigidezza della molla maggiori di 0.",
     "anchorLevel": "L'ancoraggio si trova tra la sommità della parete e la quota del lato basso.",
@@ -323,6 +330,7 @@
     "vEd": "taglio massimo dal modello a molle con i valori di progetto, a NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Forma del profilo schematica: le tabelle dei produttori non riportano la larghezza dell'ala, l'angolo dell'anima né la forma del gargame; la larghezza dell'ala è ricavata da A e I, il gargame è un blocco.",
     "displacement": "Spostamento",
     "ground": "p.c.",
     "highSide": "lato alto",
@@ -335,7 +343,7 @@
     "runSls": "Valori caratteristici",
     "runUls": "Valori di progetto",
     "sceneAria": "Vista 3D della palancolata; trascinare per ruotare, scorrere per lo zoom",
-    "sceneHint": "Il blocco di terreno è sezionato: il piano di taglio è la sezione, la parete sporge davanti. La larghezza della palancola, l'altezza del profilo e gli spessori delle lamiere provengono dalla libreria dei profili; la larghezza dell'ala è stimata e i giunti non sono disegnati. Arancione: ancoraggio o puntone. Trascinare per ruotare, scorrere per lo zoom.",
+    "sceneHint": "Il blocco di terreno è sezionato: la faccia di taglio è la sezione e la paratia sporge davanti. Larghezza della palancola, altezza della parete e spessori provengono dalla libreria dei profili. Arancione: tirante o puntone. Trascinare per ruotare, scorrere per ingrandire.",
     "sceneHintRevetment": "Il blocco di terreno è sezionato: il piano di taglio è la sezione, la difesa spondale sporge davanti. Lo spessore del tavolone, la dimensione del palo, l'interasse e le tavole sono in scala; la larghezza del tavolone è una misura di disegno. Arancione: ancoraggio con trave di ripartizione. Trascinare per ruotare, scorrere per lo zoom.",
     "section": "Sezione",
     "sectionAria": "Sezione della palancolata con spinta delle terre, spostamento, momento e taglio",

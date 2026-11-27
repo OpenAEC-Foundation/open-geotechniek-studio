@@ -65,6 +65,15 @@ describe("groutanker in het rekenblad", () => {
     expect(length(svg.querySelector("line.sw-anchor-grout")!)).toBeCloseTo(length(svg.querySelector("line.sw-anchor-free")!), 6);
   });
 
+  it("detail van het profiel in de invoer: twee planken met de maten uit de tabel en de aanduiding schematisch", () => {
+    const input = wallExample();
+    render(<module.InputPanel input={input} result={ok(input)} onChange={vi.fn()} />);
+    const svg = screen.getByRole("img", { name: /Detail van het profiel AZ 18-700/ });
+    expect(svg.querySelectorAll(".sw-detail-plate")).toHaveLength(2); expect(svg.querySelectorAll(".sw-detail-lock")).toHaveLength(3);
+    expect(svg).toHaveTextContent("b = 700"); expect(svg).toHaveTextContent("h = 420"); expect(svg).toHaveTextContent("t = 9,0 · s = 9,0 mm");
+    expect(svg).toHaveTextContent(/schematisch: flensbreedte en lijfhoek afgeleid uit A en I/);
+  });
+
   it("uitdraai: een eigen blok voor het groutanker met invoer, krachten en toetsen", () => {
     const input = grouted(), text = new TextDecoder("latin1").decode(module.buildReport!(input, ok(input), ctx));
     for (const part of ["met groutankers", "Groutanker", "Trekelement van het groutanker", "Houdkracht van het groutlichaam", "Groutlichaam buiten het actieve glijvlak", "Actief glijvlak"]) expect(text).toContain(part);

@@ -47,6 +47,13 @@
       "title": "Armature du tirant d'ancrage scellé"
     }
   },
+  "detail": {
+    "aria": "Détail du profil {{id}} : deux palplanches en plan",
+    "derived": "schématique : largeur d'aile et angle d'âme déduits de A et I ; serrure représentée par un bloc",
+    "flange": "aile",
+    "schematic": "schématique : seuls b, h et les épaisseurs proviennent du tableau",
+    "table": "dimensions du tableau des profils ; serrure schématique"
+  },
   "errors": {
     "anchor": "Vérifiez l'ancrage : angle inférieur à 80°, entraxe et raideur du ressort supérieurs à 0.",
     "anchorLevel": "L'ancrage se situe entre le sommet de l'écran et le niveau côté bas.",
@@ -323,6 +330,7 @@
     "vEd": "effort tranchant maximal issu du modèle à ressorts avec les valeurs de calcul, à NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Forme du profil schématique : les tableaux des fabricants ne donnent ni la largeur d'aile, ni l'angle d'âme, ni la forme de la serrure ; la largeur d'aile est déduite de A et I, la serrure est un bloc.",
     "displacement": "Déplacement",
     "ground": "TN",
     "highSide": "côté haut",
@@ -335,7 +343,7 @@
     "runSls": "Valeurs caractéristiques",
     "runUls": "Valeurs de calcul",
     "sceneAria": "Vue 3D du rideau de palplanches ; faire glisser pour tourner, faire défiler pour zoomer",
-    "sceneHint": "Le bloc de sol est ouvert : le plan de coupe est la coupe, l'écran dépasse devant. La largeur des palplanches, la hauteur de l'écran et les épaisseurs de tôle proviennent de la bibliothèque de profilés ; la largeur de l'aile est estimée et les serrures ne sont pas dessinées. Orange : ancrage ou buton. Faites glisser pour tourner, faites défiler pour zoomer.",
+    "sceneHint": "Le bloc de sol est ouvert : la face de coupe est la coupe, le rideau dépasse devant. Largeur de palplanche, hauteur du rideau et épaisseurs proviennent de la bibliothèque de profils. Orange : tirant ou buton. Faites glisser pour tourner, faites défiler pour zoomer.",
     "sceneHintRevetment": "Le bloc de sol est ouvert : le plan de coupe est la coupe, la protection de berge dépasse devant. L'épaisseur des madriers, la dimension des pieux, l'entraxe et les planches sont à l'échelle ; la largeur des madriers est une cote de dessin. Orange : ancrage avec lierne. Faites glisser pour tourner, faites défiler pour zoomer.",
     "section": "Coupe",
     "sectionAria": "Coupe du rideau de palplanches avec pression des terres, déplacement, moment et effort tranchant",

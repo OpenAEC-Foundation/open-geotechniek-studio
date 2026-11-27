@@ -47,6 +47,13 @@
       "title": "Dragelement i det injekterade staget"
     }
   },
+  "detail": {
+    "aria": "Detalj av profil {{id}}: två plankor i plan",
+    "derived": "schematisk: flänsbredd och livvinkel härledda ur A och I; låset som ett block",
+    "flange": "fläns",
+    "schematic": "schematisk: endast b, h och plåttjocklekarna kommer från tabellen",
+    "table": "mått från profiltabellen; låset schematiskt"
+  },
   "errors": {
     "anchor": "Kontrollera staget: vinkel mindre än 80°, centrumavstånd och fjäderstyvhet större än 0.",
     "anchorLevel": "Staget ligger mellan väggens överkant och nivån på den låga sidan.",
@@ -323,6 +330,7 @@
     "vEd": "största tvärkraft ur fjädermodellen med dimensionerande värden, på NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Profilformen är schematisk: tillverkarnas tabeller anger inte flänsbredd, livvinkel eller låsets form; flänsbredden är härledd ur A och I, låset är ett block.",
     "displacement": "Förskjutning",
     "ground": "my",
     "highSide": "hög sida",
@@ -335,7 +343,7 @@
     "runSls": "Karakteristiska värden",
     "runUls": "Dimensionerande värden",
     "sceneAria": "3D-vy av sponten; rotera genom att dra, zooma genom att rulla",
-    "sceneHint": "Jordblocket är uppskuret: snittytan är sektionen, väggen sticker ut framför den. Plankbredd, vägghöjd och plåttjocklekar kommer från profilbiblioteket; flänsens bredd är uppskattad och låsen är inte ritade. Orange: stag eller stämp. Dra för att rotera, rulla för att zooma.",
+    "sceneHint": "Jordblocket är uppskuret: snittytan är tvärsnittet och sponten sticker ut framför. Plankbredd, väggens höjd och plåttjocklekar kommer från profilbiblioteket. Orange: stag eller stämp. Dra för att rotera, skrolla för att zooma.",
     "sceneHintRevetment": "Jordblocket är uppskuret: snittytan är sektionen, strandskoningen sticker ut framför den. Planktjocklek, pålmått, centrumavstånd och brädor är skalenliga; plankbredden är ett ritmått. Orange: stag med hammarband. Dra för att rotera, rulla för att zooma.",
     "section": "Sektion",
     "sectionAria": "Sektion av sponten med jordtryck, förskjutning, moment och tvärkraft",

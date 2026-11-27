@@ -47,6 +47,13 @@
       "title": "Armadura da ancoragem selada"
     }
   },
+  "detail": {
+    "aria": "Pormenor do perfil {{id}}: duas estacas-prancha em planta",
+    "derived": "esquemático: largura do banzo e ângulo da alma deduzidos de A e I; encaixe representado por um bloco",
+    "flange": "banzo",
+    "schematic": "esquemático: apenas b, h e as espessuras provêm da tabela",
+    "table": "dimensões da tabela de perfis; encaixe esquemático"
+  },
   "errors": {
     "anchor": "Verifique a ancoragem: ângulo inferior a 80°, afastamento entre eixos e rigidez da mola superiores a 0.",
     "anchorLevel": "A ancoragem situa-se entre o topo da cortina e o nível do lado baixo.",
@@ -323,6 +330,7 @@
     "vEd": "esforço transverso máximo do modelo de molas com valores de cálculo, a NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Forma do perfil esquemática: as tabelas dos fabricantes não indicam a largura do banzo, o ângulo da alma nem a forma do encaixe; a largura do banzo é deduzida de A e I, o encaixe é um bloco.",
     "displacement": "Deslocamento",
     "ground": "terr.",
     "highSide": "lado alto",
@@ -335,7 +343,7 @@
     "runSls": "Valores característicos",
     "runUls": "Valores de cálculo",
     "sceneAria": "Vista 3D da cortina de estacas-pranchas; arraste para rodar, desloque a roda para ampliar",
-    "sceneHint": "O bloco de terreno está cortado: o plano de corte é a secção, a cortina sobressai à frente. A largura da estaca-prancha, a altura do perfil e as espessuras de chapa provêm da biblioteca de perfis; a largura do banzo é estimada e as juntas não estão desenhadas. Laranja: ancoragem ou escora. Arraste para rodar, desloque a roda para ampliar.",
+    "sceneHint": "O bloco de terreno está aberto: a face de corte é a secção e a cortina prolonga-se à frente. A largura da estaca-prancha, a altura da cortina e as espessuras provêm da biblioteca de perfis. Laranja: ancoragem ou escora. Arraste para rodar, use a roda para ampliar.",
     "sceneHintRevetment": "O bloco de terreno está cortado: o plano de corte é a secção, a proteção de margem sobressai à frente. A espessura da prancha, a dimensão da estaca, o afastamento entre eixos e as tábuas estão à escala; a largura da prancha é uma medida de desenho. Laranja: ancoragem com viga de repartição. Arraste para rodar, desloque a roda para ampliar.",
     "section": "Secção",
     "sectionAria": "Secção da cortina de estacas-pranchas com impulso de terras, deslocamento, momento e esforço transverso",

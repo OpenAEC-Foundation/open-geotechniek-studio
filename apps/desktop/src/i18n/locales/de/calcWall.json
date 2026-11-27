@@ -47,6 +47,13 @@
       "title": "Zugglied des Verpressankers"
     }
   },
+  "detail": {
+    "aria": "Detail des Profils {{id}}: zwei Bohlen im Grundriss",
+    "derived": "schematisch: Flanschbreite und Stegwinkel aus A und I abgeleitet; Schloss als Block",
+    "flange": "Flansch",
+    "schematic": "schematisch: nur b, h und die Blechdicken stammen aus der Tabelle",
+    "table": "Maße aus der Profiltabelle; Schloss schematisch"
+  },
   "errors": {
     "anchor": "Prüfen Sie den Anker: Winkel kleiner als 80°, Achsabstand und Federsteifigkeit größer als 0.",
     "anchorLevel": "Der Anker liegt zwischen der Oberkante der Wand und dem Niveau auf der tiefen Seite.",
@@ -323,6 +330,7 @@
     "vEd": "größte Querkraft aus dem Federmodell mit Bemessungswerten, auf NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Profilform schematisch: die Herstellertabellen geben Flanschbreite, Stegwinkel und Schlossform nicht an; die Flanschbreite ist aus A und I abgeleitet, das Schloss ist ein Block.",
     "displacement": "Verschiebung",
     "ground": "GOK",
     "highSide": "hohe Seite",
@@ -335,7 +343,7 @@
     "runSls": "Charakteristische Werte",
     "runUls": "Bemessungswerte",
     "sceneAria": "3D-Ansicht der Spundwand; Drehen durch Ziehen, Zoomen durch Scrollen",
-    "sceneHint": "Der Bodenblock ist aufgeschnitten: Die Schnittfläche ist der Schnitt, die Wand ragt davor heraus. Bohlenbreite, Wandhöhe und Blechdicken kommen aus der Profilbibliothek; die Flanschbreite ist geschätzt und die Schlösser sind nicht gezeichnet. Orange: Anker oder Steife. Ziehen zum Drehen, Scrollen zum Zoomen.",
+    "sceneHint": "Der Bodenblock ist aufgeschnitten: die Schnittfläche ist der Querschnitt, die Wand ragt davor heraus. Bohlenbreite, Wandhöhe und Blechdicken stammen aus der Profilbibliothek. Orange: Anker oder Steife. Ziehen zum Drehen, Scrollen zum Zoomen.",
     "sceneHintRevetment": "Der Bodenblock ist aufgeschnitten: Die Schnittfläche ist der Schnitt, die Uferbefestigung ragt davor heraus. Bohlendicke, Pfahlabmessung, Achsabstand und Bretter sind maßstäblich; die Bohlenbreite ist ein Zeichenmaß. Orange: Anker mit Gurt. Ziehen zum Drehen, Scrollen zum Zoomen.",
     "section": "Schnitt",
     "sectionAria": "Schnitt der Spundwand mit Erddruck, Verschiebung, Moment und Querkraft",

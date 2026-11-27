@@ -47,6 +47,13 @@
       "title": "Trækelement i det injicerede anker"
     }
   },
+  "detail": {
+    "aria": "Detalje af profil {{id}}: to spunsjern i plan",
+    "derived": "skematisk: flangebredde og kropvinkel udledt af A og I; låsen som en blok",
+    "flange": "flange",
+    "schematic": "skematisk: kun b, h og pladetykkelserne stammer fra tabellen",
+    "table": "mål fra profiltabellen; låsen skematisk"
+  },
   "errors": {
     "anchor": "Kontrollér ankeret: vinkel mindre end 80°, centerafstand og fjederstivhed større end 0.",
     "anchorLevel": "Ankeret ligger mellem væggens overkant og niveauet på den lave side.",
@@ -323,6 +330,7 @@
     "vEd": "største forskydningskraft fra fjedermodellen med regningsmæssige værdier, på NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Profilformen er skematisk: producenternes tabeller angiver ikke flangebredde, kropvinkel eller låsens form; flangebredden er udledt af A og I, låsen er en blok.",
     "displacement": "Flytning",
     "ground": "terr.",
     "highSide": "høj side",
@@ -335,7 +343,7 @@
     "runSls": "Karakteristiske værdier",
     "runUls": "Regningsmæssige værdier",
     "sceneAria": "3D-visning af spunsvæggen; drej ved at trække, zoom ved at rulle",
-    "sceneHint": "Jordblokken er skåret op: snitfladen er snittet, væggen rager frem foran den. Plankebredde, væghøjde og pladetykkelser kommer fra profilbiblioteket; flangens bredde er skønnet, og låsene er ikke tegnet. Orange: anker eller stiver. Træk for at dreje, rul for at zoome.",
+    "sceneHint": "Jordblokken er skåret op: snitfladen er tværsnittet, og væggen rager frem foran. Spunsjernets bredde, væggens højde og pladetykkelser stammer fra profilbiblioteket. Orange: anker eller afstivning. Træk for at dreje, rul for at zoome.",
     "sceneHintRevetment": "Jordblokken er skåret op: snitfladen er snittet, bolværket rager frem foran den. Planketykkelse, pælemål, centerafstand og brædder er i målestok; plankebredden er et tegnemål. Orange: anker med stræk. Træk for at dreje, rul for at zoome.",
     "section": "Snit",
     "sectionAria": "Snit af spunsvæggen med jordtryk, flytning, moment og forskydningskraft",

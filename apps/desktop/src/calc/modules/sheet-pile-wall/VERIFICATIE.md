@@ -371,7 +371,7 @@ de wateroverspanning het zwaarst telt.
 | NEN-EN 338 sterkteklassen (fm;k, fv;k, E0;mean) | C18 tot D70 | uit kennis van de norm; aanpasbaar |
 | kmod klimaatklasse 3 (0,50), γM = 1,3, kcr = 0,67 | standaard | uit kennis van NEN-EN 1995-1-1; kcr volgens de nationale bijlage niet nagelopen |
 | Factor ruimtelijke werking 3 (Broms) | standaard, invoer | geldt voor een losse paal in niet-cohesieve grond; voor klei en voor palen dicht bij elkaar niet onderbouwd |
-| Plattegrond van het stalen profiel in 3D | plankbreedte, wandhoogte en plaatdikten uit de bibliotheek; flensbreedte geschat, sloten niet getekend | tekenmaat, geen rekenwaarde |
+| Vorm van het stalen profiel in de tekeningen | hoofdstuk 9 | b, h, t en s uit de tabel; flensbreedte en lijfhoek afgeleid uit A en I; slotvorm schematisch |
 
 ## 8. Niet in deze versie
 
@@ -391,3 +391,41 @@ de wateroverspanning het zwaarst telt.
 - Beschoeiing van palen met schotten met een verankerde paal; schotten van een ander materiaal
   dan hout.
 - De uitdraai is in het Nederlands; de teksten op het scherm zijn vertaald.
+
+## 9. Profielvorm in de tekeningen
+
+De contour van een stalen damwandprofiel komt uit één functie, `calc/library/sheetPileContour.ts`,
+die de doorsnede, het detail in de invoer en de uitdraai, de 3D-weergave en de schets in de module
+voor horizontaal belaste palen voedt.
+
+Wat maatvast is: de plankbreedte b, de wandhoogte h, de flensdikte t en de lijfdikte s uit de
+profieltabel, en de plaats van het slot per soort (Z: aan de flens op de buitenvezel; U: op de
+neutrale lijn van de wand). De platen zijn getekend met hun dikte en met verstek in de knikken.
+
+Wat de openbare profieltabellen niet geven: de breedte van de flens, de hoek van het lijf, de
+afrondingen en de vorm van het slot. Nagelopen is de tabel met technische gegevens van de
+warmgewalste U-profielen van één van de fabrikanten in de bibliotheek (tien pagina's, volledig
+gelezen): kolommen W, gewicht, I, t, s, h, b en de doorsnedeklasse, en per profiel A, omtrek, S,
+I en de traagheidsstraal per m wand en per plank. De algemene catalogus van de fabrikant van de
+Z- en de overige U-profielen was te groot om binnen te halen en is niet gelezen; de bibliotheek
+zelf noemt uit die catalogus ook alleen b, h, t en s. De velden `flangeWidthMm`, `webAngleDeg`
+en `cornerRadiusMm` bestaan in de bibliotheek, maar zijn voor elk profiel leeg.
+
+In plaats van een geschatte flens rekent de contour de flensbreedte terug uit de tabel: de
+breedte waarbij vlakke platen met de diktes t en s, plus het slot als puntmassa op zijn plaats,
+precies de A en de I van de tabel geven (bij U volgt de flens uit I en het slot uit A; bij Z
+beide samen). Dat is een afgeleide maat en geen fabrieksmaat; de tekening heet dan
+"schematisch" en zegt dat erbij. De lijfhoek volgt uit de flensbreedte. Het slot is een blokje
+met de afgeleide doorsnede. Hoedprofielen, vlakke profielen en profielen zonder volledige
+tabelwaarden houden een vaste verhouding (flens 40 % van de plankbreedte).
+
+Controle (`sheetPileContour.test.ts`): voor alle Z- en U-profielen met volledige tabelwaarden
+liggen de A en de I die uit de getekende omtrek volgen (veelhoeken, formules van Green) binnen
+2 % van de bibliotheek. Omdat de flens uit dezelfde A en I is afgeleid, toetst dit de
+contourfunctie en het terugrekenen, niet de fabrieksmaten; een tikfout in b, h, t of s vangt de
+test alleen als het platenmodel er niet meer op past. Koudgevormde profielen zitten niet in de
+bibliotheek.
+
+Beschoeiing: houten planken met messing en groef (een derde van de dikte, schematisch), een
+eigen doorsnede als rechte plank; palen rond of vierkant op hun hart-op-hartafstand met de
+schotten aan de hoge zijde; de gording op het niveau van het anker.

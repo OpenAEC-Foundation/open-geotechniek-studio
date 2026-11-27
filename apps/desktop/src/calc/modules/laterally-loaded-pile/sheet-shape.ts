@@ -1,8 +1,11 @@
 // Hartlijn van een damwandprofiel voor de doorsnedetekening en het 3D-beeld.
 // De bibliotheek geeft de plankbreedte b en de wandhoogte h, niet de flensbreedte
-// en de lijfhoek: de vorm is daarom schematisch (flens 40 % van de plankbreedte),
-// met de juiste breedte, hoogte en de plaats van de sloten per profielvorm.
+// en de lijfhoek: de vorm is daarom schematisch, met de juiste breedte, hoogte en de
+// plaats van de sloten per profielvorm. De flensbreedte komt uit de gedeelde contour
+// (library/sheetPileContour.ts): afgeleid uit A en I van de tabel als die er zijn,
+// anders 40 % van de plankbreedte. Zo is het profiel overal hetzelfde.
 import type { SheetPileProfile } from '../../library/sheetPiles';
+import { sheetGeometry } from '../../library/sheetPileContour';
 
 export interface SheetOutline {
   /** Hartlijn in mm: x langs de wand, y in de buigrichting; gecentreerd op 0. */
@@ -12,7 +15,9 @@ export interface SheetOutline {
   widthMm: number; heightMm: number; planks: number;
 }
 
-export function sheetOutline(p: Pick<SheetPileProfile, 'shape' | 'widthMm' | 'wallHeightMm'>, mode: 'wall' | 'single'): SheetOutline {
+export function sheetOutline(p: Pick<SheetPileProfile, 'shape' | 'widthMm' | 'wallHeightMm'> & Partial<Pick<SheetPileProfile, 'flangeMm' | 'webMm' | 'areaCm2PerM' | 'iCm4PerM' | 'flangeWidthMm'>>, mode: 'wall' | 'single'): SheetOutline {
+  // Aandeel van de flens in de plankbreedte: bij Z de twee halve flenzen samen.
+  const fl = sheetGeometry(p).flangeMm / (p.widthMm ?? 500);
   const b = p.widthMm ?? 500, h = p.shape === 'straight' ? 0 : p.wallHeightMm ?? 0, a = h / 2;
   // Per m wand: twee planken, zodat het golfpatroon van de wand zichtbaar is.
   const planks = mode === 'single' ? 1 : 2, pts: SheetOutline['points'] = [], locks: SheetOutline['locks'] = [];
@@ -21,14 +26,14 @@ export function sheetOutline(p: Pick<SheetPileProfile, 'shape' | 'widthMm' | 'wa
     const x0 = k * b, s = k % 2 ? -1 : 1;
     if (p.shape === 'Z') {
       // Z-plank: van het midden van de ene flens via het schuine lijf naar het midden van de andere; sloten in de flenzen.
-      add(x0, s * a); add(x0 + .2 * b, s * a); add(x0 + .8 * b, -s * a); add(x0 + b, -s * a);
+      add(x0, s * a); add(x0 + fl / 2 * b, s * a); add(x0 + (1 - fl / 2) * b, -s * a); add(x0 + b, -s * a);
       locks.push({ x: x0, y: s * a }); if (k === planks - 1) locks.push({ x: x0 + b, y: -s * a });
     } else if (p.shape === 'hat') {
       add(x0, -a); add(x0 + .15 * b, -a); add(x0 + .3 * b, a); add(x0 + .7 * b, a); add(x0 + .85 * b, -a); add(x0 + b, -a);
       locks.push({ x: x0, y: -a }); if (k === planks - 1) locks.push({ x: x0 + b, y: -a });
     } else {
       // U-plank (en vlak profiel met a = 0): sloten op de neutrale lijn van de wand, de flens om en om aan weerszijden.
-      add(x0, 0); add(x0 + .3 * b, s * a); add(x0 + .7 * b, s * a); add(x0 + b, 0);
+      add(x0, 0); add(x0 + (1 - fl) / 2 * b, s * a); add(x0 + (1 + fl) / 2 * b, s * a); add(x0 + b, 0);
       locks.push({ x: x0, y: 0 }); if (k === planks - 1) locks.push({ x: x0 + b, y: 0 });
     }
   }

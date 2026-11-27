@@ -1,46 +1,46 @@
 // Geometrie voor de tekeningen: de plattegrond van de wand en de maten van het grondblok in 3D.
 // Zuivere functies; de tekening zelf staat in SectionDrawing.tsx, WallScene3D.tsx en report.ts.
 import type { SheetPileProfile } from "../../library/sheetPiles";
+import { sheetContour, type ContourBasis } from "../../library/sheetPileContour";
 import { getSoilType } from "../spread-foundation/catalog";
 import { anchorAngle, hasAnchor, normalizeWallInput, type AnchorKind, type Construction, type ScenarioLayer, type Side, type WallInput, type WallOk, type WallRun } from "./compute";
 
-/** Eén recht stuk plaat in de plattegrond: van (a, x) naar (a, x) met een dikte; a langs de wand, x dwars erop [m]. */
-export interface PlateSegment { a0: number; x0: number; a1: number; x1: number; thicknessM: number; kind: "flange" | "web" | "plank" }
-
-/**
- * Plattegrond van een stalen damwand als trapeziumgolf met de maten uit de bibliotheek: plankbreedte,
- * wandhoogte, flens- en lijfdikte. Z- en U-planken geven één golf per twee planken, hoedprofielen één golf per
- * plank. De breedte van de flens staat niet in de bibliotheek en is een vast deel van de plankbreedte; de
- * sloten zijn niet getekend.
- */
-export function profilePlan(p: SheetPileProfile, lengthM: number): PlateSegment[] {
-  const b = (p.widthMm ?? 600) / 1000, h = (p.wallHeightMm ?? 300) / 1000;
-  const tf = (p.flangeMm ?? p.webMm ?? 10) / 1000, tw = (p.webMm ?? p.flangeMm ?? 10) / 1000;
-  if (p.shape === "straight") return [{ a0: 0, x0: 0, a1: lengthM, x1: 0, thicknessM: tw, kind: "web" }];
-  const period = p.shape === "hat" ? b : 2 * b, flat = (p.shape === "Z" ? 0.5 : p.shape === "U" ? 0.42 : 0.3) * (period / 2), run = period / 2 - flat;
-  const out: PlateSegment[] = [];
-  const push = (a0: number, x0: number, a1: number, x1: number, kind: PlateSegment["kind"]) => {
-    if (a0 >= lengthM) return;
-    const t = a1 > lengthM ? (lengthM - a0) / (a1 - a0) : 1;
-    out.push({ a0, x0, a1: a0 + t * (a1 - a0), x1: x0 + t * (x1 - x0), thicknessM: kind === "flange" ? tf : tw, kind });
-  };
-  for (let a = 0; a < lengthM; a += period) {
-    push(a, -h / 2, a + flat, -h / 2, "flange");
-    push(a + flat, -h / 2, a + flat + run, h / 2, "web");
-    push(a + flat + run, h / 2, a + 2 * flat + run, h / 2, "flange");
-    push(a + 2 * flat + run, h / 2, a + period, -h / 2, "web");
-  }
-  return out;
-}
+/** Punt in de plattegrond van de wand: a langs de wand, x dwars erop (hoge zijde negatief) [m]. */
+export interface PlanPoint { a: number; x: number }
+/** Gesloten omtrek in de plattegrond, over de volle hoogte van de wand. */
+export interface PlanOutline { kind: "plate" | "lock" | "plank"; points: PlanPoint[] }
 
 /** Breedte van één plank van een doorgaande beschoeiing in de tekening [m]. */
 export const PLANK_WIDTH_M = 0.2;
 
-/** Doorgaande wand van vlakke planken: planken van vaste breedte naast elkaar, met een voeg ertussen. */
-export function plankPlan(thicknessM: number, lengthM: number): PlateSegment[] {
-  const out: PlateSegment[] = [];
-  for (let a = 0; a < lengthM - 1e-9; a += PLANK_WIDTH_M) out.push({ a0: a + 0.004, x0: 0, a1: Math.min(lengthM, a + PLANK_WIDTH_M) - 0.004, x1: 0, thicknessM, kind: "plank" });
+/** Stalen damwand: de contour uit de profielbibliotheek, per plank, met de sloten. */
+export function profilePlan(p: SheetPileProfile, lengthM: number): { outlines: PlanOutline[]; line: PlanPoint[]; basis: ContourBasis } {
+  const planks = Math.max(1, Math.ceil((lengthM * 1000) / (p.widthMm ?? 600) - 1e-9)), c = sheetContour(p, planks), m = (q: { x: number; y: number }): PlanPoint => ({ a: q.x / 1000, x: q.y / 1000 });
+  return { outlines: [...c.plates.map((poly) => ({ kind: "plate" as const, points: poly.map(m) })), ...c.locks.map((poly) => ({ kind: "lock" as const, points: poly.map(m) }))], line: c.centerlines.flat().map(m), basis: c.geometry.basis };
+}
+
+/**
+ * Doorgaande wand van planken: planken van vaste breedte naast elkaar. Houten planken met messing en groef
+ * (een derde van de dikte, schematisch); een eigen doorsnede als rechte plank.
+ */
+export function plankPlan(thicknessM: number, lengthM: number, tongue: boolean): PlanOutline[] {
+  const out: PlanOutline[] = [], d = thicknessM / 2, g = tongue ? Math.min(0.012, thicknessM / 3) : 0, e = thicknessM / 6;
+  for (let a = 0; a < lengthM - 1e-9; a += PLANK_WIDTH_M) {
+    const a1 = a + PLANK_WIDTH_M;
+    out.push({ kind: "plank", points: g
+      ? [{ a, x: -d }, { a: a1, x: -d }, { a: a1, x: -e }, { a: a1 + g, x: -e }, { a: a1 + g, x: e }, { a: a1, x: e }, { a: a1, x: d }, { a, x: d }, { a, x: e }, { a: a + g, x: e }, { a: a + g, x: -e }, { a, x: -e }]
+      : [{ a: a + 0.002, x: -d }, { a: a1 - 0.002, x: -d }, { a: a1 - 0.002, x: d }, { a: a + 0.002, x: d }] });
+  }
   return out;
+}
+
+/** Het stuk van een lijn tussen a0 en a1, met de eindpunten erbij geïnterpoleerd. */
+export function clipLine(line: PlanPoint[], a0: number, a1: number): PlanPoint[] {
+  const at = (a: number): PlanPoint => {
+    for (let k = 1; k < line.length; k++) if (line[k].a >= a && line[k].a > line[k - 1].a) { const t = Math.max(0, Math.min(1, (a - line[k - 1].a) / (line[k].a - line[k - 1].a))); return { a, x: line[k - 1].x + t * (line[k].x - line[k - 1].x) }; }
+    return { a, x: line[line.length - 1]?.x ?? 0 };
+  };
+  return [at(a0), ...line.filter((p) => p.a > a0 + 1e-9 && p.a < a1 - 1e-9), at(a1)];
 }
 
 export interface SceneLayer { name: string; color: string; topNap: number; bottomNap: number }
@@ -57,8 +57,12 @@ export interface WallScene {
   toeNap: number;
   /** Dikte van de wand of breedte van de paal dwars op de wand [m]. */
   wallHeightM: number;
-  /** Platen over de volle hoogte van de wand (damwand of planken); leeg bij palen met schotten. */
-  plates: PlateSegment[];
+  /** Omtrekken over de volle hoogte van de wand (damwand met sloten, of planken); leeg bij palen met schotten. */
+  outlines: PlanOutline[];
+  /** Hartlijn van de wand in de plattegrond: de grond sluit er aan beide zijden tegenaan. */
+  wallLine: PlanPoint[];
+  /** Waar de vorm van het stalen profiel vandaan komt; null bij een beschoeiing. */
+  contourBasis: ContourBasis | null;
   /** Palen met hun plaats langs de wand, en de schotten aan de hoge zijde. */
   posts: Array<{ alongM: number; shape: "round" | "square"; sizeM: number }>;
   boards: { thicknessM: number; bottomNap: number } | null;
@@ -102,12 +106,14 @@ export function wallScene(raw: WallInput, r: WallOk, run: WallRun = r.sls): Wall
   const deepest = support && akind === "grout" ? an.levelNap - (support.freeM + support.groutM) * Math.sin((support.angleDeg * Math.PI) / 180) : i.toeNap;
   const bottom = Math.min(bottomWall, deepest - 1);
   const slip = r.grout ? { angleDeg: r.grout.slipAngleDeg, reachM: (Math.min(i.wallTopNap, s.high.surfaceNap) - i.toeNap) / Math.tan((r.grout.slipAngleDeg * Math.PI) / 180) } : null;
+  const plan = kind === "sheet-pile" && sec.profile ? profilePlan(sec.profile, length + front) : null;
   const posts: WallScene["posts"] = [];
   if (kind === "posts") for (let a = period / 2; a < length + front; a += period) posts.push({ alongM: a, shape: i.posts.shape, sizeM: i.posts.sizeMm / 1000 });
   return {
     extentHighM: Math.max(half, reach + 1), support, slip,
     construction: kind, halfWidthM: half, lengthM: length, frontM: front, topNap: Math.max(i.wallTopNap, s.high.surfaceNap), bottomNap: bottom, wallTopNap: i.wallTopNap, toeNap: i.toeNap,
-    wallHeightM: sec.depthM, plates: kind === "sheet-pile" && sec.profile ? profilePlan(sec.profile, length + front) : kind === "plank" ? plankPlan(sec.depthM, length + front) : [],
+    wallHeightM: sec.depthM, outlines: plan ? plan.outlines : kind === "plank" ? plankPlan(sec.depthM, length + front, i.material === "timber") : [],
+    wallLine: plan ? plan.line : [{ a: 0, x: 0 }, { a: length + front, x: 0 }], contourBasis: plan ? plan.basis : null,
     posts, boards: kind === "posts" ? { thicknessM: i.posts.boardMm / 1000, bottomNap: i.posts.boardBottomNap } : null,
     waling: anchored && (kind === "plank" || akind === "grout") ? { levelNap: an.levelNap, sizeM: kind === "plank" ? Math.max(0.08, 2 * sec.depthM) : 0.2 } : null,
     high: { surfaceNap: s.high.surfaceNap, waterNap: s.high.waterNap, layers: sceneLayers(s.high, bottom) },

@@ -47,6 +47,13 @@
       "title": "Trekelement van het groutanker"
     }
   },
+  "detail": {
+    "aria": "Detail van het profiel {{id}}: twee planken in de plattegrond",
+    "derived": "schematisch: flensbreedte en lijfhoek afgeleid uit A en I; slot als blokje",
+    "flange": "flens",
+    "schematic": "schematisch: alleen b, h en de plaatdikten komen uit de tabel",
+    "table": "maten uit de profieltabel; slot schematisch"
+  },
   "errors": {
     "anchor": "Controleer het anker: hoek kleiner dan 80°, hart-op-hartafstand en veerstijfheid groter dan 0.",
     "anchorLevel": "Het anker ligt tussen de bovenkant van de wand en het niveau aan de lage zijde.",
@@ -323,6 +330,7 @@
     "vEd": "grootste dwarskracht uit het verenmodel met rekenwaarden, op NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Profielvorm schematisch: de fabriekstabellen geven de flensbreedte, de lijfhoek en de slotvorm niet; de flensbreedte is afgeleid uit A en I, het slot is een blokje.",
     "displacement": "Verplaatsing",
     "ground": "mv",
     "highSide": "hoge zijde",
@@ -335,7 +343,7 @@
     "runSls": "Representatieve waarden",
     "runUls": "Rekenwaarden",
     "sceneAria": "3D-weergave van de damwand; draaien met slepen, zoomen met scrollen",
-    "sceneHint": "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de wand steekt ervoor uit. Plankbreedte, wandhoogte en plaatdikten komen uit de profielbibliotheek; de breedte van de flens is geschat en de sloten zijn niet getekend. Oranje: anker of stempel. Sleep om te draaien, scroll om te zoomen.",
+    "sceneHint": "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de wand steekt ervoor uit. Plankbreedte, wandhoogte en plaatdikten komen uit de profielbibliotheek. Oranje: anker of stempel. Sleep om te draaien, scroll om te zoomen.",
     "sceneHintRevetment": "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de beschoeiing steekt ervoor uit. Plankdikte, paalafmeting, hart-op-hartafstand en schotten staan op schaal; de plankbreedte is een tekenmaat. Oranje: anker met gording. Sleep om te draaien, scroll om te zoomen.",
     "section": "Doorsnede",
     "sectionAria": "Doorsnede van de damwand met gronddruk, verplaatsing, moment en dwarskracht",

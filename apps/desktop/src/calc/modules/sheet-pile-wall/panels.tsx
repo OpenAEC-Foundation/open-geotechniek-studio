@@ -9,6 +9,7 @@ import { SHEET_PILE_GRADES, sheetPileCatalog } from "../../library/sheetPiles";
 import { SOIL_TYPES, getSoilType } from "../spread-foundation/catalog";
 import type { BlumCase } from "./blum";
 import { DEFAULT_FACTORS, FACTOR_SETS, GAMMA_WATER, TENDON_GRADES, TIMBER_CLASSES, normalizeWallInput, revetmentExample, wallExample, wallLayersFromCpt, type WallCheck, type WallFactors, type WallInput, type WallLayer, type WallResult, type WallRun } from "./compute";
+import { ProfileDetail } from "./ProfileDetail";
 import { SectionDrawing } from "./SectionDrawing";
 import { WallScene3D } from "./WallScene3D";
 import { wallScene } from "./scene";
@@ -135,6 +136,7 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
       {num("input.wallTop", "Bovenkant wand", "m NAP", i.wallTopNap, (v) => change({ wallTopNap: v }))}
       {num("input.toe", "Teenniveau", "m NAP", i.toeNap, (v) => change({ toeNap: v }))}
       {r.ok && <Hint>{t("input.wallHint", "{{name}}: lengte {{l}} m; EI = {{ei}} kNm²/m wand; {{props}}.", { name: r.section.label, l: fmt(r.lengthM, 2), ei: fmt(r.eiKnM2, r.eiKnM2 < 100 ? 1 : 0), props: r.section.properties.map(([k, v]) => `${k.replace(/_/g, "")} = ${v}`).join("; ") })}</Hint>}
+      {r.ok && sheet && r.section.profile && <ProfileDetail profile={r.section.profile} />}
     </Section>
     {!posts && <Section title={t("input.support", "Anker of stempel")}>
       <label className="cs-check"><input type="checkbox" checked={a.enabled} onChange={(e) => setAnchor({ enabled: e.target.checked })} /> {t("input.supportEnabled", "Eén ankerrij of stempel")}</label>

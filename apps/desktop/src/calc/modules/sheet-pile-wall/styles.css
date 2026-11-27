@@ -10,6 +10,15 @@
 .sw-excess { margin: 4px 0; }
 .sw-excess td:first-child { white-space: nowrap; }
 
+.sw-detail { margin: 6px 0 0; }
+.sw-detail svg { width: 100%; max-width: 420px; font: 9px var(--oa-font-numbers, monospace); }
+.sw-detail text { fill: var(--oa-text-secondary, #555); }
+.sw-detail-plate { fill: #5b6470; stroke: #1f2937; stroke-width: .5; }
+.sw-detail-lock { fill: #1f2937; stroke: #1f2937; stroke-width: .5; }
+.sw-detail-axis { stroke: var(--oa-text-secondary, #666); stroke-width: .5; stroke-dasharray: 8 2 2 2; }
+.sw-detail-dim { fill: none; stroke: var(--oa-text-secondary, #666); stroke-width: .6; }
+.sw-detail .sw-detail-note { font-style: italic; font-size: 8px; }
+
 .sw-visual { display: flex; flex-direction: column; gap: 6px; padding: 8px; height: 100%; }
 .sw-tabs { display: flex; gap: 4px; align-items: center; }
 .sw-tabs button.active { border-color: var(--oa-accent, #d97706); background: var(--oa-selected, #fff7ed); color: var(--oa-accent-text, #92400e); }

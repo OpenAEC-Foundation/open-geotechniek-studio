@@ -47,6 +47,13 @@
       "title": "Tirante del anclaje inyectado"
     }
   },
+  "detail": {
+    "aria": "Detalle del perfil {{id}}: dos tablestacas en planta",
+    "derived": "esquemático: ancho de ala y ángulo del alma deducidos de A e I; enclavamiento como bloque",
+    "flange": "ala",
+    "schematic": "esquemático: solo b, h y los espesores proceden de la tabla",
+    "table": "dimensiones de la tabla de perfiles; enclavamiento esquemático"
+  },
   "errors": {
     "anchor": "Compruebe el anclaje: ángulo menor que 80°, separación entre ejes y rigidez del muelle mayores que 0.",
     "anchorLevel": "El anclaje se sitúa entre la coronación de la pantalla y el nivel del lado bajo.",
@@ -323,6 +330,7 @@
     "vEd": "cortante máximo del modelo de muelles con valores de cálculo, a NAP {{nap}} m"
   },
   "visual": {
+    "contourSchematic": "Forma del perfil esquemática: las tablas de los fabricantes no dan el ancho de ala, el ángulo del alma ni la forma del enclavamiento; el ancho de ala se deduce de A e I, el enclavamiento es un bloque.",
     "displacement": "Desplazamiento",
     "ground": "terr.",
     "highSide": "lado alto",
@@ -335,7 +343,7 @@
     "runSls": "Valores característicos",
     "runUls": "Valores de cálculo",
     "sceneAria": "Vista 3D de la pantalla de tablestacas; arrastre para girar, desplace la rueda para ampliar",
-    "sceneHint": "El bloque de terreno está cortado: el plano de corte es la sección, la pantalla sobresale por delante. El ancho de la tablestaca, la altura del perfil y los espesores de chapa proceden de la biblioteca de perfiles; el ancho del ala es estimado y las juntas no están dibujadas. Naranja: anclaje o puntal. Arrastre para girar, desplace la rueda para ampliar.",
+    "sceneHint": "El bloque de terreno está abierto: la cara de corte es la sección y la pantalla sobresale por delante. El ancho de tablestaca, la altura de la pantalla y los espesores proceden de la biblioteca de perfiles. Naranja: anclaje o puntal. Arrastre para girar, desplace para ampliar.",
     "sceneHintRevetment": "El bloque de terreno está cortado: el plano de corte es la sección, la defensa de margen sobresale por delante. El espesor del tablón, la dimensión del poste, la separación entre ejes y las tablas están a escala; el ancho del tablón es una medida de dibujo. Naranja: anclaje con viga de reparto. Arrastre para girar, desplace la rueda para ampliar.",
     "section": "Sección",
     "sectionAria": "Sección de la pantalla de tablestacas con empuje de tierras, desplazamiento, momento y esfuerzo cortante",
