@@ -51,9 +51,8 @@ describe('tekengebieden van een krachtslijn', () => {
     const { container } = render(<ForceDiagrams input={lateralExample} beam={r.beam} />);
     const shear = [...container.querySelectorAll('.pile-diagram-V .pile-sign-region')].map((g) => g.getAttribute('data-sign'));
     expect(shear.slice(0, 2)).toEqual(['-1', '1']);
-    // Het afschuifteken toont de kracht op het bovenvlak: bij H naar rechts wijst de bovenste pijl aan de kop naar rechts.
-    const first = container.querySelector('.pile-diagram-V .pile-shear-sign line')!;
-    expect(Number(first.getAttribute('x2'))).toBeGreaterThan(Number(first.getAttribute('x1')));
+    // Plus en min bij de dwarskracht: aan de kop wijst de dwarskracht op het bovenvlak met H mee, dus plus; daaronder min.
+    expect([...container.querySelectorAll('.pile-diagram-V .pile-shear-sign')].slice(0, 2).map((g) => g.getAttribute('data-value'))).toEqual(['1', '-1']);
     expect(container.querySelectorAll('.pile-diagram-V .pile-shear-sign').length).toBe(shear.length);
     expect(container.querySelectorAll('.pile-diagram-M .pile-bend-sign').length).toBeGreaterThan(0);
     expect(container.querySelectorAll('.pile-diagram-y .pile-sign-region')).toHaveLength(0);

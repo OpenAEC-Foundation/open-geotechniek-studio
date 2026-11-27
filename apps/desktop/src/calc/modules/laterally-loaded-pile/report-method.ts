@@ -12,7 +12,7 @@ type Ok = Extract<LateralResult, { ok: true }>;
 /** Volle pagina nodig: niet-lineaire veren of laagcorrectie. */
 export const needsMethodPage = (input: LateralInput, r: Ok) => r.analysisMode === 'nonlinear' || input.layerCorrection === 'georgiadis';
 
-const BEAM_TEXT = 'De paal is gerekend als een buigligger die over zijn lengte door de grond wordt gesteund. De grond is vervangen door veren haaks op de paal: waar de paal opzij wil, drukt de grond terug. Elke grondlaag heeft zijn eigen veer met stijfheid k0 = kh x werkende breedte; kh is de beddingsconstante van de laag. Uit het evenwicht van de ligger volgen verplaatsing, moment, dwarskracht en grondreactie over de diepte. De normaalkracht telt alleen mee in de toets van de doorsnede.';
+const BEAM_TEXT = 'De paal is een buigligger op veren haaks op de paal. Elke grondlaag heeft een veer met stijfheid k0 = kh x werkende breedte. Uit het evenwicht volgen verplaatsing, moment, dwarskracht en grondreactie; de normaalkracht telt alleen mee in de toets van de doorsnede.';
 const SIZE = 7.8;
 
 function label(c: Cursor, text: string, x: number, y: number, align: 'left' | 'right' | 'center' = 'left', size = 7) {
@@ -111,16 +111,16 @@ export function renderMethod(c: Cursor, input: LateralInput, r: Ok): boolean {
 
   if (nonlinear) {
     sectionTitle(c, 'Waarom de veer niet-lineair is');
-    text('Grond kan niet onbeperkt terugdrukken. Bij een kleine verplaatsing reageert de veer met zijn beginstijfheid k0; gaat de paal verder opzij, dan loopt de grondreactie p steeds langzamer op en nadert zij de grenswaarde pu van de laag. Een veer bij zijn grens neemt weinig extra kracht op; die kracht verhuist naar dieper gelegen veren. Daardoor worden verplaatsing en moment groter dan bij lineaire veren.');
+    text('De grondreactie p loopt bij toenemende verplaatsing steeds langzamer op en nadert de grenswaarde pu van de laag. De kracht verhuist dan naar dieper gelegen veren; verplaatsing en moment worden groter dan bij lineaire veren.');
     pyFigure(c);
 
     sectionTitle(c, 'Hoe het evenwicht wordt gevonden');
-    text(`Omdat de veerstijfheid van de verplaatsing afhangt, is het evenwicht niet in een keer op te lossen. De belasting wordt in stappen opgebracht. Per stap wordt met de raaklijnstijfheid van elke veer een verbetering van de verplaatsingen berekend (Newton-Raphson), zo nodig ingekort tot de onbalans afneemt, totdat de grootste onbalans tussen belasting, ligger en veren kleiner is dan een tienmiljoenste deel van de belasting. Een stap die niet convergeert wordt gehalveerd; zonder evenwicht volgt een foutmelding en geen uitkomst. Deze berekening: ${r.convergence.loadSteps} belastingstappen, ${r.convergence.iterations} iteraties, ${r.beam.elements.length} elementen met elk vier veerpunten, resterende onbalans ${r.convergence.residualKn.toExponential(1)} kN.`);
+    text(`De belasting wordt in stappen opgebracht; per stap Newton-Raphson met de raaklijnstijfheid van elke veer, tot de onbalans kleiner is dan een tienmiljoenste van de belasting. Zonder evenwicht volgt een foutmelding. Deze berekening: ${r.convergence.loadSteps} belastingstappen, ${r.convergence.iterations} iteraties, ${r.beam.elements.length} elementen met elk vier veerpunten, resterende onbalans ${r.convergence.residualKn.toExponential(1)} kN.`);
   }
 
   sectionTitle(c, 'Gelaagde grond: equivalente diepte');
   if (georgiadis) {
-    text(`De grenswaarde pu van een laag is ingevoerd als profiel vanaf maaiveld, alsof de hele ondergrond uit die grondsoort bestaat. Onder een andere laag klopt die diepte niet meer: een slappe bovenlaag steunt minder dan dezelfde dikte van de onderlaag zou doen. De laagcorrectie (principe van Georgiadis) rekent de onderlaag daarom door op een equivalente diepte: de diepte waarbij het homogene profiel van die laag, opgeteld vanaf nul, dezelfde grensweerstand F geeft als alle lagen erboven samen. Binnen de laag loopt de equivalente diepte mee met de werkelijke diepte. De eerste laag begint op nul; de beginstijfheid k0 wordt niet aangepast.${nonlinear ? '' : ' Deze berekening is lineair: de veren hebben dan geen grenswaarde en de laagcorrectie verandert de uitkomst niet.'}`);
+    text(`De grenswaarde pu van een laag is ingevoerd als profiel vanaf maaiveld. Onder een andere laag rekent de laagcorrectie (Georgiadis) met een equivalente diepte: de diepte waarbij het homogene profiel van die laag dezelfde grensweerstand F geeft als alle lagen erboven samen. De beginstijfheid k0 wordt niet aangepast.${nonlinear ? '' : ' Deze berekening is lineair: de laagcorrectie verandert de uitkomst niet.'}`);
     layerFigure(c, input);
     const order = input.layers.map((l, k) => ({ l, k })).sort((a, b) => a.l.topM - b.l.topM);
     if (order.length > 1) {
@@ -128,11 +128,11 @@ export function renderMethod(c: Cursor, input: LateralInput, r: Ok): boolean {
       formula(c, `zeq,top laag ${n}`, `oplossing van  int(0..zeq) pu,${n}(z) dz = F`, `F = ${nl(above.cumulativeUltimateKn, 1)} kN`, `${nl(own.topEquivalentM, 2)} m`);
     } else kv(c, 'Deze berekening', 'een laag: de equivalente diepte is gelijk aan de werkelijke diepte');
   } else {
-    text('Er is geen laagcorrectie toegepast. De diepte waarmee de grenswaarde pu van een laag wordt bepaald, is de werkelijke diepte gemeten vanaf de bovenkant van de eerste grondlaag.');
+    text('Er is geen laagcorrectie toegepast: pu volgt uit de werkelijke diepte vanaf de bovenkant van de eerste grondlaag.');
   }
 
   sectionTitle(c, 'Controle en bronnen');
-  text('Het rekenhart wordt bij elke wijziging van de software nagerekend tegen gesloten oplossingen, een onafhankelijke differentieoplossing en gepubliceerde uitgewerkte voorbeelden. De lijst met per geval de bron, de uitkomst van de bron, de uitkomst van de module en de verklaring van het verschil staat in VERIFICATIE.md bij de module.');
+  text('Het rekenhart is nagerekend tegen gesloten oplossingen, een onafhankelijke differentieoplossing en gepubliceerde voorbeelden; zie VERIFICATIE.md bij de module.');
   for (const source of [
     'Hetenyi, M. (1946). Beams on Elastic Foundation. University of Michigan Press. (ligger op veren)',
     'CUR (2008). CUR-publicatie 166, Damwandconstructies, deel 1, tabel 3.3. (beddingsconstanten kh)',

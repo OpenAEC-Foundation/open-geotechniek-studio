@@ -9,6 +9,8 @@ import { lateralReportData, type LayerRow } from './report-data';
 import { computeLateral } from './compute';
 import { computePileTable } from './pile-table';
 import { renderMethod } from './report-method';
+import { sheetProps } from './sheet-section';
+import type { MaterialResult, Quantity } from './material-types';
 import {
   CONTENT_W, M, TOTAL_PAGES_TOKEN, formula, kv, makeCursor, nl, paragraph, sectionTitle, table, winAnsi, type Cursor,
 } from '../pile-bearing-capacity/parts/pile-report-pdf';
@@ -60,8 +62,8 @@ function renderTableAppendix(c: Cursor, input: LateralInput, rows: ReturnType<ty
     { label: 'V max [kN]', width: 13, align: 'right' }, { label: 'u.c.', width: 9, align: 'right' }, { label: 'Oordeel', width: 14 },
   ], rows.map(({ row, input: ri, summary: x }) => [row.name, String(row.count ?? 1), nl(row.headForceKn, 1), nl(row.headMomentKnM, 1), nl(row.nEdKn, 1),
     nl(ri.lengthM, 2), String(ri.section.diameterMm),
-    ...(x.ok ? [nl(x.yHeadMm, 1), nl(x.mMaxKnM, 1), nl(x.mNap, 2), nl(x.vMaxKn, 1), x.uc === null ? '-' : nl(x.uc, 2), x.passes ? 'voldoet' : 'voldoet niet'] : ['-', '-', '-', '-', '-', 'niet berekend'])]), { size: 7 });
-  paragraph(c, 'Alle palen met dezelfde grondopbouw, doorsnedetype en wapening als de basisinvoer; per paal een eigen kopbelasting en zo nodig een eigen lengte of maat. Voldoet: u.c. ≤ 1,00 en, als opgegeven, de kopverplaatsing binnen de grens.', { italic: true, size: 7.5 });
+    ...(x.ok ? [nl(x.yHeadMm, 1), nl(x.mMaxKnM, 1), nl(x.mNap, 2), nl(x.vMaxKn, 1), x.ucGov === null ? '-' : ucPdf(x.ucGov), x.passes ? 'voldoet' : 'voldoet niet'] : ['-', '-', '-', '-', '-', 'niet berekend'])]), { size: 7 });
+  paragraph(c, 'Zelfde grond, doorsnede en wapening als de basisinvoer. u.c.: hoogste van de materiaaltoetsing. Voldoet: u.c. ≤ 1,00 en de kopverplaatsing binnen de grens.', { italic: true, size: 7 });
 }
 
 /** De volledige uitwerking van één paal. */
@@ -80,13 +82,16 @@ export function renderCalc(c: Cursor, input: LateralInput, result: Extract<Later
   c.y += 2;
 
   sectionTitle(c, '2. Paaldoorsnede');
-  const sec = r.section, gross = input.section.kind === 'concrete-square' ? (input.section.diameterMm / 1000) ** 2 : Math.PI * (input.section.diameterMm / 1000) ** 2 / 4;
+  const sec = r.section, sheet = input.section.kind === 'sheet-pile' ? sheetProps(input.section.sheet, input.section.steelEMpa) : null;
+  const gross = sheet ? sec.steelAreaM2 : input.section.kind === 'concrete-square' ? (input.section.diameterMm / 1000) ** 2 : Math.PI * (input.section.diameterMm / 1000) ** 2 / 4;
   kv(c, 'Bruto oppervlak', `${nl(gross * 1e6, 0)} mm²`);
   if (sec.concreteAreaM2 > 0) kv(c, 'Beton (netto)', `${nl(sec.concreteAreaM2 * 1e6, 0)} mm²; E_c,eff = ${nl(input.section.concreteEMpa * input.section.concreteFactor / (1 + input.section.creepCoefficient), 0)} MPa`);
   if (sec.rebarAreaMm2 > 0) kv(c, 'Langswapening', `${nl(sec.rebarAreaMm2, 0)} mm²; ρ = ${nl(100 * sec.rebarAreaMm2 / (gross * 1e6), 2)} %`);
-  if (sec.steelAreaM2 > 0) kv(c, 'Buis', `${nl(sec.steelAreaM2 * 1e6, 0)} mm²; wand ${nl(input.section.wallMm, 1)} mm`);
+  if (sheet) kv(c, 'Profiel', `${sheet.profile.manufacturer} ${sheet.profile.id}, ${sheet.grade} (f_y = ${nl(sheet.fyMpa, 0)} MPa); I = ${nl(sheet.profile.iCm4PerM ?? 0, 0)} cm⁴/m, W_el = ${nl(sheet.profile.welCm3PerM ?? 0, 0)} cm³/m${sheet.profile.wplCm3PerM !== null ? `, W_pl = ${nl(sheet.profile.wplCm3PerM, 0)} cm³/m` : ''}; rekenbreedte ${nl(sheet.widthM, 3)} m; β_B = ${nl(sheet.betaB, 2)}, β_D = ${nl(sheet.betaD, 2)}`);
+  else if (sec.steelAreaM2 > 0) kv(c, 'Buis', `${nl(sec.steelAreaM2 * 1e6, 0)} mm²; wand ${nl(input.section.wallMm, 1)} mm`);
   if (r.capacity) kv(c, 'M_Rd bij N_Ed', `${nl(r.capacity.mRdKnM, 1)} kNm (N tussen ${nl(r.capacity.nMinKn, 0)} en ${nl(r.capacity.nMaxKn, 0)} kN)`);
-  formula(c, 'EI', 'E_c,eff · I_c + E_s · I_s + E_a · I_a', `${nl(sec.concreteEI, 0)} + ${nl(sec.rebarEI, 0)} + ${nl(sec.tubeEI, 0)}`, `${nl(sec.eiKnM2, 0)} kNm²`);
+  if (sheet) formula(c, 'EI', 'β_D · E · I · b', null, `${nl(sec.eiKnM2, 0)} kNm²`);
+  else formula(c, 'EI', 'E_c,eff · I_c + E_s · I_s + E_a · I_a', `${nl(sec.concreteEI, 0)} + ${nl(sec.rebarEI, 0)} + ${nl(sec.tubeEI, 0)}`, `${nl(sec.eiKnM2, 0)} kNm²`);
 
   sectionTitle(c, '3. Grondopbouw', 'CUR166 deel 1, tabel 3.3 (eerste secanttraject); kleuren: zand geel, klei groen, veen bruin');
   drawSoilTable(c, d.layers, nonlinear);
@@ -119,13 +124,36 @@ export function renderCalc(c: Cursor, input: LateralInput, result: Extract<Later
   else paragraph(c, r.capacityError ?? 'Geen doorsnedetoets mogelijk.');
   if (d.nm.length > 1) drawNM(c, d.nm, input.nEdKn, s.mEd);
 
-  sectionTitle(c, '8. Conclusie');
-  paragraph(c, s.uc === null ? 'Geen doorsnedetoets mogelijk.' : s.uc <= 1
-    ? `De doorsnede voldoet voor buiging met normaalkracht: u.c. ${nl(s.uc, 2)} ≤ 1,00. Kopverplaatsing ${nl(s.yHeadMm, 1)} mm.`
-    : `De doorsnede voldoet niet: u.c. ${nl(s.uc, 2)} > 1,00.`);
-  paragraph(c, 'Niet getoetst: dwarskracht, scheurwijdte, minimumwapening, verankering, lokale buisplooi, P-delta en een gescheurde EI. Statische, monotone belasting. Concept: indicatieve berekening.', { italic: true, size: 7.5 });
+  const mat = r.material, gov = mat?.governing;
+  if (mat) renderMaterial(c, mat, nap); else { sectionTitle(c, '8. Materiaaltoetsing'); paragraph(c, r.materialError ?? 'Geen materiaaltoetsing mogelijk.'); }
+
+  sectionTitle(c, '9. Conclusie');
+  paragraph(c, !mat || mat.ok === null ? 'Geen doorsnedetoets mogelijk.' : mat.outside ? 'Geen oordeel: een deel van de materiaaltoetsing valt buiten deze toetsing (zie 8).'
+    : mat.ok && gov ? `De doorsnede voldoet op alle uitgevoerde toetsen. Maatgevend: ${gov.label.toLowerCase()}, u.c. ${ucPdf(gov.uc)} ≤ 1,00. Kopverplaatsing ${nl(s.yHeadMm, 1)} mm.`
+      : `De doorsnede voldoet niet. Maatgevend: ${gov?.label.toLowerCase() ?? '-'}, u.c. ${ucPdf(gov?.uc ?? null)} > 1,00.`);
+  // De voorbehouden als één compacte voetregel.
+  if (mat) paragraph(c, `${mat.notChecked.nl} Statische, monotone belasting. Concept alpha: indicatieve berekening.`, { italic: true, size: 6.5 });
 
   c.continuationTitle = undefined;
+}
+
+const ucPdf = (uc: number | null) => uc === null ? '-' : uc === Infinity ? 'oneindig' : uc > 99 ? '> 99' : nl(uc, 2);
+const STATUS: Record<string, string> = { ok: 'voldoet', fail: 'voldoet niet', info: 'ter informatie', na: 'niet getoetst', outside: 'buiten toetsing' };
+/** Tekst van een toelichting met de ingevulde waarden. */
+const noteText = (n: { nl: string; vars?: Record<string, string | number> }) => n.nl.replace(/\{\{(\w+)\}\}/g, (_, k: string) => { const v = n.vars?.[k]; return typeof v === 'number' ? String(v).replace('.', ',') : String(v ?? ''); });
+const qty = (q: Quantity | undefined) => !q ? '-' : Number.isFinite(q.v) ? `${q.s} = ${nl(q.v, q.d ?? 1)}${q.u ? ` ${q.u}` : ''}` : q.s;
+
+/** Materiaaltoetsing: het overzicht als tabel, daaronder per toets de tussenstappen op één regel. */
+function renderMaterial(c: Cursor, m: MaterialResult, nap: (z: number) => string) {
+  sectionTitle(c, '8. Materiaaltoetsing', m.standard);
+  table(c, [{ label: 'Toets', width: 40 }, { label: 'Artikel', width: 36 }, { label: 'Rekenwaarde', width: 26, align: 'right' }, { label: 'Weerstand', width: 28, align: 'right' }, { label: 'u.c.', width: 9, align: 'right' }, { label: 'Oordeel', width: 18 }, { label: 'Snede', width: 15 }],
+    m.rows.map((r) => [r.label, r.article.replace(/^NEN-/, ''), qty(r.demand), qty(r.resistance), ucPdf(r.uc), STATUS[r.status], r.zM === undefined ? '' : nap(r.zM)]), { size: 7 });
+  for (const r of m.rows) {
+    if (!r.steps.length && !r.note) continue;
+    const steps = r.steps.map((x) => `${x.s}${x.f ? ` = ${x.f}` : ''} = ${nl(x.v, x.d ?? 1)}${x.u ? ` ${x.u}` : ''}`).join('; ');
+    paragraph(c, `${r.label}: ${steps}${steps && r.note ? '. ' : ''}${r.note ? noteText(r.note) : ''}`, { size: 7, indent: 2 });
+  }
+  for (const n of m.notes) paragraph(c, noteText(n), { italic: true, size: 7 });
 }
 
 /** Gekleurde grondkolom links, met de laagtabel ernaast. */
@@ -174,9 +202,9 @@ function drawDiagrams(c: Cursor, input: LateralInput, samplesIn: Sample[], head:
     const tone = TONES[cv.tone];
     doc.setTextColor(0); doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5);
     doc.text(winAnsi(`${cv.title} [${cv.unit}]`), left + W / 2, top - 3, { align: 'center' });
-    doc.setDrawColor(200); doc.setLineWidth(.15); doc.rect(left, top, W, H);
+    doc.setDrawColor(150); doc.setLineWidth(.15); doc.line(left, bottom, left + W, bottom);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.setTextColor(90);
-    ticks.forEach((t) => { doc.setDrawColor(225); doc.line(x(t), top, x(t), bottom); doc.text(nl(dir * t === 0 ? 0 : dir * t, Math.abs(ticks[1] - ticks[0]) < 1 ? 1 : 0), x(t), bottom + 3.5, { align: 'center' }); });
+    ticks.forEach((t) => { doc.setDrawColor(150); doc.line(x(t), bottom, x(t), bottom + 1); doc.text(nl(dir * t === 0 ? 0 : dir * t, Math.abs(ticks[1] - ticks[0]) < 1 ? 1 : 0), x(t), bottom + 3.5, { align: 'center' }); });
     doc.text(cv.mirror ? `${cv.unit} (getrokken zijde)` : cv.unit, left + W / 2, bottom + 7, { align: 'center' });
     // Rustig vlak: lichte vulling met een fijne arcering haaks op de paal, in de kleur van de grootheid.
     const pts = samples.map((p) => [x(drawn(p)), y(p.zM)] as const), tint = (f: number) => tone.map((v) => Math.round(255 - (255 - v) * f)) as [number, number, number];
@@ -185,7 +213,7 @@ function drawDiagrams(c: Cursor, input: LateralInput, samplesIn: Sample[], head:
     doc.lines(outline.slice(1).map((p, k) => [p[0] - outline[k][0], p[1] - outline[k][1]]), outline[0][0], outline[0][1], [1, 1], 'F', true);
     doc.setDrawColor(...tint(.35)); doc.setLineWidth(.1);
     for (let py = y(samples[0].zM); py <= y(samples[samples.length - 1].zM); py += 2.2) doc.line(x0, py, x(valueAt(samples, drawn, (py - top) * L / H)), py);
-    doc.setDrawColor(40); doc.setLineWidth(.3); doc.line(x0, top, x0, bottom);
+    doc.setDrawColor(40); doc.setLineWidth(.3); doc.line(x0, pts[0][1], x0, pts[pts.length - 1][1]);
     doc.setDrawColor(tone[0], tone[1], tone[2]); doc.setLineWidth(.45);
     for (let k = 1; k < pts.length; k++) doc.line(pts[k - 1][0], pts[k - 1][1], pts[k][0], pts[k][1]);
     const e = extremes(samples, cv.value);
@@ -194,20 +222,27 @@ function drawDiagrams(c: Cursor, input: LateralInput, samplesIn: Sample[], head:
     if (cv.sign) for (const g of signRegions(samples, cv.value)) {
       if (Math.abs(g.peak.v) <= .04 * absMax || y(g.zBottom) - y(g.zTop) < 7) continue;
       const far = g.peak.z - g.zTop > g.zBottom - g.peak.z ? g.zTop : g.zBottom, cy = Math.min(y(g.zBottom) - 3.5, Math.max(y(g.zTop) + 3.5, y((g.peak.z + far) / 2))), cx = (x0 + x(valueAt(samples, drawn, (cy - top) * L / H))) / 2;
-      // Afschuifteken: de rekenkern geeft V = -H aan de kop; de bovenste pijl wijst met de kracht op het bovenvlak mee.
-      drawSign(c, cv.sign, cx, cy, cv.sign === 'bend' ? (Math.sign(dir * g.sign) || 1) : cv.sign === 'shear' ? -g.sign : g.sign);
+      // Dwarskracht: plus als zij op het bovenvlak met een positieve H meewijst (de rekenkern geeft V = -H aan de kop).
+      drawSign(c, cv.sign === 'bend' ? 'bend' : 'plain', cx, cy, cv.sign === 'bend' ? (Math.sign(dir * g.sign) || 1) : cv.sign === 'shear' ? -g.sign : g.sign);
     }
     doc.setFontSize(6); doc.setTextColor(0);
+    // Labels van max en min nooit over elkaar.
+    const sideOf = (v: { v: number }) => x(dir * v.v) > left + W * .55;
+    const labelY = { max: Math.min(bottom - 4, Math.max(top + 3, y(e.max.z) - 2)), min: Math.min(bottom - 4, Math.max(top + 3, y(e.min.z) + 3.5)) };
+    if (sideOf(e.max) === sideOf(e.min) && Math.abs(labelY.max - labelY.min) < 6) {
+      const upper = labelY.max <= labelY.min ? 'max' : 'min', lower = upper === 'max' ? 'min' : 'max';
+      labelY[lower] = Math.min(bottom - 4, labelY[upper] + 6); labelY[upper] = Math.min(labelY[upper], labelY[lower] - 6);
+    }
     for (const [kind, v] of [['max', e.max], ['min', e.min]] as const) {
-      const px = x(dir * v.v), py = y(v.z), right = px > left + W * .55;
+      const px = x(dir * v.v), py = y(v.z), right = sideOf(v);
       doc.setDrawColor(0); doc.setFillColor(255, 255, 255); doc.circle(px, py, .7, 'FD');
-      const ty = Math.min(bottom - 1, Math.max(top + 3, py + (kind === 'max' ? -2 : 3.5)));
+      const ty = labelY[kind];
       doc.text(winAnsi(`${kind} ${nl(v.v, cv.digits)} ${cv.unit}`), right ? px - 1.5 : px + 1.5, ty, { align: right ? 'right' : 'left' });
       doc.setTextColor(110); doc.text(`NAP ${nl(head - v.z, 2)}`, right ? px - 1.5 : px + 1.5, ty + 2.4, { align: right ? 'right' : 'left' }); doc.setTextColor(0);
     }
   });
   doc.setFont('helvetica', 'italic'); doc.setFontSize(6.5); doc.setTextColor(90);
-  doc.text(winAnsi('Tekens: het moment staat aan de getrokken zijde (boogje bol naar de getrokken vezel, streeplijn = trek); dwarskracht met afschuifteken; z omlaag, H naar rechts.'), M.left, bottom + 11);
+  doc.text(winAnsi('Moment aan de getrokken zijde (streeplijn = trek); dwarskracht + met H mee op het bovenvlak.'), M.left, bottom + 11);
   doc.setFont('helvetica', 'normal'); doc.setTextColor(0);
   c.y = bottom + 15;
 }

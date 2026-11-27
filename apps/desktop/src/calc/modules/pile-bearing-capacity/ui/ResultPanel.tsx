@@ -9,6 +9,7 @@ import { pileGeometry } from "../parts/geometry";
 import { InterpretationNote } from "../../../shared/interpretation/InterpretationEditor";
 import "./styles.css";
 import { OaIcon } from "../../../../components/icons/oaIcon";
+import { AddLateralCalculation } from "../../laterally-loaded-pile/InheritedNote";
 
 // ─── Formula-helper component (Open Calculation Studio stijl) ────
 // Toont een berekening in 3 stappen:
@@ -301,6 +302,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         <h2>{t("result.title", "Paaldraagvermogen")}{input.cptId ? <> — {input.cptId}</> : null}</h2>
         <p>{standardLabel(getStandard(input.standard)) ?? t("result.existingModel", "Bestaand projectmodel")} · {pileType ? pileTypeName(pileType) : input.pileTypeId}</p>
       </header>
+      <AddLateralCalculation input={input} />
 
       {result.warnings.length > 0 && (
         <div className="pile-warnings">

@@ -1,21 +1,25 @@
 import { ct } from '../../i18n';
+import { sheetMoment, sheetProps, type SheetSection } from './sheet-section';
 /** Doorsnedemechanica met expliciete projectsterkten (MPa).
  * Beton: parabool-rechthoek, eps_c2=2‰, eps_cu=3,5‰ (normaal beton).
  * Staal: elastisch-perfect plastisch; betontrek telt niet mee in ULS.
- * Geen volledige toets van staaf, lokale plooi, dwarskracht of detaillering.
+ * Dwarskracht, doorsnedeklasse en wapeningsgrenzen staan in de materiaaltoetsing (material-check.ts).
+ * Een damwandprofiel komt uit de profielbibliotheek (sheet-section.ts).
  */
-export type SectionKind = 'concrete-round' | 'concrete-square' | 'steel-tube' | 'filled-tube';
+export type SectionKind = 'concrete-round' | 'concrete-square' | 'steel-tube' | 'filled-tube' | 'sheet-pile';
 export interface PileSection {
   kind:SectionKind; diameterMm:number; wallMm:number;
   concreteEMpa:number; steelEMpa:number; rebarEMpa:number; concreteFactor:number;
   creepCoefficient:number; tubeParticipates:boolean;
   barCount:number; barDiameterMm:number; coverToBarCentreMm:number;
   fckMpa:number; fcdMpa:number; fydMpa:number; tubeFydMpa:number;
+  /** Damwandprofiel uit de bibliotheek; alleen gebruikt bij kind 'sheet-pile'. */
+  sheet?:SheetSection;
 }
 const circleI=(d:number)=>Math.PI*d**4/64;
 const circleA=(d:number)=>Math.PI*d*d/4;
 function geometry(s:PileSection) {
-  const nums=Object.entries(s).filter(([k])=>!['kind','tubeParticipates'].includes(k)).map(([,v])=>v);
+  const nums=Object.entries(s).filter(([k])=>!['kind','tubeParticipates','sheet'].includes(k)).map(([,v])=>v);
   if(!nums.every(v=>typeof v==='number'&&Number.isFinite(v)) ||
     !['concrete-round','concrete-square','steel-tube','filled-tube'].includes(s.kind) ||
     typeof s.tubeParticipates!=='boolean' || s.diameterMm<=0 ||
@@ -44,6 +48,10 @@ function geometry(s:PileSection) {
   return {D,core,square,tube,coords,d,ac};
 }
 export function sectionStiffness(s:PileSection) {
+  if(s.kind==='sheet-pile') {
+    const p=sheetProps(s.sheet,s.steelEMpa);
+    return {eiKnM2:p.eiKnM2,concreteEI:0,rebarEI:0,tubeEI:p.eiKnM2,concreteAreaM2:0,steelAreaM2:p.areaMm2/1e6,rebarAreaMm2:0};
+  }
   const g=geometry(s), ec=s.concreteEMpa*1000*s.concreteFactor/(1+s.creepCoefficient);
   const steelI=g.tube ? circleI(g.D)-circleI(g.core) : 0;
   const grossConcreteI=s.kind==='steel-tube'?0:g.square?g.core**4/12:circleI(g.core);
@@ -58,6 +66,14 @@ const width=(d:number,y:number)=>2*Math.sqrt(Math.max(0,d*d/4-y*y));
 const concreteStress=(eps:number,fcd:number)=>eps<=0?0:eps>=.002?fcd:fcd*(1-(1-eps/.002)**2);
 const steelStress=(eps:number,e:number,fy:number)=>Math.max(-fy,Math.min(fy,e*eps));
 export function sectionCapacity(s:PileSection,nEdKn:number) {
+  if(s.kind==='sheet-pile') {
+    // Damwandprofiel: M_N,Rd volgens NEN-EN 1993-5 art. 5.2.3; klasse 4 valt buiten de toetsing.
+    const p=sheetProps(s.sheet,s.steelEMpa);
+    if(p.cls===4) throw new Error(ct('calcLateral', 'errors.sheetClass4', 'Doorsnedeklasse 4 bij deze staalsoort: valt buiten deze toetsing.'));
+    if(!Number.isFinite(nEdKn)) throw new Error(ct('calcLateral', 'errors.invalidNormalForce', 'Ongeldige normaalkracht.'));
+    if(Math.abs(nEdKn)>p.nplRdKn+.001) throw new Error(ct('calcLateral', 'errors.normalForceOutside', 'Normaalkracht buiten de doorsnedeweerstand.'));
+    return {mRdKnM:sheetMoment(p,nEdKn,0).mRdKnM,nResidualKn:0,nMinKn:-p.nplRdKn,nMaxKn:p.nplRdKn};
+  }
   const g=geometry(s);
   if(!Number.isFinite(nEdKn)) throw new Error(ct('calcLateral', 'errors.invalidNormalForce', 'Ongeldige normaalkracht.'));
   const fy=s.tubeFydMpa*1000, fc=s.fcdMpa*1000, fr=s.fydMpa*1000;

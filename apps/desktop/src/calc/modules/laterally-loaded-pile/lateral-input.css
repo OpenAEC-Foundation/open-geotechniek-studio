@@ -25,3 +25,28 @@
 .lat-mini:disabled { opacity: .35; cursor: default; }
 .lat-add { margin-top: 6px; padding: 4px 10px; border: 1px dashed var(--oa-border-strong); border-radius: var(--oa-radius-small); background: transparent; color: var(--oa-text-secondary); font: 12px var(--oa-font-body); cursor: pointer; }
 .lat-add:hover { color: var(--oa-accent-text); border-color: var(--oa-accent); }
+/* Paalsystemen als in de module paaldraagvermogen, met het damwandprofiel erbij. */
+.lat-input .pile-system-tiles .cs-tile:disabled { opacity: .4; cursor: not-allowed; }
+.lat-sketch-steel { fill: none; stroke: #b5543c; stroke-linejoin: round; stroke-linecap: round; }
+.lat-sketch-lock { fill: var(--oa-panel, #fff); stroke: currentColor; stroke-width: .8; }
+/* Toelichting achter een "i". */
+.lat-info { margin: 4px 0 2px; font-size: 11px; color: var(--oa-text-secondary); }
+.lat-info > summary { list-style: none; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border: 1px solid var(--oa-border-strong); border-radius: 50%; font: italic 600 10px Georgia, serif; cursor: pointer; color: var(--oa-text-secondary); }
+.lat-info > summary::-webkit-details-marker { display: none; }
+.lat-info[open] > summary { background: var(--oa-selected); color: var(--oa-text); }
+.lat-info > p { margin: 4px 0 0; line-height: 1.45; }
+/* Herkomst van een overgenomen berekening. */
+.lat-inherited { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 8px; padding: 5px 8px; border: 1px solid var(--oa-border); border-left: 3px solid var(--oa-accent); font-size: 11px; color: var(--oa-text-secondary); }
+.lat-link-add { width: auto; margin: 0 0 10px; padding: 5px 10px; border: 1px solid var(--oa-border-strong); background: var(--oa-panel); color: var(--oa-text); font: inherit; font-size: 12px; cursor: pointer; }
+.lat-link-add:hover:not(:disabled) { background: var(--oa-hover); }
+.lat-link-add:disabled { opacity: .5; cursor: not-allowed; }
+/* Materiaaltoetsing in de uitdraai. */
+.lateral-material-table td small { color: var(--oa-text-secondary); }
+.lateral-material-fail td:last-child, .lateral-material-outside td:last-child { color: var(--oa-error); font-weight: 600; }
+.lateral-material-ok td:last-child { color: var(--oa-success); }
+.lateral-material-info td, .lateral-material-na td { color: var(--oa-text-secondary); }
+.lateral-material-steps td { padding-top: 0; border-top: 0; font-size: 11px; color: var(--oa-text-secondary); }
+.lateral-material-steps details { display: inline-block; margin-right: 10px; vertical-align: top; }
+.lateral-material-steps summary { cursor: pointer; }
+.lateral-material-steps ul { margin: 4px 0 6px; padding-left: 16px; columns: 2; column-gap: 24px; }
+.lateral-material-steps li { break-inside: avoid; margin: 1px 0; }

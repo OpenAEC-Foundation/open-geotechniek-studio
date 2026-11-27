@@ -22,7 +22,10 @@ describe('diagrammen horizontale paal',()=>{
     for(const unit of ['mm','kNm','kN','kN/m'])expect(screen.getAllByText(unit).length).toBeGreaterThan(0);
     expect(screen.getByText('m NAP')).toBeInTheDocument();
     expect(screen.getByText('kop -1,00')).toBeInTheDocument();
-    // Arcering haaks op de paal, buigtekens bij het moment en afschuiftekens bij de dwarskracht.
+    // Arcering haaks op de paal, buigtekens bij het moment en plus/min bij de dwarskracht; geen kader of raster door het vlak.
+    expect(container.querySelectorAll('.pile-diagram-frame, .pile-diagrams .pile-grid, .pile-soil-band')).toHaveLength(0);
+    const labels=[...moment.querySelectorAll('.pile-extreme text')].map(t=>Number(t.getAttribute('y')));
+    expect(Math.abs(labels[0]-labels[1])).toBeGreaterThanOrEqual(26);
     expect(container.querySelectorAll('.pile-diagram-M .pile-hatch line').length).toBeGreaterThan(50);
     expect(container.querySelectorAll('.pile-diagram-M .pile-bend-sign').length).toBeGreaterThan(0);
     expect(container.querySelectorAll('.pile-diagram-V .pile-shear-sign').length).toBeGreaterThan(0);
