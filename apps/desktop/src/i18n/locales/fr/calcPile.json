@@ -378,13 +378,14 @@
     "focusPile": "Pieu entier",
     "focusTip": "Pointe du pieu",
     "label": {
-      "critical": "profondeur critique {{depth}} m",
+      "critical": "profondeur critique {{depth}} m = {{ratio}} Deq",
       "ground": "terrain naturel {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "pointe du pieu {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "limite supérieure de la zone III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Bleu-vert : la courbe qc écrêtée des trajets II et III.",
@@ -392,11 +393,11 @@
       "negative": "Frottement négatif le long du fût ; Fnk;d = {{force}} kN",
       "positive": "Frottement latéral positif le long du fût ; Rs;cal;max = {{force}} kN",
       "qc": "Résistance de pointe qc à côté du pieu ; les traits épais sont les moyennes par trajet.",
-      "slip": "Corps de rupture : le sol cisaille le long d’une spirale logarithmique, de la profondeur critique sous la pointe du pieu vers l’extérieur et vers le haut jusqu’à 8 Deq au-dessus de la pointe. Un quart est retiré pour voir l’intérieur ; les flèches indiquent le sens du cisaillement. La forme est schématique.",
+      "slip": "Corps de rupture : le sol cisaille le long d'une spirale logarithmique, de la profondeur critique sous la pointe vers l'extérieur et vers le haut jusqu'à la limite supérieure de la zone III, telles que retenues par le calcul. Un quart est omis pour voir l'intérieur ; les flèches indiquent le sens du cisaillement. La forme est schématique.",
       "zone": "Trajet {{zone}}",
       "zoneI": "de la pointe du pieu vers le bas jusqu'à la profondeur critique",
       "zoneII": "de la profondeur critique vers le haut jusqu'à la pointe du pieu",
-      "zoneIII": "de la pointe du pieu jusqu'à 8 Deq au-dessus"
+      "zoneIII": "de la pointe du pieu vers le haut jusqu'à la limite supérieure de la zone III"
     },
     "noModel": "Pas de vue 3D : associez un sondage au calcul.",
     "notComputed": "Pas de vue 3D tant que le calcul n'a pas de résultat. Modifiez les données ou revenez à la 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Trajets I, II et III, zone de rupture, frottement et qc",
     "ariaPhysical": "Vue 3D du pieu dans le sol ; glisser pour pivoter, défiler pour zoomer",
     "noPhysical": "Pas de vue 3D : les dimensions du pieu ou les niveaux ne sont pas valides.",
-    "notePhysical": "Le pieu, les couches et les niveaux sont à l'échelle ; le bloc de sol est ouvert le long de l'axe du pieu. Schématiques : la pointe de battage, les armatures en attente et le ferraillage, l'hélice, le tube central et la bague de soudure. En dehors du profil saisi, la couche la plus proche est prolongée.",
+    "notePhysical": "Le pieu, les couches et les niveaux sont à l'échelle ; le bloc de sol est ouvert le long de l'axe du pieu. Les couches sont la stratigraphie de l'essai CPT, avec les ajustements de l'interprétation des couches. Schématiques : la pointe, les attentes et l'armature, l'hélice, le tube central et la bague de soudure. Là où l'essai ne donne pas de couche, la couche la plus proche est prolongée.",
     "material": {
       "concrete": "Béton",
       "steel": "Acier",
@@ -432,7 +433,8 @@
       "water": "nappe phréatique {{nap}}",
       "excavation": "excavation {{nap}}",
       "joint": "joint {{nap}}",
-      "excavatedLayer": "{{soil}} (excavé)"
+      "excavatedLayer": "{{soil}} (excavé)",
+      "adjustedLayer": "{{soil}} (ajusté)"
     }
   },
   "types": {

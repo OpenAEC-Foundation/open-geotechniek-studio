@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import * as THREE from "three";
-import { buildPhysicalScene, partRadius, pileParts, soilBlockLayers, type PhysicalPart } from "./physical-scene";
+import { buildPhysicalScene, cptBlockLayers, partRadius, pileParts, type PhysicalPart } from "./physical-scene";
+import { analyzeLayers } from "../../../../utils/layerAnalysis";
 import { buildPhysicalObjects } from "../ui/physical-three";
 import { disposeObjects } from "../ui/koppejan-three";
 import { getPileType } from "../catalog";
@@ -9,7 +10,10 @@ import fixture from "../__fixtures__/sondering-3bm-cgeo1.json";
 import type { PileInput } from "../types";
 import type { Cpt } from "../../../../types/cpt";
 
-const cpt: Cpt = { id: "S1", metadata: { source_file: "test", ground_level_nap: 0 }, points: [{ depth: 0, qc: 5 }, { depth: 25, qc: 12 }] };
+// Gelaagde sondering (maaiveld NAP 0, tot 20 m): klei, veen, zand en vast zand volgens de
+// qc/Rf-indeling van de grondopbouw (zones 3, 2, 6 en 7).
+const zoneAt = (d: number) => (d < 1 ? { qc: 1, rf: 2 } : d < 4 ? { qc: 0.4, rf: 3 } : d < 12 ? { qc: 15, rf: 1 } : { qc: 30, rf: 0.5 });
+const cpt: Cpt = { id: "S1", metadata: { source_file: "test", ground_level_nap: 0 }, points: Array.from({ length: 201 }, (_, i) => ({ depth: i / 10, ...zoneAt(i / 10) })) };
 const base: PileInput = {
   ...fixture.input as PileInput, cptId: cpt.id, pileTopNap: -0.5, pileToeNap: -12, excavationNap: -1, waterNap: -1.5,
   negKleefBottomNap: -6, posKleefTopNap: -6, timberTaper: undefined, concreteExtension: undefined, baseDiameterMm: undefined, sideBMm: undefined,
@@ -88,16 +92,20 @@ describe("paal per paalsysteem", () => {
 
 describe("grondblok en niveaus", () => {
   const s = scene({ ...base, pileTypeId: "concrete-prefab-prestressed-driven", diameterMm: 250 });
-  it("splitst op het ontgravingsniveau, voegt gelijke lagen samen en trekt de onderste laag door", () => {
-    expect(s.block.layers.map((l) => [l.kind, l.topNap, l.bottomNap, l.excavated, l.assumed])).toEqual([
-      ["clay", 0, -1, true, false],
-      ["clay", -1, -4, false, false],
-      ["peat", -4, -6, false, false],
-      ["sand", -6, -12, false, false],
-      ["sand", -12, s.block.bottomNap, false, true],
-    ]);
-    expect(s.block.bottomNap).toBeLessThanOrEqual(-13);
+  it("neemt de grondopbouw van de sondering over, gesplitst op het ontgravingsniveau, tot de einddiepte", () => {
+    const own = analyzeLayers(cpt).layers;
+    expect(own.map((l) => l.zone_number)).toEqual([3, 2, 6, 7]);
+    expect(s.block.bottomNap).toBe(-20);
     expect(s.block.topNap).toBe(0);
+    expect(s.block.layers.map((l) => [l.zone, l.topNap, l.bottomNap, l.excavated, l.assumed])).toEqual([
+      [3, 0, -own[0].depth_bottom, true, false],
+      [2, -own[1].depth_top, -1, true, false],
+      [2, -1, -own[1].depth_bottom, false, false],
+      [6, -own[2].depth_top, -own[2].depth_bottom, false, false],
+      [7, -own[3].depth_top, -20, false, false],
+    ].map(([zone, top, bottom, ex, as]) => [zone, expect.closeTo(top as number, 9), expect.closeTo(bottom as number, 9), ex, as]));
+    // Naam en kleur zoals in het paneel Grondopbouw.
+    expect(s.block.layers.map((l) => [l.name, l.color])).toEqual([own[0], own[1], own[1], own[2], own[3]].map((l) => [l.zone_name, l.zone_color]));
   });
   it("geeft maaiveld, ontgraving en grondwater als vlak en zet de niveaus als label", () => {
     expect(s.planes).toEqual([{ id: "ground", nap: 0 }, { id: "excavation", nap: -1 }, { id: "water", nap: -1.5 }]);
@@ -106,7 +114,26 @@ describe("grondblok en niveaus", () => {
     // Uit elkaar geschoven: nooit dichter dan de labelafstand, de aanhaallijn wijst naar het echte niveau.
     for (let i = 1; i < levels.length; i++) expect(levels[i - 1].anchor[1] - levels[i].anchor[1]).toBeGreaterThanOrEqual(s.labelGapM - 1e-9);
     expect(levels.find((l) => l.id === "water")!.target![1]).toBe(-1.5);
-    expect(s.labels.filter((l) => l.id.startsWith("layer-")).map((l) => l.text)).toEqual(["Klei (ontgraven)", "Klei", "Veen", "Zand"]);
+    // Te dunne lagen houden geen naam, zodat de namen elkaar niet overlappen.
+    const names = s.labels.filter((l) => l.id.startsWith("layer-"));
+    expect(names.map((l) => l.text)).toEqual(["Organisch / veen", "Zand", "Grof zand / grind"]);
+    for (let i = 1; i < names.length; i++) expect(names[i - 1].anchor[1] - names[i].anchor[1]).toBeGreaterThanOrEqual(s.labelGapM - 1e-9);
+  });
+  it("verwerkt een grondsoortaanpassing uit de grondlaaginterpretatie zoals de berekening en de 2D-tekening", () => {
+    const input: PileInput = { ...base, pileTypeId: "concrete-prefab-prestressed-driven", diameterMm: 250,
+      interpretationOverrides: [{ id: "a1", cptId: "S1", topNap: -6, bottomNap: -8, soilKind: "clay" }] };
+    const adjusted = scene(input);
+    const own = analyzeLayers(cpt).layers;
+    expect(adjusted.block.layers.map((l) => [l.zone, l.adjusted, l.topNap, l.bottomNap])).toEqual([
+      [3, false, 0, -own[0].depth_bottom],
+      [2, false, -own[1].depth_top, -1],
+      [2, false, -1, -own[1].depth_bottom],
+      [6, false, -own[2].depth_top, -6],
+      [3, true, -6, -8],
+      [6, false, -8, -own[2].depth_bottom],
+      [7, false, -own[3].depth_top, -20],
+    ].map(([zone, adj, top, bottom]) => [zone, adj, expect.closeTo(top as number, 9), expect.closeTo(bottom as number, 9)]));
+    expect(adjusted.labels.map((l) => l.text)).toContain("Klei (aangepast)");
   });
   it("laat een gelijk ontgravingsniveau weg en werkt zonder sondering", () => {
     const flat = buildPhysicalScene({ ...base, excavationNap: 0 }, cpt, getPileType(base.pileTypeId))!;
@@ -114,11 +141,13 @@ describe("grondblok en niveaus", () => {
     expect(flat.block.layers.some((l) => l.excavated)).toBe(false);
     const noCpt = buildPhysicalScene(base, null, getPileType(base.pileTypeId))!;
     expect(noCpt.groundNap).toBe(-1);
+    expect(noCpt.block.layers).toEqual([]);
   });
-  it("vult gaten in het profiel met de laag erboven en geeft niets zonder profiel", () => {
-    const gap = soilBlockLayers({ ...base, excavationNap: 5, soilProfile: [base.soilProfile[2], base.soilProfile[3]].map((l, i) => i ? { ...l, startNap: -7 } : l) }, 0, -13);
-    expect(gap.map((l) => [l.kind, l.topNap, l.bottomNap, l.assumed])).toEqual([["peat", 0, -4, true], ["peat", -4, -6, false], ["peat", -6, -7, true], ["sand", -7, -12, false], ["sand", -12, -13, true]]);
-    expect(soilBlockLayers({ ...base, soilProfile: [] }, 0, -13)).toEqual([]);
+  it("trekt boven en onder de sondering de dichtstbijzijnde laag door", () => {
+    const layers = cptBlockLayers(cpt, [], 0, 5, 1, -22);
+    expect(layers[0]).toMatchObject({ zone: 3, topNap: 1, bottomNap: 0, assumed: true });
+    expect(layers[layers.length - 1]).toMatchObject({ zone: 7, topNap: -20, bottomNap: -22, assumed: true });
+    expect(cptBlockLayers({ ...cpt, points: [] }, [], 0, 5, 0, -13)).toEqual([]);
   });
   it("geeft geen model bij ongeldige maten of niveaus", () => {
     expect(buildPhysicalScene({ ...base, pileToeNap: 3 }, cpt, getPileType(base.pileTypeId))).toBeNull();

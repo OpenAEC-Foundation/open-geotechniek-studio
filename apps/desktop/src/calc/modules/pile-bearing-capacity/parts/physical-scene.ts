@@ -9,9 +9,12 @@
 import type { Cpt } from "../../../../types/cpt";
 import { ct, fmtNumber } from "../../../i18n";
 import { pileSystemIdOf, type PileSystemId } from "../pile-systems";
-import type { PileInput, PileTypeSpec, SoilKind } from "../types";
+import type { AppliedOverride, PileInput, PileTypeSpec, SoilKind } from "../types";
 import { pileGeometry, shaftDiameterAtNap, woodTopNap } from "./geometry";
 import { spreadDown } from "./koppejan-scene";
+import { applyOverrides } from "./interpretation-overrides";
+import { analyzeLayers } from "../../../../utils/layerAnalysis";
+import { zoneName, zones } from "../../../../utils/soilZones";
 import type { PileMaterial } from "./material-colors";
 
 export type PhysicalShape =
@@ -38,17 +41,19 @@ export interface PhysicalPart {
   schematic?: boolean;
 }
 
-export type SoilDisplayKind = "sand" | "clay" | "peat";
-export const soilDisplayKind = (kind: SoilKind): SoilDisplayKind => (kind === "clay" ? "clay" : kind === "peat" ? "peat" : "sand");
-
 export interface SoilBlockLayer {
-  kind: SoilDisplayKind;
+  /** Zone van de grondopbouw van de sondering (1-9), met naam en kleur zoals in het paneel Grondopbouw. */
+  zone: number;
+  name: string;
+  color: string;
   topNap: number;
   bottomNap: number;
   /** Boven het ontgravingsniveau: wordt ontgraven. */
   excavated: boolean;
-  /** Buiten het ingevoerde profiel: de dichtstbijzijnde laag is doorgetrokken. */
+  /** Waar de sondering geen laag geeft: de dichtstbijzijnde laag is doorgetrokken. */
   assumed: boolean;
+  /** Grondsoort gewijzigd in de grondlaaginterpretatie van deze berekening. */
+  adjusted: boolean;
 }
 
 export interface PhysicalLabel {
@@ -201,37 +206,68 @@ export function partRadius(shape: PhysicalShape): number {
   }
 }
 
-/** Lagen van het grondblok: het ingevoerde profiel, gesplitst op het ontgravingsniveau; gelijke lagen samengevoegd. */
-export function soilBlockLayers(input: PileInput, topNap: number, bottomNap: number): SoilBlockLayer[] {
-  const profile = input.soilProfile
-    .filter((l) => [l.startNap, l.endNap].every(Number.isFinite) && l.startNap > l.endNap)
-    .sort((a, b) => b.startNap - a.startNap);
-  const pieces: SoilBlockLayer[] = [];
-  const push = (kind: SoilDisplayKind, top: number, bottom: number, assumed: boolean) => {
-    const t = Math.min(top, topNap), b = Math.max(bottom, bottomNap);
-    if (t - b < 1e-6) return;
-    const cut = input.excavationNap;
-    for (const [pt, pb] of cut < t - 1e-6 && cut > b + 1e-6 ? [[t, cut], [cut, b]] : [[t, b]]) {
-      const excavated = (pt + pb) / 2 > cut, last = pieces[pieces.length - 1];
-      if (last && last.kind === kind && last.excavated === excavated && last.assumed === assumed && Math.abs(last.bottomNap - pt) < 1e-6) last.bottomNap = pb;
-      else pieces.push({ kind, topNap: pt, bottomNap: pb, excavated, assumed });
-    }
-  };
-  if (!profile.length) return pieces;
-  // Boven en onder het profiel en in een gat ertussen: de dichtstbijzijnde laag doorgetrokken.
-  if (profile[0].startNap < topNap) push(soilDisplayKind(profile[0].kind), topNap, profile[0].startNap, true);
-  profile.forEach((layer, i) => {
-    push(soilDisplayKind(layer.kind), layer.startNap, layer.endNap, false);
-    const next = profile[i + 1];
-    if (next && next.startNap < layer.endNap - 1e-6) push(soilDisplayKind(layer.kind), layer.endNap, next.startNap, true);
-  });
-  const last = profile[profile.length - 1];
-  if (last.endNap > bottomNap) push(soilDisplayKind(last.kind), last.endNap, bottomNap, true);
-  return pieces;
+/** Robertson-zone die bij een grondsoort uit een aanpassing van de interpretatie hoort. */
+const ZONE_OF_KIND: Record<SoilKind, number> = { "sand-dry": 6, "sand-wet": 6, clay: 3, peat: 2 };
+
+type Piece = { zone: number; topNap: number; bottomNap: number; adjusted: boolean };
+
+/** Zet een traject in de lagenlijst (van boven naar beneden) en snijdt wat eronder lag weg. */
+function overlay(pieces: Piece[], piece: Piece): Piece[] {
+  const out: Piece[] = [];
+  for (const p of pieces) {
+    if (p.bottomNap >= piece.topNap - 1e-9 || p.topNap <= piece.bottomNap + 1e-9) { out.push(p); continue; }
+    if (p.topNap > piece.topNap + 1e-9) out.push({ ...p, bottomNap: piece.topNap });
+    if (p.bottomNap < piece.bottomNap - 1e-9) out.push({ ...p, topNap: piece.bottomNap });
+  }
+  out.push(piece);
+  return out.sort((a, b) => b.topNap - a.topNap);
 }
 
-const SOIL_NL: Record<SoilDisplayKind, string> = { sand: "Zand", clay: "Klei", peat: "Veen" };
-export const soilDisplayName = (kind: SoilDisplayKind) => ct("calcPile", `view3d.soil.${kind}`, SOIL_NL[kind]);
+/**
+ * Lagen van het grondblok: de grondopbouw van de sondering (dezelfde indeling als
+ * het paneel Grondopbouw en de lagenkolom van de sonderingsgrafiek), met de
+ * grondsoortaanpassingen uit de grondlaaginterpretatie van deze berekening erop.
+ * Gesplitst op het ontgravingsniveau; boven, onder en tussen de lagen van de
+ * sondering is de dichtstbijzijnde laag doorgetrokken (`assumed`).
+ */
+export function cptBlockLayers(
+  cpt: Cpt | null | undefined, applied: AppliedOverride[], groundNap: number,
+  excavationNap: number, topNap: number, bottomNap: number,
+): SoilBlockLayer[] {
+  if (!cpt) return [];
+  let pieces: Piece[] = [];
+  try {
+    pieces = analyzeLayers(cpt).layers.map((l) => ({ zone: l.zone_number, topNap: groundNap - l.depth_top, bottomNap: groundNap - l.depth_bottom, adjusted: false }));
+  } catch { pieces = []; }
+  for (const a of applied) {
+    if (a.status !== "applied" || !a.soil || !(a.topNap > a.bottomNap)) continue;
+    pieces = overlay(pieces, { zone: ZONE_OF_KIND[a.soil.after], topNap: a.topNap, bottomNap: a.bottomNap, adjusted: true });
+  }
+  pieces = pieces.filter((p) => p.topNap - p.bottomNap > 1e-6).sort((a, b) => b.topNap - a.topNap);
+  if (!pieces.length) return [];
+
+  const out: SoilBlockLayer[] = [];
+  const push = (p: Piece, top: number, bottom: number, assumed: boolean) => {
+    const t = Math.min(top, topNap), b = Math.max(bottom, bottomNap);
+    if (t - b < 1e-6) return;
+    const zone = zones.find((z) => z.number === p.zone);
+    const name = zoneName(p.zone, zone?.name), color = zone?.color ?? "#9ca3af";
+    for (const [pt, pb] of excavationNap < t - 1e-6 && excavationNap > b + 1e-6 ? [[t, excavationNap], [excavationNap, b]] : [[t, b]]) {
+      const excavated = (pt + pb) / 2 > excavationNap, last = out[out.length - 1];
+      if (last && last.zone === p.zone && last.adjusted === p.adjusted && last.excavated === excavated && last.assumed === assumed && Math.abs(last.bottomNap - pt) < 1e-6) last.bottomNap = pb;
+      else out.push({ zone: p.zone, name, color, topNap: pt, bottomNap: pb, excavated, assumed, adjusted: p.adjusted });
+    }
+  };
+  if (pieces[0].topNap < topNap) push(pieces[0], topNap, pieces[0].topNap, true);
+  pieces.forEach((p, i) => {
+    push(p, p.topNap, p.bottomNap, false);
+    const next = pieces[i + 1];
+    if (next && next.topNap < p.bottomNap - 1e-6) push(p, p.bottomNap, next.topNap, true);
+  });
+  const last = pieces[pieces.length - 1];
+  if (last.bottomNap > bottomNap) push(last, last.bottomNap, bottomNap, true);
+  return out;
+}
 
 /**
  * Bouwt het model voor de fysieke 3D-weergave. Heeft geen rekenresultaat nodig:
@@ -239,6 +275,7 @@ export const soilDisplayName = (kind: SoilDisplayKind) => ct("calcPile", `view3d
  * ongeldige maten of niveaus.
  */
 export function buildPhysicalScene(input: PileInput, cpt: Cpt | null | undefined, pileType: PileTypeSpec | undefined): PhysicalScene | null {
+  // `cpt` is de gemeten sondering; de aanpassingen van deze berekening komen er hier op.
   const top = input.pileTopNap, toe = input.pileToeNap;
   if (![top, toe, input.diameterMm, input.excavationNap, input.waterNap].every(Number.isFinite) || top <= toe || input.diameterMm <= 0) return null;
   const baseSizeMm = input.timberTaper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm;
@@ -252,8 +289,12 @@ export function buildPhysicalScene(input: PileInput, cpt: Cpt | null | undefined
   const groundNap = cpt?.metadata.ground_level_nap ?? input.excavationNap;
 
   const halfWidthM = Math.max(6 * maxRadiusM, 0.11 * length, 0.8);
-  const blockTop = groundNap, blockBottom = toe - Math.max(1, 5 * deqM);
-  const layers = soilBlockLayers(input, blockTop, blockBottom);
+  // Het blok loopt tot onder de paalpunt en minstens tot de einddiepte van de sondering.
+  const depths = (cpt?.points ?? []).map((p) => p.depth).filter(Number.isFinite);
+  const cptEndNap = depths.length ? groundNap - Math.max(...depths) : Infinity;
+  const blockTop = groundNap, blockBottom = Math.min(toe - Math.max(1, 5 * deqM), cptEndNap);
+  const { applied } = applyOverrides(cpt, input.soilProfile, input.interpretationOverrides);
+  const layers = cptBlockLayers(cpt, applied, groundNap, input.excavationNap, blockTop, blockBottom);
   const planes: PhysicalScene["planes"] = [{ id: "ground", nap: groundNap }];
   if (Math.abs(input.excavationNap - groundNap) > 0.01) planes.push({ id: "excavation", nap: input.excavationNap });
   if (input.waterNap < blockTop + 2 && input.waterNap > blockBottom) planes.push({ id: "water", nap: input.waterNap });
@@ -277,7 +318,8 @@ export function buildPhysicalScene(input: PileInput, cpt: Cpt | null | undefined
   // Laagnamen rechts van het blok, met een aanhaallijn naar het snijvlak; een laag die te dun is voor een naam blijft zonder.
   layers.forEach((layer, i) => {
     if (layer.assumed || layer.topNap - layer.bottomNap < labelGapM) return;
-    labels.push({ id: `layer-${i}`, text: layer.excavated ? ct("calcPile", "view3d.physical.excavatedLayer", "{{soil}} (ontgraven)", { soil: soilDisplayName(layer.kind) }) : soilDisplayName(layer.kind),
+    const soil = layer.adjusted ? ct("calcPile", "view3d.physical.adjustedLayer", "{{soil}} (aangepast)", { soil: layer.name }) : layer.name;
+    labels.push({ id: `layer-${i}`, text: layer.excavated ? ct("calcPile", "view3d.physical.excavatedLayer", "{{soil}} (ontgraven)", { soil }) : soil,
       anchor: [1.2 * halfWidthM, (layer.topNap + layer.bottomNap) / 2], target: [0.9 * halfWidthM, (layer.topNap + layer.bottomNap) / 2], align: "right", group: "pile" });
   });
 

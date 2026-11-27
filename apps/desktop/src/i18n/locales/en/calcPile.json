@@ -378,13 +378,14 @@
     "focusPile": "Whole pile",
     "focusTip": "Pile toe",
     "label": {
-      "critical": "critical depth {{depth}} m",
+      "critical": "critical depth {{depth}} m = {{ratio}} Deq",
       "ground": "ground level {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "pile toe {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "top of zone III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Teal: the clipped qc line of trajectories II and III.",
@@ -392,11 +393,11 @@
       "negative": "Negative skin friction along the shaft; Fnk;d = {{force}} kN",
       "positive": "Positive shaft friction along the shaft; Rs;cal;max = {{force}} kN",
       "qc": "Cone resistance qc next to the pile; thick bars are the trajectory averages.",
-      "slip": "Failure body: the soil shears along a logarithmic spiral, from the critical depth below the pile toe outwards and up to 8 Deq above the toe. A quarter is left out so you can look inside; the arrows point in the direction of shearing. The shape is schematic.",
+      "slip": "Failure body: the soil shears along a logarithmic spiral, from the critical depth below the pile toe outwards and up to the top of zone III, as chosen by the calculation. A quarter is left out so you can look inside; the arrows point in the direction of shearing. The shape is schematic.",
       "zone": "Trajectory {{zone}}",
       "zoneI": "from the pile toe down to the critical depth",
       "zoneII": "from the critical depth back up to the pile toe",
-      "zoneIII": "from the pile toe to 8 Deq above it"
+      "zoneIII": "from the pile toe up to the top of zone III"
     },
     "noModel": "There is no 3D view: link a CPT to the calculation.",
     "notComputed": "There is no 3D view while the calculation has no result. Adjust the input or go back to 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Trajectories I, II and III, failure body, skin friction and qc",
     "ariaPhysical": "3D view of the pile in the ground; drag to rotate, scroll to zoom",
     "noPhysical": "There is no 3D view: the pile dimensions or levels are invalid.",
-    "notePhysical": "Pile, layers and levels are to scale; the soil block is cut open along the pile axis. Schematic: the pile shoe, starter bars and reinforcement, the screw blade, the core tube and the weld ring. Outside the entered profile the nearest layer is extended.",
+    "notePhysical": "Pile, layers and levels are to scale; the soil block is cut open along the pile axis. The layers are the soil layering of the CPT, with the adjustments from the soil layer interpretation. Schematic: the pile shoe, starter bars and reinforcement, the screw blade, the core tube and the weld ring. Where the CPT gives no layer, the nearest layer is extended.",
     "material": {
       "concrete": "Concrete",
       "steel": "Steel",
@@ -432,7 +433,8 @@
       "water": "groundwater {{nap}}",
       "excavation": "excavation {{nap}}",
       "joint": "joint {{nap}}",
-      "excavatedLayer": "{{soil}} (excavated)"
+      "excavatedLayer": "{{soil}} (excavated)",
+      "adjustedLayer": "{{soil}} (adjusted)"
     }
   },
   "types": {

@@ -378,13 +378,14 @@
     "focusPile": "Hele paal",
     "focusTip": "Paalpunt",
     "label": {
-      "critical": "kritieke diepte {{depth}} m",
+      "critical": "kritieke diepte {{depth}} m = {{ratio}} Deq",
       "ground": "maaiveld {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "paalpunt {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "bovengrens traject III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Groenblauw: de afgekapte qc-lijn van traject II en III.",
@@ -392,11 +393,11 @@
       "negative": "Negatieve kleef langs de schacht; Fnk;d = {{force}} kN",
       "positive": "Positieve schachtwrijving langs de schacht; Rs;cal;max = {{force}} kN",
       "qc": "Conusweerstand qc naast de paal; dikke strepen zijn de trajectgemiddelden.",
-      "slip": "Bezwijklichaam: de grond schuift af langs een logaritmische spiraal, van de kritieke diepte onder de paalpunt naar buiten en omhoog tot 8 Deq boven de punt. Een kwart is weggelaten zodat je erin kijkt; de pijlen wijzen in de schuifrichting. De vorm is schematisch.",
+      "slip": "Bezwijklichaam: de grond schuift af langs een logaritmische spiraal, van de kritieke diepte onder de paalpunt naar buiten en omhoog tot de bovengrens van traject III, zoals de berekening ze heeft gekozen. Een kwart is weggelaten zodat je erin kijkt; de pijlen wijzen in de schuifrichting. De vorm is schematisch.",
       "zone": "Traject {{zone}}",
       "zoneI": "van de paalpunt omlaag tot de kritieke diepte",
       "zoneII": "van de kritieke diepte terug omhoog naar de paalpunt",
-      "zoneIII": "van de paalpunt tot 8 Deq erboven"
+      "zoneIII": "van de paalpunt omhoog tot de bovengrens van traject III"
     },
     "noModel": "Er is geen 3D-weergave: koppel een sondering aan de berekening.",
     "notComputed": "Er is geen 3D-weergave zolang de berekening geen resultaat heeft. Pas de invoer aan of ga terug naar 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Trajecten I, II en III, bezwijklichaam, kleef en qc",
     "ariaPhysical": "3D-weergave van de paal in de grond; slepen draait, scrollen zoomt",
     "noPhysical": "Er is geen 3D-weergave: de paalmaten of niveaus zijn ongeldig.",
-    "notePhysical": "Paal, lagen en niveaus zijn op schaal; het grondblok is opengewerkt langs de paalas. Schematisch: de heipunt, stekken en wapening, het schroefblad, de kernbuis en de lasring. Buiten het ingevoerde profiel is de dichtstbijzijnde laag doorgetrokken.",
+    "notePhysical": "Paal, lagen en niveaus zijn op schaal; het grondblok is opengewerkt langs de paalas. De lagen zijn de grondopbouw van de sondering, met de aanpassingen uit de grondlaaginterpretatie. Schematisch: de heipunt, stekken en wapening, het schroefblad, de kernbuis en de lasring. Waar de sondering geen laag geeft, is de dichtstbijzijnde laag doorgetrokken.",
     "material": {
       "concrete": "Beton",
       "steel": "Staal",
@@ -432,7 +433,8 @@
       "water": "grondwater {{nap}}",
       "excavation": "ontgraving {{nap}}",
       "joint": "las {{nap}}",
-      "excavatedLayer": "{{soil}} (ontgraven)"
+      "excavatedLayer": "{{soil}} (ontgraven)",
+      "adjustedLayer": "{{soil}} (aangepast)"
     }
   },
   "types": {

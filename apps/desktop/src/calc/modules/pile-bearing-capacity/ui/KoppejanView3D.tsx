@@ -11,8 +11,8 @@ import { applyOverrides } from "../parts/interpretation-overrides";
 import { fmtNumber } from "../../../i18n";
 import { getPileType, resolvePileType } from "../catalog";
 import { buildKoppejanScene } from "../parts/koppejan-scene";
-import { buildPhysicalScene, soilDisplayName, type SoilDisplayKind } from "../parts/physical-scene";
-import { EXCAVATION_COLOR, SOIL_COLORS, WATER_COLOR, buildPhysicalObjects, partColor } from "./physical-three";
+import { buildPhysicalScene } from "../parts/physical-scene";
+import { EXCAVATION_COLOR, WATER_COLOR, buildPhysicalObjects, partColor } from "./physical-three";
 import type { PileInput, PileResult } from "../types";
 import { buildKoppejanObjects, CLIPPED_COLOR, disposeObjects, fitPose, SHAFT_COLORS, SLIP_COLOR, ZONE_COLORS, type KoppejanObjects, type LabelSprite, type SceneColors } from "./koppejan-three";
 import "./koppejan-3d.css";
@@ -49,7 +49,8 @@ export function KoppejanView3D({ input, result, initialFocus = "tip", initialVie
   // Dezelfde qc-lijn als waarmee is gerekend, dus met de aanpassingen van de interpretatie.
   const cpt = useMemo(() => applyOverrides(measured, input.soilProfile, input.interpretationOverrides).cpt, [measured, input.soilProfile, input.interpretationOverrides]);
   const model = useMemo(() => buildKoppejanScene(input, result, cpt, getPileType(input.pileTypeId)), [input, result, cpt]);
-  const physical = useMemo(() => buildPhysicalScene(input, cpt, resolvePileType(input) ?? getPileType(input.pileTypeId)), [input, cpt]);
+  // De fysieke weergave neemt de grondopbouw van de gemeten sondering en legt de aanpassingen er zelf op.
+  const physical = useMemo(() => buildPhysicalScene(input, measured, resolvePileType(input) ?? getPileType(input.pileTypeId)), [input, measured]);
   const [view, setViewState] = useState<View3D>(() => storedView(storageKey, initialView));
   const setView = (next: View3D) => {
     setViewState(next);
@@ -198,7 +199,7 @@ export function KoppejanView3D({ input, result, initialFocus = "tip", initialVie
   const zoneText: Record<string, string> = {
     I: t("view3d.legend.zoneI", "van de paalpunt omlaag tot de kritieke diepte"),
     II: t("view3d.legend.zoneII", "van de kritieke diepte terug omhoog naar de paalpunt"),
-    III: t("view3d.legend.zoneIII", "van de paalpunt tot 8 Deq erboven"),
+    III: t("view3d.legend.zoneIII", "van de paalpunt omhoog tot de bovengrens van traject III"),
   };
   return (
     <div className="pile-3d">
@@ -218,13 +219,13 @@ export function KoppejanView3D({ input, result, initialFocus = "tip", initialVie
           {[...new Set(physical.pile.parts.map((part) => part.material))].map((material) => (
             <li key={material}><span className="pile-3d-swatch" style={{ background: partColor(material), opacity: 1 }} /><span>{materialName[material]}</span></li>
           ))}
-          {[...new Set(physical.block.layers.map((layer) => layer.kind))].map((kind: SoilDisplayKind) => (
-            <li key={kind}><span className="pile-3d-swatch" style={{ background: SOIL_COLORS[kind], opacity: 1 }} /><span>{soilDisplayName(kind)}</span></li>
+          {[...new Map(physical.block.layers.map((layer) => [layer.zone, layer])).values()].map((layer) => (
+            <li key={layer.zone}><span className="pile-3d-swatch" style={{ background: layer.color, opacity: 1 }} /><span>{layer.name}</span></li>
           ))}
           {physical.planes.some((plane) => plane.id === "water") && <li><span className="pile-3d-swatch" style={{ background: WATER_COLOR }} /><span>{t("levels.water", "Grondwater")}</span></li>}
           {physical.planes.some((plane) => plane.id === "excavation") && <li><span className="pile-3d-swatch" style={{ background: EXCAVATION_COLOR }} /><span>{t("levels.excavation", "Ontgraving")}</span></li>}
         </ul>
-        <p className="pile-3d-note">{t("view3d.notePhysical", "Paal, lagen en niveaus zijn op schaal; het grondblok is opengewerkt langs de paalas. Schematisch: de heipunt, stekken en wapening, het schroefblad, de kernbuis en de lasring. Buiten het ingevoerde profiel is de dichtstbijzijnde laag doorgetrokken.")}</p>
+        <p className="pile-3d-note">{t("view3d.notePhysical", "Paal, lagen en niveaus zijn op schaal; het grondblok is opengewerkt langs de paalas. De lagen zijn de grondopbouw van de sondering, met de aanpassingen uit de grondlaaginterpretatie. Schematisch: de heipunt, stekken en wapening, het schroefblad, de kernbuis en de lasring. Waar de sondering geen laag geeft, is de dichtstbijzijnde laag doorgetrokken.")}</p>
       </> : model && <>
       <ul className="pile-3d-legend">
         {model.zones.map((zone) => (
@@ -236,7 +237,7 @@ export function KoppejanView3D({ input, result, initialFocus = "tip", initialVie
         {model.slip && (
           <li>
             <span className="pile-3d-swatch" style={{ background: SLIP_COLOR, opacity: 0.6 }} />
-            <span>{t("view3d.legend.slip", "Bezwijklichaam: de grond schuift af langs een logaritmische spiraal, van de kritieke diepte onder de paalpunt naar buiten en omhoog tot 8 Deq boven de punt. Een kwart is weggelaten zodat je erin kijkt; de pijlen wijzen in de schuifrichting. De vorm is schematisch.")}</span>
+            <span>{t("view3d.legend.slip", "Bezwijklichaam: de grond schuift af langs een logaritmische spiraal, van de kritieke diepte onder de paalpunt naar buiten en omhoog tot de bovengrens van traject III, zoals de berekening ze heeft gekozen. Een kwart is weggelaten zodat je erin kijkt; de pijlen wijzen in de schuifrichting. De vorm is schematisch.")}</span>
           </li>
         )}
         <li>
