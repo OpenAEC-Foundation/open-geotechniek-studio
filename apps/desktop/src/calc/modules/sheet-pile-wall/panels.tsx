@@ -14,7 +14,8 @@ import { DEFAULT_CORROSION, DEFAULT_FACTORS, FACTOR_SETS, GAMMA_WATER, TENDON_GR
 import { ProfileDetail } from "./ProfileDetail";
 import { SectionDrawing } from "./SectionDrawing";
 import { WallScene3D } from "./WallScene3D";
-import { wallScene } from "./scene";
+import { envelopeLines, phaseOf, wallScene } from "./scene";
+import { CurBlock, ExtraChecksBlock, GeometryBlock, PhasesBlock, StageOverview, SupportsBlock, caseLabel } from "./stage-panels";
 import "./styles.css";
 
 type Props = PanelProps<WallInput, WallResult>;
@@ -151,6 +152,7 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
         {num("input.supportSpacing", "Hart-op-hartafstand", "m", a.spacingM, (v) => setAnchor({ spacingM: v }), 0.01)}
         {kind !== "grout" && <label className="cs-check"><input type="checkbox" checked={a.rigid} onChange={(e) => setAnchor({ rigid: e.target.checked })} /> {t("input.supportRigid", "Starre steun")}</label>}
         {kind !== "grout" && !a.rigid && num("input.supportStiffness", "Veerstijfheid per anker", "kN/m", a.stiffnessKnPerM, (v) => setAnchor({ stiffnessKnPerM: v }), 0.01, t("input.supportStiffnessTitle", "Axiale stijfheid E·A/L van één anker of stempel"))}
+        {kind !== "grout" && num("stage.prestressOne", "Voorspankracht per anker", "kN", a.prestressKn ?? 0, (v) => setAnchor({ prestressKn: v }), 0, t("input.prestressTitle", "0 = niet voorgespannen"))}
         {kind === "grout" && <>
           {num("input.groutFree", "Vrije ankerlengte", "m", g.freeLengthM, (v) => setGrout({ freeLengthM: v }), 0.01)}
           {num("input.groutLength", "Lengte van het groutlichaam", "m", g.groutLengthM, (v) => setGrout({ groutLengthM: v }), 0.01)}
@@ -169,7 +171,11 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
           {r.ok && r.grout && <Hint>{t("input.groutSummary", "k = {{k}} kN/m per anker; groutlichaam van NAP {{top}} tot {{bottom}} m, {{x}} m achter de wand; vrije lengte minstens {{req}} m.", { k: fmt(r.grout.stiffnessKnPerM, 0), top: fmt(r.grout.start.nap, 2), bottom: fmt(r.grout.end.nap, 2), x: fmt(r.grout.start.xM, 2), req: fmt(r.grout.requiredFreeM, 2) })}</Hint>}
         </>}
       </>}
+      <SupportsBlock input={i} onChange={change} />
     </Section>}
+    <Section title={t("stage.phases", "Bouwfasen")}>
+      <PhasesBlock input={i} onChange={change} />
+    </Section>
     <Section title={t("input.layers", "Grondlagen (representatieve waarden)")}>
       <Row label={t("input.cpt", "Sondering")}><select aria-label={t("input.cptAria", "Sondering voor het laagvoorstel")} value={i.cptId ?? ""} onChange={(e) => change({ cptId: e.target.value || null })}>
         <option value="">{t("input.none", "Geen")}</option>{[...cpts.keys()].map((id) => <option key={id} value={id}>{id}</option>)}</select></Row>
@@ -177,6 +183,7 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
       <LayerTable layers={i.layersHigh} caption={t("input.layersHigh", "hoge zijde")} onChange={(layersHigh) => change({ layersHigh })} />
       <label className="cs-check"><input type="checkbox" checked={i.lowSameAsHigh} onChange={(e) => change({ lowSameAsHigh: e.target.checked, layersLow: e.target.checked || i.layersLow.length ? i.layersLow : i.layersHigh.map((l) => ({ ...l })) })} /> {t("input.lowSame", "Lage zijde heeft dezelfde lagen")}</label>
       {!i.lowSameAsHigh && <LayerTable layers={i.layersLow} caption={t("input.layersLow", "lage zijde")} onChange={(layersLow) => change({ layersLow })} />}
+      <GeometryBlock input={i} onChange={change} />
       <Hint>{t("input.layersHint", "De bovenste laag loopt door tot het maaiveld, de onderste tot onbeperkte diepte. De beddingsconstanten vult u zelf in, bijvoorbeeld uit CUR 166 tabel 3.3: dit rekenblad levert daarvoor geen tabelwaarden. Met alleen kh1 rekent het met één tak; met kh2 en kh3 erbij met de drietakkige veer van CUR 166. Een voorstel uit de sondering is indicatief en laat de beddingsconstanten open.")}</Hint>
     </Section>
     <More title={t("input.pressure", "Gronddruk, water en stijfheid")}>
@@ -196,6 +203,8 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
       {FACTOR_FIELDS.map(([key, name, unit, translate]) => { const label = translate ? t(`input.factor.${key}`, name) : name; return <Row key={key} label={label} unit={unit || undefined}><NumberInput label={unit ? `${label} [${unit}]` : label} min={unit ? 0 : 0.01} value={f[key]} onChange={(v) => change({ factors: { ...f, [key]: v } })} /></Row>; })}
       <Hint warn>{t("input.factorsHint", "De sets zijn een voorstel en zijn niet tegen de tekst van NEN 9997-1 en CUR 166 gelegd. Controleer de factoren, de toeslag op de kerende hoogte en de waterstanden bij uw veiligheidsklasse en pas ze aan.")}</Hint>
     </More>
+    <CurBlock input={i} onChange={change} />
+    <ExtraChecksBlock input={i} onChange={change} />
   </div>;
 }
 
@@ -232,20 +241,24 @@ function CorrosionBlock({ input: i, result: r, onChange }: { input: WallInput; r
 export function VisualPanel({ input: i, result: r }: Props) {
   const { t } = useTranslation("calcWall");
   const [view, setView] = useState<"section" | "3d">("section");
-  const [design, setDesign] = useState(true);
+  const [pick, setPick] = useState("uls");
   if (!r.ok) return <p className="cs-hint">{t("visual.pending", "De tekening verschijnt zodra de invoer compleet is en er evenwicht is.")}</p>;
-  const run = design ? r.uls : r.sls;
+  // Keuze: de omhullende van de rekenwaarden, de maatgevende representatieve berekening, of één fase en stap.
+  const many = r.cases.length > 2, chosen = pick.startsWith("c") ? r.cases[Number(pick.slice(1))] : undefined;
+  const run = chosen ? chosen.run : pick === "sls" ? r.sls : r.uls, phase = chosen ? r.phases[chosen.phase] : phaseOf(r, run);
+  const design = r.cases.filter((c) => c.design), envelope = pick === "uls" && design.length > 1 ? envelopeLines(design, i.wallTopNap, i.toeNap) : undefined;
   const tab = (id: "section" | "3d", label: string) => <button type="button" role="tab" aria-selected={view === id} className={view === id ? "active" : ""} onClick={() => setView(id)}>{label}</button>;
   return <div className="sw-visual">
     <div className="sw-tabs" role="tablist" aria-label={t("visual.viewAria", "Weergave")}>
       {tab("section", t("visual.section", "Doorsnede"))}{tab("3d", "3D")}
-      {view === "section" && <select className="sw-run" aria-label={t("visual.runAria", "Waarden in de tekening")} value={design ? "uls" : "sls"} onChange={(e) => setDesign(e.target.value === "uls")}>
-        <option value="uls">{t("visual.runUls", "Rekenwaarden")}</option><option value="sls">{t("visual.runSls", "Representatieve waarden")}</option></select>}
+      <select className="sw-run" aria-label={t("visual.runAria", "Waarden in de tekening")} value={chosen || pick === "sls" ? pick : "uls"} onChange={(e) => setPick(e.target.value)}>
+        <option value="uls">{many ? t("stage.envelope", "Omhullende") : t("visual.runUls", "Rekenwaarden")}</option><option value="sls">{many ? t("stage.slsGoverning", "Grootste verplaatsing") : t("visual.runSls", "Representatieve waarden")}</option>
+        {many && r.cases.map((c, k) => <option key={k} value={`c${k}`}>{caseLabel(c, r.phases.length, t)}</option>)}</select>
     </div>
     {view === "section" ? <>
-      <SectionDrawing input={i} result={r} run={run} />
-      <p className="cs-hint">{t("visual.sectionHint", "Op schaal. Tegen de wand staat de druk op de wand: bruin de korreldruk, blauw de waterdruk erbovenop; de streeplijnen zijn de actieve grens aan de hoge zijde en de passieve grens aan de lage zijde. Rechts de verplaatsing (positief naar de lage zijde), het moment en de dwarskracht over dezelfde hoogte; de stip is de grootste waarde.")}</p>
-    </> : <WallScene3D scene={wallScene(i, r, r.sls)} />}
+      <SectionDrawing input={i} result={r} run={run} phase={phase} envelope={envelope} />
+      <p className="cs-hint">{t("visual.sectionHint", "Op schaal. Tegen de wand staat de druk op de wand: bruin de korreldruk, blauw de waterdruk erbovenop; de streeplijnen zijn de actieve grens aan de hoge zijde en de passieve grens aan de lage zijde. Rechts de verplaatsing (positief naar de lage zijde), het moment en de dwarskracht over dezelfde hoogte; de stip is de grootste waarde.")}{envelope ? ` ${t("stage.envelopeHint", "De band is de omhullende over alle fasen en stappen.")}` : ""}</p>
+    </> : <WallScene3D scene={wallScene(i, r, chosen ? chosen.run : r.sls, chosen ? phase : undefined)} />}
   </div>;
 }
 
@@ -288,6 +301,7 @@ export function ResultPanel({ input: i, result: r }: Props) {
       </tbody>
     </table>
     <p className="cs-hint">{t("result.springHint", "Moment op NAP {{m}} m, dwarskracht op NAP {{v}} m (rekenwaarden). Verplaatsingen beoordeelt u met de representatieve waarden. Het verenmodel kwam in {{n}} stappen tot rust.", { m: fmt(u.maxMoment.nap, 2), v: fmt(u.maxShear.nap, 2), n: u.iterations })}</p>
+    <StageOverview result={r} />
 
     {r.grout && <>
       <h3>{t("result.grout", "Groutanker")}</h3>
@@ -347,7 +361,8 @@ export function ResultPanel({ input: i, result: r }: Props) {
         <li>{t("result.method3", "Veiligheid: rekenwaarden van de grondparameters, een toeslag op de kerende hoogte en eventueel op de waterstanden; verplaatsingen met representatieve waarden.")}</li>
         <li>{t("result.method4", "Staal: buiging, dwarskracht en normaalkracht volgens NEN-EN 1993-5, met de afroesting als die is ingevoerd. Hout: buiging en afschuiving volgens NEN-EN 1995-1-1. Kunststof en beton: tegen het opneembare moment dat u invoert.")}</li>
         <li>{t("result.method6", "Palen met schotten: per m wand met de buigstijfheid van de paal gedeeld door de hart-op-hartafstand; onder de schotten de gronddruk over de paalbreedte en de passieve weerstand over de factor voor ruimtelijke werking maal de paalbreedte. Het schot is een ligger op twee steunpunten tussen de palen.")}</li>
-        <li>{t("result.method5", "Niet in deze versie: fasering en voorspanning, meer ankerrijen, het stappenplan 6.1 tot en met 6.5 van CUR 166 met lage en hoge stijfheid, een berekening van de grondwaterstroming (wateroverspanning is wel in te voeren), de stabiliteit van het diepe glijvlak bij een groutanker (Kranz), belastingen op afstand, hellend maaiveld en een aflopende waterbodem, verticaal evenwicht, algehele stabiliteit, het ontwerp van anker, ankerschot en gording, plooi van koudgevormde profielen, kruip van hout en kunststof, de toets van de vervorming tegen een eis, en beschoeiingen met een verankerde paal.")}</li>
+        <li>{t("stage.method7", "Fasering: elke fase rekent verder vanaf de vervormde wand; een veer begint op zijn druk aan het eind van de vorige fase, met K0 maal de verandering van de verticale korrelspanning erbij. Stappenplan: zie het blok Stappenplan CUR 166.")}</li>
+        <li>{t("stage.method5", "Niet in deze versie: de stabiliteit van het diepe glijvlak (Kranz), algehele stabiliteit (Bishop), een glijvlakberekening (Culmann) met het werkelijke maaiveld en gelaagde grond, een ontlasttak van de veer, uitval van een anker, rekenwaarden alleen in de getoetste fase, een berekening van de grondwaterstroming, plooi van koudgevormde profielen, kruip van hout en kunststof, en beschoeiingen met een verankerde paal.")}</li>
       </ul>
     </details>
   </div>;

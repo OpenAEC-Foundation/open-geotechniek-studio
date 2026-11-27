@@ -8,7 +8,7 @@
 import { describe, expect, it } from "vitest";
 import { contourModuli, drawingContour } from "../../library/sheetPileContour";
 import { findSheetPile } from "../../library/sheetPiles";
-import { FACTOR_SETS, REPRESENTATIVE, buildScenario, computeWall, sidePoint, wallExample, type WallFactors, type WallInput, type WallLayer, type WallOk } from "./compute";
+import { CUR_FACTOR_SETS, CUR_STEPS, FACTOR_SETS, REPRESENTATIVE, buildScenario, computeWall, sidePoint, wallExample, type WallFactors, type WallInput, type WallLayer, type WallOk } from "./compute";
 
 const ok = (i: WallInput): WallOk => { const r = computeWall(i); if (!r.ok) throw new Error(r.error); return r; };
 
@@ -106,5 +106,39 @@ describe("openbare referentieberekening: onverankerde damwand langs een rivier",
     const r = computeWall(riverWall({ ...asSource, straight: false, factors: designFactors }));
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.error).toMatch(/Geen evenwicht met rekenwaarden/);
+  });
+
+  it("stappenplan: 6.1 en 6.2 vervallen bij vrij water aan de lage zijde; 6.3, 6.4 en 6.5 zoals de bron", () => {
+    // Bron (p. 15): 6.3 M 89,75, D 48,93, 62,3 %; 6.4 M 89,75, D 48,53, 62,1 %; 6.5 u 31,4 mm, M 50,03, D 28,48; 6.5 × 1,35 = 67,54 kNm/m.
+    const rc3 = CUR_FACTOR_SETS.find((x) => x.id === "rc3-cur")!;
+    const i: WallInput = { ...riverWall({ ...asSource, factors: rc3.factors }), cur: { enabled: true, skipFreeWater: true, steps: CUR_STEPS.map((s) => (s.id === "6.5" ? { ...s, resultFactor: rc3.resultFactor } : s)) } };
+    const r = ok(i), step = (id: string) => r.cases.find((c) => c.stepId === id)!;
+    expect(r.cases.map((c) => c.stepId)).toEqual(["6.3", "6.4", "6.5"]);
+    expect(r.warnings.some((w) => /Stap 6\.1, 6\.2 vervalt/.test(w))).toBe(true);
+    // 6.3 is dezelfde berekening als de losse berekening met de rekenwaarden van de bron hierboven.
+    const single = ok(riverWall({ ...asSource, factors: designFactors }));
+    expect(step("6.3").run.maxMoment.value).toBeCloseTo(single.uls.maxMoment.value, 9);
+    within(Math.abs(step("6.4").run.maxMoment.value), 89.75, 0.05); within(Math.abs(step("6.4").run.maxShear.value), 48.53, 0.05);
+    expect(Math.abs(100 * step("6.4").run.passive.ratio - 62.1)).toBeLessThan(5);
+    within(Math.abs(step("6.5").run.maxMoment.value), 50.03, 0.05); within(r.sls.headDisplacementM * 1000, 31.4, 0.1);
+    // De omhullende: het grootste van 6.3, 6.4 en 1,35 × 6.5.
+    const m = Math.max(...r.cases.map((c) => Math.abs(c.run.maxMoment.value) * c.resultFactor));
+    expect(Math.abs(r.uls.maxMoment.value)).toBeCloseTo(m, 9); within(Math.abs(r.uls.maxMoment.value), 89.75, 0.05);
+    expect(r.checks.find((c) => c.id === "bending")!.load).toBeCloseTo(m, 9);
+  });
+
+  it("met het aflopende maaiveld achter de wand en het verticale evenwicht van de bron", () => {
+    // Bron (p. 21): maaiveld hoog (x; NAP) (0; 20,50) (2; 20,50) (5; 19,50) (22,5; 19,50) (32,5; 14,50) (50; 14,50).
+    // Verticaal evenwicht (p. 15), stap 6.5: R_b;d = 61,75 kN/m tegen 29,49 kN/m, met q_b;max = 10 MPa, ξ = 1,39, γ_b = 1,2.
+    const rc3 = CUR_FACTOR_SETS.find((x) => x.id === "rc3-cur")!;
+    const i: WallInput = { ...riverWall({ ...asSource, factors: rc3.factors }), profileHigh: [{ xM: 2, dzM: 0 }, { xM: 5, dzM: -1 }, { xM: 22.5, dzM: -1 }, { xM: 32.5, dzM: -6 }, { xM: 50, dzM: -6 }],
+      cur: { enabled: true, skipFreeWater: true, steps: CUR_STEPS.map((s) => (s.id === "6.5" ? { ...s, resultFactor: rc3.resultFactor } : s)) },
+      extraChecks: { deformation: { enabled: true, ratio: 100, maxMm: 50 }, vertical: { enabled: true, qbMaxMPa: 10, xi: 1.39, gammaB: 1.2 } } };
+    const r = ok(i), step = (id: string) => r.cases.find((c) => c.stepId === id)!;
+    within(Math.abs(step("6.3").run.maxMoment.value), 89.75, 0.05); within(Math.abs(step("6.5").run.maxMoment.value), 50.03, 0.05); within(r.sls.headDisplacementM * 1000, 31.4, 0.1);
+    const v = r.checks.find((c) => c.id === "vertical")!;
+    within(v.resistance, 61.75, 0.01); within(v.load, 29.49, 0.1);
+    // Vervormingseis van de bron: 1/100 van de kerende hoogte, hooguit 50 mm: 1,85 m geeft 18,5 mm; de bron noemt de eis maar toetst hem niet in het uittreksel.
+    expect(r.checks.find((c) => c.id === "deformation")!.resistance).toBeCloseTo(18.5, 6);
   });
 });

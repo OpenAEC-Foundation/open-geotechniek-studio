@@ -80,3 +80,12 @@
 .sw-steps > div { display: grid; grid-template-columns: 96px 1fr; gap: 6px; }
 .sw-steps dt { color: var(--oa-text-secondary); overflow-wrap: anywhere; }
 .sw-steps dd { margin: 0; overflow-wrap: anywhere; }
+/* Fasering, steunpunten en stappenplan. */
+.sw-envelope { stroke-width: .8; opacity: .35; }
+.sw-curve-y .sw-envelope { fill: #0f766e; stroke: #0f766e; } .sw-curve-m .sw-envelope { fill: #b91c1c; stroke: #b91c1c; } .sw-curve-v .sw-envelope { fill: #1d4ed8; stroke: #1d4ed8; }
+.sw-stage-table td input[type="text"] { min-width: 70px; }
+.sw-stage-table td input[type="checkbox"] { width: auto; min-width: 0; }
+.sw-ids label { display: inline-flex; align-items: center; gap: 2px; margin-right: 6px; white-space: nowrap; }
+.sw-overview td.sw-max { font-weight: 700; }
+.sw-overview td:first-child { white-space: nowrap; }
+.sw-support-checks { margin: 6px 0; }

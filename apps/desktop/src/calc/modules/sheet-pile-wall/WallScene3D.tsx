@@ -167,15 +167,16 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     const groutMaterial = new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.9 });
     const crestLow = s.outlines.length ? Math.max(...s.faceLow.map((q) => q.x)) : s.wallHeightM / 2;
     const faceHighX = s.outlines.length ? Math.min(...s.faceHigh.map((q) => q.x)) : -s.wallHeightM / 2;
-    const waling = s.waling ?? (sheet && s.support ? { levelNap: s.support.levelNap, sizeM: 0.2 } : null);
-    const walingDepth = waling ? waling.sizeM / 2 : 0;
-    if (waling) {
-      const geometry = new THREE.BoxGeometry(walingDepth, waling.sizeM, s.lengthM + s.frontM), at = new THREE.Vector3(crestLow + walingDepth / 2, y(waling.levelNap), (s.frontM - s.lengthM) / 2);
+    // Per steunpunt een gording (bij een stalen damwand altijd, anders zoals de invoer het vraagt) en de ankers of stempels.
+    const walings = s.supports.map((sup, k) => (k === 0 ? s.waling ?? (sheet ? { levelNap: sup.levelNap, sizeM: 0.2 } : null) : sheet || s.waling ? { levelNap: sup.levelNap, sizeM: s.waling?.sizeM ?? 0.2 } : null));
+    const walingDepth = Math.max(0, ...walings.map((w) => (w ? w.sizeM / 2 : 0)));
+    for (const waling of walings) if (waling) {
+      const geometry = new THREE.BoxGeometry(waling.sizeM / 2, waling.sizeM, s.lengthM + s.frontM), at = new THREE.Vector3(crestLow + waling.sizeM / 4, y(waling.levelNap), (s.frontM - s.lengthM) / 2);
       const mesh = new THREE.Mesh(geometry, sheet ? rod : steel); mesh.position.copy(at); scene.add(mesh);
       const outline = new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 30), sheet ? new THREE.LineBasicMaterial({ color: 0x7c2d12 }) : edge); outline.position.copy(at); scene.add(outline);
     }
-    if (s.support) for (const along of s.anchors) {
-      const sup = s.support, angle = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, cos = Math.cos(angle), sin = Math.sin(angle);
+    for (const sup of s.supports) for (const along of sup.anchors) {
+      const angle = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, cos = Math.cos(angle), sin = Math.sin(angle);
       // Hartlijn van het anker door het hart van de gording (of de kop van de paal) op het ankerniveau.
       const ox = crestLow + walingDepth / 2, oy = y(sup.levelNap), z = -along;
       const at = (length: number) => new THREE.Vector3(ox + dir * length * cos, oy - length * sin, z);

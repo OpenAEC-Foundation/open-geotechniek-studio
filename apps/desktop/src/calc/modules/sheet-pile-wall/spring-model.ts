@@ -27,6 +27,11 @@ export interface SideSpring {
   /** Tweede en derde tak [kN/m³] (tot 80 % en tot 100 %); beide nodig voor de drietakkige veer. */
   k2?: number;
   k3?: number;
+  /**
+   * Verplaatsing naar de grond toe waarbij de druk p0 is [m]; standaard 0. In een volgende bouwfase begint de veer
+   * op de vervormde stand van de vorige fase: p0 is dan de druk aan het eind van die fase en w0 de verplaatsing daar.
+   */
+  w0?: number;
 }
 
 export interface WallElement {
@@ -69,16 +74,16 @@ const MAX_ITERATIONS = 300;
 interface Curve { w: number[]; p: number[]; residual: number }
 
 export function springCurve(s: SideSpring): Curve {
-  const delta = s.pp - s.pa, residual = RESIDUAL * Math.max(s.k, 1e-9);
-  if (!(delta > 1e-12) || !(s.k > 0)) return { w: [0], p: [s.pa], residual };
+  const delta = s.pp - s.pa, residual = RESIDUAL * Math.max(s.k, 1e-9), w0 = s.w0 ?? 0;
+  if (!(delta > 1e-12) || !(s.k > 0)) return { w: [w0], p: [s.pa], residual };
   const p0 = Math.max(s.pa, Math.min(s.pp, s.p0));
-  if (!(s.k2 && s.k3 && s.k2 > 0 && s.k3 > 0)) return { w: [(s.pa - p0) / s.k, (s.pp - p0) / s.k], p: [s.pa, s.pp], residual };
+  if (!(s.k2 && s.k3 && s.k2 > 0 && s.k3 > 0)) return { w: [(s.pa - p0) / s.k + w0, (s.pp - p0) / s.k + w0], p: [s.pa, s.pp], residual };
   // Drie takken, verplaatsing gemeten vanaf het actieve punt; een tak mag niet teruglopen.
   const r1 = (0.5 * delta) / s.k, r2 = Math.max(r1 * 1.0001, (0.8 * delta) / s.k2), r3 = Math.max(r2 * 1.0001, delta / s.k3);
   const r = [0, r1, r2, r3], p = [s.pa, s.pa + 0.5 * delta, s.pa + 0.8 * delta, s.pp];
   let at = r3;
   for (let k = 1; k < 4; k++) if (p0 <= p[k]) { at = r[k - 1] + ((p0 - p[k - 1]) / (p[k] - p[k - 1])) * (r[k] - r[k - 1]); break; }
-  return { w: r.map((v) => v - at), p, residual };
+  return { w: r.map((v) => v - at + w0), p, residual };
 }
 
 /** Tak bij verplaatsing w: 0 = op de actieve grens, 1..n = de takken, n+1 = op de passieve grens. */
@@ -86,6 +91,18 @@ function branchOf(c: Curve, w: number): number {
   let b = 0;
   while (b < c.w.length && w > c.w[b] + 1e-15) b++;
   return b;
+}
+
+/**
+ * Mag de veer op tak b blijven bij verplaatsing w? Ja als w binnen 0,1 µm van die tak ligt. Zonder die marge kan een veer
+ * die precies op een knik staat (zoals aan het begin van een volgende fase) eindeloos tussen twee takken wisselen.
+ */
+const SETTLE_M = 1e-7;
+function stays(c: Curve, b: number, w: number): boolean {
+  const n = c.w.length;
+  if (b === 0) return w <= c.w[0] + SETTLE_M;
+  if (b === n) return w >= c.w[n - 1] - SETTLE_M;
+  return w >= c.w[b - 1] - SETTLE_M && w <= c.w[b] + SETTLE_M;
 }
 
 /** Druk op de lijn (zonder reststijfheid), en het lineaire stuk p = load + spring·w van één tak. */
@@ -110,8 +127,9 @@ function linear(c: Curve, b: number): { spring: number; load: number } {
 export function solveSpringWall(input: { lengthM: number; eiKnM2: number; elements: WallElement[]; headForceKn?: number; headMomentKnM?: number }): SpringWallResult {
   const { elements } = input, n = elements.length;
   const curves = elements.map((e) => ({ left: e.left ? springCurve(e.left) : null, right: e.right ? springCurve(e.right) : null }));
-  // Begin op de tak door de neutrale druk.
-  let left = curves.map((c) => (c.left ? Math.max(1, Math.min(c.left.w.length - 1, branchOf(c.left, 0))) : 0)), right = curves.map((c) => (c.right ? Math.max(1, Math.min(c.right.w.length - 1, branchOf(c.right, 0))) : 0));
+  // Begin op de tak door de beginstand: de neutrale druk, of de stand aan het eind van de vorige fase.
+  const start = (c: Curve | null, w0: number | undefined) => (c ? Math.max(1, Math.min(c.w.length - 1, branchOf(c, w0 ?? 0))) : 0);
+  let left = curves.map((c, i) => start(c.left, elements[i].left?.w0)), right = curves.map((c, i) => start(c.right, elements[i].right?.w0));
   let beam: BeamResult | null = null, mids: number[] = [], iterations = 0, converged = false;
   const solve = () => solveBeam({
     lengthM: input.lengthM, eiKnM2: input.eiKnM2, maxElementM: input.lengthM * 2, headForceKn: input.headForceKn ?? 0, headMomentKnM: input.headMomentKnM ?? 0,
@@ -130,7 +148,8 @@ export function solveSpringWall(input: { lengthM: number; eiKnM2: number; elemen
       const a = beam!.nodes[i], b = beam!.nodes[i + 1], l = e.bottomM - e.topM;
       return (a.yM + b.yM) / 2 + (l * (a.rotationRad - b.rotationRad)) / 8;
     });
-    const nextLeft = curves.map((c, i) => (c.left ? branchOf(c.left, -mids[i]) : 0)), nextRight = curves.map((c, i) => (c.right ? branchOf(c.right, mids[i]) : 0));
+    const nextLeft = curves.map((c, i) => (c.left ? (stays(c.left, left[i], -mids[i]) ? left[i] : branchOf(c.left, -mids[i])) : 0));
+    const nextRight = curves.map((c, i) => (c.right ? (stays(c.right, right[i], mids[i]) ? right[i] : branchOf(c.right, mids[i])) : 0));
     const changed = nextLeft.reduce((c, s, i) => c + Number(s !== left[i]) + Number(nextRight[i] !== right[i]), 0);
     if (changed === 0) { converged = true; break; }
     // Een toestand die terugkomt betekent een cyclus: dan wisselt per stap nog maar de helft van de veren.

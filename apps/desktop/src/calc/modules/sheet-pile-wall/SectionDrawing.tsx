@@ -2,15 +2,15 @@
 // met ernaast de lijnen voor verplaatsing, moment en dwarskracht over dezelfde hoogte.
 import { useTranslation } from "react-i18next";
 import { numberLocale } from "../../i18n";
-import type { RunSample, WallInput, WallOk, WallRun } from "./compute";
-import { niceTicks, wallScene } from "./scene";
+import type { ResolvedPhase, RunSample, WallInput, WallOk, WallRun } from "./compute";
+import { niceTicks, wallScene, type envelopeLines } from "./scene";
 
 const f = (v: number, d = 1) => v.toLocaleString(numberLocale(), { minimumFractionDigits: d, maximumFractionDigits: d });
 const napText = (v: number) => `NAP ${v >= 0 ? "+" : "−"}${f(Math.abs(v), 2)}`;
 
-export function SectionDrawing({ input: i, result: r, run }: { input: WallInput; result: WallOk; run: WallRun }) {
+export function SectionDrawing({ input: i, result: r, run, phase, envelope }: { input: WallInput; result: WallOk; run: WallRun; phase?: ResolvedPhase; envelope?: ReturnType<typeof envelopeLines> }) {
   const { t } = useTranslation("calcWall");
-  const s = wallScene(i, r, run), top = s.topNap + Math.max(0.3, 0.08 * (s.topNap - s.bottomNap)), bottom = s.bottomNap, half = Math.max(1.2, Math.min(7, 0.42 * (s.topNap - s.toeNap + 1)));
+  const s = wallScene(i, r, run, phase), top = s.topNap + Math.max(0.3, 0.08 * (s.topNap - s.bottomNap)), bottom = s.bottomNap, half = Math.max(1.2, Math.min(7, 0.42 * (s.topNap - s.toeNap + 1)));
   const hi = s.support?.kind === "grout" ? s.extentHighM : half;
   const secW = 330, padL = 78, padT = 16, k = secW / (hi + half), H = padT + (top - bottom) * k + 22;
   const colW = 108, gap = 14, W = padL + secW + 3 * (colW + gap) + 8;
@@ -37,14 +37,29 @@ export function SectionDrawing({ input: i, result: r, run }: { input: WallInput;
       <text x={anchor === "end" ? X(x0) - 4 : X(x1) + 4} y={Y(nap) + 3} textAnchor={anchor}>{text}</text>
     </g>
   );
-  const anchor = s.support ? (() => {
-    const sup = s.support, a = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, free = strut ? Math.min(half - wallHalf - 0.1, sup.freeM) : sup.freeM;
+  const anchor = s.supports.map((sup) => {
+    const a = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, free = strut ? Math.min(half - wallHalf - 0.1, sup.freeM) : sup.freeM;
     const at = (len: number) => ({ x: X(dir * (wallHalf + len * Math.cos(a))), y: Y(sup.levelNap - len * Math.sin(a)) }), p1 = at(0), p2 = at(free), p3 = at(free + sup.groutM);
-    return <g className={`sw-anchor sw-anchor-${sup.kind}`}><line className="sw-anchor-free" x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} />
+    return <g key={sup.id} className={`sw-anchor sw-anchor-${sup.kind}`}><line className="sw-anchor-free" x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} />
       {sup.groutM > 0 && <line className="sw-anchor-grout" x1={p2.x} y1={p2.y} x2={p3.x} y2={p3.y} strokeWidth={Math.max(3, sup.groutDiameterM * k)} />}
       <circle cx={p1.x} cy={p1.y} r={3} />
-      <text x={p2.x} y={p2.y + (strut ? -5 : 11)} textAnchor={strut ? "end" : "start"}>{run.anchor ? `${f(run.anchor.axialKn, 0)} kN/m` : ""}</text></g>;
-  })() : null;
+      <text x={p2.x} y={p2.y + (strut ? -5 : 11)} textAnchor={strut ? "end" : "start"}>{sup.forceKnPerM !== null ? `${s.supports.length > 1 ? `${sup.id} ` : ""}${f(sup.forceKnPerM, 0)} kN/m` : ""}</text></g>;
+  });
+  // Maaiveld van de wand af en de belastingen op afstand, op schaal; buiten het blok afgekapt.
+  const ground = (side: -1 | 1, pts: Array<{ xM: number; nap: number }>, reach: number) => {
+    const out = pts.filter((p) => p.xM < reach - wallHalf).map((p) => `${X(side * (wallHalf + p.xM)).toFixed(1)},${Y(p.nap).toFixed(1)}`);
+    const last = [...pts].reverse().find((p) => p.xM < reach - wallHalf) ?? pts[0];
+    return [...out, `${X(side * reach).toFixed(1)},${Y(last.nap).toFixed(1)}`].join(" ");
+  };
+  const surfaceAt = (pts: Array<{ xM: number; nap: number }>, x: number) => { let nap = pts[0].nap; for (let k = 1; k < pts.length; k++) if (x >= pts[k - 1].xM) nap = x >= pts[k].xM ? pts[k].nap : pts[k - 1].nap + ((x - pts[k - 1].xM) / (pts[k].xM - pts[k - 1].xM)) * (pts[k].nap - pts[k - 1].nap); return nap; };
+  const loads = s.loads.map((l, n) => {
+    const side = l.side === "high" ? -1 : 1, pts = l.side === "high" ? s.profileHigh : s.profileLow, reach = l.side === "high" ? hi : half;
+    const x0 = Math.min(l.fromM, reach - wallHalf), x1 = l.kind === "line" ? x0 : Math.min(Number.isFinite(l.toM) ? l.toM : reach, reach - wallHalf);
+    if (x0 >= reach - wallHalf) return null;
+    const count = Math.max(2, Math.round(((x1 - x0) * k) / 18)), arrows = l.kind === "line" ? [x0] : Array.from({ length: count }, (_, j) => x0 + ((x1 - x0) * j) / (count - 1));
+    return <g key={n} className="sw-surcharge sw-load">{arrows.map((x, j) => { const px = X(side * (wallHalf + x)), py = Y(surfaceAt(pts, x)); return <path key={j} d={`M${px},${py - 16}V${py - 2}M${px - 3},${py - 7}L${px},${py - 2}L${px + 3},${py - 7}`} />; })}
+      <text x={X(side * (wallHalf + (x0 + x1) / 2))} y={Y(surfaceAt(pts, (x0 + x1) / 2)) - 20} textAnchor="middle">{`${l.id} ${f(l.value, 0)} ${l.kind === "line" ? "kN/m" : "kPa"}`}</text></g>;
+  });
   const slip = s.slip ? <g className="sw-slip"><line x1={X(-wallHalf)} y1={Y(s.toeNap)} x2={X(-wallHalf - s.slip.reachM)} y2={Y(Math.min(s.wallTopNap, s.high.surfaceNap))} />
     <text x={X(-wallHalf - s.slip.reachM / 2) - 4} y={Y((s.toeNap + s.high.surfaceNap) / 2)} textAnchor="end">{`${f(s.slip.angleDeg, 1)}°`}</text></g> : null;
 
@@ -59,8 +74,8 @@ export function SectionDrawing({ input: i, result: r, run }: { input: WallInput;
     {s.low.layers.map((l, n) => <g key={`l${n}`}><rect x={X(0)} y={Y(l.topNap)} width={X(half) - X(0)} height={Y(l.bottomNap) - Y(l.topNap)} fill={l.color} opacity={0.3} /><text className="sw-layer-name" x={X(half) - 4} y={Y(l.topNap) + 11} textAnchor="end">{l.name}</text></g>)}
     {s.high.waterNap > s.high.surfaceNap && <rect className="sw-water-fill" x={X(-hi)} y={Y(s.high.waterNap)} width={X(0) - X(-hi)} height={Y(s.high.surfaceNap) - Y(s.high.waterNap)} />}
     {s.low.waterNap > s.low.surfaceNap && <rect className="sw-water-fill" x={X(0)} y={Y(s.low.waterNap)} width={X(half) - X(0)} height={Y(s.low.surfaceNap) - Y(s.low.waterNap)} />}
-    <polyline className="sw-ground" points={`${X(-hi)},${Y(s.high.surfaceNap)} ${X(-wallHalf)},${Y(s.high.surfaceNap)}`} />
-    <polyline className="sw-ground" points={`${X(wallHalf)},${Y(s.low.surfaceNap)} ${X(half)},${Y(s.low.surfaceNap)}`} />
+    <polyline className="sw-ground" points={ground(-1, s.profileHigh, hi)} />
+    <polyline className="sw-ground" points={ground(1, s.profileLow, half)} />
     {s.low.originalNap > s.low.surfaceNap + 0.01 && <line className="sw-original" x1={X(wallHalf)} x2={X(half)} y1={Y(s.low.originalNap)} y2={Y(s.low.originalNap)} />}
 
     <polygon className="sw-pressure sw-pressure-water" points={diagram("high", (row) => total(row, "high"))} />
@@ -74,6 +89,7 @@ export function SectionDrawing({ input: i, result: r, run }: { input: WallInput;
     {s.waling && <rect className="sw-waling" x={X(wallHalf)} y={Y(s.waling.levelNap) - Math.max(3, s.waling.sizeM * k)} width={Math.max(3, (s.waling.sizeM * k) / 2)} height={Math.max(6, 2 * s.waling.sizeM * k)} />}
     {slip}
     {anchor}
+    {loads}
     {s.surchargeKpa > 0 && <g className="sw-surcharge">
       {Array.from({ length: 6 }, (_, n) => { const x = X(-hi + ((n + 0.5) * (hi - wallHalf)) / 6), y = Y(s.high.surfaceNap); return <path key={n} d={`M${x},${y - 16}V${y - 2}M${x - 3},${y - 7}L${x},${y - 2}L${x + 3},${y - 7}`} />; })}
       <text x={X(-hi / 2)} y={Y(s.high.surfaceNap) - 20} textAnchor="middle">{`q = ${f(s.surchargeKpa, 1)} kPa`}</text>
@@ -88,7 +104,8 @@ export function SectionDrawing({ input: i, result: r, run }: { input: WallInput;
     <text className="sw-scale" x={X(0)} y={H - 6} textAnchor="middle">{`${t("visual.pressureScale", "gronddruk")}: ${f(pMax, 0)} kPa = ${f(pMax * pScale / k, 2)} m`}</text>
 
     {columns.map((c, n) => {
-      const x0 = padL + secW + gap + n * (colW + gap), values = run.samples.map(c.value), ticks = niceTicks(Math.min(...values), Math.max(...values), 2);
+      const band = envelope?.map((e) => ({ nap: e.nap, range: c.key === "y" ? e.y : c.key === "m" ? e.m : e.v }));
+      const x0 = padL + secW + gap + n * (colW + gap), values = [...run.samples.map(c.value), ...(band ?? []).flatMap((e) => e.range)], ticks = niceTicks(Math.min(...values), Math.max(...values), 2);
       const lo = ticks[0], hi = ticks[ticks.length - 1], span = hi - lo || 1, cx = (v: number) => x0 + 6 + ((v - lo) / span) * (colW - 12);
       const peak = run.samples.reduce((best, p) => (Math.abs(c.value(p)) > Math.abs(c.value(best)) ? p : best), run.samples[0]);
       return <g key={c.key} className={`sw-column ${c.cls}`}>
@@ -97,8 +114,9 @@ export function SectionDrawing({ input: i, result: r, run }: { input: WallInput;
         <line className="sw-column-zero" x1={cx(0)} x2={cx(0)} y1={Y(s.wallTopNap)} y2={Y(s.toeNap)} />
         <line className="sw-column-level" x1={x0} x2={x0 + colW} y1={Y(s.low.surfaceNap)} y2={Y(s.low.surfaceNap)} />
         {ticks.map((v) => <text key={v} className="sw-tick" x={cx(v)} y={Y(s.toeNap) + 11} textAnchor="middle">{f(v, Math.abs(v) < 10 && v % 1 !== 0 ? 1 : 0)}</text>)}
-        <polygon className="sw-curve-fill" points={`${cx(0)},${Y(s.wallTopNap)} ${run.samples.map((p) => `${cx(c.value(p)).toFixed(1)},${Y(p.nap).toFixed(1)}`).join(" ")} ${cx(0)},${Y(s.toeNap)}`} />
-        <polyline className="sw-curve" points={run.samples.map((p) => `${cx(c.value(p)).toFixed(1)},${Y(p.nap).toFixed(1)}`).join(" ")} />
+        {band ? <polygon className="sw-envelope" points={[...band.map((e) => `${cx(e.range[1]).toFixed(1)},${Y(e.nap).toFixed(1)}`), ...[...band].reverse().map((e) => `${cx(e.range[0]).toFixed(1)},${Y(e.nap).toFixed(1)}`)].join(" ")} />
+          : <polygon className="sw-curve-fill" points={`${cx(0)},${Y(s.wallTopNap)} ${run.samples.map((p) => `${cx(c.value(p)).toFixed(1)},${Y(p.nap).toFixed(1)}`).join(" ")} ${cx(0)},${Y(s.toeNap)}`} />}
+        {!band && <polyline className="sw-curve" points={run.samples.map((p) => `${cx(c.value(p)).toFixed(1)},${Y(p.nap).toFixed(1)}`).join(" ")} />}
         <circle className="sw-peak" cx={cx(c.value(peak))} cy={Y(peak.nap)} r={2.5} />
         <text className="sw-peak-text" x={Math.min(x0 + colW - 2, Math.max(x0 + 2, cx(c.value(peak))))} y={Y(peak.nap) - 5} textAnchor={cx(c.value(peak)) > x0 + colW / 2 ? "end" : "start"}>{f(c.value(peak), 1)}</text>
       </g>;

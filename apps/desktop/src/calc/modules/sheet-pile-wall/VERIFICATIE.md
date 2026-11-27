@@ -1,7 +1,8 @@
 # Damwand en beschoeiing: rekenregels en verificatie
 
-Status: **concept alpha**. De module rekent één wand met een hoge en een lage zijde in één
-ontgravingsfase. Dit document zegt welke formules erin zitten, waar ze vandaan komen, wat er
+Status: **beta release**. De module rekent een wand met een hoge en een lage zijde, in één fase of in
+bouwfasen, met één of meer steunpunten, en desgewenst met het stappenplan 6.1 tot en met 6.5 (hoofdstuk
+12 tot en met 16). Dit document zegt welke formules erin zitten, waar ze vandaan komen, wat er
 tegen een bekende uitkomst is gelegd en wat niet. De normteksten zelf (NEN 9997-1, CUR 166,
 NEN-EN 1993-5, NEN-EN 1995-1-1, NEN-EN 338) lagen bij het bouwen niet op tafel: alles wat
 daaruit komt is uit kennis van de norm geschreven en staat in hoofdstuk 7 als open punt.
@@ -356,7 +357,12 @@ de wateroverspanning het zwaarst telt.
 | Toeslag op de kerende hoogte | 10 %, hooguit 0,50 m | NEN-EN 1997-1 art. 9.3.2.2; de Nederlandse invulling niet nagelopen |
 | Toeslag op de waterstanden | 0 (de berekening van 6.2 gebruikt +0,05 en −0,25 m) | niet nagelopen; aanpasbaar |
 | Factor op de beddingsconstante | 1,0 (de berekening van 6.2 deelt de lage waarden door 1,3) | niet nagelopen; aanpasbaar |
-| Stappenplan 6.1 tot en met 6.5 van CUR 166, lage en hoge stijfheid, factor op de uitkomst van de representatieve berekening | niet aanwezig | niet in deze versie |
+| Stappenplan 6.1 tot en met 6.5 van CUR 166, lage en hoge stijfheid, factor op de uitkomst van de representatieve berekening | hoofdstuk 13 | zoals openbare uitvoer het per stap afdrukt; niet tegen de tekst van CUR 166 gelegd |
+| Fasering: begindruk van een veer in een volgende fase = druk aan het eind van de vorige fase + K0 · Δσ′v, binnen de nieuwe grenzen; geen ontlasttak | hoofdstuk 12 | eigen schematisering; niet tegen CUR 166 gelegd; gecontroleerd met openbare berekeningen nr. 5 en 6 |
+| Spreiding van belastingen op afstand en van een talud (Boussinesq, gespiegeld in de wand) | hoofdstuk 14 | gangbare elastische benadering (Poulos en Davis, 1974); de openbare berekeningen rekenen met Culmann, zie 16.3 |
+| Verticaal evenwicht: alleen de wrijving aan de hoge zijde omlaag, puntweerstand q_b;max · A / (ξ · γ_b), ξ = 1,39 en γ_b = 1,2 | hoofdstuk 15 | in de vorm van openbare uitvoer (nr. 3, sluit op 0,1 %); niet tegen NEN 9997-1 gelegd |
+| Ankerstaaf: k_t = 0,6, γ_M2 = 1,25, F_tt;Rd en F_tg;Rd | hoofdstuk 15 | uit kennis van NEN-EN 1993-5 art. 7.2.3; niet tegen de normtekst gelegd |
+| Gording: M = q · a² / c met c = 10 voor een doorgaande ligger | hoofdstuk 15 | benadering; c is invoer |
 | Beddingsconstanten CUR 166 tabel 3.3 | geen tabelwaarden; invoer (één of drie per laag) | bewust weggelaten |
 | Regel δ > φ′/3 voor het gekromde glijvlak | als keuze "auto" | uit kennis van CUR 166; de openbare berekening van 6.2 rekent passief met rechte glijvlakken en een verlaagde δ boven φ′ = 30°. De module is met "auto" strenger; welke regel de publicatie geeft is niet nagelopen |
 | Drietakkige veer: secanswaarden vanaf het actieve punt, knikken op 50 en 80 % | hoofdstuk 3 | niet tegen CUR 166 gelegd; reproduceert de afgedrukte berekening van 6.2 |
@@ -376,19 +382,27 @@ de wateroverspanning het zwaarst telt.
 
 ## 8. Niet in deze versie
 
-- Fasering, voorspanning, meer dan één ankerrij, uitval van een anker.
-- Het stappenplan 6.1 tot en met 6.5 van CUR 166 (lage en hoge stijfheid, stap 6.5 maal een factor);
-  de ontlasttak van de veer.
+- Uitval van een anker als aparte berekening; een ontlasttak van de veer (bij terugbewegen volgt
+  de veer dezelfde takken, verschoven naar de stand van nu).
+- Rekenwaarden alleen in de getoetste fase (de "methode B" van sommige uitvoer); hier gelden de
+  rekenwaarden in alle fasen.
+- Een glijvlakberekening (Culmann) over het hele profiel met het werkelijke maaiveld: de module rekent
+  de gronddruk per laag (Coulomb, bijlage C.2) en een talud of belasting op afstand als extra
+  verticale spanning (hoofdstuk 14). De verlaging van δ boven φ′ ≈ 30° die de uitvoer afdrukt (16,6°) is
+  geen automatisme; δ is per laag en per zijde in te voeren.
+- Een puntlast of moment op de kop van de wand (nr. 2 van de verzameling).
 - Bij een groutanker: de stabiliteit van het diepe glijvlak (Kranz), de afleiding van de
   schachtwrijving uit de sondering, beproeving, kruip en de vrije lengte met een extra marge.
-- Hellend maaiveld, taluds, een aflopende waterbodem, belastingen op afstand van de wand.
-- Een berekening van de grondwaterstroming om de teen: de wateroverspanning per laag is invoer.
-- Verticaal evenwicht, algehele stabiliteit, opbarsten en onderloopsheid.
-- Ontwerp van ankerstaaf, groutlichaam, ankerschot en gording; stabiliteit van het ankerlichaam.
+- Een berekening van de grondwaterstroming om de teen: de wateroverspanning per laag is invoer, en
+  geldt in alle fasen.
+- Algehele stabiliteit (Bishop), opbarsten en onderloopsheid.
+- Het ankerschot en de ankerpaal; de stabiliteit van het ankerlichaam.
 - Plooi en doorsnedeklasse 4 van koudgevormde profielen, reductie van het moment bij
   hoge dwarskracht, knik.
-- Kruip van hout en kunststof (kdef), aantasting van hout op de waterlijn, de toets van de
-  vervorming tegen een eis.
+- Kruip van hout en kunststof (kdef), aantasting van hout op de waterlijn.
+- Andere grondlagen per fase (bijvoorbeeld een zandbed van ander materiaal): de lagen gelden in alle
+  fasen.
+- In 3D: het maaiveldprofiel en de belastingen op afstand (alleen in de doorsnede getekend).
 - Beschoeiing van palen met schotten met een verankerde paal; schotten van een ander materiaal
   dan hout.
 - De uitdraai is in het Nederlands; de teksten op het scherm zijn vertaald.
@@ -623,3 +637,225 @@ een vaste of eigen reductie op W_el (of met een iets ander uitgangsprofiel); het
 tussenstap niet, dus dat is niet nagegaan. Dat de bron elastisch rekent past bij klasse 3 na
 afroesting; de module kan uit de catalogus niet vaststellen of het 3 of 4 is en kiest zonder keuze
 van de gebruiker voor 4.
+
+## 12. Bouwfasen en meer steunpunten
+
+Rekenkern: `runPhases` en `runSpringModel` in `compute.ts`, de veer met een beginstand in
+`spring-model.ts`. Tests: `stages.test.ts`, `spring-model.test.ts`.
+
+### 12.1 Wat de module doet
+
+- **Fase**: wat er ten opzichte van de vorige fase verandert: ontgraving of waterbodem aan de lage zijde,
+  maaiveld aan de hoge zijde (aanvullen), waterstanden, gelijkmatige bovenbelasting, maaiveldprofiel per
+  zijde, steunpunten aanbrengen of verwijderen, belastingen op afstand aan of uit. Een leeg veld houdt de
+  waarde van de vorige fase. Zonder fasen is er één fase met alle steunpunten (de berekening van vroeger).
+- **Verder vanaf de vervormde stand**: elke fase gebruikt dezelfde elementindeling. Een veer die er al
+  was, begint op de druk p aan het eind van de vorige fase bij de verplaatsing van toen:
+  p0;nieuw = p_vorig + K0 · (σ′v;nieuw − σ′v;vorig), binnen de nieuwe actieve en passieve grens. De
+  drietakkige lijn wordt door dat punt gelegd (secanswaarden vanaf het actieve punt, als in hoofdstuk 3).
+  Plastische verplaatsing blijft dus staan. Nieuwe grond (aanvullen) begint neutraal op de vervormde
+  wand; afgegraven grond valt weg. Een aparte ontlasttak is er niet.
+- **Steunpunt**: werkt vanaf de verplaatsing y_a waarbij het wordt aangebracht: F = k · (y − y_a) +
+  voorspanning. Een stempel en een ankerstaaf hebben een voorspankracht als invoer (een groutanker al).
+  Een verwijderd steunpunt draagt niets meer.
+- **Uitkomst**: per fase (en per stap, hoofdstuk 13) moment, dwarskracht, verplaatsing, kracht per
+  steunpunt en aangesproken weerstand. Voor de toetsen telt de omhullende: per grootheid de grootste
+  waarde, per steunpunt de grootste kracht. Blum wordt gerekend in de fase met de diepste ontgraving,
+  en alleen met hooguit één steunpunt.
+- **Toeslag op de kerende hoogte** per fase, vanaf het onderste steunpunt dat in die fase werkt.
+
+### 12.2 Controle
+
+| Geval | Verwacht | Module |
+|---|---|---|
+| Eén fase met één steunpunt (zes varianten: verankerd, groutanker met voorspanning, onverankerd, planken, palen, starre steun) | dezelfde uitkomst als vóór de fasering | gelijk op 9 cijfers; bij de starre steun was de grootste dwarskracht een piek binnen de band (12.3) |
+| Veer met beginstand, met de hand: fase 1 q = 20 kPa, links actief op 4 kPa, y = 14 mm; fase 2 zonder belasting | 4 − 1000·d = 24 + 1000·d: y = 4 mm, beide zijden 14 kPa | gelijk |
+| Lineair-elastisch (alleen de bovenste veren op p0 = pa): in twee stappen ontgraven tegen in één keer | gelijk (superpositie) | binnen 10⁻⁶ |
+| Fase zonder verandering | niets verandert | eerste herhaling verschuift tot 2,5 % (12.3), daarna < 0,1 % |
+| Stempel aangebracht zonder verdere verandering | kracht ≈ 0 | < 0,5 kN/m |
+| Evenwicht in elke fase (ΣH grond, water, steunpunten) | 0 | binnen 0,5 % van de passieve weerstand |
+
+### 12.3 Wat bij het bouwen naar boven kwam
+
+- **Reststijfheid**: een veer voorbij zijn grens houdt 10⁻⁴·kh (hoofdstuk 3). In één berekening levert
+  hij daardoor iets meer dan zijn grens. Begint de volgende fase de grens op de stand van nu, dan valt
+  dat weg: bij een onverankerde wand vlak bij bezwijken 2,5 % op de verplaatsing, bij een verankerde wand
+  minder dan 0,5 %.
+- **Band van een stijve steun op een slappe wand**: de steun is over een band uitgesmeerd; die houdt de
+  wand ook tegen draaien (k·b²/12). Bij een lichte kunststof wand met een vrijwel star anker (nr. 13) gaf
+  dat een te klein moment en een dwarskracht van 137 kN/m bij een ankerkracht van 25 kN/m. De band wordt
+  nu smaller tot die draaistijfheid hooguit 2 % van EI per meter is (b = √(0,24·EI/k), tussen 2 mm en
+  4 cm), en binnen de band loopt de dwarskracht lineair van boven naar onder. Voor de bestaande voorbeelden
+  verandert alleen de grootste dwarskracht bij de starre steun (−101,6 werd 64,9 kN/m; −101,6 was groter
+  dan de steunkracht zelf, 96,7 kN/m, en dus geen echte waarde).
+- **Knik**: een veer die precies op een knik staat (zoals aan het begin van een fase) wisselde soms
+  eindeloos tussen twee takken; een veer blijft nu op zijn tak zolang hij binnen 0,1 µm ervan ligt.
+
+## 13. Stappenplan CUR 166
+
+De tekst van CUR 166 lag niet op tafel. De stappen volgen wat openbare uitvoer van het stappenplan per
+stap afdrukt (nagelezen in de uitvoer van de gevallen 2, 3, 4, 5, 6, 13, 16 en 20 van de verzameling, en
+in een tiende rapport):
+
+| Stap | Grond | Beddingsconstante | Water lage zijde | Water hoge zijde | Kerende hoogte | Factor op M, V, F |
+|---|---|---|---|---|---|---|
+| 6.1 | rekenwaarden | invoer / 1,3 | omhoog | +0,05 m | toeslag | 1 |
+| 6.2 | rekenwaarden | invoer × 2,25 | omhoog | +0,05 m | toeslag | 1 |
+| 6.3 | rekenwaarden | invoer / 1,3 | omlaag | +0,05 m | toeslag | 1 |
+| 6.4 | rekenwaarden | invoer × 2,25 | omlaag | +0,05 m | toeslag | 1 |
+| 6.5 | representatief | invoer | – | – | – | 1,2 (RC3: 1,35); de verplaatsing zonder factor |
+
+- De rekenwaarden gelden in alle fasen (zo drukt de uitvoer het af bij acht van de negen gevallen).
+- Waterstandtoeslag aan de lage zijde: 0,20 m (RC1) of 0,25 m (RC2, RC3); de knoppen RC1/RC2/RC3 in het
+  blok Stappenplan zetten ook de factor op de variabele belasting (1,0 / 1,1 / 1,25).
+- Stap 6.1 en 6.2 vervallen als aan de lage zijde in elke fase vrij water staat (de uitvoer: dan is een
+  lage waterstand het meest ongunstig). Dat is een vinkje.
+- Alles staat in een tabel in de invoer en is aan te passen. **Niet tegen de tekst van CUR 166 gelegd.**
+  Eén RC3-uitvoer gebruikt 1,2 in plaats van 1,35 op stap 6.5 (nr. 4).
+
+Controle (`reference-cases.test.ts`): bij nr. 3 vervallen 6.1 en 6.2 zoals in de bron; 6.3 is precies de
+losse berekening met de rekenwaarden van de bron; 6.4 en 6.5 binnen 5 % van de bron; de omhullende is het
+grootste van 6.3, 6.4 en 1,35 × 6.5.
+
+## 14. Maaiveld en belastingen op afstand
+
+`surface-loads.ts`. Een strooklast q van x1 tot x2 uit de wand of een lijnlast P op x geeft langs de wand
+extra verticale spanning volgens Boussinesq: strook σz = q/π · (θ2 − θ1 + sin θ2 cos θ2 − sin θ1 cos θ1)
+met θ = atan(x/z), lijnlast σz = 2Pz³/(π(x² + z²)²) (Poulos en Davis, 1974). De wand is een gladde,
+starre rand: de last wordt gespiegeld, dus maal 2. Een strook vanaf de wand tot oneindig geeft dan precies
+q op elke diepte, dezelfde uitkomst als de gelijkmatige bovenbelasting (test). De extra spanning telt in
+σ′v en daarmee in de actieve, neutrale en passieve druk; σ′v wordt niet negatief. De factor op de
+bovenbelasting geldt ook hiervoor.
+
+Een maaiveld dat van de wand af niet vlak is (talud, aflopende waterbodem) is per stukje van 0,25 m een
+strooklast γ · Δh, met γ van de bovenste laag (onder water γsat − γw); voorbij het laatste punt blijft de
+hoogte gelijk. Aan de lage zijde zakt het profiel met de toeslag op de kerende hoogte evenwijdig mee, zoals
+de uitvoer het doet. Dit is een schematisering: de openbare berekeningen rekenen met een glijvlakmethode
+(Culmann) over het hele profiel. Voor een talud dat onbeperkt doorloopt is het niet bedoeld.
+
+Controle (`surface-loads.test.ts`): strook en lijnlast met de hand (op 6 cijfers), de strook tot oneindig
+gelijk aan de bovenbelasting, een maaiveld 0,01 m van de wand 1 m hoger binnen 1 % van 18 kPa
+bovenbelasting, een aflopende bodem verkleint de passieve weerstand.
+
+## 15. Vervorming, verticaal evenwicht, ankerstaaf en gording
+
+Alle vier staan standaard uit; bestaande berekeningen houden dezelfde toetsen. Tests: `extra-checks.test.ts`.
+
+- **Vervorming**: grootste verplaatsing met representatieve waarden (stap 6.5) tegen min(H / r; u_max),
+  met H de grootste kerende hoogte over de fasen; r en u_max zijn invoer (100 en 50 mm).
+- **Verticaal evenwicht**: F_v = Σ σ′h · tan δ aan de hoge zijde (representatief, de fase met de grootste
+  waarde) + verticale component van de ankers + normaalkracht, tegen R_b;d = q_b;max · A / (ξ · γ_b), met
+  A de staaldoorsnede per m wand. De wrijving aan de lage zijde (omhoog) telt niet mee. Nr. 3: bron R_b;d
+  61,75 kN/m (q_b;max 10 MPa, ξ 1,39, γ_b 1,2), module 61,8; bron F 29,49 kN/m, module 30,5 (+3,5 %), met
+  het aflopende maaiveld van de bron.
+- **Ankerstaaf** (NEN-EN 1993-5 art. 7.2.3, uit kennis van de norm): F_t;Rd = min(k_t · f_ua · A_s / γ_M2;
+  f_y · A_g / γ_M0) met k_t = 0,6, γ_M2 = 1,25, tegen de extra factor (1,25) maal de ankerkracht per anker.
+- **Gording**: q · a² / c met q de horizontale ankerkracht per m wand, a de h.o.h.-afstand en c = 10
+  (doorgaande ligger, benadering) of 8 (één veld), tegen W · f_y / γ_M0.
+- Kranz en algehele stabiliteit zitten er **niet** in (hoofdstuk 8).
+
+## 16. Openbare berekeningen met fasering en stappenplan
+
+Tests: `reference-stages.test.ts` (nr. 5, 6, 13, 20) en `reference-cases.test.ts` (nr. 3). De getallen
+zijn in de bron-pdf zelf nagelezen (paginanummers bij de koppen). Tolerantie, vooraf vastgelegd en voor
+alle gevallen gelijk: moment, dwarskracht en anker- of stempelkracht 15 %, verplaatsing 25 %, aangesproken
+weerstand 10 procentpunt. Wat daarbuiten valt, staat hieronder met de verklaring en wordt in de test niet
+getoetst. Ankerkrachten axiaal per m wand; "× 1,2" is stap 6.5 maal de factor.
+
+### 16.1 Nr. 6: bestaande kade met groutanker aan een boezem, drie fasen (bron p. 23)
+
+RC2; EI 2,4192·10⁴ × 0,70; anker als veer E·A/L = 2,1·10⁸ · 10⁻⁴ / 12 per m wand onder 45°; 6.1 en
+6.2 vervallen (vrij water), zoals in de bron. Benaderingen: het verhoogde maaiveld van fase 2 en 3 als
+profiel per fase; de laag "zand −d" met δ = −20° aan de hoge zijde.
+
+| Fase / stap | Bron M | Module M | Bron anker | Module anker | Bron u | Module u |
+|---|---|---|---|---|---|---|
+| 1 / 6.3 | 21,21 | 21,60 (+2 %) | 22,64 | 22,01 (−3 %) | | |
+| 1 / 6.4 | 26,51 | 26,43 (0 %) | 19,99 | 19,44 (−3 %) | | |
+| 1 / 6.5 | 15,38 | 15,45 (0 %) | 14,35 (× 1,2) | 14,17 (−1 %) | 10,8 | 10,6 (−2 %) |
+| 2 / 6.3 | 23,22 | 23,60 (+2 %) | 25,94 | 24,90 (−4 %) | | |
+| 2 / 6.4 | 29,48 | 29,28 (−1 %) | 23,00 | 22,15 (−4 %) | | |
+| 2 / 6.5 | 17,89 | 17,71 (−1 %) | 17,03 (× 1,2) | 16,56 (−3 %) | 12,8 | 12,4 (−3 %) |
+| 3 / 6.3 | 22,87 | 23,63 (+3 %) | 33,19 | 32,31 (−3 %) | | |
+| 3 / 6.4 | 32,74 | 33,13 (+1 %) | 29,87 | 29,11 (−3 %) | | |
+| 3 / 6.5 | 20,47 | 20,29 (−1 %) | 20,26 (× 1,2) | 19,58 (−3 %) | 15,0 | 14,5 (−3 %) |
+
+Dwarskracht fase 3: bron 24,45 / 26,80 / 18,09, module 24,60 / 26,85 / 17,98. Aangesproken weerstand fase 3:
+38,3 / 40,4 % tegen 38,9 / 40,8 %. Alles binnen 4 %.
+
+### 16.2 Nr. 5: bouwput met stempelraam en later de keldervloer als stempel, vier fasen (bron p. 36)
+
+RC1, alle stappen; EI 73 269 kNm²/m (eigen doorsnede); raam E·A/L = 2,1·10⁸ · 10⁻³ / 38, vloer
+2·10⁷ · 0,30 / 38 per m wand; strook 20 kPa van 4,90 tot 11,00 m (fase 1) en van 0,20 tot 10,20 m (fase
+2–4); wateroverspanning voor de stijghoogte van de diepe zandlaag. Benaderingen: de wateroverspanning
+aan de lage zijde (−2 kPa, die van fase 2–4) ook in fase 1; het zandbed van fase 3 met de grond die er al
+lag (in de bron drainagezand); de kleine sleuf in de bodem niet; δ = 16,6° voor de lagen met φ′ = 32°
+aan beide zijden.
+
+| Fase | Stap | Bron M | Module M | Bron stempel | Module stempel |
+|---|---|---|---|---|---|
+| 1 | 6.1 / 6.2 / 6.3 / 6.4 | 24,12 / 15,73 / 26,16 / 16,81 | 21,00 / 13,57 / 23,15 / 14,77 (−11 tot −14 %) | – | – |
+| 1 | 6.5 | 20,50 | 17,31 (**−16 %**) | – | – |
+| 2 | 6.1 / 6.2 / 6.3 / 6.4 | 288,63 / 269,53 / 300,63 / 285,10 | 273,35 / 241,69 / 299,71 / 273,12 (−5 / −10 / 0 / −4 %) | 124,85 / 120,24 / 127,99 / 124,28 | 117,38 / 109,46 / 124,36 / 117,82 (−6 / −9 / −3 / −5 %) |
+| 2 | 6.5 | 189,50 | 175,30 (−7 %) | 111,31 (× 1,2) | 103,06 (−7 %) |
+| 3 | 6.3 | 302,83 | 297,05 (−2 %) | 128,76 | 125,38 (−3 %) |
+| 3 | 6.5 | 190,45 | 173,66 (−9 %) | | |
+| 4 | 6.1 / 6.2 / 6.3 / 6.4 | 169,76 / 188,36 / 183,53 / 206,10 | 158,66 / 161,30 / 175,70 / 188,27 (−7 / −14 / −4 / −9 %) | 225,59 / 246,74 / 232,76 / 255,07 | 212,16 / 224,84 / 223,94 / 241,71 (−6 / −9 / −4 / −5 %) |
+| 4 | 6.5 | 113,83 | 98,06 (−14 %) | 210,37 (× 1,2) | 199,24 (−5 %) |
+
+Omhullende: moment 302,83 tegen 299,71 kNm/m (−1 %), raam 128,76 tegen 125,38 kN/m (−3 %), vloer 255,07
+tegen 241,71 kN/m (−5 %); grootste verplaatsing 37,5 tegen 34,4 mm (−8 %). Fase 1, stap 6.5 (−16 %) valt
+buiten de tolerantie: een klein moment (20 kNm/m) in een onverankerde fase, waar de toeslag op de kerende
+hoogte (de bron rekent die bij een onverankerde wand vanaf de kop van de wand, de module vanaf het
+maaiveld) en de wateroverspanning aan de lage zijde in fase 1 (in de bron −25 kPa, hier −2 kPa) het meest
+tellen. De module ligt in dit geval over de hele linie iets onder de bron; zie 16.3.
+
+### 16.3 Nr. 13 en nr. 20: lichte (kunststof) damwanden met één anker
+
+Nr. 13 (bron p. 4 en 29; RC1; EI 205,3 kNm²/m; anker E·A/L zoals afgedrukt; aflopende bodem; strook
+10 kPa van 0 tot 8 m). Nr. 20, profiel B (bron p. 15; RC1; EI 327 kNm²/m; anker M20 als veer; aflopende
+bodem; strook 10 kPa van 0 tot 4,20 m).
+
+| | Bron | Module | Verschil |
+|---|---|---|---|
+| 13: anker 6.3 / 6.4 / 6.5 × 1,2 | 26,35 / 28,64 / 20,40 | 25,27 / 27,51 / 19,04 | −4 / −4 / −7 % |
+| 13: dwarskracht 6.3 / 6.4 / 6.5 | 15,6 / 15,5 / 8,8 | 14,7 / 14,4 / 8,4 | −6 / −7 / −5 % |
+| 13: moment 6.5, verplaatsing 6.5 | 3,8; 14,3 mm | 3,5; 12,1 mm | −8 %; −15 % |
+| 13: moment 6.3 / 6.4 | 10,8 / 10,3 | 9,2 / 8,4 | **−15 / −19 %** |
+| 13: aangesproken weerstand 6.3 / 6.5 | 82,8 / 48,7 % | 71,2 / 40,2 % | **−12** / −9 procentpunt |
+| 20: anker 6.3 / 6.4 / 6.5 × 1,2 | 42,09 / 45,06 / 29,50 | 38,27 / 40,43 / 27,05 | −9 / −10 / −8 % |
+| 20: dwarskracht 6.3 / 6.4 / 6.5 | 23,6 / 23,7 / 13,3 | 21,3 / 20,9 / 12,5 | −10 / −12 / −6 % |
+| 20: moment 6.5, verplaatsing 6.5 | 6,4; 30,1 mm | 5,8; 23,9 mm | −9 %; −21 % |
+| 20: moment 6.3 / 6.4 | 18,9 / 18,4 | 15,3 / 13,9 | **−19 / −25 %** |
+| 20: aangesproken weerstand 6.3 | 100,0 % | 83,9 % | **−16 procentpunt** |
+
+Verklaring. Het profiel van de bodem en de strooklast zijn het niet: zonder profiel, of met de strook als
+gelijkmatige last, verandert het moment hier minder dan 6 %. De bron drukt per segment "fictieve"
+gronddrukcoëfficiënten af die uit een glijvlakberekening over het hele gelaagde profiel komen (Culmann):
+bij nr. 20 bijvoorbeeld Kp 3,21 in de klei direct onder het zand en 2,27 dieper, en een K0 van 0,89 aan het
+maaiveld; de module rekent per laag met Coulomb (Kp van de klei ≈ 2,6) en K0 = 1 − sin φ′d. Bij deze lichte
+wanden, die in 6.3 en 6.4 tot 80 à 100 % van de passieve weerstand aanspreken, werkt dat verschil in de
+gronddruk sterk door in het moment; anker- en dwarskracht (die het evenwicht volgen) blijven binnen 12 %.
+De module ligt hier voor het moment met rekenwaarden aan de **onveilige kant**. Een glijvlakberekening
+over het hele profiel staat in hoofdstuk 8.
+
+### 16.4 Samenvatting en niet nagerekend
+
+| Nr. | Wat | Uitkomst |
+|---|---|---|
+| 1 | profieltoets (hoofdstuk 10) | ongewijzigd |
+| 3 | stappenplan, maaiveld achter de wand, verticaal evenwicht | met het maaiveld van de bron: M 6.3 −4 %, 6.4 −5 %, 6.5 −1 %; u −5 %; R_b;d 0 %, F_v +3,5 % |
+| 5 | vier fasen, twee stempels | omhullende M −1 %, stempels −3 en −5 %; per fase en stap −16 tot 0 % |
+| 6 | drie fasen, groutanker | alles binnen 4 % |
+| 13 | lichte wand met anker | anker, dwarskracht en stap 6.5 binnen de tolerantie; M met rekenwaarden −15 tot −19 % |
+| 20 | lichte wand met anker | idem; M met rekenwaarden −19 tot −25 % |
+| 25, 26 | Blum, profieltoets (hoofdstuk 6 en 10) | ongewijzigd |
+| 2 | onverankerde stuwwand | niet nagerekend: horizontale kracht en moment op de kop van de wand zitten niet in de module; de beddingsconstanten staan niet in de afgedrukte uitvoer |
+| 4 | vijf waterstandsfasen | niet nagerekend: lagen met negatieve δ per fase en zijde, en belasting en factorset tegenstrijdig in de bron |
+| 14 | oeverbeschoeiing | niet nagerekend: het adres in de verzameling geeft een ander stuk (de uitvoer van nr. 13); de bron is niet gevonden |
+| 16 | kade met ankers, twee fasen | niet nagerekend: de invoer van fase 1 is niet afgedrukt, en de bovenste laag (slib, φ′ = 0, c′ = 0) is in de module geen gedraineerde laag |
+| 30 | kanaaloever met kraanlast | niet nagerekend: de bron rekent met rekenwaarden alleen in de getoetste fase, met dertien lagen en een onregelmatig maaiveld per fase |
+
+Correcties op de verzameling (uit de bron-pdf's): nr. 13 grootste moment 10,8 kNm/m (de 15,6 is de
+dwarskracht), verplaatsing 14,3 mm, δ = 0; de adressen van nr. 13 en 14 kloppen niet; nr. 16 verplaatsing
+14,0 mm; nr. 20 profiel C grootste ankerkracht 16,65 kN/m (6.4).

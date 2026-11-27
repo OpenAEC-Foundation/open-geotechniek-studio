@@ -77,7 +77,7 @@ describe("module", () => {
     expect(compare.querySelectorAll("tbody tr")).toHaveLength(3); expect(compare).toHaveTextContent("Blum, ingeklemde voet");
     expect(screen.getByRole("table", { name: "Gronddrukcoëfficiënten per laag" })).toHaveTextContent("gekromd");
     expect(screen.getByRole("table", { name: "Spanningen per niveau" }).querySelectorAll("tbody tr")).toHaveLength(r.levels.length);
-    expect(screen.getByText(/Niet in deze versie: fasering/)).toBeInTheDocument();
+    expect(screen.getByText(/Niet in deze versie: de stabiliteit van het diepe glijvlak/)).toBeInTheDocument();
     cleanup();
     render(<module.ResultPanel input={input} result={{ ok: false, error: "Geen evenwicht" }} />);
     expect(screen.getByRole("alert")).toHaveTextContent("Geen evenwicht");
