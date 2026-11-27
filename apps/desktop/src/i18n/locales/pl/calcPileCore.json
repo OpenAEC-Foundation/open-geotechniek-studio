@@ -3,7 +3,8 @@
     "cptItem": "CPT {{id}}",
     "notCalculated": "Nie obliczono",
     "checks": {
-      "capacity": "nośność"
+      "capacity": "nośność",
+      "strength": "wytrzymałość pala"
     }
   },
   "notes": {
@@ -41,7 +42,8 @@
     "pileSizeInvalid": "Wymiar pala musi być skończony i większy od zera",
     "historicalGroupAnalysis": "Historyczna analiza dla wielu sondowań nie jest jeszcze zweryfikowana; użyj jednego sondowania",
     "factorsMissing2025": "Współczynniki klasy pala z NEN 9997-1:2025 dla tego typu pala nie są jeszcze ujęte w tabeli. Wybierz wydanie 2017 lub podaj współczynniki projektowe (deklaracja własna lub próbne obciążenie).",
-    "factorsMissingNoRow": "Ten system palowy nie ma własnego wiersza w tabeli 7.c tego wydania. Podaj współczynniki projektowe (deklaracja własna lub próbne obciążenie)."
+    "factorsMissingNoRow": "Ten system palowy nie ma własnego wiersza w tabeli 7.c tego wydania. Podaj współczynniki projektowe (deklaracja własna lub próbne obciążenie).",
+    "rectInvalid": "Przekrój prostokątny a × b wymaga pala z drewna tartego o dodatnich bokach, bez zbieżności i bez osobnego wymiaru podstawy"
   },
   "warnings": {
     "factors": "Współczynniki: {{edition}}; {{source}}.",
@@ -57,7 +59,8 @@
     "taper": "Zbieżność pala drewnianego: tarcie negatywne i tarcie na pobocznicy ze średnim obwodem dla każdej warstwy. Bez nadstawki betonowej i bez zwiększenia z tytułu zbieżności.",
     "deviatingToeSize": "Odmienny wymiar podstawy: sprawdź współczynnik kształtu podstawy pala β i dopuszczalny zakres tarcia na pobocznicy dla tej technologii wykonania.",
     "qbMaxCapped": "qb;max ograniczono do 15 MPa (wartość surowa {{raw}} MPa)",
-    "settlementLineUnknown": "Dla tego typu pala nie jest znana krzywa obciążenie-osiadanie z tabeli: osiadanie i sztywności nie są wyznaczane."
+    "settlementLineUnknown": "Dla tego typu pala nie jest znana krzywa obciążenie-osiadanie z tabeli: osiadanie i sztywności nie są wyznaczane.",
+    "rectShape": "Przekrój prostokątny {{a}} × {{b}} mm: obliczono z A = a · b, obwodem 2 (a + b) i Deq = √(4 · a · b / π). Program nie wyznacza współczynnika s dla kształtu prostokątnej podstawy pala (a ≠ b); obliczono z s = {{s}}. Wyznacz s zgodnie z normą i w razie potrzeby wprowadź go jako współczynnik projektowy."
   },
   "table": {
     "errors": {
@@ -170,6 +173,10 @@
     },
     "concrete-auger-cased": {
       "name": "Pal DPA — pal świdrowy w rurze osłonowej"
+    },
+    "timber-square": {
+      "name": "Pal drewniany wbijany — kwadratowy lub prostokątny, z nadstawką betonową lub bez",
+      "conditions": "Przekrój z drewna tartego a × b, stały na długości; opcjonalnie z nadstawką betonową do styku. Współczynniki klasy pala jak dla okrągłego pala drewnianego. Program nie wyznacza współczynnika kształtu s dla prostokątnej podstawy pala (a ≠ b)."
     }
   },
   "soil": {

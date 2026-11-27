@@ -77,6 +77,8 @@ export function buildPileReport(input: PileInput, result: PileResult, ctx: Proje
     summary,
     interpretation,
     endAnalysis: samePile,
+    // Beknopt is de standaard; "uitgebreid" geeft de volledige afleiding.
+    detail: input.reportDetail === "full" ? "full" : "compact",
     pileTypeName: pileType?.name ?? input.pileTypeId,
     factors: {
       alphaP: pileType?.alphaP ?? 0.7,

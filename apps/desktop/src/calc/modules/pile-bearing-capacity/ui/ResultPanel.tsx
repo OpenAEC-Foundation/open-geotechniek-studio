@@ -10,6 +10,7 @@ import { InterpretationNote } from "../../../shared/interpretation/Interpretatio
 import "./styles.css";
 import { OaIcon } from "../../../../components/icons/oaIcon";
 import { AddLateralCalculation } from "../../laterally-loaded-pile/InheritedNote";
+import { CompactSheet, StrengthTable } from "./CompactSheet";
 
 // ─── Formula-helper component (Open Calculation Studio stijl) ────
 // Toont een berekening in 3 stappen:
@@ -295,7 +296,10 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
   const factors = input.projectFactors ?? {
     alphaP: pileType?.alphaP ?? 0, alphaS: pileType?.alphaS ?? 0, beta: pileType?.beta ?? 1, s: pileType?.s ?? 1,
   };
-  const Os = negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, isCircular).perimeterM;
+  const Os = negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, isCircular, input.sideBMm).perimeterM;
+  const rect = !isCircular && input.sideBMm !== undefined && input.sideBMm !== input.diameterMm;
+  // Beknopt is de standaard; de volledige afleiding blijft beschikbaar voor wie wil narekenen.
+  const full = input.reportDetail === "full";
   return (
     <div className="pile-result">
       <header className="pile-sheet-title">
@@ -304,11 +308,16 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
       </header>
       <AddLateralCalculation input={input} />
 
-      {result.warnings.length > 0 && (
+      {result.warnings.length > 0 && (full ? (
         <div className="pile-warnings">
           {result.warnings.map((w, i) => <div key={i} className="pile-warning"><OaIcon id="status.warning" /> {w}</div>)}
         </div>
-      )}
+      ) : (
+        <div className="pile-warnings pile-warnings--compact">
+          <div className="pile-warning"><OaIcon id="status.warning" /> <strong>{t("result.compact.remarks", "Opmerkingen")}</strong></div>
+          <ul>{result.warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>
+        </div>
+      ))}
 
       {result.interpretation && <InterpretationNote cptId={input.cptId ?? ""} applied={result.interpretation} soilLabel={soilLabel} />}
 
@@ -321,7 +330,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
             <tr><th>{t("cpt.title", "Sondering")}</th><td colSpan={3}>{input.cptId ?? "—"}</td></tr>
             <tr><th>{t("pile.type", "Paaltype")}</th><td colSpan={3}>{pileType ? pileTypeName(pileType) : input.pileTypeId}</td></tr>
             {input.concreteExtension && <tr><th>{t("extension.title", "Betonopzetter")}</th><td colSpan={3}>{t("result.facts.extensionValue", "{{size}} mm, van paalkop tot de las op NAP {{joint}} m", { size: `${input.concreteExtension.isCircular ? "Ø" : `${input.concreteExtension.sizeMm} × `}${input.concreteExtension.sizeMm}`, joint: fmtNap(input.concreteExtension.jointNap) })}</td></tr>}
-            <tr><th>{input.concreteExtension ? t("result.facts.woodAtJoint", "Hout bij de las") : isCircular ? t("result.facts.diameterD", "Diameter D") : t("result.facts.sideA", "Zijde a")}</th><td>{input.diameterMm} mm</td><th>{t("pile.baseSize", "Puntafmeting")}</th><td>{input.timberTaper ? t("result.facts.tapered", "{{size}} mm (taps)", { size: input.timberTaper.toeDiameterMm }) : input.baseDiameterMm ? `${input.baseDiameterMm} mm` : t("result.facts.equalToShaft", "gelijk aan schacht")}</td></tr>
+            <tr><th>{input.concreteExtension ? t("result.facts.woodAtJoint", "Hout bij de las") : isCircular ? t("result.facts.diameterD", "Diameter D") : rect ? t("result.facts.sidesAB", "Doorsnede a × b") : t("result.facts.sideA", "Zijde a")}</th><td>{rect ? `${input.diameterMm} × ${input.sideBMm}` : input.diameterMm} mm</td><th>{t("pile.baseSize", "Puntafmeting")}</th><td>{input.timberTaper ? t("result.facts.tapered", "{{size}} mm (taps)", { size: input.timberTaper.toeDiameterMm }) : input.baseDiameterMm ? `${input.baseDiameterMm} mm` : t("result.facts.equalToShaft", "gelijk aan schacht")}</td></tr>
             <tr><th>{t("levels.pileTop", "Paalkop")}</th><td>NAP {fmtNap(input.pileTopNap)} m</td><th>{t("levels.pileToe", "Paalpunt")}</th><td>NAP {fmtNap(input.pileToeNap)} m</td></tr>
             <tr><th>{t("levels.water", "Grondwater")}</th><td>NAP {fmtNap(input.waterNap)} m</td><th>{t("levels.excavation", "Ontgraving")}</th><td>NAP {fmtNap(input.excavationNap)} m</td></tr>
             <tr><th>N<sub>Ed</sub></th><td>{input.nEd.toFixed(0)} kN</td><th>N<sub>Ek</sub></th><td>{input.nEk.toFixed(0)} kN</td></tr>
@@ -331,6 +340,10 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         </table>
       </section>
 
+      {!full ? <>
+        <CompactSheet input={input} result={result} />
+        {settlement.available !== false && <div className="pile-zakking-chart"><ZakkingsChart settlement={settlement} rbCalMax={base.rbCalMax} rsCalMax={shaft.rsCalMax} /></div>}
+      </> : <>
       <section>
         <h3>{t("result.negSkin.title", "Negatieve kleef")}</h3>
         <p className="pile-result-input">
@@ -339,8 +352,8 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         </p>
         <Formula
           lhs={input.concreteExtension || input.timberTaper ? <>O<sub>s;gem</sub></> : <>O<sub>s</sub></>}
-          symbolic={input.concreteExtension ? <>Σ (O<sub>s;i</sub> · h<sub>i</sub>) / ΔL<sub>nk</sub> <small>{t("result.negSkin.extensionAndWood", "(opzetter en hout)")}</small></> : input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : <>4 · a</>}
-          filled={input.concreteExtension ? undefined : <>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
+          symbolic={input.concreteExtension ? <>Σ (O<sub>s;i</sub> · h<sub>i</sub>) / ΔL<sub>nk</sub> <small>{t("result.negSkin.extensionAndWood", "(opzetter en hout)")}</small></> : input.timberTaper ? <>π · D<sub>gem;nk</sub></> : isCircular ? <>π · D</> : rect ? <>2 · (a + b)</> : <>4 · a</>}
+          filled={input.concreteExtension ? undefined : rect ? <>2 · ({D.toFixed(3)} + {(input.sideBMm! / 1000).toFixed(3)})</> : <>{isCircular ? "π" : "4"} · {(input.timberTaper ? Os / Math.PI : D).toFixed(3)}</>}
           result={<>{Os.toFixed(3)} m</>}
         />
         <div className="pile-formula-scroll">
@@ -560,9 +573,13 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
         />
       </section>
       </>}
+      </>}
+
+      {result.strength && <StrengthTable strength={result.strength} pileTopNap={input.pileTopNap} />}
 
       <section>
         <h3>{t("result.summary.title", "Samenvatting")}</h3>
+        {full && <>
         <p>{standardLabel(getStandard(input.standard))}</p>
         <Formula lhs={<>R<sub>c;rep/k</sub></>}
           symbolic={summary.historicalXi === undefined ? <>R<sub>c;cal</sub> / ξ₃</> : <>ξ · R<sub>c;cal</sub></>}
@@ -590,6 +607,7 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
             </span>
           }
         />
+        </>}
         <table className="pile-sheet-checks">
           <thead><tr><th>{t("result.summary.check", "Toets")}</th><th>{t("result.summary.quantity", "Grootheid")}</th><th>u.c.</th><th>{t("result.summary.result", "Resultaat")}</th></tr></thead>
           <tbody>
@@ -599,6 +617,14 @@ export function ResultPanel({ input, result }: PanelProps<PileInput, PileResult>
               <td className="num">{summary.unityCheck.toFixed(2)}</td>
               <td className={summary.passes ? "pile-pass" : "pile-fail"}>{summary.passes ? t("result.summary.passes", "Voldoet") : t("result.summary.fails", "Voldoet niet")}</td>
             </tr>
+            {result.strength?.governing && (
+              <tr>
+                <td>{t("strength.title", "Sterkte van de paal")}</td>
+                <td>{t(`strength.rows.${result.strength.governing.id}`, result.strength.governing.label)}</td>
+                <td className="num">{Number.isFinite(result.strength.governing.uc) ? result.strength.governing.uc.toFixed(2) : "∞"}</td>
+                <td className={result.strength.ok ? "pile-pass" : "pile-fail"}>{result.strength.ok ? t("result.summary.passes", "Voldoet") : t("result.summary.fails", "Voldoet niet")}</td>
+              </tr>
+            )}
           </tbody>
         </table>
         <p className="pile-sheet-conclusion">

@@ -3,7 +3,8 @@
     "cptItem": "CPT {{id}}",
     "notCalculated": "Non calculé",
     "checks": {
-      "capacity": "capacité portante"
+      "capacity": "capacité portante",
+      "strength": "résistance du pieu"
     }
   },
   "notes": {
@@ -41,7 +42,8 @@
     "pileSizeInvalid": "La dimension du pieu doit être finie et supérieure à zéro",
     "historicalGroupAnalysis": "L'analyse historique sur plusieurs CPT n'est pas encore vérifiée ; utilisez un seul CPT",
     "factorsMissing2025": "Les facteurs de classe de pieu de la NEN 9997-1:2025 pour ce type de pieu ne figurent pas encore dans le tableau. Choisissez l'édition 2017 ou saisissez des facteurs de projet (autodéclaration ou essai de chargement).",
-    "factorsMissingNoRow": "Ce système de pieux n'a pas de ligne propre dans le tableau 7.c de cette édition. Saisissez des facteurs de projet (autodéclaration ou essai de chargement)."
+    "factorsMissingNoRow": "Ce système de pieux n'a pas de ligne propre dans le tableau 7.c de cette édition. Saisissez des facteurs de projet (autodéclaration ou essai de chargement).",
+    "rectInvalid": "Une section rectangulaire a × b exige un pieu en bois scié à côtés positifs, sans conicité ni dimension de pointe distincte"
   },
   "warnings": {
     "factors": "Facteurs : {{edition}} ; {{source}}.",
@@ -57,7 +59,8 @@
     "taper": "Conicité du bois : frottements négatif et positif avec le périmètre moyen par couche. Sans rehausse en béton ni majoration pour la conicité.",
     "deviatingToeSize": "Dimension de pointe différente : vérifiez le facteur de forme de pointe β et la plage de frottement latéral admise pour cette méthode de mise en œuvre.",
     "qbMaxCapped": "qb;max plafonné à 15 MPa (valeur brute {{raw}} MPa)",
-    "settlementLineUnknown": "Aucune courbe charge-tassement du tableau n'est connue pour ce type de pieu : le tassement et les raideurs ne sont pas déterminés."
+    "settlementLineUnknown": "Aucune courbe charge-tassement du tableau n'est connue pour ce type de pieu : le tassement et les raideurs ne sont pas déterminés.",
+    "rectShape": "Section rectangulaire {{a}} × {{b}} mm : calculée avec A = a · b, périmètre 2 (a + b) et Deq = √(4 · a · b / π). Le programme ne détermine pas le facteur s pour la forme d'une pointe de pieu rectangulaire (a ≠ b) ; le calcul a été fait avec s = {{s}}. Déterminez s selon la norme et saisissez-le comme facteur de projet si nécessaire."
   },
   "table": {
     "errors": {
@@ -170,6 +173,10 @@
     },
     "concrete-auger-cased": {
       "name": "Pieu DPA — pieu à la tarière tubée"
+    },
+    "timber-square": {
+      "name": "Pieu battu en bois — carré ou rectangulaire, avec ou sans rehausse en béton",
+      "conditions": "Section en bois scié a × b, constante sur la longueur ; en option avec rehausse en béton jusqu'au joint. Facteurs de classe de pieu comme pour le pieu en bois rond. Le programme ne détermine pas le facteur de forme s pour une pointe de pieu rectangulaire (a ≠ b)."
     }
   },
   "soil": {

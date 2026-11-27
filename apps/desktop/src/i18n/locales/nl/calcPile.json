@@ -178,7 +178,13 @@
     "wallThicknessAria": "Wanddikte [mm]",
     "woodDiameterAtJoint": "Houtdiameter bij de las",
     "system": "Paalsysteem",
-    "standardSize": "Standaardmaat"
+    "standardSize": "Standaardmaat",
+    "woodSection": "Doorsnede",
+    "woodRound": "Rond (heipaal)",
+    "woodSawn": "Vierkant of rechthoekig a × b (gezaagd)",
+    "sideA": "Zijde a",
+    "sideB": "Zijde b",
+    "rectHint": "Rechthoek a ≠ b: oppervlak, omtrek en Deq volgen uit a en b; de vormfactor s voor een rechthoekige paalvoet bepaalt het programma niet. Vul s zo nodig in als projectfactor."
   },
   "pilePlan": {
     "button": "Exporteer voor Pile Plan Studio (CSV)",
@@ -215,7 +221,8 @@
       "sideA": "Zijde a",
       "tapered": "{{size}} mm (taps)",
       "title": "Uitgangspunten",
-      "woodAtJoint": "Hout bij de las"
+      "woodAtJoint": "Hout bij de las",
+      "sidesAB": "Doorsnede a × b"
     },
     "negSkin": {
       "cappedNote": "gecapt op ksMin = {{v}}",
@@ -261,6 +268,15 @@
     "title": "Paaldraagvermogen",
     "total": {
       "title": "Maximum gronddraagvermogen"
+    },
+    "compact": {
+      "remarks": "Opmerkingen",
+      "layers": "Tussenwaarden per laag",
+      "results": "Uitkomsten",
+      "formula": "Formule",
+      "value": "Waarde",
+      "capacity": "Draagvermogen",
+      "settlement": "Zakking"
     }
   },
   "settings": {
@@ -293,7 +309,10 @@
     "sourceAria": "Bron projectfactoren",
     "table": "Tabel",
     "timberToe": "Puntdiameter hout",
-    "useTableValues": "Tabelwaarden gebruiken"
+    "useTableValues": "Tabelwaarden gebruiken",
+    "rectSizes": "Gezaagd hout a × b",
+    "rectSizesAria": "Reeks gezaagd hout a × b [mm]",
+    "rectHint": "Doorsneden als a×b, gescheiden door spaties; een enkel getal is een vierkant. De vierkante maten vullen ook de draagvermogentabel."
   },
   "shape": {
     "round": "Rond",
@@ -383,11 +402,37 @@
     "notComputed": "Er is geen 3D-weergave zolang de berekening geen resultaat heeft. Pas de invoer aan of ga terug naar 2D.",
     "note": "Hoogten en de paal zijn op schaal. De breedte van de trajecten is schematisch: de methode rekent alleen langs de diepte.",
     "switch": "Weergave van de tekening",
-    "switch3dTitle": "4D-8D-methode in 3D",
+    "switch3dTitle": "De paal in 3D: fysiek of rekenkundig (4D-8D-methode)",
     "switchBoth": "2D + 3D",
     "switchBothTitle": "Sondering en de paal in 3D naast elkaar",
     "toolbar": "Beeld",
-    "unavailable": "3D is op dit apparaat niet beschikbaar (geen WebGL). Gebruik de 2D-tekening."
+    "unavailable": "3D is op dit apparaat niet beschikbaar (geen WebGL). Gebruik de 2D-tekening.",
+    "viewSwitch": "Soort 3D-weergave",
+    "viewPhysical": "Fysiek",
+    "viewPhysicalTitle": "De paal zoals hij is, in de grondlagen",
+    "viewCalc": "Rekenkundig",
+    "viewCalcTitle": "Trajecten I, II en III, bezwijklichaam, kleef en qc",
+    "ariaPhysical": "3D-weergave van de paal in de grond; slepen draait, scrollen zoomt",
+    "noPhysical": "Er is geen 3D-weergave: de paalmaten of niveaus zijn ongeldig.",
+    "notePhysical": "Paal, lagen en niveaus zijn op schaal; het grondblok is opengewerkt langs de paalas. Schematisch: de heipunt, stekken en wapening, het schroefblad, de kernbuis en de lasring. Buiten het ingevoerde profiel is de dichtstbijzijnde laag doorgetrokken.",
+    "material": {
+      "concrete": "Beton",
+      "steel": "Staal",
+      "wood": "Hout",
+      "grout": "Grout"
+    },
+    "soil": {
+      "sand": "Zand",
+      "clay": "Klei",
+      "peat": "Veen"
+    },
+    "physical": {
+      "head": "paalkop {{nap}}",
+      "water": "grondwater {{nap}}",
+      "excavation": "ontgraving {{nap}}",
+      "joint": "las {{nap}}",
+      "excavatedLayer": "{{soil}} (ontgraven)"
+    }
   },
   "types": {
     "add": "Paaltype toevoegen",
@@ -499,5 +544,59 @@
       "applied": "Grondlaaginterpretatie aangepast: {{n}} traject(en) van sondering {{cpt}} wijken af van de meting.",
       "skipped": "{{n}} aanpassing(en) van de grondlaaginterpretatie zijn niet toegepast: het traject valt buiten de sondering of is ongeldig."
     }
+  },
+  "strength": {
+    "title": "Sterkte van de paal",
+    "enable": "Sterkte van de paal toetsen",
+    "steelGrade": "Staalsoort",
+    "timberClass": "Sterkteklasse hout",
+    "ownValue": "Eigen waarde",
+    "timber": "hout",
+    "concreteClass": "Betonsterkteklasse",
+    "concreteClassExtension": "Betonklasse opzetter",
+    "hintTimber": "Druk evenwijdig aan de vezel op N_Ed + F_nk;d (NEN-EN 1995-1-1). k_mod en γ_M: standaard voor permanent nat hout en blijvende belasting. Knik is niet getoetst.",
+    "hintSteel": "Doorsnedeklasse en normaalkracht van de buis op N_Ed + F_nk;d (NEN-EN 1993-1-1). Knik is niet getoetst: het programma kent geen vrije of slap gesteunde lengte.",
+    "hintConcrete": "Normaalkracht van de betondoorsnede op N_Ed + F_nk;d (NEN-EN 1992-1-1), zonder wapening. Knik is niet getoetst.",
+    "col": {
+      "article": "Artikel",
+      "demand": "Rekenwaarde",
+      "resistance": "Weerstand"
+    },
+    "notesTitle": "Uitgangspunten en wat niet is getoetst",
+    "status": {
+      "ok": "voldoet",
+      "fail": "voldoet niet",
+      "outside": "valt buiten deze toetsing",
+      "na": "niet getoetst",
+      "info": "ter informatie"
+    },
+    "rows": {
+      "steelClass": "Doorsnedeklasse buis",
+      "steelAxial": "Normaalkracht stalen buis",
+      "timberAxial": "Hout: druk evenwijdig aan de vezel",
+      "timberToe": "Hout: kleinste doorsnede bij de punt",
+      "extensionAxial": "Betonopzetter: normaalkracht",
+      "concreteAxial": "Normaalkracht betondoorsnede"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, aangehouden van de paalkop tot de onderkant van de negatieve kleef. Daaronder neemt de normaalkracht af door positieve schachtwrijving; dat deel is niet getoetst.",
+      "steelNoSection": "Niet getoetst: de stalen doorsnede (kernbuis, wanddikte) zit voor dit paalsysteem niet in de invoer.",
+      "class4": "Doorsnedeklasse 4: lokale plooi is maatgevend. Dat valt buiten deze toetsing (NEN-EN 1993-1-6); de weerstand is niet berekend.",
+      "class4Short": "Valt buiten deze toetsing (doorsnedeklasse 4).",
+      "classIs": "Doorsnedeklasse {{cls}}.",
+      "steel": "Staal: alleen de buis met de ingevoerde wanddikte en f_y voor t ≤ 40 mm; een betonvulling is niet meegerekend. Niet getoetst: knik (art. 6.3; de module kent geen vrije of slap gesteunde lengte), corrosie (vul de restwanddikte in), lassen en koppelingen, en de heispanningen.",
+      "timber": "Hout: sterkteklasse {{cls}} met f_c,0,k = {{fc}} MPa (NEN-EN 338); k_mod en γ_M zijn invoer, standaard voor permanent nat hout en blijvende belasting. Niet getoetst: knik (art. 6.3.2), de las met een opzetter, aantasting van het hout en de heispanningen.",
+      "timberToe": "Ter informatie: bovengrens met de volle N_Ed;max op de puntdoorsnede. De positieve schachtwrijving boven de punt is niet afgetrokken; de werkelijke kracht bij de punt is kleiner.",
+      "concrete": "Beton: N_Rd = A_c · f_cd van de schachtdoorsnede, zonder wapening (die zit niet in de invoer). Niet getoetst: de minimale excentriciteit (art. 6.1 (4)), knik, de wapening en de heispanningen.",
+      "concreteInSitu": "In de grond gevormde paal: de verkleinde rekendiameter (art. 2.3.4.2) en de verhoging van γ_c (art. 2.4.2.5) voor palen zonder blijvende buis zijn niet toegepast; reken de weerstand daarvoor zelf om.",
+      "concreteClassUnknown": "Onbekende betonsterkteklasse {{cls}}."
+    }
+  },
+  "report": {
+    "title": "Uitdraai",
+    "detail": "Omvang",
+    "detailAria": "Omvang van de uitdraai",
+    "compact": "Beknopt: tabellen",
+    "full": "Uitgebreid: volledige afleiding"
   }
 }

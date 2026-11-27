@@ -40,8 +40,8 @@ export const PILE_SYSTEMS: PileSystem[] = [
   { id: "auger", label: "Avegaarpaal", typeIds: ["concrete-auger"], profile: "constant", fields: {} },
   { id: "auger-cased", label: "DPA-paal", typeIds: ["concrete-auger-cased"], profile: "constant", fields: {} },
   { id: "bored", label: "Boorpaal", typeIds: ["concrete-bored"], profile: "constant", fields: {} },
-  { id: "timber", label: "Houten paal", typeIds: ["timber-uniform"], profile: "tapered", fields: {} },
-  { id: "timber-extension", label: "Houten paal met betonopzetter", typeIds: ["timber-uniform"], profile: "extension", fields: {} },
+  { id: "timber", label: "Houten paal", typeIds: ["timber-uniform", "timber-square"], profile: "tapered", fields: {} },
+  { id: "timber-extension", label: "Houten paal met betonopzetter", typeIds: ["timber-uniform", "timber-square"], profile: "extension", fields: {} },
 ];
 
 export function getPileSystem(id: string): PileSystem | undefined {
@@ -60,7 +60,7 @@ export function pileSystemName(system: Pick<PileSystem, "id" | "label">): string
  * zoals hij is.
  */
 export function pileSystemIdOf(input: Pick<PileInput, "pileTypeId" | "concreteExtension">): PileSystemId | undefined {
-  if (input.pileTypeId === "timber-uniform") return input.concreteExtension ? "timber-extension" : "timber";
+  if (getPileType(input.pileTypeId)?.material === "wood") return input.concreteExtension ? "timber-extension" : "timber";
   return PILE_SYSTEMS.find((s) => s.typeIds.includes(input.pileTypeId))?.id;
 }
 
@@ -83,20 +83,30 @@ export function defaultExtension(input: PileInput): ConcreteExtension {
 export function switchPileType(input: PileInput, pileTypeId: string, extension = true): PileInput {
   const material = getPileType(pileTypeId)?.material ?? "steel", wood = material === "wood";
   const series = seriesFor(pileTypeId, input.presets);
+  if (wood && getPileType(pileTypeId)?.isCircular === false) {
+    // Gezaagd hout: vierkant uit de reeks, constante doorsnede (geen tapsheid).
+    const sides = series.sizes?.length ? series.sizes : [200];
+    const wasWood = getPileType(input.pileTypeId)?.material === "wood";
+    return { ...input, pileTypeId, diameterMm: sides.includes(input.diameterMm) ? input.diameterMm : nearest(sides, 200), sideBMm: undefined,
+      projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper: undefined,
+      concreteExtension: extension ? (wasWood && input.concreteExtension) || defaultExtension(input) : undefined };
+  }
   // Hout: gangbare kopmaat, punt Ø150 over het hele houten deel. Staal: maat uit de buisreeks.
   const diameterMm = wood ? ((series.sizes ?? TIMBER_HEAD).includes(input.diameterMm) ? input.diameterMm : nearest(series.sizes ?? TIMBER_HEAD, 220))
     : material === "steel" ? nearest(series.sizes ?? STEEL_TUBE_OD, input.diameterMm) : input.diameterMm;
   const concreteExtension = wood && extension ? defaultExtension(input) : undefined;
   const woodTop = concreteExtension?.jointNap ?? input.pileTopNap;
   const timberTaper = wood ? { toeDiameterMm: series.timberToeMm, lengthM: +(woodTop - input.pileToeNap).toFixed(2) } : undefined;
-  return { ...input, pileTypeId, diameterMm, projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper, concreteExtension };
+  return { ...input, pileTypeId, diameterMm, sideBMm: undefined, projectFactors: undefined, axialStiffnessKn: undefined, baseDiameterMm: undefined, timberTaper, concreteExtension };
 }
 
 /** Kies een paalsysteem: de tabelrij `pileTypeId` (standaard de eerste van het systeem) met de bijbehorende vorm. */
 export function applyPileSystem(input: PileInput, systemId: PileSystemId, pileTypeId?: string): PileInput {
   const system = getPileSystem(systemId);
   if (!system) return input;
-  const typeId = pileTypeId && system.typeIds.includes(pileTypeId) ? pileTypeId : system.typeIds[0];
+  // Wissel tussen hout met en zonder opzetter: de gekozen doorsnede (rond of gezaagd) blijft.
+  const keep = !pileTypeId && system.typeIds.includes(input.pileTypeId) ? input.pileTypeId : undefined;
+  const typeId = pileTypeId && system.typeIds.includes(pileTypeId) ? pileTypeId : keep ?? system.typeIds[0];
   if (pileSystemIdOf(input) === systemId && input.pileTypeId === typeId) return input;
   if (system.profile === "extension" && input.pileTypeId === typeId) {
     // Zelfde hout, opzetter erbij: een bestaande tapsheid moet binnen het houten deel blijven.

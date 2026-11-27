@@ -754,3 +754,25 @@
 .pile-cpt-interp-capture { fill: transparent; cursor: crosshair; }
 .pile-cpt-qc-curve--adjusted-halo { stroke: var(--amber, #d97706); stroke-width: 8; opacity: 0.3; }
 .pile-cpt-qc-curve--adjusted { stroke: #b45309; stroke-width: 1.8; }
+
+/* Beknopt rekenblad en sterktetoets: compacte tabellen. */
+.pile-warnings--compact ul { margin: 4px 0 0; padding-left: 22px; font-size: 11.5px; line-height: 1.45; }
+.pile-compact-table { width: 100%; margin: 6px 0 12px; border-collapse: collapse; font: 12px var(--oa-font-body); }
+.pile-compact-table caption { caption-side: top; text-align: left; padding: 2px 0 4px; color: var(--oa-text-secondary); font-size: 11.5px; }
+.pile-compact-table th { text-align: left; font-weight: 600; padding: 3px 8px 3px 0; border-bottom: 1.5px solid var(--oa-text); white-space: nowrap; }
+.pile-compact-table td { padding: 3px 8px 3px 0; border-bottom: 1px solid var(--oa-border); vertical-align: top; }
+.pile-compact-table .num { text-align: right; font-family: var(--oa-font-numbers); white-space: nowrap; }
+.pile-compact-table td.num:last-child, .pile-compact-table th.num:last-child { padding-right: 0; }
+.pile-compact-sum td { font-weight: 600; border-top: 1.5px solid var(--oa-text); }
+.pile-compact-group th { padding-top: 8px; border-bottom: 1px solid var(--oa-border); color: var(--oa-text-secondary); font-weight: 600; }
+.pile-compact-group small { font-weight: 400; margin-left: 6px; }
+.pile-compact-results td:first-child { white-space: nowrap; }
+.pile-compact-results td:nth-child(2) { color: var(--oa-text-secondary); }
+.pile-strength-table td small { color: var(--oa-text-secondary); }
+.pile-strength-fail td:last-child, .pile-strength-outside td:last-child { color: var(--oa-error); font-weight: 600; }
+.pile-strength-ok td:last-child { color: var(--oa-success); }
+.pile-strength-info td, .pile-strength-na td { color: var(--oa-text-secondary); }
+.pile-strength-steps td { padding-top: 0; font-size: 11px; color: var(--oa-text-secondary); line-height: 1.5; }
+.pile-strength-notes { font-size: 11.5px; color: var(--oa-text-secondary); }
+.pile-strength-notes summary { cursor: pointer; }
+.pile-strength-notes p { margin: 4px 0; }

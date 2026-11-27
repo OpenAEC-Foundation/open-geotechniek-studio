@@ -178,7 +178,13 @@
     "wallThicknessAria": "Épaisseur de paroi [mm]",
     "woodDiameterAtJoint": "Diamètre du bois à la jonction",
     "system": "Système de pieux",
-    "standardSize": "Dimension standard"
+    "standardSize": "Dimension standard",
+    "woodSection": "Section",
+    "woodRound": "Rond (pieu battu)",
+    "woodSawn": "Carré ou rectangulaire a × b (scié)",
+    "sideA": "Côté a",
+    "sideB": "Côté b",
+    "rectHint": "Rectangle a ≠ b : l'aire, le périmètre et Deq découlent de a et b ; le programme ne détermine pas le facteur de forme s pour une pointe de pieu rectangulaire. Saisissez s comme facteur de projet si nécessaire."
   },
   "pilePlan": {
     "button": "Exporter pour Pile Plan Studio (CSV)",
@@ -215,7 +221,8 @@
       "sideA": "Côté a",
       "tapered": "{{size}} mm (conique)",
       "title": "Hypothèses de base",
-      "woodAtJoint": "Bois à la jonction"
+      "woodAtJoint": "Bois à la jonction",
+      "sidesAB": "Section a × b"
     },
     "negSkin": {
       "cappedNote": "plafonné à ksMin = {{v}}",
@@ -261,6 +268,15 @@
     "title": "Capacité portante du pieu",
     "total": {
       "title": "Capacité portante géotechnique maximale"
+    },
+    "compact": {
+      "remarks": "Remarques",
+      "layers": "Valeurs intermédiaires par couche",
+      "results": "Résultats",
+      "formula": "Formule",
+      "value": "Valeur",
+      "capacity": "Capacité portante",
+      "settlement": "Tassement"
     }
   },
   "settings": {
@@ -293,7 +309,10 @@
     "sourceAria": "Source des facteurs du projet",
     "table": "Tableau",
     "timberToe": "Diamètre de pointe du bois",
-    "useTableValues": "Utiliser les valeurs du tableau"
+    "useTableValues": "Utiliser les valeurs du tableau",
+    "rectSizes": "Bois scié a × b",
+    "rectSizesAria": "Série de bois scié a × b [mm]",
+    "rectHint": "Sections sous la forme a×b, séparées par des espaces ; un nombre seul est un carré. Les dimensions carrées alimentent aussi le tableau de capacité portante."
   },
   "shape": {
     "round": "Circulaire",
@@ -383,11 +402,37 @@
     "notComputed": "Pas de vue 3D tant que le calcul n'a pas de résultat. Modifiez les données ou revenez à la 2D.",
     "note": "Les niveaux et le pieu sont à l'échelle. La largeur des trajets est schématique : la méthode ne calcule que selon la profondeur.",
     "switch": "Affichage du dessin",
-    "switch3dTitle": "Méthode 4D-8D en 3D",
+    "switch3dTitle": "Le pieu en 3D : vue physique ou de calcul (méthode 4D-8D)",
     "switchBoth": "2D + 3D",
     "switchBothTitle": "Sondage et pieu en 3D côte à côte",
     "toolbar": "Vue",
-    "unavailable": "La 3D n'est pas disponible sur cet appareil (pas de WebGL). Utilisez le dessin 2D."
+    "unavailable": "La 3D n'est pas disponible sur cet appareil (pas de WebGL). Utilisez le dessin 2D.",
+    "viewSwitch": "Type de vue 3D",
+    "viewPhysical": "Physique",
+    "viewPhysicalTitle": "Le pieu tel qu'il est, dans les couches de sol",
+    "viewCalc": "Calcul",
+    "viewCalcTitle": "Trajets I, II et III, zone de rupture, frottement et qc",
+    "ariaPhysical": "Vue 3D du pieu dans le sol ; glisser pour pivoter, défiler pour zoomer",
+    "noPhysical": "Pas de vue 3D : les dimensions du pieu ou les niveaux ne sont pas valides.",
+    "notePhysical": "Le pieu, les couches et les niveaux sont à l'échelle ; le bloc de sol est ouvert le long de l'axe du pieu. Schématiques : la pointe de battage, les armatures en attente et le ferraillage, l'hélice, le tube central et la bague de soudure. En dehors du profil saisi, la couche la plus proche est prolongée.",
+    "material": {
+      "concrete": "Béton",
+      "steel": "Acier",
+      "wood": "Bois",
+      "grout": "Coulis"
+    },
+    "soil": {
+      "sand": "Sable",
+      "clay": "Argile",
+      "peat": "Tourbe"
+    },
+    "physical": {
+      "head": "tête du pieu {{nap}}",
+      "water": "nappe phréatique {{nap}}",
+      "excavation": "excavation {{nap}}",
+      "joint": "joint {{nap}}",
+      "excavatedLayer": "{{soil}} (excavé)"
+    }
   },
   "types": {
     "add": "Ajouter un type de pieu",
@@ -499,5 +544,59 @@
       "applied": "Interprétation des couches modifiée : {{n}} intervalle(s) du CPT {{cpt}} diffèrent de la mesure.",
       "skipped": "{{n}} modification(s) de l'interprétation des couches n'ont pas été appliquées : l'intervalle est hors du CPT ou invalide."
     }
+  },
+  "strength": {
+    "title": "Résistance du pieu",
+    "enable": "Vérifier la résistance du pieu",
+    "steelGrade": "Nuance d'acier",
+    "timberClass": "Classe de résistance du bois",
+    "ownValue": "Valeur personnalisée",
+    "timber": "bois",
+    "concreteClass": "Classe de résistance du béton",
+    "concreteClassExtension": "Classe de béton de la rehausse",
+    "hintTimber": "Compression parallèle au fil sous N_Ed + F_nk;d (EN 1995-1-1). k_mod et γ_M : valeurs par défaut pour un bois immergé en permanence et une charge permanente. Le flambement n'est pas vérifié.",
+    "hintSteel": "Classe de section et effort normal du tube sous N_Ed + F_nk;d (EN 1993-1-1). Le flambement n'est pas vérifié : le programme ne connaît pas de longueur libre ou faiblement maintenue.",
+    "hintConcrete": "Effort normal de la section en béton sous N_Ed + F_nk;d (EN 1992-1-1), sans armatures. Le flambement n'est pas vérifié.",
+    "col": {
+      "article": "Article",
+      "demand": "Valeur de calcul",
+      "resistance": "Résistance"
+    },
+    "notesTitle": "Hypothèses et éléments non vérifiés",
+    "status": {
+      "ok": "satisfait",
+      "fail": "ne satisfait pas",
+      "outside": "hors du champ de cette vérification",
+      "na": "non vérifié",
+      "info": "pour information"
+    },
+    "rows": {
+      "steelClass": "Classe de section du tube",
+      "steelAxial": "Effort normal du tube en acier",
+      "timberAxial": "Bois : compression parallèle au fil",
+      "timberToe": "Bois : plus petite section à la pointe",
+      "extensionAxial": "Rehausse en béton : effort normal",
+      "concreteAxial": "Effort normal de la section en béton"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, retenu de la tête du pieu jusqu'à la base de la zone de frottement négatif. En dessous, l'effort normal diminue par frottement latéral positif ; cette partie n'est pas vérifiée.",
+      "steelNoSection": "Non vérifié : la section en acier (tube central, épaisseur de paroi) ne figure pas dans les données d'entrée pour ce système de pieu.",
+      "class4": "Classe de section 4 : le voilement local est déterminant. Cela sort du champ de cette vérification (EN 1993-1-6) ; la résistance n'a pas été calculée.",
+      "class4Short": "Hors du champ de cette vérification (classe de section 4).",
+      "classIs": "Classe de section {{cls}}.",
+      "steel": "Acier : uniquement le tube avec l'épaisseur de paroi saisie et f_y pour t ≤ 40 mm ; un remplissage en béton n'est pas pris en compte. Non vérifiés : le flambement (art. 6.3 ; le module ne connaît pas de longueur libre ou faiblement maintenue), la corrosion (saisissez l'épaisseur de paroi résiduelle), les soudures et raccords, et les contraintes de battage.",
+      "timber": "Bois : classe de résistance {{cls}} avec f_c,0,k = {{fc}} MPa (EN 338) ; k_mod et γ_M sont des données d'entrée, valeurs par défaut pour un bois immergé en permanence et une charge permanente. Non vérifiés : le flambement (art. 6.3.2), le joint avec une rehausse, la dégradation du bois et les contraintes de battage.",
+      "timberToe": "Pour information : borne supérieure avec la totalité de N_Ed;max sur la section en pointe. Le frottement latéral positif au-dessus de la pointe n'a pas été déduit ; l'effort réel en pointe est plus faible.",
+      "concrete": "Béton : N_Rd = A_c · f_cd de la section du fût, sans armatures (elles ne figurent pas dans les données d'entrée). Non vérifiés : l'excentricité minimale (art. 6.1 (4)), le flambement, les armatures et les contraintes de battage.",
+      "concreteInSitu": "Pieu coulé en place : le diamètre de calcul réduit (art. 2.3.4.2) et la majoration de γ_c (art. 2.4.2.5) pour les pieux sans tubage permanent n'ont pas été appliqués ; convertissez vous-même la résistance en conséquence.",
+      "concreteClassUnknown": "Classe de résistance du béton inconnue {{cls}}."
+    }
+  },
+  "report": {
+    "title": "Impression",
+    "detail": "Étendue",
+    "detailAria": "Étendue de l'impression",
+    "compact": "Abrégé : tableaux",
+    "full": "Détaillé : dérivation complète"
   }
 }

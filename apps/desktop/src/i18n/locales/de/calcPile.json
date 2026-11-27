@@ -178,7 +178,13 @@
     "wallThicknessAria": "Wanddicke [mm]",
     "woodDiameterAtJoint": "Holzdurchmesser am Stoß",
     "system": "Pfahlsystem",
-    "standardSize": "Standardmaß"
+    "standardSize": "Standardmaß",
+    "woodSection": "Querschnitt",
+    "woodRound": "Rund (Rammpfahl)",
+    "woodSawn": "Quadratisch oder rechteckig a × b (gesägt)",
+    "sideA": "Seite a",
+    "sideB": "Seite b",
+    "rectHint": "Rechteck a ≠ b: Fläche, Umfang und Deq ergeben sich aus a und b; den Formfaktor s für einen rechteckigen Pfahlfuß bestimmt das Programm nicht. Geben Sie s bei Bedarf als Projektfaktor ein."
   },
   "pilePlan": {
     "button": "Für Pile Plan Studio exportieren (CSV)",
@@ -215,7 +221,8 @@
       "sideA": "Seite a",
       "tapered": "{{size}} mm (konisch)",
       "title": "Annahmen",
-      "woodAtJoint": "Holz am Stoß"
+      "woodAtJoint": "Holz am Stoß",
+      "sidesAB": "Querschnitt a × b"
     },
     "negSkin": {
       "cappedNote": "begrenzt auf ksMin = {{v}}",
@@ -261,6 +268,15 @@
     "title": "Pfahltragfähigkeit",
     "total": {
       "title": "Maximale geotechnische Tragfähigkeit"
+    },
+    "compact": {
+      "remarks": "Anmerkungen",
+      "layers": "Zwischenwerte je Schicht",
+      "results": "Ergebnisse",
+      "formula": "Formel",
+      "value": "Wert",
+      "capacity": "Tragfähigkeit",
+      "settlement": "Setzung"
     }
   },
   "settings": {
@@ -293,7 +309,10 @@
     "sourceAria": "Quelle der Projektfaktoren",
     "table": "Tabelle",
     "timberToe": "Fußdurchmesser Holz",
-    "useTableValues": "Tabellenwerte verwenden"
+    "useTableValues": "Tabellenwerte verwenden",
+    "rectSizes": "Schnittholz a × b",
+    "rectSizesAria": "Reihe Schnittholz a × b [mm]",
+    "rectHint": "Querschnitte als a×b, durch Leerzeichen getrennt; eine einzelne Zahl ist ein Quadrat. Die quadratischen Maße füllen auch die Tragfähigkeitstabelle."
   },
   "shape": {
     "round": "Rund",
@@ -383,11 +402,37 @@
     "notComputed": "Es gibt keine 3D-Ansicht, solange die Berechnung kein Ergebnis hat. Passen Sie die Eingabe an oder wechseln Sie zurück zu 2D.",
     "note": "Höhen und Pfahl sind maßstäblich. Die Breite der Bereiche ist schematisch: Die Methode rechnet nur entlang der Tiefe.",
     "switch": "Ansicht der Zeichnung",
-    "switch3dTitle": "4D-8D-Methode in 3D",
+    "switch3dTitle": "Der Pfahl in 3D: physisch oder rechnerisch (4D-8D-Verfahren)",
     "switchBoth": "2D + 3D",
     "switchBothTitle": "Sondierung und der Pfahl in 3D nebeneinander",
     "toolbar": "Ansicht",
-    "unavailable": "3D ist auf diesem Gerät nicht verfügbar (kein WebGL). Verwenden Sie die 2D-Zeichnung."
+    "unavailable": "3D ist auf diesem Gerät nicht verfügbar (kein WebGL). Verwenden Sie die 2D-Zeichnung.",
+    "viewSwitch": "Art der 3D-Ansicht",
+    "viewPhysical": "Physisch",
+    "viewPhysicalTitle": "Der Pfahl, wie er ist, in den Bodenschichten",
+    "viewCalc": "Rechnerisch",
+    "viewCalcTitle": "Abschnitte I, II und III, Bruchkörper, Mantelreibung und qc",
+    "ariaPhysical": "3D-Ansicht des Pfahls im Boden; Ziehen dreht, Scrollen zoomt",
+    "noPhysical": "Es gibt keine 3D-Ansicht: Die Pfahlmaße oder Höhen sind ungültig.",
+    "notePhysical": "Pfahl, Schichten und Höhen sind maßstäblich; der Bodenblock ist entlang der Pfahlachse aufgeschnitten. Schematisch: die Rammspitze, Anschlussbewehrung und Bewehrung, der Schraubenflügel, das Kernrohr und der Schweißring. Außerhalb des eingegebenen Profils wird die nächstgelegene Schicht fortgeführt.",
+    "material": {
+      "concrete": "Beton",
+      "steel": "Stahl",
+      "wood": "Holz",
+      "grout": "Verpressmörtel"
+    },
+    "soil": {
+      "sand": "Sand",
+      "clay": "Ton",
+      "peat": "Torf"
+    },
+    "physical": {
+      "head": "Pfahlkopf {{nap}}",
+      "water": "Grundwasser {{nap}}",
+      "excavation": "Aushub {{nap}}",
+      "joint": "Stoß {{nap}}",
+      "excavatedLayer": "{{soil}} (ausgehoben)"
+    }
   },
   "types": {
     "add": "Pfahltyp hinzufügen",
@@ -499,5 +544,59 @@
       "applied": "Schichtinterpretation angepasst: {{n}} Tiefenbereich(e) der Sondierung {{cpt}} weichen von der Messung ab.",
       "skipped": "{{n}} Anpassung(en) der Schichtinterpretation wurden nicht angewendet: Der Tiefenbereich liegt außerhalb der Sondierung oder ist ungültig."
     }
+  },
+  "strength": {
+    "title": "Festigkeit des Pfahls",
+    "enable": "Festigkeit des Pfahls nachweisen",
+    "steelGrade": "Stahlsorte",
+    "timberClass": "Festigkeitsklasse Holz",
+    "ownValue": "Eigener Wert",
+    "timber": "Holz",
+    "concreteClass": "Betonfestigkeitsklasse",
+    "concreteClassExtension": "Betonklasse Aufsatz",
+    "hintTimber": "Druck parallel zur Faser unter N_Ed + F_nk;d (EN 1995-1-1). k_mod und γ_M: Standardwerte für dauerhaft nasses Holz und ständige Last. Knicken wird nicht nachgewiesen.",
+    "hintSteel": "Querschnittsklasse und Normalkraft des Rohrs unter N_Ed + F_nk;d (EN 1993-1-1). Knicken wird nicht nachgewiesen: Das Programm kennt keine freie oder schwach gestützte Länge.",
+    "hintConcrete": "Normalkraft des Betonquerschnitts unter N_Ed + F_nk;d (EN 1992-1-1), ohne Bewehrung. Knicken wird nicht nachgewiesen.",
+    "col": {
+      "article": "Abschnitt",
+      "demand": "Bemessungswert",
+      "resistance": "Widerstand"
+    },
+    "notesTitle": "Annahmen und was nicht nachgewiesen wurde",
+    "status": {
+      "ok": "erfüllt",
+      "fail": "nicht erfüllt",
+      "outside": "außerhalb dieses Nachweises",
+      "na": "nicht nachgewiesen",
+      "info": "zur Information"
+    },
+    "rows": {
+      "steelClass": "Querschnittsklasse Rohr",
+      "steelAxial": "Normalkraft Stahlrohr",
+      "timberAxial": "Holz: Druck parallel zur Faser",
+      "timberToe": "Holz: kleinster Querschnitt am Pfahlfuß",
+      "extensionAxial": "Betonaufsatz: Normalkraft",
+      "concreteAxial": "Normalkraft Betonquerschnitt"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, angesetzt vom Pfahlkopf bis zur Unterkante der negativen Mantelreibung. Darunter nimmt die Normalkraft durch positive Mantelreibung ab; dieser Teil wird nicht nachgewiesen.",
+      "steelNoSection": "Nicht nachgewiesen: Der Stahlquerschnitt (Kernrohr, Wanddicke) ist für dieses Pfahlsystem nicht in der Eingabe enthalten.",
+      "class4": "Querschnittsklasse 4: Lokales Beulen ist maßgebend. Das liegt außerhalb dieses Nachweises (EN 1993-1-6); der Widerstand wurde nicht berechnet.",
+      "class4Short": "Außerhalb dieses Nachweises (Querschnittsklasse 4).",
+      "classIs": "Querschnittsklasse {{cls}}.",
+      "steel": "Stahl: nur das Rohr mit der eingegebenen Wanddicke und f_y für t ≤ 40 mm; eine Betonfüllung wird nicht berücksichtigt. Nicht nachgewiesen: Knicken (Abs. 6.3; das Modul kennt keine freie oder schwach gestützte Länge), Korrosion (Restwanddicke eingeben), Schweißnähte und Kupplungen sowie die Rammspannungen.",
+      "timber": "Holz: Festigkeitsklasse {{cls}} mit f_c,0,k = {{fc}} MPa (EN 338); k_mod und γ_M sind Eingabewerte, Standardwerte für dauerhaft nasses Holz und ständige Last. Nicht nachgewiesen: Knicken (Abs. 6.3.2), der Stoß mit einem Aufsatz, Schädigung des Holzes und die Rammspannungen.",
+      "timberToe": "Zur Information: obere Grenze mit dem vollen N_Ed;max auf dem Fußquerschnitt. Die positive Mantelreibung oberhalb des Pfahlfußes wurde nicht abgezogen; die tatsächliche Kraft am Pfahlfuß ist kleiner.",
+      "concrete": "Beton: N_Rd = A_c · f_cd des Schaftquerschnitts, ohne Bewehrung (sie ist nicht in der Eingabe enthalten). Nicht nachgewiesen: die Mindestausmitte (Abs. 6.1 (4)), Knicken, die Bewehrung und die Rammspannungen.",
+      "concreteInSitu": "Ortbetonpfahl: Der verminderte Bemessungsdurchmesser (Abs. 2.3.4.2) und die Erhöhung von γ_c (Abs. 2.4.2.5) für Pfähle ohne bleibendes Rohr wurden nicht angewendet; rechnen Sie den Widerstand dafür selbst um.",
+      "concreteClassUnknown": "Unbekannte Betonfestigkeitsklasse {{cls}}."
+    }
+  },
+  "report": {
+    "title": "Ausdruck",
+    "detail": "Umfang",
+    "detailAria": "Umfang des Ausdrucks",
+    "compact": "Kurz: Tabellen",
+    "full": "Ausführlich: vollständige Herleitung"
   }
 }

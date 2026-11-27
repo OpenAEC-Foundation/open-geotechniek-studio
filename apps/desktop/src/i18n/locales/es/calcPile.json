@@ -178,7 +178,13 @@
     "wallThicknessAria": "Espesor de pared [mm]",
     "woodDiameterAtJoint": "Diámetro de la madera en la junta",
     "system": "Sistema de pilotes",
-    "standardSize": "Medida estándar"
+    "standardSize": "Medida estándar",
+    "woodSection": "Sección",
+    "woodRound": "Redondo (pilote hincado)",
+    "woodSawn": "Cuadrado o rectangular a × b (aserrado)",
+    "sideA": "Lado a",
+    "sideB": "Lado b",
+    "rectHint": "Rectángulo a ≠ b: el área, el perímetro y Deq se deducen de a y b; el programa no determina el factor de forma s para una punta de pilote rectangular. Introduzca s como factor de proyecto si es necesario."
   },
   "pilePlan": {
     "button": "Exportar para Pile Plan Studio (CSV)",
@@ -215,7 +221,8 @@
       "sideA": "Lado a",
       "tapered": "{{size}} mm (cónico)",
       "title": "Hipótesis de partida",
-      "woodAtJoint": "Madera en la junta"
+      "woodAtJoint": "Madera en la junta",
+      "sidesAB": "Sección a × b"
     },
     "negSkin": {
       "cappedNote": "limitado a ksMin = {{v}}",
@@ -261,6 +268,15 @@
     "title": "Capacidad portante del pilote",
     "total": {
       "title": "Capacidad portante geotécnica máxima"
+    },
+    "compact": {
+      "remarks": "Observaciones",
+      "layers": "Valores intermedios por capa",
+      "results": "Resultados",
+      "formula": "Fórmula",
+      "value": "Valor",
+      "capacity": "Capacidad portante",
+      "settlement": "Asiento"
     }
   },
   "settings": {
@@ -293,7 +309,10 @@
     "sourceAria": "Fuente de los coeficientes del proyecto",
     "table": "Tabla",
     "timberToe": "Diámetro de punta de la madera",
-    "useTableValues": "Usar valores de tabla"
+    "useTableValues": "Usar valores de tabla",
+    "rectSizes": "Madera aserrada a × b",
+    "rectSizesAria": "Serie de madera aserrada a × b [mm]",
+    "rectHint": "Secciones como a×b, separadas por espacios; un solo número es un cuadrado. Las medidas cuadradas también rellenan la tabla de capacidad portante."
   },
   "shape": {
     "round": "Circular",
@@ -383,11 +402,37 @@
     "notComputed": "No hay vista 3D mientras el cálculo no tenga resultado. Ajuste los datos o vuelva a 2D.",
     "note": "Los niveles y el pilote están a escala. La anchura de los tramos es esquemática: el método solo calcula a lo largo de la profundidad.",
     "switch": "Vista del dibujo",
-    "switch3dTitle": "Método 4D-8D en 3D",
+    "switch3dTitle": "El pilote en 3D: vista física o de cálculo (método 4D-8D)",
     "switchBoth": "2D + 3D",
     "switchBothTitle": "Sondeo y pilote en 3D uno junto al otro",
     "toolbar": "Vista",
-    "unavailable": "El 3D no está disponible en este dispositivo (sin WebGL). Use el dibujo 2D."
+    "unavailable": "El 3D no está disponible en este dispositivo (sin WebGL). Use el dibujo 2D.",
+    "viewSwitch": "Tipo de vista 3D",
+    "viewPhysical": "Física",
+    "viewPhysicalTitle": "El pilote tal como es, en las capas del terreno",
+    "viewCalc": "Cálculo",
+    "viewCalcTitle": "Tramos I, II y III, mecanismo de rotura, rozamiento y qc",
+    "ariaPhysical": "Vista 3D del pilote en el terreno; arrastrar gira, desplazar amplía",
+    "noPhysical": "No hay vista 3D: las dimensiones del pilote o los niveles no son válidos.",
+    "notePhysical": "El pilote, las capas y los niveles están a escala; el bloque de terreno está abierto a lo largo del eje del pilote. Esquemático: el azuche, las armaduras de espera y la armadura, la hélice, el tubo central y el anillo de soldadura. Fuera del perfil introducido se prolonga la capa más cercana.",
+    "material": {
+      "concrete": "Hormigón",
+      "steel": "Acero",
+      "wood": "Madera",
+      "grout": "Lechada"
+    },
+    "soil": {
+      "sand": "Arena",
+      "clay": "Arcilla",
+      "peat": "Turba"
+    },
+    "physical": {
+      "head": "cabeza del pilote {{nap}}",
+      "water": "nivel freático {{nap}}",
+      "excavation": "excavación {{nap}}",
+      "joint": "junta {{nap}}",
+      "excavatedLayer": "{{soil}} (excavado)"
+    }
   },
   "types": {
     "add": "Añadir tipo de pilote",
@@ -499,5 +544,59 @@
       "applied": "Interpretación de capas ajustada: {{n}} tramo(s) del CPT {{cpt}} difieren de la medición.",
       "skipped": "{{n}} ajuste(s) de la interpretación de capas no se han aplicado: el tramo queda fuera del CPT o no es válido."
     }
+  },
+  "strength": {
+    "title": "Resistencia del pilote",
+    "enable": "Comprobar la resistencia del pilote",
+    "steelGrade": "Tipo de acero",
+    "timberClass": "Clase resistente de la madera",
+    "ownValue": "Valor propio",
+    "timber": "madera",
+    "concreteClass": "Clase resistente del hormigón",
+    "concreteClassExtension": "Clase de hormigón de la prolongación",
+    "hintTimber": "Compresión paralela a la fibra bajo N_Ed + F_nk;d (EN 1995-1-1). k_mod y γ_M: valores por defecto para madera permanentemente húmeda y carga permanente. El pandeo no se comprueba.",
+    "hintSteel": "Clase de sección y esfuerzo axil del tubo bajo N_Ed + F_nk;d (EN 1993-1-1). El pandeo no se comprueba: el programa no conoce una longitud libre o débilmente arriostrada.",
+    "hintConcrete": "Esfuerzo axil de la sección de hormigón bajo N_Ed + F_nk;d (EN 1992-1-1), sin armadura. El pandeo no se comprueba.",
+    "col": {
+      "article": "Apartado",
+      "demand": "Valor de cálculo",
+      "resistance": "Resistencia"
+    },
+    "notesTitle": "Hipótesis y lo que no se ha comprobado",
+    "status": {
+      "ok": "cumple",
+      "fail": "no cumple",
+      "outside": "fuera del alcance de esta comprobación",
+      "na": "no comprobado",
+      "info": "a título informativo"
+    },
+    "rows": {
+      "steelClass": "Clase de sección del tubo",
+      "steelAxial": "Esfuerzo axil del tubo de acero",
+      "timberAxial": "Madera: compresión paralela a la fibra",
+      "timberToe": "Madera: sección mínima en la punta",
+      "extensionAxial": "Prolongación de hormigón: esfuerzo axil",
+      "concreteAxial": "Esfuerzo axil de la sección de hormigón"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, adoptado desde la cabeza del pilote hasta la base de la zona de rozamiento negativo. Por debajo, el esfuerzo axil disminuye por el rozamiento positivo por fuste; esa parte no se comprueba.",
+      "steelNoSection": "No comprobado: la sección de acero (tubo central, espesor de pared) no figura en los datos de entrada para este sistema de pilote.",
+      "class4": "Clase de sección 4: la abolladura local es determinante. Queda fuera del alcance de esta comprobación (EN 1993-1-6); la resistencia no se ha calculado.",
+      "class4Short": "Fuera del alcance de esta comprobación (clase de sección 4).",
+      "classIs": "Clase de sección {{cls}}.",
+      "steel": "Acero: solo el tubo con el espesor de pared introducido y f_y para t ≤ 40 mm; no se considera un relleno de hormigón. No comprobado: pandeo (apdo. 6.3; el módulo no conoce una longitud libre o débilmente arriostrada), corrosión (introduzca el espesor de pared residual), soldaduras y uniones, y las tensiones de hinca.",
+      "timber": "Madera: clase resistente {{cls}} con f_c,0,k = {{fc}} MPa (EN 338); k_mod y γ_M son datos de entrada, valores por defecto para madera permanentemente húmeda y carga permanente. No comprobado: pandeo (apdo. 6.3.2), la junta con una prolongación, la degradación de la madera y las tensiones de hinca.",
+      "timberToe": "A título informativo: cota superior con el N_Ed;max completo sobre la sección de la punta. No se ha descontado el rozamiento positivo por fuste por encima de la punta; el esfuerzo real en la punta es menor.",
+      "concrete": "Hormigón: N_Rd = A_c · f_cd de la sección del fuste, sin armadura (no figura en los datos de entrada). No comprobado: la excentricidad mínima (apdo. 6.1 (4)), el pandeo, la armadura y las tensiones de hinca.",
+      "concreteInSitu": "Pilote hormigonado in situ: no se han aplicado el diámetro de cálculo reducido (apdo. 2.3.4.2) ni el aumento de γ_c (apdo. 2.4.2.5) para pilotes sin entubación permanente; corrija usted mismo la resistencia.",
+      "concreteClassUnknown": "Clase resistente del hormigón desconocida {{cls}}."
+    }
+  },
+  "report": {
+    "title": "Impresión",
+    "detail": "Alcance",
+    "detailAria": "Alcance de la impresión",
+    "compact": "Resumido: tablas",
+    "full": "Detallado: desarrollo completo"
   }
 }

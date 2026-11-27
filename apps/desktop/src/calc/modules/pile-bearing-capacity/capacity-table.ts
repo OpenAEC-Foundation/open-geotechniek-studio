@@ -82,7 +82,7 @@ export function defaultCapacityConfig(input:PileInput,cptIds:string[]):Required<
 export function sizeInput(base:PileInput,sizeMm:number):PileInput {
  if(sizeMm===base.diameterMm)return base;
  const r=sizeMm/base.diameterMm;
- return {...base,diameterMm:sizeMm,
+ return {...base,diameterMm:sizeMm,sideBMm:undefined,
   axialStiffnessKn:base.axialStiffnessKn===undefined?undefined:base.axialStiffnessKn*r*r,
   baseDiameterMm:base.baseDiameterMm===undefined?undefined:base.baseDiameterMm*r};
 }

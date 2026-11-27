@@ -8,6 +8,8 @@ interface Args {
   method?: "legacy-qci" | "minimum-qb";
   pileToeDepth: number;        // depth onder maaiveld in m
   diameterMm: number;
+  /** Tweede zijde van een rechthoekige paalvoet [mm]; ontbrekend = vierkant of rond. */
+  sideBMm?: number;
   pileType: PileTypeSpec;
 }
 
@@ -166,7 +168,7 @@ function clippedAvgQcUpward(
 export function computeBaseResistanceFromAverages(
   args: Omit<Args, "pileToeDepth"> & Pick<BaseResistanceResult, "qcIGemMpa" | "qcIIGemMpa" | "qcIIIGemMpa">,
 ): Pick<BaseResistanceResult, "deqMm" | "abMm2" | "qbMaxMpaRaw" | "qbMaxMpa" | "rbCalMax"> {
-  const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular);
+  const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular, args.sideBMm);
   const { alphaP, beta, s } = args.pileType;
   const qbMaxMpaRaw = 0.5 * alphaP * beta * s * ((args.qcIGemMpa + args.qcIIGemMpa) / 2 + args.qcIIIGemMpa);
   const qbMaxMpa = Math.min(qbMaxMpaRaw, 15);
@@ -181,7 +183,7 @@ export function computeBaseResistanceFromAverages(
 
 export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResult {
   if (args.method === "minimum-qb") return computeMinimumBaseResistance(cpt, args);
-  const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular);
+  const geometry = pileGeometry(args.diameterMm, args.pileType.isCircular, args.sideBMm);
   const DeqMm = geometry.equivalentDiameterMm;
   const Deq = DeqMm / 1000;
 
@@ -252,7 +254,7 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
  */
 function computeMinimumBaseResistance(cpt: Cpt, args: Args): BaseResistanceResult {
   const profile = new QcProfile(cpt);
-  const deq = pileGeometry(args.diameterMm, args.pileType.isCircular).equivalentDiameterMm / 1000;
+  const deq = pileGeometry(args.diameterMm, args.pileType.isCircular, args.sideBMm).equivalentDiameterMm / 1000;
   const toe = args.pileToeDepth;
   const top = Math.max(0, toe - 8 * deq);
   const evaluate = (dc: number, capture = false): BaseResistanceResult => {

@@ -29,7 +29,7 @@ export function computeShaftFriction(
   args: Args,
   soilProfile: SoilLayer[],
 ): ShaftFrictionResult {
-  const Os = pileGeometry(args.diameterMm, args.pileType.isCircular).perimeterM;
+  const Os = pileGeometry(args.diameterMm, args.pileType.isCircular, args.shaftGeometry?.sideBMm).perimeterM;
 
   // Schachtwrijvings-zone: tussen negKleefBottomNap en pileToeNap
   // (alleen POSITIEVE schachtwrijving)

@@ -30,6 +30,7 @@ import { renderZakkingDiagram } from "./pile-report-zakking";
 import { resolvePileType, soilLabel } from "../catalog";
 import { pileGeometry } from "./geometry";
 import { getStandard, isHistorical, usesHistoricalProcedure } from "../standards";
+import { COMPACT_GROUP_NL, compactArticle, compactLayerTables, compactRows, strengthTable } from "./compact-sheet";
 
 export interface PileReportProject {
   /** Projectnummer (bv. "2705"). */
@@ -84,6 +85,9 @@ export interface PileReportInputs {
   endAnalysis?: boolean;
   /** Extra bladen na de berekeningen, bijvoorbeeld de draagvermogentabellen. */
   appendix?: (c: Cursor) => void;
+  /** "compact": uitgangspunten, tussenwaarden en uitkomsten als tabellen, formules één keer.
+   *  "full" (standaard bij directe aanroep): de volledige afleiding per formule. */
+  detail?: "compact" | "full";
 }
 
 // ─── PDF layout constants ────────────────────────────────────────
@@ -490,7 +494,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
       `: α_p = ${nl(inputs.factors.alphaP, 3)}   α_s = ${nl(inputs.factors.alphaS, 4)}   α_t = ${nl(inputs.factors.alphaT, 4)}   Lastzakkingslijn: ${resolvePileType(inp)?.settlementLine ?? 1}`,
     );
     const isCircular = resolvePileType(inp)?.isCircular ?? true;
-    kv(c, inp.concreteExtension ? "Hout bij de las" : inp.timberTaper ? "Kopdiameter" : isCircular ? "Diameter" : "Zijlengte", `: ${isCircular ? "D" : "a"} = ${inp.diameterMm} mm  (D_eq = ${nl(first.result.base.deqMm, 1)} mm)`);
+    kv(c, inp.concreteExtension ? "Hout bij de las" : inp.timberTaper ? "Kopdiameter" : isCircular ? "Diameter" : inp.sideBMm !== undefined ? "Doorsnede" : "Zijlengte", `: ${isCircular ? "D" : inp.sideBMm !== undefined ? "a × b" : "a"} = ${inp.diameterMm}${!isCircular && inp.sideBMm !== undefined ? ` × ${inp.sideBMm}` : ""} mm  (D_eq = ${nl(first.result.base.deqMm, 1)} mm)`);
     if (resolvePileType(inp)?.material === "steel" && !resolvePileType(inp)?.requiresEA) kv(c, "Wanddikte", `: ${nl(inp.wallThicknessMm, 1)} mm`);
     kv(c, "Paalkopniveau", `: ${nlNap(inp.pileTopNap)}`);
     kv(c, "Paalpuntniveau", `: ${nlNap(inp.pileToeNap)}`);
@@ -501,7 +505,23 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
     kv(c, "Paalgroep", `: geen paalgroep`);
     c.y += 3;
 
-    // Grondsoorten-tabel: unieke kinds over alle sonderingen.
+    renderSoilTable(c, inputs);
+
+    if (inputs.interpretation?.length) renderInterpretation(c, inputs.interpretation);
+
+    c.y += 2;
+    sectionTitle(c, "Berekening");
+    paragraph(c, `D_eq = ${nl(first.result.base.deqMm, 1)} mm`);
+    paragraph(
+      c,
+      `Aantal sonderingen in deze analyse: ${inputs.sonderingen.length} (${inputs.sonderingen.map((s) => s.name).join(", ")})`,
+    );
+  }
+}
+
+/** Grondsoorten-tabel: unieke kinds over alle sonderingen. */
+function renderSoilTable(c: Cursor, inputs: PileReportInputs): void {
+  {
     sectionTitle(c, "Grondsoorten");
     const seen = new Map<string, { gammaK: number; gammaW: number; phi: number }>();
     for (const s of inputs.sonderingen) {
@@ -532,17 +552,114 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
         return [base + suffix, nl(v.gammaK, 0), nl(v.gammaW, 0), nl(v.phi, 1)];
       }),
     );
-
-    if (inputs.interpretation?.length) renderInterpretation(c, inputs.interpretation);
-
-    c.y += 2;
-    sectionTitle(c, "Berekening");
-    paragraph(c, `D_eq = ${nl(first.result.base.deqMm, 1)} mm`);
-    paragraph(
-      c,
-      `Aantal sonderingen in deze analyse: ${inputs.sonderingen.length} (${inputs.sonderingen.map((s) => s.name).join(", ")})`,
-    );
   }
+}
+
+// ─── Beknopte uitdraai ───────────────────────────────────────────
+//
+// Dezelfde getallen als de volledige afleiding, als tabellen: de formule staat
+// één keer per grootheid, de lagen staan in een tabel en de opmerkingen in één blok.
+
+const sizeOf = (inp: PileInput, circular: boolean) => circular ? `Ø${inp.diameterMm} mm` : `${inp.diameterMm} × ${inp.sideBMm ?? inp.diameterMm} mm`;
+
+function renderProjectBladCompact(c: Cursor, inputs: PileReportInputs): void {
+  const p = inputs.project, first = inputs.sonderingen[0];
+  const summary = usesHistoricalProcedure(first?.input.standard) && first ? first.result.summary : inputs.summary;
+  resultBox(c, "SAMENVATTING", [
+    { label: "Belasting N_Ed", value: `${nl(first?.input.nEd ?? 0, 1)} kN` },
+    { label: "Netto draagvermogen R_c;net;d", value: `${nl(summary.rcNetD, 1)} kN` },
+    { label: "Benutting N_Ed / R_c;net;d", value: nl(summary.unityCheck, 2), tone: summary.unityCheck <= 1 ? "pass" : "fail" },
+  ]);
+  paragraph(c, "CONCEPT ALPHA - Resultaten zijn indicatief; niet gebruiken voor vergunning of uitvoering.", { size: 8 });
+  if (!first) return;
+  const inp = first.input, type = resolvePileType(inp), circular = type?.isCircular ?? true, ext = inp.concreteExtension;
+  const facts: Array<[string, string]> = [
+    ["Norm", p.norm],
+    ["Paaltype", inputs.pileTypeName],
+    ["Sonderingen", inputs.sonderingen.map((s) => s.name).join(", ")],
+    [ext ? "Hout bij de las" : inp.timberTaper ? "Kopmaat" : "Doorsnede", `${sizeOf(inp, circular)}; D_eq = ${nl(first.result.base.deqMm, 0)} mm`],
+    ["Punt", inp.timberTaper ? `Ø${inp.timberTaper.toeDiameterMm} mm, taps over ${nl(inp.timberTaper.lengthM, 2)} m` : inp.baseDiameterMm ? `${inp.baseDiameterMm} mm` : "gelijk aan schacht"],
+    ...(ext ? [["Betonopzetter", `${ext.isCircular ? "Ø" : `${ext.sizeMm} × `}${ext.sizeMm} mm tot las ${nlNap(ext.jointNap)}`] as [string, string]] : []),
+    ...(type?.material === "steel" && !type.requiresEA ? [["Wanddikte", `${nl(inp.wallThicknessMm, 1)} mm`] as [string, string]] : []),
+    ["Paalkop / paalpunt", `${nlNap(inp.pileTopNap)} / ${nlNap(inp.pileToeNap)}; L = ${nl(inp.pileTopNap - inp.pileToeNap, 2)} m`],
+    ["Grondwater / ontgraving", `${nlNap(inp.waterNap)} / ${nlNap(inp.excavationNap)}`],
+    ["Kleef: neg. tot / pos. vanaf", `${nlNap(inp.negKleefBottomNap)} / ${nlNap(inp.posKleefTopNap ?? inp.negKleefBottomNap)}`],
+    ["Belasting", `N_Ed = ${nl(inp.nEd, 0)} kN; N_k = ${nl(inp.nEk, 0)} kN`],
+    ["Factoren", `α_p = ${nl(inputs.factors.alphaP, 2)}; α_s = ${nl(inputs.factors.alphaS, 4)}; β = ${nl(type?.beta ?? 1, 2)}; s = ${nl(type?.s ?? 1, 2)}; γ_m = ${nl(inp.gammaM, 2)}; γ_f,nk = ${nl(inp.gammaFnk, 2)}`],
+    ...(first.result.settlement.available !== false ? [["EA / lastzakkingslijn", `${nl(first.result.settlement.eaKn ?? 0, 0)} kN / ${type?.settlementLine ?? 1}`] as [string, string]] : []),
+    ...(p.ontwerplevensduur !== undefined || p.gevolgklasse ? [["Levensduur / gevolgklasse", `${p.ontwerplevensduur ?? "-"} jaar / ${p.gevolgklasse ?? "-"}`] as [string, string]] : []),
+  ];
+  c.y += 2;
+  sectionTitle(c, "Uitgangspunten");
+  table(c, [{ label: "Gegeven", width: 46 }, { label: "Waarde", width: 136 }], facts, { size: 7.5 });
+
+  renderSoilTable(c, inputs);
+  if (inputs.interpretation?.length) renderInterpretation(c, inputs.interpretation);
+
+  // Alle meldingen van de voorbeelden in één blok, elk één keer.
+  const remarks = [...new Set(inputs.sonderingen.flatMap((s) => s.result.warnings))];
+  if (remarks.length) {
+    sectionTitle(c, "Opmerkingen");
+    remarks.forEach((text, i) => paragraph(c, `${i + 1}. ${text}`, { size: 7.5 }));
+  }
+}
+
+function renderLayerTable(c: Cursor, title: string, art: string, t: { head: string[]; rows: string[][]; sum: string[]; formula: string }): void {
+  if (!t.rows.length) return;
+  sectionTitle(c, title, art);
+  table(c, t.head.map((label, i) => ({ label, width: i ? 24 : 30, align: i ? "right" as const : "left" as const })), t.rows, { summaryRow: t.rows.length > 1 ? t.sum : undefined, size: 7 });
+  paragraph(c, t.formula, { italic: true, size: 7.5 });
+}
+
+export function renderBerekeningBladCompact(c: Cursor, s: PileReportSondering): void {
+  const { input, result } = s;
+  c.newPage();
+  sheetTitle(c, `Berekening — sondering ${s.name}`);
+  c.continuationTitle = `Berekening - sondering ${s.name} (vervolg)`;
+  const tables = compactLayerTables(input, result, nl, soilLabel);
+  renderLayerTable(c, "Negatieve kleef per laag", compactArticle("negSkin", input.standard), tables.neg);
+  renderLayerTable(c, "Schachtwrijving per laag", compactArticle("shaft", input.standard), tables.shaft);
+  sectionTitle(c, "Uitkomsten");
+  const rows = compactRows(input, result, nl);
+  table(c, [{ label: "Onderdeel", width: 32 }, { label: "Grootheid", width: 40 }, { label: "Formule", width: 80 }, { label: "Waarde", width: 38, align: "right" }],
+    rows.map((r, i) => [i === 0 || rows[i - 1].group !== r.group ? `${COMPACT_GROUP_NL[r.group]} ${compactArticle(r.group, input.standard)}`.trim() : "", r.s, r.f, r.v]), { size: 7.5 });
+  if (result.settlement.available === false) paragraph(c, "Zakking en veerwaarden zijn voor deze paal niet bepaald; zie de opmerkingen.", { italic: true, size: 7.5 });
+}
+
+/** Tabel "Sterkte van de paal" met per toets de tussenwaarden en daaronder de uitgangspunten. */
+export function renderStrength(c: Cursor, s: PileReportSondering): void {
+  const strength = s.result.strength;
+  if (!strength) return;
+  const t = strengthTable(strength, nl, (zM) => nlNap(s.input.pileTopNap - zM));
+  c.reserve(40);
+  sectionTitle(c, "Sterkte van de paal", strength.standard.replace(/ met Nederlandse bijlage/g, ""));
+  paragraph(c, `N_Ed;max = N_Ed + F_nk;d = ${nl(s.input.nEd, 0)} + ${nl(s.result.negKleef.fnkD, 0)} = ${nl(strength.nEdMaxKn, 0)} kN`, { size: 8 });
+  table(c, [{ label: t.head[0], width: 48 }, { label: t.head[1], width: 34 }, { label: t.head[2], width: 34, align: "right" }, { label: t.head[3], width: 34, align: "right" }, { label: t.head[4], width: 12, align: "right" }, { label: t.head[5], width: 24 }], t.rows, { size: 7.5 });
+  for (const line of t.steps) paragraph(c, line, { size: 7.5 });
+  for (const line of t.notes) paragraph(c, line, { italic: true, size: 7.5 });
+}
+
+function renderEndAnalysisCompact(c: Cursor, sonderingen: PileReportSondering[], summary: MultiCptSummary, totalNEd: number): void {
+  c.newPage();
+  sectionTitle(c, "Berekening netto maatgevend paaldraagvermogen", "art. 7.6.2.3 (5)");
+  table(c, [{ label: "Sondering", width: 36 }, { label: "R_b;cal [kN]", width: 32, align: "right" }, { label: "R_s;cal [kN]", width: 32, align: "right" }, { label: "R_c;cal [kN]", width: 32, align: "right" }, { label: "F_nk;d [kN]", width: 30, align: "right" }],
+    sonderingen.map((s) => [s.name, s.result.base.rbCalMax.toFixed(0), s.result.shaft.rsCalMax.toFixed(0), (s.result.base.rbCalMax + s.result.shaft.rsCalMax).toFixed(0), s.result.negKleef.fnkD.toFixed(0)]),
+    { summaryRow: ["Gem. / max",
+      (sonderingen.reduce((a, s) => a + s.result.base.rbCalMax, 0) / sonderingen.length).toFixed(0),
+      (sonderingen.reduce((a, s) => a + s.result.shaft.rsCalMax, 0) / sonderingen.length).toFixed(0),
+      summary.rcCalMean.toFixed(0), summary.fnkDMean.toFixed(0)] });
+  const gammaM = sonderingen[0]?.input.gammaM ?? 1.2;
+  table(c, [{ label: "Grootheid", width: 40 }, { label: "Formule", width: 100 }, { label: "Waarde", width: 42, align: "right" }], [
+    ["n; VC", "σ / (R_c;cal)_gem · 100%; niet-stijf bouwwerk", `${summary.n}; ${nl(summary.variatieCoeffPct, 1)}%`],
+    ["ξ_3; ξ_4", "tabel A.10", `${nl(summary.xi3, 2)}; ${nl(summary.xi4, 2)}`],
+    ["(R_c;k)_gem", "(R_c;cal)_gem / ξ_3", `${summary.rcKGem.toFixed(0)} kN`],
+    ["(R_c;k)_min", "(R_c;cal)_min / ξ_4", `${summary.rcKMin.toFixed(0)} kN`],
+    ["R_c;d", `min((R_c;k)_gem; (R_c;k)_min) / γ_m, γ_m = ${nl(gammaM, 2)}`, `${summary.rcD.toFixed(0)} kN`],
+    ["R_c;net;d", "R_c;d − F_nk;d", `${summary.rcNetD.toFixed(0)} kN`],
+    ["u.c.", `N_Ed / R_c;net;d = ${totalNEd} / ${summary.rcNetD.toFixed(0)}`, nl(summary.unityCheck, 2)],
+  ], { size: 8 });
+  c.y += 4;
+  verdict(c, `Indicatieve rekentoets: ${summary.passes ? "voldoet" : "voldoet niet"}`, summary.passes);
 }
 
 // ─── Aanpassingen aan de grondlaaginterpretatie ──────────────────
@@ -582,7 +699,7 @@ export function renderInterpretation(c: Cursor, items: Array<{ nr: string; appli
 
 export function renderBerekeningBlad(c: Cursor, s: PileReportSondering, factors: PileReportInputs["factors"]): void {
   const { input, result } = s;
-  const Os = result.negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, resolvePileType(input)?.isCircular ?? true).perimeterM;
+  const Os = result.negKleef.meanPerimeterM ?? pileGeometry(input.diameterMm, resolvePileType(input)?.isCircular ?? true, input.sideBMm).perimeterM;
   const wp = result.settlement.sls;
   const L = result.settlement.lM ?? input.pileTopNap - input.pileToeNap;
   const ell = result.settlement.ellM ?? input.pileTopNap - input.negKleefBottomNap;
@@ -908,9 +1025,10 @@ export function generatePileReport(inputs: PileReportInputs): Uint8Array {
   if (historical) inputs = { ...inputs, project: { ...inputs.project, norm: getStandard(first.input.standard)!.label } };
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const c = makeCursor(doc, inputs.project);
+  const compact = inputs.detail === "compact";
 
   // Blad 1 — projectblad
-  renderProjectBlad(c, inputs);
+  if (compact) renderProjectBladCompact(c, inputs); else renderProjectBlad(c, inputs);
 
   // Per sondering: visual → berekening → lastzakkingsdiagram
   for (const s of inputs.sonderingen) {
@@ -927,7 +1045,8 @@ export function generatePileReport(inputs: PileReportInputs): Uint8Array {
         adjustments: s.adjustments,
       });
     }
-    renderBerekeningBlad(c, s, inputs.factors);
+    if (compact) renderBerekeningBladCompact(c, s); else renderBerekeningBlad(c, s, inputs.factors);
+    renderStrength(c, s);
     c.continuationTitle = undefined;
     if (s.result.settlement.available !== false) {
       c.newPage();
@@ -955,7 +1074,7 @@ export function generatePileReport(inputs: PileReportInputs): Uint8Array {
     formula(c, "R_c;net;d", "R_c;d − F_nk;d", `${nl(r.rcD, 1)} − ${nl(first.result.negKleef.fnkD, 1)}`, `${nl(r.rcNetD, 1)} kN`);
     formula(c, "U.C.", "N_Ed / R_c;net;d", `${nl(first.input.nEd, 1)} / ${nl(r.rcNetD, 1)}`, `${nl(r.unityCheck, 2)}`);
     paragraph(c, "Alleenstaande drukpaal bij een sondering. Historische zakking en paalgroepwerking niet geverifieerd.");
-  } else if (inputs.endAnalysis !== false) renderEndAnalysis(c, inputs.sonderingen, inputs.summary, totalNEd);
+  } else if (inputs.endAnalysis !== false) (compact ? renderEndAnalysisCompact : renderEndAnalysis)(c, inputs.sonderingen, inputs.summary, totalNEd);
   inputs.appendix?.(c);
 
   // Vervang het {tp}-token door het werkelijke paginatotaal.

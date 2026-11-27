@@ -3,7 +3,8 @@
     "cptItem": "CPT-sondering {{id}}",
     "notCalculated": "Ej beräknad",
     "checks": {
-      "capacity": "bärförmåga"
+      "capacity": "bärförmåga",
+      "strength": "pålens hållfasthet"
     }
   },
   "notes": {
@@ -41,7 +42,8 @@
     "pileSizeInvalid": "Påldimensionen måste vara ändlig och större än noll",
     "historicalGroupAnalysis": "Historisk analys med flera CPT-sonderingar är ännu inte verifierad; använd en enda CPT-sondering",
     "factorsMissing2025": "Pålklassfaktorerna enligt NEN 9997-1:2025 för denna påltyp finns ännu inte i tabellen. Välj 2017 års utgåva eller ange projektfaktorer (egendeklaration eller provbelastning).",
-    "factorsMissingNoRow": "Detta pålsystem har ingen egen rad i tabell 7.c i denna utgåva. Ange projektfaktorer (egendeklaration eller provbelastning)."
+    "factorsMissingNoRow": "Detta pålsystem har ingen egen rad i tabell 7.c i denna utgåva. Ange projektfaktorer (egendeklaration eller provbelastning).",
+    "rectInvalid": "Ett rektangulärt tvärsnitt a × b kräver en sågad träpåle med positiva sidor, utan konicitet eller separat spetsmått"
   },
   "warnings": {
     "factors": "Faktorer: {{edition}}; {{source}}.",
@@ -57,7 +59,8 @@
     "taper": "Konicitet hos trä: negativ och positiv mantelfriktion med medelomkrets per lager. Utan betongförlängning eller höjning för konicitet.",
     "deviatingToeSize": "Avvikande spetsdimension: kontrollera formfaktorn för pålfoten β och tillåten mantelzon för denna installationsmetod.",
     "qbMaxCapped": "qb;max begränsad till 15 MPa (ursprungligt värde {{raw}} MPa)",
-    "settlementLineUnknown": "Ingen last-sättningskurva från tabellen är känd för denna påltyp: sättning och fjädervärden bestäms inte."
+    "settlementLineUnknown": "Ingen last-sättningskurva från tabellen är känd för denna påltyp: sättning och fjädervärden bestäms inte.",
+    "rectShape": "Rektangulärt tvärsnitt {{a}} × {{b}} mm: beräknat med A = a · b, omkrets 2 (a + b) och Deq = √(4 · a · b / π). Programmet bestämmer inte faktorn s för formen på en rektangulär pålspets (a ≠ b); beräkningen har gjorts med s = {{s}}. Bestäm s enligt standarden och ange den vid behov som projektfaktor."
   },
   "table": {
     "errors": {
@@ -170,6 +173,10 @@
     },
     "concrete-auger-cased": {
       "name": "DPA-påle — fodrad skruvborrad påle"
+    },
+    "timber-square": {
+      "name": "Slagen träpåle — kvadratisk eller rektangulär, med eller utan betongförlängning",
+      "conditions": "Sågat trätvärsnitt a × b, konstant över längden; valfritt med betongförlängning ned till skarven. Pålklassfaktorer som för den runda träpålen. Programmet bestämmer inte formfaktorn s för en rektangulär pålspets (a ≠ b)."
     }
   },
   "soil": {

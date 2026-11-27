@@ -3,7 +3,8 @@
     "cptItem": "CPT {{id}}",
     "notCalculated": "Non calcolato",
     "checks": {
-      "capacity": "capacità portante"
+      "capacity": "capacità portante",
+      "strength": "resistenza del palo"
     }
   },
   "notes": {
@@ -41,7 +42,8 @@
     "pileSizeInvalid": "La dimensione del palo deve essere finita e maggiore di zero",
     "historicalGroupAnalysis": "L'analisi storica con più prove CPT non è ancora verificata; usa una sola prova CPT",
     "factorsMissing2025": "I fattori di classe del palo della NEN 9997-1:2025 per questo tipo di palo non sono ancora nella tabella. Scegliere l'edizione 2017 o inserire fattori di progetto (autodichiarazione o prova di carico).",
-    "factorsMissingNoRow": "Questo sistema di pali non ha una riga propria nella tabella 7.c di questa edizione. Inserire fattori di progetto (autodichiarazione o prova di carico)."
+    "factorsMissingNoRow": "Questo sistema di pali non ha una riga propria nella tabella 7.c di questa edizione. Inserire fattori di progetto (autodichiarazione o prova di carico).",
+    "rectInvalid": "Una sezione rettangolare a × b richiede un palo in legno segato con lati positivi, senza rastremazione né dimensione di punta separata"
   },
   "warnings": {
     "factors": "Fattori: {{edition}}; {{source}}.",
@@ -57,7 +59,8 @@
     "taper": "Rastremazione del legno: attrito negativo e positivo con il perimetro medio per strato. Senza prolunga in calcestruzzo né incremento per la rastremazione.",
     "deviatingToeSize": "Dimensione della punta diversa: verifica il fattore di forma della base del palo β e il tratto d'attrito laterale ammesso per questo metodo di installazione.",
     "qbMaxCapped": "qb;max limitato a 15 MPa (valore grezzo {{raw}} MPa)",
-    "settlementLineUnknown": "Per questo tipo di palo non è nota alcuna curva carico-cedimento dalla tabella: cedimento e rigidezze non vengono determinati."
+    "settlementLineUnknown": "Per questo tipo di palo non è nota alcuna curva carico-cedimento dalla tabella: cedimento e rigidezze non vengono determinati.",
+    "rectShape": "Sezione rettangolare {{a}} × {{b}} mm: calcolata con A = a · b, perimetro 2 (a + b) e Deq = √(4 · a · b / π). Il programma non determina il fattore s per la forma di una punta del palo rettangolare (a ≠ b); si è calcolato con s = {{s}}. Determinare s secondo la norma e, se necessario, inserirlo come fattore di progetto."
   },
   "table": {
     "errors": {
@@ -170,6 +173,10 @@
     },
     "concrete-auger-cased": {
       "name": "Palo DPA — palo a elica intubata"
+    },
+    "timber-square": {
+      "name": "Palo battuto in legno — quadrato o rettangolare, con o senza prolunga in calcestruzzo",
+      "conditions": "Sezione in legno segato a × b, costante sulla lunghezza; in opzione con prolunga in calcestruzzo fino al giunto. Fattori di classe del palo come per il palo in legno tondo. Il programma non determina il fattore di forma s per una punta del palo rettangolare (a ≠ b)."
     }
   },
   "soil": {
