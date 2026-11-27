@@ -92,6 +92,7 @@ const pileModuleTyped: CalcModule<PileInput, PileResult> = {
       { label: "Rc;net;d", value: kn(r.summary.rcNetD) },
       // Zonder ontwerpbelasting is u.c. 0 en "voldoet" niets zeggend.
       ...(input.nEd > 0 ? [{ label: ct("calcPileCore", "module.checks.capacity", "draagvermogen"), value: `NEd ${kn(input.nEd)}`, uc: r.summary.unityCheck }] : []),
+      ...(r.strength?.governing && Number.isFinite(r.strength.governing.uc) ? [{ label: ct("calcPileCore", "module.checks.strength", "sterkte paal"), value: `NEd;max ${kn(r.strength.nEdMaxKn)}`, uc: r.strength.governing.uc }] : []),
     ];
   },
   buildReport: buildPileReport,

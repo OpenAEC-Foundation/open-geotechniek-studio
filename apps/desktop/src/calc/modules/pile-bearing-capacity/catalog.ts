@@ -52,6 +52,8 @@ export const PILE_TYPE_CATALOG: PileTypeSpec[] = [
   normativeType({ id: "concrete-screw-soil-displacing", name: "Grondverdringende schroefpaal — in de grond gevormd", alphaP: 0, alphaS: 0, alphaT: 0, beta: 1, s: 1, isCircular: true, requiresEA: true, factorsMissing: true, source: NO_TABLE_ROW, conditions: NO_ROW_CONDITIONS }),
   normativeType({ id: "concrete-auger-cased", name: "DPA-paal — verbuisde avegaarpaal", alphaP: 0, alphaS: 0, alphaT: 0, beta: 1, s: 1, isCircular: true, requiresEA: true, factorsMissing: true, source: NO_TABLE_ROW, conditions: NO_ROW_CONDITIONS }),
   normativeType({ id: "timber-uniform", name: "Houten heipaal — rond, met of zonder betonopzetter", alphaP: .7, alphaS: .010, alphaT: .007, beta: 1, s: 1, isCircular: true, material: "wood", requiresEA: true, conditions: "Ronde houten doorsnede, constant of lineair taps vanaf de bovenkant van het hout; optioneel met betonopzetter tot de las. Geen verhoging van paalfactoren wegens coniciteit." }),
+  // Gezaagd hout: dezelfde tabelrij als de ronde houten paal, met een vierkante of rechthoekige doorsnede a × b.
+  normativeType({ id: "timber-square", name: "Houten heipaal — vierkant of rechthoekig, met of zonder betonopzetter", alphaP: .7, alphaS: .010, alphaT: .007, beta: 1, s: 1, isCircular: false, material: "wood", requiresEA: true, conditions: "Gezaagde houten doorsnede a × b, constant over de lengte; optioneel met betonopzetter tot de las. Paalklassefactoren als de ronde houten paal. De vormfactor s voor een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet." }),
 ];
 
 export function getPileType(id: string): PileTypeSpec | undefined {

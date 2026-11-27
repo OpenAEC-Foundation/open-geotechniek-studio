@@ -10,7 +10,8 @@ import { useCptStore } from "../../../../store/useCptStore";
 import { SOIL_DEFAULTS, catalogText, getPileType, pileTypeName, resolvePileType, soilLabel } from "../catalog";
 import type { ConcreteExtension, PileInput, PileResult, PileTypeSpec, SoilKind, SoilLayer } from "../types";
 import { woodTopNap } from "../parts/geometry";
-import { STEEL_TUBE_OD, seriesFor, sizeText } from "../standard-sizes";
+import { STEEL_TUBE_OD, rectText, seriesFor, sizeText } from "../standard-sizes";
+import { CONCRETE_CLASSES, STEEL_GRADES, STRENGTH_DEFAULTS, TIMBER_CLASSES, defaultConcreteClass } from "../parts/strength-check";
 import { PILE_STANDARDS, applyStandard, changeStandard, getStandard, standardLabel, usesHistoricalProcedure, type PileStandard } from "../standards";
 import { PILE_SYSTEMS, applyPileSystem, pileSystemIdOf, pileSystemName, switchPileType, type PileSystem } from "../pile-systems";
 import { PileSketch } from "./PileSketch";
@@ -53,7 +54,12 @@ export function InputPanel({ input, onChange }: Props) {
   };
   const num = (key: keyof PileInput) => (e: { target: { value: string } }) => set(key, +e.target.value as never);
   const updateLayer = (index: number, patch: Partial<SoilLayer>) => set("soilProfile", input.soilProfile.map((layer, i) => i === index ? { ...layer, ...patch } : layer));
-  const changeType = (pileTypeId: string) => onChange?.(switchPileType(input, pileTypeId));
+  // Wissel binnen hout (rond of gezaagd): de betonopzetter blijft zoals hij was.
+  const changeType = (pileTypeId: string) => onChange?.(switchPileType(input, pileTypeId,
+    getPileType(pileTypeId)?.material === "wood" && material === "wood" ? !!input.concreteExtension : true));
+  const sawn = material === "wood" && pileType?.isCircular === false;
+  const strength = input.strengthCheck;
+  const setStrength = (patch: Partial<NonNullable<PileInput["strengthCheck"]>>) => set("strengthCheck", { enabled: true, ...strength, ...patch });
   const ext = input.concreteExtension;
   const series = seriesFor(input.pileTypeId, input.presets);
   const sizes = series.sizes ?? (material === "steel" ? STEEL_TUBE_OD : undefined);
@@ -154,7 +160,24 @@ export function InputPanel({ input, onChange }: Props) {
             ))}
           </select>
         </Row>
-        {sizes && (
+        {material === "wood" && (
+          <Row label={t("pile.woodSection", "Doorsnede")}>
+            <select aria-label={t("pile.woodSection", "Doorsnede")} value={sawn ? "timber-square" : "timber-uniform"} onChange={(e) => changeType(e.target.value)}>
+              <option value="timber-uniform">{t("pile.woodRound", "Rond (heipaal)")}</option>
+              <option value="timber-square" disabled={availability("timber-square", input.standard) !== "ok" && !sawn}>{t("pile.woodSawn", "Vierkant of rechthoekig a × b (gezaagd)")}</option>
+            </select>
+          </Row>
+        )}
+        {sawn && (
+          <Row label={t("pile.standardSize", "Standaardmaat")}>
+            <select aria-label={t("pile.standardSize", "Standaardmaat")} value={series.rect.some(([a, b]) => a === input.diameterMm && b === (input.sideBMm ?? input.diameterMm)) ? `${input.diameterMm}x${input.sideBMm ?? input.diameterMm}` : ""}
+              onChange={(e) => { const [a, b] = e.target.value.split("x").map(Number); if (a > 0 && b > 0) onChange?.({ ...input, diameterMm: a, sideBMm: b === a ? undefined : b }); }}>
+              {!series.rect.some(([a, b]) => a === input.diameterMm && b === (input.sideBMm ?? input.diameterMm)) && <option value="">{t("pile.customSize", "Eigen maat")}</option>}
+              {series.rect.map(([a, b]) => <option key={`${a}x${b}`} value={`${a}x${b}`}>{rectText(a, b)} mm</option>)}
+            </select>
+          </Row>
+        )}
+        {sizes && !sawn && (
           <Row label={material === "steel" ? t("pile.tubeSize", "Buismaat") : t("pile.standardSize", "Standaardmaat")}>
             <select aria-label={material === "steel" ? t("pile.tubeSize", "Buismaat") : t("pile.standardSize", "Standaardmaat")} value={sizes.includes(input.diameterMm) ? String(input.diameterMm) : ""} onChange={(e) => e.target.value && set("diameterMm", Number(e.target.value))}>
               {!sizes.includes(input.diameterMm) && <option value="">{t("pile.customSize", "Eigen maat")}</option>}
@@ -162,9 +185,15 @@ export function InputPanel({ input, onChange }: Props) {
             </select>
           </Row>
         )}
-        <Row label={sizeLabel} unit="mm">
-          <NumField aria-label={`${sizeLabel} [mm]`} min="1" step="any" value={input.diameterMm} onChange={num("diameterMm")} />
+        <Row label={sawn ? t("pile.sideA", "Zijde a") : sizeLabel} unit="mm">
+          <NumField aria-label={`${sawn ? t("pile.sideA", "Zijde a") : sizeLabel} [mm]`} min="1" step="any" value={input.diameterMm} onChange={num("diameterMm")} />
         </Row>
+        {sawn && <>
+          <Row label={t("pile.sideB", "Zijde b")} unit="mm">
+            <NumField aria-label={`${t("pile.sideB", "Zijde b")} [mm]`} min="1" step="any" value={input.sideBMm ?? input.diameterMm} onChange={(e) => set("sideBMm", e.target.value === "" || +e.target.value === input.diameterMm ? undefined : +e.target.value)} />
+          </Row>
+          {input.sideBMm !== undefined && input.sideBMm !== input.diameterMm && <Hint warn>{t("pile.rectHint", "Rechthoek a ≠ b: oppervlak, omtrek en Deq volgen uit a en b; de vormfactor s voor een rechthoekige paalvoet bepaalt het programma niet. Vul s zo nodig in als projectfactor.")}</Hint>}
+        </>}
         {pileType?.material === "wood" && <>
           {ext && <div className="cs-subgroup">
             <Row label={t("extension.joint", "Las (onderkant opzetter)")} unit="m NAP">
@@ -199,10 +228,10 @@ export function InputPanel({ input, onChange }: Props) {
             {ext.jointNap > input.waterNap - 0.5 + 1e-9 && <Hint warn>{t("extension.jointTooHigh", "De las ligt minder dan 0,5 m onder de grondwaterstand (NAP {{water}}): het hout blijft daar niet permanent nat. Kies een langere opzetter.", { water: mm(input.waterNap) })}</Hint>}
             <Hint>{t("extension.perimeterHint", "Boven de las rekent de omtrek van de opzetter, eronder die van het hout.")}</Hint>
           </div>}
-          <label className="cs-check">
+          {!sawn && <label className="cs-check">
             <input type="checkbox" checked={!!input.timberTaper} onChange={e => onChange?.({ ...input, baseDiameterMm: undefined, timberTaper: e.target.checked ? { toeDiameterMm: input.diameterMm, lengthM: +woodLength.toFixed(2) } : undefined })} />
             {t("taper.title", "Tapse houten paal")}
-          </label>
+          </label>}
         </>}
         {input.timberTaper ? <>
           <Row label={t("taper.toeDiameter", "Puntdiameter")} unit="mm">
@@ -245,6 +274,55 @@ export function InputPanel({ input, onChange }: Props) {
         <Row label={<>N<sub>Ek</sub> {t("load.characteristic", "karakteristiek")}</>} unit="kN"><NumField aria-label="NEk [kN]" value={input.nEk} onChange={num("nEk")} /></Row>
         <Row label={<>γ<sub>m</sub> {t("load.materialFactor", "materiaalfactor")}</>}><NumField aria-label="γm" step="0.01" value={input.gammaM} onChange={num("gammaM")} /></Row>
         <Row label={<>γ<sub>f,nk</sub> {t("load.negativeSkinFriction", "negatieve kleef")}</>}><NumField aria-label="γf,nk" step="0.01" value={input.gammaFnk} onChange={num("gammaFnk")} /></Row>
+      </Section>
+
+      <Section title={t("strength.title", "Sterkte van de paal")}>
+        <label className="cs-check">
+          <input type="checkbox" checked={!!strength?.enabled} onChange={(e) => set("strengthCheck", e.target.checked ? { ...strength, enabled: true } : strength ? { ...strength, enabled: false } : undefined)} />
+          {t("strength.enable", "Sterkte van de paal toetsen")}
+        </label>
+        {strength?.enabled && <>
+          {material === "steel" && !pileType?.requiresEA && (
+            <Row label={t("strength.steelGrade", "Staalsoort")}>
+              <select aria-label={t("strength.steelGrade", "Staalsoort")} value={strength.steelGrade ?? STRENGTH_DEFAULTS.steelGrade} onChange={(e) => setStrength({ steelGrade: e.target.value })}>
+                {STEEL_GRADES.map((g) => <option key={g.id} value={g.id}>{g.id}</option>)}
+              </select>
+            </Row>
+          )}
+          {material === "wood" && <>
+            <Row label={t("strength.timberClass", "Sterkteklasse hout")}>
+              <select aria-label={t("strength.timberClass", "Sterkteklasse hout")} value={strength.timberFc0kMpa !== undefined ? "eigen" : strength.timberClass ?? STRENGTH_DEFAULTS.timberClass}
+                onChange={(e) => e.target.value === "eigen" ? setStrength({ timberFc0kMpa: TIMBER_CLASSES.find((c) => c.id === (strength.timberClass ?? STRENGTH_DEFAULTS.timberClass))?.fc0kMpa ?? 18 }) : setStrength({ timberClass: e.target.value, timberFc0kMpa: undefined })}>
+                {TIMBER_CLASSES.map((c) => <option key={c.id} value={c.id}>{c.id} · {sizeText(c.fc0kMpa)} MPa</option>)}
+                <option value="eigen">{t("strength.ownValue", "Eigen waarde")}</option>
+              </select>
+            </Row>
+            {strength.timberFc0kMpa !== undefined && <Row label={<>f<sub>c,0,k</sub></>} unit="MPa"><NumField aria-label="fc,0,k [MPa]" min="0.1" step="0.5" value={strength.timberFc0kMpa} onChange={(e) => setStrength({ timberFc0kMpa: +e.target.value })} /></Row>}
+            <Row label={<>k<sub>mod</sub></>}><NumField aria-label="kmod" min="0.05" max="1.1" step="0.05" value={strength.kMod ?? STRENGTH_DEFAULTS.kMod} onChange={(e) => setStrength({ kMod: +e.target.value })} /></Row>
+            <Row label={<>γ<sub>M</sub> {t("strength.timber", "hout")}</>}><NumField aria-label={`γM ${t("strength.timber", "hout")}`} min="1" step="0.05" value={strength.gammaMTimber ?? STRENGTH_DEFAULTS.gammaMTimber} onChange={(e) => setStrength({ gammaMTimber: +e.target.value })} /></Row>
+          </>}
+          {(material === "concrete" || ext) && pileType && (
+            <Row label={ext ? t("strength.concreteClassExtension", "Betonklasse opzetter") : t("strength.concreteClass", "Betonsterkteklasse")}>
+              <select aria-label={ext ? t("strength.concreteClassExtension", "Betonklasse opzetter") : t("strength.concreteClass", "Betonsterkteklasse")} value={strength.concreteClass ?? defaultConcreteClass(pileType)} onChange={(e) => setStrength({ concreteClass: e.target.value })}>
+                {CONCRETE_CLASSES.map((c) => <option key={c.id} value={c.id}>{c.id}</option>)}
+              </select>
+            </Row>
+          )}
+          <Hint>{material === "wood"
+            ? t("strength.hintTimber", "Druk evenwijdig aan de vezel op N_Ed + F_nk;d (NEN-EN 1995-1-1). k_mod en γ_M: standaard voor permanent nat hout en blijvende belasting. Knik is niet getoetst.")
+            : material === "steel"
+              ? t("strength.hintSteel", "Doorsnedeklasse en normaalkracht van de buis op N_Ed + F_nk;d (NEN-EN 1993-1-1). Knik is niet getoetst: het programma kent geen vrije of slap gesteunde lengte.")
+              : t("strength.hintConcrete", "Normaalkracht van de betondoorsnede op N_Ed + F_nk;d (NEN-EN 1992-1-1), zonder wapening. Knik is niet getoetst.")}</Hint>
+        </>}
+      </Section>
+
+      <Section title={t("report.title", "Uitdraai")}>
+        <Row label={t("report.detail", "Omvang")}>
+          <select aria-label={t("report.detailAria", "Omvang van de uitdraai")} value={input.reportDetail ?? "compact"} onChange={(e) => set("reportDetail", e.target.value === "full" ? "full" : undefined)}>
+            <option value="compact">{t("report.compact", "Beknopt: tabellen")}</option>
+            <option value="full">{t("report.full", "Uitgebreid: volledige afleiding")}</option>
+          </select>
+        </Row>
       </Section>
 
       <Section title={t("skin.title", "Kleefzones")}>

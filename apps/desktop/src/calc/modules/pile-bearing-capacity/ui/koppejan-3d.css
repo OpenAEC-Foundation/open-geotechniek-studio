@@ -30,3 +30,13 @@
 /* Sondering en de paal in 3D naast elkaar; onder elkaar als het paneel smal is. */
 .pile-drawing-split { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 12px; align-items: start; flex: 1 1 auto; min-width: 0; }
 .pile-drawing-split > * { min-width: 0; }
+
+/* Keuze fysiek / rekenkundig en de legenda van de fysieke weergave. */
+.pile-3d-views { display: flex; gap: 1px; }
+.pile-3d-empty { padding-top: 30px; }
+.pile-3d-empty .pile-3d-views { align-self: center; padding: 2px; border: 1px solid var(--theme-border, #e7e5e4); border-radius: 5px; }
+.pile-3d-empty .pile-3d-views button { padding: 2px 9px; border: 0; border-radius: 3px; background: none; color: var(--theme-text-secondary, #71717a); font: 600 0.75rem "Inter", sans-serif; cursor: pointer; }
+.pile-3d-empty .pile-3d-views button.on { color: var(--theme-text, #36363e); background: color-mix(in srgb, var(--theme-accent, #d97706) 18%, transparent); }
+.pile-3d-legend-row { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.pile-3d-legend-row li { display: flex; align-items: center; gap: 6px; }
+.pile-3d-legend-row .pile-3d-swatch { transform: none; }

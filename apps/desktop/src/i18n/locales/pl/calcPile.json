@@ -178,7 +178,13 @@
     "wallThicknessAria": "Grubość ścianki [mm]",
     "woodDiameterAtJoint": "Średnica drewna na styku",
     "system": "System palowy",
-    "standardSize": "Wymiar standardowy"
+    "standardSize": "Wymiar standardowy",
+    "woodSection": "Przekrój",
+    "woodRound": "Okrągły (pal wbijany)",
+    "woodSawn": "Kwadratowy lub prostokątny a × b (tarty)",
+    "sideA": "Bok a",
+    "sideB": "Bok b",
+    "rectHint": "Prostokąt a ≠ b: pole, obwód i Deq wynikają z a i b; program nie wyznacza współczynnika kształtu s dla prostokątnej podstawy pala. W razie potrzeby wprowadź s jako współczynnik projektowy."
   },
   "pilePlan": {
     "button": "Eksportuj dla Pile Plan Studio (CSV)",
@@ -215,7 +221,8 @@
       "sideA": "Bok a",
       "tapered": "{{size}} mm (zbieżny)",
       "title": "Założenia podstawowe",
-      "woodAtJoint": "Drewno na styku"
+      "woodAtJoint": "Drewno na styku",
+      "sidesAB": "Przekrój a × b"
     },
     "negSkin": {
       "cappedNote": "ograniczono do ksMin = {{v}}",
@@ -261,6 +268,15 @@
     "title": "Nośność pala",
     "total": {
       "title": "Maksymalna nośność geotechniczna"
+    },
+    "compact": {
+      "remarks": "Uwagi",
+      "layers": "Wartości pośrednie dla warstw",
+      "results": "Wyniki",
+      "formula": "Wzór",
+      "value": "Wartość",
+      "capacity": "Nośność",
+      "settlement": "Osiadanie"
     }
   },
   "settings": {
@@ -293,7 +309,10 @@
     "sourceAria": "Źródło współczynników projektowych",
     "table": "Tabela",
     "timberToe": "Średnica podstawy pala drewnianego",
-    "useTableValues": "Użyj wartości tabelarycznych"
+    "useTableValues": "Użyj wartości tabelarycznych",
+    "rectSizes": "Drewno tarte a × b",
+    "rectSizesAria": "Szereg drewna tartego a × b [mm]",
+    "rectHint": "Przekroje jako a×b, rozdzielone spacjami; pojedyncza liczba oznacza kwadrat. Wymiary kwadratowe wypełniają także tabelę nośności."
   },
   "shape": {
     "round": "Okrągły",
@@ -383,11 +402,37 @@
     "notComputed": "Brak widoku 3D, dopóki obliczenie nie ma wyniku. Zmień dane lub wróć do 2D.",
     "note": "Poziomy i pal są w skali. Szerokość odcinków jest schematyczna: metoda liczy tylko wzdłuż głębokości.",
     "switch": "Widok rysunku",
-    "switch3dTitle": "Metoda 4D-8D w 3D",
+    "switch3dTitle": "Pal w 3D: widok fizyczny lub obliczeniowy (metoda 4D-8D)",
     "switchBoth": "2D + 3D",
     "switchBothTitle": "Sondowanie i pal w 3D obok siebie",
     "toolbar": "Widok",
-    "unavailable": "3D nie jest dostępne na tym urządzeniu (brak WebGL). Użyj rysunku 2D."
+    "unavailable": "3D nie jest dostępne na tym urządzeniu (brak WebGL). Użyj rysunku 2D.",
+    "viewSwitch": "Rodzaj widoku 3D",
+    "viewPhysical": "Fizyczny",
+    "viewPhysicalTitle": "Pal w rzeczywistej postaci, w warstwach gruntu",
+    "viewCalc": "Obliczeniowy",
+    "viewCalcTitle": "Odcinki I, II i III, strefa zniszczenia, tarcie i qc",
+    "ariaPhysical": "Widok 3D pala w gruncie; przeciąganie obraca, przewijanie powiększa",
+    "noPhysical": "Brak widoku 3D: wymiary pala lub poziomy są nieprawidłowe.",
+    "notePhysical": "Pal, warstwy i poziomy są w skali; blok gruntu jest rozcięty wzdłuż osi pala. Schematycznie: but pala, pręty startowe i zbrojenie, łopata śrubowa, rura rdzeniowa i pierścień spawany. Poza wprowadzonym profilem przedłużono najbliższą warstwę.",
+    "material": {
+      "concrete": "Beton",
+      "steel": "Stal",
+      "wood": "Drewno",
+      "grout": "Zaczyn"
+    },
+    "soil": {
+      "sand": "Piasek",
+      "clay": "Ił",
+      "peat": "Torf"
+    },
+    "physical": {
+      "head": "głowica pala {{nap}}",
+      "water": "woda gruntowa {{nap}}",
+      "excavation": "wykop {{nap}}",
+      "joint": "styk {{nap}}",
+      "excavatedLayer": "{{soil}} (wykopany)"
+    }
   },
   "types": {
     "add": "Dodaj typ pala",
@@ -499,5 +544,59 @@
       "applied": "Zmieniono interpretację warstw: {{n}} przedział(y) sondowania CPT {{cpt}} różnią się od pomiaru.",
       "skipped": "Nie zastosowano {{n}} zmian(y) interpretacji warstw: przedział leży poza sondowaniem CPT lub jest nieprawidłowy."
     }
+  },
+  "strength": {
+    "title": "Wytrzymałość pala",
+    "enable": "Sprawdź wytrzymałość pala",
+    "steelGrade": "Gatunek stali",
+    "timberClass": "Klasa wytrzymałości drewna",
+    "ownValue": "Wartość własna",
+    "timber": "drewno",
+    "concreteClass": "Klasa wytrzymałości betonu",
+    "concreteClassExtension": "Klasa betonu nadstawki",
+    "hintTimber": "Ściskanie wzdłuż włókien pod N_Ed + F_nk;d (EN 1995-1-1). k_mod i γ_M: wartości domyślne dla drewna stale mokrego i obciążenia stałego. Wyboczenie nie jest sprawdzane.",
+    "hintSteel": "Klasa przekroju i siła osiowa rury pod N_Ed + F_nk;d (EN 1993-1-1). Wyboczenie nie jest sprawdzane: program nie zna długości swobodnej ani słabo podpartej.",
+    "hintConcrete": "Siła osiowa przekroju betonowego pod N_Ed + F_nk;d (EN 1992-1-1), bez zbrojenia. Wyboczenie nie jest sprawdzane.",
+    "col": {
+      "article": "Punkt",
+      "demand": "Wartość obliczeniowa",
+      "resistance": "Nośność"
+    },
+    "notesTitle": "Założenia i zakres niesprawdzony",
+    "status": {
+      "ok": "spełnia",
+      "fail": "nie spełnia",
+      "outside": "poza zakresem tego sprawdzenia",
+      "na": "nie sprawdzono",
+      "info": "informacyjnie"
+    },
+    "rows": {
+      "steelClass": "Klasa przekroju rury",
+      "steelAxial": "Siła osiowa w rurze stalowej",
+      "timberAxial": "Drewno: ściskanie wzdłuż włókien",
+      "timberToe": "Drewno: najmniejszy przekrój przy podstawie",
+      "extensionAxial": "Nadstawka betonowa: siła osiowa",
+      "concreteAxial": "Siła osiowa w przekroju betonowym"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, przyjęte od głowicy pala do spodu strefy tarcia negatywnego. Poniżej siła osiowa maleje wskutek dodatniego tarcia na pobocznicy; ta część nie jest sprawdzana.",
+      "steelNoSection": "Nie sprawdzono: przekrój stalowy (rura rdzeniowa, grubość ścianki) nie występuje w danych wejściowych dla tego systemu pali.",
+      "class4": "Klasa przekroju 4: decyduje wyboczenie miejscowe. Wykracza to poza zakres tego sprawdzenia (EN 1993-1-6); nośności nie obliczono.",
+      "class4Short": "Poza zakresem tego sprawdzenia (klasa przekroju 4).",
+      "classIs": "Klasa przekroju {{cls}}.",
+      "steel": "Stal: tylko rura o wprowadzonej grubości ścianki i f_y dla t ≤ 40 mm; wypełnienia betonem nie uwzględniono. Nie sprawdzono: wyboczenia (p. 6.3; moduł nie zna długości swobodnej ani słabo podpartej), korozji (wprowadź pozostałą grubość ścianki), spoin i złączy oraz naprężeń przy wbijaniu.",
+      "timber": "Drewno: klasa wytrzymałości {{cls}} z f_c,0,k = {{fc}} MPa (EN 338); k_mod i γ_M są danymi wejściowymi, domyślnie dla drewna stale mokrego i obciążenia stałego. Nie sprawdzono: wyboczenia (p. 6.3.2), styku z nadstawką, degradacji drewna oraz naprężeń przy wbijaniu.",
+      "timberToe": "Informacyjnie: górne oszacowanie z pełnym N_Ed;max na przekroju przy podstawie. Dodatniego tarcia na pobocznicy powyżej podstawy nie odjęto; rzeczywista siła przy podstawie jest mniejsza.",
+      "concrete": "Beton: N_Rd = A_c · f_cd przekroju trzonu, bez zbrojenia (nie występuje w danych wejściowych). Nie sprawdzono: minimalnego mimośrodu (p. 6.1 (4)), wyboczenia, zbrojenia oraz naprężeń przy wbijaniu.",
+      "concreteInSitu": "Pal formowany w gruncie: zmniejszonej średnicy obliczeniowej (p. 2.3.4.2) i zwiększenia γ_c (p. 2.4.2.5) dla pali bez rury traconej nie zastosowano; nośność należy przeliczyć samodzielnie.",
+      "concreteClassUnknown": "Nieznana klasa wytrzymałości betonu {{cls}}."
+    }
+  },
+  "report": {
+    "title": "Wydruk",
+    "detail": "Zakres",
+    "detailAria": "Zakres wydruku",
+    "compact": "Skrócony: tabele",
+    "full": "Rozszerzony: pełne wyprowadzenie"
   }
 }

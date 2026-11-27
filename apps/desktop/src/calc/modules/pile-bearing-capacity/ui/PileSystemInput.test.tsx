@@ -106,8 +106,8 @@ describe("omtrek per laag in resultaat en uitdraai", () => {
     const table = screen.getAllByRole("table").find((t) => within(t).queryByRole("columnheader", { name: /^Os/ }))!;
     const rows = within(table).getAllByRole("row").slice(1);
     // Laag naast de opzetter 4 × 0,32 = 1,280 m; daaronder het hout π × 0,22 = 0,691 m.
-    expect(within(rows[0]).getByText("1.280")).toBeInTheDocument();
-    expect(within(rows[1]).getByText("0.691")).toBeInTheDocument();
+    expect(within(rows[0]).getByText(/^1[.,]280$/)).toBeInTheDocument();
+    expect(within(rows[1]).getByText(/^0[.,]691$/)).toBeInTheDocument();
   });
 
   it("neemt de omtrek per laag op in de uitdraai", () => {

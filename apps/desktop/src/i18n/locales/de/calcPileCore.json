@@ -3,7 +3,8 @@
     "cptItem": "Sondierung {{id}}",
     "notCalculated": "Nicht berechnet",
     "checks": {
-      "capacity": "Tragfähigkeit"
+      "capacity": "Tragfähigkeit",
+      "strength": "Pfahlfestigkeit"
     }
   },
   "notes": {
@@ -41,7 +42,8 @@
     "pileSizeInvalid": "Die Pfahlabmessung muss endlich und größer als null sein",
     "historicalGroupAnalysis": "Die historische Analyse mit mehreren Sondierungen ist noch nicht verifiziert; verwenden Sie eine einzelne Sondierung",
     "factorsMissing2025": "Für diesen Pfahltyp sind die Pfahlklassenfaktoren der NEN 9997-1:2025 noch nicht in der Tabelle enthalten. Wählen Sie die Ausgabe 2017 oder geben Sie Projektfaktoren ein (Selbsterklärung oder Probebelastung).",
-    "factorsMissingNoRow": "Dieses Pfahlsystem hat keine eigene Zeile in Tabelle 7.c dieser Ausgabe. Geben Sie Projektfaktoren ein (Selbsterklärung oder Probebelastung)."
+    "factorsMissingNoRow": "Dieses Pfahlsystem hat keine eigene Zeile in Tabelle 7.c dieser Ausgabe. Geben Sie Projektfaktoren ein (Selbsterklärung oder Probebelastung).",
+    "rectInvalid": "Ein rechteckiger Querschnitt a × b erfordert einen gesägten Holzpfahl mit positiven Seiten, ohne Verjüngung oder gesondertes Fußmaß"
   },
   "warnings": {
     "factors": "Faktoren: {{edition}}; {{source}}.",
@@ -57,7 +59,8 @@
     "taper": "Holzkonizität: negative und positive Mantelreibung mit dem mittleren Umfang je Schicht. Ohne Betonaufsatz oder Erhöhung infolge Konizität.",
     "deviatingToeSize": "Abweichende Fußabmessung: Prüfen Sie den Pfahlfußformbeiwert β und den zulässigen Mantelreibungsbereich für dieses Herstellverfahren.",
     "qbMaxCapped": "qb;max auf 15 MPa begrenzt (Rohwert {{raw}} MPa)",
-    "settlementLineUnknown": "Für diesen Pfahltyp ist keine Last-Setzungs-Linie aus der Tabelle bekannt: Setzung und Federwerte werden nicht bestimmt."
+    "settlementLineUnknown": "Für diesen Pfahltyp ist keine Last-Setzungs-Linie aus der Tabelle bekannt: Setzung und Federwerte werden nicht bestimmt.",
+    "rectShape": "Rechteckiger Querschnitt {{a}} × {{b}} mm: gerechnet mit A = a · b, Umfang 2 (a + b) und Deq = √(4 · a · b / π). Den Faktor s für die Form eines rechteckigen Pfahlfußes (a ≠ b) bestimmt das Programm nicht; gerechnet wurde mit s = {{s}}. Bestimmen Sie s nach der Norm und geben Sie ihn bei Bedarf als Projektfaktor ein."
   },
   "table": {
     "errors": {
@@ -170,6 +173,10 @@
     },
     "concrete-auger-cased": {
       "name": "DPA-Pfahl — verrohrter Schneckenbohrpfahl"
+    },
+    "timber-square": {
+      "name": "Holzrammpfahl — quadratisch oder rechteckig, mit oder ohne Betonaufsatz",
+      "conditions": "Gesägter Holzquerschnitt a × b, konstant über die Länge; optional mit Betonaufsatz bis zum Stoß. Pfahlklassenfaktoren wie beim runden Holzpfahl. Den Formfaktor s für einen rechteckigen Pfahlfuß (a ≠ b) bestimmt das Programm nicht."
     }
   },
   "soil": {

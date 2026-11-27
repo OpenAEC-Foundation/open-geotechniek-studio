@@ -64,6 +64,7 @@ const HISTORICAL_FACTORS: Record<string, readonly [number, number]> = {
   "concrete-auger": [.8, .006],
   "concrete-bored": [.5, .006],
   "timber-uniform": [1, .010],
+  "timber-square": [1, .010],
 };
 
 /** Paaltype volgens de tabel van 2025. Zonder volledige regel blijft het type

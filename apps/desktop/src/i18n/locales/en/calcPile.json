@@ -178,7 +178,13 @@
     "wallThicknessAria": "Wall thickness [mm]",
     "woodDiameterAtJoint": "Timber diameter at the joint",
     "system": "Pile system",
-    "standardSize": "Standard size"
+    "standardSize": "Standard size",
+    "woodSection": "Cross-section",
+    "woodRound": "Round (driven pile)",
+    "woodSawn": "Square or rectangular a × b (sawn)",
+    "sideA": "Side a",
+    "sideB": "Side b",
+    "rectHint": "Rectangle a ≠ b: area, perimeter and Deq follow from a and b; the program does not determine the shape factor s for a rectangular pile toe. Enter s as a project factor if needed."
   },
   "pilePlan": {
     "button": "Export for Pile Plan Studio (CSV)",
@@ -215,7 +221,8 @@
       "sideA": "Side a",
       "tapered": "{{size}} mm (tapered)",
       "title": "Basic assumptions",
-      "woodAtJoint": "Timber at the joint"
+      "woodAtJoint": "Timber at the joint",
+      "sidesAB": "Cross-section a × b"
     },
     "negSkin": {
       "cappedNote": "capped at ksMin = {{v}}",
@@ -261,6 +268,15 @@
     "title": "Pile bearing capacity",
     "total": {
       "title": "Maximum geotechnical bearing capacity"
+    },
+    "compact": {
+      "remarks": "Remarks",
+      "layers": "Intermediate values per layer",
+      "results": "Results",
+      "formula": "Formula",
+      "value": "Value",
+      "capacity": "Bearing capacity",
+      "settlement": "Settlement"
     }
   },
   "settings": {
@@ -293,7 +309,10 @@
     "sourceAria": "Source of project factors",
     "table": "Table",
     "timberToe": "Timber toe diameter",
-    "useTableValues": "Use table values"
+    "useTableValues": "Use table values",
+    "rectSizes": "Sawn timber a × b",
+    "rectSizesAria": "Range of sawn timber a × b [mm]",
+    "rectHint": "Cross-sections as a×b, separated by spaces; a single number is a square. The square sizes also fill the bearing capacity table."
   },
   "shape": {
     "round": "Round",
@@ -383,11 +402,37 @@
     "notComputed": "There is no 3D view while the calculation has no result. Adjust the input or go back to 2D.",
     "note": "Levels and the pile are to scale. The width of the trajectories is schematic: the method only works along the depth.",
     "switch": "Drawing view",
-    "switch3dTitle": "4D-8D method in 3D",
+    "switch3dTitle": "The pile in 3D: physical or calculation view (4D-8D method)",
     "switchBoth": "2D + 3D",
     "switchBothTitle": "CPT and the pile in 3D side by side",
     "toolbar": "View",
-    "unavailable": "3D is not available on this device (no WebGL). Use the 2D drawing."
+    "unavailable": "3D is not available on this device (no WebGL). Use the 2D drawing.",
+    "viewSwitch": "Type of 3D view",
+    "viewPhysical": "Physical",
+    "viewPhysicalTitle": "The pile as it is, in the soil layers",
+    "viewCalc": "Calculation",
+    "viewCalcTitle": "Trajectories I, II and III, failure body, skin friction and qc",
+    "ariaPhysical": "3D view of the pile in the ground; drag to rotate, scroll to zoom",
+    "noPhysical": "There is no 3D view: the pile dimensions or levels are invalid.",
+    "notePhysical": "Pile, layers and levels are to scale; the soil block is cut open along the pile axis. Schematic: the pile shoe, starter bars and reinforcement, the screw blade, the core tube and the weld ring. Outside the entered profile the nearest layer is extended.",
+    "material": {
+      "concrete": "Concrete",
+      "steel": "Steel",
+      "wood": "Timber",
+      "grout": "Grout"
+    },
+    "soil": {
+      "sand": "Sand",
+      "clay": "Clay",
+      "peat": "Peat"
+    },
+    "physical": {
+      "head": "pile head {{nap}}",
+      "water": "groundwater {{nap}}",
+      "excavation": "excavation {{nap}}",
+      "joint": "joint {{nap}}",
+      "excavatedLayer": "{{soil}} (excavated)"
+    }
   },
   "types": {
     "add": "Add pile type",
@@ -499,5 +544,59 @@
       "applied": "Soil layer interpretation adjusted: {{n}} depth range(s) of CPT {{cpt}} differ from the measurement.",
       "skipped": "{{n}} adjustment(s) of the soil layer interpretation were not applied: the depth range lies outside the CPT or is invalid."
     }
+  },
+  "strength": {
+    "title": "Strength of the pile",
+    "enable": "Check the strength of the pile",
+    "steelGrade": "Steel grade",
+    "timberClass": "Timber strength class",
+    "ownValue": "Custom value",
+    "timber": "timber",
+    "concreteClass": "Concrete strength class",
+    "concreteClassExtension": "Concrete class of extension",
+    "hintTimber": "Compression parallel to the grain under N_Ed + F_nk;d (EN 1995-1-1). k_mod and γ_M: defaults for permanently wet timber and permanent load. Buckling is not checked.",
+    "hintSteel": "Cross-section class and axial force of the tube under N_Ed + F_nk;d (EN 1993-1-1). Buckling is not checked: the program has no free or weakly supported length.",
+    "hintConcrete": "Axial force of the concrete section under N_Ed + F_nk;d (EN 1992-1-1), without reinforcement. Buckling is not checked.",
+    "col": {
+      "article": "Clause",
+      "demand": "Design value",
+      "resistance": "Resistance"
+    },
+    "notesTitle": "Assumptions and what is not checked",
+    "status": {
+      "ok": "satisfies",
+      "fail": "does not satisfy",
+      "outside": "outside the scope of this check",
+      "na": "not checked",
+      "info": "for information"
+    },
+    "rows": {
+      "steelClass": "Cross-section class of tube",
+      "steelAxial": "Axial force in steel tube",
+      "timberAxial": "Timber: compression parallel to the grain",
+      "timberToe": "Timber: smallest cross-section at the toe",
+      "extensionAxial": "Concrete extension: axial force",
+      "concreteAxial": "Axial force in concrete section"
+    },
+    "notes": {
+      "load": "N_Ed;max = N_Ed + F_nk;d, applied from the pile head to the bottom of the negative skin friction zone. Below that the axial force decreases through positive shaft friction; that part is not checked.",
+      "steelNoSection": "Not checked: the steel section (core tube, wall thickness) is not part of the input for this pile system.",
+      "class4": "Cross-section class 4: local buckling governs. This is outside the scope of this check (EN 1993-1-6); the resistance has not been calculated.",
+      "class4Short": "Outside the scope of this check (cross-section class 4).",
+      "classIs": "Cross-section class {{cls}}.",
+      "steel": "Steel: only the tube with the entered wall thickness and f_y for t ≤ 40 mm; a concrete fill is not taken into account. Not checked: buckling (cl. 6.3; the module has no free or weakly supported length), corrosion (enter the remaining wall thickness), welds and couplings, and the driving stresses.",
+      "timber": "Timber: strength class {{cls}} with f_c,0,k = {{fc}} MPa (EN 338); k_mod and γ_M are input, defaults for permanently wet timber and permanent load. Not checked: buckling (cl. 6.3.2), the joint with an extension, decay of the timber and the driving stresses.",
+      "timberToe": "For information: upper bound with the full N_Ed;max on the toe cross-section. The positive shaft friction above the toe has not been deducted; the actual force at the toe is smaller.",
+      "concrete": "Concrete: N_Rd = A_c · f_cd of the shaft cross-section, without reinforcement (it is not part of the input). Not checked: the minimum eccentricity (cl. 6.1 (4)), buckling, the reinforcement and the driving stresses.",
+      "concreteInSitu": "Cast-in-place pile: the reduced design diameter (cl. 2.3.4.2) and the increase of γ_c (cl. 2.4.2.5) for piles without permanent casing have not been applied; convert the resistance for this yourself.",
+      "concreteClassUnknown": "Unknown concrete strength class {{cls}}."
+    }
+  },
+  "report": {
+    "title": "Printout",
+    "detail": "Extent",
+    "detailAria": "Extent of the printout",
+    "compact": "Concise: tables",
+    "full": "Extended: full derivation"
   }
 }

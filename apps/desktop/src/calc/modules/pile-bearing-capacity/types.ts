@@ -1,4 +1,5 @@
 // apps/desktop/src/calc/modules/pile-bearing-capacity/types.ts
+import type { StrengthResult } from "./parts/strength-check";
 import type { AppliedOverride as SharedAppliedOverride, InterpretationOverride as SharedInterpretationOverride } from "../../shared/interpretation/overrides";
 
 /** Soil-type voor neg.kleef + schachtwrijving. */
@@ -66,6 +67,25 @@ export interface PilePresets {
   extensions?: Array<{ sizeMm: number; isCircular: boolean }>;
   extensionLengthsM?: number[];
   timberToeMm?: number;
+  /** Gezaagde houten palen: doorsneden a × b [mm]. */
+  rectSizesMm?: Array<[number, number]>;
+}
+
+/** Optionele toets van de paal als constructie-element op de axiale rekenbelasting. */
+export interface StrengthCheckInput {
+  enabled: boolean;
+  /** Staalsoort van de buis, bv. "S355". Standaard S235. */
+  steelGrade?: string;
+  /** Sterkteklasse van het hout (NEN-EN 338), bv. "C18". */
+  timberClass?: string;
+  /** Eigen karakteristieke druksterkte evenwijdig aan de vezel [MPa]; gaat voor de klasse. */
+  timberFc0kMpa?: number;
+  /** Modificatiefactor; standaard 0,50 (klimaatklasse 3, blijvende belasting). */
+  kMod?: number;
+  /** Materiaalfactor hout; standaard 1,3. */
+  gammaMTimber?: number;
+  /** Betonsterkteklasse van paal of opzetter, bv. "C35/45". */
+  concreteClass?: string;
 }
 
 /**
@@ -105,6 +125,13 @@ export interface PileInput {
   wallThicknessMm: number;     // 8.0 — voor EA
   /** Ontbrekend betekent dezelfde maat als de schacht (bestaande projecten). */
   baseDiameterMm?: number;
+  /** Gezaagd hout: tweede zijde b [mm] van een rechthoekige doorsnede; diameterMm
+   *  is dan zijde a. Ontbrekend = vierkant (b = a). */
+  sideBMm?: number;
+  /** Optionele sterktetoets van de paal; ontbrekend of uit = geen toets. */
+  strengthCheck?: StrengthCheckInput;
+  /** Omvang van rekenblad en uitdraai; ontbrekend = beknopt. */
+  reportDetail?: "compact" | "full";
   /** Hout: lineair verloop vanaf de bovenkant van het hout (paalkop, of de
    *  las bij een betonopzetter) over lengthM, daarna constante puntdiameter. */
   timberTaper?: { toeDiameterMm: number; lengthM: number };
@@ -243,4 +270,6 @@ export interface PileResult {
   settlement: SettlementResult;
   spring: SpringStiffnessResult;
   summary: SummaryResult;
+  /** Sterktetoets van de paal; alleen aanwezig als hij is aangevinkt. */
+  strength?: StrengthResult;
 }

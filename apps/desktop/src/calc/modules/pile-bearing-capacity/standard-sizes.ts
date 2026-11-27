@@ -14,6 +14,14 @@ export const PREFAB_SQUARE = [180, 220, 250, 290, 320, 350, 400, 450];
 /** Houten palen: diameter bij de las of kop [mm]; de punt is standaard Ø150. */
 export const TIMBER_HEAD = [160, 180, 200, 220, 240, 260];
 export const TIMBER_TOE_MM = 150;
+/** Gezaagde houten palen a × b [mm]: een beginreeks van vierkante en rechthoekige
+ *  doorsneden. Geen normreeks; in de instellingen aan te vullen. */
+export const TIMBER_RECT: ReadonlyArray<readonly [number, number]> = [
+  [100, 100], [120, 120], [150, 150], [180, 180], [200, 200], [220, 220], [250, 250], [300, 300],
+  [100, 150], [100, 200], [150, 200], [150, 250], [200, 250], [200, 300],
+];
+/** Opmaak van een doorsnede a × b. */
+export const rectText = (a: number, b: number) => `${sizeText(a)}×${sizeText(b)}`;
 
 /** Betonopzetters op houten palen. */
 export const EXTENSION_PRESETS = [
@@ -33,7 +41,7 @@ export const EXTENSION_LENGTHS_M = [1.5, 2, 2.5, 4];
 export const nearest = (list: readonly number[], v: number) => list.reduce((a, b) => Math.abs(b - v) < Math.abs(a - v) ? b : a, list[0]);
 
 /** Opmaak van een maat met decimale komma (168,3). */
-export const sizeText = (v: number) => String(v).replace(".", ",");
+export function sizeText(v: number) { return String(v).replace(".", ","); }
 
 /** Standaard maatreeks per paaltype; andere typen hebben geen standaardreeks. */
 export const DEFAULT_SIZES: Record<string, number[]> = {
@@ -54,6 +62,7 @@ export interface Presets {
   extensions?: Array<{ sizeMm: number; isCircular: boolean }>;
   extensionLengthsM?: number[];
   timberToeMm?: number;
+  rectSizesMm?: Array<[number, number]>;
 }
 export interface ExtensionPreset { id: string; label: string; sizeMm: number; isCircular: boolean }
 const extensionPreset = (e: { sizeMm: number; isCircular: boolean }): ExtensionPreset => ({
@@ -66,8 +75,12 @@ const extensionPreset = (e: { sizeMm: number; isCircular: boolean }): ExtensionP
 
 /** Reeksen zoals ze voor deze berekening gelden: eigen instellingen, anders de standaard. */
 export function seriesFor(pileTypeId: string, presets?: Presets) {
+  const rect: ReadonlyArray<readonly [number, number]> = presets?.rectSizesMm?.length ? presets.rectSizesMm : TIMBER_RECT;
   return {
-    sizes: presets?.sizesMm?.[pileTypeId] ?? DEFAULT_SIZES[pileTypeId],
+    // Gezaagd hout: de vierkante doorsneden uit de reeks a × b (voor de draagvermogentabel).
+    sizes: pileTypeId === "timber-square" ? [...new Set(rect.filter(([a, b]) => a === b).map(([a]) => a))].sort((a, b) => a - b)
+      : presets?.sizesMm?.[pileTypeId] ?? DEFAULT_SIZES[pileTypeId],
+    rect,
     extensions: (presets?.extensions?.length ? presets.extensions : EXTENSION_PRESETS).map(extensionPreset),
     extensionLengths: presets?.extensionLengthsM?.length ? presets.extensionLengthsM : EXTENSION_LENGTHS_M,
     timberToeMm: presets?.timberToeMm ?? TIMBER_TOE_MM,

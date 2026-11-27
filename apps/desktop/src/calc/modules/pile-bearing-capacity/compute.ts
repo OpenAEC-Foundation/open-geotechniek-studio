@@ -13,6 +13,7 @@ import { pileGeometry, woodTopNap } from "./parts/geometry";
 import { getStandard, usesHistoricalProcedure } from "./standards";
 import { applyOverrides } from "./parts/interpretation-overrides";
 import { digitizedNote } from "../../../digitaliseren/record";
+import { strengthCheck } from "./parts/strength-check";
 
 // E-moduli [N/mm²] voor de axiale paalstijfheid EA.
 //  - Staal: 210 000 (EN 1993-1-1)
@@ -29,11 +30,12 @@ function computeEA_N(
   wallMm: number,
   material: "steel" | "concrete",
   isCircular: boolean,
+  sideBMm?: number,
 ): number {
   const D = diameterMm;
   if (material === "concrete") {
     // Massieve betonpaal — vierkant (a×a) of rond.
-    const A_mm2 = isCircular ? (Math.PI / 4) * D * D : D * D;
+    const A_mm2 = isCircular ? (Math.PI / 4) * D * D : D * (sideBMm ?? D);
     return E_CONCRETE_PREFAB * A_mm2;
   }
   // Stalen buis met gesloten punt — in den natte gevuld met beton:
@@ -133,6 +135,10 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
       ? msg("errors.taperInvalidWithExtension", "Houttapsheid vereist een positieve puntdiameter ≤ houtdiameter bij de las en een tapse lengte binnen het houten deel onder de las")
       : msg("errors.taperInvalid", "Houttapsheid vereist een positieve puntdiameter ≤ kopdiameter en een tapse lengte binnen de paallengte, zonder losse voetmaat"));
   }
+  const sideB = input.sideBMm;
+  if (sideB !== undefined && (pileType.material !== "wood" || pileType.isCircular || !Number.isFinite(sideB) || sideB <= 0 || !!taper || input.baseDiameterMm !== undefined)) {
+    return emptyResult(msg("errors.rectInvalid", "Een rechthoekige doorsnede a × b vereist een gezaagde houten paal met positieve zijden, zonder tapsheid of losse voetmaat"));
+  }
   const baseDiameterMm = taper?.toeDiameterMm ?? input.baseDiameterMm ?? input.diameterMm;
   if (!Number.isFinite(baseDiameterMm) || baseDiameterMm <= 0) return emptyResult(msg("errors.toeSizeInvalid", "Puntafmeting moet positief en eindig zijn"));
   if (pileType.id === "steel-pipe-driven-closed-2017" && baseDiameterMm - input.diameterMm > 20) return emptyResult(msg("errors.footPlateTooWide", "De voetplaat mag voor dit paaltype maximaal 10 mm per zijde uitsteken"));
@@ -187,7 +193,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
 
   // Edge-case: sondering te ondiep
   const lastDepth = cpt.points[cpt.points.length - 1]?.depth ?? 0;
-  const Deq = pileGeometry(baseDiameterMm, pileType.isCircular).equivalentDiameterMm / 1000;
+  const Deq = pileGeometry(baseDiameterMm, pileType.isCircular, sideB).equivalentDiameterMm / 1000;
   if (historical) {
     if (cpt.points.some((p, i) => !Number.isFinite(p.depth) || !Number.isFinite(p.qc) || p.qc! < 0 || (i > 0 && p.depth <= cpt.points[i - 1].depth))) {
       return emptyResult(msg("errors.historicalCptData", "Historische berekening vereist oplopende diepten met volledige, niet-negatieve qc-waarden"));
@@ -212,6 +218,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     method: historical ? "minimum-qb" : "legacy-qci",
     pileToeDepth,
     diameterMm: baseDiameterMm,
+    sideBMm: sideB,
     pileType,
   });
   // Positief schachtwrijvings-traject: van posKleefTopNap (boven, default
@@ -237,6 +244,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     input.wallThicknessMm,
     pileType.material === "concrete" ? "concrete" : "steel",
     pileType.isCircular,
+    sideB,
   );
   const L = input.pileTopNap - input.pileToeNap;
   // ΔL = lengte van het positieve schachtwrijvings-traject; λ (ell) =
@@ -293,6 +301,8 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
   if (taper) warnings.push(ext
     ? msg("warnings.taperWithExtension", "Houttapsheid vanaf de las: positieve kleef met gemiddelde omtrek per laag. Geen verhoging van paalfactoren door coniciteit.")
     : msg("warnings.taper", "Houttapsheid: negatieve en positieve kleef met de gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit."));
+  if (sideB !== undefined && sideB !== input.diameterMm) warnings.push(msg("warnings.rectShape", "Rechthoekige doorsnede {{a}} × {{b}} mm: gerekend met A = a · b, omtrek 2 (a + b) en Deq = √(4 · a · b / π). De factor s voor de vorm van een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet; gerekend is met s = {{s}}. Bepaal s volgens de norm en vul hem zo nodig in als projectfactor.", {
+    a: fmtNumber(Math.min(input.diameterMm, sideB), 0), b: fmtNumber(Math.max(input.diameterMm, sideB), 0), s: fmtNumber(pileType.s, 2) }));
   if (!taper && baseDiameterMm !== input.diameterMm) warnings.push(msg("warnings.deviatingToeSize", "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering."));
   if (base.qbMaxMpaRaw > 15) {
     warnings.push(msg("warnings.qbMaxCapped", "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)", { raw: base.qbMaxMpaRaw.toFixed(2) }));
@@ -307,5 +317,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     settlement,
     spring,
     summary,
+    // Optionele sterktetoets van de paal; uit = het resultaat blijft zoals het was.
+    ...(input.strengthCheck?.enabled ? { strength: strengthCheck(input, pileType, negKleef.fnkD) } : {}),
   };
 }

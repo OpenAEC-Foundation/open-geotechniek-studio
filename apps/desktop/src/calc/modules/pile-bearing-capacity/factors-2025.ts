@@ -52,6 +52,7 @@ export const FACTORS_2025: FactorTable2025 = {
   "concrete-bored": {},
   // Houten paal
   "timber-uniform": {},
+  "timber-square": {},
 };
 
 /** Gangbare typen: zijn deze volledig, dan wordt 2025 de standaard voor nieuwe berekeningen. */

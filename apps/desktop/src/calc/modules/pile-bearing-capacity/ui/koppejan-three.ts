@@ -16,7 +16,7 @@ export interface LabelSprite { sprite: THREE.Sprite; aspect: number; group: Scen
 export interface KoppejanObjects { root: THREE.Group; labels: LabelSprite[] }
 
 /** Tekst als sprite met vaste schermgrootte; null als er geen 2D-canvas is. */
-function textSprite(text: string, colors: SceneColors, align: SceneLabel["align"]): LabelSprite | null {
+export function textSprite(text: string, colors: SceneColors, align: SceneLabel["align"]): LabelSprite | null {
   const canvas = document.createElement("canvas");
   let ctx: CanvasRenderingContext2D | null = null;
   try { ctx = canvas.getContext("2d"); } catch { ctx = null; }
@@ -42,7 +42,7 @@ function textSprite(text: string, colors: SceneColors, align: SceneLabel["align"
   return { sprite, aspect: canvas.width / canvas.height, group: "tip" };
 }
 
-function line(points: Array<[number, number, number]>, color: string, opacity = 1, dashed?: number): THREE.Line {
+export function line(points: Array<[number, number, number]>, color: string, opacity = 1, dashed?: number): THREE.Line {
   const geometry = new THREE.BufferGeometry().setFromPoints(points.map((p) => new THREE.Vector3(...p)));
   const material = dashed
     ? new THREE.LineDashedMaterial({ color, transparent: opacity < 1, opacity, dashSize: dashed, gapSize: dashed * 0.7 })
@@ -59,7 +59,7 @@ function circle(radius: number, y: number): Array<[number, number, number]> {
   });
 }
 
-function translucent(color: string, opacity: number) {
+export function translucent(color: string, opacity: number) {
   return new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide });
 }
 

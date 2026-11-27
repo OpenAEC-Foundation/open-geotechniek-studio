@@ -3,7 +3,8 @@
     "cptItem": "Sondering {{id}}",
     "notCalculated": "Niet berekend",
     "checks": {
-      "capacity": "draagvermogen"
+      "capacity": "draagvermogen",
+      "strength": "sterkte paal"
     }
   },
   "notes": {
@@ -41,7 +42,8 @@
     "pileSizeInvalid": "De paalafmeting moet eindig en groter dan nul zijn",
     "historicalGroupAnalysis": "Historische paalgroepanalyse is nog niet geverifieerd; gebruik één sondering",
     "factorsMissing2025": "Voor dit paaltype zijn de paalklassefactoren van NEN 9997-1:2025 nog niet in de tabel opgenomen. Kies de editie 2017 of vul projectfactoren in (zelfverklaring of proefbelasting).",
-    "factorsMissingNoRow": "Dit paalsysteem heeft geen eigen rij in tabel 7.c van deze editie. Vul projectfactoren in (zelfverklaring of proefbelasting)."
+    "factorsMissingNoRow": "Dit paalsysteem heeft geen eigen rij in tabel 7.c van deze editie. Vul projectfactoren in (zelfverklaring of proefbelasting).",
+    "rectInvalid": "Een rechthoekige doorsnede a × b vereist een gezaagde houten paal met positieve zijden, zonder tapsheid of losse voetmaat"
   },
   "warnings": {
     "factors": "Factoren: {{edition}}; {{source}}.",
@@ -57,7 +59,8 @@
     "taper": "Houttapsheid: negatieve en positieve kleef met de gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit.",
     "deviatingToeSize": "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering.",
     "qbMaxCapped": "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)",
-    "settlementLineUnknown": "Voor dit paaltype is geen lastzakkingslijn uit de tabel bekend: zakking en veerwaarden worden niet bepaald."
+    "settlementLineUnknown": "Voor dit paaltype is geen lastzakkingslijn uit de tabel bekend: zakking en veerwaarden worden niet bepaald.",
+    "rectShape": "Rechthoekige doorsnede {{a}} × {{b}} mm: gerekend met A = a · b, omtrek 2 (a + b) en Deq = √(4 · a · b / π). De factor s voor de vorm van een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet; gerekend is met s = {{s}}. Bepaal s volgens de norm en vul hem zo nodig in als projectfactor."
   },
   "table": {
     "errors": {
@@ -170,6 +173,10 @@
     },
     "concrete-auger-cased": {
       "name": "DPA-paal — verbuisde avegaarpaal"
+    },
+    "timber-square": {
+      "name": "Houten heipaal — vierkant of rechthoekig, met of zonder betonopzetter",
+      "conditions": "Gezaagde houten doorsnede a × b, constant over de lengte; optioneel met betonopzetter tot de las. Paalklassefactoren als de ronde houten paal. De vormfactor s voor een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet."
     }
   },
   "soil": {

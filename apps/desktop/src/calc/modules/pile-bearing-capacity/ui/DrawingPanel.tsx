@@ -34,14 +34,15 @@ export function DrawingPanel(props: PanelProps<PileInput, PileResult>) {
       <div className="pile-drawing-switch" role="group" aria-label={t("view3d.switch", "Weergave van de tekening")}>
         {button("2d", "2D")}
         {button("both", t("view3d.switchBoth", "2D + 3D"), t("view3d.switchBothTitle", "Sondering en de paal in 3D naast elkaar"))}
-        {button("3d", "3D", t("view3d.switch3dTitle", "4D-8D-methode in 3D"))}
+        {button("3d", "3D", t("view3d.switch3dTitle", "De paal in 3D: fysiek of rekenkundig (4D-8D-methode)"))}
       </div>
       {mode === "2d" && <VisualPanel {...props} />}
-      {mode === "3d" && <KoppejanView3D input={props.input} result={props.result} />}
+      {mode === "3d" && <KoppejanView3D input={props.input} result={props.result} storageKey="3d" />}
       {mode === "both" && (
         <div className="pile-drawing-split">
           <VisualPanel {...props} />
-          <KoppejanView3D input={props.input} result={props.result} initialFocus="pile" />
+          {/* Naast de sondering standaard de paal zoals hij is; de rekenkundige weergave is één klik verder. */}
+          <KoppejanView3D input={props.input} result={props.result} initialFocus="pile" initialView="physical" storageKey="both" />
         </div>
       )}
     </div>
