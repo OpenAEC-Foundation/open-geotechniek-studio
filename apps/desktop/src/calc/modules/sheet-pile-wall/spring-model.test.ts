@@ -47,4 +47,17 @@ describe("verenmodel", () => {
     const r = solveSpringWall({ lengthM: 4, eiKnM2: 1e6, elements });
     expect(r.elements[0].supportKnM).toBeCloseTo(20, 1); expect(r.elements[39].supportKnM).toBeCloseTo(20, 1);
   });
+
+  it("volgende fase vanaf de vervormde stand: de plastische verplaatsing blijft", () => {
+    // Fase 1 (zie hierboven): q = 20 kPa, links actief op 4 kPa, rechts 24 kPa, y = 14 mm.
+    // Fase 2 zonder belasting, de veren beginnen op hun stand: links p = 4 − k·(y − 0,014), rechts p = 24 + k·(y − 0,014).
+    // Evenwicht 4 − 1000·d = 24 + 1000·d geeft d = −0,010 m: y = 4 mm en aan beide zijden 14 kPa, niet terug naar 0.
+    const y1 = 0.014, left = { p0: 4, pa: 4, pp: 100, k: 1000, w0: -y1 }, right = { p0: 24, pa: 0, pp: 50, k: 1000, w0: y1 };
+    const r = solveSpringWall({ lengthM: 4, eiKnM2: 1e7, elements: uniform(4, 40, left, right, 0) });
+    expect(r.converged).toBe(true);
+    for (const e of r.elements) { expect(e.yM).toBeCloseTo(0.004, 6); expect(e.left!.pressureKpa).toBeCloseTo(14, 3); expect(e.right!.pressureKpa).toBeCloseTo(14, 3); expect(e.left!.state).toBe("elastic"); }
+    // Zelfde belasting als fase 1 en de stand van fase 1: er verandert niets.
+    const same = solveSpringWall({ lengthM: 4, eiKnM2: 1e7, elements: uniform(4, 40, left, right, 20) });
+    for (const e of same.elements) { expect(e.yM).toBeCloseTo(y1, 6); expect(e.right!.pressureKpa).toBeCloseTo(24, 3); }
+  });
 });
