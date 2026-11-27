@@ -7,7 +7,7 @@ NEN-EN 1993-5, NEN-EN 1995-1-1, NEN-EN 338) lagen bij het bouwen niet op tafel: 
 daaruit komt is uit kennis van de norm geschreven en staat in hoofdstuk 7 als open punt.
 
 Tests: `earth-pressure.test.ts`, `blum.test.ts`, `spring-model.test.ts`, `compute.test.ts`,
-`reference-cases.test.ts`, `module.test.tsx`.
+`grout-anchor.test.ts`, `grout-anchor-ui.test.tsx`, `reference-cases.test.ts`, `module.test.tsx`.
 
 ## 1. Opzet
 
@@ -65,9 +65,17 @@ Elastisch ondersteunde ligger met aan beide zijden grondveren:
 
     σ′hoog = σ′0 − kh·y,  σ′laag = σ′0 + kh·y,  elk begrensd tot σ′a ≤ σ′ ≤ σ′p
 
-met y positief naar de lage zijde en één beddingsconstante kh per laag. Het waterdrukverschil
-is belasting. Een anker of stempel is een lineaire veer: horizontaal k·cos²α / h.o.h. per m wand,
-of star.
+met y positief naar de lage zijde. Per laag één beddingsconstante (één tak), of de drietakkige
+veer van CUR 166 met kh1, kh2 en kh3. Bij drie takken zijn het secanswaarden vanaf het actieve
+punt: de druk bereikt 50 %, 80 % en 100 % van (σ′p − σ′a) na een verplaatsing van 0,5·Δp/kh1,
+0,8·Δp/kh2 en Δp/kh3; de lijn wordt verschoven tot hij bij y = 0 door de neutrale druk gaat. Die
+lezing van de drie takken is niet tegen de tekst van CUR 166 gelegd, maar reproduceert de
+afgedrukte berekening van hoofdstuk 6.2 (moment, dwarskracht, verplaatsing en de som van de
+gronddruk aan beide zijden) binnen 3 %.
+
+Het waterdrukverschil is belasting. Een anker of stempel is een lineaire veer: horizontaal
+k·cos²α / h.o.h. per m wand, of star; bij een groutanker met de voorspankracht als beginkracht
+(kracht = k·y + voorspanning).
 
 De ligger wordt opgelost door de liggeroplosser van de module voor horizontaal belaste palen
 (`laterally-loaded-pile/beam.ts`, ongewijzigd geïmporteerd). Die kent per element een constante
@@ -97,6 +105,9 @@ kent alleen een symmetrische veer zonder beginspanning.
 | Zelfde wand, q = 20 kPa: hoge zijde valt op de actieve grens (4 kPa) | lage zijde 24 kPa, y = 14,0 mm | 24,0 kPa, 14,0 mm |
 | q = 60 kPa bij een grootste weerstand van 46 kPa | overschot 14 kPa · 4 m = 56 kN/m | 56 kN/m |
 | Stijve wand op twee steunen | elk de helft van de belasting | gelijk |
+| Zelfde, één steun met 5 kN voorspanning, k = 10⁵ kN/m | beide 20 kN; y = 0,15 en 0,20 mm | gelijk |
+| Drie takken, σ′a = 0, σ′p = 100, k = 20 000 / 10 000 / 5 000: knikpunten | 2,5, 8 en 20 mm | gelijk |
+| Stijve wand tegen die veer, 40, 65 en 90 kPa | 2,0, 5,25 en 14,0 mm (tak 1, 2, 3) | gelijk |
 | Voorbeelden (damwand verankerd en onverankerd, planken, palen): ΣH = 0, drukken binnen de grenzen, M = 0 aan kop en teen | sluit | binnen 0,5 % van de passieve weerstand |
 
 Het verenmodel tegen Blum, met dezelfde rekenwaarden (voorbeeld in zand, 4 m kerende hoogte):
@@ -177,9 +188,42 @@ Toetsen:
   (1964) voor een losse paal in niet-cohesieve grond; het is invoer. Moment en dwarskracht per
   paal zijn de uitkomst per m wand maal de h.o.h.-afstand. Het schot: ligger op twee steunpunten
   met overspanning h.o.h. en de grootste druk op het schot, M = q·a²/8 en V = q·a/2.
+- **Buigstijfheid**: een reductiefactor op EI (invoer, standaard 1,0) voor U-planken zonder
+  volledige schuifkrachtoverdracht in de sloten.
+- **Water**: γw is invoer (standaard 10 kN/m³). Wateroverspanning per laag, lineair van de
+  bovenkant naar de onderkant van de laag, boven op de hydrostatische druk; de onderste laag
+  houdt de bovenwaarde.
 - **Passieve weerstand**: de som van de korreldruk aan de lage zijde uit het verenmodel tegen de
   som van de passieve korreldruk.
 - **Inheidiepte**: aanwezige lengte onder de ontgraving tegen wat Blum vraagt.
+
+### Groutanker
+
+Soort steun: stempel (horizontaal, naar de lage zijde), ankerstaaf naar een ankerschot of ankerpaal
+(veerstijfheid als invoer, of star) of groutanker.
+
+| Grootheid | Formule |
+|---|---|
+| Veerstijfheid per anker | k = E·A / L_vrij |
+| Horizontaal per m wand | k·cos²α / h.o.h. |
+| Voorspanning in de wand | P0·cos α / h.o.h. als beginkracht van de veer |
+| Ankerkracht per anker | F = F_h · h.o.h. / cos α |
+| Normaalkracht in de wand | F_h · tan α, telt mee in de toets buiging met normaalkracht |
+| Rekenwaarde ankerkracht | F_A;d = factor · F (factor is invoer, voorstel 1,25) |
+| Trekelement | R_t;d = A·f / γs, met f = f_p0,1k (strengen) of f_y (staaf); γs invoer, voorstel 1,15 |
+| Houdkracht groutlichaam | R_a;k = π·D·L_grout·τ; R_a;d = R_a;k / γa; τ is invoer, γa invoer, voorstel 1,1 |
+| Actief glijvlak | vanaf de teen onder θ = 45° + φ′gem;d / 2, φ′ gewogen naar laagdikte over de hoogte van de wand |
+| Vrije lengte minstens | L = (z_anker − z_teen) / (tan θ·cos α + sin α): het snijpunt van de ankerlijn met het glijvlak |
+
+Verder meldt de module als het groutlichaam boven het maaiveld uitkomt of door een laag gaat met
+φ′ < 27,5° of een ongedraineerde laag, en geeft ze de lengte van het groutlichaam per laag.
+
+Controle in `grout-anchor.test.ts`: 4 strengen van 150 mm² (A = 600 mm², E = 195 000 N/mm²),
+6 m vrij: k = 19 500 kN/m, horizontaal 5223 kN/m per m bij 30° en h.o.h. 2,8 m. Staal:
+600·1600/1,15 = 834,8 kN. Groutlichaam rond 150 mm, 6 m, τ = 200 kPa: 565,5 kN, gedeeld door 1,1
+is 514,1 kN. Ligging: begin op 5,196 m achter de wand op NAP −4,0 m; het snijpunt met het
+glijvlak ligt op het glijvlak (hoogte boven de teen = afstand · tan θ). Met voorspanning sluit
+het horizontale evenwicht en is de ankerkracht k·y + voorspanning.
 
 Controle in `compute.test.ts`, met de hand uitgeschreven: spanningen in gelaagde grond met water
 (σv = 47, u = 5, σ′a = 14, σ′0 = 21, σ′p = 126 kPa), open water boven de bodem, de ongedraineerde
@@ -211,39 +255,87 @@ Kerende hoogte 10 m, anker op 3 m onder de kop, bovenbelasting 10 kPa, geen gron
 Met de onafgeronde coëfficiënten (0,2710 en 3,690) geeft de module D = 2,82 m, A = 171,8 kN/m en
 Mmax = 356,6 kNm/m. De test eist 2 %.
 
-### 6.2 Onverankerde stalen damwand langs een rivier (nagerekend, met verschillen)
+### 6.2 Onverankerde stalen damwand langs een rivier (nagerekend en verklaard)
 
 Bron: damwandberekening van een permanente grond- en waterkering, 2022,
 <https://repository.officiele-overheidspublicaties.nl/externebijlagen/exb-2023-30219/currentItem>.
-Profiel GU 8N in S240GP, bovenkant NAP +20,50 m, teen NAP +13,00 m; water NAP +20,44 m (hoog) en
-NAP +18,65 m (laag); bodem lage zijde NAP +18,65 m; vier lagen (dijksmateriaal, opgebracht zand,
-zandhoudende klei, vast zand en grind) met δ = ⅔φ′ en drie beddingsconstanten per laag;
-factorset RC3. De buigstijfheid van de module (25 221 kNm²/m) is gelijk aan die in de bron.
+Het stuk is voor dit hoofdstuk zelf gelezen (tekstlaag, 28 pagina's). De bron is een externe
+referentie-berekening met een verenmodel; zij drukt de representatieve berekening (stap 6.5)
+volledig af, met de gronddruk per segment aan beide zijden, en geeft van de berekening met
+rekenwaarden (stap 6.3 en 6.4) de uitkomsten.
 
-De bron rekent met een verenmodel uit een extern geotechnisch software-pakket. De module wijkt
-af in de invoer: één beddingsconstante per laag (hier de eerste tak), een vlak maaiveld achter
-de wand (de bron heeft een aflopend maaiveld), geen stappenplan met lage en hoge stijfheid, en de
-factoren en toeslagen van hoofdstuk 5 in plaats van die van de bron.
+Invoer van de bron: profiel GU 8N in S240GP, bovenkant NAP +20,50 m, teen NAP +13,00 m;
+EI = 2,5221·10⁴ kNm²/m met een reductiefactor 0,66 (1,6646·10⁴); water NAP +20,44 m (hoog) en
+NAP +18,65 m (laag), γw = 9,81 kN/m³; bodem lage zijde NAP +18,65 m; vier lagen met δ = ⅔φ′ en drie
+beddingsconstanten; aan de lage zijde een wateroverspanning per laag (0 tot 5,37 kPa in het zand,
+5,37 tot 17,56 kPa in de klei, 17,56 kPa in het grind: de stijghoogte loopt met de diepte op
+naar het rivierpeil); passieve gronddruk met rechte glijvlakken (Kp = 5,74 voor het zand);
+maaiveld achter de wand na 2 m aflopend. Rekenwaarden: RC3 met γφ′ = 1,2, γc′ = 1,4, lage
+beddingsconstanten gedeeld door 1,3, kerende hoogte +10 % (hooguit 0,5 m), water hoge zijde
++0,05 m en lage zijde −0,25 m; stap 6.5 maal 1,35 als extra toets.
+
+**Eerste stap: de rekenkern los van de gronddruk.** Met de gronddrukken, waterdrukken en
+beddingsconstanten zoals de bron ze afdrukt, geeft `spring-model.ts`:
+
+| Stap 6.5 | Bron | Rekenkern met de drukken van de bron |
+|---|---|---|
+| Moment | 50,03 kNm/m | 49,7 kNm/m |
+| Dwarskracht | −28,48 en +26,96 kN/m | −28,4 en +27,2 kN/m |
+| Verplaatsing kop en teen | 31,4 en 1,6 mm | 30,6 en 1,7 mm |
+| Korreldruk links en rechts | 100,1 en 180,8 kN/m | 100,0 en 180,7 kN/m |
+
+De liggeroplosser, de iteratie en de drietakkige veer zijn dus in orde; het verschil van de
+eerste versie zat in de invoer van het model. (Deze proef is eenmalig gedaan en zit niet in de
+tests, omdat ze de tabellen van de bron zou moeten overnemen.)
+
+**Tweede stap: de module met de invoer van de bron** (`reference-cases.test.ts`). De enige
+afwijking die overblijft is het maaiveld achter de wand: hier vlak, in de bron aflopend.
 
 | | Bron | Module | Verschil |
 |---|---|---|---|
-| Moment | 89,75 kNm/m | 76,4 kNm/m | −15 % |
-| Dwarskracht | 48,93 kN/m | 35,1 kN/m | −28 % |
-| Verplaatsing (representatief) | 31,4 mm | 15,6 mm | −50 % |
-| Aangesproken passieve weerstand | 62,3 % | 57,9 % | −4 procentpunt |
+| Stap 6.5: moment | 50,03 kNm/m | 49,9 kNm/m | −0,3 % |
+| Stap 6.5: dwarskracht | −28,48 kN/m | −28,5 kN/m | 0 % |
+| Stap 6.5: verplaatsing kop | 31,4 mm | 30,1 mm | −4 % |
+| Stap 6.5: aangesproken weerstand | 35,6 % | 38,6 % | +3 procentpunt |
+| Stap 6.3: moment | 89,75 kNm/m | 87,7 kNm/m | −2,3 % |
+| Stap 6.3: dwarskracht | 48,93 kN/m | 48,1 kN/m | −1,7 % |
+| Stap 6.3: aangesproken weerstand | 62,3 % | 64,5 % | +2 procentpunt |
 
-Varianten van de module: met de waterstandstoeslag die in zulke rapporten gangbaar is (hoog
-+0,05 m, laag −0,25 m) wordt het moment 81,2 kNm/m en de dwarskracht 37,5 kN/m; met de derde tak
-van de beddingsconstante wordt de verplaatsing 19,1 mm en verandert het moment minder dan 1 %.
-Blum geeft met dezelfde rekenwaarden 76,9 kNm/m.
+Ook de tussenwaarden kloppen: Kp van het zand 5,74, waterspanning aan de lage zijde 31,37 kPa op
+NAP +16,00 m en 66,89 kPa op NAP +13,00 m, passieve korreldruk 115,9 kPa op NAP +16,17 m. De
+test eist 5 % op moment en dwarskracht en 10 % op de verplaatsing.
 
-Conclusie: moment, dwarskracht en aangesproken weerstand liggen in dezelfde orde maar **lager dan
-de bron**, en de verplaatsing is de helft. De verplaatsing is verklaarbaar (één lineaire tak is
-stijver dan de drietakkige veer); voor het verschil in moment en dwarskracht is geen oorzaak
-aangewezen. Mogelijke oorzaken zijn de factoren en toeslagen van de bron, een andere passieve
-coëfficiënt en het stappenplan. Dit geval is dus geen bevestiging van het verenmodel, wel een
-maat voor hoe ver de eerste versie van een volledige berekening af ligt. De test legt het
-verschil vast (binnen 30 %, aan de lage kant) en toetst de verplaatsing niet tegen de bron.
+**Waar het verschil van de eerste versie vandaan kwam** (representatief; moment in kNm/m):
+
+| Stap | Moment | Verplaatsing kop |
+|---|---|---|
+| Eerste versie: één tak, hydrostatisch, volle EI, gekromd glijvlak, γw = 10 | 45,4 | 15,6 mm |
+| Passief met het rechte glijvlak, zoals de bron (Kp 5,74 in plaats van 4,63) | 39,5 | 12,3 mm |
+| Wateroverspanning aan de lage zijde, γw = 9,81 | 48,5 | 17,5 mm |
+| Drie takken | 50,6 | 22,3 mm |
+| EI maal 0,66 | 49,9 | 30,1 mm |
+
+1. **Wateroverspanning aan de lage zijde: +23 % op het moment.** Dit was de oorzaak aan de
+   onveilige kant. De bron laat de stijghoogte aan de lage zijde met de diepte oplopen; dat
+   verhoogt daar de waterdruk en verlaagt de korrelspanning en dus de passieve weerstand. De
+   eerste versie rekende hydrostatisch. Hersteld: wateroverspanning per laag is invoer, en zonder
+   die invoer waarschuwt de module bij een waterstandsverschil met dit getal erbij.
+2. **Glijvlak voor de passieve gronddruk: −13 %.** De bron rekent passief met rechte glijvlakken
+   bij δ = ⅔φ′ en verlaagt δ alleen boven φ′ = 30° (35° wordt 16,6°). De module rekent bij δ > φ′/3
+   met het gekromde glijvlak van bijlage C.2 en komt lager uit (4,63 tegen 5,74). Dit compenseerde
+   in de eerste versie een deel van punt 1. Het is geen fout maar een keuze, en de module is hier
+   strenger: met het gekromde glijvlak en verder de invoer van de bron is er met rekenwaarden
+   geen evenwicht. Welke van de twee CUR 166 voorschrijft is niet nagelopen (hoofdstuk 7).
+3. **Drie takken: +4 % op het moment, +27 % op de verplaatsing.** Hersteld: kh2 en kh3 zijn invoer.
+4. **Reductie op EI: moment vrijwel gelijk, verplaatsing +35 %.** Hersteld: reductiefactor is invoer.
+5. **Rekenwaarden**: de bron deelt de beddingsconstanten door 1,3 en past de waterstanden aan
+   (+0,05 en −0,25 m); beide zijn in de module in te stellen en staan in de sets op 1,0 en 0.
+6. **Aflopend maaiveld achter de wand**: niet in de module. In dit geval is het effect klein
+   (de module zit met vlak maaiveld binnen 3 % van de bron).
+
+De −15 % op het moment en −28 % op de dwarskracht uit de eerste versie zijn daarmee verklaard.
+De dwarskracht week meer af omdat de grootste dwarskracht in de bron onder in de wand ligt, waar
+de wateroverspanning het zwaarst telt.
 
 ### 6.3 Niet nagerekend
 
@@ -262,23 +354,34 @@ verschil vast (binnen 30 %, aan de lage kant) en toetst de verplaatsing niet teg
 | Partiële factoren per RC (γφ′, γc′, γcu) | tabel in hoofdstuk 5 | uit kennis van NEN 9997-1 tabel A.4 voor damwanden; γφ′ met vertrouwen, γc′ en γcu minder zeker |
 | Factor op volumegewicht, bovenbelasting, beddingsconstante | 1,0 | aanname; aanpasbaar |
 | Toeslag op de kerende hoogte | 10 %, hooguit 0,50 m | NEN-EN 1997-1 art. 9.3.2.2; de Nederlandse invulling niet nagelopen |
-| Toeslag op de waterstanden | 0 (openbare rapporten gebruiken vaak +0,05 en −0,25 m) | niet nagelopen; aanpasbaar |
+| Toeslag op de waterstanden | 0 (de berekening van 6.2 gebruikt +0,05 en −0,25 m) | niet nagelopen; aanpasbaar |
+| Factor op de beddingsconstante | 1,0 (de berekening van 6.2 deelt de lage waarden door 1,3) | niet nagelopen; aanpasbaar |
 | Stappenplan 6.1 tot en met 6.5 van CUR 166, lage en hoge stijfheid, factor op de uitkomst van de representatieve berekening | niet aanwezig | niet in deze versie |
-| Beddingsconstanten CUR 166 tabel 3.3 | geen tabelwaarden; invoer | bewust weggelaten |
-| Regel δ > φ′/3 voor het gekromde glijvlak | als keuze "auto" | uit kennis van CUR 166 |
+| Beddingsconstanten CUR 166 tabel 3.3 | geen tabelwaarden; invoer (één of drie per laag) | bewust weggelaten |
+| Regel δ > φ′/3 voor het gekromde glijvlak | als keuze "auto" | uit kennis van CUR 166; de openbare berekening van 6.2 rekent passief met rechte glijvlakken en een verlaagde δ boven φ′ = 30°. De module is met "auto" strenger; welke regel de publicatie geeft is niet nagelopen |
+| Drietakkige veer: secanswaarden vanaf het actieve punt, knikken op 50 en 80 % | hoofdstuk 3 | niet tegen CUR 166 gelegd; reproduceert de afgedrukte berekening van 6.2 |
+| Groutanker: extra factor 1,25 op de ankerkracht | invoer | zo gebruikt in openbare rapporten; niet tegen NEN 9997-1 en CUR 166 gelegd |
+| Groutanker: γs = 1,15 en γa = 1,1 | invoer | γs uit NEN-EN 1992-1-1 voor voorspanstaal, γa uit NEN-EN 1997-1 tabel A.12 (aanbevolen waarde); de Nederlandse bijlage en de ξ-factoren voor proeven niet nagelopen |
+| Groutanker: schachtwrijving | invoer, geen afleiding uit de conusweerstand | bewust weggelaten |
+| Groutanker: glijvlak vanaf de teen onder 45° + φ′/2, zonder extra marge | hoofdstuk 5 | gangbare schematisering; de eis van CUR 166 (vertrekpunt en marge) niet nagelopen |
+| Trekelementen Y1860S7 (1600 / 195 000), Y1050H (950 / 205 000), B500B (500 / 200 000) | keuzelijst | uit kennis van de productnormen; aanpasbaar |
+| Laag "draagkrachtig" voor het groutlichaam: φ′ ≥ 27,5° en gedraineerd | alleen een melding | eigen grens, geen normwaarde |
 | Formules bijlage C.2 | hoofdstuk 2 | uit kennis van de norm; getoetst op de grenzen, niet op een tabelwaarde |
 | NEN-EN 1993-5: Av, interactie M-N (1,11 en 1,33, grenzen 0,10 en 0,25), βB | hoofdstuk 5 | uit kennis van de norm |
 | NEN-EN 338 sterkteklassen (fm;k, fv;k, E0;mean) | C18 tot D70 | uit kennis van de norm; aanpasbaar |
 | kmod klimaatklasse 3 (0,50), γM = 1,3, kcr = 0,67 | standaard | uit kennis van NEN-EN 1995-1-1; kcr volgens de nationale bijlage niet nagelopen |
 | Factor ruimtelijke werking 3 (Broms) | standaard, invoer | geldt voor een losse paal in niet-cohesieve grond; voor klei en voor palen dicht bij elkaar niet onderbouwd |
-| Plattegrond van het stalen profiel in 3D | plankbreedte, wandhoogte en plaatdikten uit de bibliotheek; flensbreedte geschat, sloten niet getekend | tekenmaat, geen rekenwaarde |
+| Vorm van het stalen profiel in de tekeningen | hoofdstuk 9 | b, h, t en s uit de tabel; flensbreedte en lijfhoek afgeleid uit A en I; slotvorm schematisch |
 
 ## 8. Niet in deze versie
 
 - Fasering, voorspanning, meer dan één ankerrij, uitval van een anker.
-- De drietakkige veer (kh1, kh2, kh3) en het stappenplan van CUR 166.
+- Het stappenplan 6.1 tot en met 6.5 van CUR 166 (lage en hoge stijfheid, stap 6.5 maal een factor);
+  de ontlasttak van de veer.
+- Bij een groutanker: de stabiliteit van het diepe glijvlak (Kranz), de afleiding van de
+  schachtwrijving uit de sondering, beproeving, kruip en de vrije lengte met een extra marge.
 - Hellend maaiveld, taluds, een aflopende waterbodem, belastingen op afstand van de wand.
-- Grondwaterstroming om de teen en het effect daarvan op de korrelspanning; stijghoogten per laag.
+- Een berekening van de grondwaterstroming om de teen: de wateroverspanning per laag is invoer.
 - Verticaal evenwicht, algehele stabiliteit, opbarsten en onderloopsheid.
 - Ontwerp van ankerstaaf, groutlichaam, ankerschot en gording; stabiliteit van het ankerlichaam.
 - Corrosie, plooi en doorsnedeklasse 4 van koudgevormde profielen, reductie van het moment bij
@@ -288,3 +391,41 @@ verschil vast (binnen 30 %, aan de lage kant) en toetst de verplaatsing niet teg
 - Beschoeiing van palen met schotten met een verankerde paal; schotten van een ander materiaal
   dan hout.
 - De uitdraai is in het Nederlands; de teksten op het scherm zijn vertaald.
+
+## 9. Profielvorm in de tekeningen
+
+De contour van een stalen damwandprofiel komt uit één functie, `calc/library/sheetPileContour.ts`,
+die de doorsnede, het detail in de invoer en de uitdraai, de 3D-weergave en de schets in de module
+voor horizontaal belaste palen voedt.
+
+Wat maatvast is: de plankbreedte b, de wandhoogte h, de flensdikte t en de lijfdikte s uit de
+profieltabel, en de plaats van het slot per soort (Z: aan de flens op de buitenvezel; U: op de
+neutrale lijn van de wand). De platen zijn getekend met hun dikte en met verstek in de knikken.
+
+Wat de openbare profieltabellen niet geven: de breedte van de flens, de hoek van het lijf, de
+afrondingen en de vorm van het slot. Nagelopen is de tabel met technische gegevens van de
+warmgewalste U-profielen van één van de fabrikanten in de bibliotheek (tien pagina's, volledig
+gelezen): kolommen W, gewicht, I, t, s, h, b en de doorsnedeklasse, en per profiel A, omtrek, S,
+I en de traagheidsstraal per m wand en per plank. De algemene catalogus van de fabrikant van de
+Z- en de overige U-profielen was te groot om binnen te halen en is niet gelezen; de bibliotheek
+zelf noemt uit die catalogus ook alleen b, h, t en s. De velden `flangeWidthMm`, `webAngleDeg`
+en `cornerRadiusMm` bestaan in de bibliotheek, maar zijn voor elk profiel leeg.
+
+In plaats van een geschatte flens rekent de contour de flensbreedte terug uit de tabel: de
+breedte waarbij vlakke platen met de diktes t en s, plus het slot als puntmassa op zijn plaats,
+precies de A en de I van de tabel geven (bij U volgt de flens uit I en het slot uit A; bij Z
+beide samen). Dat is een afgeleide maat en geen fabrieksmaat; de tekening heet dan
+"schematisch" en zegt dat erbij. De lijfhoek volgt uit de flensbreedte. Het slot is een blokje
+met de afgeleide doorsnede. Hoedprofielen, vlakke profielen en profielen zonder volledige
+tabelwaarden houden een vaste verhouding (flens 40 % van de plankbreedte).
+
+Controle (`sheetPileContour.test.ts`): voor alle Z- en U-profielen met volledige tabelwaarden
+liggen de A en de I die uit de getekende omtrek volgen (veelhoeken, formules van Green) binnen
+2 % van de bibliotheek. Omdat de flens uit dezelfde A en I is afgeleid, toetst dit de
+contourfunctie en het terugrekenen, niet de fabrieksmaten; een tikfout in b, h, t of s vangt de
+test alleen als het platenmodel er niet meer op past. Koudgevormde profielen zitten niet in de
+bibliotheek.
+
+Beschoeiing: houten planken met messing en groef (een derde van de dikte, schematisch), een
+eigen doorsnede als rechte plank; palen rond of vierkant op hun hart-op-hartafstand met de
+schotten aan de hoge zijde; de gording op het niveau van het anker.

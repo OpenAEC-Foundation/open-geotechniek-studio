@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import type { SceneLayer, WallScene } from "./scene";
+import { clipLine, type SceneLayer, type WallScene } from "./scene";
 
 export function WallScene3D({ scene: latest }: { scene: WallScene }) {
   const { t } = useTranslation("calcWall");
@@ -20,7 +20,7 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     if (!container || unavailable) return;
     let renderer: THREE.WebGLRenderer;
     try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); } catch { setUnavailable(true); return; }
-    const scene = new THREE.Scene(), hw = s.halfWidthM, len = s.lengthM, mid = (s.topNap + s.bottomNap) / 2, size = Math.max(hw, len, s.topNap - s.bottomNap);
+    const scene = new THREE.Scene(), hw = s.halfWidthM, hh = s.extentHighM, len = s.lengthM, mid = (s.topNap + s.bottomNap) / 2, size = Math.max(hw, hh * 0.7, len, s.topNap - s.bottomNap);
     // Scène-assen: x dwars op de wand (hoge zijde negatief), y omhoog (NAP min het midden), z langs de wand naar de kijker.
     const y = (nap: number) => nap - mid;
     const camera = new THREE.PerspectiveCamera(36, 1, 0.01, size * 60);
@@ -48,15 +48,19 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     };
     const nap = (v: number) => `NAP ${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(2).replace(".", ",")}`;
     const block = (l: SceneLayer, x0: number, x1: number, nameAt: "left" | "right") => {
-      const geometry = new THREE.BoxGeometry(x1 - x0, l.topNap - l.bottomNap, len);
-      const soil = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: new THREE.Color(l.color).lerp(white, 0.5), polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }));
-      soil.position.set((x0 + x1) / 2, y((l.topNap + l.bottomNap) / 2), -len / 2);
+      // In de plattegrond: de rand aan de wand volgt de hartlijn van de planken, zodat de grond in de golf sluit.
+      const edgeLine = clipLine(s.wallLine, s.frontM, s.frontM + len), far = nameAt === "left" ? x0 : x1;
+      const shape = new THREE.Shape([new THREE.Vector2(far, 0), ...edgeLine.map((q) => new THREE.Vector2(q.x, q.a - s.frontM)), new THREE.Vector2(far, len)]);
+      const geometry = new THREE.ExtrudeGeometry(shape, { depth: l.topNap - l.bottomNap, bevelEnabled: false });
+      geometry.rotateX(-Math.PI / 2); geometry.translate(0, y(l.bottomNap), 0);
+      const see = nameAt === "left" && s.support?.kind === "grout";
+      const soil = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: new THREE.Color(l.color).lerp(white, 0.5), polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, transparent: see, opacity: see ? 0.35 : 1, depthWrite: !see }));
       scene.add(soil);
       const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geometry), new THREE.LineBasicMaterial({ color: new THREE.Color(l.color).multiplyScalar(0.55) }));
-      edges.position.copy(soil.position); scene.add(edges);
+      scene.add(edges);
       label(l.name, new THREE.Vector3(nameAt === "left" ? x0 + 0.02 * size : x1 - 0.02 * size, y(l.topNap) - 0.04 * size, face), ink, nameAt === "left" ? "left" : "right");
     };
-    for (const l of s.high.layers) block(l, -hw, 0, "left");
+    for (const l of s.high.layers) block(l, -hh, 0, "left");
     for (const l of s.low.layers) block(l, 0, hw, "right");
 
     // Waterstanden: een doorschijnend vlak boven het maaiveld, en een streeplijn op het snijvlak eronder.
@@ -70,26 +74,25 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
         line.computeLineDistances(); line.renderOrder = 3; scene.add(line);
       }
     };
-    water(s.high.waterNap, s.high.surfaceNap, -hw, 0); water(s.low.waterNap, s.low.surfaceNap, 0, hw);
-    label(`${labels.ground} ${nap(s.high.surfaceNap)}`, new THREE.Vector3(-hw - 0.03 * size, y(s.high.surfaceNap), face), ink, "right");
-    label(`${labels.water} ${nap(s.high.waterNap)}`, new THREE.Vector3(-hw - 0.03 * size, y(s.high.waterNap), face), "#2563eb", "right");
+    water(s.high.waterNap, s.high.surfaceNap, -hh, 0); water(s.low.waterNap, s.low.surfaceNap, 0, hw);
+    label(`${labels.ground} ${nap(s.high.surfaceNap)}`, new THREE.Vector3(-hh - 0.03 * size, y(s.high.surfaceNap), face), ink, "right");
+    label(`${labels.water} ${nap(s.high.waterNap)}`, new THREE.Vector3(-hh - 0.03 * size, y(s.high.waterNap), face), "#2563eb", "right");
     label(nap(s.low.surfaceNap), new THREE.Vector3(hw + 0.03 * size, y(s.low.surfaceNap), face), ink, "left");
     label(`${labels.water} ${nap(s.low.waterNap)}`, new THREE.Vector3(hw + 0.03 * size, y(s.low.waterNap) - (Math.abs(s.low.waterNap - s.low.surfaceNap) < 0.06 * size ? 0.06 * size : 0), face), "#2563eb", "left");
-    label(`${labels.toe} ${nap(s.toeNap)}`, new THREE.Vector3(-hw - 0.03 * size, y(s.toeNap), face), ink, "right");
+    label(`${labels.toe} ${nap(s.toeNap)}`, new THREE.Vector3(-hh - 0.03 * size, y(s.toeNap), face), ink, "right");
 
     // De planken: elk recht stuk van de plattegrond als plaat over de volle hoogte van de wand.
     const sheet = s.construction === "sheet-pile";
     const steel = sheet ? new THREE.MeshStandardMaterial({ color: 0x5b6470, roughness: 0.55, metalness: 0.5 }) : new THREE.MeshStandardMaterial({ color: 0x8a6239, roughness: 0.9 }), edge = new THREE.LineBasicMaterial({ color: sheet ? 0x1f2937 : 0x3f2a14 });
     const wallHeight = s.wallTopNap - s.toeNap;
-    for (const p of s.plates) {
-      const length = Math.hypot(p.a1 - p.a0, p.x1 - p.x0);
-      if (length < 1e-6) continue;
-      const geometry = new THREE.BoxGeometry(Math.max(p.thicknessM, 0.004 * size), wallHeight, length + p.thicknessM);
-      const plate = new THREE.Mesh(geometry, steel);
-      plate.position.set((p.x0 + p.x1) / 2, y((s.wallTopNap + s.toeNap) / 2), s.frontM - (p.a0 + p.a1) / 2);
-      plate.rotation.y = Math.atan2(p.x1 - p.x0, -(p.a1 - p.a0));
-      scene.add(plate);
-      const outline = new THREE.LineSegments(new THREE.EdgesGeometry(geometry), edge); outline.position.copy(plate.position); outline.rotation.copy(plate.rotation); scene.add(outline);
+    // De planken: de echte omtrek uit de plattegrond, geëxtrudeerd over de hoogte van de wand; de sloten donkerder.
+    const lockMaterial = new THREE.MeshStandardMaterial({ color: 0x374151, roughness: 0.5, metalness: 0.5 });
+    for (const o of s.outlines) {
+      const shape = new THREE.Shape(o.points.map((q) => new THREE.Vector2(q.x, q.a - s.frontM)));
+      const geometry = new THREE.ExtrudeGeometry(shape, { depth: wallHeight, bevelEnabled: false });
+      geometry.rotateX(-Math.PI / 2); geometry.translate(0, y(s.toeNap), 0);
+      scene.add(new THREE.Mesh(geometry, o.kind === "lock" ? lockMaterial : steel));
+      scene.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 30), edge));
     }
     // Palen met schotten: de palen tot de teen, de schotten aan de hoge zijde tot hun onderkant.
     const body = (geometry: THREE.BufferGeometry, at: THREE.Vector3) => {
@@ -106,18 +109,28 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
 
     // Ankers of stempels op hun hart-op-hartafstand.
     const rod = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.6 });
-    for (const a of s.anchors) {
-      const angle = (a.angleDeg * Math.PI) / 180, strut = a.angleDeg === 0, dir = strut ? 1 : -1, length = strut ? hw : a.lengthM;
-      const from = new THREE.Vector3(dir * s.wallHeightM / 2, y(a.levelNap), -a.alongM), to = new THREE.Vector3(dir * (s.wallHeightM / 2 + length * Math.cos(angle)), y(a.levelNap) - length * Math.sin(angle), -a.alongM);
-      const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.012 * size, 0.012 * size, from.distanceTo(to), 12), rod);
-      bar.position.copy(from.clone().add(to).multiplyScalar(0.5));
-      bar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize());
-      scene.add(bar);
-      const plateHead = new THREE.Mesh(new THREE.BoxGeometry(0.02 * size, 0.06 * size, 0.06 * size), rod); plateHead.position.set(-dir * (s.wallHeightM / 2 + 0.01 * size), y(a.levelNap), -a.alongM); scene.add(plateHead);
+    const groutMaterial = new THREE.MeshStandardMaterial({ color: 0x9ca3af, roughness: 0.9 });
+    if (s.support) for (const along of s.anchors) {
+      const sup = s.support, angle = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, free = strut ? hw : sup.freeM;
+      const at = (length: number) => new THREE.Vector3(dir * (s.wallHeightM / 2 + length * Math.cos(angle)), y(sup.levelNap) - length * Math.sin(angle), -along);
+      const rodBetween = (from: THREE.Vector3, to: THREE.Vector3, radius: number, material: THREE.Material) => {
+        const bar = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, from.distanceTo(to), 14), material);
+        bar.position.copy(from.clone().add(to).multiplyScalar(0.5));
+        bar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize());
+        scene.add(bar);
+      };
+      rodBetween(at(0), at(free), Math.max(0.012 * size, 0.02), rod);
+      if (sup.groutM > 0) rodBetween(at(free), at(free + sup.groutM), Math.max(sup.groutDiameterM / 2, 0.02 * size), groutMaterial);
+      const plateHead = new THREE.Mesh(new THREE.BoxGeometry(0.02 * size, 0.06 * size, 0.06 * size), rod); plateHead.position.set(-dir * (s.wallHeightM / 2 + 0.01 * size), y(sup.levelNap), -along); scene.add(plateHead);
+    }
+    // Actief glijvlak op het snijvlak, gestippeld.
+    if (s.slip) {
+      const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-s.wallHeightM / 2, y(s.toeNap), face), new THREE.Vector3(-s.wallHeightM / 2 - s.slip.reachM, y(Math.min(s.wallTopNap, s.high.surfaceNap)), face)]);
+      const line = new THREE.Line(geometry, new THREE.LineDashedMaterial({ color: 0xb91c1c, dashSize: 0.02 * size, gapSize: 0.015 * size })); line.computeLineDistances(); line.renderOrder = 4; scene.add(line);
     }
     // Bovenbelasting als pijlen op het maaiveld van de hoge zijde.
     if (s.surchargeKpa > 0) for (let n = 0; n < 4; n++) for (let m = 0; m < 3; m++)
-      scene.add(new THREE.ArrowHelper(new THREE.Vector3(0, -1, 0), new THREE.Vector3(-hw + ((n + 0.5) * (hw - s.wallHeightM)) / 4, y(s.high.surfaceNap) + 0.09 * size, -((m + 0.5) * len) / 3), 0.085 * size, 0x1d4ed8, 0.03 * size, 0.018 * size));
+      scene.add(new THREE.ArrowHelper(new THREE.Vector3(0, -1, 0), new THREE.Vector3(-Math.min(hw, hh) + ((n + 0.5) * (Math.min(hw, hh) - s.wallHeightM)) / 4, y(s.high.surfaceNap) + 0.09 * size, -((m + 0.5) * len) / 3), 0.085 * size, 0x1d4ed8, 0.03 * size, 0.018 * size));
 
     const lost = (event: Event) => { event.preventDefault(); setUnavailable(true); };
     const resize = () => { const w = Math.max(1, container.clientWidth), h = Math.max(1, container.clientHeight); camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h); render(); };
@@ -140,7 +153,7 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
   return <>
     <div className="sw-scene" ref={host} />
     <p className="cs-hint">{s.construction === "sheet-pile"
-      ? t("visual.sceneHint", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de wand steekt ervoor uit. Plankbreedte, wandhoogte en plaatdikten komen uit de profielbibliotheek; de breedte van de flens is geschat en de sloten zijn niet getekend. Oranje: anker of stempel. Sleep om te draaien, scroll om te zoomen.")
+      ? `${t("visual.sceneHint", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de wand steekt ervoor uit. Plankbreedte, wandhoogte en plaatdikten komen uit de profielbibliotheek. Oranje: anker of stempel. Sleep om te draaien, scroll om te zoomen.")} ${s.contourBasis === "table" ? "" : t("visual.contourSchematic", "Profielvorm schematisch: de fabriekstabellen geven de flensbreedte, de lijfhoek en de slotvorm niet; de flensbreedte is afgeleid uit A en I, het slot is een blokje.")}`
       : t("visual.sceneHintRevetment", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de beschoeiing steekt ervoor uit. Plankdikte, paalafmeting, hart-op-hartafstand en schotten staan op schaal; de plankbreedte is een tekenmaat. Oranje: anker met gording. Sleep om te draaien, scroll om te zoomen.")}</p>
   </>;
 }

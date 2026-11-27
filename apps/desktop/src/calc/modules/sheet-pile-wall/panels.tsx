@@ -2,13 +2,14 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { PanelProps } from "../../framework/types";
-import { Hint, More, NumberInput, Row, Section } from "../../framework/views/SheetForm";
+import { Hint, More, NumField, NumberInput, Row, Section } from "../../framework/views/SheetForm";
 import { useCptStore } from "../../../store/useCptStore";
 import { numberLocale } from "../../i18n";
 import { SHEET_PILE_GRADES, sheetPileCatalog } from "../../library/sheetPiles";
 import { SOIL_TYPES, getSoilType } from "../spread-foundation/catalog";
 import type { BlumCase } from "./blum";
-import { DEFAULT_FACTORS, FACTOR_SETS, TIMBER_CLASSES, normalizeWallInput, revetmentExample, wallExample, wallLayersFromCpt, type WallCheck, type WallFactors, type WallInput, type WallLayer, type WallResult, type WallRun } from "./compute";
+import { DEFAULT_FACTORS, FACTOR_SETS, GAMMA_WATER, TENDON_GRADES, TIMBER_CLASSES, normalizeWallInput, revetmentExample, wallExample, wallLayersFromCpt, type WallCheck, type WallFactors, type WallInput, type WallLayer, type WallResult, type WallRun } from "./compute";
+import { ProfileDetail } from "./ProfileDetail";
 import { SectionDrawing } from "./SectionDrawing";
 import { WallScene3D } from "./WallScene3D";
 import { wallScene } from "./scene";
@@ -24,6 +25,15 @@ const FACTOR_FIELDS: Array<[keyof WallFactors, string, string, boolean?]> = [
   ["deltaAPct", "Toeslag op de kerende hoogte", "%", true], ["deltaAMaxM", "Grootste toeslag", "m", true], ["deltaWaterHighM", "Water hoge zijde hoger", "m", true], ["deltaWaterLowM", "Water lage zijde lager", "m", true],
 ];
 
+function ExcessTable({ layers, onChange, caption }: { layers: WallLayer[]; onChange: (next: WallLayer[]) => void; caption: string }) {
+  const { t } = useTranslation("calcWall");
+  const cell = (k: number, key: "excessTop" | "excessBottom", name: string) =>
+    <td><NumberInput label={`${name}, ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} value={layers[k][key] ?? 0} onChange={(v) => onChange(layers.map((l, j) => (j === k ? { ...l, [key]: v } : l)))} /></td>;
+  return <div className="cs-table-wrap"><table className="cs-layer-table sw-excess" aria-label={`${t("input.excess", "Wateroverspanning")}, ${caption}`}>
+    <thead><tr><th>{t("input.excess", "Wateroverspanning")} ({caption})</th><th>{t("input.excessTop", "boven")}<small>kPa</small></th><th>{t("input.excessBottom", "onder")}<small>kPa</small></th></tr></thead>
+    <tbody>{layers.map((l, k) => <tr key={k}><td>{l.name}</td>{cell(k, "excessTop", t("input.excessTop", "boven"))}{cell(k, "excessBottom", t("input.excessBottom", "onder"))}</tr>)}</tbody></table></div>;
+}
+
 function LayerTable({ layers, onChange, caption }: { layers: WallLayer[]; onChange: (next: WallLayer[]) => void; caption: string }) {
   const { t } = useTranslation("calcWall");
   const set = (k: number, patch: Partial<WallLayer>) => onChange(layers.map((l, j) => (j === k ? { ...l, ...patch } : l)));
@@ -31,16 +41,18 @@ function LayerTable({ layers, onChange, caption }: { layers: WallLayer[]; onChan
   const add = () => { const last = layers[layers.length - 1], s = SOIL_TYPES[1]; onChange([...layers, { topNap: round2((last?.topNap ?? 0) - 2), name: s.name, soilId: s.id, gamma: s.gamma, gammaSat: s.gammaSat, phi: s.phi, c: s.c, delta: Math.round((s.phi * 2) / 3 * 10) / 10, undrained: false, cu: s.cu, kh: 0 }]); };
   const cell = (k: number, key: "topNap" | "gamma" | "gammaSat" | "phi" | "c" | "delta" | "cu" | "kh", name: string, min?: number) =>
     <td><NumberInput label={`${name} ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} min={min} value={layers[k][key]} onChange={(v) => set(k, { [key]: v })} /></td>;
+  const optional = (k: number, key: "kh2" | "kh3", name: string) =>
+    <td><NumField aria-label={`${name} ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} placeholder="–" value={layers[k][key] ?? ""} onChange={(e) => { const v = Number(e.target.value); set(k, { [key]: e.target.value === "" || !(v > 0) ? undefined : v }); }} /></td>;
   return <>
     <div className="cs-table-wrap"><table className="cs-layer-table sw-layers" aria-label={caption}>
       <thead><tr><th>{t("input.col.top", "Bovenkant")}<small>m NAP</small></th><th>{t("input.col.soil", "Grondsoort")}</th><th>γ<small>kN/m³</small></th><th>γsat<small>kN/m³</small></th><th>φ′<small>°</small></th><th>c′<small>kPa</small></th><th>δ<small>°</small></th>
-        <th><abbr title={t("input.col.undrainedTitle", "Reken deze laag ongedraineerd met cu")}>{t("input.col.undrained", "ongedr.")}</abbr></th><th>cu<small>kPa</small></th><th><abbr title={t("input.col.khTitle", "Horizontale beddingsconstante; eigen invoer")}>kh</abbr><small>kN/m³</small></th><th /></tr></thead>
+        <th><abbr title={t("input.col.undrainedTitle", "Reken deze laag ongedraineerd met cu")}>{t("input.col.undrained", "ongedr.")}</abbr></th><th>cu<small>kPa</small></th><th><abbr title={t("input.col.khTitle", "Horizontale beddingsconstante; eigen invoer")}>kh1</abbr><small>kN/m³</small></th><th><abbr title={t("input.col.kh2Title", "Tweede en derde tak van de veer (tot 80 % en tot 100 % van passief min actief); leeg = één tak")}>kh2</abbr><small>kN/m³</small></th><th>kh3<small>kN/m³</small></th><th /></tr></thead>
       <tbody>{layers.map((l, k) => <tr key={k}>
         {cell(k, "topNap", t("input.col.top", "Bovenkant"))}
         <td><select aria-label={`${t("input.col.soil", "Grondsoort")} ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} value={l.soilId ?? ""} onChange={(e) => setSoil(k, e.target.value)}>{!l.soilId && <option value="">{l.name || t("input.ownValues", "Eigen waarden")}</option>}{SOIL_TYPES.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></td>
         {cell(k, "gamma", "γ", 0)}{cell(k, "gammaSat", "γsat", 0)}{cell(k, "phi", "φ′", 0)}{cell(k, "c", "c′", 0)}{cell(k, "delta", "δ", 0)}
         <td><input type="checkbox" aria-label={`${t("input.col.undrained", "ongedr.")} ${t("input.layerN", "laag {{n}}", { n: k + 1 })}, ${caption}`} checked={l.undrained} onChange={(e) => set(k, { undrained: e.target.checked })} /></td>
-        {cell(k, "cu", "cu", 0)}{cell(k, "kh", "kh", 0)}
+        {cell(k, "cu", "cu", 0)}{cell(k, "kh", "kh1", 0)}{optional(k, "kh2", "kh2")}{optional(k, "kh3", "kh3")}
         <td><button type="button" className="sw-remove" aria-label={`${t("input.removeLayer", "Laag verwijderen")} ${k + 1}, ${caption}`} disabled={layers.length < 2} onClick={() => onChange(layers.filter((_, j) => j !== k))}>×</button></td>
       </tr>)}</tbody></table></div>
     <div className="sw-buttons"><button type="button" onClick={add}>{t("input.addLayer", "Laag toevoegen")}</button></div>
@@ -57,6 +69,8 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
   const cpt = i.cptId ? cpts.get(i.cptId) : undefined;
   const f = { ...DEFAULT_FACTORS, ...i.factors }, a = i.anchor;
   const setAnchor = (patch: Partial<WallInput["anchor"]>) => change({ anchor: { ...a, ...patch } });
+  const kind = a.kind ?? "tie", g = a.grout!;
+  const setGrout = (patch: Partial<NonNullable<WallInput["anchor"]["grout"]>>) => setAnchor({ grout: { ...g, ...patch } });
   const setPosts = (patch: Partial<WallInput["posts"]>) => change({ posts: { ...i.posts, ...patch } });
   const setTimber = (patch: Partial<WallInput["timber"]>) => change({ timber: { ...i.timber, ...patch } });
   const setCustom = (patch: Partial<WallInput["custom"]>) => change({ custom: { ...i.custom, ...patch } });
@@ -122,15 +136,35 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
       {num("input.wallTop", "Bovenkant wand", "m NAP", i.wallTopNap, (v) => change({ wallTopNap: v }))}
       {num("input.toe", "Teenniveau", "m NAP", i.toeNap, (v) => change({ toeNap: v }))}
       {r.ok && <Hint>{t("input.wallHint", "{{name}}: lengte {{l}} m; EI = {{ei}} kNm²/m wand; {{props}}.", { name: r.section.label, l: fmt(r.lengthM, 2), ei: fmt(r.eiKnM2, r.eiKnM2 < 100 ? 1 : 0), props: r.section.properties.map(([k, v]) => `${k.replace(/_/g, "")} = ${v}`).join("; ") })}</Hint>}
+      {r.ok && sheet && r.section.profile && <ProfileDetail profile={r.section.profile} />}
     </Section>
     {!posts && <Section title={t("input.support", "Anker of stempel")}>
       <label className="cs-check"><input type="checkbox" checked={a.enabled} onChange={(e) => setAnchor({ enabled: e.target.checked })} /> {t("input.supportEnabled", "Eén ankerrij of stempel")}</label>
       {a.enabled && <>
+        <Row label={t("input.supportKind", "Soort steun")}><select aria-label={t("input.supportKind", "Soort steun")} value={kind} onChange={(e) => setAnchor({ kind: e.target.value as NonNullable<WallInput["anchor"]["kind"]> })}>
+          <option value="strut">{t("input.kindStrut", "Stempel")}</option><option value="tie">{t("input.kindTie", "Ankerstaaf naar ankerschot of ankerpaal")}</option><option value="grout">{t("input.kindGrout", "Groutanker")}</option></select></Row>
         {num("input.supportLevel", "Niveau", "m NAP", a.levelNap, (v) => setAnchor({ levelNap: v }))}
-        {num("input.supportAngle", "Hoek met de horizontaal", "°", a.angleDeg, (v) => setAnchor({ angleDeg: v }), 0, t("input.supportAngleTitle", "Omlaag positief; 0° is een stempel naar de lage zijde"))}
+        {kind !== "strut" && num("input.supportAngle", "Hoek met de horizontaal", "°", a.angleDeg, (v) => setAnchor({ angleDeg: v }), 0, t("input.supportAngleTitle", "Omlaag positief"))}
         {num("input.supportSpacing", "Hart-op-hartafstand", "m", a.spacingM, (v) => setAnchor({ spacingM: v }), 0.01)}
-        <label className="cs-check"><input type="checkbox" checked={a.rigid} onChange={(e) => setAnchor({ rigid: e.target.checked })} /> {t("input.supportRigid", "Starre steun")}</label>
-        {!a.rigid && num("input.supportStiffness", "Veerstijfheid per anker", "kN/m", a.stiffnessKnPerM, (v) => setAnchor({ stiffnessKnPerM: v }), 0.01, t("input.supportStiffnessTitle", "Axiale stijfheid E·A/L van één anker of stempel"))}
+        {kind !== "grout" && <label className="cs-check"><input type="checkbox" checked={a.rigid} onChange={(e) => setAnchor({ rigid: e.target.checked })} /> {t("input.supportRigid", "Starre steun")}</label>}
+        {kind !== "grout" && !a.rigid && num("input.supportStiffness", "Veerstijfheid per anker", "kN/m", a.stiffnessKnPerM, (v) => setAnchor({ stiffnessKnPerM: v }), 0.01, t("input.supportStiffnessTitle", "Axiale stijfheid E·A/L van één anker of stempel"))}
+        {kind === "grout" && <>
+          {num("input.groutFree", "Vrije ankerlengte", "m", g.freeLengthM, (v) => setGrout({ freeLengthM: v }), 0.01)}
+          {num("input.groutLength", "Lengte van het groutlichaam", "m", g.groutLengthM, (v) => setGrout({ groutLengthM: v }), 0.01)}
+          {num("input.groutDiameter", "Diameter van het groutlichaam", "mm", g.diameterMm, (v) => setGrout({ diameterMm: v }), 1)}
+          <Row label={t("input.tendon", "Trekelement")}><select aria-label={t("input.tendon", "Trekelement")} value={TENDON_GRADES.some((x) => x.id === g.gradeId && x.fMPa === g.fMPa && x.eMPa === g.eMPa) ? g.gradeId : ""} onChange={(e) => { const x = TENDON_GRADES.find((y) => y.id === e.target.value); if (x) setGrout({ gradeId: x.id, tendonType: x.type, fMPa: x.fMPa, eMPa: x.eMPa }); }}>
+            <option value="">{t("input.ownValues", "Eigen waarden")}</option>{TENDON_GRADES.map((x) => <option key={x.id} value={x.id}>{`${x.type === "strand" ? t("input.strands", "Strengen") : t("input.bar", "Staaf")} ${x.name}`}</option>)}</select></Row>
+          {num("input.tendonArea", "Doorsnede staal A", "mm²", g.areaMm2, (v) => setGrout({ areaMm2: v }), 1, t("input.tendonAreaTitle", "Staaf: π·d²/4. Strengen: aantal maal de doorsnede van één streng (bijvoorbeeld 150 mm² voor 15,7 mm)"))}
+          {num("input.tendonStrength", "Rekgrens fp0,1k of fy", "N/mm²", g.fMPa, (v) => setGrout({ fMPa: v }), 1)}
+          {num("input.tendonE", "Elasticiteitsmodulus staal", "N/mm²", g.eMPa, (v) => setGrout({ eMPa: v }), 1)}
+          {num("input.prestress", "Voorspankracht per anker", "kN", g.prestressKn, (v) => setGrout({ prestressKn: v }), 0, t("input.prestressTitle", "0 = niet voorgespannen"))}
+          {num("input.shaftFriction", "Schachtwrijving groutlichaam", "kPa", g.shaftFrictionKpa, (v) => setGrout({ shaftFrictionKpa: v }), 0, t("input.shaftFrictionTitle", "Representatieve wrijving langs het groutlichaam, uit proefbelastingen, ervaring of de conusweerstand; eigen invoer"))}
+          {num("input.anchorLoadFactor", "Extra factor op de ankerkracht", "", g.loadFactor, (v) => setGrout({ loadFactor: v }), 0.01)}
+          {num("input.gammaSteel", "γs staal", "", g.gammaSteel, (v) => setGrout({ gammaSteel: v }), 0.01)}
+          {num("input.gammaPullout", "γa groutlichaam", "", g.gammaPullout, (v) => setGrout({ gammaPullout: v }), 0.01)}
+          <Hint>{t("input.groutHint", "In de wand is het anker een veer met k = E·A / vrije lengte, met de voorspankracht als beginkracht. De schachtwrijving vult u zelf in: dit rekenblad leidt haar niet af uit de sondering. De extra factor op de ankerkracht (1,25), γs (1,15) en γa (1,1) zijn een voorstel en zijn niet tegen de tekst van NEN 9997-1 en CUR 166 gelegd.")}</Hint>
+          {r.ok && r.grout && <Hint>{t("input.groutSummary", "k = {{k}} kN/m per anker; groutlichaam van NAP {{top}} tot {{bottom}} m, {{x}} m achter de wand; vrije lengte minstens {{req}} m.", { k: fmt(r.grout.stiffnessKnPerM, 0), top: fmt(r.grout.start.nap, 2), bottom: fmt(r.grout.end.nap, 2), x: fmt(r.grout.start.xM, 2), req: fmt(r.grout.requiredFreeM, 2) })}</Hint>}
+        </>}
       </>}
     </Section>}
     <Section title={t("input.layers", "Grondlagen (representatieve waarden)")}>
@@ -140,11 +174,16 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
       <LayerTable layers={i.layersHigh} caption={t("input.layersHigh", "hoge zijde")} onChange={(layersHigh) => change({ layersHigh })} />
       <label className="cs-check"><input type="checkbox" checked={i.lowSameAsHigh} onChange={(e) => change({ lowSameAsHigh: e.target.checked, layersLow: e.target.checked || i.layersLow.length ? i.layersLow : i.layersHigh.map((l) => ({ ...l })) })} /> {t("input.lowSame", "Lage zijde heeft dezelfde lagen")}</label>
       {!i.lowSameAsHigh && <LayerTable layers={i.layersLow} caption={t("input.layersLow", "lage zijde")} onChange={(layersLow) => change({ layersLow })} />}
-      <Hint>{t("input.layersHint", "De bovenste laag loopt door tot het maaiveld, de onderste tot onbeperkte diepte. De beddingsconstante kh vult u zelf in, bijvoorbeeld uit CUR 166 tabel 3.3: dit rekenblad levert daarvoor geen tabelwaarden en rekent met één constante per laag. Een voorstel uit de sondering is indicatief en laat kh open.")}</Hint>
+      <Hint>{t("input.layersHint", "De bovenste laag loopt door tot het maaiveld, de onderste tot onbeperkte diepte. De beddingsconstanten vult u zelf in, bijvoorbeeld uit CUR 166 tabel 3.3: dit rekenblad levert daarvoor geen tabelwaarden. Met alleen kh1 rekent het met één tak; met kh2 en kh3 erbij met de drietakkige veer van CUR 166. Een voorstel uit de sondering is indicatief en laat de beddingsconstanten open.")}</Hint>
     </Section>
-    <More title={t("input.pressure", "Gronddruk")}>
+    <More title={t("input.pressure", "Gronddruk, water en stijfheid")}>
       <Row label={t("input.passiveMethod", "Passieve gronddruk")}><select aria-label={t("input.passiveMethod", "Passieve gronddruk")} value={i.passiveMethod} onChange={(e) => change({ passiveMethod: e.target.value as WallInput["passiveMethod"] })}>
         <option value="auto">{t("input.methodAuto", "Recht glijvlak tot δ = φ′/3, daarboven gekromd")}</option><option value="straight">{t("input.methodStraight", "Altijd recht glijvlak")}</option><option value="curved">{t("input.methodCurved", "Altijd gekromd glijvlak")}</option></select></Row>
+      {num("input.gammaWater", "Volumegewicht water", "kN/m³", i.gammaWater ?? GAMMA_WATER, (v) => change({ gammaWater: v }), 0.01)}
+      <ExcessTable layers={i.layersHigh} caption={t("input.layersHigh", "hoge zijde")} onChange={(layersHigh) => change({ layersHigh })} />
+      {!i.lowSameAsHigh && <ExcessTable layers={i.layersLow} caption={t("input.layersLow", "lage zijde")} onChange={(layersLow) => change({ layersLow })} />}
+      <Hint>{t("input.excessHint", "Wateroverspanning: extra waterdruk boven op de hydrostatische druk, lineair van de bovenkant naar de onderkant van de laag (de onderste laag houdt de bovenwaarde). Daarmee voert u stroming onder de teen door of een hogere stijghoogte in een diepere laag in; aan de lage zijde verlaagt dat de korrelspanning en de passieve weerstand. Vink 'dezelfde lagen' uit om de lage zijde apart in te vullen.")}</Hint>
+      {sheet && num("input.eiFactor", "Reductiefactor op EI", "", i.eiFactor ?? 1, (v) => change({ eiFactor: v }), 0.01, t("input.eiFactorTitle", "U-planken zonder volledige schuifkrachtoverdracht in de sloten; 1,0 voor Z-planken"))}
       {sheet && num("input.betaB", "Reductiefactor βB", "", i.betaB, (v) => change({ betaB: v }), 0.01, t("input.betaBTitle", "Reductie van het weerstandsmoment bij U-planken zonder volledige schuifkrachtoverdracht in de sloten; 1,0 voor Z-planken"))}
       {sheet && num("input.normalForce", "Extra normaalkracht NEd", "kN/m", i.normalForceKn, (v) => change({ normalForceKn: v }), 0)}
     </More>
@@ -217,6 +256,24 @@ export function ResultPanel({ input: i, result: r }: Props) {
     </table>
     <p className="cs-hint">{t("result.springHint", "Moment op NAP {{m}} m, dwarskracht op NAP {{v}} m (rekenwaarden). Verplaatsingen beoordeelt u met de representatieve waarden. Het verenmodel kwam in {{n}} stappen tot rust.", { m: fmt(u.maxMoment.nap, 2), v: fmt(u.maxShear.nap, 2), n: u.iterations })}</p>
 
+    {r.grout && <>
+      <h3>{t("result.grout", "Groutanker")}</h3>
+      <table className="cs-layer-table sw-summary" aria-label={t("result.groutAria", "Uitwerking van het groutanker")}>
+        <tbody>
+          <tr><td>{t("result.groutStiffness", "Veerstijfheid E·A / vrije lengte")}</td><td>{fmt(r.grout.stiffnessKnPerM, 0)} kN/m</td></tr>
+          <tr><td>{t("result.groutHorizontal", "Horizontaal per m wand")}</td><td>{fmt(r.grout.horizontalStiffness, 0)} kN/m</td></tr>
+          <tr><td>{t("result.groutForce", "Ankerkracht per anker (rekenwaarden)")}</td><td>{fmt(r.grout.forceKn, 1)} kN</td></tr>
+          <tr><td>{t("result.groutDesign", "Met de extra factor")}</td><td>{fmt(r.grout.designForceKn, 1)} kN</td></tr>
+          <tr><td>{t("result.groutSteel", "Staalweerstand")}</td><td>{fmt(r.grout.steelRdKn, 1)} kN</td></tr>
+          <tr><td>{t("result.groutPullout", "Houdkracht groutlichaam (rekenwaarde)")}</td><td>{fmt(r.grout.pulloutRdKn, 1)} kN</td></tr>
+          <tr><td>{t("result.groutElongation", "Verlenging van de vrije lengte")}</td><td>{fmt(r.grout.elongationMm, 1)} mm</td></tr>
+          <tr><td>{t("result.groutSlip", "Actief glijvlak vanaf de teen")}</td><td>{fmt(r.grout.slipAngleDeg, 1)}°</td></tr>
+          <tr><td>{t("result.groutFree", "Vrije lengte: aanwezig en minstens nodig")}</td><td>{fmt(i.anchor.grout?.freeLengthM ?? 0, 2)} m / {fmt(r.grout.requiredFreeM, 2)} m</td></tr>
+          <tr><td>{t("result.groutBody", "Groutlichaam: van en tot")}</td><td>NAP {fmt(r.grout.start.nap, 2)} / {fmt(r.grout.end.nap, 2)} m</td></tr>
+          {r.grout.layers.map((l) => <tr key={l.name}><td>{t("result.groutIn", "Groutlichaam in {{name}}", { name: l.name })}</td><td>{fmt(l.lengthM, 2)} m</td></tr>)}
+        </tbody>
+      </table>
+    </>}
     <h3>{t("result.compare", "Vergelijking met Blum (rekenwaarden)")}</h3>
     <table className="cs-layer-table sw-summary" aria-label={t("result.compareAria", "Verenmodel naast de methode van Blum")}>
       <thead><tr><th /><th>{t("result.mMax", "M;max")}<small>kNm/m</small></th><th>{t("result.anchorH", "Anker, horizontaal")}<small>kN/m</small></th><th>{t("result.toeNeeded", "Benodigde teen")}<small>m NAP</small></th></tr></thead>
@@ -249,7 +306,7 @@ export function ResultPanel({ input: i, result: r }: Props) {
         <li>{t("result.method3", "Veiligheid: rekenwaarden van de grondparameters, een toeslag op de kerende hoogte en eventueel op de waterstanden; verplaatsingen met representatieve waarden.")}</li>
         <li>{t("result.method4", "Staal: buiging, dwarskracht en normaalkracht volgens NEN-EN 1993-5, zonder corrosietoeslag. Hout: buiging en afschuiving volgens NEN-EN 1995-1-1. Kunststof en beton: tegen het opneembare moment dat u invoert.")}</li>
         <li>{t("result.method6", "Palen met schotten: per m wand met de buigstijfheid van de paal gedeeld door de hart-op-hartafstand; onder de schotten de gronddruk over de paalbreedte en de passieve weerstand over de factor voor ruimtelijke werking maal de paalbreedte. Het schot is een ligger op twee steunpunten tussen de palen.")}</li>
-        <li>{t("result.method5", "Niet in deze versie: fasering en voorspanning, meer ankerrijen, de drietakkige veer (kh1, kh2, kh3) en het stappenplan 6.1 tot en met 6.5 van CUR 166 met lage en hoge stijfheid, grondwaterstroming, belastingen op afstand, hellend maaiveld en een aflopende waterbodem, verticaal evenwicht, algehele stabiliteit, het ontwerp van anker, ankerschot en gording, corrosie, plooi van koudgevormde profielen, kruip van hout en kunststof, de toets van de vervorming tegen een eis, en beschoeiingen met een verankerde paal.")}</li>
+        <li>{t("result.method5", "Niet in deze versie: fasering en voorspanning, meer ankerrijen, het stappenplan 6.1 tot en met 6.5 van CUR 166 met lage en hoge stijfheid, een berekening van de grondwaterstroming (wateroverspanning is wel in te voeren), de stabiliteit van het diepe glijvlak bij een groutanker (Kranz), belastingen op afstand, hellend maaiveld en een aflopende waterbodem, verticaal evenwicht, algehele stabiliteit, het ontwerp van anker, ankerschot en gording, corrosie, plooi van koudgevormde profielen, kruip van hout en kunststof, de toets van de vervorming tegen een eis, en beschoeiingen met een verankerde paal.")}</li>
       </ul>
     </details>
   </div>;

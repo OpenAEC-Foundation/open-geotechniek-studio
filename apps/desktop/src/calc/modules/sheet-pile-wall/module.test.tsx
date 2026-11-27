@@ -5,7 +5,7 @@ import type { ProjectContext } from "../../framework/types";
 import { findSheetPile } from "../../library/sheetPiles";
 import { computeWall, revetmentExample, wallExample, type WallInput, type WallOk } from "./compute";
 import { sheetPileWallModule as module } from "./module";
-import { niceTicks, plankPlan, profilePlan, wallScene } from "./scene";
+import { clipLine, niceTicks, plankPlan, profilePlan, wallScene } from "./scene";
 
 const ctx = { cpts: new Map(), activeCptId: null, projectMeta: { title: "Proef", client: "", project_number: "P1", author: "", date: "2026-01-05" } } as unknown as ProjectContext;
 const ok = (i: WallInput): WallOk => { const r = computeWall(i); if (!r.ok) throw new Error(r.error); return r; };
@@ -119,24 +119,28 @@ describe("module", () => {
 describe("geometrie van de tekeningen", () => {
   it("stalen damwand: trapeziumgolf met de plankbreedte, wandhoogte en plaatdikten uit de bibliotheek", () => {
     const z = findSheetPile("AZ 18-700")!, plan = profilePlan(z, 2.8);
-    // Twee planken van 700 mm per golf: vier stukken per 1,4 m, flenzen op ± de halve wandhoogte.
-    expect(plan).toHaveLength(8); expect(plan[0]).toMatchObject({ kind: "flange", x0: -0.21, x1: -0.21, thicknessM: 0.009 }); expect(plan[2]).toMatchObject({ kind: "flange", x0: 0.21 });
-    expect(plan[1]).toMatchObject({ kind: "web", x0: -0.21, x1: 0.21, thicknessM: 0.009 }); expect(plan[7].a1).toBeCloseTo(2.8, 12);
-    for (let k = 1; k < plan.length; k++) { expect(plan[k].a0).toBeCloseTo(plan[k - 1].a1, 12); expect(plan[k].x0).toBeCloseTo(plan[k - 1].x1, 12); }
-    expect(profilePlan(z, 1)[2].a1).toBeCloseTo(1, 12);
+    // Vier planken van 700 mm: vier platen en vijf sloten; de hartlijn loopt van 0 tot 2,8 m tussen ± (420 − 9)/2 mm.
+    expect(plan.outlines.filter((o) => o.kind === "plate")).toHaveLength(4); expect(plan.outlines.filter((o) => o.kind === "lock")).toHaveLength(5);
+    expect(plan.line[0]).toEqual({ a: 0, x: 0.2055 }); expect(plan.line[plan.line.length - 1].a).toBeCloseTo(2.8, 12);
+    expect(Math.max(...plan.outlines.flatMap((o) => (o.kind === "plate" ? o.points.map((q) => q.x) : [])))).toBeCloseTo(0.21, 9);
+    expect(plan.basis).toBe("derived");
+    expect(clipLine(plan.line, 0.35, 1.05).map((q) => +q.x.toFixed(4))).toEqual([expect.any(Number), ...plan.line.filter((q) => q.a > 0.35 && q.a < 1.05).map((q) => +q.x.toFixed(4)), expect.any(Number)]);
+    expect(clipLine([{ a: 0, x: 0 }, { a: 2, x: 1 }], 0.5, 1.5)).toEqual([{ a: 0.5, x: 0.25 }, { a: 1.5, x: 0.75 }]);
     const scene = wallScene(wallExample(), ok(wallExample()));
-    expect(scene.construction).toBe("sheet-pile"); expect(scene.wallHeightM).toBe(0.42); expect(scene.plates.length).toBeGreaterThan(8); expect(scene.posts).toHaveLength(0);
-    expect(scene.anchors.length).toBeGreaterThan(0); expect(scene.anchors[0]).toMatchObject({ levelNap: -1, angleDeg: 30 });
+    expect(scene.construction).toBe("sheet-pile"); expect(scene.wallHeightM).toBe(0.42); expect(scene.outlines.length).toBeGreaterThan(8); expect(scene.contourBasis).toBe("derived"); expect(scene.wallLine.length).toBeGreaterThan(8); expect(scene.posts).toHaveLength(0);
+    expect(scene.anchors.length).toBeGreaterThan(0); expect(scene.support).toMatchObject({ kind: "tie", levelNap: -1, angleDeg: 30 }); expect(scene.slip).toBeNull();
     expect(scene.high.layers.map((l) => l.name)).toEqual(["Zand, matig", "Zand, vast"]); expect(scene.low.layers[0].topNap).toBe(-4);
     expect(wallScene(wallExample(), ok(wallExample()), ok(wallExample()).uls).low.surfaceNap).toBeCloseTo(-4.3, 12);
   });
 
   it("beschoeiing: vlakke planken naast elkaar, of palen op hun hart-op-hartafstand met schotten en zonder anker", () => {
-    expect(plankPlan(0.05, 0.6)).toHaveLength(3); expect(plankPlan(0.05, 0.6)[0]).toMatchObject({ x0: 0, x1: 0, thicknessM: 0.05, kind: "plank" });
+    // Houten planken met messing en groef (twaalf hoekpunten), een eigen doorsnede als rechte plank.
+    expect(plankPlan(0.05, 0.6, true)).toHaveLength(3); expect(plankPlan(0.05, 0.6, true)[0].points).toHaveLength(12); expect(plankPlan(0.05, 0.6, false)[0].points).toHaveLength(4);
+    expect(Math.max(...plankPlan(0.05, 0.6, true)[0].points.map((q) => q.x))).toBe(0.025);
     const plank = { ...revetmentExample("plank"), toeNap: -2.5, anchor: { ...revetmentExample("plank").anchor, enabled: true } }, a = wallScene(plank, ok(plank));
     expect(a.construction).toBe("plank"); expect(a.waling).toMatchObject({ levelNap: -0.3 }); expect(a.anchors.length).toBeGreaterThan(0); expect(a.boards).toBeNull();
     const posts = revetmentExample("posts"), b = wallScene(posts, ok(posts));
-    expect(b.plates).toHaveLength(0); expect(b.boards).toEqual({ thicknessM: 0.04, bottomNap: -1.3 }); expect(b.waling).toBeNull(); expect(b.anchors).toHaveLength(0);
+    expect(b.outlines).toHaveLength(0); expect(b.contourBasis).toBeNull(); expect(b.boards).toEqual({ thicknessM: 0.04, bottomNap: -1.3 }); expect(b.waling).toBeNull(); expect(b.anchors).toHaveLength(0);
     expect(b.posts[1].alongM - b.posts[0].alongM).toBeCloseTo(0.8, 12); expect(b.posts[0]).toMatchObject({ shape: "round", sizeM: 0.16 });
     // Open water aan de lage zijde ligt boven de bodem.
     expect(b.low.waterNap).toBeGreaterThan(b.low.surfaceNap);

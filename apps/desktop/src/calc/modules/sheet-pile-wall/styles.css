@@ -7,6 +7,17 @@
 .sw-remove:disabled { opacity: .3; cursor: not-allowed; }
 .sw-layers td:nth-child(2) select { min-width: 110px; }
 .sw-layers td input[type="checkbox"] { width: auto; min-width: 0; }
+.sw-excess { margin: 4px 0; }
+.sw-excess td:first-child { white-space: nowrap; }
+
+.sw-detail { margin: 6px 0 0; }
+.sw-detail svg { width: 100%; max-width: 420px; font: 9px var(--oa-font-numbers, monospace); }
+.sw-detail text { fill: var(--oa-text-secondary, #555); }
+.sw-detail-plate { fill: #5b6470; stroke: #1f2937; stroke-width: .5; }
+.sw-detail-lock { fill: #1f2937; stroke: #1f2937; stroke-width: .5; }
+.sw-detail-axis { stroke: var(--oa-text-secondary, #666); stroke-width: .5; stroke-dasharray: 8 2 2 2; }
+.sw-detail-dim { fill: none; stroke: var(--oa-text-secondary, #666); stroke-width: .6; }
+.sw-detail .sw-detail-note { font-style: italic; font-size: 8px; }
 
 .sw-visual { display: flex; flex-direction: column; gap: 6px; padding: 8px; height: 100%; }
 .sw-tabs { display: flex; gap: 4px; align-items: center; }
@@ -30,6 +41,10 @@
 .sw-level-water line { stroke: #2563eb; }
 .sw-level-water text { fill: #2563eb; }
 .sw-anchor line { stroke: #b45309; stroke-width: 2.2; }
+.sw-anchor-grout .sw-anchor-free, .sw-anchor-tie .sw-anchor-free { stroke-width: 1.3; }
+.sw-anchor line.sw-anchor-grout { stroke: #6b7280; stroke-linecap: round; opacity: .9; }
+.sw-slip line { stroke: var(--oa-error, #b91c1c); stroke-width: .9; stroke-dasharray: 2 3; }
+.sw-slip text { fill: var(--oa-error, #b91c1c); font-size: 8px; }
 .sw-anchor circle { fill: #b45309; }
 .sw-anchor text { fill: #b45309; font-weight: 600; }
 .sw-surcharge path { fill: none; stroke: #1d4ed8; stroke-width: 1; }

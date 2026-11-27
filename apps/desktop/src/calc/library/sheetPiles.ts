@@ -18,6 +18,15 @@ export interface SheetPileProfile {
   wallHeightMm: number | null;
   flangeMm: number | null;
   webMm: number | null;
+  /**
+   * Breedte van de flens tussen de snijpunten van de hartlijnen [mm], hoek van het lijf met de as van de wand [°] en
+   * straal van de afronding [mm]. Alleen invullen met een maat uit een profieltabel; de tabellen waaruit deze
+   * bibliotheek is opgebouwd geven ze niet, dus ze zijn leeg en de tekening leidt de flensbreedte af uit A en I
+   * (zie sheetPileContour.ts).
+   */
+  flangeWidthMm?: number;
+  webAngleDeg?: number;
+  cornerRadiusMm?: number;
   areaCm2PerM: number | null;
   massKgPerM2: number | null;
   /** Traagheidsmoment per m wand [cm⁴/m]. */
