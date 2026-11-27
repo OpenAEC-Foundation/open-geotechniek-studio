@@ -221,6 +221,8 @@ export interface WallInput {
   extraSupports?: WallAnchor[];
   /** Bouwfasen; leeg = één fase met alle steunpunten. */
   phases?: WallPhase[];
+  /** Stappenplan van CUR 166 (stap 6.1 tot en met 6.5); uit = één berekening met rekenwaarden en één representatief. */
+  cur?: CurSetup;
   passiveMethod: PassiveMethod;
   factors: WallFactors;
   /** Reductiefactor op de buigstijfheid (U-planken zonder volledige schuifkrachtoverdracht in de sloten). */
@@ -278,12 +280,64 @@ export const FACTOR_SETS: Array<{ id: string; name: string; factors: WallFactors
 ];
 export const DEFAULT_FACTORS: WallFactors = FACTOR_SETS[1].factors;
 
+/**
+ * Factorsets zoals openbare uitvoer van het stappenplan ze afdrukt (VERIFICATIE.md 13): γφ′ en γc′ als hierboven, een factor
+ * op de variabele bovenbelasting (1,0 / 1,1 / 1,25), water aan de hoge zijde 0,05 m hoger en aan de lage zijde 0,20 m (RC1)
+ * of 0,25 m (RC2, RC3) hoger of lager. Niet tegen de tekst van CUR 166 of NEN 9997-1 gelegd; γcu niet in die uitvoer.
+ */
+export const CUR_FACTOR_SETS: Array<{ id: string; name: string; factors: WallFactors; resultFactor: number }> = [
+  { id: "rc1-cur", name: "RC1", factors: { ...FACTOR_SETS[0].factors, gammaQ: 1, deltaWaterHighM: 0.05, deltaWaterLowM: 0.2 }, resultFactor: 1.2 },
+  { id: "rc2-cur", name: "RC2", factors: { ...FACTOR_SETS[1].factors, gammaQ: 1.1, deltaWaterHighM: 0.05, deltaWaterLowM: 0.25 }, resultFactor: 1.2 },
+  { id: "rc3-cur", name: "RC3", factors: { ...FACTOR_SETS[2].factors, gammaQ: 1.25, deltaWaterHighM: 0.05, deltaWaterLowM: 0.25 }, resultFactor: 1.35 },
+];
+
+/** Verschuiving van de waterstand aan de lage zijde in een stap: omhoog, omlaag (met de toeslag van de factorset) of niet. */
+export type WaterShift = "up" | "down" | "none";
+/** Eén stap van het stappenplan. */
+export interface CurStep {
+  id: string;
+  on: boolean;
+  /** Rekenwaarden van de grondparameters (en de toeslagen); uit = representatieve waarden zonder toeslagen. */
+  design: boolean;
+  /** Factor op de ingevoerde beddingsconstanten. */
+  khFactor: number;
+  lowWater: WaterShift;
+  /** Factor op moment, dwarskracht en ankerkracht van deze stap; bij stap 6.5 de factor waarmee de representatieve uitkomst ook als rekenwaarde telt. */
+  resultFactor: number;
+}
+export interface CurSetup {
+  enabled: boolean;
+  steps: CurStep[];
+  /** Laat de stappen met een hogere waterstand aan de lage zijde weg als daar in elke fase vrij water staat. */
+  skipFreeWater: boolean;
+}
+/**
+ * Het stappenplan zoals openbare uitvoer het per stap afdrukt (VERIFICATIE.md 13): 6.1 tot en met 6.4 met rekenwaarden in alle
+ * fasen, lage beddingsconstanten (invoer / 1,3) of hoge (invoer × 2,25), het water aan de lage zijde omhoog (6.1, 6.2) of omlaag
+ * (6.3, 6.4); 6.5 representatief, waarvan moment, dwarskracht en ankerkracht maal 1,2 (RC3: 1,35) ook als rekenwaarde tellen.
+ * Niet tegen de tekst van CUR 166 gelegd.
+ */
+export const CUR_STEPS: CurStep[] = [
+  { id: "6.1", on: true, design: true, khFactor: 1 / 1.3, lowWater: "up", resultFactor: 1 },
+  { id: "6.2", on: true, design: true, khFactor: 2.25, lowWater: "up", resultFactor: 1 },
+  { id: "6.3", on: true, design: true, khFactor: 1 / 1.3, lowWater: "down", resultFactor: 1 },
+  { id: "6.4", on: true, design: true, khFactor: 2.25, lowWater: "down", resultFactor: 1 },
+  { id: "6.5", on: true, design: false, khFactor: 1, lowWater: "none", resultFactor: 1.2 },
+];
+export const DEFAULT_CUR: CurSetup = { enabled: false, steps: CUR_STEPS, skipFreeWater: true };
+
+/** De factoren van één stap: de factorset van de invoer met de beddingsconstante en de waterstand van de stap. */
+export function stepFactors(f: WallFactors, step: CurStep): WallFactors {
+  const water = step.lowWater === "down" ? f.deltaWaterLowM : step.lowWater === "up" ? -f.deltaWaterLowM : 0;
+  return step.design ? { ...f, gammaK: 1 / step.khFactor, deltaWaterLowM: water } : { ...REPRESENTATIVE, gammaK: 1 / step.khFactor, deltaWaterLowM: water, gammaM0: f.gammaM0 };
+}
+
 /** Vult velden aan die een eerder opgeslagen berekening nog niet had. */
 export function normalizeWallInput(i: WallInput): WallInput {
   return {
     ...i, construction: i.construction ?? "sheet-pile", material: i.material ?? "timber", timber: { ...DEFAULT_TIMBER, ...i.timber }, plankMm: i.plankMm ?? 50,
     custom: { ...DEFAULT_CUSTOM, ...i.custom }, posts: { ...DEFAULT_POSTS, ...i.posts }, factors: { ...DEFAULT_FACTORS, ...i.factors },
-    eiFactor: i.eiFactor ?? 1, gammaWater: i.gammaWater ?? GAMMA_WATER, corrosion: { ...DEFAULT_CORROSION, ...i.corrosion }, anchor: { ...i.anchor, kind: i.anchor.kind ?? "tie", grout: { ...DEFAULT_GROUT, ...i.anchor.grout } },
+    eiFactor: i.eiFactor ?? 1, gammaWater: i.gammaWater ?? GAMMA_WATER, cur: i.cur ? { ...DEFAULT_CUR, ...i.cur, steps: i.cur.steps?.length ? i.cur.steps : CUR_STEPS } : undefined, corrosion: { ...DEFAULT_CORROSION, ...i.corrosion }, anchor: { ...i.anchor, kind: i.anchor.kind ?? "tie", grout: { ...DEFAULT_GROUT, ...i.anchor.grout } },
   };
 }
 
@@ -612,7 +666,7 @@ export function runSpringModel(i: WallInput, s: Scenario, eiKnM2: number, opts: 
 }
 
 /** Uitkomst van één fase binnen een berekening. */
-export interface PhaseRun { phase: ResolvedPhase; run: WallRun }
+export interface PhaseRun { phase: ResolvedPhase; scenario: Scenario; run: WallRun }
 
 /**
  * Alle fasen van één berekening achter elkaar, met dezelfde factoren en elementindeling: elke fase begint op de stand
@@ -632,7 +686,7 @@ export function runPhases(i: WallInput, phases: ResolvedPhase[], f: WallFactors,
     });
     const run = runSpringModel(phaseInput(i, ph), scenarios[k], eiKnM2, { supports, previous, zs });
     previous = run.state!;
-    return { phase: ph, run };
+    return { phase: ph, scenario: scenarios[k], run };
   });
 }
 
@@ -741,6 +795,8 @@ export interface CaseRun {
   phaseName: string;
   /** Telt mee voor de snedekrachten en de ankerkracht (rekenwaarden, of stap 6.5 maal de factor). */
   design: boolean;
+  /** Geeft de verplaatsingen (representatieve waarden). */
+  serviceability: boolean;
   /** Factor op moment, dwarskracht en ankerkracht van deze berekening (stap 6.5). */
   resultFactor: number;
   run: WallRun;
@@ -841,6 +897,7 @@ function validate(i: WallInput): string | null {
     const lowest = Math.min(...phases.filter((ph) => ph.supports.some((b) => b.id === a.id)).map((ph) => ph.excavationNap), Infinity);
     if (a.levelNap > i.wallTopNap || a.levelNap <= i.toeNap || (Number.isFinite(lowest) && a.levelNap <= lowest)) return t("errors.anchorLevel", "Het anker ligt tussen de bovenkant van de wand en het niveau aan de lage zijde.");
   }
+  if (i.cur?.enabled && !i.cur.steps.every((x) => Number.isFinite(x.khFactor) && x.khFactor > 0 && Number.isFinite(x.resultFactor) && x.resultFactor >= 0)) return t("stage.errors.steps", "Stappenplan: de factoren op de beddingsconstante zijn groter dan 0 en die op de uitkomst niet negatief.");
   const f = i.factors;
   if (![f.gammaPhi, f.gammaC, f.gammaCu, f.gammaGamma, f.gammaK, f.gammaM0].every((v) => Number.isFinite(v) && v > 0) || ![f.gammaQ, f.deltaAPct, f.deltaAMaxM, f.deltaWaterHighM, f.deltaWaterLowM].every((v) => Number.isFinite(v) && v >= 0))
     return t("errors.factors", "De partiële factoren zijn groter dan 0; de toeslagen zijn niet negatief.");
@@ -1072,10 +1129,28 @@ export function computeWall(raw: WallInput): WallResult {
   if (ulsRuns.some((x) => !x.run.stable)) return fail(t("errors.unstable", "Geen evenwicht met rekenwaarden: de passieve weerstand aan de lage zijde is uitgeput. Vergroot de inheidiepte of voeg een steun toe.") + where(ulsRuns) + hint);
   if (slsRuns.some((x) => !x.run.stable)) return fail(t("errors.unstableSls", "Geen evenwicht met representatieve waarden; controleer de invoer.") + where(slsRuns) + hint);
   const cases: CaseRun[] = [
-    ...ulsRuns.map((x) => ({ stepId: "uls", phase: x.phase.index, phaseName: x.phase.name, design: true, resultFactor: 1, run: x.run })),
-    ...slsRuns.map((x) => ({ stepId: "sls", phase: x.phase.index, phaseName: x.phase.name, design: false, resultFactor: 1, run: x.run })),
+    ...ulsRuns.map((x) => ({ stepId: "uls", phase: x.phase.index, phaseName: x.phase.name, design: true, serviceability: false, resultFactor: 1, run: x.run })),
+    ...slsRuns.map((x) => ({ stepId: "sls", phase: x.phase.index, phaseName: x.phase.name, design: false, serviceability: true, resultFactor: 1, run: x.run })),
   ];
-  const uls = envelopeRun(cases.filter((c) => c.design)), sls = governingSls(cases.filter((c) => !c.design));
+  const curOn = i.cur?.enabled === true, skipped: string[] = [];
+  if (curOn) {
+    // Stappenplan: elke stap rekent alle fasen door, met de factoren van die stap in alle fasen.
+    cases.length = 0;
+    const free = phases.every((ph) => ph.waterLowNap >= ph.excavationNap - 1e-9);
+    for (const step of i.cur!.steps.filter((x) => x.on)) {
+      if (i.cur!.skipFreeWater && free && step.lowWater === "up") { skipped.push(step.id); continue; }
+      const f = stepFactors(i.factors, step);
+      let runs: PhaseRun[];
+      try { runs = runPhases(i, phases, f, ei, phaseScenario(f)); }
+      catch (e) { return fail(t("errors.solver", "Het verenmodel is niet oplosbaar: {{reason}}", { reason: e instanceof Error ? e.message : String(e) }) + hint); }
+      const bad = runs.find((x) => !x.run.stable);
+      if (bad) return fail(t("stage.errors.unstableStep", "Geen evenwicht in stap {{step}}{{phase}}: de passieve weerstand aan de lage zijde is uitgeput. Vergroot de inheidiepte of voeg een steun toe.", { step: step.id, phase: multi ? ", " + t("stage.errors.phaseName", "fase {{name}}", { name: bad.phase.name }) : "" }) + hint);
+      if (runs.some((x) => x.scenario.low.surfaceNap <= i.toeNap)) return fail(t("errors.toeAboveDesign", "Met de toeslag op de kerende hoogte komt het niveau aan de lage zijde onder de teen."));
+      for (const x of runs) cases.push({ stepId: step.id, phase: x.phase.index, phaseName: x.phase.name, design: step.design || step.resultFactor > 0, serviceability: !step.design, resultFactor: step.design ? step.resultFactor : Math.max(0, step.resultFactor), run: x.run });
+    }
+    if (!cases.some((c) => c.serviceability) || !cases.some((c) => c.design)) return fail(t("stage.errors.noSteps", "Zet in het stappenplan minstens één stap met rekenwaarden en stap 6.5 (representatief) aan."));
+  }
+  const uls = envelopeRun(cases.filter((c) => c.design)), sls = governingSls(cases.filter((c) => c.serviceability));
 
   const { checks, warnings } = !section.profile ? revetmentChecks(i, uls) : !corroded ? steelChecks(i, section.profile, section.fyMPa, uls) : zones.reduce<{ checks: WallCheck[]; warnings: string[] }>((acc, z) => {
     const part = steelChecks(i, z.sheet.profile, section.fyMPa, uls, z);
@@ -1097,6 +1172,8 @@ export function computeWall(raw: WallInput): WallResult {
   }
   if (grouts.length) warnings.push(t("warnings.kranz", "De stabiliteit van het diepe glijvlak (Kranz) en de beproeving van het anker zitten niet in dit rekenblad."));
   if (blumSupports.length > 1) warnings.push(t("stage.warnings.blumMulti", "Blum is alleen uitgewerkt voor één steunpunt; met meer steunpunten ontbreekt de vergelijking van de inheidiepte."));
+  if (skipped.length) warnings.push(t("stage.warnings.skipped", "Stap {{steps}} vervalt: aan de lage zijde staat in elke fase vrij water, dan is een lage waterstand het ongunstigst.", { steps: skipped.join(", ") }));
+  if (curOn) warnings.push(t("stage.warnings.curSteps", "Het stappenplan volgt de instellingen die openbare berekeningen per stap afdrukken; het is niet tegen de tekst van CUR 166 gelegd. Controleer de stappen en factoren."));
   if (needed) {
     const available = ulsScenario.low.surfaceNap - i.toeNap, required = needed.requiredToeM - excavationM;
     checks.push({
