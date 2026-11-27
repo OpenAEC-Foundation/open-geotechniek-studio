@@ -122,7 +122,12 @@ export function PileScene3D({input,beam,springs,selectedId,onSelect,scale,fallba
     const kind=input.section.kind,tube=kind==='steel-tube'||kind==='filled-tube';
     const inner=Math.max(0,diameter/2-input.section.wallMm/1000);
     const sheetProfile=kind==='sheet-pile'&&input.section.sheet?findSheetPile(input.section.sheet.profileId,input.section.sheet.manufacturer):undefined;
-    if(sheetProfile)scene.add(new THREE.Mesh(sheetGeometry(beam.samples,scale,sheetOutline(sheetProfile,input.section.sheet!.widthMode).points.map(q=>({x:q.x/1000,y:q.y/1000}))),steel));
+    if(sheetProfile){
+      // Met een contour uit de fabriekstekening: elke plank als gesloten omtrek langs de verplaatsingslijn; anders de hartlijn.
+      const o=sheetOutline(sheetProfile,input.section.sheet!.widthMode),toM=(q:{x:number;y:number})=>({x:q.x/1000,y:q.y/1000});
+      if(o.basis==='drawing')for(const poly of o.plates)scene.add(new THREE.Mesh(sheetGeometry(beam.samples,scale,[...poly,poly[0]].map(toM)),steel));
+      else scene.add(new THREE.Mesh(sheetGeometry(beam.samples,scale,o.points.map(toM)),steel));
+    }
     else scene.add(new THREE.Mesh(pileGeometry(beam.samples,scale,diameter/2,kind==='concrete-square',tube?inner:0),tube?steel:concrete));
     if(kind==='filled-tube')scene.add(new THREE.Mesh(pileGeometry(beam.samples,scale,inner,false),concrete));
     const edgeMaterials:THREE.LineBasicMaterial[]=[],accentMaterials:Array<THREE.LineBasicMaterial|THREE.MeshBasicMaterial>=[];

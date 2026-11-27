@@ -535,7 +535,10 @@
     "aria": "Sezione {{label}} mm",
     "bars": " con {{count}} barre Ø{{dia}}",
     "figure": "Sezione del palo",
+    "fromDrawing": "contorno dal DWG del produttore",
+    "schematic": "schematico",
     "sheetAria": "Profilo di palancola {{id}}, schematico",
+    "sheetAriaDrawing": "Profilo di palancola {{id}}, contorno dal DWG del produttore",
     "sheetSingle": "palancola singola",
     "sheetWall": "parete"
   },

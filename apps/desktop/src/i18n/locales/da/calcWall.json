@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Detalje af profil {{id}}: to spunsjern i plan",
     "derived": "skematisk: flangebredde og kropvinkel udledt af A og I; låsen som en blok",
+    "drawing": "kontur fra producentens DWG ({{manufacturer}})",
     "flange": "flange",
     "schematic": "skematisk: kun b, h og pladetykkelserne stammer fra tabellen",
     "table": "mål fra profiltabellen; låsen skematisk"
@@ -330,6 +331,7 @@
     "vEd": "største forskydningskraft fra fjedermodellen med regningsmæssige værdier, på NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Profilform: kontur fra producentens DWG ({{manufacturer}}).",
     "contourSchematic": "Profilformen er skematisk: producenternes tabeller angiver ikke flangebredde, kropvinkel eller låsens form; flangebredden er udledt af A og I, låsen er en blok.",
     "displacement": "Flytning",
     "ground": "terr.",

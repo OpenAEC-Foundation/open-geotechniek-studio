@@ -535,7 +535,10 @@
     "aria": "Doorsnede {{label}} mm",
     "bars": " met {{count}} staven Ø{{dia}}",
     "figure": "Doorsnede paal",
+    "fromDrawing": "contour uit fabrieks-DWG",
+    "schematic": "schematisch",
     "sheetAria": "Damwandprofiel {{id}}, schematisch",
+    "sheetAriaDrawing": "Damwandprofiel {{id}}, contour uit fabrieks-DWG",
     "sheetSingle": "losse plank",
     "sheetWall": "wand"
   },

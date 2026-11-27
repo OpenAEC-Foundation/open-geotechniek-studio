@@ -535,7 +535,10 @@
     "aria": "Querschnitt {{label}} mm",
     "bars": " mit {{count}} Stäben Ø{{dia}}",
     "figure": "Pfahlquerschnitt",
+    "fromDrawing": "Kontur aus Hersteller-DWG",
+    "schematic": "schematisch",
     "sheetAria": "Spundwandprofil {{id}}, schematisch",
+    "sheetAriaDrawing": "Spundwandprofil {{id}}, Kontur aus der Hersteller-DWG",
     "sheetSingle": "Einzelbohle",
     "sheetWall": "Wand"
   },

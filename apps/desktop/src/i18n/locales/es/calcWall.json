@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Detalle del perfil {{id}}: dos tablestacas en planta",
     "derived": "esquemático: ancho de ala y ángulo del alma deducidos de A e I; enclavamiento como bloque",
+    "drawing": "contorno del DWG del fabricante ({{manufacturer}})",
     "flange": "ala",
     "schematic": "esquemático: solo b, h y los espesores proceden de la tabla",
     "table": "dimensiones de la tabla de perfiles; enclavamiento esquemático"
@@ -330,6 +331,7 @@
     "vEd": "cortante máximo del modelo de muelles con valores de cálculo, a NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Forma del perfil: contorno del DWG del fabricante ({{manufacturer}}).",
     "contourSchematic": "Forma del perfil esquemática: las tablas de los fabricantes no dan el ancho de ala, el ángulo del alma ni la forma del enclavamiento; el ancho de ala se deduce de A e I, el enclavamiento es un bloque.",
     "displacement": "Desplazamiento",
     "ground": "terr.",

@@ -535,7 +535,10 @@
     "aria": "Tværsnit {{label}} mm",
     "bars": " med {{count}} jern Ø{{dia}}",
     "figure": "Pælens tværsnit",
+    "fromDrawing": "kontur fra producentens DWG",
+    "schematic": "skematisk",
     "sheetAria": "Spunsprofil {{id}}, skematisk",
+    "sheetAriaDrawing": "Spunsprofil {{id}}, kontur fra producentens DWG",
     "sheetSingle": "enkelt spunsjern",
     "sheetWall": "væg"
   },

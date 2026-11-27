@@ -535,7 +535,10 @@
     "aria": "Cross-section {{label}} mm",
     "bars": " with {{count}} bars Ø{{dia}}",
     "figure": "Pile cross-section",
+    "fromDrawing": "contour from manufacturer DWG",
+    "schematic": "schematic",
     "sheetAria": "Sheet pile section {{id}}, schematic",
+    "sheetAriaDrawing": "Sheet pile section {{id}}, contour from the manufacturer DWG",
     "sheetSingle": "single pile",
     "sheetWall": "wall"
   },

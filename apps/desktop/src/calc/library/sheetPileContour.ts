@@ -9,10 +9,44 @@
 // flensbreedte waarbij vlakke platen met de diktes t en s, plus het slot als puntmassa, precies die A en I
 // geven. Dat is een afgeleide maat, geen fabrieksmaat, en de tekening heet dan "schematisch". Lukt ook dat
 // niet (hoedprofielen, ontbrekende waarden), dan krijgt de flens een vast deel van de plankbreedte.
+//
+// Voor de profielen in sheet-pile-contours.json gaat de exacte contour voor: de omtrek van de planken zoals de
+// openbare CAD-tekening van de fabrikant hem geeft, met de sloten erin (basis "drawing"). Die contour is per
+// profiel getoetst: A en I eruit binnen 3 % en 5 % van de profieltabel (zie sheetPileContour.test.ts).
 import type { SheetPileProfile } from "./sheetPiles";
+import contourData from "./sheet-pile-contours.json";
 
 export interface Pt { x: number; y: number }
-export type ContourBasis = "table" | "derived" | "schematic";
+export type ContourBasis = "drawing" | "table" | "derived" | "schematic";
+
+/** Exacte contour uit de CAD-tekening van de fabrikant (schema ogs.sheetpilecontours/1). */
+export interface DrawingContour {
+  manufacturer: string;
+  /** Bestand in de download (bij een zip: het pad in de zip). */
+  file: string;
+  archive?: string;
+  url: string;
+  dwgUrl?: string;
+  /** Ophaaldatum (ISO). */
+  retrieved: string;
+  /** Breedte van de getekende strook [mm]: het aantal getekende planken maal b. */
+  pitchMm: number;
+  /** Per getekende plank een gesloten omtrek [x0, y0, x1, y1, ...] in mm; y = 0 is de as van de wand. */
+  planks: number[][];
+  lockAxes: number[][];
+}
+
+const DRAWINGS = (contourData as unknown as { contours: Record<string, DrawingContour> }).contours;
+
+/** De exacte contour van een profiel, als de bibliotheek die heeft. */
+export function drawingContour(p: { id?: string; manufacturer?: string }): DrawingContour | undefined {
+  const c = p.id ? DRAWINGS[p.id] : undefined;
+  return c && (!p.manufacturer || c.manufacturer === p.manufacturer) ? c : undefined;
+}
+
+export const DRAWING_CONTOUR_IDS: readonly string[] = Object.keys(DRAWINGS);
+
+const toPts = (flat: number[]): Pt[] => { const out: Pt[] = []; for (let k = 0; k + 1 < flat.length; k += 2) out.push({ x: flat[k], y: flat[k + 1] }); return out; };
 
 export interface SheetGeometry {
   /** Waar de flensbreedte vandaan komt: uit de tabel, afgeleid uit A en I, of een vast deel van de breedte. */
@@ -29,7 +63,7 @@ export interface SheetGeometry {
   webThicknessMm: number;
 }
 
-type ProfileLike = Pick<SheetPileProfile, "shape" | "widthMm" | "wallHeightMm"> & Partial<Pick<SheetPileProfile, "flangeMm" | "webMm" | "areaCm2PerM" | "iCm4PerM" | "flangeWidthMm">>;
+type ProfileLike = Pick<SheetPileProfile, "shape" | "widthMm" | "wallHeightMm"> & Partial<Pick<SheetPileProfile, "id" | "manufacturer" | "flangeMm" | "webMm" | "areaCm2PerM" | "iCm4PerM" | "flangeWidthMm">>;
 
 /** Vast deel van de plankbreedte voor de flens als er niets af te leiden valt. */
 const SCHEMATIC_FLANGE = 0.4;
@@ -102,8 +136,24 @@ export function thicken(line: Pt[], thickness: number[]): Pt[] {
 
 const square = (c: Pt, side: number): Pt[] => [{ x: c.x - side / 2, y: c.y - side / 2 }, { x: c.x + side / 2, y: c.y - side / 2 }, { x: c.x + side / 2, y: c.y + side / 2 }, { x: c.x - side / 2, y: c.y + side / 2 }];
 
-/** De wand in de plattegrond: `planks` planken naast elkaar, om en om gespiegeld. */
-export function sheetContour(p: ProfileLike, planks = 2): SheetContour {
+/**
+ * De wand in de plattegrond: `planks` planken naast elkaar, om en om gespiegeld. Met een exacte contour (en
+ * `exact` niet uit) zijn de platen de getekende planken, herhaald per getekende strook, met de sloten erin; de
+ * hartlijn en de slotpunten blijven de schematische, zo gespiegeld dat ze bij de tekening passen.
+ */
+export function sheetContour(p: ProfileLike, planks = 2, options: { exact?: boolean } = {}): SheetContour {
+  const schematic = schematicContour(p, planks), drawing = options.exact === false ? undefined : drawingContour(p);
+  if (!drawing) return schematic;
+  const drawn = drawing.planks.map(toPts), b = schematic.geometry.widthMm, plates: Pt[][] = [];
+  for (let k = 0; k < planks; k++) { const shift = Math.floor(k / drawn.length) * drawing.pitchMm; plates.push(drawn[k % drawn.length].map((q) => ({ x: q.x + shift, y: q.y }))); }
+  // Ligt de schematische hartlijn aan de andere kant van de as dan de getekende plank, dan wordt zij gespiegeld.
+  let agree = 0;
+  schematic.centerlines.slice(0, drawn.length).forEach((line, k) => { for (const q of line) { const near = drawn[k].filter((r) => Math.abs(r.x - q.x) < 0.08 * b); if (near.length) agree += q.y * (near.reduce((s, r) => s + r.y, 0) / near.length); } });
+  const flip = (q: Pt): Pt => (agree < 0 ? { x: q.x, y: -q.y } : q);
+  return { ...schematic, geometry: { ...schematic.geometry, basis: "drawing" }, plates, locks: [], centerlines: schematic.centerlines.map((l) => l.map(flip)), lockPoints: schematic.lockPoints.map(flip) };
+}
+
+function schematicContour(p: ProfileLike, planks: number): SheetContour {
   const g = sheetGeometry(p), b = g.widthMm, t = g.flangeThicknessMm, s = g.webThicknessMm, d = Math.max(0, (g.heightMm - t) / 2), f = g.flangeMm;
   const centerlines: Pt[][] = [], plates: Pt[][] = [], lockPoints: Pt[] = [];
   for (let k = 0; k < planks; k++) {
@@ -136,7 +186,47 @@ export function contourProperties(polygons: Pt[][]): { areaMm2: number; inertiaM
  * A [cm²/m] en I [cm⁴/m] per m wand zoals ze uit de getekende contour volgen. Een slot dat halverwege de
  * getekende strook ligt telt één keer; de sloten op de rand van de strook tellen samen als één.
  */
-export function contourSectionProperties(p: ProfileLike): { areaCm2PerM: number; iCm4PerM: number } {
-  const c = sheetContour(p, 2), plates = contourProperties(c.plates), locks = contourProperties(c.locks.slice(0, 2)), width = c.widthMm / 1000;
-  return { areaCm2PerM: (plates.areaMm2 + locks.areaMm2) / 100 / width, iCm4PerM: (plates.inertiaMm4 + locks.inertiaMm4) / 1e4 / width };
+export function contourSectionProperties(p: ProfileLike, options: { exact?: boolean } = {}): { areaCm2PerM: number; iCm4PerM: number } {
+  const { polygons, widthMm } = sectionPolygons(p, options), props = contourProperties(polygons), width = widthMm / 1000;
+  return { areaCm2PerM: props.areaMm2 / 100 / width, iCm4PerM: props.inertiaMm4 / 1e4 / width };
+}
+
+/** De omtrekken van één herhalende strook wand: de getekende strook, of twee schematische planken met hun sloten. */
+function sectionPolygons(p: ProfileLike, options: { exact?: boolean }): { polygons: Pt[][]; widthMm: number } {
+  const drawing = options.exact === false ? undefined : drawingContour(p);
+  if (drawing) return { polygons: drawing.planks.map(toPts), widthMm: drawing.pitchMm };
+  const c = sheetContour(p, 2, { exact: false });
+  return { polygons: [...c.plates, ...c.locks.slice(0, 2)], widthMm: c.widthMm };
+}
+
+/** Oppervlak en eerste moment om de lijn y = y0 van het deel van een omtrek boven (of onder) die lijn. */
+function clipMoment(poly: Pt[], y0: number, above: boolean): { area: number; moment: number } {
+  const keep = (q: Pt) => (above ? q.y >= y0 : q.y <= y0), out: Pt[] = [];
+  for (let k = 0; k < poly.length; k++) {
+    const a = poly[k], b = poly[(k + 1) % poly.length];
+    if (keep(a)) out.push(a);
+    if (keep(a) !== keep(b)) { const t = (y0 - a.y) / (b.y - a.y); out.push({ x: a.x + t * (b.x - a.x), y: y0 }); }
+  }
+  let area = 0, moment = 0;
+  for (let k = 0; k < out.length; k++) { const a = out[k], b = out[(k + 1) % out.length], cross = a.x * b.y - b.x * a.y; area += cross / 2; moment += ((a.y - y0 + b.y - y0) * cross) / 6; }
+  return { area: Math.abs(area), moment: Math.abs(moment) };
+}
+
+/**
+ * Weerstandsmomenten per m wand uit de contour: elastisch W_el = I / e met e de afstand van de zwaartelijn tot de
+ * uiterste vezel, en plastisch W_pl = S_boven + S_onder om de plastische neutrale lijn (gelijke oppervlakken).
+ */
+export function contourModuli(p: ProfileLike, options: { exact?: boolean } = {}): { welCm3PerM: number; wplCm3PerM: number; neutralAxisMm: number; plasticAxisMm: number } {
+  const { polygons, widthMm } = sectionPolygons(p, options), width = widthMm / 1000;
+  let area = 0, first = 0, second = 0;
+  for (const poly of polygons) {
+    let a = 0, s = 0, i = 0;
+    for (let k = 0; k < poly.length; k++) { const u = poly[k], v = poly[(k + 1) % poly.length], cross = u.x * v.y - v.x * u.y; a += cross / 2; s += ((u.y + v.y) * cross) / 6; i += ((u.y * u.y + u.y * v.y + v.y * v.y) * cross) / 12; }
+    const sign = a < 0 ? -1 : 1; area += sign * a; first += sign * s; second += sign * i;
+  }
+  const yc = first / area, inertia = second - area * yc * yc, ys = polygons.flat().map((q) => q.y), e = Math.max(...ys.map((y) => Math.abs(y - yc)));
+  let lo = Math.min(...ys), hi = Math.max(...ys);
+  for (let k = 0; k < 80; k++) { const mid = (lo + hi) / 2, up = polygons.reduce((s, poly) => s + clipMoment(poly, mid, true).area, 0); if (up > area / 2) lo = mid; else hi = mid; }
+  const yp = (lo + hi) / 2, plastic = polygons.reduce((s, poly) => s + clipMoment(poly, yp, true).moment + clipMoment(poly, yp, false).moment, 0);
+  return { welCm3PerM: inertia / e / 1e3 / width, wplCm3PerM: plastic / 1e3 / width, neutralAxisMm: yc, plasticAxisMm: yp };
 }

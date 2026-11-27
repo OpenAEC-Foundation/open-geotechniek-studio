@@ -153,7 +153,7 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
   return <>
     <div className="sw-scene" ref={host} />
     <p className="cs-hint">{s.construction === "sheet-pile"
-      ? `${t("visual.sceneHint", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de wand steekt ervoor uit. Plankbreedte, wandhoogte en plaatdikten komen uit de profielbibliotheek. Oranje: anker of stempel. Sleep om te draaien, scroll om te zoomen.")} ${s.contourBasis === "table" ? "" : t("visual.contourSchematic", "Profielvorm schematisch: de fabriekstabellen geven de flensbreedte, de lijfhoek en de slotvorm niet; de flensbreedte is afgeleid uit A en I, het slot is een blokje.")}`
+      ? `${t("visual.sceneHint", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de wand steekt ervoor uit. Plankbreedte, wandhoogte en plaatdikten komen uit de profielbibliotheek. Oranje: anker of stempel. Sleep om te draaien, scroll om te zoomen.")} ${s.contourBasis === "drawing" ? t("visual.contourDrawing", "Profielvorm: contour uit fabrieks-DWG ({{manufacturer}}).", { manufacturer: s.contourManufacturer ?? "" }) : s.contourBasis === "table" ? "" : t("visual.contourSchematic", "Profielvorm schematisch: de fabriekstabellen geven de flensbreedte, de lijfhoek en de slotvorm niet; de flensbreedte is afgeleid uit A en I, het slot is een blokje.")}`
       : t("visual.sceneHintRevetment", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de beschoeiing steekt ervoor uit. Plankdikte, paalafmeting, hart-op-hartafstand en schotten staan op schaal; de plankbreedte is een tekenmaat. Oranje: anker met gording. Sleep om te draaien, scroll om te zoomen.")}</p>
   </>;
 }

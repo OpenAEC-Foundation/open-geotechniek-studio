@@ -11,6 +11,7 @@ import { AddLateralCalculation, InheritedNote } from './InheritedNote';
 import { SYSTEM_KINDS, applyPile, lateralInputFromPile, systemAvailable, systemOf } from './pile-link';
 import { sheetGeometry } from './PileScene3D';
 import { sheetOutline } from './sheet-shape';
+import { findSheetPile } from '../../library/sheetPiles';
 
 const ctx = { cpts: new Map(), activeCptId: null, projectMeta: { title: '', client: '', location: '', project_number: '', author: '', date: '' } };
 const base = pileBearingCapacityModule.defaultInput(ctx) as PileInput;
@@ -120,6 +121,18 @@ describe('damwandprofiel in tekening en 3D', () => {
     const z = sheetOutline({ shape: 'Z', widthMm: 800, wallHeightMm: 450 }, 'wall');
     expect(z.locks.map((q) => q.y)).toEqual([225, -225, 225]);
     expect(sheetOutline({ shape: 'hat', widthMm: 900, wallHeightMm: 230 }, 'single').heightMm).toBe(230);
+  });
+  it('met een contour uit de fabriekstekening: de getekende planken op de plaats van de hartlijn', () => {
+    // PU 18 (600 × 430): twee platen over 1,2 m, symmetrisch om de as; aan dezelfde kant als de flens van de hartlijn.
+    const w = sheetOutline(findSheetPile('PU 18')!, 'wall'), xs = w.plates.flat().map((q) => q.x), ys = w.plates.flat().map((q) => q.y);
+    expect(w.basis).toBe('drawing'); expect(w.plates).toHaveLength(2); expect(w.heightMm).toBeCloseTo(430, 0);
+    expect(Math.min(...xs)).toBeGreaterThan(-650); expect(Math.max(...xs)).toBeLessThan(650); expect(Math.abs(Math.max(...ys) + Math.min(...ys))).toBeLessThan(1);
+    const flange = w.points[1], near = w.plates[0].filter((q) => Math.abs(q.x - flange.x) < 40);
+    expect(Math.sign(near.reduce((s, q) => s + q.y, 0))).toBe(Math.sign(flange.y));
+    const single = sheetOutline(findSheetPile('PU 18')!, 'single');
+    expect(single.plates).toHaveLength(1); expect(single.heightMm).toBeLessThan(w.heightMm);
+    // Zonder tekening: geen platen, de hartlijn blijft.
+    const plain = sheetOutline(findSheetPile('JFESP-2')!, 'wall'); expect(plain.basis).not.toBe('drawing'); expect(plain.plates).toEqual([]);
   });
   it('het 3D-vlak volgt de verplaatsingslijn over de hele paallengte', () => {
     const r = computeLateral(lateralExample); if (!r.ok) throw new Error(r.error);

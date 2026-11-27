@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Szczegół profilu {{id}}: dwie grodzice w rzucie",
     "derived": "schematycznie: szerokość półki i kąt środnika wyznaczone z A i I; zamek jako blok",
+    "drawing": "kontur z pliku DWG producenta ({{manufacturer}})",
     "flange": "półka",
     "schematic": "schematycznie: tylko b, h i grubości blach pochodzą z tabeli",
     "table": "wymiary z tabeli profili; zamek schematycznie"
@@ -330,6 +331,7 @@
     "vEd": "największa siła poprzeczna z modelu sprężynowego z wartościami obliczeniowymi, na NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Kształt profilu: kontur z pliku DWG producenta ({{manufacturer}}).",
     "contourSchematic": "Kształt profilu schematyczny: tabele producentów nie podają szerokości półki, kąta środnika ani kształtu zamka; szerokość półki wyznaczono z A i I, zamek jest blokiem.",
     "displacement": "Przemieszczenie",
     "ground": "p.t.",

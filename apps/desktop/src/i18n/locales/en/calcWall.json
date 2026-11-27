@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Detail of section {{id}}: two piles in plan",
     "derived": "schematic: flange width and web angle derived from A and I; interlock as a block",
+    "drawing": "contour from the manufacturer DWG ({{manufacturer}})",
     "flange": "flange",
     "schematic": "schematic: only b, h and the plate thicknesses come from the table",
     "table": "dimensions from the section table; interlock schematic"
@@ -330,6 +331,7 @@
     "vEd": "largest shear force from the spring model with design values, at NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Section shape: contour from the manufacturer DWG ({{manufacturer}}).",
     "contourSchematic": "Section shape schematic: the manufacturers' tables do not give the flange width, the web angle or the interlock shape; the flange width is derived from A and I, the interlock is a block.",
     "displacement": "Displacement",
     "ground": "GL",

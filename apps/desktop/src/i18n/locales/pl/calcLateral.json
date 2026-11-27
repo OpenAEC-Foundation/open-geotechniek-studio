@@ -535,7 +535,10 @@
     "aria": "Przekrój {{label}} mm",
     "bars": " z prętami {{count}} × Ø{{dia}}",
     "figure": "Przekrój pala",
+    "fromDrawing": "kontur z DWG producenta",
+    "schematic": "schematycznie",
     "sheetAria": "Profil grodzicy {{id}}, schematycznie",
+    "sheetAriaDrawing": "Profil grodzicy {{id}}, kontur z pliku DWG producenta",
     "sheetSingle": "pojedyncza grodzica",
     "sheetWall": "ściana"
   },

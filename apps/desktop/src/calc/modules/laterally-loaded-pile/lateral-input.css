@@ -29,6 +29,8 @@
 .lat-input .pile-system-tiles .cs-tile:disabled { opacity: .4; cursor: not-allowed; }
 .lat-sketch-steel { fill: none; stroke: #b5543c; stroke-linejoin: round; stroke-linecap: round; }
 .lat-sketch-lock { fill: var(--oa-panel, #fff); stroke: currentColor; stroke-width: .8; }
+.lat-sketch-plate { fill: #b5543c; stroke: #7a3424; stroke-width: .3; stroke-linejoin: round; }
+.lat-sketch-note { font-size: 7px; opacity: .7; }
 /* Toelichting achter een "i". */
 .lat-info { margin: 4px 0 2px; font-size: 11px; color: var(--oa-text-secondary); }
 .lat-info > summary { list-style: none; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border: 1px solid var(--oa-border-strong); border-radius: 50%; font: italic 600 10px Georgia, serif; cursor: pointer; color: var(--oa-text-secondary); }

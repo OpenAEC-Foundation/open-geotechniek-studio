@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Dettaglio del profilo {{id}}: due palancole in pianta",
     "derived": "schematico: larghezza dell'ala e angolo dell'anima ricavati da A e I; gargame come blocco",
+    "drawing": "contorno dal DWG del produttore ({{manufacturer}})",
     "flange": "ala",
     "schematic": "schematico: solo b, h e gli spessori provengono dalla tabella",
     "table": "dimensioni dalla tabella dei profili; gargame schematico"
@@ -330,6 +331,7 @@
     "vEd": "taglio massimo dal modello a molle con i valori di progetto, a NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Forma del profilo: contorno dal DWG del produttore ({{manufacturer}}).",
     "contourSchematic": "Forma del profilo schematica: le tabelle dei produttori non riportano la larghezza dell'ala, l'angolo dell'anima né la forma del gargame; la larghezza dell'ala è ricavata da A e I, il gargame è un blocco.",
     "displacement": "Spostamento",
     "ground": "p.c.",

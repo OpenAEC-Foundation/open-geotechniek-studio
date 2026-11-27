@@ -50,6 +50,7 @@
   "detail": {
     "aria": "Détail du profil {{id}} : deux palplanches en plan",
     "derived": "schématique : largeur d'aile et angle d'âme déduits de A et I ; serrure représentée par un bloc",
+    "drawing": "contour issu du DWG du fabricant ({{manufacturer}})",
     "flange": "aile",
     "schematic": "schématique : seuls b, h et les épaisseurs proviennent du tableau",
     "table": "dimensions du tableau des profils ; serrure schématique"
@@ -330,6 +331,7 @@
     "vEd": "effort tranchant maximal issu du modèle à ressorts avec les valeurs de calcul, à NAP {{nap}} m"
   },
   "visual": {
+    "contourDrawing": "Forme du profil : contour issu du DWG du fabricant ({{manufacturer}}).",
     "contourSchematic": "Forme du profil schématique : les tableaux des fabricants ne donnent ni la largeur d'aile, ni l'angle d'âme, ni la forme de la serrure ; la largeur d'aile est déduite de A et I, la serrure est un bloc.",
     "displacement": "Déplacement",
     "ground": "TN",

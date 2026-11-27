@@ -535,7 +535,10 @@
     "aria": "Section {{label}} mm",
     "bars": " avec {{count}} barres Ø{{dia}}",
     "figure": "Section du pieu",
+    "fromDrawing": "contour du DWG fabricant",
+    "schematic": "schématique",
     "sheetAria": "Profilé de palplanche {{id}}, schématique",
+    "sheetAriaDrawing": "Profil de palplanche {{id}}, contour issu du DWG du fabricant",
     "sheetSingle": "palplanche isolée",
     "sheetWall": "paroi"
   },

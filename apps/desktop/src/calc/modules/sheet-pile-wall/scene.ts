@@ -63,6 +63,8 @@ export interface WallScene {
   wallLine: PlanPoint[];
   /** Waar de vorm van het stalen profiel vandaan komt; null bij een beschoeiing. */
   contourBasis: ContourBasis | null;
+  /** Fabrikant van de getekende contour, als die uit de CAD-tekening komt. */
+  contourManufacturer: string | null;
   /** Palen met hun plaats langs de wand, en de schotten aan de hoge zijde. */
   posts: Array<{ alongM: number; shape: "round" | "square"; sizeM: number }>;
   boards: { thicknessM: number; bottomNap: number } | null;
@@ -113,7 +115,7 @@ export function wallScene(raw: WallInput, r: WallOk, run: WallRun = r.sls): Wall
     extentHighM: Math.max(half, reach + 1), support, slip,
     construction: kind, halfWidthM: half, lengthM: length, frontM: front, topNap: Math.max(i.wallTopNap, s.high.surfaceNap), bottomNap: bottom, wallTopNap: i.wallTopNap, toeNap: i.toeNap,
     wallHeightM: sec.depthM, outlines: plan ? plan.outlines : kind === "plank" ? plankPlan(sec.depthM, length + front, i.material === "timber") : [],
-    wallLine: plan ? plan.line : [{ a: 0, x: 0 }, { a: length + front, x: 0 }], contourBasis: plan ? plan.basis : null,
+    wallLine: plan ? plan.line : [{ a: 0, x: 0 }, { a: length + front, x: 0 }], contourBasis: plan ? plan.basis : null, contourManufacturer: plan && plan.basis === "drawing" ? sec.profile?.manufacturer ?? null : null,
     posts, boards: kind === "posts" ? { thicknessM: i.posts.boardMm / 1000, bottomNap: i.posts.boardBottomNap } : null,
     waling: anchored && (kind === "plank" || akind === "grout") ? { levelNap: an.levelNap, sizeM: kind === "plank" ? Math.max(0.08, 2 * sec.depthM) : 0.2 } : null,
     high: { surfaceNap: s.high.surfaceNap, waterNap: s.high.waterNap, layers: sceneLayers(s.high, bottom) },
