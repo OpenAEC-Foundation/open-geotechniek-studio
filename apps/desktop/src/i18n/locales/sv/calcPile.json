@@ -378,13 +378,14 @@
     "focusPile": "Hela pålen",
     "focusTip": "Pålspets",
     "label": {
-      "critical": "kritiskt djup {{depth}} m",
+      "critical": "kritiskt djup {{depth}} m = {{ratio}} Deq",
       "ground": "markyta {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "pålspets {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "övre gräns för zon III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Blågrön: den kapade qc-linjen för sträcka II och III.",
@@ -392,11 +393,11 @@
       "negative": "Negativ mantelfriktion längs skaftet; Fnk;d = {{force}} kN",
       "positive": "Positiv mantelfriktion längs skaftet; Rs;cal;max = {{force}} kN",
       "qc": "Spetsmotstånd qc bredvid pålen; tjocka streck är medelvärdena för sträckorna.",
-      "slip": "Brottkropp: jorden skjuvas längs en logaritmisk spiral, från det kritiska djupet under pålspetsen utåt och uppåt till 8 Deq över spetsen. En fjärdedel är utelämnad så att man ser in; pilarna visar skjuvriktningen. Formen är schematisk.",
+      "slip": "Brottkropp: jorden skjuvas längs en logaritmisk spiral, från det kritiska djupet under pålspetsen utåt och uppåt till övre gränsen för zon III, så som beräkningen har valt dem. En fjärdedel är utelämnad så att du ser in; pilarna visar skjuvriktningen. Formen är schematisk.",
       "zone": "Sträcka {{zone}}",
       "zoneI": "från pålspetsen nedåt till det kritiska djupet",
       "zoneII": "från det kritiska djupet tillbaka upp till pålspetsen",
-      "zoneIII": "från pålspetsen till 8 Deq ovanför"
+      "zoneIII": "från pålspetsen upp till övre gränsen för zon III"
     },
     "noModel": "Det finns ingen 3D-vy: koppla en CPT-sondering till beräkningen.",
     "notComputed": "Det finns ingen 3D-vy så länge beräkningen saknar resultat. Ändra indata eller gå tillbaka till 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Sträcka I, II och III, brottfigur, mantelfriktion och qc",
     "ariaPhysical": "3D-vy av pålen i marken; dra för att rotera, rulla för att zooma",
     "noPhysical": "Det finns ingen 3D-vy: pålmåtten eller nivåerna är ogiltiga.",
-    "notePhysical": "Påle, lager och nivåer är skalenliga; jordblocket är uppskuret längs pålaxeln. Schematiskt: pålskon, uppstickande järn och armering, skruvbladet, kärnröret och svetsringen. Utanför den angivna profilen har närmaste lager förlängts.",
+    "notePhysical": "Påle, lager och nivåer är skalenliga; jordblocket är uppskuret längs pålaxeln. Lagren är sonderingens lagerföljd med justeringarna från lagertolkningen. Schematiskt: pålspetsen, anslutningsjärn och armering, skruvbladet, kärnröret och svetsringen. Där sonderingen inte ger något lager är närmaste lager förlängt.",
     "material": {
       "concrete": "Betong",
       "steel": "Stål",
@@ -432,7 +433,8 @@
       "water": "grundvatten {{nap}}",
       "excavation": "schakt {{nap}}",
       "joint": "skarv {{nap}}",
-      "excavatedLayer": "{{soil}} (schaktad)"
+      "excavatedLayer": "{{soil}} (schaktad)",
+      "adjustedLayer": "{{soil}} (justerad)"
     }
   },
   "types": {

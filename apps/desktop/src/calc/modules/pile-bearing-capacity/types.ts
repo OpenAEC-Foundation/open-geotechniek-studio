@@ -207,6 +207,9 @@ export interface BaseResistanceResult {
   qcIIGemMpa: number;
   qcIIIGemMpa: number;
   criticalDepthM: number;      // 0,7..4 Deq onder paalpunt
+  /** Bovengrens van traject III waarmee is gerekend [m onder maaiveld]: 8 Deq boven
+   *  de paalpunt, begrensd op het maaiveld. Optioneel ivm eerdere PileResult-snapshots. */
+  zoneIIITopDepthM?: number;
   qbMaxMpaRaw: number;         // voor cap
   qbMaxMpa: number;            // na cap op 15 MPa
   abMm2: number;

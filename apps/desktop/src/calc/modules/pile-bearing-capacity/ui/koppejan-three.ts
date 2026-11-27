@@ -174,14 +174,15 @@ export function buildKoppejanObjects(model: KoppejanScene, colors: SceneColors):
   ring.renderOrder = 3;
   root.add(ring);
 
-  // Kleeftrajecten als dunne kokers om de schacht.
+  // Kleeftrajecten als dunne kokers direct om de schacht: een laagje op de paal, geen
+  // volume, zodat de positieve schachtwrijving niet als deel van het bezwijklichaam leest.
   for (const zone of model.shaftZones) {
-    const radius = pileRadius + 0.1 * deq;
+    const radius = pileRadius + 0.03 * deq;
     const geometry = new THREE.CylinderGeometry(radius, radius, zone.topNap - zone.bottomNap, 40, 1, true);
     geometry.translate(0, (zone.topNap + zone.bottomNap) / 2, 0);
-    const mesh = new THREE.Mesh(geometry, translucent(SHAFT_COLORS[zone.id], 0.3));
+    const mesh = new THREE.Mesh(geometry, translucent(SHAFT_COLORS[zone.id], 0.45));
     mesh.name = `shaft-${zone.id}`;
-    mesh.renderOrder = 1;
+    mesh.renderOrder = 0;
     root.add(mesh);
   }
 

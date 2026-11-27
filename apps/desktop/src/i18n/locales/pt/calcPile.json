@@ -378,13 +378,14 @@
     "focusPile": "Estaca inteira",
     "focusTip": "Ponta da estaca",
     "label": {
-      "critical": "profundidade crítica {{depth}} m",
+      "critical": "profundidade crítica {{depth}} m = {{ratio}} Deq",
       "ground": "nível do terreno {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "ponta da estaca {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "limite superior da zona III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Verde-azulado: a curva qc truncada dos troços II e III.",
@@ -392,11 +393,11 @@
       "negative": "Atrito negativo ao longo do fuste; Fnk;d = {{force}} kN",
       "positive": "Atrito lateral positivo ao longo do fuste; Rs;cal;max = {{force}} kN",
       "qc": "Resistência de ponta qc ao lado da estaca; os traços grossos são as médias dos troços.",
-      "slip": "Corpo de rotura: o solo desliza ao longo de uma espiral logarítmica, desde a profundidade crítica abaixo da ponta da estaca para fora e para cima até 8 Deq acima da ponta. Um quarto foi omitido para se ver o interior; as setas indicam o sentido do deslizamento. A forma é esquemática.",
+      "slip": "Corpo de rotura: o solo desliza ao longo de uma espiral logarítmica, desde a profundidade crítica abaixo da ponta para fora e para cima até ao limite superior da zona III, tal como escolhidos pelo cálculo. Um quarto foi omitido para se ver o interior; as setas indicam o sentido do corte. A forma é esquemática.",
       "zone": "Troço {{zone}}",
       "zoneI": "da ponta da estaca para baixo até à profundidade crítica",
       "zoneII": "da profundidade crítica de volta para cima até à ponta da estaca",
-      "zoneIII": "da ponta da estaca até 8 Deq acima"
+      "zoneIII": "da ponta da estaca para cima até ao limite superior da zona III"
     },
     "noModel": "Não há vista 3D: associe uma sondagem ao cálculo.",
     "notComputed": "Não há vista 3D enquanto o cálculo não tiver resultado. Ajuste os dados ou volte ao 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Troços I, II e III, mecanismo de rotura, atrito e qc",
     "ariaPhysical": "Vista 3D da estaca no terreno; arrastar roda, deslocar amplia",
     "noPhysical": "Não existe vista 3D: as dimensões da estaca ou os níveis são inválidos.",
-    "notePhysical": "A estaca, as camadas e os níveis estão à escala; o bloco de solo está aberto ao longo do eixo da estaca. Esquemático: a ponteira de cravação, as armaduras de espera e a armadura, a hélice, o tubo central e o anel de soldadura. Fora do perfil introduzido, a camada mais próxima é prolongada.",
+    "notePhysical": "A estaca, as camadas e os níveis estão à escala; o bloco de solo está aberto ao longo do eixo da estaca. As camadas são a estratigrafia do CPT, com os ajustes da interpretação das camadas. Esquemáticos: a ponta, os arranques e a armadura, a hélice, o tubo central e o anel de soldadura. Onde o CPT não dá camada, prolonga-se a camada mais próxima.",
     "material": {
       "concrete": "Betão",
       "steel": "Aço",
@@ -432,7 +433,8 @@
       "water": "nível freático {{nap}}",
       "excavation": "escavação {{nap}}",
       "joint": "junta {{nap}}",
-      "excavatedLayer": "{{soil}} (escavado)"
+      "excavatedLayer": "{{soil}} (escavado)",
+      "adjustedLayer": "{{soil}} (ajustado)"
     }
   },
   "types": {

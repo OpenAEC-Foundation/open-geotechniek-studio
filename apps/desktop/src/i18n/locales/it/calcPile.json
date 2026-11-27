@@ -378,13 +378,14 @@
     "focusPile": "Palo intero",
     "focusTip": "Punta del palo",
     "label": {
-      "critical": "profondità critica {{depth}} m",
+      "critical": "profondità critica {{depth}} m = {{ratio}} Deq",
       "ground": "piano campagna {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "punta del palo {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "limite superiore della zona III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Verde-azzurro: la curva qc troncata dei tratti II e III.",
@@ -392,11 +393,11 @@
       "negative": "Attrito negativo lungo il fusto; Fnk;d = {{force}} kN",
       "positive": "Attrito laterale positivo lungo il fusto; Rs;cal;max = {{force}} kN",
       "qc": "Resistenza alla punta qc accanto al palo; i tratti spessi sono le medie dei tratti.",
-      "slip": "Corpo di rottura: il terreno scorre lungo una spirale logaritmica, dalla profondità critica sotto la punta del palo verso l’esterno e verso l’alto fino a 8 Deq sopra la punta. Un quarto è omesso per vedere all’interno; le frecce indicano il verso dello scorrimento. La forma è schematica.",
+      "slip": "Corpo di rottura: il terreno scorre lungo una spirale logaritmica, dalla profondità critica sotto la punta verso l'esterno e verso l'alto fino al limite superiore della zona III, come scelti dal calcolo. Un quarto è omesso per vedere all'interno; le frecce indicano la direzione di scorrimento. La forma è schematica.",
       "zone": "Tratto {{zone}}",
       "zoneI": "dalla punta del palo verso il basso fino alla profondità critica",
       "zoneII": "dalla profondità critica di nuovo verso l'alto fino alla punta del palo",
-      "zoneIII": "dalla punta del palo fino a 8 Deq sopra"
+      "zoneIII": "dalla punta del palo verso l'alto fino al limite superiore della zona III"
     },
     "noModel": "Nessuna vista 3D: collegare una prova penetrometrica al calcolo.",
     "notComputed": "Nessuna vista 3D finché il calcolo non ha un risultato. Modificare i dati o tornare al 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Tratti I, II e III, meccanismo di rottura, attrito e qc",
     "ariaPhysical": "Vista 3D del palo nel terreno; trascinare per ruotare, scorrere per lo zoom",
     "noPhysical": "Nessuna vista 3D: le dimensioni del palo o le quote non sono valide.",
-    "notePhysical": "Palo, strati e quote sono in scala; il blocco di terreno è aperto lungo l'asse del palo. Schematici: la puntazza, i ferri di ripresa e l'armatura, l'elica, il tubo centrale e l'anello di saldatura. Fuori dal profilo inserito viene prolungato lo strato più vicino.",
+    "notePhysical": "Palo, strati e livelli sono in scala; il blocco di terreno è aperto lungo l'asse del palo. Gli strati sono la stratigrafia della prova CPT, con le modifiche dell'interpretazione degli strati. Schematici: la punta, i ferri di ripresa e l'armatura, l'elica, il tubo centrale e l'anello di saldatura. Dove la prova non dà uno strato, viene prolungato lo strato più vicino.",
     "material": {
       "concrete": "Calcestruzzo",
       "steel": "Acciaio",
@@ -432,7 +433,8 @@
       "water": "falda {{nap}}",
       "excavation": "scavo {{nap}}",
       "joint": "giunto {{nap}}",
-      "excavatedLayer": "{{soil}} (scavato)"
+      "excavatedLayer": "{{soil}} (scavato)",
+      "adjustedLayer": "{{soil}} (modificato)"
     }
   },
   "types": {

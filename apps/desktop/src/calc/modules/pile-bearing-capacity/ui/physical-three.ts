@@ -3,16 +3,17 @@
 // the soil block sits behind the pile axis (z ≤ 0) so the pile stands in the cut.
 import * as THREE from "three";
 import { MATERIAL_COLORS } from "../parts/material-colors";
-import type { PhysicalPart, PhysicalScene, SoilDisplayKind } from "../parts/physical-scene";
+import type { PhysicalPart, PhysicalScene } from "../parts/physical-scene";
 import { line, textSprite, translucent, type KoppejanObjects, type SceneColors } from "./koppejan-three";
 
-export const SOIL_COLORS: Record<SoilDisplayKind, string> = { sand: "#e6c93a", clay: "#7fae5f", peat: "#a9714b" };
+/** Grond in een open buis (prop). */
+export const PLUG_COLOR = "#e6c93a";
 export const WATER_COLOR = "#2f80c9";
 export const EXCAVATION_COLOR = "#8a5a2b";
 export const GROUT_COLOR = "#c9c6bd";
 const GROUND_COLOR = "#7c8f4e";
 
-export const partColor = (material: PhysicalPart["material"]) => (material === "grout" ? GROUT_COLOR : material === "plug" ? SOIL_COLORS.sand : MATERIAL_COLORS[material].fill);
+export const partColor = (material: PhysicalPart["material"]) => (material === "grout" ? GROUT_COLOR : material === "plug" ? PLUG_COLOR : MATERIAL_COLORS[material].fill);
 
 function partMaterial(part: PhysicalPart, flat: boolean): THREE.MeshStandardMaterial {
   const steel = part.material === "steel";
@@ -86,10 +87,10 @@ export function buildPhysicalObjects(model: PhysicalScene, colors: SceneColors):
     root.add(object);
   }
 
-  // Grondblok achter de paalas; elke laag een blok in de kleur van de grondsoort.
+  // Grondblok achter de paalas; elke laag een blok in de kleur van zijn zone uit de grondopbouw.
   for (const [i, layer] of model.block.layers.entries()) {
     const h = layer.topNap - layer.bottomNap;
-    const material = new THREE.MeshStandardMaterial({ color: SOIL_COLORS[layer.kind], roughness: 1, metalness: 0,
+    const material = new THREE.MeshStandardMaterial({ color: layer.color, roughness: 1, metalness: 0,
       ...(layer.excavated ? { transparent: true, opacity: 0.3, depthWrite: false } : layer.assumed ? { transparent: true, opacity: 0.75 } : {}) });
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(2 * w, h, depth), material);
     mesh.position.set(0, (layer.topNap + layer.bottomNap) / 2, -depth / 2 - 0.0005);

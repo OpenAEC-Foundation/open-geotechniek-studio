@@ -88,11 +88,13 @@ describe("buildKoppejanScene", () => {
     expect(text("I")).toBe(`qc;I;gem = ${result.base.qcIGemMpa.toFixed(2).replace(".", ",")} MPa`);
     expect(text("II")).toContain("qc;II;gem");
     expect(text("III")).toContain("qc;III;gem");
-    expect(text("critical")).toBe(`kritieke diepte ${result.base.criticalDepthM.toFixed(2).replace(".", ",")} m`);
+    const comma = (v: number) => v.toFixed(2).replace(".", ",");
+    expect(text("critical")).toBe(`kritieke diepte ${comma(result.base.criticalDepthM)} m = ${comma(result.base.criticalDepthM / deq)} Deq`);
+    expect(text("zoneIIITop")).toBe(`bovengrens traject III ${comma(8 * deq)} m = 8,00 Deq`);
     expect(text("toe")).toBe("paalpunt NAP −14,00 m");
     // Labels rond de punt staan van boven naar beneden en overlappen niet.
     const tip = scene.labels.filter((l) => l.group === "tip" && l.target);
-    expect(tip.map((l) => l.id)).toEqual(["III", "toe", "II", "I", "critical"]);
+    expect(tip.map((l) => l.id)).toEqual(["zoneIIITop", "III", "toe", "II", "I", "critical"]);
     for (let i = 1; i < tip.length; i++) expect(tip[i - 1].anchor[1] - tip[i].anchor[1]).toBeGreaterThanOrEqual(scene.labelGapM - 1e-9);
     expect(scene.labelGapM).toBeCloseTo(1.4 * deq, 9);
   });
@@ -118,11 +120,45 @@ describe("buildKoppejanScene", () => {
     expect(tip.x0).toBeLessThan(0);
   });
 
+  it("tekent het bezwijklichaam van de kritieke diepte tot de bovengrens van traject III uit het resultaat, los van het kleeftraject", () => {
+    const slip = scene.slip!;
+    expect(result.base.zoneIIITopDepthM).toBeCloseTo(GROUND - input.pileToeNap - 8 * deq, 9);
+    expect(slip.bottomNap).toBeCloseTo(input.pileToeNap - result.base.criticalDepthM, 9);
+    expect(slip.topNap).toBeCloseTo(GROUND - result.base.zoneIIITopDepthM!, 9);
+    expect(slip.topNap - slip.bottomNap).toBeCloseTo(result.base.criticalDepthM + 8 * deq, 9);
+    // Een ander kleeftraject verandert de puntweerstand niet en dus ook het lichaam niet.
+    for (const posTop of [-9, -12, -13.5]) {
+      const other = { ...input, negKleefBottomNap: Math.max(posTop, -8), posKleefTopNap: posTop } as PileInput;
+      const otherResult = computePile(other, cpt);
+      expect(otherResult.ok).toBe(true);
+      const otherSlip = buildKoppejanScene(other, otherResult, cpt, pileType)!.slip!;
+      expect(otherSlip.bottomNap).toBeCloseTo(slip.bottomNap, 9);
+      expect(otherSlip.topNap).toBeCloseTo(slip.topNap, 9);
+    }
+  });
+
+  it("volgt een andere kritieke diepte uit het resultaat", () => {
+    // De zwakke laag (NAP -15,0 tot -15,4) ligt dieper onder een hogere punt: andere kritieke diepte.
+    const deeper = { ...input, pileToeNap: -14.6 } as PileInput;
+    const r = computePile(deeper, cpt);
+    expect(r.ok).toBe(true);
+    expect(Math.abs(r.base.criticalDepthM - result.base.criticalDepthM)).toBeGreaterThan(0.05);
+    const s = buildKoppejanScene(deeper, r, cpt, pileType)!;
+    expect(s.slip!.bottomNap).toBeCloseTo(-14.6 - r.base.criticalDepthM, 9);
+    expect(s.slip!.topNap).toBeCloseTo(-14.6 + 8 * deq, 9);
+    expect(s.labels.find((l) => l.id === "critical")!.text).toContain(`= ${(r.base.criticalDepthM / deq).toFixed(2).replace(".", ",")} Deq`);
+  });
+
   it("kapt traject III af op het maaiveld bij een korte paal", () => {
     const short = { ...input, pileToeNap: GROUND - 1, negKleefBottomNap: GROUND - 0.2, posKleefTopNap: GROUND - 0.2 } as PileInput;
     const shortResult = computePile(short, cpt);
     const shortScene = buildKoppejanScene(short, { ...shortResult, ok: true }, cpt, pileType);
+    expect(shortResult.base.zoneIIITopDepthM).toBe(0);
     expect(shortScene!.zones.find((z) => z.id === "III")!.topNap).toBe(GROUND);
+    // Het lichaam volgt de begrensde bovengrens, niet 8 Deq.
+    expect(shortScene!.slip!.topNap).toBe(GROUND);
+    expect(shortScene!.slip!.topNap - shortScene!.slip!.bottomNap).toBeCloseTo(1 + shortResult.base.criticalDepthM, 9);
+    expect(shortScene!.labels.find((l) => l.id === "zoneIIITop")!.text).toBe(`bovengrens traject III 1,00 m = ${(1 / deq).toFixed(2).replace(".", ",")} Deq`);
   });
 
   it("tekent een vierkante paal en een taps verlopende houten paal met de juiste maten", () => {

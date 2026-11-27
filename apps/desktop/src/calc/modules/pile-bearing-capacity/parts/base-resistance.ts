@@ -222,10 +222,11 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
   // qc;III: continueer de running-min vanaf paalpunt → 8·Deq omhoog.
   // De runMin start op de eindwaarde van qc;II (continuiteit van de
   // afkap-walk door de hele invloedszone, conform norm-procedure).
+  const zoneIIITopDepthM = Math.max(0, args.pileToeDepth - 8 * Deq);
   const qcIIIWalk = clippedAvgQcUpward(
     cpt,
     args.pileToeDepth,
-    Math.max(0, args.pileToeDepth - 8 * Deq),
+    zoneIIITopDepthM,
     Math.min(qcIIWalk.finalMin, args.pileType.qcIIIStartCapMpa ?? Infinity),
   );
   const qcIIIGemMpa = qcIIIWalk.avg;
@@ -244,6 +245,7 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
     qcIIGemMpa,
     qcIIIGemMpa,
     criticalDepthM: bestDc,
+    zoneIIITopDepthM,
     clippedQcCurve,
   };
 }
@@ -263,7 +265,7 @@ function computeMinimumBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
     const iii = profile.walkUp(toe, top, Math.min(ii.finalMin, args.pileType.qcIIIStartCapMpa ?? Infinity), capture);
     const averages = { qcIGemMpa, qcIIGemMpa: ii.avg, qcIIIGemMpa: iii.avg };
     return { ...computeBaseResistanceFromAverages({ ...args, ...averages }), ...averages,
-      criticalDepthM: dc, clippedQcCurve: capture ? [...iii.clippedPoints, ...ii.clippedPoints] : undefined };
+      criticalDepthM: dc, zoneIIITopDepthM: top, clippedQcCurve: capture ? [...iii.clippedPoints, ...ii.clippedPoints] : undefined };
   };
   const lower = .7 * deq, upper = 4 * deq;
   const candidates = new Set<number>([lower, upper]);

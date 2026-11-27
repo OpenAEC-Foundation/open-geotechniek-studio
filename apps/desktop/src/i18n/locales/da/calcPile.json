@@ -378,13 +378,14 @@
     "focusPile": "Hele pælen",
     "focusTip": "Pælespids",
     "label": {
-      "critical": "kritisk dybde {{depth}} m",
+      "critical": "kritisk dybde {{depth}} m = {{ratio}} Deq",
       "ground": "terræn {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "pælespids {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "overgrænse for zone III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Blågrøn: den afskårne qc-linje for strækning II og III.",
@@ -392,11 +393,11 @@
       "negative": "Negativ overflademodstand langs skaftet; Fnk;d = {{force}} kN",
       "positive": "Positiv overflademodstand langs skaftet; Rs;cal;max = {{force}} kN",
       "qc": "Spidsmodstand qc ved siden af pælen; tykke streger er gennemsnittene for strækningerne.",
-      "slip": "Brudlegeme: jorden forskydes langs en logaritmisk spiral, fra den kritiske dybde under pælespidsen udad og opad til 8 Deq over spidsen. En fjerdedel er udeladt, så man kan se ind; pilene viser forskydningsretningen. Formen er skematisk.",
+      "slip": "Brudlegeme: jorden glider langs en logaritmisk spiral, fra den kritiske dybde under pælespidsen udad og op til overgrænsen for zone III, som beregningen har valgt dem. En fjerdedel er udeladt, så du kan se ind; pilene viser forskydningsretningen. Formen er skematisk.",
       "zone": "Strækning {{zone}}",
       "zoneI": "fra pælespidsen nedad til den kritiske dybde",
       "zoneII": "fra den kritiske dybde tilbage op til pælespidsen",
-      "zoneIII": "fra pælespidsen til 8 Deq over den"
+      "zoneIII": "fra pælespidsen op til overgrænsen for zone III"
     },
     "noModel": "Der er ingen 3D-visning: knyt en CPT-sondering til beregningen.",
     "notComputed": "Der er ingen 3D-visning, så længe beregningen ikke har et resultat. Tilpas inddata, eller gå tilbage til 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Strækning I, II og III, brudfigur, overflademodstand og qc",
     "ariaPhysical": "3D-visning af pælen i jorden; træk for at dreje, rul for at zoome",
     "noPhysical": "Der er ingen 3D-visning: pælemålene eller niveauerne er ugyldige.",
-    "notePhysical": "Pæl, lag og niveauer er i målestok; jordblokken er skåret op langs pæleaksen. Skematisk: pæleskoen, stritter og armering, skruebladet, kernerøret og svejseringen. Uden for det indtastede profil er det nærmeste lag forlænget.",
+    "notePhysical": "Pæl, lag og niveauer er i skala; jordblokken er skåret op langs pæleaksen. Lagene er sonderingens lagfølge med justeringerne fra laginterpretationen. Skematisk: pælespidsen, stikjern og armering, skruebladet, kernerøret og svejseringen. Hvor sonderingen ikke giver et lag, er det nærmeste lag forlænget.",
     "material": {
       "concrete": "Beton",
       "steel": "Stål",
@@ -432,7 +433,8 @@
       "water": "grundvand {{nap}}",
       "excavation": "udgravning {{nap}}",
       "joint": "samling {{nap}}",
-      "excavatedLayer": "{{soil}} (udgravet)"
+      "excavatedLayer": "{{soil}} (udgravet)",
+      "adjustedLayer": "{{soil}} (justeret)"
     }
   },
   "types": {

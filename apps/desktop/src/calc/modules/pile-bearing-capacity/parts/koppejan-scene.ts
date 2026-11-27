@@ -41,7 +41,7 @@ export interface ShaftZone {
 }
 
 export interface SceneLabel {
-  id: KoppejanZoneId | "critical" | "toe" | "ground" | "negative" | "positive" | "qcAxis";
+  id: KoppejanZoneId | "critical" | "toe" | "ground" | "negative" | "positive" | "qcAxis" | "zoneIIITop";
   text: string;
   /** Plek van de tekst [x, NAP]; "left" = tekst eindigt hier, "right" = tekst begint hier. */
   anchor: [number, number];
@@ -63,7 +63,8 @@ export interface KoppejanScene {
   searchRange: { topNap: number; bottomNap: number; radiusM: number };
   critical: { nap: number; depthM: number; deqRatio: number };
   shaftZones: ShaftZone[];
-  /** Bezwijklichaam rond de paalpunt als omwentelingslichaam; null als traject III ontbreekt. */
+  /** Bezwijklichaam rond de paalpunt als omwentelingslichaam, van de kritieke diepte tot de
+   *  bovengrens van traject III uit het rekenresultaat; null als traject III ontbreekt. */
   slip: SlipBody | null;
   qc: {
     /** x van qc = 0 en breedte van de as tot axisMaxMpa [m]. */
@@ -188,9 +189,13 @@ export function buildKoppejanScene(
   // Buitenkant van de paal bij de punt: bij een vierkante paal de halve diagonaal.
   const toeRadiusM = Math.min(coreR, toeSegment.bottomSizeM / 2 * (toeSegment.isCircular ? 1 : Math.SQRT2));
 
+  // Het bezwijklichaam en de trajecten volgen het scenario dat de berekening heeft gekozen:
+  // onder de punt de kritieke diepte met de laagste puntweerstand, boven de punt de
+  // bovengrens van traject III zoals de rekenkern die toepast (8 Deq, begrensd op het maaiveld).
   const criticalNap = toe - base.criticalDepthM;
-  // De berekening kapt traject III af op het maaiveld.
-  const zoneIIITop = Math.min(groundNap, toe + 8 * deqM);
+  const zoneIIITop = typeof base.zoneIIITopDepthM === "number" && Number.isFinite(base.zoneIIITopDepthM)
+    ? groundNap - base.zoneIIITopDepthM
+    : Math.min(groundNap, toe + 8 * deqM);
   const zones: KoppejanZone[] = [
     { id: "I", topNap: toe, bottomNap: criticalNap, innerRadiusM: 0, outerRadiusM: coreR, direction: "down", qcGemMpa: base.qcIGemMpa },
     { id: "II", topNap: toe, bottomNap: criticalNap, innerRadiusM: coreR, outerRadiusM: outerR, direction: "up", qcGemMpa: base.qcIIGemMpa },
@@ -234,12 +239,15 @@ export function buildKoppejanScene(
   // Labels links van de paal, van boven naar beneden; rond de punt uit elkaar geschoven.
   const labelX = -(reach + deqM);
   const zoneIII = zones.find((z) => z.id === "III");
+  // Grenzen van het bezwijklichaam met de werkelijke maat: in m en als veelvoud van Deq.
+  const deqText = (m: number) => fmtNumber(m / deqM, 2);
   const tipWanted: Array<{ id: SceneLabel["id"]; text: string; target: [number, number] }> = [
+    ...(zoneIII ? [{ id: "zoneIIITop" as const, text: ct("calcPile", "view3d.label.zoneIIITop", "bovengrens traject III {{height}} m = {{ratio}} Deq", { height: fmtNumber(zoneIIITop - toe, 2), ratio: deqText(zoneIIITop - toe) }), target: [-outerR, zoneIIITop] as [number, number] }] : []),
     ...(zoneIII ? [{ id: "III" as const, text: ct("calcPile", "view3d.label.zone", "{{symbol}} = {{value}}", { symbol: "qc;III;gem", value: mpa(base.qcIIIGemMpa) }), target: [-(toeRadiusM + outerR) / 2, (zoneIII.topNap + toe) / 2] as [number, number] }] : []),
     { id: "toe", text: ct("calcPile", "view3d.label.toe", "paalpunt {{nap}}", { nap: nap(toe) }), target: [-toeRadiusM, toe] },
     { id: "II", text: ct("calcPile", "view3d.label.zone", "{{symbol}} = {{value}}", { symbol: "qc;II;gem", value: mpa(base.qcIIGemMpa) }), target: [-(coreR + outerR) / 2, toe - base.criticalDepthM * 0.35] },
     { id: "I", text: ct("calcPile", "view3d.label.zone", "{{symbol}} = {{value}}", { symbol: "qc;I;gem", value: mpa(base.qcIGemMpa) }), target: [-coreR / 2, toe - base.criticalDepthM * 0.65] },
-    { id: "critical", text: ct("calcPile", "view3d.label.critical", "kritieke diepte {{depth}} m", { depth: fmtNumber(base.criticalDepthM, 2) }), target: [-outerR, criticalNap] },
+    { id: "critical", text: ct("calcPile", "view3d.label.critical", "kritieke diepte {{depth}} m = {{ratio}} Deq", { depth: fmtNumber(base.criticalDepthM, 2), ratio: deqText(base.criticalDepthM) }), target: [-outerR, criticalNap] },
   ];
   const labelGapM = LABEL_GAP_DEQ * deqM;
   const tipLevels = spreadDown(tipWanted.map((l) => l.target[1]), labelGapM);

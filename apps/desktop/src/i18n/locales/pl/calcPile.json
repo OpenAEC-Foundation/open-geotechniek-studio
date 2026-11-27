@@ -378,13 +378,14 @@
     "focusPile": "Cały pal",
     "focusTip": "Podstawa pala",
     "label": {
-      "critical": "głębokość krytyczna {{depth}} m",
+      "critical": "głębokość krytyczna {{depth}} m = {{ratio}} Deq",
       "ground": "poziom terenu {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "podstawa pala {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "górna granica strefy III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Zielononiebieski: obcięta linia qc odcinków II i III.",
@@ -392,11 +393,11 @@
       "negative": "Tarcie negatywne wzdłuż pobocznicy; Fnk;d = {{force}} kN",
       "positive": "Tarcie pozytywne wzdłuż pobocznicy; Rs;cal;max = {{force}} kN",
       "qc": "Opór stożka qc obok pala; grube kreski to średnie z odcinków.",
-      "slip": "Bryła zniszczenia: grunt ścina się wzdłuż spirali logarytmicznej, od głębokości krytycznej pod podstawą pala na zewnątrz i w górę do 8 Deq nad podstawą. Jedna ćwiartka jest pominięta, aby było widać wnętrze; strzałki wskazują kierunek ścinania. Kształt jest schematyczny.",
+      "slip": "Bryła zniszczenia: grunt ścina się wzdłuż spirali logarytmicznej, od głębokości krytycznej pod podstawą pala na zewnątrz i w górę do górnej granicy strefy III, tak jak wybrało je obliczenie. Ćwiartka jest pominięta, aby zajrzeć do środka; strzałki wskazują kierunek ścinania. Kształt jest schematyczny.",
       "zone": "Odcinek {{zone}}",
       "zoneI": "od podstawy pala w dół do głębokości krytycznej",
       "zoneII": "od głębokości krytycznej z powrotem w górę do podstawy pala",
-      "zoneIII": "od podstawy pala do 8 Deq powyżej"
+      "zoneIII": "od podstawy pala w górę do górnej granicy strefy III"
     },
     "noModel": "Brak widoku 3D: przypisz sondowanie do obliczenia.",
     "notComputed": "Brak widoku 3D, dopóki obliczenie nie ma wyniku. Zmień dane lub wróć do 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Odcinki I, II i III, strefa zniszczenia, tarcie i qc",
     "ariaPhysical": "Widok 3D pala w gruncie; przeciąganie obraca, przewijanie powiększa",
     "noPhysical": "Brak widoku 3D: wymiary pala lub poziomy są nieprawidłowe.",
-    "notePhysical": "Pal, warstwy i poziomy są w skali; blok gruntu jest rozcięty wzdłuż osi pala. Schematycznie: but pala, pręty startowe i zbrojenie, łopata śrubowa, rura rdzeniowa i pierścień spawany. Poza wprowadzonym profilem przedłużono najbliższą warstwę.",
+    "notePhysical": "Pal, warstwy i poziomy są w skali; blok gruntu jest rozcięty wzdłuż osi pala. Warstwy to układ warstw z sondowania CPT, z korektami z interpretacji warstw. Schematycznie: grot, pręty wystające i zbrojenie, łopata śrubowa, rura rdzeniowa i pierścień spawalniczy. Tam, gdzie sondowanie nie podaje warstwy, przedłużono najbliższą warstwę.",
     "material": {
       "concrete": "Beton",
       "steel": "Stal",
@@ -432,7 +433,8 @@
       "water": "woda gruntowa {{nap}}",
       "excavation": "wykop {{nap}}",
       "joint": "styk {{nap}}",
-      "excavatedLayer": "{{soil}} (wykopany)"
+      "excavatedLayer": "{{soil}} (wykopany)",
+      "adjustedLayer": "{{soil}} (zmieniony)"
     }
   },
   "types": {

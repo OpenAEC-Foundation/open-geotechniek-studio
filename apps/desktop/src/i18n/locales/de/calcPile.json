@@ -378,13 +378,14 @@
     "focusPile": "Ganzer Pfahl",
     "focusTip": "Pfahlfuß",
     "label": {
-      "critical": "kritische Tiefe {{depth}} m",
+      "critical": "kritische Tiefe {{depth}} m = {{ratio}} Deq",
       "ground": "Geländeoberkante {{nap}}",
       "negative": "Fnk;d = {{force}}",
       "positive": "Rs;cal;max = {{force}}",
       "qcAxis": "qc 0 – {{max}} MPa",
       "toe": "Pfahlfuß {{nap}}",
-      "zone": "{{symbol}} = {{value}}"
+      "zone": "{{symbol}} = {{value}}",
+      "zoneIIITop": "Obergrenze Bereich III {{height}} m = {{ratio}} Deq"
     },
     "legend": {
       "clipped": "Blaugrün: die gekappte qc-Linie der Bereiche II und III.",
@@ -392,11 +393,11 @@
       "negative": "Negative Mantelreibung entlang des Schafts; Fnk;d = {{force}} kN",
       "positive": "Positive Mantelreibung entlang des Schafts; Rs;cal;max = {{force}} kN",
       "qc": "Spitzenwiderstand qc neben dem Pfahl; dicke Striche sind die Bereichsmittelwerte.",
-      "slip": "Bruchkörper: Der Boden schert entlang einer logarithmischen Spirale ab, von der kritischen Tiefe unter dem Pfahlfuß nach außen und nach oben bis 8 Deq über dem Fuß. Ein Viertel ist weggelassen, damit man hineinsieht; die Pfeile zeigen die Scherrichtung. Die Form ist schematisch.",
+      "slip": "Bruchkörper: Der Boden schert entlang einer logarithmischen Spirale ab, von der kritischen Tiefe unter der Pfahlspitze nach außen und nach oben bis zur Obergrenze von Bereich III, wie die Berechnung sie gewählt hat. Ein Viertel ist weggelassen, damit man hineinsieht; die Pfeile zeigen in Scherrichtung. Die Form ist schematisch.",
       "zone": "Bereich {{zone}}",
       "zoneI": "vom Pfahlfuß abwärts bis zur kritischen Tiefe",
       "zoneII": "von der kritischen Tiefe zurück nach oben zum Pfahlfuß",
-      "zoneIII": "vom Pfahlfuß bis 8 Deq darüber"
+      "zoneIII": "von der Pfahlspitze nach oben bis zur Obergrenze von Bereich III"
     },
     "noModel": "Es gibt keine 3D-Ansicht: Verknüpfen Sie eine Drucksondierung mit der Berechnung.",
     "notComputed": "Es gibt keine 3D-Ansicht, solange die Berechnung kein Ergebnis hat. Passen Sie die Eingabe an oder wechseln Sie zurück zu 2D.",
@@ -414,7 +415,7 @@
     "viewCalcTitle": "Abschnitte I, II und III, Bruchkörper, Mantelreibung und qc",
     "ariaPhysical": "3D-Ansicht des Pfahls im Boden; Ziehen dreht, Scrollen zoomt",
     "noPhysical": "Es gibt keine 3D-Ansicht: Die Pfahlmaße oder Höhen sind ungültig.",
-    "notePhysical": "Pfahl, Schichten und Höhen sind maßstäblich; der Bodenblock ist entlang der Pfahlachse aufgeschnitten. Schematisch: die Rammspitze, Anschlussbewehrung und Bewehrung, der Schraubenflügel, das Kernrohr und der Schweißring. Außerhalb des eingegebenen Profils wird die nächstgelegene Schicht fortgeführt.",
+    "notePhysical": "Pfahl, Schichten und Höhen sind maßstäblich; der Bodenblock ist entlang der Pfahlachse aufgeschnitten. Die Schichten sind der Schichtaufbau der Drucksondierung, mit den Anpassungen aus der Schichtinterpretation. Schematisch: Pfahlspitze, Anschlusseisen und Bewehrung, Schraubenblatt, Kernrohr und Schweißring. Wo die Sondierung keine Schicht liefert, ist die nächstgelegene Schicht verlängert.",
     "material": {
       "concrete": "Beton",
       "steel": "Stahl",
@@ -432,7 +433,8 @@
       "water": "Grundwasser {{nap}}",
       "excavation": "Aushub {{nap}}",
       "joint": "Stoß {{nap}}",
-      "excavatedLayer": "{{soil}} (ausgehoben)"
+      "excavatedLayer": "{{soil}} (ausgehoben)",
+      "adjustedLayer": "{{soil}} (angepasst)"
     }
   },
   "types": {
