@@ -19,8 +19,13 @@ export const TIMBER_TOE_MM = 150;
 export const EXTENSION_PRESETS = [
   { id: "rond-280", label: "Rond Ø280", sizeMm: 280, isCircular: true },
   { id: "rond-180", label: "Rond Ø180", sizeMm: 180, isCircular: true },
+  { id: "rond-220", label: "Rond Ø220", sizeMm: 220, isCircular: true },
+  { id: "rond-250", label: "Rond Ø250", sizeMm: 250, isCircular: true },
+  { id: "rond-480", label: "Rond Ø480", sizeMm: 480, isCircular: true },
+  { id: "vierkant-220", label: "Vierkant 220×220", sizeMm: 220, isCircular: false },
   { id: "vierkant-250", label: "Vierkant 250×250", sizeMm: 250, isCircular: false },
   { id: "vierkant-320", label: "Vierkant 320×320", sizeMm: 320, isCircular: false },
+  { id: "vierkant-480", label: "Vierkant 480×480", sizeMm: 480, isCircular: false },
 ] as const;
 export const EXTENSION_LENGTHS_M = [1.5, 2, 2.5, 4];
 

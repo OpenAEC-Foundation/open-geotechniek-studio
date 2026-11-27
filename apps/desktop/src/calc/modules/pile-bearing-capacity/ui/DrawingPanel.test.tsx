@@ -30,7 +30,7 @@ it("schakelt tussen 2D en 3D en meldt het als WebGL ontbreekt", () => {
   expect(screen.getByRole("button", { name: "3D" })).toHaveAttribute("aria-pressed", "true");
   // jsdom heeft geen WebGL: de weergave valt terug op een melding.
   expect(screen.getByRole("status")).toHaveTextContent("3D is op dit apparaat niet beschikbaar");
-  fireEvent.click(screen.getByRole("button", { name: "2D", exact: true }));
+  fireEvent.click(screen.getByRole("button", { name: /^2D$/ }));
   expect(screen.getByText(`Sondering: ${cpt.id}`)).toBeInTheDocument();
 });
 

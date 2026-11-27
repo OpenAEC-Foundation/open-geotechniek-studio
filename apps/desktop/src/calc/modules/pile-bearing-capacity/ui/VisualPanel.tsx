@@ -1208,7 +1208,7 @@ function CptOverlayChart({ cpt, effCpt, applied, selection, onSelectRange, onPic
             refY="9"
             markerWidth="7"
             markerHeight="7"
-            orient="auto"
+            orient="0"
           >
             <path d="M0,0 L10,0 L5,10 z" fill="#dc2626" />
           </marker>
@@ -1219,7 +1219,7 @@ function CptOverlayChart({ cpt, effCpt, applied, selection, onSelectRange, onPic
             refY="1"
             markerWidth="7"
             markerHeight="7"
-            orient="auto"
+            orient="0"
           >
             <path d="M0,10 L10,10 L5,0 z" fill="#16a34a" />
           </marker>
