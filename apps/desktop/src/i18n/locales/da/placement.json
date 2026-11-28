@@ -27,7 +27,13 @@
     "supports": "Ankre/afstivninger",
     "base": "Funderingsniveau",
     "width": "Bredde",
-    "open": "Åbn beregning"
+    "open": "Åbn beregning",
+    "strut": "afstivning",
+    "grout": "jordanker",
+    "tie": "ankerstang",
+    "tie_wall": "ankerstang med ankervæg",
+    "tie_pile": "ankerstang med ankerpæl",
+    "tie_plate": "ankerstang med ankerplade"
   },
   "bar": {
     "placeHint": "Placer denne beregning på kortet og i 3D-modellen",

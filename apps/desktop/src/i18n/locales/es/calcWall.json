@@ -355,7 +355,9 @@
     "shear": "Cortante",
     "toe": "pie",
     "viewAria": "Vista",
-    "water": "agua"
+    "water": "agua",
+    "strutOpen": "lado opuesto desconocido",
+    "tieHint": "Tirante en longitud e inclinación reales, con tuerca y placa en la viga de reparto y el anclaje al final. Rojo discontinuo: plano activo del muro; morado: plano pasivo de la pantalla de anclaje. Un puntal llega hasta el borde del bloque: el lado opuesto de la excavación no se conoce en el cálculo (disco rojo)."
   },
   "warnings": {
     "groutAboveGround": "El bulbo de anclaje sobresale por encima del nivel del terreno del lado alto; compruebe el nivel, el ángulo y las longitudes.",
@@ -560,5 +562,72 @@
     "showQc": "qc del CPT junto a la sección",
     "clear": "Suelo transparente",
     "noLayers": "El CPT no da división en capas (sin qc ni Rf)."
+  },
+  "tie": {
+    "type": "Anclaje",
+    "typeNone": "Sin indicar (esquemático)",
+    "typeWall": "pantalla de anclaje",
+    "typePile": "pilote de anclaje",
+    "typePlate": "placa de anclaje",
+    "typeWallLong": "Pantalla de anclaje (tablestaca corta)",
+    "typePileLong": "Pilote de anclaje (inclinado o vertical)",
+    "typePlateLong": "Placa de anclaje o bloque de hormigón",
+    "length": "Longitud del tirante hasta el anclaje",
+    "wallTop": "Coronación de la pantalla de anclaje",
+    "wallBottom": "Base de la pantalla de anclaje",
+    "wallProfile": "Perfil de la pantalla de anclaje",
+    "wallPlate": "Sin perfil: placa por anclaje",
+    "width": "Ancho por anclaje",
+    "thickness": "Espesor",
+    "height": "Altura",
+    "pileLength": "Longitud del pilote",
+    "pileRake": "Inclinación respecto a la vertical",
+    "pileDiameter": "Diámetro del pilote",
+    "pileFromTo": "pilote",
+    "where": "Frente del anclaje a {{x}} m detrás del muro, a NAP {{z}} m; {{what}} de NAP {{top}} a {{bottom}} m.",
+    "rodType": "Barra",
+    "rodCustom": "Secciones propias A_g y A_s (tabla del proveedor)",
+    "rodPlain": "Barra lisa con rosca tallada",
+    "rodUpset": "Barra con rosca recalcada",
+    "diameter": "Diámetro de la barra",
+    "threadDiameter": "Diámetro de la rosca",
+    "pitch": "Paso de la rosca",
+    "grade": "Tipo de acero",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0,9382 · P)² según EN ISO 898-1, paso por defecto la rosca gruesa ISO 261. f_y y f_u de EN 1993-1-1 tabla 3.1 (hasta 40 mm y de 40 a 80 mm; por encima, valores propios). Para comparar: E · A_g / L = {{k}} kN/m por anclaje.",
+    "result": "Tirante y anclaje",
+    "resultAria": "Posición del anclaje",
+    "activeX": "Plano de deslizamiento activo",
+    "requiredX": "Necesario con plano pasivo",
+    "frontX": "Disponible",
+    "ok": "cumple",
+    "notOk": "no cumple",
+    "resultHint": "Distancias detrás del muro: el plano activo desde el pie a 45° + φ′/2 al nivel del frente del anclaje; para pantalla o placa, la distancia a la que el plano pasivo (45° − φ′/2 desde la base) no corta el plano activo bajo el terreno (CUR 166; Terzaghi, 1943). No en esta versión: la resistencia de la pantalla, el pilote o la placa.",
+    "checks": {
+      "slip": {
+        "label": "posición del anclaje",
+        "title": "Anclaje fuera del plano de deslizamiento activo"
+      },
+      "wedge": {
+        "label": "planos de la pantalla",
+        "title": "Plano pasivo de la pantalla de anclaje fuera del plano activo del muro",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, frente: {{name}}",
+      "frontShort": "distancia del muro al frente"
+    },
+    "warnings": {
+      "outside": "El tirante {{id}} termina fuera de la altura de la pantalla de anclaje; compruebe la longitud, el ángulo y la coronación y base de la pantalla.",
+      "aboveGround": "El anclaje de {{id}} sobresale del terreno del lado alto.",
+      "strength": "La resistencia y la rigidez de la pantalla, el pilote o la placa de anclaje no están en esta hoja; tampoco la estabilidad del deslizamiento profundo (Kranz)."
+    },
+    "errors": {
+      "length": "Tirante: introduzca la longitud hasta el anclaje (mayor que 0).",
+      "wall": "Pantalla de anclaje: la coronación queda sobre la base; sin perfil, ancho y espesor mayores que 0.",
+      "pile": "Pilote de anclaje: longitud y diámetro mayores que 0, inclinación menor que 60°.",
+      "plate": "Placa de anclaje: ancho, altura y espesor mayores que 0.",
+      "rod": "Tirante: introduzca el diámetro de la barra y, con rosca recalcada, el de la rosca; el paso es mayor que 0."
+    }
   }
 }

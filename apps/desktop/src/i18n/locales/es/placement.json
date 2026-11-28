@@ -27,7 +27,13 @@
     "supports": "Anclajes/puntales",
     "base": "Base de cimentación",
     "width": "Ancho",
-    "open": "Abrir cálculo"
+    "open": "Abrir cálculo",
+    "strut": "puntal",
+    "grout": "anclaje inyectado",
+    "tie": "tirante",
+    "tie_wall": "tirante con pantalla de anclaje",
+    "tie_pile": "tirante con pilote de anclaje",
+    "tie_plate": "tirante con placa de anclaje"
   },
   "bar": {
     "placeHint": "Colocar este cálculo en el mapa y en el modelo 3D",

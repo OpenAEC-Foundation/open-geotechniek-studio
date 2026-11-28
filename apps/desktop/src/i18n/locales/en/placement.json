@@ -27,7 +27,13 @@
     "supports": "Anchors/struts",
     "base": "Foundation base",
     "width": "Width",
-    "open": "Open calculation"
+    "open": "Open calculation",
+    "strut": "strut",
+    "grout": "ground anchor",
+    "tie": "tie rod",
+    "tie_wall": "tie rod with anchor wall",
+    "tie_pile": "tie rod with anchor pile",
+    "tie_plate": "tie rod with anchor plate"
   },
   "bar": {
     "placeHint": "Place this calculation on the map and in the 3D model",

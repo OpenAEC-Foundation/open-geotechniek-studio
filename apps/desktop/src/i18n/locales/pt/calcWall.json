@@ -355,7 +355,9 @@
     "shear": "Esforço transverso",
     "toe": "pé",
     "viewAria": "Vista",
-    "water": "água"
+    "water": "água",
+    "strutOpen": "lado oposto desconhecido",
+    "tieHint": "Tirante em comprimento e inclinação reais, com porca e placa na viga de distribuição e a ancoragem no fim. Vermelho tracejado: plano ativo da parede; roxo: plano passivo da cortina de ancoragem. Uma escora vai até ao bordo do bloco: o lado oposto da escavação não é conhecido no cálculo (disco vermelho)."
   },
   "warnings": {
     "groutAboveGround": "O bolbo de selagem fica acima do nível do terreno do lado alto; verifique o nível, o ângulo e os comprimentos.",
@@ -560,5 +562,72 @@
     "showQc": "qc do CPT junto ao corte",
     "clear": "Solo transparente",
     "noLayers": "O CPT não dá divisão em camadas (sem qc e Rf)."
+  },
+  "tie": {
+    "type": "Ancoragem",
+    "typeNone": "Não indicado (esquemático)",
+    "typeWall": "cortina de ancoragem",
+    "typePile": "estaca de ancoragem",
+    "typePlate": "placa de ancoragem",
+    "typeWallLong": "Cortina de ancoragem (estacas-prancha curtas)",
+    "typePileLong": "Estaca de ancoragem (inclinada ou vertical)",
+    "typePlateLong": "Placa de ancoragem ou bloco de betão",
+    "length": "Comprimento do tirante até à ancoragem",
+    "wallTop": "Topo da cortina de ancoragem",
+    "wallBottom": "Base da cortina de ancoragem",
+    "wallProfile": "Perfil da cortina de ancoragem",
+    "wallPlate": "Sem perfil: placa por ancoragem",
+    "width": "Largura por ancoragem",
+    "thickness": "Espessura",
+    "height": "Altura",
+    "pileLength": "Comprimento da estaca",
+    "pileRake": "Inclinação em relação à vertical",
+    "pileDiameter": "Diâmetro da estaca",
+    "pileFromTo": "estaca",
+    "where": "Frente da ancoragem a {{x}} m atrás da parede, a NAP {{z}} m; {{what}} de NAP {{top}} a {{bottom}} m.",
+    "rodType": "Barra",
+    "rodCustom": "Secções próprias A_g e A_s (tabela do fornecedor)",
+    "rodPlain": "Barra lisa com rosca cortada",
+    "rodUpset": "Barra com rosca recalcada",
+    "diameter": "Diâmetro da barra",
+    "threadDiameter": "Diâmetro da rosca",
+    "pitch": "Passo da rosca",
+    "grade": "Classe de aço",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0,9382 · P)² segundo EN ISO 898-1, passo por defeito a rosca grossa ISO 261. f_y e f_u da EN 1993-1-1 quadro 3.1 (até 40 mm e de 40 a 80 mm; acima, valores próprios). Para comparação: E · A_g / L = {{k}} kN/m por ancoragem.",
+    "result": "Tirante e ancoragem",
+    "resultAria": "Posição da ancoragem",
+    "activeX": "Plano de deslizamento ativo",
+    "requiredX": "Necessário com plano passivo",
+    "frontX": "Disponível",
+    "ok": "verifica",
+    "notOk": "não verifica",
+    "resultHint": "Distâncias atrás da parede: o plano ativo a partir do pé a 45° + φ′/2 ao nível da frente da ancoragem; para cortina ou placa, a distância a que o plano passivo (45° − φ′/2 a partir da base) não corta o plano ativo abaixo do terreno (CUR 166; Terzaghi, 1943). Não nesta versão: a resistência da cortina, da estaca ou da placa.",
+    "checks": {
+      "slip": {
+        "label": "posição da ancoragem",
+        "title": "Ancoragem fora do plano de deslizamento ativo"
+      },
+      "wedge": {
+        "label": "planos da cortina",
+        "title": "Plano passivo da cortina de ancoragem fora do plano ativo da parede",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, frente: {{name}}",
+      "frontShort": "distância da parede à frente"
+    },
+    "warnings": {
+      "outside": "O tirante {{id}} termina fora da altura da cortina de ancoragem; verifique o comprimento, o ângulo e o topo e a base da cortina.",
+      "aboveGround": "A ancoragem de {{id}} sobressai acima do terreno do lado alto.",
+      "strength": "A resistência e a rigidez da cortina, da estaca ou da placa de ancoragem não estão nesta folha; nem a estabilidade do deslizamento profundo (Kranz)."
+    },
+    "errors": {
+      "length": "Tirante: introduza o comprimento até à ancoragem (maior que 0).",
+      "wall": "Cortina de ancoragem: o topo fica acima da base; sem perfil, largura e espessura maiores que 0.",
+      "pile": "Estaca de ancoragem: comprimento e diâmetro maiores que 0, inclinação menor que 60°.",
+      "plate": "Placa de ancoragem: largura, altura e espessura maiores que 0.",
+      "rod": "Tirante: introduza o diâmetro da barra e, com rosca recalcada, o da rosca; o passo é maior que 0."
+    }
   }
 }

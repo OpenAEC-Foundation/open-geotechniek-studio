@@ -3,10 +3,11 @@ import { jsPDF } from "jspdf";
 import type { ProjectContext } from "../../framework/types";
 import { M, TOTAL_PAGES_TOKEN, type Cursor, formula, kv, makeCursor, nl, paragraph, sectionTitle, table } from "../pile-bearing-capacity/parts/pile-report-pdf";
 import type { BlumCase } from "./blum";
-import { DEFAULT_FACTORS, GAMMA_WATER, anchorAngle, anchorStiffness, hasAnchor, normalizeWallInput, supportPreload, supportStiffness, wallLoads, wallSupports, type RunSample, type WallInput, type WallResult, type WallRun } from "./compute";
+import { DEFAULT_FACTORS, DEFAULT_TIE, GAMMA_WATER, anchorAngle, anchorStiffness, hasAnchor, normalizeWallInput, supportPreload, supportStiffness, wallLoads, wallSupports, type RunSample, type WallAnchor, type WallInput, type WallResult, type WallRun } from "./compute";
 import { sheetContour } from "../../library/sheetPileContour";
 import type { SheetPileProfile } from "../../library/sheetPiles";
 import { niceTicks, wallScene } from "./scene";
+import { anchorWallProfile, rodSection, tieGeometry } from "./tie-anchorage";
 
 const NORM = "NEN 9997-1 met CUR 166; NEN-EN 1993-5";
 const NORM_REVETMENT = "NEN 9997-1 met CUR 166; NEN-EN 1995-1-1";
@@ -42,7 +43,7 @@ function profileFigure(c: Cursor, p: SheetPileProfile): void {
 
 /** Doorsnede op schaal met de druk op de wand, en ernaast verplaatsing, moment en dwarskracht. */
 function sectionFigure(c: Cursor, i: WallInput, r: Extract<WallResult, { ok: true }>, run: WallRun): void {
-  const doc = c.doc, s = wallScene(i, r, run), top = s.topNap + Math.max(0.3, 0.08 * (s.topNap - s.bottomNap)), bottom = s.bottomNap, half = Math.max(1.2, Math.min(7, 0.42 * (s.topNap - s.toeNap + 1))), hi = s.support?.kind === "grout" ? s.extentHighM : half;
+  const doc = c.doc, s = wallScene(i, r, run), top = s.topNap + Math.max(0.3, 0.08 * (s.topNap - s.bottomNap)), bottom = s.bottomNap, half = Math.max(1.2, Math.min(7, 0.42 * (s.topNap - s.toeNap + 1))), hi = s.supports.some((x) => x.kind === "grout" || x.tie) ? Math.max(half, s.extentHighM) : half;
   const secW = 78, colW = 26, gap = 5, k = Math.min(secW / (hi + half), 105 / (top - bottom)), h = (top - bottom) * k + 9;
   c.reserve(h + 4);
   const x0 = M.left + 20 + hi * k, y0 = c.y + 4, X = (x: number) => x0 + x * k, Y = (z: number) => y0 + (top - z) * k, wallHalf = Math.max(s.wallHeightM / 2, 0.5 / k);
@@ -94,11 +95,28 @@ function sectionFigure(c: Cursor, i: WallInput, r: Extract<WallResult, { ok: tru
     doc.setDrawColor(185, 28, 28); doc.setLineWidth(0.2); doc.setLineDashPattern([0.6, 0.8], 0);
     doc.line(X(-wallHalf), Y(s.toeNap), X(-wallHalf - s.slip.reachM), Y(Math.min(s.wallTopNap, s.high.surfaceNap))); doc.setLineDashPattern([], 0);
   }
+  // Passief glijvlak van een ankerschot of ankerplaat, gestippeld (paars).
+  const sec = (q: { x: number; z: number }): [number, number] => [X(-(wallHalf + q.x)), Y(q.z)];
+  for (const p of s.passiveSlips) {
+    const run = Math.max(0, p.toNap - p.fromNap) / Math.tan((p.angleDeg * Math.PI) / 180), a0 = sec({ x: p.fromXM, z: p.fromNap }), b0 = sec({ x: p.fromXM - run, z: p.toNap });
+    doc.setDrawColor(124, 58, 237); doc.setLineWidth(0.2); doc.setLineDashPattern([0.6, 0.8], 0); doc.line(a0[0], a0[1], b0[0], b0[1]); doc.setLineDashPattern([], 0);
+  }
   for (const sup of s.supports) {
-    const a = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, free = strut ? Math.min(half - wallHalf - 0.1, sup.freeM) : sup.freeM;
+    const a = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, g = sup.tie;
+    const free = strut ? Math.min(half - wallHalf - 0.1, sup.freeM) : g ? Math.hypot(g.rodTo.x - g.rodFrom.x, g.rodTo.z - g.rodFrom.z) : sup.freeM;
     const at = (len: number): [number, number] => [X(dir * (wallHalf + len * Math.cos(a))), Y(sup.levelNap - len * Math.sin(a))], p1 = at(0), p2 = at(free), p3 = at(free + sup.groutM);
     doc.setDrawColor(180, 83, 9); doc.setLineWidth(sup.kind === "strut" ? 0.6 : 0.3); doc.line(p1[0], p1[1], p2[0], p2[1]);
     if (sup.groutM > 0) { doc.setDrawColor(107, 114, 128); doc.setLineWidth(Math.max(0.9, sup.groutDiameterM * k)); doc.line(p2[0], p2[1], p3[0], p3[1]); }
+    if (g) {
+      // Verankering op schaal: schot, plaat of blok, of de paal van kop tot punt.
+      const pts = g.body.map(sec);
+      if (g.type === "wall") doc.setFillColor(107, 117, 129); else doc.setFillColor(168, 162, 158);
+      doc.setDrawColor(55, 65, 81); doc.setLineWidth(0.15);
+      doc.lines(pts.slice(1).map((q, m) => [q[0] - pts[m][0], q[1] - pts[m][1]]), pts[0][0], pts[0][1], [1, 1], "FD", true);
+      doc.setFillColor(180, 83, 9); doc.rect(p2[0] - 0.4, p2[1] - 0.8, 0.8, 1.6, "F");
+    }
+    if (!strut) { doc.setFillColor(180, 83, 9); doc.rect(X(wallHalf) + (s.waling ? 1 : 0), p1[1] - 0.8, 0.8, 1.6, "F"); }
+    if (strut && sup.open) { doc.setDrawColor(220, 38, 38); doc.setLineWidth(0.25); doc.lines([[0.8, 1], [-0.8, 0.8], [0.8, 1], [-0.8, 0.8]], p2[0] - 0.8, p2[1] - 1.8, [1, 1], "S", false); doc.setTextColor(220, 38, 38); doc.text("overkant niet bekend", p2[0] - 1.2, p2[1] + 3.2, { align: "right" }); }
     doc.setTextColor(180, 83, 9); if (sup.forceKnPerM !== null) doc.text(`${s.supports.length > 1 ? `${sup.id} ` : ""}${nl(sup.forceKnPerM, 0)} kN/m`, p2[0], p2[1] + (strut ? -1 : 2.4), { align: strut ? "right" : "left" });
   }
   if (s.surchargeKpa > 0) { doc.setTextColor(29, 78, 216); doc.text(`q = ${nl(s.surchargeKpa, 1)} kPa`, X(-hi / 2), Y(s.high.surfaceNap) - 1.5, { align: "center" }); }
@@ -153,8 +171,26 @@ export function buildWallReport(raw: WallInput, r: WallResult, ctx: ProjectConte
   if (!sheet && (i.material === "timber" || posts)) kv(c, "Hout", `${i.timber.classId}: f_m;k = ${nl(i.timber.fmK, 1)} N/mm²; f_v;k = ${nl(i.timber.fvK, 1)} N/mm²; E_0;mean = ${nl(i.timber.eMeanMPa, 0)} N/mm²; k_mod = ${nl(i.timber.kmod)}; γ_M = ${nl(i.timber.gammaM)}; k_cr = ${nl(i.timber.kcr)}`);
   const supportText = (x: WallInput["anchor"]) => `${x.kind === "strut" ? "stempel" : x.kind === "grout" ? "groutanker" : "ankerstaaf naar ankerschot of ankerpaal"} op NAP ${nap(x.levelNap)} m, ${nl(anchorAngle(x), 1)}° met de horizontaal, h.o.h. ${nl(x.spacingM)} m; ${x.rigid && x.kind !== "grout" ? "star" : `veerstijfheid ${nl(anchorStiffness(x), 0)} kN/m per anker, horizontaal ${nl(supportStiffness(x), 0)} kN/m per m wand`}${supportPreload(x) > 0 ? `; voorspanning ${nl(supportPreload(x), 1)} kN/m horizontaal` : ""}`;
   const supports = wallSupports(i);
+  // Ankerstaaf: type verankering met de maten, de staaf zelf en de uitkomst van de liggingcontrole.
+  const tieText = (x: WallAnchor): string => {
+    if (x.kind !== "tie") return "";
+    const tie = { ...DEFAULT_TIE, ...x.tie }, rod = rodSection(tie), an = x.anchorage;
+    const rodPart = `staaf ${tie.rodType === "plain" ? `glad, d = ${nl(rod.diameterMm, 0)} mm met gesneden draad M${nl(rod.threadDiameterMm ?? 0, 0)} × ${nl(rod.pitchMm ?? 0, 1)}` : tie.rodType === "upset" ? `d = ${nl(rod.diameterMm, 0)} mm met opgestuikte draad M${nl(rod.threadDiameterMm ?? 0, 0)} × ${nl(rod.pitchMm ?? 0, 1)}` : "met eigen doorsneden"}: A_g = ${nl(rod.grossMm2, 0)} mm², A_s = ${nl(rod.threadMm2, 0)} mm²; ${tie.gradeId ? `${tie.gradeId}, ` : ""}f_y = ${nl(tie.fyMPa, 0)} N/mm², f_u = ${nl(tie.fuMPa, 0)} N/mm²`;
+    if (!an) return `${rodPart}; verankering niet opgegeven (in de tekening schematisch)`;
+    const g = tieGeometry(x.levelNap, x.angleDeg, an), p = anchorWallProfile(an);
+    const body = an.type === "wall" ? `ankerschot ${p ? `van ${p.id}` : `van platen ${nl(an.wallWidthM)} m breed en ${nl(an.wallThicknessM, 3)} m dik per anker`}, van NAP ${nap(an.wallTopNap)} tot ${nap(an.wallBottomNap)} m`
+      : an.type === "pile" ? `ankerpaal Ø ${nl(an.pileDiameterMm, 0)} mm, ${nl(an.pileLengthM)} m lang, helling ${nl(an.pileRakeDeg, 1)}° met de verticaal, kop NAP ${nap(g.topNap)} m en punt NAP ${nap(g.bottomNap)} m`
+      : `ankerplaat ${nl(an.plateWidthM)} × ${nl(an.plateHeightM)} m, ${nl(an.plateThicknessM, 2)} m dik, van NAP ${nap(g.topNap)} tot ${nap(g.bottomNap)} m`;
+    const loc = r.ties.find((y) => y.id === x.id);
+    const locPart = loc ? `; ligging: actief glijvlak (${nl(loc.activeAngleDeg, 1)}°) op ${nl(loc.activeXM)} m${loc.passive ? `, met het passieve glijvlak van het schot (${nl(loc.passive.angleDeg, 1)}°) minstens ${nl(loc.passive.requiredXM)} m` : ""}, aanwezig ${nl(loc.frontXM)} m: ${loc.passes ? "voldoet" : "voldoet niet"}` : "";
+    return `${body}; staaf ${nl(an.lengthM)} m tot de voorkant (${nl(g.front.x)} m achter de wand, NAP ${nap(g.front.z)} m); ${rodPart}${locPart}`;
+  };
   if (!anchored) kv(c, "Steun", "geen");
-  else for (const x of supports) kv(c, supports.length > 1 ? `Steunpunt ${x.id}` : "Steun", supportText(x));
+  else for (const x of supports) {
+    kv(c, supports.length > 1 ? `Steunpunt ${x.id}` : "Steun", supportText(x));
+    const tieLine = tieText(x);
+    if (tieLine) kv(c, supports.length > 1 ? `Ankerstaaf ${x.id}` : "Ankerstaaf", tieLine);
+  }
   if (anchored && a.kind === "grout" && a.grout) {
     const g = a.grout;
     kv(c, "Groutanker", `vrije lengte ${nl(g.freeLengthM)} m; groutlichaam ${nl(g.groutLengthM)} m, rond ${nl(g.diameterMm, 0)} mm; ${g.tendonType === "strand" ? "strengen" : "staaf"}, A = ${nl(g.areaMm2, 0)} mm², ${g.tendonType === "strand" ? "f_p0,1k" : "f_y"} = ${nl(g.fMPa, 0)} N/mm², E = ${nl(g.eMPa, 0)} N/mm²; voorspankracht ${nl(g.prestressKn, 0)} kN per anker; schachtwrijving ${nl(g.shaftFrictionKpa, 0)} kPa (invoer)`);
@@ -271,7 +307,7 @@ export function buildWallReport(raw: WallInput, r: WallResult, ctx: ProjectConte
     for (const step of k.steps) formula(c, step.symbol || " ", step.formula || " ", step.filled ?? null, step.result);
   }
   if (posts) paragraph(c, "Palen met schotten zijn per m wand gerekend: de buigstijfheid van de paal gedeeld door de hart-op-hartafstand; moment en dwarskracht per paal zijn de uitkomst per m wand maal de hart-op-hartafstand. De drukken onder de schotten in de tabellen en de figuur zijn omgerekend naar de paalbreedte.", { size: 7.5 });
-  paragraph(c, "Niet in deze berekening: de stabiliteit van het diepe glijvlak (Kranz), algehele stabiliteit (Bishop), een glijvlakberekening (Culmann) met het werkelijke maaiveld en gelaagde grond, een ontlasttak van de veer, uitval van een anker, rekenwaarden alleen in de getoetste fase, een berekening van de grondwaterstroming, het ankerschot, plooi van koudgevormde profielen en kruip van hout en kunststof.", { italic: true, size: 7.5 });
+  paragraph(c, "Niet in deze berekening: de stabiliteit van het diepe glijvlak (Kranz), algehele stabiliteit (Bishop), een glijvlakberekening (Culmann) met het werkelijke maaiveld en gelaagde grond, een ontlasttak van de veer, uitval van een anker, rekenwaarden alleen in de getoetste fase, een berekening van de grondwaterstroming, de sterkte en stijfheid van het ankerschot, de ankerpaal of de ankerplaat zelf, plooi van koudgevormde profielen en kruip van hout en kunststof.", { italic: true, size: 7.5 });
 
   if (typeof doc.putTotalPages === "function") doc.putTotalPages(TOTAL_PAGES_TOKEN);
   return new Uint8Array(doc.output("arraybuffer"));

@@ -7,7 +7,7 @@ import type { CalculationInstance, ProjectContext } from "../calc/framework/type
 import { fromRd, type SoilModel } from "../components/soil3d/soilModel";
 import { profilePlan } from "../calc/modules/sheet-pile-wall/scene";
 import { calcSpec, type CalcSpec, type WallSpec } from "./calcGeometry";
-import { centroid, inPit, rayToPolygon, wallSides, type Side, type Vec } from "./geometry";
+import { centroid, inPit, rayHit, wallSides, type Side, type Vec } from "./geometry";
 import { calcColor, calcStatus, STATUS_COLOR, type CalcStatus, type PlacementLayers } from "./store";
 import { hasGeometry, type Placement, type WallPlacement } from "./types";
 
@@ -129,6 +129,25 @@ export function sideSpec(it: PlacedItem, k: number, byId: Map<string, PlacedItem
   return { spec: (it.spec as { kind: "wall"; wall: WallSpec }).wall, calcId: it.calc.id, name: it.calc.name };
 }
 
+/** Kleur van de markering aan het eind van een stempel of anker waarvan de lengte niet bekend is. */
+export const OPEN_MARK = 0xdc2626;
+
+/**
+ * Stempel vanaf punt p0 op een zijde dwars over de kuip. In een gesloten kuip loopt hij tot de overkant; staat daar op
+ * hetzelfde niveau ook een stempel, dan tekent alleen de zijde met het laagste nummer hem (null voor de andere), zodat er
+ * één doorgaande stempel staat. Zonder overkant (open lijn, ontgraving buiten de kuip): een halve, schematische lengte
+ * met `open` als markering.
+ */
+export function strutReach(it: PlacedItem, side: Side, p0: Vec, levelNap: number, local: Vec[], byId: Map<string, PlacedItem | { spec: CalcSpec; calc: CalculationInstance }>): { lengthM: number; open: boolean } | null {
+  const w = it.placement as WallPlacement, own = sideSpec(it, side.index, byId).spec;
+  const hit = w.closed && w.excavation === "inside" ? rayHit(p0, side.low, local, 0.05) : null;
+  if (!hit) return { lengthM: Math.max(2, 0.4 * (own.topNap - own.toeNap)), open: true };
+  const other = sideSpec(it, hit.edge, byId).spec;
+  const paired = hit.edge !== side.index && other.supports.some((o) => o.kind === "strut" && Math.abs(o.levelNap - levelNap) < 0.25);
+  if (paired && hit.edge < side.index) return null;
+  return { lengthM: hit.t, open: false };
+}
+
 /** Bouwt de plaatsingen als scène-uitbreiding voor het grondmodel. */
 export function buildPlacedScene(model: SoilModel, items: PlacedItem[], layers: PlacementLayers, textColor: string, allCalcs: CalculationInstance[] = []): PlacedScene {
   const pitList = layers.pit ? pits(model, items) : [];
@@ -221,42 +240,62 @@ export function buildPlacedScene(model: SoilModel, items: PlacedItem[], layers: 
         }
         if (layers.anchors) {
           const anchorMat = new THREE.MeshLambertMaterial({ color: 0x374151 }), groutMat = new THREE.MeshLambertMaterial({ color: 0x9ca3af });
+          const steelMat = new THREE.MeshLambertMaterial({ color: 0x6b7581, side: THREE.DoubleSide }), concreteMat = new THREE.MeshLambertMaterial({ color: 0xa8a29e }), markMat = new THREE.MeshBasicMaterial({ color: OPEN_MARK });
           for (const side of sides) {
             const s = sideSpec(it, side.index, byId);
-            const height = s.spec.topNap - s.spec.toeNap;
+            const height = s.spec.topNap - s.spec.toeNap, anchorTag = { kind: "placed", calcId: s.calcId, name: s.name, item: "anchor" };
+            const add = <T extends THREE.Object3D>(o: T): T => { o.userData = { ...anchorTag }; root.add(o); return o; };
+            // Een punt x m achter de wand (naar de hoge zijde) vanaf een punt op de wandlijn.
+            const behind = (p: Vec, x: number): Vec => ({ x: p.x - side.low.x * x, y: p.y - side.low.y * x });
+            const turn = Math.atan2(side.t.y, side.t.x);
+            const block = (center: Vec, nap: number, alongM: number, crossM: number, heightM: number, mat: THREE.Material) => {
+              const m = add(new THREE.Mesh(new THREE.BoxGeometry(alongM, heightM * ex, crossM), mat));
+              m.position.copy(scenePoint(center, nap, ex)); m.rotation.y = turn;
+              return m;
+            };
             for (const sup of s.spec.supports) {
               const along: number[] = [];
               for (let a = Math.min(sup.spacingM, side.length) / 2; a < side.length - 1e-6; a += sup.spacingM) along.push(a);
               // Gording langs de wand aan de lage zijde.
               const off = Math.max(s.spec.thicknessM / 2, thin) + thin;
               const wa = { x: side.a.x + side.low.x * off, y: side.a.y + side.low.y * off }, wb = { x: side.b.x + side.low.x * off, y: side.b.y + side.low.y * off };
-              const waler = rod(scenePoint(wa, sup.levelNap, ex), scenePoint(wb, sup.levelNap, ex), thin * 1.4, anchorMat);
-              waler.userData = { kind: "placed", calcId: s.calcId, name: s.name, item: "anchor" };
-              root.add(waler);
+              add(rod(scenePoint(wa, sup.levelNap, ex), scenePoint(wb, sup.levelNap, ex), thin * 1.4, anchorMat));
+              const g = sup.tie, continuous = !!g && g.type === "wall" && (g.widthM === null || g.widthM >= sup.spacingM - 1e-9);
+              if (g && continuous) {
+                // Doorgaand ankerschot evenwijdig aan de wand: het damwandprofiel als golfplaat, anders een plaat.
+                const shift = g.front.x + g.thicknessM / 2, shifted: Side = { ...side, a: behind(side.a, shift), b: behind(side.b, shift) };
+                const line = sup.anchorProfile ? sideLine(shifted, { ...s.spec, construction: "sheet-pile", profile: sup.anchorProfile }) : [];
+                if (line.length > 2) add(new THREE.Mesh(ribbon(line, g.bottomNap, g.topNap, ex), steelMat));
+                else block({ x: (shifted.a.x + shifted.b.x) / 2, y: (shifted.a.y + shifted.b.y) / 2 }, (g.topNap + g.bottomNap) / 2, side.length, Math.max(g.thicknessM, thin * 2), g.topNap - g.bottomNap, concreteMat);
+              }
               for (const a of along) {
                 const p0 = { x: side.a.x + side.t.x * a, y: side.a.y + side.t.y * a };
                 if (sup.kind === "strut") {
-                  // Stempel naar de overkant van de kuip; elke zijde tekent de helft, zodat ze in het midden aansluiten.
-                  const reach = w.closed ? rayToPolygon(p0, side.low, local, 0.05) : null;
-                  const len = reach !== null ? reach / 2 : Math.max(2, 0.4 * height);
-                  const p1 = { x: p0.x + side.low.x * len, y: p0.y + side.low.y * len };
-                  const m = rod(scenePoint(p0, sup.levelNap, ex), scenePoint(p1, sup.levelNap, ex), Math.max(thin * 2, 0.15), anchorMat);
-                  m.userData = { kind: "placed", calcId: s.calcId, name: s.name, item: "anchor" };
-                  root.add(m);
+                  const st = strutReach(it, side, p0, sup.levelNap, local, byId);
+                  if (!st) continue;
+                  const p1 = { x: p0.x + side.low.x * st.lengthM, y: p0.y + side.low.y * st.lengthM };
+                  add(rod(scenePoint(p0, sup.levelNap, ex), scenePoint(p1, sup.levelNap, ex), Math.max(thin * 2, 0.15), anchorMat));
+                  // Overkant niet bekend: een rode schijf aan het eind van de halve stempel.
+                  if (st.open) add(rod(scenePoint(p1, sup.levelNap, ex), scenePoint({ x: p1.x + side.low.x * thin * 2, y: p1.y + side.low.y * thin * 2 }, sup.levelNap, ex), Math.max(thin * 6, 0.45), markMat)).userData.open = true;
                   continue;
                 }
-                // Anker naar de hoge zijde, onder de hoek omlaag. Zonder lengte in de berekening: schematisch.
-                const len = sup.lengthM ?? Math.max(3, 0.8 * height), ang = (sup.angleDeg * Math.PI) / 180;
+                const ang = (sup.angleDeg * Math.PI) / 180;
+                if (g) {
+                  // Ankerstaaf op ware lengte en hoek, met moer en plaat op de gording en de verankering aan het eind.
+                  const r = Math.max(sup.rodDiameterM / 2, thin * 0.6);
+                  add(rod(scenePoint(p0, sup.levelNap, ex), scenePoint(behind(p0, g.rodTo.x), g.rodTo.z, ex), r, anchorMat));
+                  block({ x: p0.x + side.low.x * (off + thin * 1.6), y: p0.y + side.low.y * (off + thin * 1.6) }, sup.levelNap, Math.max(0.3, thin * 4), thin * 0.8, Math.max(0.3, (thin * 4) / ex), anchorMat);
+                  if (g.type === "pile" && g.pileHead && g.pileToe) add(rod(scenePoint(behind(p0, g.pileHead.x), g.pileHead.z, ex), scenePoint(behind(p0, g.pileToe.x), g.pileToe.z, ex), Math.max(g.thicknessM / 2, thin), concreteMat)).userData.anchorage = "pile";
+                  else if (!continuous && g.widthM !== null) block(behind(p0, g.front.x + g.thicknessM / 2), (g.topNap + g.bottomNap) / 2, g.widthM, Math.max(g.thicknessM, thin * 2), g.topNap - g.bottomNap, g.type === "plate" ? concreteMat : steelMat).userData.anchorage = g.type;
+                  continue;
+                }
+                // Anker naar de hoge zijde, onder de hoek omlaag. Zonder lengte in de berekening: schematisch, met de rode schijf.
+                const len = sup.lengthM ?? Math.max(3, 0.8 * height);
                 const dir = { x: -side.low.x * Math.cos(ang), y: -side.low.y * Math.cos(ang) };
                 const end = (l: number) => scenePoint({ x: p0.x + dir.x * l, y: p0.y + dir.y * l }, sup.levelNap - l * Math.sin(ang), ex);
-                const tie = rod(end(0), end(len), thin, anchorMat);
-                tie.userData = { kind: "placed", calcId: s.calcId, name: s.name, item: "anchor" };
-                root.add(tie);
-                if (sup.groutM > 0) {
-                  const g = rod(end(len - sup.groutM), end(len), Math.max(thin * 2.5, 0.075), groutMat);
-                  g.userData = tie.userData;
-                  root.add(g);
-                }
+                add(rod(end(0), end(len), thin, anchorMat));
+                if (sup.groutM > 0) add(rod(end(len - sup.groutM), end(len), Math.max(thin * 2.5, 0.075), groutMat));
+                else if (sup.lengthM === null) add(rod(end(len), end(len + thin * 2), Math.max(thin * 5, 0.35), markMat)).userData.open = true;
               }
             }
           }

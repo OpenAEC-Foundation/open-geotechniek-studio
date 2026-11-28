@@ -355,7 +355,9 @@
     "shear": "Siła poprzeczna",
     "toe": "stopa",
     "viewAria": "Widok",
-    "water": "woda"
+    "water": "woda",
+    "strutOpen": "druga strona nieznana",
+    "tieHint": "Ściąg w rzeczywistej długości i nachyleniu, z nakrętką i płytką na kleszczach i zakotwieniem na końcu. Czerwona przerywana: czynna powierzchnia poślizgu ściany; fioletowa: bierna ścianki kotwiącej. Rozpora sięga do krawędzi bloku: druga strona wykopu nie jest znana w obliczeniu (czerwony krążek)."
   },
   "warnings": {
     "groutAboveGround": "Buława iniekcyjna wychodzi ponad poziom terenu po stronie wyższej; sprawdź poziom, kąt i długości.",
@@ -560,5 +562,72 @@
     "showQc": "qc sondowania obok przekroju",
     "clear": "Przezroczysty grunt",
     "noLayers": "Sondowanie nie daje podziału na warstwy (brak qc i Rf)."
+  },
+  "tie": {
+    "type": "Zakotwienie",
+    "typeNone": "Nie podano (schematycznie)",
+    "typeWall": "ścianka kotwiąca",
+    "typePile": "pal kotwiący",
+    "typePlate": "płyta kotwiąca",
+    "typeWallLong": "Ścianka kotwiąca (krótka ścianka szczelna)",
+    "typePileLong": "Pal kotwiący (ukośny lub pionowy)",
+    "typePlateLong": "Płyta kotwiąca lub blok betonowy",
+    "length": "Długość ściągu do zakotwienia",
+    "wallTop": "Góra ścianki kotwiącej",
+    "wallBottom": "Dół ścianki kotwiącej",
+    "wallProfile": "Profil ścianki kotwiącej",
+    "wallPlate": "Bez profilu: płyta na kotew",
+    "width": "Szerokość na kotew",
+    "thickness": "Grubość",
+    "height": "Wysokość",
+    "pileLength": "Długość pala",
+    "pileRake": "Nachylenie od pionu",
+    "pileDiameter": "Średnica pala",
+    "pileFromTo": "pal",
+    "where": "Przód zakotwienia {{x}} m za ścianą na NAP {{z}} m; {{what}} od NAP {{top}} do {{bottom}} m.",
+    "rodType": "Pręt",
+    "rodCustom": "Własne przekroje A_g i A_s (tabela dostawcy)",
+    "rodPlain": "Pręt gładki z gwintem naciętym",
+    "rodUpset": "Pręt z gwintem na spęczonym końcu",
+    "diameter": "Średnica pręta",
+    "threadDiameter": "Średnica gwintu",
+    "pitch": "Skok gwintu",
+    "grade": "Gatunek stali",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0,9382 · P)² wg EN ISO 898-1, skok domyślnie gwint zwykły ISO 261. f_y i f_u z EN 1993-1-1 tablica 3.1 (do 40 mm i od 40 do 80 mm; powyżej własne dane). Dla porównania: E · A_g / L = {{k}} kN/m na kotew.",
+    "result": "Ściąg i zakotwienie",
+    "resultAria": "Położenie zakotwienia",
+    "activeX": "Czynna powierzchnia poślizgu",
+    "requiredX": "Wymagane z bierną powierzchnią",
+    "frontX": "Istniejące",
+    "ok": "spełnia",
+    "notOk": "nie spełnia",
+    "resultHint": "Odległości za ścianą: czynna powierzchnia poślizgu od stopy pod 45° + φ′/2 na poziomie przodu zakotwienia; dla ścianki lub płyty odległość, przy której bierna powierzchnia (45° − φ′/2 od dołu) nie przecina czynnej poniżej terenu (CUR 166; Terzaghi, 1943). Nie w tej wersji: nośność samej ścianki, pala lub płyty.",
+    "checks": {
+      "slip": {
+        "label": "położenie zakotwienia",
+        "title": "Zakotwienie poza czynną powierzchnią poślizgu"
+      },
+      "wedge": {
+        "label": "powierzchnie poślizgu ścianki",
+        "title": "Bierna powierzchnia ścianki kotwiącej poza czynną powierzchnią ściany",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, przód: {{name}}",
+      "frontShort": "odległość od ściany do przodu"
+    },
+    "warnings": {
+      "outside": "Ściąg {{id}} kończy się poza wysokością ścianki kotwiącej; sprawdź długość, kąt oraz górę i dół ścianki.",
+      "aboveGround": "Zakotwienie {{id}} wystaje ponad teren po stronie wysokiej.",
+      "strength": "Nośność i sztywność samej ścianki, pala lub płyty kotwiącej nie są w tym arkuszu; również stateczność głębokiego poślizgu (Kranz)."
+    },
+    "errors": {
+      "length": "Ściąg: podaj długość do zakotwienia (większą od 0).",
+      "wall": "Ścianka kotwiąca: góra powyżej dołu; bez profilu szerokość i grubość większe od 0.",
+      "pile": "Pal kotwiący: długość i średnica większe od 0, nachylenie mniejsze niż 60°.",
+      "plate": "Płyta kotwiąca: szerokość, wysokość i grubość większe od 0.",
+      "rod": "Ściąg: podaj średnicę pręta, przy gwincie spęczonym także średnicę gwintu; skok większy od 0."
+    }
   }
 }

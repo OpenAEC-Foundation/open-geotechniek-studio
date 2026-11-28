@@ -80,14 +80,19 @@ export function rectangleCorners(cx: number, cy: number, widthM: number, lengthM
 
 /** Afstand langs een straal tot de eerste rand van een veelhoek (verder dan `minT`); null als hij niets raakt. */
 export function rayToPolygon(o: Vec, d: Vec, poly: Vec[], minT = 1e-6): number | null {
-  let best: number | null = null;
+  return rayHit(o, d, poly, minT)?.t ?? null;
+}
+
+/** Als rayToPolygon, met de rand die de straal raakt (rand k loopt van punt k naar k + 1). */
+export function rayHit(o: Vec, d: Vec, poly: Vec[], minT = 1e-6): { t: number; edge: number } | null {
+  let best: { t: number; edge: number } | null = null;
   for (let k = 0; k < poly.length; k++) {
     const a = poly[k], b = poly[(k + 1) % poly.length];
     const ex = b.x - a.x, ey = b.y - a.y, den = d.x * ey - d.y * ex;
     if (Math.abs(den) < 1e-12) continue;
     const t = ((a.x - o.x) * ey - (a.y - o.y) * ex) / den;
     const u = ((a.x - o.x) * d.y - (a.y - o.y) * d.x) / den;
-    if (t > minT && u >= -1e-9 && u <= 1 + 1e-9 && (best === null || t < best)) best = t;
+    if (t > minT && u >= -1e-9 && u <= 1 + 1e-9 && (best === null || t < best.t)) best = { t, edge: k };
   }
   return best;
 }

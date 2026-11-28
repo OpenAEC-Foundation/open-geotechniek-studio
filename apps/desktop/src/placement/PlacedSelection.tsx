@@ -32,7 +32,7 @@ export function PlacedSelection({ calcId }: { calcId: string }) {
     rows.push([t("props.excavation", "Ontgraving"), `NAP ${f(spec.wall.excavationNap)} m`]);
     if (spec.wall.profileName) rows.push([t("props.profile", "Profiel"), spec.wall.profileName]);
     if (calc.placement?.kind === "wall") rows.push([calc.placement.closed ? t("props.perimeter", "Omtrek") : t("props.length", "Lengte"), `${f(polylineLength(calc.placement.points, calc.placement.closed), 1)} m`]);
-    if (spec.wall.supports.length) rows.push([t("props.supports", "Ankers/stempels"), spec.wall.supports.map((s) => `NAP ${f(s.levelNap)}`).join(", ")]);
+    if (spec.wall.supports.length) rows.push([t("props.supports", "Ankers/stempels"), spec.wall.supports.map((s) => `NAP ${f(s.levelNap)} (${s.kind === "strut" ? t("props.strut", "stempel") : s.kind === "grout" ? t("props.grout", "groutanker") : s.tie ? `${t(`props.tie_${s.tie.type}`, s.tie.type === "wall" ? "ankerstaaf met ankerschot" : s.tie.type === "pile" ? "ankerstaaf met ankerpaal" : "ankerstaaf met ankerplaat")}, ${f(s.lengthM ?? 0, 1)} m` : t("props.tie", "ankerstaaf")})`).join(", ")]);
   }
   if (spec?.kind === "footing") {
     rows.push([t("props.base", "Funderingsvlak"), `NAP ${f(spec.footing.foundationNap)} m`]);

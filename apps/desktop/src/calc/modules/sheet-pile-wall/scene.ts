@@ -4,8 +4,9 @@ import type { SheetPileProfile } from "../../library/sheetPiles";
 import { sheetContour, type ContourBasis } from "../../library/sheetPileContour";
 import { getSoilType } from "../spread-foundation/catalog";
 import { getTableRow, zoneColor, zoneForSoil } from "./cpt-layers";
-import { anchorAngle, normalizeWallInput, resolvePhases, wallLoads, wallSupports, type AnchorKind, type CaseRun, type Construction, type ResolvedPhase, type ScenarioLayer, type Side, type WallInput, type WallOk, type WallRun } from "./compute";
+import { DEFAULT_TIE, anchorAngle, normalizeWallInput, resolvePhases, wallLoads, wallSupports, type AnchorKind, type CaseRun, type Construction, type ResolvedPhase, type ScenarioLayer, type Side, type WallAnchor, type WallInput, type WallOk, type WallRun } from "./compute";
 import type { SurfaceLoad } from "./surface-loads";
+import { anchorWallProfile, rodSection, tieGeometry, type TieGeometry } from "./tie-anchorage";
 
 /** Punt in de plattegrond van de wand: a langs de wand, x dwars erop (hoge zijde negatief) [m]. */
 export interface PlanPoint { a: number; x: number }
@@ -105,7 +106,17 @@ export function soilOutline(face: PlanPoint[], farX: number): PlanPoint[] {
 }
 
 export interface SceneLayer { name: string; color: string; topNap: number; bottomNap: number; zone?: number }
-export interface SceneSupport { kind: AnchorKind; levelNap: number; angleDeg: number; freeM: number; groutM: number; groutDiameterM: number }
+export interface SceneSupport {
+  kind: AnchorKind; levelNap: number; angleDeg: number; freeM: number; groutM: number; groutDiameterM: number;
+  /** Ankerstaaf met opgegeven verankering: staaf op ware lengte en het schot, de paal of de plaat; null = schematisch. */
+  tie?: TieGeometry | null;
+  /** Diameter van de staaf [m] (ankerstaaf), voor de tekening. */
+  rodDiameterM?: number;
+  /** Stempel: de overkant is niet bekend in deze berekening; getekend tot de rand van het blok met een markering. */
+  open?: boolean;
+  /** Ankerschot van een damwandprofiel: de omtrekken van de planken in de plattegrond (zoals de wand zelf). */
+  anchorOutlines?: PlanOutline[];
+}
 export interface WallScene {
   construction: Construction;
   /** Halve breedte van het grondblok dwars op de wand en de lengte langs de wand [m]. */
@@ -148,8 +159,10 @@ export interface WallScene {
   profileHigh: Array<{ xM: number; nap: number }>;
   profileLow: Array<{ xM: number; nap: number }>;
   loads: SurfaceLoad[];
-  /** Actief glijvlak vanaf de teen (alleen bij een groutanker): hoek met de horizontaal en het punt op het maaiveld. */
+  /** Actief glijvlak vanaf de teen (bij een groutanker of een ankerstaaf met verankering): hoek met de horizontaal en het punt op het maaiveld. */
   slip: { angleDeg: number; reachM: number } | null;
+  /** Passieve glijvlakken van een ankerschot of ankerplaat: vanaf de onderkant voorzijde (x achter de wand, NAP) naar de wand op tot het maaiveld. */
+  passiveSlips: Array<{ id: string; fromXM: number; fromNap: number; angleDeg: number; toNap: number }>;
   /** Plaatsen van de ankers langs de wand [m]. */
   anchors: number[];
   profileName: string;
@@ -197,27 +210,38 @@ export function wallScene(raw: WallInput, r: WallOk, run: WallRun = r.sls, phase
   const bottomWall = i.toeNap - Math.max(0.5, 0.12 * height), half = Math.max(1.5, Math.min(9, 0.55 * height));
   // De steunpunten die in deze berekening werken (bij een omhullende: alle die ergens werken).
   const active = run.supports ? wallSupports(i).filter((a) => run.supports.some((x) => x.id === a.id)) : wallSupports(i);
+  const anchorPlan = (a: NonNullable<WallAnchor["anchorage"]>): { anchorOutlines?: PlanOutline[] } => {
+    const p = anchorWallProfile(a);
+    try { return p ? { anchorOutlines: profilePlan(p, length + front).outlines } : {}; } catch { return {}; }
+  };
   const supports: WallScene["supports"] = active.map((an) => {
     const akind = an.kind ?? "tie", g = an.grout, along: number[] = [];
     for (let a = Math.min(an.spacingM, length) / 2; a < length; a += an.spacingM) along.push(a);
+    const tie = akind === "tie" && an.anchorage ? tieGeometry(an.levelNap, an.angleDeg, an.anchorage) : null;
+    const rodDiameterM = rodSection({ ...DEFAULT_TIE, ...an.tie }).diameterMm / 1000;
     const base: SceneSupport = akind === "grout" && g
       ? { kind: akind, levelNap: an.levelNap, angleDeg: an.angleDeg, freeM: g.freeLengthM, groutM: g.groutLengthM, groutDiameterM: g.diameterMm / 1000 }
-      : { kind: akind, levelNap: an.levelNap, angleDeg: anchorAngle(an), freeM: Math.min(half * 0.9, 3.2), groutM: 0, groutDiameterM: 0 };
+      : tie ? { kind: akind, levelNap: an.levelNap, angleDeg: an.angleDeg, freeM: an.anchorage!.lengthM, groutM: 0, groutDiameterM: 0, tie, rodDiameterM, ...anchorPlan(an.anchorage!) }
+      : { kind: akind, levelNap: an.levelNap, angleDeg: anchorAngle(an), freeM: Math.min(half * 0.9, 3.2), groutM: 0, groutDiameterM: 0, ...(akind === "tie" ? { tie: null, rodDiameterM } : { open: true }) };
     return { ...base, id: an.id!, anchors: along, forceKnPerM: run.supports?.find((x) => x.id === an.id)?.axialKn ?? null };
   });
   const support: WallScene["support"] = supports[0] ? { kind: supports[0].kind, levelNap: supports[0].levelNap, angleDeg: supports[0].angleDeg, freeM: supports[0].freeM, groutM: supports[0].groutM, groutDiameterM: supports[0].groutDiameterM } : null;
   const anchors = supports[0]?.anchors ?? [], an = active[0], akind = an?.kind ?? "tie", anchored = supports.length > 0;
   const grouts = supports.filter((x) => x.kind === "grout");
-  const reach = Math.max(0, ...grouts.map((x) => (x.freeM + x.groutM) * Math.cos((x.angleDeg * Math.PI) / 180)));
-  const deepest = Math.min(i.toeNap, ...grouts.map((x) => x.levelNap - (x.freeM + x.groutM) * Math.sin((x.angleDeg * Math.PI) / 180)));
+  const tieBodies = supports.flatMap((x) => (x.tie ? [x.tie] : []));
+  const reach = Math.max(0, ...grouts.map((x) => (x.freeM + x.groutM) * Math.cos((x.angleDeg * Math.PI) / 180)), ...tieBodies.map((b) => Math.max(b.rodTo.x, ...b.body.map((q) => q.x))));
+  const deepest = Math.min(i.toeNap, ...grouts.map((x) => x.levelNap - (x.freeM + x.groutM) * Math.sin((x.angleDeg * Math.PI) / 180)), ...tieBodies.map((b) => Math.min(...b.body.map((q) => q.z))));
   const bottom = Math.min(bottomWall, deepest - 1);
-  const slip = r.grout ? { angleDeg: r.grout.slipAngleDeg, reachM: (Math.min(i.wallTopNap, s.high.surfaceNap) - i.toeNap) / Math.tan((r.grout.slipAngleDeg * Math.PI) / 180) } : null;
+  const slipAngle = r.grout?.slipAngleDeg ?? r.ties?.find((x) => supports.some((y) => y.id === x.id))?.activeAngleDeg;
+  const slip = slipAngle !== undefined ? { angleDeg: slipAngle, reachM: (Math.min(i.wallTopNap, s.high.surfaceNap) - i.toeNap) / Math.tan((slipAngle * Math.PI) / 180) } : null;
+  const passiveSlips: WallScene["passiveSlips"] = (r.ties ?? []).filter((x) => x.passive && x.geometry.passiveFrom && supports.some((y) => y.id === x.id))
+    .map((x) => ({ id: x.id, fromXM: x.geometry.passiveFrom!.x, fromNap: x.geometry.passiveFrom!.z, angleDeg: x.passive!.angleDeg, toNap: s.high.surfaceNap }));
   const plan = kind === "sheet-pile" && sec.profile ? profilePlan(sec.profile, length + front) : null;
   const outlines = plan ? plan.outlines : kind === "plank" ? plankPlan(sec.depthM, length + front, i.material === "timber") : [];
   const posts: WallScene["posts"] = [];
   if (kind === "posts") for (let a = period / 2; a < length + front; a += period) posts.push({ alongM: a, shape: i.posts.shape, sizeM: i.posts.sizeMm / 1000 });
   return {
-    extentHighM: Math.max(half, reach + 1), support, slip,
+    extentHighM: Math.max(half, reach + 1), support, slip, passiveSlips,
     construction: kind, halfWidthM: half, lengthM: length, frontM: front, topNap: Math.max(i.wallTopNap, s.high.surfaceNap), bottomNap: bottom, wallTopNap: i.wallTopNap, toeNap: i.toeNap,
     wallHeightM: sec.depthM, outlines, faceHigh: wallFace(outlines, -1, front, front + length), faceLow: wallFace(outlines, 1, front, front + length),
     wallLine: plan ? plan.line : [{ a: 0, x: 0 }, { a: length + front, x: 0 }], contourBasis: plan ? plan.basis : null, contourManufacturer: plan && plan.basis === "drawing" ? sec.profile?.manufacturer ?? null : null,

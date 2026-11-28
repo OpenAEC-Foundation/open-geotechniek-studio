@@ -7,7 +7,8 @@ import { getTensionPileType } from "../calc/modules/tension-pile/catalog";
 import type { TensionInput } from "../calc/modules/tension-pile/compute";
 import type { LateralInput } from "../calc/modules/laterally-loaded-pile/compute";
 import type { SpreadInput } from "../calc/modules/spread-foundation/compute";
-import { anchorAngle, normalizeWallInput, wallSupports, type AnchorKind, type WallInput } from "../calc/modules/sheet-pile-wall/compute";
+import { DEFAULT_TIE, anchorAngle, normalizeWallInput, wallSupports, type AnchorKind, type WallInput } from "../calc/modules/sheet-pile-wall/compute";
+import { anchorWallProfile, rodSection, tieGeometry, type TieGeometry } from "../calc/modules/sheet-pile-wall/tie-anchorage";
 import { findSheetPile, type SheetPileProfile } from "../calc/library/sheetPiles";
 
 export interface PileSpec {
@@ -26,9 +27,15 @@ export interface WallSupportSpec {
   /** Hoek met de horizontaal, omlaag positief [°]. */
   angleDeg: number;
   spacingM: number;
-  /** Lengte van het anker [m]: bij een groutanker vrije lengte plus groutlichaam; anders null (schematisch). */
+  /** Lengte van het anker [m]: bij een groutanker vrije lengte plus groutlichaam, bij een ankerstaaf met verankering de staaf; anders null (schematisch). */
   lengthM: number | null;
   groutM: number;
+  /** Ankerstaaf met opgegeven verankering: staaf en schot, paal of plaat in de doorsnede (x achter de wand, NAP); anders null. */
+  tie: TieGeometry | null;
+  /** Diameter van de ankerstaaf [m]. */
+  rodDiameterM: number;
+  /** Damwandprofiel van een ankerschot. */
+  anchorProfile: SheetPileProfile | null;
 }
 
 export interface WallSpec {
@@ -88,11 +95,16 @@ function wallSpec(input: unknown): WallSpec | null {
   const excavationNap = Math.min(fin(i.excavationNap) ? i.excavationNap : i.wallTopNap, ...phases);
   let supports: WallSupportSpec[] = [];
   try {
-    supports = wallSupports(i).map((a) => ({
-      kind: a.kind ?? "tie", levelNap: a.levelNap, angleDeg: anchorAngle(a), spacingM: fin(a.spacingM) && a.spacingM > 0 ? a.spacingM : 2,
-      lengthM: a.kind === "grout" && a.grout ? a.grout.freeLengthM + a.grout.groutLengthM : null,
-      groutM: a.kind === "grout" && a.grout ? a.grout.groutLengthM : 0,
-    })).filter((a) => fin(a.levelNap));
+    supports = wallSupports(i).map((a) => {
+      let tie: TieGeometry | null = null;
+      try { tie = a.kind === "tie" && a.anchorage && a.anchorage.lengthM > 0 ? tieGeometry(a.levelNap, a.angleDeg, a.anchorage) : null; } catch { tie = null; }
+      return {
+        kind: a.kind ?? "tie", levelNap: a.levelNap, angleDeg: anchorAngle(a), spacingM: fin(a.spacingM) && a.spacingM > 0 ? a.spacingM : 2,
+        lengthM: a.kind === "grout" && a.grout ? a.grout.freeLengthM + a.grout.groutLengthM : tie ? a.anchorage!.lengthM : null,
+        groutM: a.kind === "grout" && a.grout ? a.grout.groutLengthM : 0,
+        tie, rodDiameterM: rodSection({ ...DEFAULT_TIE, ...a.tie }).diameterMm / 1000, anchorProfile: tie && a.anchorage ? anchorWallProfile(a.anchorage) : null,
+      };
+    }).filter((a) => fin(a.levelNap));
   } catch { supports = []; }
   return {
     construction, topNap: i.wallTopNap, toeNap: i.toeNap, excavationNap,

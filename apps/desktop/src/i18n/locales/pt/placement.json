@@ -27,7 +27,13 @@
     "supports": "Ancoragens/escoras",
     "base": "Base da fundação",
     "width": "Largura",
-    "open": "Abrir cálculo"
+    "open": "Abrir cálculo",
+    "strut": "escora",
+    "grout": "ancoragem injetada",
+    "tie": "tirante",
+    "tie_wall": "tirante com cortina de ancoragem",
+    "tie_pile": "tirante com estaca de ancoragem",
+    "tie_plate": "tirante com placa de ancoragem"
   },
   "bar": {
     "placeHint": "Posicionar este cálculo no mapa e no modelo 3D",

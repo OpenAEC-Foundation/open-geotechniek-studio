@@ -355,7 +355,9 @@
     "shear": "Tvärkraft",
     "toe": "fot",
     "viewAria": "Vy",
-    "water": "vatten"
+    "water": "vatten",
+    "strutOpen": "motsatt sida okänd",
+    "tieHint": "Ankarstag i verklig längd och lutning, med mutter och platta på hammarbandet och förankringen i änden. Röd streckad: väggens aktiva glidplan; lila: ankarväggens passiva glidplan. En stämp går till blockets kant: schaktets motsatta sida är inte känd i beräkningen (röd skiva)."
   },
   "warnings": {
     "groutAboveGround": "Injekteringskroppen hamnar över markytan på den höga sidan; kontrollera nivå, vinkel och längder.",
@@ -560,5 +562,72 @@
     "showQc": "qc från sonderingen bredvid sektionen",
     "clear": "Genomskinlig jord",
     "noLayers": "Sonderingen ger ingen lagerindelning (inget qc och Rf)."
+  },
+  "tie": {
+    "type": "Förankring",
+    "typeNone": "Ej angiven (schematisk)",
+    "typeWall": "ankarvägg",
+    "typePile": "ankarpåle",
+    "typePlate": "ankarplatta",
+    "typeWallLong": "Ankarvägg (kort spontvägg)",
+    "typePileLong": "Ankarpåle (lutande eller vertikal)",
+    "typePlateLong": "Ankarplatta eller betongblock",
+    "length": "Staglängd till förankring",
+    "wallTop": "Överkant ankarvägg",
+    "wallBottom": "Underkant ankarvägg",
+    "wallProfile": "Profil för ankarvägg",
+    "wallPlate": "Ingen profil: platta per ankare",
+    "width": "Bredd per ankare",
+    "thickness": "Tjocklek",
+    "height": "Höjd",
+    "pileLength": "Pållängd",
+    "pileRake": "Lutning från lodlinjen",
+    "pileDiameter": "Påldiameter",
+    "pileFromTo": "påle",
+    "where": "Förankringens framkant {{x}} m bakom väggen på NAP {{z}} m; {{what}} från NAP {{top}} till {{bottom}} m.",
+    "rodType": "Stång",
+    "rodCustom": "Egna tvärsnitt A_g och A_s (leverantörens tabell)",
+    "rodPlain": "Slät stång med skuren gänga",
+    "rodUpset": "Stång med stukad gänga",
+    "diameter": "Stångdiameter",
+    "threadDiameter": "Gängdiameter",
+    "pitch": "Gängstigning",
+    "grade": "Stålsort",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0,9382 · P)² enligt EN ISO 898-1, stigning som standard grov gänga enligt ISO 261. f_y och f_u från EN 1993-1-1 tabell 3.1 (upp till 40 mm och 40 till 80 mm; därutöver egna värden). Som jämförelse: E · A_g / L = {{k}} kN/m per ankare.",
+    "result": "Ankarstag och förankring",
+    "resultAria": "Förankringens läge",
+    "activeX": "Aktivt glidplan",
+    "requiredX": "Krävs med passivt glidplan",
+    "frontX": "Befintligt",
+    "ok": "uppfyllt",
+    "notOk": "ej uppfyllt",
+    "resultHint": "Avstånd bakom väggen: det aktiva glidplanet från foten under 45° + φ′/2 i nivå med förankringens framkant; för ankarvägg eller platta det avstånd där det passiva glidplanet (45° − φ′/2 från underkanten) inte skär det aktiva under markytan (CUR 166; Terzaghi, 1943). Inte i denna version: hållfastheten hos själva ankarväggen, pålen eller plattan.",
+    "checks": {
+      "slip": {
+        "label": "förankringens läge",
+        "title": "Förankring utanför det aktiva glidplanet"
+      },
+      "wedge": {
+        "label": "glidplan ankarvägg",
+        "title": "Ankarväggens passiva glidplan utanför väggens aktiva glidplan",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, framkant: {{name}}",
+      "frontShort": "avstånd från väggen till framkanten"
+    },
+    "warnings": {
+      "outside": "Staget {{id}} slutar utanför ankarväggens höjd; kontrollera längden, vinkeln och ankarväggens över- och underkant.",
+      "aboveGround": "Förankringen för {{id}} sticker upp över markytan på den höga sidan.",
+      "strength": "Hållfasthet och styvhet hos själva ankarväggen, ankarpålen eller ankarplattan ingår inte i detta beräkningsblad; inte heller stabiliteten för det djupa glidplanet (Kranz)."
+    },
+    "errors": {
+      "length": "Ankarstag: ange längden till förankringen (större än 0).",
+      "wall": "Ankarvägg: överkanten ligger över underkanten; utan profil är bredd och tjocklek större än 0.",
+      "pile": "Ankarpåle: längd och diameter större än 0, lutning under 60°.",
+      "plate": "Ankarplatta: bredd, höjd och tjocklek större än 0.",
+      "rod": "Ankarstag: ange stångens diameter, vid stukad gänga även gängdiametern; stigningen är större än 0."
+    }
   }
 }

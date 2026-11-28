@@ -355,7 +355,9 @@
     "shear": "Querkraft",
     "toe": "Fuß",
     "viewAria": "Ansicht",
-    "water": "Wasser"
+    "water": "Wasser",
+    "strutOpen": "Gegenseite unbekannt",
+    "tieHint": "Zugstab in wahrer Länge und Neigung, mit Mutter und Platte am Gurt und der Verankerung am Ende. Rot gestrichelt: aktive Gleitfläche der Wand; violett: passive Gleitfläche der Ankerwand. Eine Steife läuft bis zum Rand des Blocks: die Gegenseite der Baugrube ist in der Berechnung unbekannt (rote Scheibe)."
   },
   "warnings": {
     "groutAboveGround": "Der Verpresskörper ragt über die Geländeoberkante der hohen Seite hinaus; prüfen Sie Niveau, Winkel und Längen.",
@@ -560,5 +562,72 @@
     "showQc": "qc der Sondierung neben dem Schnitt",
     "clear": "Boden durchsichtig",
     "noLayers": "Die Sondierung liefert keine Schichteinteilung (kein qc und Rf)."
+  },
+  "tie": {
+    "type": "Verankerung",
+    "typeNone": "Nicht angegeben (schematisch)",
+    "typeWall": "Ankerwand",
+    "typePile": "Ankerpfahl",
+    "typePlate": "Ankerplatte",
+    "typeWallLong": "Ankerwand (kurze Spundwand)",
+    "typePileLong": "Ankerpfahl (schräg oder lotrecht)",
+    "typePlateLong": "Ankerplatte oder Betonblock",
+    "length": "Länge des Zugglieds bis zur Verankerung",
+    "wallTop": "Oberkante Ankerwand",
+    "wallBottom": "Unterkante Ankerwand",
+    "wallProfile": "Profil der Ankerwand",
+    "wallPlate": "Kein Profil: Platte je Anker",
+    "width": "Breite je Anker",
+    "thickness": "Dicke",
+    "height": "Höhe",
+    "pileLength": "Pfahllänge",
+    "pileRake": "Neigung zur Lotrechten",
+    "pileDiameter": "Pfahldurchmesser",
+    "pileFromTo": "Pfahl",
+    "where": "Vorderseite der Verankerung {{x}} m hinter der Wand auf NAP {{z}} m; {{what}} von NAP {{top}} bis {{bottom}} m.",
+    "rodType": "Zugstab",
+    "rodCustom": "Eigene Querschnitte A_g und A_s (Herstellertabelle)",
+    "rodPlain": "Glatter Stab mit geschnittenem Gewinde",
+    "rodUpset": "Stab mit aufgestauchtem Gewinde",
+    "diameter": "Stabdurchmesser",
+    "threadDiameter": "Gewindedurchmesser",
+    "pitch": "Gewindesteigung",
+    "grade": "Stahlsorte",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0,9382 · P)² nach EN ISO 898-1, Steigung standardmäßig Regelgewinde nach ISO 261. f_y und f_u aus EN 1993-1-1 Tabelle 3.1 (bis 40 mm und 40 bis 80 mm; darüber eigene Eingabe). Zum Vergleich: E · A_g / L = {{k}} kN/m je Anker.",
+    "result": "Zugstab und Verankerung",
+    "resultAria": "Lage der Verankerung",
+    "activeX": "Aktive Gleitfläche",
+    "requiredX": "Erforderlich mit passiver Gleitfläche",
+    "frontX": "Vorhanden",
+    "ok": "erfüllt",
+    "notOk": "erfüllt nicht",
+    "resultHint": "Abstände hinter der Wand: die aktive Gleitfläche vom Fuß unter 45° + φ′/2 auf Höhe der Vorderseite der Verankerung; bei Ankerwand oder Platte der Abstand, bei dem die passive Gleitfläche (45° − φ′/2 von der Unterkante) die aktive Gleitfläche nicht unter Gelände schneidet (CUR 166; Terzaghi, 1943). Nicht in dieser Version: die Tragfähigkeit von Ankerwand, Pfahl oder Platte selbst.",
+    "checks": {
+      "slip": {
+        "label": "Lage der Verankerung",
+        "title": "Verankerung außerhalb der aktiven Gleitfläche"
+      },
+      "wedge": {
+        "label": "Gleitflächen Ankerwand",
+        "title": "Passive Gleitfläche der Ankerwand außerhalb der aktiven Gleitfläche der Wand",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, Vorderseite: {{name}}",
+      "frontShort": "Abstand von der Wand bis zur Vorderseite"
+    },
+    "warnings": {
+      "outside": "Der Zugstab {{id}} endet außerhalb der Höhe der Ankerwand; Länge, Neigung sowie Ober- und Unterkante der Ankerwand prüfen.",
+      "aboveGround": "Die Verankerung von {{id}} ragt über das Gelände der hohen Seite.",
+      "strength": "Tragfähigkeit und Steifigkeit von Ankerwand, Ankerpfahl oder Ankerplatte selbst sind nicht in diesem Rechenblatt; ebenso nicht die Standsicherheit in der tiefen Gleitfuge (Kranz)."
+    },
+    "errors": {
+      "length": "Zugstab: Länge bis zur Verankerung eingeben (größer als 0).",
+      "wall": "Ankerwand: Oberkante über Unterkante; ohne Profil sind Breite und Dicke größer als 0.",
+      "pile": "Ankerpfahl: Länge und Durchmesser größer als 0, Neigung unter 60°.",
+      "plate": "Ankerplatte: Breite, Höhe und Dicke größer als 0.",
+      "rod": "Zugstab: Stabdurchmesser eingeben, bei aufgestauchtem Gewinde auch den Gewindedurchmesser; die Steigung ist größer als 0."
+    }
   }
 }

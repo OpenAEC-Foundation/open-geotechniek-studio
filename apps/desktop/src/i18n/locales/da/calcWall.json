@@ -355,7 +355,9 @@
     "shear": "Forskydningskraft",
     "toe": "spids",
     "viewAria": "Visning",
-    "water": "vand"
+    "water": "vand",
+    "strutOpen": "modsat side ukendt",
+    "tieHint": "Ankerstang i sand længde og hældning, med møtrik og plade på bæreren og forankringen for enden. Rød stiplet: væggens aktive glideplan; lilla: ankervæggens passive glideplan. En afstivning går til blokkens kant: byggegrubens modsatte side kendes ikke i beregningen (rød skive)."
   },
   "warnings": {
     "groutAboveGround": "Forankringszonen kommer over terræn på den høje side; kontrollér niveau, vinkel og længder.",
@@ -560,5 +562,72 @@
     "showQc": "qc fra sonderingen ved siden af snittet",
     "clear": "Gennemsigtig jord",
     "noLayers": "Sonderingen giver ingen lagdeling (ingen qc og Rf)."
+  },
+  "tie": {
+    "type": "Forankring",
+    "typeNone": "Ikke angivet (skematisk)",
+    "typeWall": "ankervæg",
+    "typePile": "ankerpæl",
+    "typePlate": "ankerplade",
+    "typeWallLong": "Ankervæg (kort spunsvæg)",
+    "typePileLong": "Ankerpæl (skrå eller lodret)",
+    "typePlateLong": "Ankerplade eller betonblok",
+    "length": "Stanglængde til forankring",
+    "wallTop": "Overkant ankervæg",
+    "wallBottom": "Underkant ankervæg",
+    "wallProfile": "Profil af ankervæg",
+    "wallPlate": "Intet profil: plade pr. anker",
+    "width": "Bredde pr. anker",
+    "thickness": "Tykkelse",
+    "height": "Højde",
+    "pileLength": "Pælelængde",
+    "pileRake": "Hældning fra lodret",
+    "pileDiameter": "Pælediameter",
+    "pileFromTo": "pæl",
+    "where": "Forkant af forankringen {{x}} m bag væggen i NAP {{z}} m; {{what}} fra NAP {{top}} til {{bottom}} m.",
+    "rodType": "Stang",
+    "rodCustom": "Egne tværsnit A_g og A_s (leverandørens tabel)",
+    "rodPlain": "Glat stang med skåret gevind",
+    "rodUpset": "Stang med stuket gevind",
+    "diameter": "Stangdiameter",
+    "threadDiameter": "Gevinddiameter",
+    "pitch": "Gevindstigning",
+    "grade": "Stålkvalitet",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0,9382 · P)² efter EN ISO 898-1, stigning som standard groft gevind efter ISO 261. f_y og f_u fra EN 1993-1-1 tabel 3.1 (op til 40 mm og 40 til 80 mm; derover egne værdier). Til sammenligning: E · A_g / L = {{k}} kN/m pr. anker.",
+    "result": "Ankerstang og forankring",
+    "resultAria": "Forankringens placering",
+    "activeX": "Aktivt glideplan",
+    "requiredX": "Krævet med passivt glideplan",
+    "frontX": "Til stede",
+    "ok": "opfyldt",
+    "notOk": "ikke opfyldt",
+    "resultHint": "Afstande bag væggen: det aktive glideplan fra foden under 45° + φ′/2 i niveau med forankringens forkant; for ankervæg eller plade den afstand, hvor det passive glideplan (45° − φ′/2 fra underkanten) ikke skærer det aktive under terræn (CUR 166; Terzaghi, 1943). Ikke i denne version: styrken af selve ankervæggen, pælen eller pladen.",
+    "checks": {
+      "slip": {
+        "label": "forankringens placering",
+        "title": "Forankring uden for det aktive glideplan"
+      },
+      "wedge": {
+        "label": "glideplaner ankervæg",
+        "title": "Ankervæggens passive glideplan uden for væggens aktive glideplan",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, forkant: {{name}}",
+      "frontShort": "afstand fra væggen til forkanten"
+    },
+    "warnings": {
+      "outside": "Stangen {{id}} ender uden for ankervæggens højde; kontrollér længden, vinklen og ankervæggens over- og underkant.",
+      "aboveGround": "Forankringen af {{id}} rager op over terræn på den høje side.",
+      "strength": "Styrke og stivhed af selve ankervæggen, ankerpælen eller ankerpladen er ikke med i dette regneark; heller ikke stabiliteten af det dybe glideplan (Kranz)."
+    },
+    "errors": {
+      "length": "Ankerstang: angiv længden til forankringen (større end 0).",
+      "wall": "Ankervæg: overkanten ligger over underkanten; uden profil er bredde og tykkelse større end 0.",
+      "pile": "Ankerpæl: længde og diameter større end 0, hældning under 60°.",
+      "plate": "Ankerplade: bredde, højde og tykkelse større end 0.",
+      "rod": "Ankerstang: angiv stangens diameter, ved stuket gevind også gevinddiameteren; stigningen er større end 0."
+    }
   }
 }

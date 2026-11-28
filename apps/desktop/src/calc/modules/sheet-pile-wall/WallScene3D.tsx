@@ -51,7 +51,7 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
   const host = useRef<HTMLDivElement>(null);
   const [unavailable, setUnavailable] = useState(false);
   // Grond doorzichtig (0 tot 90 %) en per laag aan of uit; dat past alleen de materialen aan, de camera blijft staan.
-  const [clearPct, setClearPct] = useState(() => (latest.support?.kind === "grout" ? 65 : 0));
+  const [clearPct, setClearPct] = useState(() => (latest.supports.some((x) => x.kind === "grout" || x.tie) ? 65 : 0));
   const [hidden, setHidden] = useState<Set<string>>(() => new Set());
   const look = useRef({ clearPct, hidden });
   look.current = { clearPct, hidden };
@@ -67,7 +67,7 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     at.render();
   };
   useEffect(applyLook, [clearPct, hidden]); // eslint-disable-line react-hooks/exhaustive-deps
-  const labels = { ground: t("visual.ground", "mv"), water: t("visual.water", "water"), toe: t("visual.toe", "teen"), aria: t("visual.sceneAria", "3D-weergave van de damwand; draaien met slepen, zoomen met scrollen") };
+  const labels = { ground: t("visual.ground", "mv"), water: t("visual.water", "water"), toe: t("visual.toe", "teen"), strutOpen: t("visual.strutOpen", "overkant niet bekend"), aria: t("visual.sceneAria", "3D-weergave van de damwand; draaien met slepen, zoomen met scrollen") };
   const labelKey = JSON.stringify(labels);
   useEffect(() => {
     const container = host.current;
@@ -202,29 +202,73 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
       const mesh = new THREE.Mesh(geometry, sheet ? rod : steel); mesh.position.copy(at); scene.add(mesh);
       const outline = new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 30), sheet ? new THREE.LineBasicMaterial({ color: 0x7c2d12 }) : edge); outline.position.copy(at); scene.add(outline);
     }
-    for (const sup of s.supports) for (const along of sup.anchors) {
-      const angle = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, cos = Math.cos(angle), sin = Math.sin(angle);
-      // Hartlijn van het anker door het hart van de gording (of de kop van de paal) op het ankerniveau.
-      const ox = crestLow + walingDepth / 2, oy = y(sup.levelNap), z = -along;
-      const at = (length: number) => new THREE.Vector3(ox + dir * length * cos, oy - length * sin, z);
-      const rodBetween = (from: THREE.Vector3, to: THREE.Vector3, radius: number, material: THREE.Material) => {
-        const bar = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, from.distanceTo(to), 14), material);
-        bar.position.copy(from.clone().add(to).multiplyScalar(0.5));
-        bar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize());
-        scene.add(bar);
-      };
-      // Begin aan de voorkant van de gording; de vrije lengte telt vanaf de kant van de wand waar het anker uitkomt.
-      const start = strut ? walingDepth / 2 : -(walingDepth / 2 + 0.01 * size) / cos;
-      const end = strut ? (s.wallHeightM / 2 + hw - ox) / cos : (ox - faceHighX) / cos + sup.freeM;
-      rodBetween(at(start), at(end), Math.max(0.012 * size, 0.02), rod);
-      if (sup.groutM > 0) rodBetween(at(end), at(end + sup.groutM), Math.max(sup.groutDiameterM / 2, 0.02 * size), groutMaterial);
-      // Ankerplaat met moer tegen de voorkant van de gording (bij palen zonder gording tegen de paal).
-      if (!strut) { const plateHead = new THREE.Mesh(new THREE.BoxGeometry(0.012 * size, 0.045 * size, 0.045 * size), rod); plateHead.position.set(crestLow + walingDepth + 0.006 * size, oy + (walingDepth / 2 + 0.006 * size) * Math.tan(angle), z); scene.add(plateHead); }
+    // Punt (x achter de wand, NAP) uit de doorsnede naar de scène: x telt vanaf de buitenkant aan de hoge zijde.
+    const fromSection = (q: { x: number; z: number }, along: number) => new THREE.Vector3(faceHighX - q.x, y(q.z), -along);
+    const anchorageMaterial = new THREE.MeshStandardMaterial({ color: 0x6b7581, roughness: 0.55, metalness: 0.3 }), concrete = new THREE.MeshStandardMaterial({ color: 0xa8a29e, roughness: 0.95 });
+    const anchorageEdge = new THREE.LineBasicMaterial({ color: 0x1f2937 }), openMark = new THREE.MeshBasicMaterial({ color: 0xdc2626 });
+    const box = (sx: number, sy: number, sz: number, at: THREE.Vector3, material: THREE.Material) => {
+      const geometry = new THREE.BoxGeometry(sx, sy, sz), mesh = new THREE.Mesh(geometry, material); mesh.position.copy(at); scene.add(mesh);
+      const lines = new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 30), anchorageEdge); lines.position.copy(at); scene.add(lines);
+    };
+    const rodBetween = (from: THREE.Vector3, to: THREE.Vector3, radius: number, material: THREE.Material, segments = 14) => {
+      const bar = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, from.distanceTo(to), segments), material);
+      bar.position.copy(from.clone().add(to).multiplyScalar(0.5));
+      bar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize());
+      scene.add(bar);
+      return bar;
+    };
+    for (const sup of s.supports) {
+      const g = sup.tie, spacing = sup.anchors.length > 1 ? sup.anchors[1] - sup.anchors[0] : 2 * (sup.anchors[0] ?? 0);
+      // Een plaat die minstens zo breed is als de h.o.h.-afstand is een doorgaand schot.
+      const continuous = !!g && g.type === "wall" && (g.widthM === null || g.widthM >= spacing - 1e-9);
+      if (g && continuous && sup.anchorOutlines?.length) {
+        // Ankerschot van een damwandprofiel: de echte omtrek van de planken, over de hele lengte.
+        const cx = faceHighX - (g.front.x + g.thicknessM / 2);
+        for (const o of sup.anchorOutlines) {
+          const outline = o.points.map((q) => new THREE.Vector2(q.x + cx, q.a - s.frontM));
+          scene.add(new THREE.Mesh(prismGeometry(outline, y(g.bottomNap), y(g.topNap), 35), o.kind === "lock" ? lockMaterial : anchorageMaterial));
+          scene.add(outlineLines(outline, y(g.topNap), edge));
+        }
+      } else if (g && continuous) box(g.thicknessM, g.topNap - g.bottomNap, s.lengthM + s.frontM, new THREE.Vector3(faceHighX - g.front.x - g.thicknessM / 2, y((g.topNap + g.bottomNap) / 2), (s.frontM - s.lengthM) / 2), concrete);
+      for (const along of sup.anchors) {
+        const angle = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, cos = Math.cos(angle), sin = Math.sin(angle);
+        // Hartlijn van het anker door het hart van de gording (of de kop van de paal) op het ankerniveau.
+        const ox = crestLow + walingDepth / 2, oy = y(sup.levelNap), z = -along;
+        const at = (length: number) => new THREE.Vector3(ox + dir * length * cos, oy - length * sin, z);
+        // Begin aan de voorkant van de gording; de lengte telt vanaf de kant van de wand waar het anker uitkomt.
+        const start = strut ? walingDepth / 2 : -(walingDepth / 2 + 0.01 * size) / cos;
+        const through = g ? Math.hypot(g.rodTo.x - g.rodFrom.x, g.rodTo.z - g.rodFrom.z) : sup.freeM;
+        const end = strut ? (s.wallHeightM / 2 + hw - ox) / cos : (ox - faceHighX) / cos + through;
+        // Een ankerstaaf met opgegeven verankering op ware dikte (met een kleinste maat om zichtbaar te blijven).
+        const radius = g ? Math.max((sup.rodDiameterM ?? 0.04) / 2, 0.004 * size) : Math.max(0.012 * size, 0.02);
+        rodBetween(at(start), at(end), radius, rod);
+        if (sup.groutM > 0) rodBetween(at(end), at(end + sup.groutM), Math.max(sup.groutDiameterM / 2, 0.02 * size), groutMaterial);
+        // Ankerplaat met moer tegen de voorkant van de gording (bij palen zonder gording tegen de paal).
+        if (!strut) {
+          const plateHead = new THREE.Mesh(new THREE.BoxGeometry(0.012 * size, 0.045 * size, 0.045 * size), rod); plateHead.position.set(crestLow + walingDepth + 0.006 * size, oy + (walingDepth / 2 + 0.006 * size) * Math.tan(angle), z); scene.add(plateHead);
+          rodBetween(new THREE.Vector3(crestLow + walingDepth + 0.012 * size, plateHead.position.y, z), new THREE.Vector3(crestLow + walingDepth + 0.03 * size, plateHead.position.y, z), Math.max(radius * 1.7, 0.012 * size), rod, 6);
+        }
+        // Stempel waarvan de overkant niet bekend is: tot de rand van het blok, met een rode schijf als markering.
+        if (strut && sup.open) rodBetween(at(end - 0.01 * size), at(end), 0.05 * size, openMark, 20);
+        if (!g) continue;
+        // De verankering: de paal van kop tot punt, of een plaat of blok per anker; met plaat en moer erachter.
+        if (g.type === "pile" && g.pileHead && g.pileToe) rodBetween(fromSection(g.pileHead, along), fromSection(g.pileToe, along), g.thicknessM / 2, concrete, 20);
+        else if (!continuous && g.widthM !== null) box(g.thicknessM, g.topNap - g.bottomNap, g.widthM, fromSection({ x: g.front.x + g.thicknessM / 2, z: (g.topNap + g.bottomNap) / 2 }, along), g.type === "plate" ? concrete : anchorageMaterial);
+        const back = g.front.x + g.thicknessM, backZ = g.front.z - g.thicknessM * Math.tan(angle);
+        box(0.012 * size, 0.04 * size, 0.04 * size, fromSection({ x: back + 0.006 * size, z: backZ }, along), rod);
+      }
+      if (sup.kind === "strut" && sup.open && sup.anchors.length) label(labels.strutOpen, new THREE.Vector3(s.wallHeightM / 2 + hw, y(sup.levelNap) + 0.05 * size, face), "#dc2626", "right");
     }
     // Actief glijvlak op het snijvlak, gestippeld.
     if (s.slip) {
       const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-s.wallHeightM / 2, y(s.toeNap), face), new THREE.Vector3(-s.wallHeightM / 2 - s.slip.reachM, y(Math.min(s.wallTopNap, s.high.surfaceNap)), face)]);
       const line = new THREE.Line(geometry, new THREE.LineDashedMaterial({ color: 0xb91c1c, dashSize: 0.02 * size, gapSize: 0.015 * size })); line.computeLineDistances(); line.renderOrder = 4; scene.add(line);
+    }
+    // Passief glijvlak voor een ankerschot of ankerplaat, gestippeld op het snijvlak: vanaf de onderkant naar de wand op.
+    for (const p of s.passiveSlips) {
+      const run = Math.max(0, p.toNap - p.fromNap) / Math.tan((p.angleDeg * Math.PI) / 180);
+      const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(faceHighX - p.fromXM, y(p.fromNap), face), new THREE.Vector3(faceHighX - p.fromXM + run, y(p.toNap), face)]);
+      const line = new THREE.Line(geometry, new THREE.LineDashedMaterial({ color: 0x7c3aed, dashSize: 0.02 * size, gapSize: 0.015 * size })); line.computeLineDistances(); line.renderOrder = 4; scene.add(line);
     }
     // Bovenbelasting als pijlen op het maaiveld van de hoge zijde.
     if (s.surchargeKpa > 0) for (let n = 0; n < 4; n++) for (let m = 0; m < 3; m++)
@@ -261,6 +305,7 @@ export function WallScene3D({ scene: latest }: { scene: WallScene }) {
     {toggles("h", s.high.layers, t("visual.highSide", "hoge zijde"))}
     {toggles("l", s.low.layers, t("visual.lowSide", "lage zijde"))}
     <div className="sw-scene" ref={host} />
+    {s.supports.some((x) => x.tie || x.open) && <p className="cs-hint">{t("visual.tieHint", "Ankerstaaf op ware lengte en hoek, met moer en plaat op de gording en de verankering aan het eind. Rood gestippeld: actief glijvlak van de wand; paars: passief glijvlak van het schot. Een stempel loopt tot de rand van het blok: de overkant van de bouwkuip is in de berekening niet bekend (rode schijf).")}</p>}
     <p className="cs-hint">{s.construction === "sheet-pile"
       ? `${t("visual.sceneHint", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de wand steekt ervoor uit. Plankbreedte, wandhoogte en plaatdikten komen uit de profielbibliotheek. Oranje: anker of stempel. Sleep om te draaien, scroll om te zoomen.")} ${s.contourBasis === "drawing" ? t("visual.contourDrawing", "Profielvorm: contour uit fabrieks-DWG ({{manufacturer}}).", { manufacturer: s.contourManufacturer ?? "" }) : s.contourBasis === "table" ? "" : t("visual.contourSchematic", "Profielvorm schematisch: de fabriekstabellen geven de flensbreedte, de lijfhoek en de slotvorm niet; de flensbreedte is afgeleid uit A en I, het slot is een blokje.")}`
       : t("visual.sceneHintRevetment", "Het grondblok is opengewerkt: het snijvlak is de doorsnede, de beschoeiing steekt ervoor uit. Plankdikte, paalafmeting, hart-op-hartafstand en schotten staan op schaal; de plankbreedte is een tekenmaat. Oranje: anker met gording. Sleep om te draaien, scroll om te zoomen.")}</p>

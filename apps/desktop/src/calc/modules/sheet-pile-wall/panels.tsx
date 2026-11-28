@@ -18,6 +18,7 @@ import { envelopeLines, phaseOf, wallScene } from "./scene";
 import { CurBlock, ExtraChecksBlock, GeometryBlock, PhasesBlock, StageOverview, SupportsBlock, caseLabel } from "./stage-panels";
 import { TABLE_2B } from "./cpt-layers";
 import { LayerSources, SoilProfileBlock, tableRowValues } from "./soil-profile-panel";
+import { TieAnchorageFields, TieResult } from "./tie-anchorage-panel";
 import "./styles.css";
 
 type Props = PanelProps<WallInput, WallResult>;
@@ -153,6 +154,7 @@ export function InputPanel({ input: raw, result: r, onChange }: Props) {
         {kind !== "grout" && <label className="cs-check"><input type="checkbox" checked={a.rigid} onChange={(e) => setAnchor({ rigid: e.target.checked })} /> {t("input.supportRigid", "Starre steun")}</label>}
         {kind !== "grout" && !a.rigid && num("input.supportStiffness", "Veerstijfheid per anker", "kN/m", a.stiffnessKnPerM, (v) => setAnchor({ stiffnessKnPerM: v }), 0.01, t("input.supportStiffnessTitle", "Axiale stijfheid E·A/L van één anker of stempel"))}
         {kind !== "grout" && num("stage.prestressOne", "Voorspankracht per anker", "kN", a.prestressKn ?? 0, (v) => setAnchor({ prestressKn: v }), 0, t("input.prestressTitle", "0 = niet voorgespannen"))}
+        {kind === "tie" && <TieAnchorageFields input={i} anchor={a} id="A1" onChange={setAnchor} />}
         {kind === "grout" && <>
           {num("input.groutFree", "Vrije ankerlengte", "m", g.freeLengthM, (v) => setGrout({ freeLengthM: v }), 0.01)}
           {num("input.groutLength", "Lengte van het groutlichaam", "m", g.groutLengthM, (v) => setGrout({ groutLengthM: v }), 0.01)}
@@ -334,6 +336,7 @@ export function ResultPanel({ input: i, result: r }: Props) {
         </tbody>
       </table>
     </>}
+    <TieResult result={r} />
     <h3>{t("result.compare", "Vergelijking met Blum (rekenwaarden)")}</h3>
     <table className="cs-layer-table sw-summary" aria-label={t("result.compareAria", "Verenmodel naast de methode van Blum")}>
       <thead><tr><th /><th>{t("result.mMax", "M;max")}<small>kNm/m</small></th><th>{t("result.anchorH", "Anker, horizontaal")}<small>kN/m</small></th><th>{t("result.toeNeeded", "Benodigde teen")}<small>m NAP</small></th></tr></thead>
