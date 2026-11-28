@@ -104,7 +104,7 @@ describe("verification — 984.pdf (NEN 9997-1 NB:2019 §7.6.2.3)", () => {
         //   - rounding van paalpunt op 0,5 m vs exacte NAP
         expect(result.qcIGemMpa).toBeCloseTo(c.expected.qcIMpa, 0);
       });
-      it(`qc;II gemiddelde ≈ ${c.expected.qcIIMpa} MPa (afgekapt op qc;I)`, () => {
+      it(`qc;II gemiddelde ≈ ${c.expected.qcIIMpa} MPa (lopend minimum vanaf de gemeten qc)`, () => {
         expect(result.qcIIGemMpa).toBeCloseTo(c.expected.qcIIMpa, 0);
       });
       it(`qc;III gemiddelde ≈ ${c.expected.qcIIIMpa} MPa (continueerd lopende min)`, () => {

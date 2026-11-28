@@ -61,6 +61,7 @@
     "taper": "Conicidade da madeira: atrito negativo e positivo com o perímetro médio por camada. Sem prolongamento em betão nem aumento devido à conicidade.",
     "deviatingToeSize": "Dimensão da ponta divergente: verifique o fator de forma da base da estaca β e o troço de atrito lateral admissível para este método de execução.",
     "qbMaxCapped": "qb;max limitado a 15 MPa (valor bruto {{raw}} MPa)",
+    "trajectChoice": "Escolha dos troços: qc;I mínimo (profundidade crítica {{dc}} Deq). Segundo a NEN 9997-1 art. 7.6.2.3(e), qb;max deve ser mínimo: profundidade crítica {{dcNorm}} Deq, Rb;cal;max {{rbNorm}} kN ({{pct}} % inferior). Decida que valor adota.",
     "settlementLineUnknown": "Não é conhecida nenhuma curva carga-assentamento da tabela para este tipo de estaca: o assentamento e as rigidezes não são determinados.",
     "rectShape": "Secção retangular {{a}} × {{b}} mm: calculada com A = a · b, perímetro 2 (a + b) e Deq = √(4 · a · b / π). O programa não determina o fator s para a forma de uma ponta de estaca retangular (a ≠ b); calculou-se com s = {{s}}. Determine s de acordo com a norma e introduza-o como fator de projeto, se necessário.",
     "openTubePlug": "Tubo aberto com tampão: ponta sobre o anel de aço ({{ring}} mm²) mais η = {{factor}} × a secção interior ({{inner}} mm²), no total {{area}} mm². O fator η é a sua hipótese: demonstre que o tampão se forma, ou seja, que o atrito dentro do tubo atinge pelo menos a resistência de ponta sobre a secção interior (NEN 9997-1 art. 7.6.2.3(d)). O programa não calcula o atrito interior.",

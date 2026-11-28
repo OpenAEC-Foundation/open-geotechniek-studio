@@ -61,6 +61,7 @@
     "taper": "Houttapsheid: negatieve en positieve kleef met de gemiddelde omtrek per laag. Zonder betonoplanger of verhoging door coniciteit.",
     "deviatingToeSize": "Afwijkende puntmaat: controleer paalvoetvormfactor β en het toegestane schachtwrijvingstraject voor deze uitvoering.",
     "qbMaxCapped": "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)",
+    "trajectChoice": "Trajectkeuze: qc;I minimaal (kritieke diepte {{dc}} Deq). Volgens NEN 9997-1 art. 7.6.2.3(e) hoort qb;max minimaal te zijn: kritieke diepte {{dcNorm}} Deq, Rb;cal;max {{rbNorm}} kN ({{pct}} % lager). Beoordeel welke waarde u aanhoudt.",
     "settlementLineUnknown": "Voor dit paaltype is geen lastzakkingslijn uit de tabel bekend: zakking en veerwaarden worden niet bepaald.",
     "rectShape": "Rechthoekige doorsnede {{a}} × {{b}} mm: gerekend met A = a · b, omtrek 2 (a + b) en Deq = √(4 · a · b / π). De factor s voor de vorm van een rechthoekige paalvoet (a ≠ b) bepaalt het programma niet; gerekend is met s = {{s}}. Bepaal s volgens de norm en vul hem zo nodig in als projectfactor.",
     "openTubePlug": "Open buis met prop: punt over de staalring ({{ring}} mm²) plus η = {{factor}} × de binnendoorsnede ({{inner}} mm²), samen {{area}} mm². De propfactor η is uw aanname: toon aan dat de prop zich vormt, dus dat de wrijving binnen in de buis ten minste de puntweerstand over de binnendoorsnede haalt (NEN 9997-1 art. 7.6.2.3(d)). De binnenwrijving rekent het programma niet.",

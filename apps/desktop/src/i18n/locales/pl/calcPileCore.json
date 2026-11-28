@@ -61,6 +61,7 @@
     "taper": "Zbieżność pala drewnianego: tarcie negatywne i tarcie na pobocznicy ze średnim obwodem dla każdej warstwy. Bez nadstawki betonowej i bez zwiększenia z tytułu zbieżności.",
     "deviatingToeSize": "Odmienny wymiar podstawy: sprawdź współczynnik kształtu podstawy pala β i dopuszczalny zakres tarcia na pobocznicy dla tej technologii wykonania.",
     "qbMaxCapped": "qb;max ograniczono do 15 MPa (wartość surowa {{raw}} MPa)",
+    "trajectChoice": "Wybór odcinków: minimalne qc;I (głębokość krytyczna {{dc}} Deq). Według NEN 9997-1 art. 7.6.2.3(e) qb;max ma być minimalne: głębokość krytyczna {{dcNorm}} Deq, Rb;cal;max {{rbNorm}} kN (o {{pct}} % mniej). Oceń, którą wartość przyjąć.",
     "settlementLineUnknown": "Dla tego typu pala nie jest znana krzywa obciążenie-osiadanie z tabeli: osiadanie i sztywności nie są wyznaczane.",
     "rectShape": "Przekrój prostokątny {{a}} × {{b}} mm: obliczono z A = a · b, obwodem 2 (a + b) i Deq = √(4 · a · b / π). Program nie wyznacza współczynnika s dla kształtu prostokątnej podstawy pala (a ≠ b); obliczono z s = {{s}}. Wyznacz s zgodnie z normą i w razie potrzeby wprowadź go jako współczynnik projektowy.",
     "openTubePlug": "Otwarta rura z korkiem: podstawa na pierścieniu stalowym ({{ring}} mm²) plus η = {{factor}} × przekrój wewnętrzny ({{inner}} mm²), razem {{area}} mm². Współczynnik η to Twoje założenie: wykaż, że korek się tworzy, czyli że tarcie wewnątrz rury osiąga co najmniej opór podstawy na przekroju wewnętrznym (NEN 9997-1 art. 7.6.2.3(d)). Program nie oblicza tarcia wewnętrznego.",

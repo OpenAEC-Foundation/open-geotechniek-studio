@@ -61,6 +61,7 @@
     "taper": "Trækonicitet: negativ og positiv overflademodstand med middelomkreds pr. lag. Uden betonforlænger eller forøgelse for konicitet.",
     "deviatingToeSize": "Afvigende spidsstørrelse: kontrollér pælespidsens formfaktor β og det tilladte område for overflademodstand for denne installationsmetode.",
     "qbMaxCapped": "qb;max begrænset til 15 MPa (råværdi {{raw}} MPa)",
+    "trajectChoice": "Strækningsvalg: mindste qc;I (kritisk dybde {{dc}} Deq). Ifølge NEN 9997-1 art. 7.6.2.3(e) skal qb;max være mindst: kritisk dybde {{dcNorm}} Deq, Rb;cal;max {{rbNorm}} kN ({{pct}} % lavere). Vurder, hvilken værdi du anvender.",
     "settlementLineUnknown": "Der kendes ingen last-sætningskurve fra tabellen for denne pæletype: sætning og fjederværdier bestemmes ikke.",
     "rectShape": "Rektangulært tværsnit {{a}} × {{b}} mm: regnet med A = a · b, omkreds 2 (a + b) og Deq = √(4 · a · b / π). Programmet bestemmer ikke faktoren s for formen af en rektangulær pælespids (a ≠ b); der er regnet med s = {{s}}. Bestem s efter normen, og angiv den om nødvendigt som projektfaktor.",
     "openTubePlug": "Åbent rør med prop: spids over stålringen ({{ring}} mm²) plus η = {{factor}} × det indre tværsnit ({{inner}} mm²), i alt {{area}} mm². Propfaktoren η er din antagelse: vis at proppen dannes, dvs. at friktionen inde i røret mindst når spidsmodstanden over det indre tværsnit (NEN 9997-1 art. 7.6.2.3(d)). Programmet beregner ikke den indvendige friktion.",

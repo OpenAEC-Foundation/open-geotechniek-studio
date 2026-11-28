@@ -1,6 +1,6 @@
 # Paalklassefactoren NEN 9997-1:2025
 
-Stand: 20 november 2026. Dit document legt vast wat er over de
+Stand: 20 november 2026, opnieuw gezocht op 28 november 2026. Dit document legt vast wat er over de
 paalklassefactoren van NEN 9997-1:2025 (actueel: NEN 9997-1:2025+C1:2025,
 tabel 7.c en 7.c.1) in openbare bronnen te vinden is, en wat niet.
 
@@ -65,6 +65,27 @@ bewerkbare invoer staan; dat is geen bevestigde 2025-waarde.
 | Waarde | Bron | Plaats | Opgenomen in de code? |
 |---|---|---|---|
 | αt = 0,0045 voor de geschroefde stalen paal (type S5); de eerste druk vermeldde abusievelijk 0,045, hersteld in C1:2025 | NEN, vragen en antwoorden bij de herziene versie: https://www.nen.nl/nieuws/bouw/herziene-versie-nen-9997-1/ | onderdeel "Drukfout in tabel 7.c" | Nee. Eén waarde maakt geen volledige regel, en de bron zegt niet welke tabelrij "S5" precies is. Vermoedelijk de stalen schroefpaal met constante dwarsafmeting boven de schroefpunt (`steel-screw-permanent-casing`); bij het aanvullen uit de norm controleren. |
+
+### Waarden uit een rekenrapport (geen normtekst)
+
+Referentie-rapport 984 (externe referentie-berekening van 26 mei 2026, blad 1
+en 24) noemt als gehanteerde norm NEN 9997-1:2025+C1:2025 en drukt voor
+"stalen paal, constante dwarsafmeting, buis met gesloten punt, geheid" af:
+αp = 0,70, αs = 0,008, αt = 0,006, lastzakkingslijn 1, met β = s = 1,0 in de
+uitwerking. Dat past bij de beschreven verlaging van de schachtfactoren voor
+deze paal (2017: αs 0,010, αt 0,007), maar het is de uitvoer van een
+rekenprogramma, niet de normtekst. Niet in `FACTORS_2025` opgenomen; het
+bestaande paaltype `steel-pipe-driven-closed` rekent al met deze set als
+"bestaand projectmodel".
+
+### Gezocht op 28 november 2026, zonder nieuwe waarden
+
+- Normenmap `Z:/20_knowhow/Normen/` en `C:/Users/rickd/Documents` (alleen
+  gelezen): alleen NEN 9997-1:2016+C2:2017 en een oudere uitgave, geen 2025.
+- Openbaar internet, twee zoekopdrachten naar tabel 7.c:2025 en de waarden
+  voor de gesloten stalen buispaal: alleen de al genoemde beschrijvingen
+  (onder meer https://kivi.nl/en/communities/departments/geotechnics/news/herziene-versie-nen-9997-1-2025)
+  en leveranciersgebonden zelfverklaringen; geen tabelwaarden.
 
 ### Beschreven wijzigingen (zonder getallen)
 
