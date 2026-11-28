@@ -14,7 +14,7 @@ export interface QcTrace { side: "high" | "low"; cptId: string; points: Array<{ 
 export function SectionDrawing({ input: i, result: r, run, phase, envelope, qc }: { input: WallInput; result: WallOk; run: WallRun; phase?: ResolvedPhase; envelope?: ReturnType<typeof envelopeLines>; qc?: QcTrace[] }) {
   const { t } = useTranslation("calcWall");
   const s = wallScene(i, r, run, phase), top = s.topNap + Math.max(0.3, 0.08 * (s.topNap - s.bottomNap)), bottom = s.bottomNap, half = Math.max(1.2, Math.min(7, 0.42 * (s.topNap - s.toeNap + 1)));
-  const hi = s.support?.kind === "grout" ? s.extentHighM : half;
+  const hi = s.supports.some((x) => x.kind === "grout" || x.tie) ? Math.max(half, s.extentHighM) : half;
   const secW = 330, padL = 78, padT = 16, k = secW / (hi + half), H = padT + (top - bottom) * k + 22;
   const colW = 108, gap = 14, qcW = qc?.length ? colW + gap : 0, W = padL + secW + qcW + 3 * (colW + gap) + 8;
   const X = (x: number) => padL + (x + hi) * k, Y = (nap: number) => padT + (top - nap) * k;
@@ -40,13 +40,23 @@ export function SectionDrawing({ input: i, result: r, run, phase, envelope, qc }
       <text x={anchor === "end" ? X(x0) - 4 : X(x1) + 4} y={Y(nap) + 3} textAnchor={anchor}>{text}</text>
     </g>
   );
+  // Punt (x achter de wand, NAP) uit de doorsnede van de verankering.
+  const sec = (q: { x: number; z: number }) => ({ x: X(-(wallHalf + q.x)), y: Y(q.z) });
   const anchor = s.supports.map((sup) => {
-    const a = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, free = strut ? Math.min(half - wallHalf - 0.1, sup.freeM) : sup.freeM;
+    const a = (sup.angleDeg * Math.PI) / 180, strut = sup.kind === "strut", dir = strut ? 1 : -1, g = sup.tie;
+    const free = strut ? Math.min(half - wallHalf - 0.1, sup.freeM) : g ? Math.hypot(g.rodTo.x - g.rodFrom.x, g.rodTo.z - g.rodFrom.z) : sup.freeM;
     const at = (len: number) => ({ x: X(dir * (wallHalf + len * Math.cos(a))), y: Y(sup.levelNap - len * Math.sin(a)) }), p1 = at(0), p2 = at(free), p3 = at(free + sup.groutM);
-    return <g key={sup.id} className={`sw-anchor sw-anchor-${sup.kind}`}><line className="sw-anchor-free" x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} />
+    // Bij een staaf op ware lengte staat de kracht boven het midden van de staaf, niet bij de verankering aan de rand.
+    const tip = g ? { x: (p1.x + sec(g.front).x) / 2, y: (p1.y + sec(g.front).y) / 2 - 16 } : p2;
+    return <g key={sup.id} className={`sw-anchor sw-anchor-${sup.kind}`}><line className="sw-anchor-free" x1={g ? X(wallHalf) : p1.x} y1={p1.y} x2={p2.x} y2={p2.y} style={g ? { strokeWidth: Math.max(1.2, (sup.rodDiameterM ?? 0.04) * k) } : undefined} />
       {sup.groutM > 0 && <line className="sw-anchor-grout" x1={p2.x} y1={p2.y} x2={p3.x} y2={p3.y} strokeWidth={Math.max(3, sup.groutDiameterM * k)} />}
+      {g && <polygon className={`sw-anchorage sw-anchorage-${g.type}`} points={g.body.map((q) => { const v = sec(q); return `${v.x.toFixed(1)},${v.y.toFixed(1)}`; }).join(" ")} />}
+      {g && <rect className="sw-anchor-nut" x={p2.x - 2} y={p2.y - 3} width={3} height={6} />}
+      {!strut && <rect className="sw-anchor-nut" x={X(wallHalf) + (s.waling ? Math.max(3, (s.waling.sizeM * k) / 2) : 0)} y={p1.y - 3} width={3} height={6} />}
+      {strut && sup.open && <path className="sw-strut-open" d={`M${p2.x - 3},${p2.y - 7}l3,4l-3,3l3,4l-3,3`} />}
+      {strut && sup.open && <text className="sw-strut-open-text" x={p2.x - 5} y={p2.y + 11} textAnchor="end">{t("visual.strutOpen", "overkant niet bekend")}</text>}
       <circle cx={p1.x} cy={p1.y} r={3} />
-      <text x={p2.x} y={p2.y + (strut ? -5 : 11)} textAnchor={strut ? "end" : "start"}>{sup.forceKnPerM !== null ? `${s.supports.length > 1 ? `${sup.id} ` : ""}${f(sup.forceKnPerM, 0)} kN/m` : ""}</text></g>;
+      <text x={tip.x} y={tip.y + (strut ? -5 : 11)} textAnchor={strut ? "end" : g ? "middle" : "start"}>{sup.forceKnPerM !== null ? `${s.supports.length > 1 ? `${sup.id} ` : ""}${f(sup.forceKnPerM, 0)} kN/m` : ""}</text></g>;
   });
   // Maaiveld van de wand af en de belastingen op afstand, op schaal; buiten het blok afgekapt.
   const ground = (side: -1 | 1, pts: Array<{ xM: number; nap: number }>, reach: number) => {
@@ -65,6 +75,11 @@ export function SectionDrawing({ input: i, result: r, run, phase, envelope, qc }
   });
   const slip = s.slip ? <g className="sw-slip"><line x1={X(-wallHalf)} y1={Y(s.toeNap)} x2={X(-wallHalf - s.slip.reachM)} y2={Y(Math.min(s.wallTopNap, s.high.surfaceNap))} />
     <text x={X(-wallHalf - s.slip.reachM / 2) - 4} y={Y((s.toeNap + s.high.surfaceNap) / 2)} textAnchor="end">{`${f(s.slip.angleDeg, 1)}°`}</text></g> : null;
+  // Passief glijvlak voor een ankerschot of ankerplaat: van de onderkant naar de wand op, tot het maaiveld.
+  const passive = s.passiveSlips.map((p) => {
+    const run = Math.max(0, p.toNap - p.fromNap) / Math.tan((p.angleDeg * Math.PI) / 180), a = sec({ x: p.fromXM, z: p.fromNap }), b = sec({ x: p.fromXM - run, z: p.toNap });
+    return <g key={p.id} className="sw-slip sw-slip-passive"><line x1={a.x} y1={a.y} x2={b.x} y2={b.y} /><text x={(a.x + b.x) / 2 + 4} y={(a.y + b.y) / 2} textAnchor="start">{`${f(p.angleDeg, 1)}°`}</text></g>;
+  });
 
   // Grondlagen: elke laag in haar eigen kleur met een grenslijn; de naam alleen als die niet over de vorige valt.
   const layerBands = (layers: typeof s.high.layers, x0: number, x1: number, tx: number, anchor: "start" | "end", key: string) => {
@@ -118,6 +133,7 @@ export function SectionDrawing({ input: i, result: r, run, phase, envelope, qc }
     {s.boards && <rect className="sw-board" x={X(-wallHalf) - Math.max(2, s.boards.thicknessM * k)} y={Y(s.wallTopNap)} width={Math.max(2, s.boards.thicknessM * k)} height={Y(s.boards.bottomNap) - Y(s.wallTopNap)} />}
     {s.waling && <rect className="sw-waling" x={X(wallHalf)} y={Y(s.waling.levelNap) - Math.max(3, s.waling.sizeM * k)} width={Math.max(3, (s.waling.sizeM * k) / 2)} height={Math.max(6, 2 * s.waling.sizeM * k)} />}
     {slip}
+    {passive}
     {anchor}
     {loads}
     {s.surchargeKpa > 0 && <g className="sw-surcharge">

@@ -27,7 +27,13 @@
     "supports": "Tirants/butons",
     "base": "Base de fondation",
     "width": "Largeur",
-    "open": "Ouvrir le calcul"
+    "open": "Ouvrir le calcul",
+    "strut": "butonnage",
+    "grout": "tirant injecté",
+    "tie": "tirant",
+    "tie_wall": "tirant avec rideau d'ancrage",
+    "tie_pile": "tirant avec pieu d'ancrage",
+    "tie_plate": "tirant avec plaque d'ancrage"
   },
   "bar": {
     "placeHint": "Placer ce calcul sur la carte et dans le modèle 3D",

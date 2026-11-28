@@ -948,3 +948,40 @@ Bij een groutanker begint de schuif op 65 %.
 Bekeken in de app met de voorbeeldsondering: negen lagen (organische klei, veen, organische klei, zand sterk
 siltig, zand los en matig afwisselend), de qc-lijn naast de doorsnede, en in 3D de wand en het anker onder het
 maaiveld bij 70 % doorzichtig en met de bovenste veenlaag uit.
+
+## 18. Ankerstaaf met verankering
+
+Invoer per ankerstaaf: het type verankering (ankerschot, ankerpaal, ankerplaat of betonblok) met de maten, de lengte
+van de staaf van de wand tot de voorkant van de verankering, en de staaf zelf (eigen doorsneden, gladde staaf met
+gesneden draad of opgestuikte draad, staalsoort). Zonder type blijft de staaf schematisch en verandert er niets aan
+de uitkomst; het verenmodel gebruikt de verankering niet (de veerstijfheid blijft invoer, E · A_g / L staat als
+vergelijking bij de invoer).
+
+Staaf. A_g = π · d² / 4; A_s = π/4 · (d_draad − 0,9382 · P)² (NEN-EN ISO 898-1: het gemiddelde van flank- en
+kerndiameter). Controle: M48 × 5 geeft π/4 · 43,309² = 1473 mm²; de tabelwaarde voor M48 is 1470 mm². De spoed is
+standaard de grove draad van ISO 261 tot M68, daarboven 6 mm; f_y en f_u komen uit NEN-EN 1993-1-1 tabel 3.1 (tot
+40 mm en van 40 tot 80 mm). Tabellen van leveranciers zitten er niet in: die doorsneden vult u in als eigen waarden.
+De toets op trek blijft NEN-EN 1993-5 art. 7.2.3 (hoofdstuk 15).
+
+Ligging. Actief glijvlak van de wand vanaf de teen onder θ_a = 45° + φ′_gem;d / 2, met φ′ gemiddeld over de hoogte van
+de wand (zoals bij het groutanker). De voorkant van de verankering op het niveau van de staaf moet erachter liggen:
+x_v = L · cos α ≥ (z_v − z_teen) / tan θ_a. Bij een schot of plaat daarbij de grafische controle uit CUR 166 (ligging
+van het ankerscherm) en Terzaghi (1943, Theoretical Soil Mechanics, verankerde damwanden): het passieve glijvlak voor
+het schot, vanaf de onderkant onder θ_p = 45° − φ′_gem;d / 2 naar de wand op, mag het actieve glijvlak niet onder het
+maaiveld snijden. Dat geeft x_v ≥ (z_mv − z_teen) / tan θ_a + (z_mv − z_onder) / tan θ_p, met φ′ voor het schot
+gemiddeld van het maaiveld tot de onderkant. De teksten van CUR 166 en Terzaghi zijn hiervoor niet opnieuw nagelopen; de vorm van de
+controle is de gangbare uit de literatuur. Het glijvlak vanaf de teen ligt aan de veilige kant ten opzichte van een
+glijvlak vanaf het nulpunt van de belasting. Het maaiveldprofiel van de wand af telt niet mee (vlak maaiveld).
+
+Handberekening (test tie-anchorage.test.ts): één laag met φ′_d = 30°, teen NAP −9 m, maaiveld NAP 0, staaf
+horizontaal op NAP −1 m, schot tot NAP −3 m op 12 m. θ_a = 60°: x_glij = 8 / tan 60° = 4,62 m < 12 m. θ_p = 30°:
+x_min = 9 / tan 60° + 3 / tan 30° = 5,196 + 5,196 = 10,39 m < 12 m, u.c. 0,87. Op 10 m voldoet het schot niet.
+
+Niet in deze versie: de sterkte en stijfheid van het schot, de paal of de plaat zelf, de draagkracht van de ankerpaal
+en de stabiliteit van het diepe glijvlak (Kranz).
+
+In de tekeningen: de staaf op ware lengte en hoek met moer en plaat op de gording, het schot (met de omtrek van het
+damwandprofiel als dat gekozen is), de paal of het blok aan het eind, het actieve glijvlak rood en het passieve
+glijvlak paars gestippeld. Een stempel loopt in de module tot de rand van het blok met een rode markering, omdat de
+overkant van de bouwkuip daar niet bekend is; in het projectmodel loopt hij in een gesloten kuip tot de overkant (bij
+stempels op hetzelfde niveau aan beide kanten één keer), zonder overkant half en met dezelfde markering.

@@ -355,7 +355,9 @@
     "shear": "Taglio",
     "toe": "piede",
     "viewAria": "Vista",
-    "water": "acqua"
+    "water": "acqua",
+    "strutOpen": "lato opposto non noto",
+    "tieHint": "Tirante in lunghezza e inclinazione reali, con dado e piastra sulla trave di ripartizione e l'ancoraggio in fondo. Rosso tratteggiato: piano attivo della parete; viola: piano passivo della paratia di ancoraggio. Un puntone arriva al bordo del blocco: il lato opposto dello scavo non è noto nel calcolo (disco rosso)."
   },
   "warnings": {
     "groutAboveGround": "Il bulbo di ancoraggio fuoriesce sopra il piano campagna del lato alto; controllare quota, angolo e lunghezze.",
@@ -560,5 +562,72 @@
     "showQc": "qc della CPT accanto alla sezione",
     "clear": "Terreno trasparente",
     "noLayers": "La CPT non fornisce una suddivisione in strati (nessun qc e Rf)."
+  },
+  "tie": {
+    "type": "Ancoraggio",
+    "typeNone": "Non indicato (schematico)",
+    "typeWall": "paratia di ancoraggio",
+    "typePile": "palo di ancoraggio",
+    "typePlate": "piastra di ancoraggio",
+    "typeWallLong": "Paratia di ancoraggio (palancolata corta)",
+    "typePileLong": "Palo di ancoraggio (inclinato o verticale)",
+    "typePlateLong": "Piastra di ancoraggio o blocco di calcestruzzo",
+    "length": "Lunghezza del tirante fino all'ancoraggio",
+    "wallTop": "Sommità della paratia di ancoraggio",
+    "wallBottom": "Base della paratia di ancoraggio",
+    "wallProfile": "Profilo della paratia di ancoraggio",
+    "wallPlate": "Nessun profilo: piastra per ancoraggio",
+    "width": "Larghezza per ancoraggio",
+    "thickness": "Spessore",
+    "height": "Altezza",
+    "pileLength": "Lunghezza del palo",
+    "pileRake": "Inclinazione sulla verticale",
+    "pileDiameter": "Diametro del palo",
+    "pileFromTo": "palo",
+    "where": "Fronte dell'ancoraggio a {{x}} m dietro la parete, a NAP {{z}} m; {{what}} da NAP {{top}} a {{bottom}} m.",
+    "rodType": "Barra",
+    "rodCustom": "Sezioni proprie A_g e A_s (tabella del fornitore)",
+    "rodPlain": "Barra liscia con filettatura tagliata",
+    "rodUpset": "Barra con filettatura ricalcata",
+    "diameter": "Diametro della barra",
+    "threadDiameter": "Diametro della filettatura",
+    "pitch": "Passo della filettatura",
+    "grade": "Tipo di acciaio",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0,9382 · P)² secondo EN ISO 898-1, passo predefinito la filettatura grossa ISO 261. f_y e f_u da EN 1993-1-1 tabella 3.1 (fino a 40 mm e da 40 a 80 mm; oltre, valori propri). Per confronto: E · A_g / L = {{k}} kN/m per ancoraggio.",
+    "result": "Tirante e ancoraggio",
+    "resultAria": "Posizione dell'ancoraggio",
+    "activeX": "Piano di scorrimento attivo",
+    "requiredX": "Richiesto con piano passivo",
+    "frontX": "Disponibile",
+    "ok": "verificato",
+    "notOk": "non verificato",
+    "resultHint": "Distanze dietro la parete: il piano attivo dal piede a 45° + φ′/2 alla quota del fronte dell'ancoraggio; per paratia o piastra, la distanza alla quale il piano passivo (45° − φ′/2 dalla base) non interseca il piano attivo sotto il piano campagna (CUR 166; Terzaghi, 1943). Non in questa versione: la resistenza di paratia, palo o piastra.",
+    "checks": {
+      "slip": {
+        "label": "posizione dell'ancoraggio",
+        "title": "Ancoraggio fuori dal piano di scorrimento attivo"
+      },
+      "wedge": {
+        "label": "piani della paratia",
+        "title": "Piano passivo della paratia di ancoraggio fuori dal piano attivo della parete",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, fronte: {{name}}",
+      "frontShort": "distanza dalla parete al fronte"
+    },
+    "warnings": {
+      "outside": "Il tirante {{id}} termina fuori dall'altezza della paratia di ancoraggio; controllare lunghezza, angolo, sommità e base della paratia.",
+      "aboveGround": "L'ancoraggio di {{id}} sporge sopra il piano campagna del lato alto.",
+      "strength": "Resistenza e rigidezza di paratia, palo o piastra di ancoraggio non sono in questo foglio; nemmeno la stabilità dello scorrimento profondo (Kranz)."
+    },
+    "errors": {
+      "length": "Tirante: inserire la lunghezza fino all'ancoraggio (maggiore di 0).",
+      "wall": "Paratia di ancoraggio: la sommità sopra la base; senza profilo, larghezza e spessore maggiori di 0.",
+      "pile": "Palo di ancoraggio: lunghezza e diametro maggiori di 0, inclinazione minore di 60°.",
+      "plate": "Piastra di ancoraggio: larghezza, altezza e spessore maggiori di 0.",
+      "rod": "Tirante: inserire il diametro della barra e, con filettatura ricalcata, quello della filettatura; il passo è maggiore di 0."
+    }
   }
 }

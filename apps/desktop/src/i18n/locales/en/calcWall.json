@@ -355,7 +355,9 @@
     "shear": "Shear force",
     "toe": "toe",
     "viewAria": "View",
-    "water": "water"
+    "water": "water",
+    "strutOpen": "far side not known",
+    "tieHint": "Tie rod at true length and angle, with nut and plate on the waler and the anchorage at the end. Red dashed: active slip plane of the wall; purple: passive slip plane of the anchor wall. A strut runs to the edge of the block: the far side of the excavation is not known in the calculation (red disc)."
   },
   "warnings": {
     "groutAboveGround": "The grout body rises above the ground level of the high side; check level, angle and lengths.",
@@ -560,5 +562,72 @@
     "showQc": "CPT qc next to the section",
     "clear": "Transparent soil",
     "noLayers": "The CPT gives no layering (no qc and Rf)."
+  },
+  "tie": {
+    "type": "Anchorage",
+    "typeNone": "Not specified (schematic)",
+    "typeWall": "anchor wall",
+    "typePile": "anchor pile",
+    "typePlate": "anchor plate",
+    "typeWallLong": "Anchor wall (short sheet pile wall)",
+    "typePileLong": "Anchor pile (raked or vertical)",
+    "typePlateLong": "Anchor plate or concrete block",
+    "length": "Rod length to anchorage",
+    "wallTop": "Top of anchor wall",
+    "wallBottom": "Bottom of anchor wall",
+    "wallProfile": "Anchor wall section",
+    "wallPlate": "No section: plate per anchor",
+    "width": "Width per anchor",
+    "thickness": "Thickness",
+    "height": "Height",
+    "pileLength": "Pile length",
+    "pileRake": "Rake from vertical",
+    "pileDiameter": "Pile diameter",
+    "pileFromTo": "pile",
+    "where": "Front of the anchorage {{x}} m behind the wall at NAP {{z}} m; {{what}} from NAP {{top}} to {{bottom}} m.",
+    "rodType": "Rod",
+    "rodCustom": "Own areas A_g and A_s (supplier table)",
+    "rodPlain": "Plain rod with cut thread",
+    "rodUpset": "Rod with upset thread",
+    "diameter": "Rod diameter",
+    "threadDiameter": "Thread diameter",
+    "pitch": "Thread pitch",
+    "grade": "Steel grade",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0.9382 · P)² to EN ISO 898-1, pitch by default the ISO 261 coarse thread. f_y and f_u from EN 1993-1-1 table 3.1 (up to 40 mm and 40 to 80 mm; above that own input). For comparison: E · A_g / L = {{k}} kN/m per anchor.",
+    "result": "Tie rod and anchorage",
+    "resultAria": "Location of the anchorage",
+    "activeX": "Active slip plane",
+    "requiredX": "Required with passive slip plane",
+    "frontX": "Available",
+    "ok": "satisfies",
+    "notOk": "does not satisfy",
+    "resultHint": "Distances behind the wall: the active slip plane from the toe at 45° + φ′/2 at the level of the front of the anchorage; for an anchor wall or plate the distance at which the passive slip plane (45° − φ′/2 from the bottom) does not cut the active slip plane below ground level (CUR 166; Terzaghi, 1943). Not in this version: the strength of the anchor wall, pile or plate itself.",
+    "checks": {
+      "slip": {
+        "label": "anchorage location",
+        "title": "Anchorage outside the active slip plane"
+      },
+      "wedge": {
+        "label": "anchor wall slip planes",
+        "title": "Passive slip plane of the anchor wall outside the active slip plane of the wall",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, front of the {{name}}",
+      "frontShort": "distance from the wall to the front"
+    },
+    "warnings": {
+      "outside": "Rod {{id}} ends outside the height of the anchor wall; check the length, the angle and the top and bottom of the anchor wall.",
+      "aboveGround": "The anchorage of {{id}} rises above ground level on the retained side.",
+      "strength": "The strength and stiffness of the anchor wall, anchor pile or anchor plate itself are not in this sheet; nor is the deep slip plane stability (Kranz)."
+    },
+    "errors": {
+      "length": "Tie rod: enter the rod length to the anchorage (greater than 0).",
+      "wall": "Anchor wall: the top lies above the bottom; without a section, width and thickness are greater than 0.",
+      "pile": "Anchor pile: length and diameter greater than 0, rake less than 60°.",
+      "plate": "Anchor plate: width, height and thickness greater than 0.",
+      "rod": "Tie rod: enter the rod diameter, with an upset thread also the thread diameter; the pitch is greater than 0."
+    }
   }
 }

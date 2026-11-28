@@ -27,7 +27,13 @@
     "supports": "Ankers/stempels",
     "base": "Funderingsvlak",
     "width": "Breedte",
-    "open": "Open berekening"
+    "open": "Open berekening",
+    "strut": "stempel",
+    "grout": "groutanker",
+    "tie": "ankerstaaf",
+    "tie_wall": "ankerstaaf met ankerschot",
+    "tie_pile": "ankerstaaf met ankerpaal",
+    "tie_plate": "ankerstaaf met ankerplaat"
   },
   "bar": {
     "placeHint": "Plaats deze berekening op de kaart en in het 3D-model",

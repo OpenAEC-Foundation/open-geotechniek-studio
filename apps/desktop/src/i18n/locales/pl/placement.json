@@ -27,7 +27,13 @@
     "supports": "Kotwy/rozpory",
     "base": "Poziom posadowienia",
     "width": "Szerokość",
-    "open": "Otwórz obliczenie"
+    "open": "Otwórz obliczenie",
+    "strut": "rozpora",
+    "grout": "kotwa iniekcyjna",
+    "tie": "ściąg",
+    "tie_wall": "ściąg ze ścianką kotwiącą",
+    "tie_pile": "ściąg z palem kotwiącym",
+    "tie_plate": "ściąg z płytą kotwiącą"
   },
   "bar": {
     "placeHint": "Umieść to obliczenie na mapie i w modelu 3D",

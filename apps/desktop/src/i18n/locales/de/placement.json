@@ -27,7 +27,13 @@
     "supports": "Anker/Steifen",
     "base": "Gründungssohle",
     "width": "Breite",
-    "open": "Berechnung öffnen"
+    "open": "Berechnung öffnen",
+    "strut": "Steife",
+    "grout": "Verpressanker",
+    "tie": "Zugstab",
+    "tie_wall": "Zugstab mit Ankerwand",
+    "tie_pile": "Zugstab mit Ankerpfahl",
+    "tie_plate": "Zugstab mit Ankerplatte"
   },
   "bar": {
     "placeHint": "Diese Berechnung auf der Karte und im 3D-Modell platzieren",

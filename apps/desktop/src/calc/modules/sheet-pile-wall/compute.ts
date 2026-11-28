@@ -11,6 +11,7 @@ import { blum, type BlumResult } from "./blum";
 import { coefficients, type PassiveMethod, type PressureCoefficients } from "./earth-pressure";
 import { solveSpringWall, type SideSpring, type SpringState, type WallElement } from "./spring-model";
 import { extraVerticalStress, profileStrips, type LineLoad, type Strip, type SurfaceLoad, type SurfacePoint } from "./surface-loads";
+import { rodSection, tieLocation, validateAnchorage, type RodType, type TieAnchorage, type TieLocation } from "./tie-anchorage";
 
 /** Volumegewicht van water [kN/m³]. */
 export const GAMMA_WATER = 10;
@@ -107,12 +108,21 @@ export interface WallAnchor {
   prestressKn?: number;
   /** Toets van de ankerstaaf (NEN-EN 1993-5 art. 7.2.3); alleen bij een ankerstaaf. */
   tie?: TieRod;
+  /** Verankering van een ankerstaaf (ankerschot, ankerpaal of ankerplaat) met de lengte van de staaf; leeg = niet opgegeven. */
+  anchorage?: TieAnchorage;
   /** Toets van de gording als ligger langs de wand tussen de ankers of stempels. */
   waler?: Waler;
 }
 
-/** Ankerstaaf: bruto doorsnede en spanningsdoorsnede van de draad, staalsoort, factoren en de extra factor op de ankerkracht. */
-export interface TieRod { enabled: boolean; grossMm2: number; threadMm2: number; fyMPa: number; fuMPa: number; kt: number; gammaM0: number; gammaM2: number; loadFactor: number }
+/**
+ * Ankerstaaf: bruto doorsnede en spanningsdoorsnede van de draad, staalsoort, factoren en de extra factor op de
+ * ankerkracht. Met `rodType` "plain" of "upset" volgen de doorsneden uit de diameter, de draaddiameter en de spoed;
+ * zonder (of "custom") gelden `grossMm2` en `threadMm2` zoals ingevuld.
+ */
+export interface TieRod {
+  enabled: boolean; grossMm2: number; threadMm2: number; fyMPa: number; fuMPa: number; kt: number; gammaM0: number; gammaM2: number; loadFactor: number;
+  rodType?: RodType; diameterMm?: number; threadDiameterMm?: number; pitchMm?: number; gradeId?: string;
+}
 export const DEFAULT_TIE: TieRod = { enabled: false, grossMm2: 1257, threadMm2: 1000, fyMPa: 355, fuMPa: 490, kt: 0.6, gammaM0: 1, gammaM2: 1.25, loadFactor: 1.25 };
 /** Gording: weerstandsmoment, staalsoort en de momentcoëfficiënt (q·a²/c; 8 = één veld, 10 = doorgaande ligger als benadering). */
 export interface Waler { enabled: boolean; wCm3: number; fyMPa: number; gammaM0: number; coefficient: number; loadFactor: number }
@@ -836,7 +846,7 @@ export function resolveSection(i: WallInput): SectionModel | string {
 
 export interface WallStep { symbol: string; formula: string; filled?: string; result: string }
 export interface WallCheck {
-  id: "bending" | "shear" | "normal" | "board" | "boardShear" | "passive" | "embedment" | "tendon" | "pullout" | "freeLength" | "deformation" | "vertical" | "tie" | "waler";
+  id: "bending" | "shear" | "normal" | "board" | "boardShear" | "passive" | "embedment" | "tendon" | "pullout" | "freeLength" | "deformation" | "vertical" | "tie" | "waler" | "tieSlip" | "tieWedge";
   label: string;
   title: string;
   article: string;
@@ -925,6 +935,8 @@ export interface WallOk {
   cases: CaseRun[];
   phases: ResolvedPhase[];
   grout: GroutResult | null;
+  /** Ligging van de ankerstaven met een opgegeven verankering (ankerschot, ankerpaal of ankerplaat). */
+  ties: TieLocation[];
   section: SectionModel;
   eiKnM2: number;
   lengthM: number;
@@ -983,6 +995,9 @@ function validate(i: WallInput): string | null {
       if (!(g.shaftFrictionKpa > 0)) return t("errors.shaftFriction", "Vul de schachtwrijving langs het groutlichaam in. Het rekenblad levert daarvoor geen tabelwaarde.");
     } else if (![a.levelNap, a.angleDeg, a.spacingM, a.stiffnessKnPerM, a.prestressKn ?? 0].every(Number.isFinite) || a.spacingM <= 0 || Math.abs(a.angleDeg) >= 80 || (!a.rigid && a.stiffnessKnPerM <= 0) || (a.prestressKn ?? 0) < 0)
       return t("errors.anchor", "Controleer het anker: hoek kleiner dan 80°, hart-op-hartafstand en veerstijfheid groter dan 0.");
+    if (a.kind === "tie" && a.anchorage) { const bad = validateAnchorage(a.anchorage); if (bad) return bad; }
+    if (a.kind === "tie" && a.tie && (a.tie.rodType ?? "custom") !== "custom" && !(a.tie.diameterMm! > 0 && (a.tie.pitchMm ?? 1) > 0 && (a.tie.rodType !== "upset" || a.tie.threadDiameterMm! > 0)))
+      return t("tie.errors.rod", "Ankerstaaf: vul de diameter van de staaf in, bij opgestuikte draad ook de draaddiameter; de spoed is groter dan 0.");
     const lowest = Math.min(...phases.filter((ph) => ph.supports.some((b) => b.id === a.id)).map((ph) => ph.excavationNap), Infinity);
     if (a.levelNap > i.wallTopNap || a.levelNap <= i.toeNap || (Number.isFinite(lowest) && a.levelNap <= lowest)) return t("errors.anchorLevel", "Het anker ligt tussen de bovenkant van de wand en het niveau aan de lage zijde.");
   }
@@ -1118,12 +1133,16 @@ export function supportChecks(a: WallAnchor, uls: WallRun, suffix = ""): WallChe
   if (!f) return out;
   const tie = a.tie ? { ...DEFAULT_TIE, ...a.tie } : null;
   if (tie?.enabled && a.kind === "tie") {
-    const fd = tie.loadFactor * Math.abs(f.perAnchorKn), ftt = (tie.kt * tie.fuMPa * tie.threadMm2) / tie.gammaM2 / 1000, ftg = (tie.fyMPa * tie.grossMm2) / tie.gammaM0 / 1000, rd = Math.min(ftt, ftg);
+    const rod = rodSection(tie), fd = tie.loadFactor * Math.abs(f.perAnchorKn), ftt = (tie.kt * tie.fuMPa * rod.threadMm2) / tie.gammaM2 / 1000, ftg = (tie.fyMPa * rod.grossMm2) / tie.gammaM0 / 1000, rd = Math.min(ftt, ftg);
     out.push({ id: "tie", label: t("stage.checks.tie.label", "ankerstaaf") + suffix, title: t("stage.checks.tie.title", "Ankerstaaf op trek") + suffix, article: "NEN-EN 1993-5 art. 7.2.3", load: fd, resistance: rd, unit: "kN", uc: fd / rd, passes: fd <= rd,
       steps: [
         { symbol: "F_t;Ed", formula: t("stage.steps.tieLoad", "extra factor × ankerkracht per anker uit de omhullende"), filled: `${n(tie.loadFactor)} · ${n(Math.abs(f.perAnchorKn), 1)}`, result: `${n(fd, 1)} kN` },
-        { symbol: "F_tt;Rd", formula: "k_t · f_ua · A_s / γ_M2", filled: `${n(tie.kt)} · ${n(tie.fuMPa, 0)} · ${n(tie.threadMm2, 0)} / ${n(tie.gammaM2)}`, result: `${n(ftt, 1)} kN` },
-        { symbol: "F_tg;Rd", formula: "f_y · A_g / γ_M0", filled: `${n(tie.fyMPa, 0)} · ${n(tie.grossMm2, 0)} / ${n(tie.gammaM0)}`, result: `${n(ftg, 1)} kN` },
+        ...(rod.pitchMm !== null ? [
+          { symbol: "A_g", formula: "π · d² / 4", filled: `π · ${n(rod.diameterMm, 0)}² / 4`, result: `${n(rod.grossMm2, 0)} mm²` },
+          { symbol: "A_s", formula: "π / 4 · (d_draad − 0,9382 · P)²", filled: `π / 4 · (${n(rod.threadDiameterMm!, 0)} − 0,9382 · ${n(rod.pitchMm, 1)})²`, result: `${n(rod.threadMm2, 0)} mm²` },
+        ] : []),
+        { symbol: "F_tt;Rd", formula: "k_t · f_ua · A_s / γ_M2", filled: `${n(tie.kt)} · ${n(tie.fuMPa, 0)} · ${n(rod.threadMm2, 0)} / ${n(tie.gammaM2)}`, result: `${n(ftt, 1)} kN` },
+        { symbol: "F_tg;Rd", formula: "f_y · A_g / γ_M0", filled: `${n(tie.fyMPa, 0)} · ${n(rod.grossMm2, 0)} / ${n(tie.gammaM0)}`, result: `${n(ftg, 1)} kN` },
         { symbol: "F_t;Rd", formula: "min(F_tt;Rd; F_tg;Rd)", result: `${n(rd, 1)} kN` },
       ] });
   }
@@ -1325,6 +1344,13 @@ export function computeWall(raw: WallInput): WallResult {
     const ga = groutAnchor(i, uls, a, all.length > 1 ? ` (${a.id})` : "");
     grout ??= ga.result; checks.push(...ga.checks); warnings.push(...ga.warnings.filter((w) => !warnings.includes(w)));
   }
+  // Ankerstaven met een verankering: ligging tegen het actieve glijvlak en, bij een schot of plaat, het passieve glijvlak.
+  const ties: TieLocation[] = [];
+  for (const a of all.filter((x) => x.kind === "tie" && x.anchorage)) {
+    const tl = tieLocation({ id: a.id!, levelNap: a.levelNap, angleDeg: a.angleDeg, anchorage: a.anchorage!, toeNap: i.toeNap, wallTopNap: i.wallTopNap, surfaceNap: uls.scenario.high.surfaceNap, layers: uls.scenario.high.layers }, all.length > 1 ? ` (${a.id})` : "");
+    ties.push(tl.result); checks.push(...tl.checks); warnings.push(...tl.warnings.filter((w) => !warnings.includes(w)));
+  }
+  if (ties.length) warnings.push(t("tie.warnings.strength", "De sterkte en de stijfheid van het ankerschot, de ankerpaal of de ankerplaat zelf zitten niet in dit rekenblad; ook de stabiliteit van het diepe glijvlak (Kranz) niet."));
   if (grouts.length) warnings.push(t("warnings.kranz", "De stabiliteit van het diepe glijvlak (Kranz) en de beproeving van het anker zitten niet in dit rekenblad."));
   if (blumSupports.length > 1) warnings.push(t("stage.warnings.blumMulti", "Blum is alleen uitgewerkt voor één steunpunt; met meer steunpunten ontbreekt de vergelijking van de inheidiepte."));
   if (skipped.length) warnings.push(t("stage.warnings.skipped", "Stap {{steps}} vervalt: aan de lage zijde staat in elke fase vrij water, dan is een lage waterstand het ongunstigst.", { steps: skipped.join(", ") }));
@@ -1370,7 +1396,7 @@ export function computeWall(raw: WallInput): WallResult {
     if (typeof v === "string") warnings.push(v); else checks.push(v);
   }
   const governing = checks.reduce((a, b) => (b.uc > a.uc ? b : a));
-  return { ok: true, grout, section, eiKnM2: ei, lengthM: length, sls, uls, cases, phases, coefficients: coefficientRows, levels, blum: blumOut, checks, governing, passes: checks.every((c) => c.passes), warnings,
+  return { ok: true, grout, ties, section, eiKnM2: ei, lengthM: length, sls, uls, cases, phases, coefficients: coefficientRows, levels, blum: blumOut, checks, governing, passes: checks.every((c) => c.passes), warnings,
     corrosion: corroded ? { zones, reducedStiffness: co.reducedStiffness, eiOriginalKnM2: section.eiKnM2 * i.eiFactor! } : null };
 }
 

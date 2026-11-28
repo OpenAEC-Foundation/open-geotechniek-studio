@@ -355,7 +355,9 @@
     "shear": "Dwarskracht",
     "toe": "teen",
     "viewAria": "Weergave",
-    "water": "water"
+    "water": "water",
+    "strutOpen": "overkant niet bekend",
+    "tieHint": "Ankerstaaf op ware lengte en hoek, met moer en plaat op de gording en de verankering aan het eind. Rood gestippeld: actief glijvlak van de wand; paars: passief glijvlak van het schot. Een stempel loopt tot de rand van het blok: de overkant van de bouwkuip is in de berekening niet bekend (rode schijf)."
   },
   "warnings": {
     "groutAboveGround": "Het groutlichaam komt boven het maaiveld van de hoge zijde uit; controleer niveau, hoek en lengten.",
@@ -560,5 +562,72 @@
     "showQc": "qc van de sondering naast de doorsnede",
     "clear": "Grond doorzichtig",
     "noLayers": "De sondering levert geen laagindeling (geen qc en Rf)."
+  },
+  "tie": {
+    "type": "Verankering",
+    "typeNone": "Niet opgegeven (schematisch)",
+    "typeWall": "ankerschot",
+    "typePile": "ankerpaal",
+    "typePlate": "ankerplaat",
+    "typeWallLong": "Ankerschot (korte damwand of ankerwand)",
+    "typePileLong": "Ankerpaal (schuin of verticaal)",
+    "typePlateLong": "Ankerplaat of betonblok",
+    "length": "Lengte staaf tot verankering",
+    "wallTop": "Bovenkant schot",
+    "wallBottom": "Onderkant schot",
+    "wallProfile": "Profiel van het schot",
+    "wallPlate": "Geen profiel: plaat per anker",
+    "width": "Breedte per anker",
+    "thickness": "Dikte",
+    "height": "Hoogte",
+    "pileLength": "Lengte van de paal",
+    "pileRake": "Helling met de verticaal",
+    "pileDiameter": "Diameter van de paal",
+    "pileFromTo": "paal",
+    "where": "Voorkant van de verankering {{x}} m achter de wand op NAP {{z}} m; {{what}} van NAP {{top}} tot {{bottom}} m.",
+    "rodType": "Staaf",
+    "rodCustom": "Eigen doorsneden A_g en A_s (tabel van de leverancier)",
+    "rodPlain": "Gladde staaf met gesneden draad",
+    "rodUpset": "Staaf met opgestuikte draad",
+    "diameter": "Diameter van de staaf",
+    "threadDiameter": "Draaddiameter",
+    "pitch": "Spoed van de draad",
+    "grade": "Staalsoort",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm²; A_s = π/4 · (d − 0,9382 · P)² volgens NEN-EN ISO 898-1, spoed standaard de grove draad van ISO 261. f_y en f_u uit NEN-EN 1993-1-1 tabel 3.1 (tot 40 mm en van 40 tot 80 mm; daarboven eigen invoer). Ter vergelijking: E · A_g / L = {{k}} kN/m per anker.",
+    "result": "Ankerstaaf en verankering",
+    "resultAria": "Ligging van de verankering",
+    "activeX": "Actief glijvlak",
+    "requiredX": "Nodig met passief glijvlak",
+    "frontX": "Aanwezig",
+    "ok": "voldoet",
+    "notOk": "voldoet niet",
+    "resultHint": "Afstanden achter de wand: het actieve glijvlak vanaf de teen onder 45° + φ′/2 op het niveau van de voorkant van de verankering; bij een schot of plaat de afstand waarbij het passieve glijvlak (45° − φ′/2 vanaf de onderkant) het actieve glijvlak niet onder het maaiveld snijdt (CUR 166; Terzaghi, 1943). Niet in deze versie: de sterkte van het schot, de paal of de plaat zelf.",
+    "checks": {
+      "slip": {
+        "label": "ligging verankering",
+        "title": "Verankering buiten het actieve glijvlak"
+      },
+      "wedge": {
+        "label": "glijvlakken schot",
+        "title": "Passief glijvlak van het schot buiten het actieve glijvlak van de wand",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, voorkant van het {{name}}",
+      "frontShort": "afstand van de wand tot de voorkant"
+    },
+    "warnings": {
+      "outside": "De staaf {{id}} komt buiten de hoogte van het ankerschot uit; controleer de lengte, de hoek en de onderkant en bovenkant van het schot.",
+      "aboveGround": "De verankering van {{id}} komt boven het maaiveld van de hoge zijde uit.",
+      "strength": "De sterkte en de stijfheid van het ankerschot, de ankerpaal of de ankerplaat zelf zitten niet in dit rekenblad; ook de stabiliteit van het diepe glijvlak (Kranz) niet."
+    },
+    "errors": {
+      "length": "Ankerstaaf: vul de lengte van de staaf tot de verankering in (groter dan 0).",
+      "wall": "Ankerschot: de bovenkant ligt boven de onderkant; zonder profiel zijn breedte en dikte groter dan 0.",
+      "pile": "Ankerpaal: lengte en diameter groter dan 0, helling kleiner dan 60°.",
+      "plate": "Ankerplaat: breedte, hoogte en dikte groter dan 0.",
+      "rod": "Ankerstaaf: vul de diameter van de staaf in, bij opgestuikte draad ook de draaddiameter; de spoed is groter dan 0."
+    }
   }
 }

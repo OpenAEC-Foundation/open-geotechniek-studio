@@ -8,6 +8,7 @@ import {
   type CaseRun, type CurStep, type WallAnchor, type WallInput, type WallOk, type WallPhase,
 } from "./compute";
 import type { SurfaceLoad, SurfacePoint } from "./surface-loads";
+import { TieAnchorageFields } from "./tie-anchorage-panel";
 
 const fmt = (v: number, d = 1) => (Number.isFinite(v) ? v.toLocaleString(numberLocale(), { minimumFractionDigits: d, maximumFractionDigits: d }) : "—");
 type Change = (patch: Partial<WallInput>) => void;
@@ -54,11 +55,9 @@ export function SupportsBlock({ input: i, onChange }: { input: WallInput; onChan
         const tie = { ...DEFAULT_TIE, ...a.tie }, w = { ...DEFAULT_WALER, ...a.waler }, id = a.id!;
         const num = (label: string, unit: string, value: number, apply: (v: number) => void) => <Row key={label} label={label} unit={unit}><NumberInput label={`${label}, ${id}`} value={value} onChange={apply} /></Row>;
         return <div key={id} className="sw-support-checks"><strong>{id}</strong>
+          {a.kind === "tie" && k > 0 && <TieAnchorageFields input={i} anchor={a} id={id} onChange={(patch) => setAny(k, patch)} />}
           {a.kind === "tie" && <label className="cs-check"><input type="checkbox" checked={tie.enabled} onChange={(e) => setAny(k, { tie: { ...tie, enabled: e.target.checked } })} /> {t("stage.tieCheck", "Ankerstaaf toetsen")}</label>}
           {a.kind === "tie" && tie.enabled && <>
-            {num(t("stage.tieGross", "Bruto doorsnede A_g"), "mm²", tie.grossMm2, (v) => setAny(k, { tie: { ...tie, grossMm2: v } }))}
-            {num(t("stage.tieThread", "Spanningsdoorsnede draad A_s"), "mm²", tie.threadMm2, (v) => setAny(k, { tie: { ...tie, threadMm2: v } }))}
-            {num("f_y", "N/mm²", tie.fyMPa, (v) => setAny(k, { tie: { ...tie, fyMPa: v } }))}{num("f_ua", "N/mm²", tie.fuMPa, (v) => setAny(k, { tie: { ...tie, fuMPa: v } }))}
             {num(t("input.anchorLoadFactor", "Extra factor op de ankerkracht"), "", tie.loadFactor, (v) => setAny(k, { tie: { ...tie, loadFactor: v } }))}
           </>}
           <label className="cs-check"><input type="checkbox" checked={w.enabled} onChange={(e) => setAny(k, { waler: { ...w, enabled: e.target.checked } })} /> {t("stage.walerCheck", "Gording toetsen")}</label>

@@ -27,7 +27,13 @@
     "supports": "Tiranti/puntoni",
     "base": "Piano di posa",
     "width": "Larghezza",
-    "open": "Apri calcolo"
+    "open": "Apri calcolo",
+    "strut": "puntone",
+    "grout": "tirante iniettato",
+    "tie": "tirante",
+    "tie_wall": "tirante con paratia di ancoraggio",
+    "tie_pile": "tirante con palo di ancoraggio",
+    "tie_plate": "tirante con piastra di ancoraggio"
   },
   "bar": {
     "placeHint": "Posiziona questo calcolo sulla mappa e nel modello 3D",

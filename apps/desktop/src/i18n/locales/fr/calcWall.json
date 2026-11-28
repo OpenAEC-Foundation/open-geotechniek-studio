@@ -355,7 +355,9 @@
     "shear": "Effort tranchant",
     "toe": "pied",
     "viewAria": "Affichage",
-    "water": "eau"
+    "water": "eau",
+    "strutOpen": "côté opposé inconnu",
+    "tieHint": "Tirant en vraie longueur et inclinaison, avec écrou et plaque sur la lierne et l'ancrage au bout. Rouge pointillé : plan actif du rideau ; violet : plan passif du rideau d'ancrage. Un butonnage va jusqu'au bord du bloc : le côté opposé de la fouille n'est pas connu dans le calcul (disque rouge)."
   },
   "warnings": {
     "groutAboveGround": "Le bulbe de scellement dépasse le terrain naturel côté haut ; vérifiez le niveau, l'angle et les longueurs.",
@@ -560,5 +562,72 @@
     "showQc": "qc du CPT à côté de la coupe",
     "clear": "Sol transparent",
     "noLayers": "Le CPT ne fournit aucun découpage (pas de qc ni de Rf)."
+  },
+  "tie": {
+    "type": "Ancrage",
+    "typeNone": "Non indiqué (schématique)",
+    "typeWall": "rideau d'ancrage",
+    "typePile": "pieu d'ancrage",
+    "typePlate": "plaque d'ancrage",
+    "typeWallLong": "Rideau d'ancrage (court rideau de palplanches)",
+    "typePileLong": "Pieu d'ancrage (incliné ou vertical)",
+    "typePlateLong": "Plaque d'ancrage ou bloc béton",
+    "length": "Longueur du tirant jusqu'à l'ancrage",
+    "wallTop": "Haut du rideau d'ancrage",
+    "wallBottom": "Bas du rideau d'ancrage",
+    "wallProfile": "Profil du rideau d'ancrage",
+    "wallPlate": "Sans profil : plaque par ancrage",
+    "width": "Largeur par ancrage",
+    "thickness": "Épaisseur",
+    "height": "Hauteur",
+    "pileLength": "Longueur du pieu",
+    "pileRake": "Inclinaison sur la verticale",
+    "pileDiameter": "Diamètre du pieu",
+    "pileFromTo": "pieu",
+    "where": "Face avant de l'ancrage à {{x}} m derrière le rideau, à NAP {{z}} m ; {{what}} de NAP {{top}} à {{bottom}} m.",
+    "rodType": "Tirant",
+    "rodCustom": "Sections propres A_g et A_s (tableau du fournisseur)",
+    "rodPlain": "Barre lisse à filetage taillé",
+    "rodUpset": "Barre à extrémités refoulées filetées",
+    "diameter": "Diamètre de la barre",
+    "threadDiameter": "Diamètre du filetage",
+    "pitch": "Pas du filetage",
+    "grade": "Nuance d'acier",
+    "rodHint": "A_g = {{ag}} mm², A_s = {{as}} mm² ; A_s = π/4 · (d − 0,9382 · P)² selon EN ISO 898-1, pas par défaut le pas gros ISO 261. f_y et f_u selon EN 1993-1-1 tableau 3.1 (jusqu'à 40 mm et de 40 à 80 mm ; au-delà, saisie propre). Pour comparaison : E · A_g / L = {{k}} kN/m par ancrage.",
+    "result": "Tirant et ancrage",
+    "resultAria": "Position de l'ancrage",
+    "activeX": "Plan de glissement actif",
+    "requiredX": "Requis avec plan passif",
+    "frontX": "Disponible",
+    "ok": "vérifié",
+    "notOk": "non vérifié",
+    "resultHint": "Distances derrière le rideau : le plan de glissement actif depuis le pied à 45° + φ′/2 au niveau de la face avant de l'ancrage ; pour un rideau ou une plaque, la distance à laquelle le plan passif (45° − φ′/2 depuis le bas) ne coupe pas le plan actif sous le terrain (CUR 166 ; Terzaghi, 1943). Pas dans cette version : la résistance du rideau, du pieu ou de la plaque eux-mêmes.",
+    "checks": {
+      "slip": {
+        "label": "position de l'ancrage",
+        "title": "Ancrage hors du plan de glissement actif"
+      },
+      "wedge": {
+        "label": "plans de glissement du rideau",
+        "title": "Plan passif du rideau d'ancrage hors du plan actif du rideau principal",
+        "article": "CUR 166; Terzaghi (1943)"
+      }
+    },
+    "steps": {
+      "front": "L · cos α, face avant : {{name}}",
+      "frontShort": "distance du rideau à la face avant"
+    },
+    "warnings": {
+      "outside": "Le tirant {{id}} sort de la hauteur du rideau d'ancrage ; vérifiez la longueur, l'angle et le haut et le bas du rideau.",
+      "aboveGround": "L'ancrage de {{id}} dépasse le terrain du côté haut.",
+      "strength": "La résistance et la raideur du rideau, du pieu ou de la plaque d'ancrage eux-mêmes ne sont pas dans cette feuille ; ni la stabilité du glissement profond (Kranz)."
+    },
+    "errors": {
+      "length": "Tirant : saisissez la longueur jusqu'à l'ancrage (supérieure à 0).",
+      "wall": "Rideau d'ancrage : le haut est au-dessus du bas ; sans profil, largeur et épaisseur supérieures à 0.",
+      "pile": "Pieu d'ancrage : longueur et diamètre supérieurs à 0, inclinaison inférieure à 60°.",
+      "plate": "Plaque d'ancrage : largeur, hauteur et épaisseur supérieures à 0.",
+      "rod": "Tirant : saisissez le diamètre de la barre, avec filetage refoulé aussi le diamètre du filetage ; le pas est supérieur à 0."
+    }
   }
 }

@@ -27,7 +27,13 @@
     "supports": "Stag/stämp",
     "base": "Grundläggningsnivå",
     "width": "Bredd",
-    "open": "Öppna beräkning"
+    "open": "Öppna beräkning",
+    "strut": "stämp",
+    "grout": "injekteringsstag",
+    "tie": "ankarstag",
+    "tie_wall": "ankarstag med ankarvägg",
+    "tie_pile": "ankarstag med ankarpåle",
+    "tie_plate": "ankarstag med ankarplatta"
   },
   "bar": {
     "placeHint": "Placera beräkningen på kartan och i 3D-modellen",

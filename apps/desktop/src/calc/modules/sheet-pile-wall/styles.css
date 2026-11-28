@@ -49,6 +49,14 @@
 .sw-slip text { fill: var(--oa-error, #b91c1c); font-size: 8px; }
 .sw-anchor circle { fill: #b45309; }
 .sw-anchor text { fill: #b45309; font-weight: 600; }
+.sw-anchorage { fill: #a8a29e; stroke: #374151; stroke-width: .8; }
+.sw-anchorage-wall { fill: #6b7581; }
+.sw-anchor-nut { fill: #b45309; }
+.sw-strut-open { fill: none; stroke: #dc2626; stroke-width: 1.4; }
+.sw-anchor text.sw-strut-open-text { fill: #dc2626; font-weight: 500; font-size: 8px; }
+.sw-slip-passive line { stroke: #7c3aed; }
+.sw-slip-passive text { fill: #7c3aed; }
+.sw-tie { border-left: 2px solid var(--oa-border, #e5e7eb); padding-left: 8px; margin: 4px 0; }
 .sw-surcharge path { fill: none; stroke: #1d4ed8; stroke-width: 1; }
 .sw-surcharge text { fill: #1d4ed8; }
 .sw-side { font-size: 8.5px; font-style: italic; }
