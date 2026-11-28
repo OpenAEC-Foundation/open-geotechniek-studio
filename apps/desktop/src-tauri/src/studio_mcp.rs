@@ -591,8 +591,8 @@ fn tool_definitions() -> Value {
         ),
         (
             "studio_add_calculation",
-            "Add and select a vertical or lateral pile calculation, or a foundation advice report that bundles them",
-            json!({"moduleId":{"type":"string","enum":["pile-bearing-capacity","laterally-loaded-pile","foundation-advice"]},"name":{"type":"string"},"input":{"type":"object"}}),
+            "Add and select a calculation of any module of the app (default: pile bearing capacity). input is a patch on the module defaults; the fields are in the input schema of the headless core (ogs schema <module>)",
+            json!({"moduleId":{"type":"string","enum":["pile-bearing-capacity","tension-pile","laterally-loaded-pile","driving-assessment","spread-foundation","sheet-pile-wall","foundation-advice"]},"name":{"type":"string"},"input":{"type":"object"}}),
             vec![],
         ),
         (
