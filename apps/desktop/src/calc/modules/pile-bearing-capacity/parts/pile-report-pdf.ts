@@ -101,6 +101,13 @@ export const TOTAL_PAGES_TOKEN = "{tp}";
 
 // ─── Getal-notatie (NL: decimaal-komma) ──────────────────────────
 /** Punt van een open buis voor de uitdraai: de keuze en het oppervlak. */
+/** De gekozen qc-begrenzing voor de puntweerstand; de begrenzing is een eigen keuze. */
+function pointQcCapText(input: PileInput): string {
+  return input.capPointQc15
+    ? "begrensd op 15 MPa vóór middeling (eigen, conservatieve keuze; wijkt af van NEN 9997-1 art. 7.6.2.3(e))"
+    : "niet begrensd (NEN 9997-1 art. 7.6.2.3(e): alleen qb;max ≤ 15 MPa)";
+}
+
 function openTubeText(base: PileResult["base"]): string | undefined {
   const o = base.openTube;
   if (!o) return undefined;
@@ -507,6 +514,7 @@ function renderProjectBlad(c: Cursor, inputs: PileReportInputs): void {
     if (resolvePileType(inp)?.material === "steel" && !resolvePileType(inp)?.requiresEA) kv(c, "Wanddikte", `: ${nl(inp.wallThicknessMm, 1)} mm`);
     const openTube = openTubeText(first.result.base);
     if (openTube) kv(c, "Punt", `: ${openTube}`);
+    kv(c, "qc traject I en II", `: ${pointQcCapText(inp)}`);
     kv(c, "Paalkopniveau", `: ${nlNap(inp.pileTopNap)}`);
     kv(c, "Paalpuntniveau", `: ${nlNap(inp.pileToeNap)}`);
     kv(c, "Waterniveau", `: ${nlNap(inp.waterNap)}`);
@@ -590,6 +598,7 @@ function renderProjectBladCompact(c: Cursor, inputs: PileReportInputs): void {
     ["Sonderingen", inputs.sonderingen.map((s) => s.name).join(", ")],
     [ext ? "Hout bij de las" : inp.timberTaper ? "Kopmaat" : "Doorsnede", `${sizeOf(inp, circular)}; D_eq = ${nl(first.result.base.deqMm, 0)} mm`],
     ["Punt", openTubeText(first.result.base) ?? (inp.timberTaper ? `Ø${inp.timberTaper.toeDiameterMm} mm, taps over ${nl(inp.timberTaper.lengthM, 2)} m` : inp.baseDiameterMm ? `${inp.baseDiameterMm} mm` : "gelijk aan schacht")],
+    ["qc traject I en II", pointQcCapText(inp)],
     ...(ext ? [["Betonopzetter", `${ext.isCircular ? "Ø" : `${ext.sizeMm} × `}${ext.sizeMm} mm tot las ${nlNap(ext.jointNap)}`] as [string, string]] : []),
     ...(type?.material === "steel" && !type.requiresEA ? [["Wanddikte", `${nl(inp.wallThicknessMm, 1)} mm`] as [string, string]] : []),
     ["Paalkop / paalpunt", `${nlNap(inp.pileTopNap)} / ${nlNap(inp.pileToeNap)}; L = ${nl(inp.pileTopNap - inp.pileToeNap, 2)} m`],

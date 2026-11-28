@@ -631,5 +631,9 @@
     "plugFactorMissing": "η eingeben (0 bis 1) — ohne η wird nicht gerechnet.",
     "hintPlug": "Mit Pfropfen zählt der Stahlring plus η mal der Innenquerschnitt; η = 1 ist der volle Querschnitt. Die Norm nennt keinen Wert für η: begründen Sie ihn, etwa mit der Reibung im Rohr (NEN 9997-1 Art. 7.6.2.3(d); über 500 mm auch Art. 7.6.2.1(13)).",
     "hintNoPlug": "Ohne Pfropfen zählt nur der Stahlring, die Reibung im Rohr bleibt unberücksichtigt; das ist eine Untergrenze nach NEN 9997-1 Art. 7.6.2.3(d)."
+  },
+  "point": {
+    "cap15": "qc in Bereich I und II auf 15 MPa begrenzen",
+    "cap15Hint": "Konservativ, eigene Wahl. Die Norm begrenzt nur qb;max auf 15 MPa; Bereich III folgt über das laufende Minimum."
   }
 }

@@ -23,6 +23,8 @@ import { getPileType } from "./catalog";
 interface ReferentieCase {
   name: string;
   gef: string;
+  /** Normconforme waarden (minimum qb;max) waar de referentie anders kiest. */
+  normConform?: ReferentieCase["expected"];
   expected: {
     qcIMpa: number;
     qcIIMpa: number;
@@ -41,6 +43,13 @@ const CASES: ReferentieCase[] = [
     name: "S1 (121882_1.gef)",
     gef: "121882_1.gef",
     expected: { qcIMpa: 17.97, qcIIMpa: 17.73, qcIIIMpa: 13.91, qbMaxMpa: 11.12, rbCalMaxKn: 419 },
+    // De referentie kiest het eindpunt van traject I bij de kleinste qc;I (0,7 Deq).
+    // Art. 7.6.2.3(e) vraagt de kleinste qb;max: door een zwakke laag op 3,4-3,8 Deq
+    // onder de punt ligt die op 4,0 Deq. Geen onafhankelijke referentie: eigen
+    // berekening, tussenwaarden per eindpunt in NUMERIEKE-VERIFICATIE.md. Dat de
+    // meetgegevens en afkapregels gelijk zijn aan die van de referentie, toont de
+    // toets met de referentiekeuze hieronder (method "legacy-qci").
+    normConform: { qcIMpa: 18.91, qcIIMpa: 12.77, qcIIIMpa: 11.97, qbMaxMpa: 9.73, rbCalMaxKn: 367 },
   },
   {
     name: "S3 (121882_3.gef)",
@@ -94,6 +103,20 @@ describe("verification — 984.pdf (NEN 9997-1 NB:2019 §7.6.2.3)", () => {
         diameterMm: DIAMETER_MM,
         pileType,
       });
+      if (c.normConform) {
+        const n = c.normConform;
+        it(`normconform (kleinste qb;max): ${n.qcIMpa} / ${n.qcIIMpa} / ${n.qcIIIMpa} MPa, R_b;cal;max ≈ ${n.rbCalMaxKn} kN`, () => {
+          expect(result.qcIGemMpa).toBeCloseTo(n.qcIMpa, 2);
+          expect(result.qcIIGemMpa).toBeCloseTo(n.qcIIMpa, 2);
+          expect(result.qcIIIGemMpa).toBeCloseTo(n.qcIIIMpa, 2);
+          expect(result.qbMaxMpa).toBeCloseTo(n.qbMaxMpa, 2);
+          expect(Math.abs(result.rbCalMax - n.rbCalMaxKn)).toBeLessThan(1);
+        });
+      }
+      // Toets tegen de referentie met de keuze die de referentie maakt.
+      const refResult = c.normConform
+        ? computeBaseResistance(cpt, { pileToeDepth, diameterMm: DIAMETER_MM, pileType, method: "legacy-qci" })
+        : result;
 
       // Drie afzonderlijke its zodat een failure direct laat zien welk
       // gemiddelde (I/II/III) van het Referentie-resultaat afwijkt.
@@ -102,22 +125,22 @@ describe("verification — 984.pdf (NEN 9997-1 NB:2019 §7.6.2.3)", () => {
         //   - andere interpolatie-strategie tussen CPT-meetpunten
         //   - andere dc-loop step-size (0,01·Deq vs de Referentie zijn interne)
         //   - rounding van paalpunt op 0,5 m vs exacte NAP
-        expect(result.qcIGemMpa).toBeCloseTo(c.expected.qcIMpa, 0);
+        expect(refResult.qcIGemMpa).toBeCloseTo(c.expected.qcIMpa, 0);
       });
       it(`qc;II gemiddelde ≈ ${c.expected.qcIIMpa} MPa (lopend minimum vanaf de gemeten qc)`, () => {
-        expect(result.qcIIGemMpa).toBeCloseTo(c.expected.qcIIMpa, 0);
+        expect(refResult.qcIIGemMpa).toBeCloseTo(c.expected.qcIIMpa, 0);
       });
       it(`qc;III gemiddelde ≈ ${c.expected.qcIIIMpa} MPa (continueerd lopende min)`, () => {
-        expect(result.qcIIIGemMpa).toBeCloseTo(c.expected.qcIIIMpa, 0);
+        expect(refResult.qcIIIGemMpa).toBeCloseTo(c.expected.qcIIIMpa, 0);
       });
       it(`q_b;max ≈ ${c.expected.qbMaxMpa} MPa`, () => {
-        expect(result.qbMaxMpa).toBeCloseTo(c.expected.qbMaxMpa, 0);
+        expect(refResult.qbMaxMpa).toBeCloseTo(c.expected.qbMaxMpa, 0);
       });
       it(`R_b;cal;max ≈ ${c.expected.rbCalMaxKn} kN`, () => {
         // Tolerantie 25 kN (~6%) — Referentie rondt intern af; cumulatieve
         // verschillen in qc;I/II/III sluipen door naar Rb.
-        expect(result.rbCalMax).toBeGreaterThan(c.expected.rbCalMaxKn - 25);
-        expect(result.rbCalMax).toBeLessThan(c.expected.rbCalMaxKn + 25);
+        expect(refResult.rbCalMax).toBeGreaterThan(c.expected.rbCalMaxKn - 25);
+        expect(refResult.rbCalMax).toBeLessThan(c.expected.rbCalMaxKn + 25);
       });
 
       // Diagnostiek: console.log de werkelijke waarden zodat een
@@ -126,15 +149,15 @@ describe("verification — 984.pdf (NEN 9997-1 NB:2019 §7.6.2.3)", () => {
         // eslint-disable-next-line no-console
         console.log(`\n${c.name}:`);
         // eslint-disable-next-line no-console
-        console.log(`  qc;I    actual=${result.qcIGemMpa.toFixed(2)}  expected=${c.expected.qcIMpa}`);
+        console.log(`  qc;I    actual=${refResult.qcIGemMpa.toFixed(2)}  expected=${c.expected.qcIMpa}`);
         // eslint-disable-next-line no-console
-        console.log(`  qc;II   actual=${result.qcIIGemMpa.toFixed(2)}  expected=${c.expected.qcIIMpa}`);
+        console.log(`  qc;II   actual=${refResult.qcIIGemMpa.toFixed(2)}  expected=${c.expected.qcIIMpa}`);
         // eslint-disable-next-line no-console
-        console.log(`  qc;III  actual=${result.qcIIIGemMpa.toFixed(2)}  expected=${c.expected.qcIIIMpa}`);
+        console.log(`  qc;III  actual=${refResult.qcIIIGemMpa.toFixed(2)}  expected=${c.expected.qcIIIMpa}`);
         // eslint-disable-next-line no-console
-        console.log(`  qb;max  actual=${result.qbMaxMpa.toFixed(2)}  expected=${c.expected.qbMaxMpa}`);
+        console.log(`  qb;max  actual=${refResult.qbMaxMpa.toFixed(2)}  expected=${c.expected.qbMaxMpa}`);
         // eslint-disable-next-line no-console
-        console.log(`  Rb;cal  actual=${result.rbCalMax.toFixed(0)}  expected=${c.expected.rbCalMaxKn}`);
+        console.log(`  Rb;cal  actual=${refResult.rbCalMax.toFixed(0)}  expected=${c.expected.rbCalMaxKn}`);
         expect(true).toBe(true);
       });
     });

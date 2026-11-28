@@ -221,16 +221,18 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
 
   const negKleef = computeNegKleef(input);
   const closedBase = computeBaseResistance(cpt, {
-    method: historical ? "minimum-qb" : "legacy-qci",
     pileToeDepth,
     diameterMm: baseDiameterMm,
     sideBMm: sideB,
     pileType,
+    qcCapMpa: input.capPointQc15 ? 15 : undefined,
   });
-  // De bestaande trajectkeuze (minimum qc;I) is niet de keuze van art. 7.6.2.3(e)
-  // (minimum qb;max). Ligt de normkeuze meer dan 1 % lager, dan meldt de uitvoer dat.
-  const normativeBase = historical ? closedBase : computeBaseResistance(cpt, {
-    method: "minimum-qb", pileToeDepth, diameterMm: baseDiameterMm, sideBMm: sideB, pileType,
+  // Ter vergelijking: de keuze bij de kleinste qc;I, zoals sommige
+  // referentieberekeningen kiezen (niet normconform). Alleen gemeld als die meer
+  // dan 1 % hoger uitkomt.
+  const qciBase = computeBaseResistance(cpt, {
+    method: "legacy-qci", pileToeDepth, diameterMm: baseDiameterMm, sideBMm: sideB, pileType,
+    qcCapMpa: input.capPointQc15 ? 15 : undefined,
   });
   // Open buis: zelfde q_b;max, oppervlak staalring (met prop plus η · binnendoorsnede).
   const base = pileType.openEnd ? applyOpenTube(closedBase, openTubeAreas(input.diameterMm, input.wallThicknessMm), input.openTube) : closedBase;
@@ -326,12 +328,13 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     if (o.plug && input.diameterMm > 500) warnings.push(msg("warnings.openTubeLarge", "Buis groter dan 500 mm: zonder voorzieningen voor propvorming is de puntweerstand begrensd op de kleinste van de binnenwrijving tegen de prop en de puntweerstand over de volle doorsnede (NEN 9997-1 art. 7.6.2.1(13)). Onderbouw η daarop, of reken zonder prop."));
     warnings.push(msg("warnings.openTubeCoarse", "Open buis in grof zand (d50 ≥ 600 μm) of grind (d50 ≥ 2 mm): de conusweerstand voor de schachtwrijving moet vóór het afsnuiten worden verlaagd tot 80 % (zand) of 70 % (grind); bij intrillen 70 % of 50 % (NEN 9997-1 art. 7.6.2.3(i)). Het programma past dit niet toe; controleer de korrelgrootte."));
   }
-  if (normativeBase.qbMaxMpa < closedBase.qbMaxMpa * 0.99) {
+  if (input.capPointQc15) warnings.push(msg("warnings.pointQcCap15", "qc in traject I en II vóór de middeling begrensd op 15 MPa: eigen, conservatieve keuze. NEN 9997-1 art. 7.6.2.3(e) begrenst alleen qb;max op 15 MPa; dit wijkt af van de normtekst."));
+  if (qciBase.qbMaxMpa > closedBase.qbMaxMpa * 1.01) {
     const deqM = closedBase.deqMm / 1000;
-    warnings.push(msg("warnings.trajectChoice", "Trajectkeuze: qc;I minimaal (kritieke diepte {{dc}} Deq). Volgens NEN 9997-1 art. 7.6.2.3(e) hoort qb;max minimaal te zijn: kritieke diepte {{dcNorm}} Deq, Rb;cal;max {{rbNorm}} kN ({{pct}} % lager). Beoordeel welke waarde u aanhoudt.", {
-      dc: fmtNumber(closedBase.criticalDepthM / deqM, 2), dcNorm: fmtNumber(normativeBase.criticalDepthM / deqM, 2),
-      rbNorm: fmtNumber(base.rbCalMax * normativeBase.qbMaxMpa / closedBase.qbMaxMpa, 0),
-      pct: fmtNumber(100 * (1 - normativeBase.qbMaxMpa / closedBase.qbMaxMpa), 1),
+    warnings.push(msg("warnings.trajectChoice", "Trajectkeuze volgens NEN 9997-1 art. 7.6.2.3(e): kleinste qb;max, kritieke diepte {{dc}} Deq. Ter informatie: bij de kleinste qc;I, zoals sommige referentieberekeningen kiezen, is de kritieke diepte {{dcAlt}} Deq en Rb;cal;max {{rbAlt}} kN ({{pct}} % hoger); die keuze volgt de norm niet.", {
+      dc: fmtNumber(closedBase.criticalDepthM / deqM, 2), dcAlt: fmtNumber(qciBase.criticalDepthM / deqM, 2),
+      rbAlt: fmtNumber(base.rbCalMax * qciBase.qbMaxMpa / closedBase.qbMaxMpa, 0),
+      pct: fmtNumber(100 * (qciBase.qbMaxMpa / closedBase.qbMaxMpa - 1), 1),
     }));
   }
   if (base.qbMaxMpaRaw > 15) {

@@ -631,5 +631,9 @@
     "plugFactorMissing": "Inserire η (da 0 a 1) — senza η non si calcola.",
     "hintPlug": "Con tappo conta l'anello d'acciaio più η volte la sezione interna; η = 1 è la sezione piena. La norma non fornisce un valore per η: lo giustifichi, ad esempio con l'attrito all'interno del tubo (NEN 9997-1 art. 7.6.2.3(d); oltre 500 mm anche art. 7.6.2.1(13)).",
     "hintNoPlug": "Senza tappo conta solo l'anello d'acciaio e l'attrito interno è trascurato; è un limite inferiore di NEN 9997-1 art. 7.6.2.3(d)."
+  },
+  "point": {
+    "cap15": "Limitare qc a 15 MPa nei tratti I e II",
+    "cap15Hint": "Conservativo, scelta propria. La norma limita solo qb;max a 15 MPa; il tratto III segue tramite il minimo progressivo."
   }
 }

@@ -631,5 +631,9 @@
     "plugFactorMissing": "Ange η (0 till 1) — utan η räknas inget.",
     "hintPlug": "Med propp räknas stålringen plus η gånger den inre tvärsektionen; η = 1 är hela tvärsektionen. Normen ger inget värde för η: motivera det, t.ex. med friktionen inne i röret (NEN 9997-1 art. 7.6.2.3(d); över 500 mm även art. 7.6.2.1(13)).",
     "hintNoPlug": "Utan propp räknas bara stålringen och friktionen inne i röret bortses från; det är en undre gräns enligt NEN 9997-1 art. 7.6.2.3(d)."
+  },
+  "point": {
+    "cap15": "Begränsa qc till 15 MPa i sträcka I och II",
+    "cap15Hint": "Konservativt, eget val. Normen begränsar bara qb;max till 15 MPa; sträcka III följer via det löpande minimumet."
   }
 }
