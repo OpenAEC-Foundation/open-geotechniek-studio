@@ -2,6 +2,28 @@
 
 For new integrations use the stateless [headless Node core/API/MCP](../packages/core/README.md). It runs without a desktop UI, has explicit version/validation endpoints, an external-client smoke test and a trusted custom-importer boundary. The [native C ABI](../packages/native/README.md) covers settlement and snapshot validation. The [AWS deployment candidate](../deploy/aws/README.md) is separate and awaits runtime verification.
 
+## Headless core: all modules, reports and the CPT report / Headless rekenkern
+
+The Node core (`@openaec/geotechniek-core`, `packages/core`) runs every calculation module of the app headless, with the app's own code: input schema, defaults, compute (checks and unity checks), the PDF report and the CPT report. One contract in four forms:
+
+| Form | Start | Covers |
+| --- | --- | --- |
+| Library (Node and browser ESM) | `import { compute, report } from '@openaec/geotechniek-core'` | everything |
+| HTTP API v1 + v2 | `npx ogs serve` or `node packages/core/dist/server.mjs` (127.0.0.1:8788) | `GET /modules`, `GET /modules/{id}/schema`, `POST /modules/{id}/default`, `POST /modules/{id}/compute`, `POST /modules/{id}/report` (application/pdf), `POST /cpt/report`, `POST /cpt/layers`, `GET /openapi.json`; v1 unchanged |
+| MCP (stdio) | `npx ogs mcp` | `list_modules`, `module_schema`, `default_input`, `compute_module`, `module_report`, `cpt_report`, `cpt_layers` + the v1 tools |
+| CLI | `npx ogs …` | `modules`, `schema`, `default`, `compute`, `report`, `cpt-report`, `parse` |
+
+| Module | compute | schema/defaults | report |
+| --- | --- | --- | --- |
+| `pile-bearing-capacity`, `tension-pile`, `laterally-loaded-pile`, `spread-foundation`, `sheet-pile-wall`, `foundation-advice` | yes | yes | the app's PDF |
+| `driving-assessment` | yes | yes | generated calculation sheet (the app has no report) |
+| `pad-foundation`, `settlement`, `kalendering` (not in the app's module list) | yes | yes | generated calculation sheet |
+| CPT report (sonderingsrapport) | – | sections as in the app | the app's PDF (offline map by default) |
+
+Details, differences of headless reports and examples: [packages/core/README.md](../packages/core/README.md). Integration in Open CalcSheet Studio: [integratie-open-calcsheet-studio.md](integratie-open-calcsheet-studio.md).
+
+Nederlands, kort: alle rekenmodules, hun rapporten en het sonderingsrapport draaien zonder venster via de Node-kern (bibliotheek, HTTP API v2, MCP of de opdrachtregel `ogs`), met dezelfde code en getallen als de app. De desktop-modus `--mcp` is een oudere, afzonderlijke Rust-server zonder deze modules; `--mcp-studio` bedient het open venster en kan nu berekeningen van alle modules van de app toevoegen.
+
 The legacy desktop-binary API below remains loopback-only and stateful. Raw GEF/BRO import and the old GEF writer are disabled because those paths could shift invalid columns or omit source channels. Its native reports and layer engine remain older implementations; use the shared Node core for the current interpretation/report contract. Do not expose this legacy service through a network proxy. For validated parsing use the Node core and pass CPT JSON snapshots into the desktop. IFC4x3 generation has been disabled because the legacy writer is not schema-valid; explicitly request experimental `ifcx` where needed. The default legacy IFC request will now return an error.
 
 # Open Geotechniek Studio — REST API
@@ -183,7 +205,7 @@ De statusbalk rechtsonder toont of de koppeling beschikbaar is, een client verbo
 
 Beschikbare tools: `studio_get_state`, `studio_get_cpt`, `studio_new_project`, `studio_select_document`, `studio_show_view`, `studio_open_file`, `studio_add_cpt`, `studio_set_project_meta`, `studio_add_calculation`, `studio_update_calculation`, `studio_get_calculation`, `studio_select_calculation`, `studio_get_capacity_table`, `studio_export_report`, `studio_export_ifcx` en `studio_save_project`. Bestandsopdrachten gebruiken absolute paden en openen geen bestandsdialoog. De server is één live sessie met het open venster: een client werkt in het actieve project (`studio_get_state` eerst) en maakt alleen op verzoek een nieuw project. `studio_open_file` activeert een bestand dat al open staat in plaats van een tweede kopie te openen; met `reload: true` leest het een projectbestand opnieuw in hetzelfde document. `studio_add_cpt` voegt een GEF-, BRO-XML- of ifcgeo-sondering aan het actieve project toe. Bij het verbinden geeft de server deze werkwijze ook als `instructions` mee. `studio_export_ifcx` schrijft het actieve project als IFC5-bestand (IFCX alpha): sonderingen als `IfcBorehole` met metadata, meetreeksen en laagindeling, het 3D-grondmodel als `IfcGeotechnicalStratum`, de bovenkant van de draagkrachtige laag en de palen, gegeorefereerd in RD en NAP. `studio_show_view` opent een weergave (ribbon-tab): `home`, `map`, `report`, `drawing`, `calculations`, `model3d` (het 3D-grondmodel) of `ifc`. Paalinvoer volgt dezelfde standaardwaarden bij een norm- of paaltypewissel als de invoerinterface. Een expliciete patch kan die standaardwaarden overschrijven.
 
-`studio_add_calculation` ondersteunt `pile-bearing-capacity` en `laterally-loaded-pile` als afzonderlijke modules, en `foundation-advice` voor een funderingsadvies dat de sonderingen en paalberekeningen van het project bundelt (`studio_export_report` schrijft het advies als PDF). Voor horizontale paalbelasting kunnen scalaire invoervelden, een gedeeltelijke `section` en volledige `layers` worden aangepast. Onbekende velden en ongeldige modellen worden afgewezen voordat projectgegevens veranderen. De conceptstatus en beperkingen van de rekenmodule blijven van toepassing.
+`studio_add_calculation` ondersteunt alle modules van de app: `pile-bearing-capacity`, `tension-pile`, `laterally-loaded-pile`, `driving-assessment`, `spread-foundation`, `sheet-pile-wall` en `foundation-advice` (een funderingsadvies dat de sonderingen en paalberekeningen van het project bundelt; `studio_export_report` schrijft het advies als PDF). Paal, horizontale paal, advies en kalendering hebben een eigen, strikte patch; bij trekpalen, fundering op staal en damwand vervangt een patch velden op het hoogste niveau (een object als geheel) en wordt de invoer eenmaal doorgerekend voordat hij wordt opgeslagen. De velden staan in het invoerschema van de headless rekenkern (`ogs schema <module>`). Voor horizontale paalbelasting kunnen scalaire invoervelden, een gedeeltelijke `section` en volledige `layers` worden aangepast. Onbekende velden en ongeldige modellen worden afgewezen voordat projectgegevens veranderen. De conceptstatus en beperkingen van de rekenmodule blijven van toepassing.
 
 Horizontale paalbelasting accepteert `analysisMode: "linear" | "nonlinear"` en
 `layerCorrection: "none" | "georgiadis"`. Niet-lineaire lagen bevatten
