@@ -62,6 +62,7 @@
     "deviatingToeSize": "Afvigende spidsstørrelse: kontrollér pælespidsens formfaktor β og det tilladte område for overflademodstand for denne installationsmetode.",
     "qbMaxCapped": "qb;max begrænset til 15 MPa (råværdi {{raw}} MPa)",
     "trajectChoice": "Strækningsvalg efter NEN 9997-1 art. 7.6.2.3(e): mindste qb;max, kritisk dybde {{dc}} Deq. Til orientering: ved mindste qc;I, som nogle referenceberegninger vælger, er den kritiske dybde {{dcAlt}} Deq og Rb;cal;max {{rbAlt}} kN ({{pct}} % højere); det valg følger ikke normen.",
+    "pointQcCap15": "qc i strækning I og II begrænset til 15 MPa før midling: eget, konservativt valg. NEN 9997-1 art. 7.6.2.3(e) begrænser kun qb;max til 15 MPa; det afviger fra normteksten.",
     "settlementLineUnknown": "Der kendes ingen last-sætningskurve fra tabellen for denne pæletype: sætning og fjederværdier bestemmes ikke.",
     "rectShape": "Rektangulært tværsnit {{a}} × {{b}} mm: regnet med A = a · b, omkreds 2 (a + b) og Deq = √(4 · a · b / π). Programmet bestemmer ikke faktoren s for formen af en rektangulær pælespids (a ≠ b); der er regnet med s = {{s}}. Bestem s efter normen, og angiv den om nødvendigt som projektfaktor.",
     "openTubePlug": "Åbent rør med prop: spids over stålringen ({{ring}} mm²) plus η = {{factor}} × det indre tværsnit ({{inner}} mm²), i alt {{area}} mm². Propfaktoren η er din antagelse: vis at proppen dannes, dvs. at friktionen inde i røret mindst når spidsmodstanden over det indre tværsnit (NEN 9997-1 art. 7.6.2.3(d)). Programmet beregner ikke den indvendige friktion.",

@@ -161,6 +161,9 @@ export interface PileInput {
   axialStiffnessKn?: number;
   /** Open stalen buispaal: met of zonder grondprop. Ontbrekend bij een open buis = zonder prop. */
   openTube?: OpenTubeInput;
+  /** Eigen, conservatieve keuze: qc in traject I en II vóór de middeling op 15 MPa
+   *  begrenzen. De norm begrenst alleen qb;max. Ontbrekend = uit. */
+  capPointQc15?: boolean;
   projectFactors?: ProjectPileFactors;
   pileTopNap: number;          // 0.34
   pileToeNap: number;          // -14.50

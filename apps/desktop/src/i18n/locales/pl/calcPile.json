@@ -631,5 +631,9 @@
     "plugFactorMissing": "Wpisz η (od 0 do 1) — bez η obliczenia nie są wykonywane.",
     "hintPlug": "Z korkiem liczy się pierścień stalowy plus η razy przekrój wewnętrzny; η = 1 to pełny przekrój. Norma nie podaje wartości η: uzasadnij ją, np. tarciem wewnątrz rury (NEN 9997-1 art. 7.6.2.3(d); powyżej 500 mm także art. 7.6.2.1(13)).",
     "hintNoPlug": "Bez korka liczy się tylko pierścień stalowy, a tarcie wewnątrz rury jest pomijane; to dolna granica według NEN 9997-1 art. 7.6.2.3(d)."
+  },
+  "point": {
+    "cap15": "Ogranicz qc do 15 MPa na odcinkach I i II",
+    "cap15Hint": "Zachowawczo, własny wybór. Norma ogranicza tylko qb;max do 15 MPa; odcinek III wynika z bieżącego minimum."
   }
 }

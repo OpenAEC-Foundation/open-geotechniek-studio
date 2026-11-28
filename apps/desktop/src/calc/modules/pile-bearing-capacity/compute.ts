@@ -225,12 +225,14 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     diameterMm: baseDiameterMm,
     sideBMm: sideB,
     pileType,
+    qcCapMpa: input.capPointQc15 ? 15 : undefined,
   });
   // Ter vergelijking: de keuze bij de kleinste qc;I, zoals sommige
   // referentieberekeningen kiezen (niet normconform). Alleen gemeld als die meer
   // dan 1 % hoger uitkomt.
   const qciBase = computeBaseResistance(cpt, {
     method: "legacy-qci", pileToeDepth, diameterMm: baseDiameterMm, sideBMm: sideB, pileType,
+    qcCapMpa: input.capPointQc15 ? 15 : undefined,
   });
   // Open buis: zelfde q_b;max, oppervlak staalring (met prop plus η · binnendoorsnede).
   const base = pileType.openEnd ? applyOpenTube(closedBase, openTubeAreas(input.diameterMm, input.wallThicknessMm), input.openTube) : closedBase;
@@ -326,6 +328,7 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     if (o.plug && input.diameterMm > 500) warnings.push(msg("warnings.openTubeLarge", "Buis groter dan 500 mm: zonder voorzieningen voor propvorming is de puntweerstand begrensd op de kleinste van de binnenwrijving tegen de prop en de puntweerstand over de volle doorsnede (NEN 9997-1 art. 7.6.2.1(13)). Onderbouw η daarop, of reken zonder prop."));
     warnings.push(msg("warnings.openTubeCoarse", "Open buis in grof zand (d50 ≥ 600 μm) of grind (d50 ≥ 2 mm): de conusweerstand voor de schachtwrijving moet vóór het afsnuiten worden verlaagd tot 80 % (zand) of 70 % (grind); bij intrillen 70 % of 50 % (NEN 9997-1 art. 7.6.2.3(i)). Het programma past dit niet toe; controleer de korrelgrootte."));
   }
+  if (input.capPointQc15) warnings.push(msg("warnings.pointQcCap15", "qc in traject I en II vóór de middeling begrensd op 15 MPa: eigen, conservatieve keuze. NEN 9997-1 art. 7.6.2.3(e) begrenst alleen qb;max op 15 MPa; dit wijkt af van de normtekst."));
   if (qciBase.qbMaxMpa > closedBase.qbMaxMpa * 1.01) {
     const deqM = closedBase.deqMm / 1000;
     warnings.push(msg("warnings.trajectChoice", "Trajectkeuze volgens NEN 9997-1 art. 7.6.2.3(e): kleinste qb;max, kritieke diepte {{dc}} Deq. Ter informatie: bij de kleinste qc;I, zoals sommige referentieberekeningen kiezen, is de kritieke diepte {{dcAlt}} Deq en Rb;cal;max {{rbAlt}} kN ({{pct}} % hoger); die keuze volgt de norm niet.", {

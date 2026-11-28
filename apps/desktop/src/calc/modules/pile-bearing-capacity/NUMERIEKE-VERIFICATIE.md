@@ -169,6 +169,46 @@ gecorrigeerd. Bij de schacht verschillen de aflezing en de qc-begrenzing per
 laag (referentie 12 of 15 MPa op de aflezing, app 15 MPa op het laaggemiddelde) en de laagindeling
 (de fixture gebruikt één positieve laag). Geen tolerantie is aangepast.
 
+### Optie: qc in traject I en II begrenzen op 15 MPa
+
+Invoerveld `capPointQc15` (standaard uit; ontbreekt in oude projectbestanden en
+staat dan uit). Een eigen, conservatieve keuze: art. 7.6.2.3(e) begrenst alleen
+qb;max op 15 MPa, niet qc. De uitvoer en de uitdraai noemen de keuze en dat ze
+afwijkt van de normtekst.
+
+Met de optie aan wordt elke qc in traject I en II vóór de middeling op 15 MPa
+gezet (lineaire segmenten met het snijpunt, zoals bij de schacht). Ook de keuze
+van de kritieke diepte rekent met de begrensde waarden. Traject III krijgt geen
+eigen begrenzing: het lopende minimum begint bij de laagste waarde van traject
+II, die met de optie ten hoogste 15 MPa is, dus elke waarde in traject III is
+dan al ten hoogste 15 MPa. Een extra begrenzing van III zou niets veranderen.
+Getoetst in `point-qc-cap.test.ts` (handberekeningen: constante qc 20 MPa geeft
+qb;max 10,5 in plaats van 14,0 MPa; een lineair profiel met het snijpunt in
+traject I).
+
+Project 2321 opnieuw gerekend met de optie aan (zelfde invoer en GEF-bestanden;
+netto in kN, afwijking ten opzichte van de referentie):
+
+| Geval | Rb ref | Rb standaard | Rb optie | Netto ref | Netto standaard | Netto optie | qc I/II/III ref | standaard | optie |
+|---|---:|---:|---:|---:|---:|---:|---|---|---|
+| OT-1 | 228 | 235,7 | 235,7 | 404 | 380,6 (−5,8 %) | 380,6 (−5,8 %) | 7/7/7 | 7,52/7,46/7,05 | gelijk |
+| OT-2 | 228 | 224,0 | 224,0 | 291 | 272,0 (−6,5 %) | 272,0 (−6,5 %) | 7/7/7 | 7,04/6,88/6,86 | gelijk |
+| OT-3 | 246 | 307,3 | 301,2 | 446 | 450,4 (+1,0 %) | 446,7 (+0,2 %) | 8/8/7,125 | 14,10/8,96/7,42 | 13,37/8,94/7,42 |
+| OT-4 | 583 | 1128,9 | 693,5 | 720 | 1109,4 (+54,1 %) | 848,4 (+17,8 %) | 15/15/5,625 | 27,78/25,30/13,53 | 15,00/15,00/9,62 |
+| VP-1 | 596 | 937,5 | 616,2 | 412 | 616,6 (+49,7 %) | 424,0 (+2,9 %) | 15/15/13,375 | 28,98/25,85/20,08 | 15,00/15,00/14,43 |
+| VP-2 | 472 | 710,5 | 494,9 | 248 | 388,9 (+56,8 %) | 259,7 (+4,7 %) | 15/15/7,5 | 23,96/23,91/10,00 | 15,00/15,00/8,64 |
+| VP-3 | 425 | 455,1 | 455,1 | 486 | 524,6 (+7,9 %) | 524,6 (+7,9 %) | 11/13/8,25 | 13,56/13,45/8,23 | gelijk |
+| VP-4 | 795 | 1021,2 | 772,0 | 605 | 740,7 (+22,4 %) | 591,4 (−2,3 %) | 15/15/13,125 | 22,15/21,97/14,19 | 15,00/15,00/12,40 |
+| VP-5 | 525 | 531,1 | 531,1 | 372 | 399,9 (+7,5 %) | 399,9 (+7,5 %) | 14/14/11 | 13,88/13,77/11,54 | gelijk |
+| VP-6 | 604 | 677,5 | 604,3 | 491 | 597,2 (+21,6 %) | 553,4 (+12,7 %) | 15/15/13,75 | 19,60/16,52/14,30 | 15,00/15,00/13,86 |
+
+Met de optie komen VP-1, VP-2 en VP-4 binnen 5 % van de referentie; bij VP-6 is
+Rb gelijk (604 kN) en blijft het verschil in de schacht (584 tegen 480 kN). OT-4
+blijft +17,8 %: qc;III is in de referentie met de hand afgelezen als 5,625 MPa
+(module 9,62) en de schacht is 799 tegen 696 kN. Bij de gevallen waar qc onder
+15 MPa blijft, verandert er niets. Geen tolerantie is aangepast; de
+standaard blijft zonder begrenzing.
+
 ### Wat nog open is
 
 - Besluit 29 november 2026: de normkeuze is de standaard, ook voor 2017 en het

@@ -631,5 +631,9 @@
     "plugFactorMissing": "Enter η (0 to 1) — without η nothing is calculated.",
     "hintPlug": "With a plug the steel ring counts plus η times the inner section; η = 1 is the full section. The standard gives no value for η: substantiate it, for example with the friction inside the tube (NEN 9997-1 art. 7.6.2.3(d); above 500 mm also art. 7.6.2.1(13)).",
     "hintNoPlug": "Without a plug only the steel ring counts and the friction inside the tube is ignored; that is a lower bound of NEN 9997-1 art. 7.6.2.3(d)."
+  },
+  "point": {
+    "cap15": "Cap qc in zones I and II at 15 MPa",
+    "cap15Hint": "Conservative, your own choice. The standard only caps qb;max at 15 MPa; zone III follows through the running minimum."
   }
 }

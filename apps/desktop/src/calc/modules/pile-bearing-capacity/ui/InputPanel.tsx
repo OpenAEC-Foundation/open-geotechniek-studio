@@ -292,6 +292,11 @@ export function InputPanel({ input, onChange }: Props) {
             ? t("openTube.hintPlug", "Met prop telt de staalring plus η maal de binnendoorsnede; η = 1 is de volle doorsnede. De norm geeft geen waarde voor η: onderbouw hem, bijvoorbeeld met de wrijving binnen in de buis (NEN 9997-1 art. 7.6.2.3(d); boven 500 mm ook art. 7.6.2.1(13)).")
             : t("openTube.hintNoPlug", "Zonder prop telt alleen de staalring en blijft de wrijving binnen in de buis buiten beschouwing; dat is een ondergrens van NEN 9997-1 art. 7.6.2.3(d).")}</Hint>
         </>}
+        <label className="cs-check">
+          <input type="checkbox" checked={!!input.capPointQc15} onChange={(e) => set("capPointQc15", e.target.checked || undefined)} />
+          {t("point.cap15", "qc in traject I en II begrenzen op 15 MPa")}
+        </label>
+        <Hint>{t("point.cap15Hint", "Conservatief, eigen keuze. De norm begrenst alleen qb;max op 15 MPa; traject III volgt via het lopende minimum.")}</Hint>
         {!input.timberTaper && !ext && (
           <Row label={<>{t("pile.axialStiffness", "Axiale stijfheid EA")}{pileType?.requiresEA && <span className="cs-required"> · {t("pile.required", "verplicht")}</span>}</>} unit="kN"
             missing={needsEA ? t("pile.eaMissing", "Vereist voor dit paaltype — zonder EA wordt er niet gerekend.") : undefined}>

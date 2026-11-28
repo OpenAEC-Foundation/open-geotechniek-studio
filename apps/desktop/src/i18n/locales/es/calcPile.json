@@ -631,5 +631,9 @@
     "plugFactorMissing": "Introduzca η (0 a 1) — sin η no se calcula.",
     "hintPlug": "Con tapón cuenta el anillo de acero más η veces la sección interior; η = 1 es la sección completa. La norma no da un valor para η: justifíquelo, por ejemplo con la fricción dentro del tubo (NEN 9997-1 art. 7.6.2.3(d); por encima de 500 mm también art. 7.6.2.1(13)).",
     "hintNoPlug": "Sin tapón solo cuenta el anillo de acero y se ignora la fricción interior; es un límite inferior de NEN 9997-1 art. 7.6.2.3(d)."
+  },
+  "point": {
+    "cap15": "Limitar qc a 15 MPa en los tramos I y II",
+    "cap15Hint": "Conservador, elección propia. La norma solo limita qb;max a 15 MPa; el tramo III sigue mediante el mínimo acumulado."
   }
 }

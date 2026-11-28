@@ -15,6 +15,9 @@ interface Args {
   /** Tweede zijde van een rechthoekige paalvoet [mm]; ontbrekend = vierkant of rond. */
   sideBMm?: number;
   pileType: PileTypeSpec;
+  /** Eigen keuze, geen normregel: qc in traject I en II vóór de middeling op deze
+   *  waarde begrenzen [MPa]. Traject III volgt via het lopende minimum vanzelf. */
+  qcCapMpa?: number;
 }
 
 /**
@@ -60,9 +63,13 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
   const deq = pileGeometry(args.diameterMm, args.pileType.isCircular, args.sideBMm).equivalentDiameterMm / 1000;
   const toe = args.pileToeDepth;
   const top = Math.max(0, toe - 8 * deq);
+  const cap = args.qcCapMpa ?? Infinity;
+  const averageI = (dc: number) => Number.isFinite(cap) ? profile.averageCapped(toe, toe + dc, cap) : profile.average(toe, toe + dc);
   const evaluate = (dc: number, capture = false): BaseResistanceResult => {
-    const qcIGemMpa = profile.average(toe, toe + dc);
-    const ii = profile.walkUp(toe + dc, toe, Infinity, capture);
+    const qcIGemMpa = averageI(dc);
+    // Begrenzen van elke qc op `cap` en daarna het lopende minimum nemen is gelijk
+    // aan het lopende minimum met beginwaarde `cap`.
+    const ii = profile.walkUp(toe + dc, toe, cap, capture);
     const iii = profile.walkUp(toe, top, Math.min(ii.finalMin, args.pileType.qcIIIStartCapMpa ?? Infinity), capture);
     const averages = { qcIGemMpa, qcIIGemMpa: ii.avg, qcIIIGemMpa: iii.avg };
     return { ...computeBaseResistanceFromAverages({ ...args, ...averages }), ...averages,
@@ -83,9 +90,9 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
     }
     return evaluate(best.criticalDepthM, true);
   }
-  let bestDc = lower, bestQcI = profile.average(toe, toe + lower);
+  let bestDc = lower, bestQcI = averageI(lower);
   for (const dc of sorted) {
-    const q = profile.average(toe, toe + dc);
+    const q = averageI(dc);
     if (q < bestQcI - 1e-12) { bestQcI = q; bestDc = dc; }
   }
   return evaluate(bestDc, true);

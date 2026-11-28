@@ -631,5 +631,9 @@
     "plugFactorMissing": "Indtast η (0 til 1) — uden η regnes der ikke.",
     "hintPlug": "Med prop tæller stålringen plus η gange det indre tværsnit; η = 1 er det fulde tværsnit. Normen angiver ingen værdi for η: begrund den, fx med friktionen inde i røret (NEN 9997-1 art. 7.6.2.3(d); over 500 mm også art. 7.6.2.1(13)).",
     "hintNoPlug": "Uden prop tæller kun stålringen, og friktionen inde i røret ses bort fra; det er en nedre grænse efter NEN 9997-1 art. 7.6.2.3(d)."
+  },
+  "point": {
+    "cap15": "Begræns qc til 15 MPa i strækning I og II",
+    "cap15Hint": "Konservativt, eget valg. Normen begrænser kun qb;max til 15 MPa; strækning III følger via det løbende minimum."
   }
 }
