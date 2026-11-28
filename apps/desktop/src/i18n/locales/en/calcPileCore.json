@@ -61,6 +61,7 @@
     "taper": "Timber taper: negative and positive skin friction with the mean perimeter per layer. Without concrete extension or increase for taper.",
     "deviatingToeSize": "Deviating toe size: check the pile base shape factor β and the permitted shaft friction range for this installation method.",
     "qbMaxCapped": "qb;max capped at 15 MPa (raw value {{raw}} MPa)",
+    "trajectChoice": "Zone choice: minimum qc;I (critical depth {{dc}} Deq). NEN 9997-1 art. 7.6.2.3(e) requires minimum qb;max: critical depth {{dcNorm}} Deq, Rb;cal;max {{rbNorm}} kN ({{pct}} % lower). Decide which value you adopt.",
     "settlementLineUnknown": "No load-settlement curve from the table is known for this pile type: settlement and spring values are not determined.",
     "rectShape": "Rectangular cross-section {{a}} × {{b}} mm: calculated with A = a · b, perimeter 2 (a + b) and Deq = √(4 · a · b / π). The program does not determine the factor s for the shape of a rectangular pile toe (a ≠ b); s = {{s}} was used. Determine s according to the standard and enter it as a project factor if needed.",
     "openTubePlug": "Open tube with plug: base over the steel ring ({{ring}} mm²) plus η = {{factor}} × the inner section ({{inner}} mm²), together {{area}} mm². The plug factor η is your assumption: show that the plug forms, i.e. that the friction inside the tube reaches at least the base resistance over the inner section (NEN 9997-1 art. 7.6.2.3(d)). The program does not calculate the inner friction.",

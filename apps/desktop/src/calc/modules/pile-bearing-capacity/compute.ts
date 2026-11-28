@@ -227,6 +227,11 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
     sideBMm: sideB,
     pileType,
   });
+  // De bestaande trajectkeuze (minimum qc;I) is niet de keuze van art. 7.6.2.3(e)
+  // (minimum qb;max). Ligt de normkeuze meer dan 1 % lager, dan meldt de uitvoer dat.
+  const normativeBase = historical ? closedBase : computeBaseResistance(cpt, {
+    method: "minimum-qb", pileToeDepth, diameterMm: baseDiameterMm, sideBMm: sideB, pileType,
+  });
   // Open buis: zelfde q_b;max, oppervlak staalring (met prop plus η · binnendoorsnede).
   const base = pileType.openEnd ? applyOpenTube(closedBase, openTubeAreas(input.diameterMm, input.wallThicknessMm), input.openTube) : closedBase;
   // Positief schachtwrijvings-traject: van posKleefTopNap (boven, default
@@ -320,6 +325,14 @@ function computePileChecked(input: PileInput, cpt: Cpt | null): PileResult {
       : msg("warnings.openTubeNoPlug", "Open buis zonder prop: punt alleen over de staalring ({{ring}} mm²); de wrijving binnen in de buis is niet meegenomen. Volgens NEN 9997-1 art. 7.6.2.3(d) mag die wel tellen, begrensd op de puntweerstand met een vaste prop; dit is dus een ondergrens.", { ring: mm2(o.ringMm2) }));
     if (o.plug && input.diameterMm > 500) warnings.push(msg("warnings.openTubeLarge", "Buis groter dan 500 mm: zonder voorzieningen voor propvorming is de puntweerstand begrensd op de kleinste van de binnenwrijving tegen de prop en de puntweerstand over de volle doorsnede (NEN 9997-1 art. 7.6.2.1(13)). Onderbouw η daarop, of reken zonder prop."));
     warnings.push(msg("warnings.openTubeCoarse", "Open buis in grof zand (d50 ≥ 600 μm) of grind (d50 ≥ 2 mm): de conusweerstand voor de schachtwrijving moet vóór het afsnuiten worden verlaagd tot 80 % (zand) of 70 % (grind); bij intrillen 70 % of 50 % (NEN 9997-1 art. 7.6.2.3(i)). Het programma past dit niet toe; controleer de korrelgrootte."));
+  }
+  if (normativeBase.qbMaxMpa < closedBase.qbMaxMpa * 0.99) {
+    const deqM = closedBase.deqMm / 1000;
+    warnings.push(msg("warnings.trajectChoice", "Trajectkeuze: qc;I minimaal (kritieke diepte {{dc}} Deq). Volgens NEN 9997-1 art. 7.6.2.3(e) hoort qb;max minimaal te zijn: kritieke diepte {{dcNorm}} Deq, Rb;cal;max {{rbNorm}} kN ({{pct}} % lager). Beoordeel welke waarde u aanhoudt.", {
+      dc: fmtNumber(closedBase.criticalDepthM / deqM, 2), dcNorm: fmtNumber(normativeBase.criticalDepthM / deqM, 2),
+      rbNorm: fmtNumber(base.rbCalMax * normativeBase.qbMaxMpa / closedBase.qbMaxMpa, 0),
+      pct: fmtNumber(100 * (1 - normativeBase.qbMaxMpa / closedBase.qbMaxMpa), 1),
+    }));
   }
   if (base.qbMaxMpaRaw > 15) {
     warnings.push(msg("warnings.qbMaxCapped", "qb;max gecapt op 15 MPa (ruwe waarde {{raw}} MPa)", { raw: base.qbMaxMpaRaw.toFixed(2) }));

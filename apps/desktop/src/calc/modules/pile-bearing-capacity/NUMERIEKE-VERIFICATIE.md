@@ -15,28 +15,164 @@ synthetische meetpunten, drie opwarmrondes en de mediaan van vijftien metingen.
 Op de ontwikkelmachine daalde de mediaan van 26,3 naar 1,9 ms. Dit is geen
 garantie voor dezelfde versnelling van de volledige applicatie.
 
-## Openstaand punt bij de puntweerstand
+## Trajectkeuze bij de puntweerstand (art. 7.6.2.3(e))
 
-Deze beperking betreft het behouden projectmodel en het profiel 2017. De
-afzonderlijke historische profielen hebben een nieuwe trajectprocedure, inclusief
-de startregel van traject II, gecontroleerd met de tabellarische normbijlage.
-Zie [historische verificatie](HISTORISCHE-NORMEN.md).
+Stand: 28 november 2026. Getoetst in `trajectory-choice.test.ts`.
 
-De bestaande puntmethode kiest het traject met het laagste qc;I. NEN
-9997-1:2016+C2:2017, §7.6.2.3(e), vraagt een trajectkeuze op basis van het minimum
-van de volledige puntweerstand. Dit is een bekende beperking; de implementatie
-mag niet als volledige verificatie van deze normprocedure worden beschouwd.
+### Wat de norm vraagt
 
-Een proef met minimalisatie van de volledige uitdrukking, met behoud van de
-bestaande afkapregels, gaf bij sondering S1 uit referentie-rapport 984 ongeveer
-367 kN in plaats van de referentiewaarde 419 kN. De juiste combinatie van
-trajectkeuze en afkapregels moet onafhankelijk worden geverifieerd voordat deze
-methodewijziging wordt vrijgegeven. De prestatieoptimalisatie behoudt daarom
-de bestaande puntmethode en ongewijzigde referentietoleranties.
+NEN 9997-1:2016+C2:2017, art. 7.6.2.3(e), nagelezen in de normtekst:
 
-De 100 externe componentgevallen toetsen aangeleverde trajectgemiddelden en
-verifiëren deze trajectkeuze dus niet. Aanvullende analytische tests toetsen
-segmentintegratie, gedeeltelijke segmenten en meetpuntafstand.
+- traject I loopt van de paalpunt tot 0,7 à 4 Deq eronder; het eindpunt moet
+  binnen die grenzen zo zijn gekozen dat qb;max minimaal is;
+- traject II loopt van het eindpunt van traject I naar boven tot de paalpunt;
+  de in rekening te brengen qc is nooit hoger dan de eronder liggende waarde;
+- traject III loopt van de paalpunt naar boven tot 8 Deq; idem, beginnend
+  met de laagste in rekening gebrachte waarde van traject II (avegaarpaal:
+  begin ten hoogste 2 MPa);
+- qb;max ten hoogste 15 MPa; in grind qc boven 20 MPa afsnuiten op 20 MPa
+  (art. 7.6.2.3(l)), na de correcties voor overconsolidatie (j) en
+  ontgraving (k).
+
+Een begrenzing van traject II op qc;I staat niet in de tekst, en ook geen
+afsnuiten van qc op 15 MPa in de trajecten I en II.
+
+### Wat de module doet
+
+Eén procedure in `parts/base-resistance.ts` met de afkapregels hierboven
+(dezelfde code als de historische profielen, `QcProfile.walkUp`). Alleen de
+keuze van het eindpunt van traject I verschilt:
+
+| Keuze | Gebruikt bij | Eindpunt traject I |
+|---|---|---|
+| `minimum-qb` | profielen 1991, 2006, 2012 | qb;max minimaal (normtekst) |
+| `legacy-qci` | profiel 2017 en het bestaande projectmodel | qc;I;gem minimaal |
+
+Kandidaten: stappen van 0,01 Deq, beide grenzen en de meetpunten daartussen.
+Ligt qb;max volgens de normkeuze meer dan 1 % lager dan bij de bestaande keuze,
+dan meldt de uitvoer de kritieke diepte en Rb;cal;max volgens de norm.
+Niet geïmplementeerd: de correcties (j), (k) en (l); de invoer moet dan al
+gecorrigeerde qc bevatten.
+
+Gewijzigd op 28 november 2026: bij `legacy-qci` begon traject II op
+min(gemeten qc, qc;I;gem). Dat staat niet in de norm; nu begint traject II bij
+de gemeten qc. Dat ligt ook dichter bij de referentie (S1: 17,73 MPa
+referentie, 17,59 oud, 17,75 nieuw).
+
+### Waarom de eerdere proef 367 kN gaf tegen 419 kN
+
+Sondering S1 uit referentie-rapport 984, paalpunt NAP −14,50 (14,50 + 0,84 =
+15,34 m onder maaiveld), Deq = 219 mm, αp = 0,70, Ab = 37 668 mm².
+
+De gemeten qc onder de punt: circa 18-21 MPa tot 15,5 m, 21-24 MPa tot 15,9 m,
+dan een dunne zwakke laag met 12,8-13,0 MPa op 16,09-16,16 m (3,4-3,8 Deq onder
+de punt), daarna weer 15-29 MPa.
+
+| Eindpunt traject I | qc;I | qc;II | qc;III | qb;max | Rb;cal;max |
+|---|---:|---:|---:|---:|---:|
+| 0,7 Deq | 17,97 | 17,75 | 13,79 | 11,08 | 417 kN |
+| 2,6 Deq | 20,61 | 20,10 | 13,79 | 11,95 | 450 kN |
+| 3,4 Deq | 19,92 | 13,32 | 12,29 | 10,12 | 381 kN |
+| 4,0 Deq | 18,91 | 12,77 | 11,97 | 9,73 | 367 kN |
+| Referentie (blad 2-3) | 17,97 | 17,73 | 13,91 | 11,12 | 419 kN |
+
+Waarden in MPa, eigen berekening uit `121882_1.gef` (gecorrigeerde diepte).
+
+- De referentie hoort bij het eindpunt 0,7 Deq: qc;I = 17,97 MPa is daar exact
+  het gemiddelde, en qc;II = 17,73 past bij een traject II dat bij de gemeten
+  qc begint (17,75).
+- Bij 0,7 Deq is qc;I het kleinst, maar qb;max niet: trekt het eindpunt door de
+  zwakke laag, dan zakt het lopende minimum van traject II naar 12,8 MPa en
+  daarmee ook traject III. Het minimum van qb;max ligt op de rand, 4,0 Deq:
+  367 kN.
+- De afkapregel van traject II verklaart het verschil niet: op 4,0 Deq geeft
+  begrenzen op qc;I hetzelfde (12,77 MPa). De startregel van traject III ook
+  niet. Voorboren speelt niet (geen voorboring, ontgraving op maaiveld). De
+  stapgrootte ook niet: het minimum ligt op de rand en qb;max loopt tussen
+  2,6 en 4,0 Deq gelijkmatig af.
+
+Conclusie: de referentie kiest het eindpunt van traject I bij het kleinste
+qc;I, niet bij het kleinste qb;max. Dat volgt de editie 2017 niet. Het
+referentie-rapport noemt NEN 9997-1:2025+C1:2025; de tekst van die editie is
+niet beschikbaar, dus of de regel daar is veranderd, is niet nagegaan.
+
+### Vergelijking per referentiegeval (984)
+
+Rb;cal;max in kN; voor = module vóór 28 november 2026 (minimum qc;I, traject II
+begrensd op qc;I); na = huidige standaard; norm = minimum qb;max.
+
+| Geval | Referentie | Voor | Na | Norm | Kritieke diepte na / norm |
+|---|---:|---:|---:|---:|---|
+| S1 | 419 | 416,1 | 417,2 | 366,6 | 0,70 / 4,00 Deq |
+| S2 (punt NAP −17,00) | 265 | 265,0 | 265,0 | 264,9 | 1,77 / 1,74 Deq |
+| S3 | 320 | 317,9 | 317,9 | 317,7 | 3,70 / 3,52 Deq |
+| S4 | 378 | 376,2 | 376,3 | 375,3 | 3,95 / 3,69 Deq |
+| S5 | 341 | 343,0 | 343,0 | 342,7 | 1,68 / 1,51 Deq |
+| S6 | 326 | 333,0 | 333,0 | 332,2 | 1,20 / 1,01 Deq |
+| S7 | 243 | 248,7 | 250,2 | 250,2 | 0,70 / 0,70 Deq |
+| S8 | 255 | 262,2 | 262,2 | 262,2 | 0,70 / 0,70 Deq |
+
+Bij S6, S7 en S8 ligt qc;I al 0,3 MPa (2 %) boven de referentie, bij elke
+keuze; dat zit in de meetgegevens of hun verwerking, niet in de trajectkeuze.
+S7 haalt de 3 %-grens van `verification-984-profielen.test.ts` nu met 2,96 %
+(voor: 2,3 %); de grens is niet verruimd.
+
+Eindanalyse met de gedigitaliseerde grondprofielen (7 sonderingen, niet-stijf):
+
+| | Referentie | Voor | Na | Norm |
+|---|---:|---:|---:|---:|
+| Rc;cal gemiddeld | 626 | 627,7 | 628,1 | 620,5 |
+| Rc;d | 411 | 411,9 | 412,1 | 407,2 |
+| Rc;net;d | 351 | 354,7 | 355,0 | 350,0 |
+| UC | 0,92 | 0,913 | 0,913 | 0,926 |
+
+Op projectniveau scheelt de normkeuze hier ruim 1 %, omdat S1 niet maatgevend
+is. Per sondering scheelt het bij S1 12,5 %.
+
+### Project 2321
+
+Projectvergelijking van 14 oktober 2026 (`VALIDATIE-3BM.md`, referentiebladen van 25 november 2025; GEF-bestanden buiten de repository). Opnieuw
+gerekend met dezelfde invoer en GEF-bestanden:
+
+| Geval | Netto ref | Netto voor | Netto na | Netto norm | qc;I app / ref | Oorzaak van het verschil |
+|---|---:|---:|---:|---:|---|---|
+| OT-1 | 404 | 379,7 | 380,6 | 380,6 | 7,52 / 7 | schacht: Rs 458 tegen 506 kN |
+| OT-2 | 291 | 272,1 | 272,1 | 272,0 | 7,04 / 7 | schacht: Rs 289 tegen 317 kN |
+| OT-3 | 446 | 451,2 | 451,2 | 450,4 | 14,03 / 8 | punt hoger (qc;I), schacht lager; heft elkaar grotendeels op |
+| OT-4 | 720 | 1129,3 | 1129,3 | 1109,4 | 27,78 / 15 | qc in traject I en II afgelezen als 15 MPa |
+| VP-1 | 412 | 616,6 | 616,6 | 616,6 | 28,14 / 15 | idem; qb;max in beide gevallen op 15 MPa begrensd in de app |
+| VP-2 | 248 | 388,5 | 388,9 | 388,9 | 23,96 / 15 | idem |
+| VP-3 | 486 | 524,2 | 524,6 | 524,6 | 13,56 / 11 | qc-aflezing punt en schacht |
+| VP-4 | 605 | 738,9 | 740,8 | 740,7 | 22,14 / 15 | qc afgelezen als 15 MPa |
+| VP-5 | 372 | 399,7 | 399,9 | 399,9 | 13,88 / 14 | schacht: Rs 401 tegen 360 kN |
+| VP-6 | 491 | 598,3 | 598,3 | 597,2 | 19,53 / 15 | qc 15 MPa; schacht 584 tegen 480 kN |
+
+De trajectkeuze verklaart de afwijking bij 2321 niet: de normkeuze verandert de
+netto draagkracht hooguit 1,8 % (OT-4), de rest minder dan 0,3 %. De grote
+afwijkingen (+50 tot +57 %) komen uit de referentiebladen zelf: daar zijn qc;I
+en qc;II met de hand afgelezen en op 15 MPa gezet, terwijl de gemeten
+gemiddelden 22-28 MPa zijn. Art. 7.6.2.3(e) begrenst qb;max op 15 MPa, niet qc
+in de trajecten I en II. Negatieve kleef is gelijk (binnen 0,01 kN), de
+paalfactoren zijn als projectfactoren overgenomen (αp 0,67, αs 0,010), en de
+ontgraving van 0,5 à 1 m wordt in geen van beide met art. 7.6.2.3(k)
+gecorrigeerd. Bij de schacht verschillen de aflezing en de qc-begrenzing per
+laag (referentie 12 of 15 MPa op de aflezing, app 15 MPa op het laaggemiddelde) en de laagindeling
+(de fixture gebruikt één positieve laag). Geen tolerantie is aangepast.
+
+### Wat nog open is
+
+- Vrijgave van de normkeuze voor het profiel 2017: de module reproduceert het
+  referentie-rapport 984 alleen met de bestaande keuze (minimum qc;I); met de
+  keuze uit de normtekst wijkt S1 12,5 % af. Welke keuze de standaard wordt,
+  is een beslissing; tot die tijd blijft de bestaande keuze staan met de
+  melding in de uitvoer. Een tweede, onafhankelijke referentie met een zwakke
+  laag tussen 0,7 en 4 Deq onder de punt zou dit beslechten.
+- De tekst van art. 7.6.2.3(e) in NEN 9997-1:2025 is niet nagelezen.
+- De correcties voor overconsolidatie, ontgraving en grind (art. 7.6.2.3(j)
+  t/m (l)) zitten niet in de puntberekening.
+
+De 100 externe componentgevallen (`public-reference.test.ts`) toetsen
+aangeleverde trajectgemiddelden en zijn door deze wijziging niet veranderd.
 
 ## Sterkte van de paal (optionele toets)
 
