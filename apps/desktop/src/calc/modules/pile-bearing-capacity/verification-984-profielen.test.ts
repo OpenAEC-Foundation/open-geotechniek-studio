@@ -85,9 +85,14 @@ interface RefCase {
   negKleefBottomNap: number;
   qcI: number; qcII: number; qcIII: number;
   rbCalMax: number; rsCalMax: number; rcCal: number; fnkD: number;
+  /** Normconforme puntwaarden (kleinste qb;max) waar de referentie anders kiest;
+   *  zie verification-984.test.ts en NUMERIEKE-VERIFICATIE.md. */
+  normConform?: { qcI: number; qcII: number; qcIII: number; rbCalMax: number };
 }
 const CASES: RefCase[] = [
-  { name: "S1", gef: "121882_1.gef", profKey: "S1", negKleefBottomNap: -9.0, qcI: 17.97, qcII: 17.73, qcIII: 13.91, rbCalMax: 419, rsCalMax: 202, rcCal: 621, fnkD: 35 },
+  { name: "S1", gef: "121882_1.gef", profKey: "S1", negKleefBottomNap: -9.0, qcI: 17.97, qcII: 17.73, qcIII: 13.91, rbCalMax: 419, rsCalMax: 202, rcCal: 621, fnkD: 35,
+    // Referentie: kleinste qc;I (0,7 Deq). Norm: kleinste qb;max (4,0 Deq).
+    normConform: { qcI: 18.91, qcII: 12.77, qcIII: 11.97, rbCalMax: 367 } },
   { name: "S3", gef: "121882_3.gef", profKey: "S3", negKleefBottomNap: -9.0, qcI: 13.25, qcII: 11.75, qcIII: 11.75, rbCalMax: 320, rsCalMax: 284, rcCal: 604, fnkD: 56 },
   { name: "S4", gef: "121882_4.gef", profKey: "S4", negKleefBottomNap: 0.0,  qcI: 17.64, qcII: 13.69, qcIII: 12.99, rbCalMax: 378, rsCalMax: 345, rcCal: 723, fnkD: 0 },
   { name: "S5", gef: "121882_5.gef", profKey: "S5", negKleefBottomNap: 0.0,  qcI: 15.27, qcII: 14.51, qcIII: 11.01, rbCalMax: 341, rsCalMax: 321, rcCal: 663, fnkD: 1 },
@@ -118,10 +123,11 @@ describe("verificatie met gedigitaliseerde referentie-grondprofielen", () => {
   for (const c of CASES) {
     it(`${c.name}: qc-trajecten + Rb binnen 3%`, () => {
       const r = RESULTS.get(c.name)!;
-      expect(Math.abs(r.base.qcIGemMpa - c.qcI) / c.qcI, `qcI=${r.base.qcIGemMpa.toFixed(2)}`).toBeLessThan(0.03);
-      expect(Math.abs(r.base.qcIIGemMpa - c.qcII) / c.qcII, `qcII=${r.base.qcIIGemMpa.toFixed(2)}`).toBeLessThan(0.03);
-      expect(Math.abs(r.base.qcIIIGemMpa - c.qcIII) / c.qcIII, `qcIII=${r.base.qcIIIGemMpa.toFixed(2)}`).toBeLessThan(0.05);
-      expect(Math.abs(r.base.rbCalMax - c.rbCalMax) / c.rbCalMax, `Rb=${r.base.rbCalMax.toFixed(0)}`).toBeLessThan(0.03);
+      const e = c.normConform ?? c;
+      expect(Math.abs(r.base.qcIGemMpa - e.qcI) / e.qcI, `qcI=${r.base.qcIGemMpa.toFixed(2)}`).toBeLessThan(0.03);
+      expect(Math.abs(r.base.qcIIGemMpa - e.qcII) / e.qcII, `qcII=${r.base.qcIIGemMpa.toFixed(2)}`).toBeLessThan(0.03);
+      expect(Math.abs(r.base.qcIIIGemMpa - e.qcIII) / e.qcIII, `qcIII=${r.base.qcIIIGemMpa.toFixed(2)}`).toBeLessThan(0.05);
+      expect(Math.abs(r.base.rbCalMax - e.rbCalMax) / e.rbCalMax, `Rb=${r.base.rbCalMax.toFixed(0)}`).toBeLessThan(0.03);
     });
 
     it(`${c.name}: Rs binnen 7% van referentie (${c.rsCalMax} kN)`, () => {

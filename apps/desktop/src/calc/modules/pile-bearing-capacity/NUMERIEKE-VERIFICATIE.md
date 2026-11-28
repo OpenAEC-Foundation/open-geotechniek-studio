@@ -40,21 +40,19 @@ afsnuiten van qc op 15 MPa in de trajecten I en II.
 ### Wat de module doet
 
 Eén procedure in `parts/base-resistance.ts` met de afkapregels hierboven
-(dezelfde code als de historische profielen, `QcProfile.walkUp`). Alleen de
-keuze van het eindpunt van traject I verschilt:
-
-| Keuze | Gebruikt bij | Eindpunt traject I |
-|---|---|---|
-| `minimum-qb` | profielen 1991, 2006, 2012 | qb;max minimaal (normtekst) |
-| `legacy-qci` | profiel 2017 en het bestaande projectmodel | qc;I;gem minimaal |
+(`QcProfile.walkUp`). Alle profielen (1991, 2006, 2012, 2017 en het bestaande
+projectmodel) kiezen het eindpunt van traject I bij de kleinste qb;max, zoals de
+normtekst vraagt (`minimum-qb`, de standaard; sinds 29 november 2026 ook voor
+2017). De keuze bij de kleinste qc;I (`legacy-qci`) blijft alleen ter
+vergelijking: ligt qb;max daarmee meer dan 1 % hoger, dan meldt de uitvoer ter
+informatie de kritieke diepte en Rb;cal;max van die keuze, met de opmerking dat
+sommige referentieberekeningen zo kiezen en dat die keuze de norm niet volgt.
 
 Kandidaten: stappen van 0,01 Deq, beide grenzen en de meetpunten daartussen.
-Ligt qb;max volgens de normkeuze meer dan 1 % lager dan bij de bestaande keuze,
-dan meldt de uitvoer de kritieke diepte en Rb;cal;max volgens de norm.
 Niet geïmplementeerd: de correcties (j), (k) en (l); de invoer moet dan al
 gecorrigeerde qc bevatten.
 
-Gewijzigd op 28 november 2026: bij `legacy-qci` begon traject II op
+Gewijzigd op 28 november 2026: traject II begon op
 min(gemeten qc, qc;I;gem). Dat staat niet in de norm; nu begint traject II bij
 de gemeten qc. Dat ligt ook dichter bij de referentie (S1: 17,73 MPa
 referentie, 17,59 oud, 17,75 nieuw).
@@ -98,10 +96,12 @@ niet beschikbaar, dus of de regel daar is veranderd, is niet nagegaan.
 
 ### Vergelijking per referentiegeval (984)
 
-Rb;cal;max in kN; voor = module vóór 28 november 2026 (minimum qc;I, traject II
-begrensd op qc;I); na = huidige standaard; norm = minimum qb;max.
+Rb;cal;max in kN. Voor = module vóór 28 november 2026 (minimum qc;I, traject II
+begrensd op qc;I); qc;I-keuze = minimum qc;I met de afkapregels van de norm
+(standaard van 28 november 2026, nu alleen ter vergelijking); norm = minimum
+qb;max, de standaard sinds 29 november 2026.
 
-| Geval | Referentie | Voor | Na | Norm | Kritieke diepte na / norm |
+| Geval | Referentie | Voor | qc;I-keuze | Norm (standaard) | Kritieke diepte qc;I / norm |
 |---|---:|---:|---:|---:|---|
 | S1 | 419 | 416,1 | 417,2 | 366,6 | 0,70 / 4,00 Deq |
 | S2 (punt NAP −17,00) | 265 | 265,0 | 265,0 | 264,9 | 1,77 / 1,74 Deq |
@@ -114,12 +114,22 @@ begrensd op qc;I); na = huidige standaard; norm = minimum qb;max.
 
 Bij S6, S7 en S8 ligt qc;I al 0,3 MPa (2 %) boven de referentie, bij elke
 keuze; dat zit in de meetgegevens of hun verwerking, niet in de trajectkeuze.
-S7 haalt de 3 %-grens van `verification-984-profielen.test.ts` nu met 2,96 %
+S7 haalt de 3 %-grens van `verification-984-profielen.test.ts` met 2,96 %
 (voor: 2,3 %); de grens is niet verruimd.
+
+Hoe de tests S1 toetsen: de standaard (normkeuze) wordt getoetst op de eigen,
+normconforme waarden 18,91 / 12,77 / 11,97 MPa en 367 kN (veld `normConform` in
+`verification-984.test.ts` en `verification-984-profielen.test.ts`). Dat is geen
+onafhankelijke referentie: het referentie-rapport kiest anders. Daarom toetst
+`verification-984.test.ts` S1 daarnaast met de keuze van de referentie
+(`legacy-qci`) op 17,97 / 17,73 / 13,91 MPa en 419 kN; dat toont dat de
+meetgegevens en de afkapregels gelijk zijn en alleen de trajectkeuze verschilt.
+Voor S2 t/m S8 liggen beide keuzes binnen 1 % en blijven de bestaande
+toleranties tegen de referentie gelden.
 
 Eindanalyse met de gedigitaliseerde grondprofielen (7 sonderingen, niet-stijf):
 
-| | Referentie | Voor | Na | Norm |
+| | Referentie | Voor | qc;I-keuze | Norm (standaard) |
 |---|---:|---:|---:|---:|
 | Rc;cal gemiddeld | 626 | 627,7 | 628,1 | 620,5 |
 | Rc;d | 411 | 411,9 | 412,1 | 407,2 |
@@ -134,7 +144,7 @@ is. Per sondering scheelt het bij S1 12,5 %.
 Projectvergelijking van 14 oktober 2026 (`VALIDATIE-3BM.md`, referentiebladen van 25 november 2025; GEF-bestanden buiten de repository). Opnieuw
 gerekend met dezelfde invoer en GEF-bestanden:
 
-| Geval | Netto ref | Netto voor | Netto na | Netto norm | qc;I app / ref | Oorzaak van het verschil |
+| Geval | Netto ref | Netto voor | Netto qc;I-keuze | Netto norm (standaard) | qc;I app / ref | Oorzaak van het verschil |
 |---|---:|---:|---:|---:|---|---|
 | OT-1 | 404 | 379,7 | 380,6 | 380,6 | 7,52 / 7 | schacht: Rs 458 tegen 506 kN |
 | OT-2 | 291 | 272,1 | 272,1 | 272,0 | 7,04 / 7 | schacht: Rs 289 tegen 317 kN |
@@ -161,12 +171,11 @@ laag (referentie 12 of 15 MPa op de aflezing, app 15 MPa op het laaggemiddelde) 
 
 ### Wat nog open is
 
-- Vrijgave van de normkeuze voor het profiel 2017: de module reproduceert het
-  referentie-rapport 984 alleen met de bestaande keuze (minimum qc;I); met de
-  keuze uit de normtekst wijkt S1 12,5 % af. Welke keuze de standaard wordt,
-  is een beslissing; tot die tijd blijft de bestaande keuze staan met de
-  melding in de uitvoer. Een tweede, onafhankelijke referentie met een zwakke
-  laag tussen 0,7 en 4 Deq onder de punt zou dit beslechten.
+- Besluit 29 november 2026: de normkeuze is de standaard, ook voor 2017 en het
+  bestaande projectmodel. Bij 984 wijkt S1 daardoor 12,5 % af van de
+  referentie (367 tegen 419 kN); de projectuitkomst UC 0,926 tegen 0,92. Een
+  onafhankelijke referentie met een zwakke laag tussen 0,7 en 4 Deq onder de
+  punt die de normkeuze volgt, is er nog niet.
 - De tekst van art. 7.6.2.3(e) in NEN 9997-1:2025 is niet nagelezen.
 - De correcties voor overconsolidatie, ontgraving en grind (art. 7.6.2.3(j)
   t/m (l)) zitten niet in de puntberekening.

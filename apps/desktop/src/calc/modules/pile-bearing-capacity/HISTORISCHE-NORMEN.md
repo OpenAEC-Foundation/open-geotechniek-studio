@@ -22,8 +22,7 @@ bevat daadwerkelijk de editie november 2006; de titelpagina is leidend.
 ## Historische rekenprocedure en grenzen
 
 De profielen 1991, 2006 en 2012 kiezen het eindpunt van traject I bij
-het minimum van de volledige puntweerstand (het profiel 2017 gebruikt dezelfde
-afkapregels, maar kiest nog bij het minimum van qc;I; zie
+het minimum van de volledige puntweerstand (net als het profiel 2017; zie
 [numerieke verificatie](NUMERIEKE-VERIFICATIE.md)): een zoekstap van 0,01 Deq plus de
 meetknikken en trajectgrenzen, en een doorlopend minimum van beneden naar boven.
 Traject II start bij de gemeten qc, zonder extra begrenzing op het gemiddelde

@@ -5,9 +5,10 @@ import { pileGeometry } from "./geometry";
 import { QcProfile } from "./qc-profile";
 
 interface Args {
-  /** Trajectkeuze. "minimum-qb": eindpunt van traject I zo dat qb;max minimaal is
-   *  (NEN 9997-1:2016+C2:2017, art. 7.6.2.3(e)). "legacy-qci": eindpunt zo dat
-   *  qc;I;gem minimaal is (bestaande keuze, zie NUMERIEKE-VERIFICATIE.md). */
+  /** Trajectkeuze. "minimum-qb" (standaard): eindpunt van traject I zo dat qb;max
+   *  minimaal is (NEN 9997-1:2016+C2:2017, art. 7.6.2.3(e)). "legacy-qci": eindpunt
+   *  zo dat qc;I;gem minimaal is; niet normconform, alleen ter vergelijking met
+   *  referentieberekeningen die zo kiezen (zie NUMERIEKE-VERIFICATIE.md). */
   method?: "legacy-qci" | "minimum-qb";
   pileToeDepth: number;        // depth onder maaiveld in m
   diameterMm: number;
@@ -74,7 +75,7 @@ export function computeBaseResistance(cpt: Cpt, args: Args): BaseResistanceResul
   for (let i = 1; i < 330; i++) if ((.7 + i * .01) * deq < upper) candidates.add((.7 + i * .01) * deq);
   for (const depth of profile.depths) if (depth > toe + lower && depth < toe + upper) candidates.add(depth - toe);
   const sorted = [...candidates].sort((a, b) => a - b);
-  if (args.method === "minimum-qb") {
+  if (args.method !== "legacy-qci") {
     let best = evaluate(lower);
     for (const dc of sorted) {
       const value = evaluate(dc);
