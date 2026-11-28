@@ -66,6 +66,13 @@ export interface CalcModule<TInput = unknown, TResult = unknown> {
   reportFileName?: (input: TInput) => string;
 }
 
+/** Het deel van een module zonder schermen: invoer, rekenen, toetsen en rapport.
+ *  De app en de headless rekenkern (packages/core) gebruiken hetzelfde object. */
+export type HeadlessCalcModule<TInput = unknown, TResult = unknown> = Omit<
+  CalcModule<TInput, TResult>,
+  "InputPanel" | "VisualPanel" | "ResultPanel" | "SettingsPanel" | "table"
+>;
+
 /** Eén uitkomst onder het invoerscherm. */
 export interface CalcCheck {
   label: string;

@@ -199,3 +199,16 @@ it("voegt sonderingen alleen aan een geopend project toe", async () => {
   await expect(executeStudioTool("studio_add_cpt", { path: "C:/werk/S1.pdf" }, view)).rejects.toThrow();
   expect(useCptStore.getState().documents).toHaveLength(1);
 });
+it("bedient ook trekpalen, fundering op staal en damwand", async () => {
+  newProjectDocument();
+  for (const moduleId of ["tension-pile", "spread-foundation", "sheet-pile-wall"]) {
+    const added = await executeStudioTool("studio_add_calculation", { moduleId }, view) as { id: string };
+    const data = await executeStudioTool("studio_get_calculation", { id: added.id }, view) as { instance: { moduleId: string } };
+    expect(data.instance.moduleId).toBe(moduleId);
+  }
+  const spread = await executeStudioTool("studio_add_calculation", { moduleId: "spread-foundation", input: { widthM: 1.4, vDKn: 200 } }, view) as { id: string };
+  expect(await executeStudioTool("studio_get_calculation", { id: spread.id }, view)).toMatchObject({ instance: { input: { widthM: 1.4, vDKn: 200 } }, result: { ok: true } });
+  await executeStudioTool("studio_update_calculation", { id: spread.id, patch: { widthM: 1.6 } }, view);
+  expect(await executeStudioTool("studio_get_calculation", { id: spread.id }, view)).toMatchObject({ instance: { input: { widthM: 1.6, vDKn: 200 } } });
+  await expect(executeStudioTool("studio_update_calculation", { id: spread.id, patch: "geen object" }, view)).rejects.toThrow();
+});

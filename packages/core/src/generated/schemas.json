@@ -1,0 +1,3902 @@
+{
+ "pile-bearing-capacity": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:pile-bearing-capacity:input",
+  "type": "object",
+  "properties": {
+   "interpretationOverrides": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "id": {
+       "type": "string"
+      },
+      "cptId": {
+       "type": "string",
+       "description": "Sondering waarvoor de aanpassing geldt."
+      },
+      "topNap": {
+       "type": "number",
+       "description": "Boven- en onderkant van het traject [m NAP].",
+       "x-unit": "m NAP"
+      },
+      "bottomNap": {
+       "type": "number",
+       "x-unit": "m NAP"
+      },
+      "qc": {
+       "anyOf": [
+        {
+         "type": "object",
+         "properties": {
+          "mode": {
+           "const": "interpolate"
+          }
+         },
+         "required": [
+          "mode"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "mode": {
+           "const": "fixed"
+          },
+          "valueMpa": {
+           "type": "number",
+           "x-unit": "MPa"
+          }
+         },
+         "required": [
+          "mode",
+          "valueMpa"
+         ]
+        }
+       ],
+       "description": "Conusweerstand in het traject: lineair tussen de randwaarden, of een vaste waarde."
+      },
+      "soilKind": {
+       "enum": [
+        "sand-dry",
+        "sand-wet",
+        "clay",
+        "peat"
+       ],
+       "description": "Grondsoort van het traject; verlegt een laaggrens of voegt een laag toe."
+      },
+      "comment": {
+       "type": "string",
+       "description": "Waarom de aanpassing is gedaan."
+      }
+     },
+     "required": [
+      "id",
+      "cptId",
+      "topNap",
+      "bottomNap"
+     ]
+    },
+    "description": "Aanpassingen van de grondlaaginterpretatie, per sondering. Ontbrekend = gemeten interpretatie."
+   },
+   "presets": {
+    "$ref": "#/$defs/PilePresets",
+    "description": "Instellingen van deze berekening: eigen standaardreeksen. Ontbrekend = standaard."
+   },
+   "capacityTable": {
+    "type": "object",
+    "properties": {
+     "cptIds": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "toeNaps": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      }
+     },
+     "sizesMm": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "description": "Paalmaten [mm] voor de tabel; ontbrekend = alleen diameterMm.",
+      "x-unit": "mm"
+     },
+     "targetKn": {
+      "type": "object",
+      "properties": {
+       "minKn": {
+        "type": "number",
+        "x-unit": "kN"
+       },
+       "maxKn": {
+        "type": "number",
+        "x-unit": "kN"
+       }
+      },
+      "required": [
+       "minKn",
+       "maxKn"
+      ],
+      "description": "Gezocht netto draagvermogen Rc;net;d [kN]."
+     },
+     "targetsKn": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "description": "Draagvermogens [kN] voor het maatgevende overzicht; ontbrekend = alleen de ondergrens.",
+      "x-unit": "kN"
+     },
+     "extraTypes": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "pileTypeId": {
+         "type": "string"
+        },
+        "sizesMm": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "x-unit": "mm"
+        }
+       },
+       "required": [
+        "pileTypeId",
+        "sizesMm"
+       ]
+      },
+      "description": "Andere paaltypes voor het maatgevende overzicht, elk met een eigen maatreeks [mm]."
+     },
+     "examples": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "cptId": {
+         "type": "string"
+        },
+        "sizeMm": {
+         "type": "number",
+         "x-unit": "mm"
+        },
+        "toeNap": {
+         "type": "number",
+         "x-unit": "m NAP"
+        }
+       },
+       "required": [
+        "cptId",
+        "sizeMm",
+        "toeNap"
+       ]
+      },
+      "description": "Voorbeeldberekeningen die volledig in de uitdraai komen; daarna alleen de tabellen."
+     }
+    },
+    "required": [
+     "cptIds",
+     "toeNaps"
+    ]
+   },
+   "standard": {
+    "enum": [
+     "nen-6743-1991",
+     "nen-6743-2006",
+     "nen-9997-2012",
+     "nen-9997-2017",
+     "nen-9997-2025"
+    ],
+    "description": "Ontbrekend: behoud het bestaande projectmodel."
+   },
+   "cptId": {
+    "type": [
+     "null",
+     "string"
+    ],
+    "description": "referentie naar CPT in project"
+   },
+   "pileTypeId": {
+    "type": "string",
+    "description": "\"steel-pipe-driven-closed\""
+   },
+   "diameterMm": {
+    "type": "number",
+    "description": "Voorbeeld: 219",
+    "x-unit": "mm"
+   },
+   "wallThicknessMm": {
+    "type": "number",
+    "description": "Voorbeeld: 8.0 — voor EA",
+    "x-unit": "mm"
+   },
+   "baseDiameterMm": {
+    "type": "number",
+    "description": "Ontbrekend betekent dezelfde maat als de schacht (bestaande projecten).",
+    "x-unit": "mm"
+   },
+   "sideBMm": {
+    "type": "number",
+    "description": "Gezaagd hout: tweede zijde b [mm] van een rechthoekige doorsnede; diameterMm is dan zijde a. Ontbrekend = vierkant (b = a).",
+    "x-unit": "mm"
+   },
+   "strengthCheck": {
+    "$ref": "#/$defs/StrengthCheckInput",
+    "description": "Optionele sterktetoets van de paal; ontbrekend of uit = geen toets."
+   },
+   "timberSpecies": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "gradeId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "description": "Hout: houtsoort en sorteerklasse (parts/timber-species.ts). Bepaalt alleen de sterkteklasse in de sterktetoets en de kleur in de tekening, niet de paalklassefactoren. Ontbrekend = eigen sterkteklasse."
+   },
+   "reportDetail": {
+    "enum": [
+     "compact",
+     "full"
+    ],
+    "description": "Omvang van rekenblad en uitdraai; ontbrekend = beknopt."
+   },
+   "timberTaper": {
+    "type": "object",
+    "properties": {
+     "toeDiameterMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "lengthM": {
+      "type": "number",
+      "x-unit": "m"
+     }
+    },
+    "required": [
+     "toeDiameterMm",
+     "lengthM"
+    ],
+    "description": "Hout: lineair verloop vanaf de bovenkant van het hout (paalkop, of de las bij een betonopzetter) over lengthM, daarna constante puntdiameter."
+   },
+   "concreteExtension": {
+    "$ref": "#/$defs/ConcreteExtension",
+    "description": "Hout: betonopzetter van paalkop tot de las. Daaronder het hout, met diameterMm als houtdiameter bij de las."
+   },
+   "axialStiffnessKn": {
+    "type": "number",
+    "description": "Projectspecifieke axiale stijfheid EA, in kN.",
+    "x-unit": "kN"
+   },
+   "openTube": {
+    "$ref": "#/$defs/OpenTubeInput",
+    "description": "Open stalen buispaal: met of zonder grondprop. Ontbrekend bij een open buis = zonder prop."
+   },
+   "capPointQc15": {
+    "type": "boolean",
+    "description": "Eigen, conservatieve keuze: qc in traject I en II vóór de middeling op 15 MPa begrenzen. De norm begrenst alleen qb;max. Ontbrekend = uit."
+   },
+   "projectFactors": {
+    "$ref": "#/$defs/ProjectPileFactors"
+   },
+   "pileTopNap": {
+    "type": "number",
+    "description": "Voorbeeld: 0.34",
+    "x-unit": "m NAP"
+   },
+   "pileToeNap": {
+    "type": "number",
+    "description": "Voorbeeld: -14.50",
+    "x-unit": "m NAP"
+   },
+   "waterNap": {
+    "type": "number",
+    "description": "Voorbeeld: -0.16",
+    "x-unit": "m NAP"
+   },
+   "excavationNap": {
+    "type": "number",
+    "description": "Voorbeeld: 0.84",
+    "x-unit": "m NAP"
+   },
+   "nEd": {
+    "type": "number",
+    "description": "Voorbeeld: 324 kN"
+   },
+   "nEk": {
+    "type": "number",
+    "description": "Voorbeeld: 303 kN"
+   },
+   "gammaM": {
+    "type": "number",
+    "description": "Voorbeeld: 1.20"
+   },
+   "gammaFnk": {
+    "type": "number",
+    "description": "Voorbeeld: 1.00"
+   },
+   "negKleefBottomNap": {
+    "type": "number",
+    "description": "Voorbeeld: -9.00",
+    "x-unit": "m NAP"
+   },
+   "posKleefTopNap": {
+    "type": "number",
+    "description": "Bovenkant van het POSITIEVE schachtwrijvings-traject [m NAP]. Default = `negKleefBottomNap` (pos-kleef begint waar neg-kleef ophoudt). Engineer kan dit ONAFHANKELIJK omlaag zetten als er een zwakke laag in een tussenstuk zit waar geen wrijving werkt. De ONDERGRENS van pos-kleef is altijd paalpunt (`pileToeNap`). Optioneel veld voor IFCX-backward-compat.",
+    "x-unit": "m NAP"
+   },
+   "soilProfile": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/SoilLayer"
+    },
+    "description": "user-editable"
+   },
+   "ksMinFactor": {
+    "type": "number",
+    "description": "Voorbeeld: 0.25 (Eurocode min-cap)"
+   }
+  },
+  "required": [
+   "cptId",
+   "pileTypeId",
+   "diameterMm",
+   "wallThicknessMm",
+   "pileTopNap",
+   "pileToeNap",
+   "waterNap",
+   "excavationNap",
+   "nEd",
+   "nEk",
+   "gammaM",
+   "gammaFnk",
+   "negKleefBottomNap",
+   "soilProfile",
+   "ksMinFactor"
+  ],
+  "$defs": {
+   "PilePresets": {
+    "type": "object",
+    "properties": {
+     "sizesMm": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       }
+      },
+      "description": "Maatreeks per paaltype [mm]."
+     },
+     "extensions": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "sizeMm": {
+         "type": "number",
+         "x-unit": "mm"
+        },
+        "isCircular": {
+         "type": "boolean"
+        }
+       },
+       "required": [
+        "sizeMm",
+        "isCircular"
+       ]
+      }
+     },
+     "extensionLengthsM": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "x-unit": "m"
+     },
+     "timberToeMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "rectSizesMm": {
+      "type": "array",
+      "items": {
+       "type": "array",
+       "prefixItems": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "number"
+        }
+       ],
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "description": "Gezaagde houten palen: doorsneden a × b [mm]."
+     }
+    }
+   },
+   "StrengthCheckInput": {
+    "type": "object",
+    "properties": {
+     "enabled": {
+      "type": "boolean"
+     },
+     "steelGrade": {
+      "type": "string",
+      "description": "Staalsoort van de buis, bv. \"S355\". Standaard S235."
+     },
+     "timberClass": {
+      "type": "string",
+      "description": "Sterkteklasse van het hout (NEN-EN 338), bv. \"C18\"."
+     },
+     "timberFc0kMpa": {
+      "type": "number",
+      "description": "Eigen karakteristieke druksterkte evenwijdig aan de vezel [MPa]; gaat voor de klasse.",
+      "x-unit": "MPa"
+     },
+     "kMod": {
+      "type": "number",
+      "description": "Modificatiefactor; standaard 0,50 (klimaatklasse 3, blijvende belasting)."
+     },
+     "gammaMTimber": {
+      "type": "number",
+      "description": "Materiaalfactor hout; standaard 1,3."
+     },
+     "concreteClass": {
+      "type": "string",
+      "description": "Betonsterkteklasse van paal of opzetter, bv. \"C35/45\"."
+     }
+    },
+    "required": [
+     "enabled"
+    ]
+   },
+   "ConcreteExtension": {
+    "type": "object",
+    "properties": {
+     "jointNap": {
+      "type": "number",
+      "description": "Onderkant van de opzetter, de las tussen beton en hout [m NAP].",
+      "x-unit": "m NAP"
+     },
+     "sizeMm": {
+      "type": "number",
+      "description": "Zijde (vierkant) of diameter (rond) van de opzetter [mm].",
+      "x-unit": "mm"
+     },
+     "isCircular": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "jointNap",
+     "sizeMm",
+     "isCircular"
+    ]
+   },
+   "OpenTubeInput": {
+    "type": "object",
+    "properties": {
+     "plug": {
+      "type": "boolean"
+     },
+     "plugFactor": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "plug"
+    ]
+   },
+   "ProjectPileFactors": {
+    "type": "object",
+    "properties": {
+     "alphaP": {
+      "type": "number"
+     },
+     "alphaS": {
+      "type": "number"
+     },
+     "alphaT": {
+      "type": "number"
+     },
+     "beta": {
+      "type": "number"
+     },
+     "s": {
+      "type": "number"
+     },
+     "source": {
+      "type": "string"
+     },
+     "edition": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "alphaP",
+     "alphaS",
+     "alphaT",
+     "beta",
+     "s",
+     "source",
+     "edition"
+    ]
+   },
+   "SoilLayer": {
+    "type": "object",
+    "properties": {
+     "kind": {
+      "enum": [
+       "sand-dry",
+       "sand-wet",
+       "clay",
+       "peat"
+      ]
+     },
+     "startNap": {
+      "type": "number",
+      "description": "m NAP (top van laag)",
+      "x-unit": "m NAP"
+     },
+     "endNap": {
+      "type": "number",
+      "description": "m NAP (onderkant van laag)",
+      "x-unit": "m NAP"
+     },
+     "gammaK": {
+      "type": "number",
+      "description": "Volumegewicht in kN/m³ (droog of nat afhankelijk van GWS)."
+     },
+     "gammaW": {
+      "type": "number",
+      "description": "Waterdruk-aandeel; 0 voor lagen boven GWS, 10 voor verzadigd."
+     },
+     "phi": {
+      "type": "number",
+      "description": "Inwendige wrijvingshoek in graden."
+     }
+    },
+    "required": [
+     "kind",
+     "startNap",
+     "endNap",
+     "gammaK",
+     "gammaW",
+     "phi"
+    ]
+   }
+  }
+ },
+ "tension-pile": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:tension-pile:input",
+  "type": "object",
+  "properties": {
+   "cptId": {
+    "type": [
+     "null",
+     "string"
+    ]
+   },
+   "interpretationOverrides": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "id": {
+       "type": "string"
+      },
+      "cptId": {
+       "type": "string",
+       "description": "Sondering waarvoor de aanpassing geldt."
+      },
+      "topNap": {
+       "type": "number",
+       "description": "Boven- en onderkant van het traject [m NAP].",
+       "x-unit": "m NAP"
+      },
+      "bottomNap": {
+       "type": "number",
+       "x-unit": "m NAP"
+      },
+      "qc": {
+       "anyOf": [
+        {
+         "type": "object",
+         "properties": {
+          "mode": {
+           "const": "interpolate"
+          }
+         },
+         "required": [
+          "mode"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "mode": {
+           "const": "fixed"
+          },
+          "valueMpa": {
+           "type": "number",
+           "x-unit": "MPa"
+          }
+         },
+         "required": [
+          "mode",
+          "valueMpa"
+         ]
+        }
+       ],
+       "description": "Conusweerstand in het traject: lineair tussen de randwaarden, of een vaste waarde."
+      },
+      "soilKind": {
+       "enum": [
+        "clay",
+        "peat",
+        "sand",
+        "loam"
+       ],
+       "description": "Grondsoort van het traject; verlegt een laaggrens of voegt een laag toe."
+      },
+      "comment": {
+       "type": "string",
+       "description": "Waarom de aanpassing is gedaan."
+      }
+     },
+     "required": [
+      "id",
+      "cptId",
+      "topNap",
+      "bottomNap"
+     ]
+    },
+    "description": "Aanpassingen van de grondlaaginterpretatie, per sondering. Ontbrekend = gemeten interpretatie."
+   },
+   "pileTypeId": {
+    "type": "string"
+   },
+   "sizeMm": {
+    "type": "number",
+    "description": "Diameter (rond) of zijde (vierkant) [mm].",
+    "x-unit": "mm"
+   },
+   "pileTopNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "pileToeNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "waterNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "excavationNap": {
+    "type": "number",
+    "description": "Ontgravingsniveau [m NAP]; ontbrekend of op maaiveld = geen ontgraving.",
+    "x-unit": "m NAP"
+   },
+   "excavationReduction": {
+    "enum": [
+     "none",
+     "sqrt",
+     "linear"
+    ],
+    "description": "\"sqrt\": geïnstalleerd vóór ontgraven of trillingsarm; \"linear\": geheid na ontgraven; \"none\": sondering na ontgraven."
+   },
+   "ocr": {
+    "type": "number",
+    "description": "Overconsolidatiegraad van het zand; 1 = normaal geconsolideerd."
+   },
+   "tensionTopNap": {
+    "type": "number",
+    "description": "Bovenkant van de trekzone [m NAP]; ontbrekend = 1 m onder maaiveld of ontgraving.",
+    "x-unit": "m NAP"
+   },
+   "ftMaxRepKn": {
+    "type": "number",
+    "description": "Representatieve trekbelasting, trek positief [kN].",
+    "x-unit": "kN"
+   },
+   "ftMinRepKn": {
+    "type": "number",
+    "description": "Kleinste representatieve belasting; druk negatief [kN].",
+    "x-unit": "kN"
+   },
+   "ftDKn": {
+    "type": "number",
+    "description": "Rekenwaarde van de trekbelasting [kN].",
+    "x-unit": "kN"
+   },
+   "cptCount": {
+    "type": "number",
+    "description": "Aantal sonderingen voor ξ en de stijfheid van het bouwwerk."
+   },
+   "stiffStructure": {
+    "type": "boolean"
+   },
+   "includeCohesive": {
+    "type": "boolean",
+    "description": "Klei en leem tellen mee in de trekweerstand."
+   },
+   "halveCohesive": {
+    "type": "boolean",
+    "description": "Halve αt in klei en leem: de paal ontleent zijn weerstand vooral aan zand."
+   },
+   "soil": {
+    "type": "object",
+    "properties": {
+     "clay": {
+      "type": "object",
+      "properties": {
+       "gamma": {
+        "type": "number"
+       },
+       "gammaSat": {
+        "type": "number"
+       },
+       "phi": {
+        "type": "number"
+       }
+      }
+     },
+     "peat": {
+      "type": "object",
+      "properties": {
+       "gamma": {
+        "type": "number"
+       },
+       "gammaSat": {
+        "type": "number"
+       },
+       "phi": {
+        "type": "number"
+       }
+      }
+     },
+     "sand": {
+      "type": "object",
+      "properties": {
+       "gamma": {
+        "type": "number"
+       },
+       "gammaSat": {
+        "type": "number"
+       },
+       "phi": {
+        "type": "number"
+       }
+      }
+     },
+     "loam": {
+      "type": "object",
+      "properties": {
+       "gamma": {
+        "type": "number"
+       },
+       "gammaSat": {
+        "type": "number"
+       },
+       "phi": {
+        "type": "number"
+       }
+      }
+     }
+    },
+    "description": "Eigen gewichten per grondsoort; ontbrekend = SOIL_DEFAULTS."
+   },
+   "group": {
+    "$ref": "#/$defs/TensionGroup",
+    "description": "Paal in een groep; ontbrekend = alleenstaande paal (f1 = f2 = 1, geen kluittoets)."
+   },
+   "table": {
+    "$ref": "#/$defs/TensionTableConfig"
+   }
+  },
+  "required": [
+   "cptId",
+   "pileTypeId",
+   "sizeMm",
+   "pileTopNap",
+   "pileToeNap",
+   "waterNap",
+   "excavationReduction",
+   "ftMaxRepKn",
+   "ftMinRepKn",
+   "ftDKn",
+   "cptCount",
+   "stiffStructure",
+   "includeCohesive",
+   "halveCohesive"
+  ],
+  "$defs": {
+   "TensionGroup": {
+    "type": "object",
+    "properties": {
+     "spacingXM": {
+      "type": "number",
+      "description": "Hart-op-hartafstanden van het palenstramien [m].",
+      "x-unit": "m"
+     },
+     "spacingYM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "areaM2": {
+      "type": "number",
+      "description": "Eigen invloedsoppervlak per paal [m²]; ontbrekend = stramien min paaldoorsnede.",
+      "x-unit": "m²"
+     },
+     "edge": {
+      "type": "boolean",
+      "description": "Rand- of hoekpaal: kleinere tophoek van de kluitkegel."
+     },
+     "f1": {
+      "type": "number",
+      "description": "Verdichtingsfactor f1; groter dan 1 alleen met controlesonderingen achteraf."
+     }
+    },
+    "required": [
+     "spacingXM",
+     "spacingYM"
+    ]
+   },
+   "TensionTableConfig": {
+    "type": "object",
+    "properties": {
+     "cptIds": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "toeNaps": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      }
+     },
+     "sizesMm": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "x-unit": "mm"
+     },
+     "examples": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "cptId": {
+         "type": "string"
+        },
+        "sizeMm": {
+         "type": "number",
+         "x-unit": "mm"
+        },
+        "toeNap": {
+         "type": "number",
+         "x-unit": "m NAP"
+        }
+       },
+       "required": [
+        "cptId",
+        "sizeMm",
+        "toeNap"
+       ]
+      },
+      "description": "Volledig uitgewerkt in de uitdraai."
+     }
+    },
+    "required": [
+     "cptIds",
+     "toeNaps",
+     "sizesMm"
+    ]
+   }
+  }
+ },
+ "laterally-loaded-pile": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:laterally-loaded-pile:input",
+  "type": "object",
+  "properties": {
+   "lengthM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "maxElementM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "headForceKn": {
+    "type": "number",
+    "x-unit": "kN"
+   },
+   "headMomentKnM": {
+    "type": "number",
+    "x-unit": "kNm"
+   },
+   "nEdKn": {
+    "type": "number",
+    "x-unit": "kN"
+   },
+   "headFixedRotation": {
+    "type": "boolean"
+   },
+   "toeFixed": {
+    "type": "boolean"
+   },
+   "springWidthM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "scenario": {
+    "enum": [
+     "low",
+     "high"
+    ]
+   },
+   "surchargeKpa": {
+    "type": "number",
+    "x-unit": "kPa"
+   },
+   "surchargeMode": {
+    "enum": [
+     "unresolved",
+     "retaining"
+    ]
+   },
+   "surchargeWidthM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "surchargeSign": {
+    "type": "number"
+   },
+   "section": {
+    "$ref": "#/$defs/PileSection"
+   },
+   "layers": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/LateralLayer"
+    }
+   },
+   "analysisMode": {
+    "enum": [
+     "linear",
+     "nonlinear",
+     "elastoplastic"
+    ]
+   },
+   "layerCorrection": {
+    "enum": [
+     "none",
+     "georgiadis"
+    ]
+   },
+   "headNap": {
+    "type": "number",
+    "description": "Paalkop in m NAP; alleen voor invoer en weergave, de berekening rekent vanaf de kop.",
+    "x-unit": "m NAP"
+   },
+   "springOverrides": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": {
+     "type": "object",
+     "properties": {
+      "low": {
+       "type": "number"
+      },
+      "high": {
+       "type": "number"
+      }
+     }
+    },
+    "description": "Instellingen: eigen beddingswaarden per grondsoort [kN/m³], boven de tabelwaarde."
+   },
+   "puDefaults": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": {
+     "$ref": "#/$defs/UltimateProfile"
+    },
+    "description": "Instellingen: pu-profiel per grondsoort dat een laag krijgt bij die grondsoort."
+   },
+   "pileTable": {
+    "$ref": "#/$defs/LateralTableConfig",
+    "description": "Paaltabel: veel palen met eigen kopbelasting, lengte of maat."
+   },
+   "material": {
+    "$ref": "#/$defs/MaterialInput",
+    "description": "Aanvullende invoer voor de materiaaltoetsing (beugels, boorpaal); zonder deze invoer verandert geen bestaande uitkomst."
+   },
+   "pileSystemId": {
+    "type": "string",
+    "description": "Paalsysteem zoals in de module paaldraagvermogen (prefab, vibro, boorpaal, ...); bepaalt welke doorsneden passen."
+   },
+   "openEnd": {
+    "type": "boolean",
+    "description": "Open stalen buis (paalsysteem 'steel-tube-open'): doorsnede als holle buis; ook de binnenzijde staat in grond, dus afroesting standaard aan twee kanten."
+   },
+   "inherited": {
+    "$ref": "#/$defs/InheritedFrom",
+    "description": "Gegevens overgenomen uit een paaldraagvermogenberekening."
+   },
+   "corrosion": {
+    "$ref": "#/$defs/PileCorrosion",
+    "description": "Afroesting van de stalen buis of het damwandprofiel; zonder deze invoer geen afroesting."
+   },
+   "variants": {
+    "$ref": "#/$defs/VariantsConfig",
+    "description": "Varianten bij dezelfde grond en belasting, en de laatste optimalisatie; de berekening zelf leest ze niet."
+   },
+   "waterBed": {
+    "$ref": "#/$defs/WaterBed",
+    "description": "Paal in open water: waterbodem en waterpeil, met optioneel een stroming; zonder deze invoer verandert er niets."
+   }
+  },
+  "required": [
+   "lengthM",
+   "maxElementM",
+   "headForceKn",
+   "headMomentKnM",
+   "nEdKn",
+   "headFixedRotation",
+   "toeFixed",
+   "springWidthM",
+   "scenario",
+   "surchargeKpa",
+   "surchargeMode",
+   "surchargeWidthM",
+   "surchargeSign",
+   "section",
+   "layers"
+  ],
+  "$defs": {
+   "SheetPileProfile": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "manufacturer": {
+      "type": "string"
+     },
+     "series": {
+      "type": "string"
+     },
+     "shape": {
+      "enum": [
+       "Z",
+       "U",
+       "hat",
+       "straight"
+      ]
+     },
+     "widthMm": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "description": "Breedte van één enkele plank [mm]; een dubbele plank is 2×.",
+      "x-unit": "mm"
+     },
+     "wallHeightMm": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "description": "Hoogte van de wand [mm].",
+      "x-unit": "mm"
+     },
+     "flangeMm": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "x-unit": "mm"
+     },
+     "webMm": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "x-unit": "mm"
+     },
+     "flangeWidthMm": {
+      "type": "number",
+      "description": "Breedte van de flens tussen de snijpunten van de hartlijnen [mm], hoek van het lijf met de as van de wand [°] en straal van de afronding [mm]. Alleen invullen met een maat uit een profieltabel; de tabellen waaruit deze bibliotheek is opgebouwd geven ze niet, dus ze zijn leeg en de tekening leidt de flensbreedte af uit A en I (zie sheetPileContour.ts).",
+      "x-unit": "mm"
+     },
+     "webAngleDeg": {
+      "type": "number",
+      "x-unit": "°"
+     },
+     "cornerRadiusMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "areaCm2PerM": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "x-unit": "cm²/m"
+     },
+     "massKgPerM2": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "x-unit": "kg/m²"
+     },
+     "iCm4PerM": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "description": "Traagheidsmoment per m wand [cm⁴/m].",
+      "x-unit": "cm⁴/m"
+     },
+     "welCm3PerM": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "description": "Elastisch weerstandsmoment per m wand [cm³/m].",
+      "x-unit": "cm³/m"
+     },
+     "wplCm3PerM": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "description": "Plastisch weerstandsmoment per m wand [cm³/m]; null als de fabrikant het niet geeft.",
+      "x-unit": "cm³/m"
+     },
+     "coatingM2PerM2": {
+      "type": "number",
+      "x-unit": "m²/m²"
+     },
+     "classes": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+       "type": "number"
+      },
+      "description": "Doorsnedeklasse (NEN-EN 1993-5) per staalsoort, als de catalogus die geeft."
+     },
+     "interlockRkKnPerM": {
+      "type": "number",
+      "description": "Karakteristieke slotsterkte van rechte profielen [kN/m].",
+      "x-unit": "kN/m"
+     },
+     "onRequest": {
+      "type": "boolean",
+      "description": "Alleen op aanvraag leverbaar."
+     },
+     "note": {
+      "type": "string"
+     },
+     "source": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "id",
+     "manufacturer",
+     "series",
+     "shape",
+     "widthMm",
+     "wallHeightMm",
+     "flangeMm",
+     "webMm",
+     "areaCm2PerM",
+     "massKgPerM2",
+     "iCm4PerM",
+     "welCm3PerM",
+     "wplCm3PerM",
+     "source"
+    ]
+   },
+   "SheetSection": {
+    "type": "object",
+    "properties": {
+     "profileId": {
+      "type": "string"
+     },
+     "manufacturer": {
+      "type": "string"
+     },
+     "grade": {
+      "type": "string",
+      "description": "Staalsoort uit de bibliotheek, bv. S355GP."
+     },
+     "widthMode": {
+      "enum": [
+       "wall",
+       "single"
+      ],
+      "description": "Rekenbreedte: 1 m doorgaande wand of één losse plank."
+     },
+     "betaB": {
+      "type": "number",
+      "description": "Reductiefactoren voor schuifkrachtoverdracht in de sloten: β_B op W, β_D op I."
+     },
+     "betaD": {
+      "type": "number"
+     },
+     "profileOverride": {
+      "$ref": "#/$defs/SheetPileProfile",
+      "description": "Profiel na afroesting (corrosion-section.ts); in plaats van het profiel uit de bibliotheek."
+     }
+    },
+    "required": [
+     "profileId",
+     "grade",
+     "widthMode",
+     "betaB",
+     "betaD"
+    ]
+   },
+   "PileSection": {
+    "type": "object",
+    "properties": {
+     "kind": {
+      "enum": [
+       "concrete-round",
+       "concrete-square",
+       "steel-tube",
+       "filled-tube",
+       "sheet-pile"
+      ]
+     },
+     "diameterMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "wallMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "concreteEMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "steelEMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "rebarEMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "concreteFactor": {
+      "type": "number"
+     },
+     "creepCoefficient": {
+      "type": "number"
+     },
+     "tubeParticipates": {
+      "type": "boolean"
+     },
+     "barCount": {
+      "type": "number"
+     },
+     "barDiameterMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "coverToBarCentreMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "fckMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "fcdMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "fydMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "tubeFydMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "sheet": {
+      "$ref": "#/$defs/SheetSection",
+      "description": "Damwandprofiel uit de bibliotheek; alleen gebruikt bij kind 'sheet-pile'."
+     }
+    },
+    "required": [
+     "kind",
+     "diameterMm",
+     "wallMm",
+     "concreteEMpa",
+     "steelEMpa",
+     "rebarEMpa",
+     "concreteFactor",
+     "creepCoefficient",
+     "tubeParticipates",
+     "barCount",
+     "barDiameterMm",
+     "coverToBarCentreMm",
+     "fckMpa",
+     "fcdMpa",
+     "fydMpa",
+     "tubeFydMpa"
+    ]
+   },
+   "UltimateProfile": {
+    "type": "object",
+    "properties": {
+     "atSurfaceKnM": {
+      "type": "number",
+      "x-unit": "kN/m"
+     },
+     "gradientKnM2": {
+      "type": "number",
+      "x-unit": "kNm²"
+     },
+     "capKnM": {
+      "type": "number",
+      "x-unit": "kN/m"
+     },
+     "brinchHansen": {
+      "type": "object",
+      "properties": {
+       "phiDeg": {
+        "type": "number",
+        "x-unit": "°"
+       },
+       "gammaEffKnM3": {
+        "type": "number"
+       },
+       "widthM": {
+        "type": "number",
+        "x-unit": "m"
+       }
+      },
+      "required": [
+       "phiDeg",
+       "gammaEffKnM3"
+      ],
+      "description": "Grensweerstand volgens Brinch Hansen (1961) in plaats van het lineaire profiel: pu(z) = K_q(z) · γ′ · z · D, met φ′ [°], het effectieve volumegewicht γ′ [kN/m³] en de breedte D [m] (de werkende breedte, door de rekenkern ingevuld)."
+     }
+    },
+    "required": [
+     "atSurfaceKnM",
+     "gradientKnM2",
+     "capKnM"
+    ]
+   },
+   "LateralLayer": {
+    "type": "object",
+    "properties": {
+     "topM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "bottomM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "springId": {
+      "type": "string"
+     },
+     "manualKhKnM3": {
+      "type": "number",
+      "x-unit": "kN/m³"
+     },
+     "frictionDeg": {
+      "type": "number",
+      "x-unit": "°"
+     },
+     "netPressureKpa": {
+      "type": "number",
+      "x-unit": "kPa"
+     },
+     "ultimate": {
+      "$ref": "#/$defs/UltimateProfile"
+     },
+     "menardEpKpa": {
+      "type": "number",
+      "description": "Bedding 'menard': pressiometermodulus E_p [kN/m²] en reologische factor α; k_h volgt uit menardKh met de werkende breedte.",
+      "x-unit": "kN/m²"
+     },
+     "menardAlpha": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "topM",
+     "bottomM",
+     "springId",
+     "manualKhKnM3",
+     "frictionDeg",
+     "netPressureKpa"
+    ]
+   },
+   "LateralRow": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "count": {
+      "type": "number",
+      "description": "Aantal palen met deze belasting (alleen voor het overzicht)."
+     },
+     "headForceKn": {
+      "type": "number",
+      "x-unit": "kN"
+     },
+     "headMomentKnM": {
+      "type": "number",
+      "x-unit": "kNm"
+     },
+     "nEdKn": {
+      "type": "number",
+      "x-unit": "kN"
+     },
+     "lengthM": {
+      "type": "number",
+      "description": "Ontbrekend: lengte en maat van de basisinvoer.",
+      "x-unit": "m"
+     },
+     "diameterMm": {
+      "type": "number",
+      "x-unit": "mm"
+     }
+    },
+    "required": [
+     "id",
+     "name",
+     "headForceKn",
+     "headMomentKnM",
+     "nEdKn"
+    ]
+   },
+   "LateralTableConfig": {
+    "type": "object",
+    "properties": {
+     "rows": {
+      "type": "array",
+      "items": {
+       "$ref": "#/$defs/LateralRow"
+      }
+     },
+     "maxDisplacementMm": {
+      "type": "number",
+      "description": "Grens voor de kopverplaatsing [mm]; ontbrekend = geen grens.",
+      "x-unit": "mm"
+     },
+     "examples": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Rijen die volledig in het rapport komen."
+     }
+    },
+    "required": [
+     "rows"
+    ]
+   },
+   "MaterialInput": {
+    "type": "object",
+    "properties": {
+     "stirrupDiameterMm": {
+      "type": "number",
+      "description": "Beugels of spiraal: staafdiameter [mm] en hart-op-hart-afstand of spoed [mm]; 0 of leeg = geen.",
+      "x-unit": "mm"
+     },
+     "stirrupSpacingMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "stirrupLegs": {
+      "type": "number",
+      "description": "Aantal beugelsneden in de dwarskrachtrichting (vierkante paal); standaard 2."
+     },
+     "cotTheta": {
+      "type": "number",
+      "description": "cot θ van de drukdiagonaal, 1 tot 2,5 (art. 6.2.3 (2)); standaard 2,5."
+     },
+     "boredPile": {
+      "type": "boolean",
+      "description": "In de grond gevormde paal (boorpaal): minimumwapening volgens art. 9.8.5."
+     }
+    }
+   },
+   "InheritedFrom": {
+    "type": "object",
+    "properties": {
+     "calcId": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "cptId": {
+      "type": [
+       "null",
+       "string"
+      ]
+     },
+     "waterNap": {
+      "type": "number",
+      "description": "Grondwaterstand en maaiveld of ontgravingsniveau [m NAP]; ter vermelding, de veren rekenen er niet mee.",
+      "x-unit": "m NAP"
+     },
+     "surfaceNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "at": {
+      "type": "string",
+      "description": "Datum van overnemen (ISO)."
+     }
+    },
+    "required": [
+     "calcId",
+     "name",
+     "cptId",
+     "waterNap",
+     "surfaceNap",
+     "at"
+    ]
+   },
+   "CorrosionFace": {
+    "type": "object",
+    "properties": {
+     "source": {
+      "enum": [
+       "table",
+       "none",
+       "custom"
+      ]
+     },
+     "environment": {
+      "enum": [
+       "soil-undisturbed",
+       "soil-polluted",
+       "soil-aggressive",
+       "fill-loose",
+       "fill-compacted",
+       "fill-aggressive-loose",
+       "fill-aggressive-compacted",
+       "fresh-water",
+       "fresh-water-polluted",
+       "sea-splash",
+       "sea-immersion"
+      ]
+     },
+     "lifeYears": {
+      "enum": [
+       5,
+       25,
+       50,
+       75,
+       100
+      ]
+     },
+     "customMm": {
+      "type": "number",
+      "description": "Eigen dikteverlies [mm].",
+      "x-unit": "mm"
+     }
+    },
+    "required": [
+     "source",
+     "environment",
+     "lifeYears",
+     "customMm"
+    ]
+   },
+   "PileCorrosion": {
+    "type": "object",
+    "properties": {
+     "outer": {
+      "$ref": "#/$defs/CorrosionFace",
+      "description": "Buitenzijde van de buis of zijde 1 van het damwandprofiel."
+     },
+     "inner": {
+      "$ref": "#/$defs/CorrosionFace",
+      "description": "Binnenzijde van een holle buis of zijde 2 van het profiel; telt alleen bij 2 kanten."
+     },
+     "sides": {
+      "enum": [
+       2,
+       1
+      ]
+     },
+     "reducedStiffness": {
+      "type": "boolean",
+      "description": "Rekent de paal met de EI na afroesting; standaard met de oorspronkelijke."
+     },
+     "zoneBottomNap": {
+      "type": "number",
+      "description": "Afroesting van de kop tot dit niveau [m NAP] (b.v. tot 1 m in de waterbodem); leeg = de hele paal. Geldt voor de EI na afroesting; de toetsen gebruiken de afgeroeste doorsnede over de hele paal (veilige kant).",
+      "x-unit": "m NAP"
+     },
+     "classChoice": {
+      "enum": [
+       2,
+       3,
+       4
+      ],
+      "description": "Doorsnedeklasse van het damwandprofiel na afroesting als die onzeker is; leeg = de ongunstigste."
+     }
+    },
+    "required": [
+     "outer",
+     "inner",
+     "sides",
+     "reducedStiffness"
+    ]
+   },
+   "VariantDesign": {
+    "type": "object",
+    "properties": {
+     "pileSystemId": {
+      "type": "string"
+     },
+     "section": {
+      "$ref": "#/$defs/PileSection"
+     },
+     "lengthM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "springWidthM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "material": {
+      "$ref": "#/$defs/MaterialInput"
+     }
+    },
+    "required": [
+     "section",
+     "lengthM",
+     "springWidthM"
+    ]
+   },
+   "LateralVariant": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "design": {
+      "$ref": "#/$defs/VariantDesign"
+     },
+     "origin": {
+      "enum": [
+       "manual",
+       "optimizer"
+      ],
+      "description": "Uit de optimalisatie, of door de gebruiker gemaakt."
+     }
+    },
+    "required": [
+     "id",
+     "name",
+     "design"
+    ]
+   },
+   "OptimizerSettings": {
+    "type": "object",
+    "properties": {
+     "objective": {
+      "enum": [
+       "total",
+       "steel"
+      ],
+      "description": "Doelgrootheid: totale massa per paal, of alleen het staal (buis of profiel en wapening)."
+     },
+     "maxDisplacementMm": {
+      "type": "number",
+      "description": "Eis kopverplaatsing [mm]; leeg = geen eis.",
+      "x-unit": "mm"
+     },
+     "kinds": {
+      "type": "array",
+      "items": {
+       "enum": [
+        "concrete-round",
+        "concrete-square",
+        "steel-tube",
+        "filled-tube",
+        "sheet-pile"
+       ]
+      }
+     },
+     "sizes": {
+      "type": "object",
+      "properties": {
+       "concrete-round": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        }
+       },
+       "concrete-square": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        }
+       },
+       "steel-tube": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        }
+       },
+       "filled-tube": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        }
+       },
+       "sheet-pile": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        }
+       }
+      },
+      "description": "Maten per doorsnede [mm]."
+     },
+     "wallsMm": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "x-unit": "mm"
+     },
+     "steelGrades": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Staalsoorten van de buis (S235 … S460)."
+     },
+     "concreteClasses": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "barDiametersMm": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "x-unit": "mm"
+     },
+     "sheetSeries": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Damwand: reeksen als \"fabrikant|reeks\" en staalsoorten uit de bibliotheek."
+     },
+     "sheetGrades": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "toeHighNap": {
+      "type": "number",
+      "description": "Paalpunt [m NAP] tussen twee grenzen met een stap; gelijk = vaste paalpunt.",
+      "x-unit": "m NAP"
+     },
+     "toeLowNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "toeStepM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "widthFollowsPile": {
+      "type": "boolean",
+      "description": "Werkende breedte van de grondveren gelijk aan de paalbreedte."
+     },
+     "population": {
+      "type": "number"
+     },
+     "generations": {
+      "type": "number"
+     },
+     "stall": {
+      "type": "number",
+      "description": "Stoppen als het beste resultaat zoveel generaties niet verbetert."
+     },
+     "seed": {
+      "type": "number"
+     },
+     "mutation": {
+      "type": "number",
+      "description": "Kans op mutatie per gen."
+     },
+     "elite": {
+      "type": "number"
+     },
+     "tournament": {
+      "type": "number"
+     },
+     "penalty": {
+      "type": "number",
+      "description": "Strafgewicht P op de overschrijding."
+     }
+    },
+    "required": [
+     "objective",
+     "kinds",
+     "sizes",
+     "wallsMm",
+     "steelGrades",
+     "concreteClasses",
+     "barDiametersMm",
+     "sheetSeries",
+     "sheetGrades",
+     "toeHighNap",
+     "toeLowNap",
+     "toeStepM",
+     "widthFollowsPile",
+     "population",
+     "generations",
+     "stall",
+     "seed",
+     "mutation",
+     "elite",
+     "tournament",
+     "penalty"
+    ]
+   },
+   "GenerationPoint": {
+    "type": "object",
+    "properties": {
+     "generation": {
+      "type": "number"
+     },
+     "bestKg": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "x-unit": "kg"
+     },
+     "evaluated": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "generation",
+     "bestKg",
+     "evaluated"
+    ]
+   },
+   "OptimizerRecord": {
+    "type": "object",
+    "properties": {
+     "settings": {
+      "$ref": "#/$defs/OptimizerSettings"
+     },
+     "history": {
+      "type": "array",
+      "items": {
+       "$ref": "#/$defs/GenerationPoint"
+      }
+     },
+     "evaluated": {
+      "type": "number"
+     },
+     "feasible": {
+      "type": "number"
+     },
+     "spaceSize": {
+      "type": "number"
+     },
+     "generations": {
+      "type": "number"
+     },
+     "reason": {
+      "enum": [
+       "generations",
+       "stall",
+       "stopped",
+       "exhausted"
+      ]
+     },
+     "ms": {
+      "type": "number"
+     },
+     "at": {
+      "type": "string"
+     },
+     "bestKg": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "x-unit": "kg"
+     },
+     "bestLabel": {
+      "type": [
+       "null",
+       "string"
+      ]
+     }
+    },
+    "required": [
+     "settings",
+     "history",
+     "evaluated",
+     "feasible",
+     "spaceSize",
+     "generations",
+     "reason",
+     "ms",
+     "at",
+     "bestKg",
+     "bestLabel"
+    ]
+   },
+   "VariantsConfig": {
+    "type": "object",
+    "properties": {
+     "items": {
+      "type": "array",
+      "items": {
+       "$ref": "#/$defs/LateralVariant"
+      }
+     },
+     "inReport": {
+      "type": "boolean",
+      "description": "Blad \"Varianten\" in de uitdraai."
+     },
+     "maxDisplacementMm": {
+      "type": "number",
+      "description": "Grens kopverplaatsing voor het oordeel in de vergelijking [mm]; leeg = geen grens.",
+      "x-unit": "mm"
+     },
+     "optimizer": {
+      "$ref": "#/$defs/OptimizerRecord",
+      "description": "Laatste optimalisatie: instellingen en verloop."
+     }
+    },
+    "required": [
+     "items"
+    ]
+   },
+   "CurrentLoad": {
+    "type": "object",
+    "properties": {
+     "speedMs": {
+      "type": "number",
+      "description": "Stroomsnelheid [m/s]; bij het machtsprofiel de snelheid aan het wateroppervlak.",
+      "x-unit": "m/s"
+     },
+     "profile": {
+      "enum": [
+       "uniform",
+       "power"
+      ]
+     },
+     "exponent": {
+      "type": "number",
+      "description": "Exponent n van het machtsprofiel u(h) = u · (h/d)^n."
+     },
+     "densityKgM3": {
+      "type": "number",
+      "description": "Dichtheid water [kg/m³]: 1000 zoet, 1025 zout.",
+      "x-unit": "kg/m³"
+     },
+     "cd": {
+      "type": [
+       "null",
+       "number"
+      ],
+      "description": "Weerstandscoëfficiënt C_D [–]; leeg = niet ingevuld (verplicht zodra u > 0).",
+      "x-unit": "–"
+     },
+     "sign": {
+      "enum": [
+       1,
+       -1
+      ],
+      "description": "1: in de richting van H; −1: ertegenin."
+     },
+     "factor": {
+      "type": "number",
+      "description": "Partiële factor op de stromingslast (rekenwaarde = factor × representatieve last)."
+     }
+    },
+    "required": [
+     "speedMs",
+     "profile",
+     "exponent",
+     "densityKgM3",
+     "cd",
+     "sign",
+     "factor"
+    ]
+   },
+   "WaterBed": {
+    "type": "object",
+    "properties": {
+     "enabled": {
+      "type": "boolean"
+     },
+     "bedNap": {
+      "type": "number",
+      "description": "Waterbodem en waterpeil [m NAP].",
+      "x-unit": "m NAP"
+     },
+     "waterNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "current": {
+      "$ref": "#/$defs/CurrentLoad"
+     }
+    },
+    "required": [
+     "enabled",
+     "bedNap",
+     "waterNap"
+    ]
+   }
+  }
+ },
+ "driving-assessment": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:driving-assessment:input",
+  "type": "object",
+  "properties": {
+   "cptId": {
+    "type": [
+     "null",
+     "string"
+    ]
+   },
+   "ramMassKg": {
+    "type": "number",
+    "x-unit": "kg"
+   },
+   "dropHeightM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "shape": {
+    "enum": [
+     "square",
+     "round",
+     "rect"
+    ]
+   },
+   "sizeMm": {
+    "type": "number",
+    "description": "Zijde of diameter [mm].",
+    "x-unit": "mm"
+   },
+   "sizeBMm": {
+    "type": "number",
+    "description": "Tweede zijde van een rechthoekige paal [mm].",
+    "x-unit": "mm"
+   },
+   "tochtMm": {
+    "type": "number",
+    "description": "Lengte van een tocht [mm].",
+    "x-unit": "mm"
+   },
+   "fromM": {
+    "type": "number",
+    "description": "Traject waarover de verwachte kalender wordt getoond [m − maaiveld].",
+    "x-unit": "m − maaiveld"
+   },
+   "toM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "rows": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/DrivingRow"
+    },
+    "description": "Getelde kalender; mag leeg zijn."
+   },
+   "tolerancePct": {
+    "type": "number",
+    "description": "Toegestane afwijking tussen geteld en verwacht [%].",
+    "x-unit": "%"
+   }
+  },
+  "required": [
+   "cptId",
+   "ramMassKg",
+   "dropHeightM",
+   "shape",
+   "sizeMm",
+   "sizeBMm",
+   "tochtMm",
+   "fromM",
+   "toM",
+   "rows",
+   "tolerancePct"
+  ],
+  "$defs": {
+   "DrivingRow": {
+    "type": "object",
+    "properties": {
+     "depthM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "blows": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "depthM",
+     "blows"
+    ]
+   }
+  }
+ },
+ "spread-foundation": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:spread-foundation:input",
+  "type": "object",
+  "properties": {
+   "cptId": {
+    "type": [
+     "null",
+     "string"
+    ],
+    "description": "Sondering voor het laagvoorstel en de tekening."
+   },
+   "shape": {
+    "enum": [
+     "strip",
+     "pad"
+    ]
+   },
+   "widthM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "lengthM": {
+    "type": "number",
+    "description": "Lengte van de poer [m]; bij een strook niet gebruikt.",
+    "x-unit": "m"
+   },
+   "foundationNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "groundNap": {
+    "type": "number",
+    "description": "Maaiveld aan de lage zijde [m NAP]: bepaalt de dekking.",
+    "x-unit": "m NAP"
+   },
+   "waterNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "vDKn": {
+    "type": "number",
+    "description": "Rekenwaarde verticale belasting op het funderingsvlak [kN; strook kN/m].",
+    "x-unit": "kN; strook kN/m"
+   },
+   "vMinDKn": {
+    "type": "number",
+    "description": "Kleinste rekenwaarde verticale belasting, voor afschuiven; ontbrekend = vDKn.",
+    "x-unit": "kN"
+   },
+   "hDKn": {
+    "type": "number",
+    "x-unit": "kN"
+   },
+   "hDirection": {
+    "enum": [
+     "B",
+     "L"
+    ],
+    "description": "Richting van de horizontale belasting: evenwijdig aan B of aan L."
+   },
+   "hArmM": {
+    "type": "number",
+    "description": "Hoogte van het aangrijpingspunt van H boven het funderingsvlak [m].",
+    "x-unit": "m"
+   },
+   "eccBM": {
+    "type": "number",
+    "description": "Excentriciteit van V in de breedte- en lengterichting [m].",
+    "x-unit": "m"
+   },
+   "eccLM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "momentDKnm": {
+    "type": "number",
+    "description": "Moment in de breedterichting op het funderingsvlak [kNm; strook kNm/m].",
+    "x-unit": "kNm; strook kNm/m"
+   },
+   "slopeDeg": {
+    "type": "number",
+    "description": "Helling van het maaiveld naast de fundering β [°].",
+    "x-unit": "°"
+   },
+   "baseTiltDeg": {
+    "type": "number",
+    "description": "Helling van de onderkant van de fundering α [°].",
+    "x-unit": "°"
+   },
+   "castInPlace": {
+    "type": "boolean",
+    "description": "In het werk gestort: δ = φ'; anders (glad prefab) δ = ⅔ φ'."
+   },
+   "passiveDKn": {
+    "type": "number",
+    "description": "Passieve gronddruk die bij afschuiven mag meetellen [kN; strook kN/m].",
+    "x-unit": "kN; strook kN/m"
+   },
+   "gapPossible": {
+    "type": "boolean",
+    "description": "Water of lucht kan het contactvlak bereiken: ongedraineerd Rh;d ≤ 0,4·Vd."
+   },
+   "zeManualM": {
+    "type": "number",
+    "description": "Invloedsdiepte met de hand vastgezet [m]; ontbrekend = iteratief bepaald.",
+    "x-unit": "m"
+   },
+   "vGRepKn": {
+    "type": "number",
+    "description": "Kantelen (EQU), representatieve waarden [kN, kNm; strook per m]. Ontbrekend = 0.",
+    "x-unit": "kN, kNm; strook per m"
+   },
+   "hGRepKn": {
+    "type": "number",
+    "x-unit": "kN"
+   },
+   "hQRepKn": {
+    "type": "number",
+    "x-unit": "kN"
+   },
+   "mGRepKnm": {
+    "type": "number",
+    "x-unit": "kNm"
+   },
+   "mQRepKnm": {
+    "type": "number",
+    "x-unit": "kNm"
+   },
+   "factors": {
+    "$ref": "#/$defs/SpreadFactors"
+   },
+   "layers": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/SpreadLayer"
+    }
+   }
+  },
+  "required": [
+   "cptId",
+   "shape",
+   "widthM",
+   "lengthM",
+   "foundationNap",
+   "groundNap",
+   "waterNap",
+   "vDKn",
+   "hDKn",
+   "hDirection",
+   "hArmM",
+   "eccBM",
+   "eccLM",
+   "momentDKnm",
+   "slopeDeg",
+   "baseTiltDeg",
+   "castInPlace",
+   "passiveDKn",
+   "gapPossible",
+   "factors",
+   "layers"
+  ],
+  "$defs": {
+   "SpreadFactors": {
+    "type": "object",
+    "properties": {
+     "gammaPhi": {
+      "type": "number"
+     },
+     "gammaC": {
+      "type": "number"
+     },
+     "gammaCu": {
+      "type": "number"
+     },
+     "gammaGamma": {
+      "type": "number",
+      "description": "Volumegewicht voor het draagvermogen."
+     },
+     "gammaGPunch": {
+      "type": "number",
+      "description": "Belastingfactor op het grondgewicht boven een fictief funderingsvlak (doorponsen)."
+     },
+     "gammaGStb": {
+      "type": "number",
+      "description": "Kantelen (EQU): permanent gunstig, permanent ongunstig, veranderlijk ongunstig."
+     },
+     "gammaGDst": {
+      "type": "number"
+     },
+     "gammaQDst": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "gammaPhi",
+     "gammaC",
+     "gammaCu",
+     "gammaGamma",
+     "gammaGPunch",
+     "gammaGStb",
+     "gammaGDst",
+     "gammaQDst"
+    ]
+   },
+   "SpreadLayer": {
+    "type": "object",
+    "properties": {
+     "topNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "name": {
+      "type": "string"
+     },
+     "gamma": {
+      "type": "number",
+      "description": "Volumegewicht boven de grondwaterstand [kN/m³].",
+      "x-unit": "kN/m³"
+     },
+     "gammaSat": {
+      "type": "number",
+      "description": "Verzadigd volumegewicht [kN/m³].",
+      "x-unit": "kN/m³"
+     },
+     "phi": {
+      "type": "number",
+      "description": "φ' [°].",
+      "x-unit": "°"
+     },
+     "c": {
+      "type": "number",
+      "description": "c' [kPa].",
+      "x-unit": "kPa"
+     },
+     "cu": {
+      "type": "number",
+      "description": "cu [kPa]; 0 = niet-cohesief, geen ongedraineerde toets.",
+      "x-unit": "kPa"
+     },
+     "soilId": {
+      "type": "string",
+      "description": "Grondsoort uit de catalogus waar de waarden vandaan komen."
+     }
+    },
+    "required": [
+     "topNap",
+     "name",
+     "gamma",
+     "gammaSat",
+     "phi",
+     "c",
+     "cu"
+    ]
+   }
+  }
+ },
+ "sheet-pile-wall": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:sheet-pile-wall:input",
+  "type": "object",
+  "properties": {
+   "construction": {
+    "enum": [
+     "sheet-pile",
+     "plank",
+     "posts"
+    ],
+    "description": "Soort constructie: stalen damwand uit de bibliotheek, doorgaande wand van planken, of palen met schotten."
+   },
+   "material": {
+    "enum": [
+     "custom",
+     "timber"
+    ],
+    "description": "Materiaal van de plank of de paal bij een beschoeiing."
+   },
+   "timber": {
+    "$ref": "#/$defs/TimberInput"
+   },
+   "plankMm": {
+    "type": "number",
+    "description": "Dikte van de plank van een doorgaande wand [mm].",
+    "x-unit": "mm"
+   },
+   "custom": {
+    "type": "object",
+    "properties": {
+     "eiKnM2": {
+      "type": "number",
+      "x-unit": "kNm²"
+     },
+     "mRdKnM": {
+      "type": "number",
+      "x-unit": "kNm"
+     },
+     "vRdKn": {
+      "type": "number",
+      "x-unit": "kN"
+     }
+    },
+    "required": [
+     "eiKnM2",
+     "mRdKnM",
+     "vRdKn"
+    ],
+    "description": "Eigen doorsnede (kunststof, beton): per m wand bij planken, per paal bij palen met schotten."
+   },
+   "posts": {
+    "$ref": "#/$defs/WallPosts"
+   },
+   "cptId": {
+    "type": [
+     "null",
+     "string"
+    ]
+   },
+   "cptIdLow": {
+    "type": [
+     "null",
+     "string"
+    ],
+    "description": "Sondering voor de lage zijde; leeg = dezelfde als de hoge zijde."
+   },
+   "layerMinThicknessM": {
+    "type": "number",
+    "description": "Kleinste laagdikte bij het voorstel uit de sondering [m].",
+    "x-unit": "m"
+   },
+   "groundHighNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "groundLowNap": {
+    "type": "number",
+    "description": "Maaiveld aan de lage zijde vóór het ontgraven; alleen voor de tekening.",
+    "x-unit": "m NAP"
+   },
+   "excavationNap": {
+    "type": "number",
+    "description": "Ontgravingsniveau of waterbodem aan de lage zijde.",
+    "x-unit": "m NAP"
+   },
+   "waterHighNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "waterLowNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "surchargeKpa": {
+    "type": "number",
+    "description": "Gelijkmatige bovenbelasting op de hoge zijde [kPa], representatief.",
+    "x-unit": "kPa"
+   },
+   "layersHigh": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/WallLayer"
+    }
+   },
+   "lowSameAsHigh": {
+    "type": "boolean"
+   },
+   "layersLow": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/WallLayer"
+    }
+   },
+   "profileId": {
+    "type": "string"
+   },
+   "manufacturer": {
+    "type": "string"
+   },
+   "grade": {
+    "type": "string"
+   },
+   "betaB": {
+    "type": "number",
+    "description": "Reductiefactor βB op het weerstandsmoment (schuifkrachtoverdracht in de sloten van U-planken)."
+   },
+   "wallTopNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "toeNap": {
+    "type": "number",
+    "x-unit": "m NAP"
+   },
+   "normalForceKn": {
+    "type": "number",
+    "description": "Extra normaalkracht in de wand [kN/m], rekenwaarde.",
+    "x-unit": "kN/m"
+   },
+   "anchor": {
+    "$ref": "#/$defs/WallAnchor"
+   },
+   "extraSupports": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/WallAnchor"
+    },
+    "description": "Verdere ankerrijen of stempels, elk met een eigen niveau, stijfheid en voorspanning."
+   },
+   "phases": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/WallPhase"
+    },
+    "description": "Bouwfasen; leeg = één fase met alle steunpunten."
+   },
+   "cur": {
+    "$ref": "#/$defs/CurSetup",
+    "description": "Stappenplan van CUR 166 (stap 6.1 tot en met 6.5); uit = één berekening met rekenwaarden en één representatief."
+   },
+   "extraChecks": {
+    "$ref": "#/$defs/WallExtraChecks",
+    "description": "Vervormingseis en verticaal evenwicht."
+   },
+   "profileHigh": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/SurfacePoint"
+    },
+    "description": "Maaiveld dat van de wand af niet vlak is (talud, aflopende waterbodem), per zijde ten opzichte van het maaiveld bij de wand."
+   },
+   "profileLow": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/SurfacePoint"
+    }
+   },
+   "loads": {
+    "type": "array",
+    "items": {
+     "$ref": "#/$defs/SurfaceLoad"
+    },
+    "description": "Strook- en lijnlasten op afstand van de wand, naast de gelijkmatige bovenbelasting."
+   },
+   "passiveMethod": {
+    "enum": [
+     "straight",
+     "auto",
+     "curved"
+    ]
+   },
+   "factors": {
+    "$ref": "#/$defs/WallFactors"
+   },
+   "eiFactor": {
+    "type": "number",
+    "description": "Reductiefactor op de buigstijfheid (U-planken zonder volledige schuifkrachtoverdracht in de sloten)."
+   },
+   "gammaWater": {
+    "type": "number",
+    "description": "Volumegewicht van water [kN/m³]; standaard 10.",
+    "x-unit": "kN/m³"
+   },
+   "corrosion": {
+    "$ref": "#/$defs/WallCorrosion",
+    "description": "Afroesting van de stalen damwand; zonder deze invoer geen afroesting."
+   }
+  },
+  "required": [
+   "construction",
+   "material",
+   "timber",
+   "plankMm",
+   "custom",
+   "posts",
+   "cptId",
+   "groundHighNap",
+   "groundLowNap",
+   "excavationNap",
+   "waterHighNap",
+   "waterLowNap",
+   "surchargeKpa",
+   "layersHigh",
+   "lowSameAsHigh",
+   "layersLow",
+   "profileId",
+   "manufacturer",
+   "grade",
+   "betaB",
+   "wallTopNap",
+   "toeNap",
+   "normalForceKn",
+   "anchor",
+   "passiveMethod",
+   "factors"
+  ],
+  "$defs": {
+   "TimberInput": {
+    "type": "object",
+    "properties": {
+     "classId": {
+      "type": "string"
+     },
+     "fmK": {
+      "type": "number",
+      "description": "Buigsterkte en schuifsterkte [N/mm²], gemiddelde elasticiteitsmodulus [N/mm²].",
+      "x-unit": "N/mm²"
+     },
+     "fvK": {
+      "type": "number"
+     },
+     "eMeanMPa": {
+      "type": "number"
+     },
+     "kmod": {
+      "type": "number"
+     },
+     "gammaM": {
+      "type": "number"
+     },
+     "kcr": {
+      "type": "number",
+      "description": "Scheurfactor op de breedte bij afschuiving."
+     }
+    },
+    "required": [
+     "classId",
+     "fmK",
+     "fvK",
+     "eMeanMPa",
+     "kmod",
+     "gammaM",
+     "kcr"
+    ]
+   },
+   "WallPosts": {
+    "type": "object",
+    "properties": {
+     "spacingM": {
+      "type": "number",
+      "description": "Hart-op-hartafstand van de palen [m].",
+      "x-unit": "m"
+     },
+     "shape": {
+      "enum": [
+       "square",
+       "round"
+      ]
+     },
+     "sizeMm": {
+      "type": "number",
+      "description": "Diameter of zijde van de paal [mm].",
+      "x-unit": "mm"
+     },
+     "spatialFactor": {
+      "type": "number",
+      "description": "Factor op de paalbreedte voor de passieve weerstand en de bedding onder de schotten (ruimtelijke werking)."
+     },
+     "boardMm": {
+      "type": "number",
+      "description": "Dikte van de schotten [mm] en hun onderkant [m NAP].",
+      "x-unit": "mm"
+     },
+     "boardBottomNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     }
+    },
+    "required": [
+     "spacingM",
+     "shape",
+     "sizeMm",
+     "spatialFactor",
+     "boardMm",
+     "boardBottomNap"
+    ]
+   },
+   "WallLayerSource": {
+    "type": "object",
+    "properties": {
+     "cptId": {
+      "type": "string"
+     },
+     "zone": {
+      "type": "number"
+     },
+     "depthTopM": {
+      "type": "number",
+      "description": "Diepte onder het maaiveld van de sondering [m].",
+      "x-unit": "m"
+     },
+     "depthBottomM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "qcMeanMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "rfMeanPct": {
+      "type": "number",
+      "x-unit": "%"
+     },
+     "sigmaVEffKpa": {
+      "type": "number",
+      "description": "Korrelspanning in het midden van de laag en de qc waarmee tabel 2.b is ingegaan.",
+      "x-unit": "kPa"
+     },
+     "qcEntryMpa": {
+      "type": "number",
+      "x-unit": "MPa"
+     },
+     "rowId": {
+      "type": "string"
+     },
+     "khRowId": {
+      "type": [
+       "null",
+       "string"
+      ]
+     },
+     "values": {
+      "type": "object",
+      "properties": {
+       "gamma": {
+        "type": "number"
+       },
+       "gammaSat": {
+        "type": "number"
+       },
+       "phi": {
+        "type": "number"
+       },
+       "c": {
+        "type": "number"
+       },
+       "cu": {
+        "type": "number"
+       },
+       "delta": {
+        "type": "number"
+       },
+       "kh": {
+        "type": "number"
+       },
+       "kh2": {
+        "type": "number"
+       },
+       "kh3": {
+        "type": "number"
+       }
+      },
+      "required": [
+       "gamma",
+       "gammaSat",
+       "phi",
+       "c",
+       "cu",
+       "delta",
+       "kh"
+      ],
+      "description": "De waarden zoals voorgesteld; een afwijkende waarde in de laag is eigen invoer."
+     }
+    },
+    "required": [
+     "cptId",
+     "zone",
+     "depthTopM",
+     "depthBottomM",
+     "qcMeanMpa",
+     "rfMeanPct",
+     "sigmaVEffKpa",
+     "qcEntryMpa",
+     "rowId",
+     "khRowId",
+     "values"
+    ]
+   },
+   "WallLayer": {
+    "type": "object",
+    "properties": {
+     "topNap": {
+      "type": "number",
+      "description": "Bovenkant van de laag [m NAP]; de bovenste laag loopt door tot het maaiveld.",
+      "x-unit": "m NAP"
+     },
+     "name": {
+      "type": "string"
+     },
+     "soilId": {
+      "type": "string"
+     },
+     "gamma": {
+      "type": "number",
+      "description": "Volumegewicht boven en onder de grondwaterstand [kN/m³].",
+      "x-unit": "kN/m³"
+     },
+     "gammaSat": {
+      "type": "number"
+     },
+     "phi": {
+      "type": "number",
+      "description": "Hoek van inwendige wrijving φ' [°], cohesie c' [kPa] en wandwrijvingshoek δ [°].",
+      "x-unit": "°"
+     },
+     "c": {
+      "type": "number"
+     },
+     "delta": {
+      "type": "number"
+     },
+     "undrained": {
+      "type": "boolean",
+      "description": "Reken deze laag ongedraineerd, met cu [kPa]."
+     },
+     "cu": {
+      "type": "number"
+     },
+     "kh": {
+      "type": "number",
+      "description": "Horizontale beddingsconstante [kN/m³]; invoer van de gebruiker. Bij drie takken de eerste (tot 50 %).",
+      "x-unit": "kN/m³"
+     },
+     "kh2": {
+      "type": "number",
+      "description": "Tweede en derde tak van de veer (tot 80 % en tot 100 %) [kN/m³]; beide ingevuld = drietakkige veer.",
+      "x-unit": "kN/m³"
+     },
+     "kh3": {
+      "type": "number"
+     },
+     "excessTop": {
+      "type": "number",
+      "description": "Wateroverspanning boven en onder in de laag [kPa], boven op de hydrostatische druk (stroming, stijghoogte).",
+      "x-unit": "kPa"
+     },
+     "excessBottom": {
+      "type": "number"
+     },
+     "zone": {
+      "type": "number",
+      "description": "Zone van de sondering (1 tot en met 9) voor de kleur in de tekeningen; alleen bij een laag uit de sondering."
+     },
+     "source": {
+      "$ref": "#/$defs/WallLayerSource",
+      "description": "Herkomst van een laag uit \"Voorstel uit sondering\"; ontbreekt bij handmatige lagen."
+     }
+    },
+    "required": [
+     "topNap",
+     "name",
+     "gamma",
+     "gammaSat",
+     "phi",
+     "c",
+     "delta",
+     "undrained",
+     "cu",
+     "kh"
+    ]
+   },
+   "GroutAnchor": {
+    "type": "object",
+    "properties": {
+     "freeLengthM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "groutLengthM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "diameterMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "tendonType": {
+      "enum": [
+       "bar",
+       "strand"
+      ]
+     },
+     "gradeId": {
+      "type": "string"
+     },
+     "areaMm2": {
+      "type": "number",
+      "description": "Doorsnede van het trekelement [mm²], rekgrens f_p0,1k of f_y [N/mm²] en elasticiteitsmodulus [N/mm²].",
+      "x-unit": "mm²"
+     },
+     "fMPa": {
+      "type": "number"
+     },
+     "eMPa": {
+      "type": "number"
+     },
+     "prestressKn": {
+      "type": "number",
+      "description": "Voorspankracht per anker, axiaal [kN]; 0 = niet voorgespannen.",
+      "x-unit": "kN"
+     },
+     "shaftFrictionKpa": {
+      "type": "number",
+      "description": "Schachtwrijving langs het groutlichaam [kPa], representatief; invoer van de gebruiker.",
+      "x-unit": "kPa"
+     },
+     "loadFactor": {
+      "type": "number",
+      "description": "Extra factor op de ankerkracht uit de wandberekening."
+     },
+     "gammaSteel": {
+      "type": "number",
+      "description": "Materiaalfactor op het staal en weerstandsfactor op de houdkracht van het groutlichaam."
+     },
+     "gammaPullout": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "freeLengthM",
+     "groutLengthM",
+     "diameterMm",
+     "tendonType",
+     "gradeId",
+     "areaMm2",
+     "fMPa",
+     "eMPa",
+     "prestressKn",
+     "shaftFrictionKpa",
+     "loadFactor",
+     "gammaSteel",
+     "gammaPullout"
+    ]
+   },
+   "TieRod": {
+    "type": "object",
+    "properties": {
+     "enabled": {
+      "type": "boolean"
+     },
+     "grossMm2": {
+      "type": "number",
+      "x-unit": "mm²"
+     },
+     "threadMm2": {
+      "type": "number",
+      "x-unit": "mm²"
+     },
+     "fyMPa": {
+      "type": "number"
+     },
+     "fuMPa": {
+      "type": "number"
+     },
+     "kt": {
+      "type": "number"
+     },
+     "gammaM0": {
+      "type": "number"
+     },
+     "gammaM2": {
+      "type": "number"
+     },
+     "loadFactor": {
+      "type": "number"
+     },
+     "rodType": {
+      "enum": [
+       "custom",
+       "plain",
+       "upset"
+      ]
+     },
+     "diameterMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "threadDiameterMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "pitchMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "gradeId": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "enabled",
+     "grossMm2",
+     "threadMm2",
+     "fyMPa",
+     "fuMPa",
+     "kt",
+     "gammaM0",
+     "gammaM2",
+     "loadFactor"
+    ]
+   },
+   "TieAnchorage": {
+    "type": "object",
+    "properties": {
+     "type": {
+      "enum": [
+       "wall",
+       "pile",
+       "plate"
+      ]
+     },
+     "lengthM": {
+      "type": "number",
+      "description": "Lengte van de staaf van de wand tot de voorkant van de verankering, langs de staaf [m].",
+      "x-unit": "m"
+     },
+     "wallTopNap": {
+      "type": "number",
+      "description": "Ankerschot: bovenkant en onderkant [m NAP]; damwandprofiel uit de bibliotheek, of leeg voor een plaat met breedte en dikte per anker.",
+      "x-unit": "m NAP"
+     },
+     "wallBottomNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "wallProfileId": {
+      "type": "string"
+     },
+     "wallManufacturer": {
+      "type": "string"
+     },
+     "wallWidthM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "wallThicknessM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "pileLengthM": {
+      "type": "number",
+      "description": "Ankerpaal: lengte langs de as [m], helling met de verticaal [°] (positief: de punt van de wand af) en diameter [mm].",
+      "x-unit": "m"
+     },
+     "pileRakeDeg": {
+      "type": "number",
+      "x-unit": "°"
+     },
+     "pileDiameterMm": {
+      "type": "number",
+      "x-unit": "mm"
+     },
+     "plateWidthM": {
+      "type": "number",
+      "description": "Ankerplaat of betonblok: breedte langs de wand, hoogte en dikte [m]; het hart ligt op het einde van de staaf.",
+      "x-unit": "m"
+     },
+     "plateHeightM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "plateThicknessM": {
+      "type": "number",
+      "x-unit": "m"
+     }
+    },
+    "required": [
+     "type",
+     "lengthM",
+     "wallTopNap",
+     "wallBottomNap",
+     "wallProfileId",
+     "wallWidthM",
+     "wallThicknessM",
+     "pileLengthM",
+     "pileRakeDeg",
+     "pileDiameterMm",
+     "plateWidthM",
+     "plateHeightM",
+     "plateThicknessM"
+    ]
+   },
+   "Waler": {
+    "type": "object",
+    "properties": {
+     "enabled": {
+      "type": "boolean"
+     },
+     "wCm3": {
+      "type": "number"
+     },
+     "fyMPa": {
+      "type": "number"
+     },
+     "gammaM0": {
+      "type": "number"
+     },
+     "coefficient": {
+      "type": "number"
+     },
+     "loadFactor": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "enabled",
+     "wCm3",
+     "fyMPa",
+     "gammaM0",
+     "coefficient",
+     "loadFactor"
+    ]
+   },
+   "WallAnchor": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "description": "Vaste aanduiding van het steunpunt (\"A1\", \"A2\", …), waarmee een fase het aanbrengt of verwijdert."
+     },
+     "kind": {
+      "enum": [
+       "strut",
+       "tie",
+       "grout"
+      ],
+      "description": "Soort steun: stempel naar de lage zijde, ankerstaaf naar een ankerschot of ankerpaal, of groutanker."
+     },
+     "grout": {
+      "$ref": "#/$defs/GroutAnchor"
+     },
+     "enabled": {
+      "type": "boolean"
+     },
+     "levelNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "angleDeg": {
+      "type": "number",
+      "description": "Hoek met de horizontaal, omlaag positief [°]; 0 voor een stempel.",
+      "x-unit": "°"
+     },
+     "rigid": {
+      "type": "boolean"
+     },
+     "stiffnessKnPerM": {
+      "type": "number",
+      "description": "Axiale veerstijfheid van één anker of stempel [kN/m].",
+      "x-unit": "kN/m"
+     },
+     "spacingM": {
+      "type": "number",
+      "description": "Hart-op-hartafstand [m].",
+      "x-unit": "m"
+     },
+     "prestressKn": {
+      "type": "number",
+      "description": "Voorspankracht per anker of stempel, axiaal [kN], bij een stempel of ankerstaaf; een groutanker heeft die in `grout`.",
+      "x-unit": "kN"
+     },
+     "tie": {
+      "$ref": "#/$defs/TieRod",
+      "description": "Toets van de ankerstaaf (NEN-EN 1993-5 art. 7.2.3); alleen bij een ankerstaaf."
+     },
+     "anchorage": {
+      "$ref": "#/$defs/TieAnchorage",
+      "description": "Verankering van een ankerstaaf (ankerschot, ankerpaal of ankerplaat) met de lengte van de staaf; leeg = niet opgegeven."
+     },
+     "waler": {
+      "$ref": "#/$defs/Waler",
+      "description": "Toets van de gording als ligger langs de wand tussen de ankers of stempels."
+     }
+    },
+    "required": [
+     "enabled",
+     "levelNap",
+     "angleDeg",
+     "rigid",
+     "stiffnessKnPerM",
+     "spacingM"
+    ]
+   },
+   "SurfacePoint": {
+    "type": "object",
+    "properties": {
+     "xM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "dzM": {
+      "type": "number",
+      "x-unit": "m"
+     }
+    },
+    "required": [
+     "xM",
+     "dzM"
+    ]
+   },
+   "WallPhase": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "excavationNap": {
+      "type": "number",
+      "description": "Ontgraving of waterbodem aan de lage zijde [m NAP].",
+      "x-unit": "m NAP"
+     },
+     "waterHighNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "waterLowNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "surchargeKpa": {
+      "type": "number",
+      "description": "Gelijkmatige bovenbelasting op de hoge zijde [kPa].",
+      "x-unit": "kPa"
+     },
+     "install": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Steunpunten (id) die in deze fase worden aangebracht en die worden verwijderd."
+     },
+     "remove": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "loadIds": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "description": "Belastingen op afstand (id) die in deze fase werken; leeg = als de vorige fase (de eerste: alle)."
+     },
+     "groundHighNap": {
+      "type": "number",
+      "description": "Maaiveld aan de hoge zijde (aanvullen, ophogen) en het maaiveldprofiel per zijde in deze fase.",
+      "x-unit": "m NAP"
+     },
+     "profileHigh": {
+      "type": "array",
+      "items": {
+       "$ref": "#/$defs/SurfacePoint"
+      }
+     },
+     "profileLow": {
+      "type": "array",
+      "items": {
+       "$ref": "#/$defs/SurfacePoint"
+      }
+     }
+    },
+    "required": [
+     "name"
+    ]
+   },
+   "CurStep": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "on": {
+      "type": "boolean"
+     },
+     "design": {
+      "type": "boolean",
+      "description": "Rekenwaarden van de grondparameters (en de toeslagen); uit = representatieve waarden zonder toeslagen."
+     },
+     "khFactor": {
+      "type": "number",
+      "description": "Factor op de ingevoerde beddingsconstanten."
+     },
+     "lowWater": {
+      "enum": [
+       "none",
+       "up",
+       "down"
+      ]
+     },
+     "resultFactor": {
+      "type": "number",
+      "description": "Factor op moment, dwarskracht en ankerkracht van deze stap; bij stap 6.5 de factor waarmee de representatieve uitkomst ook als rekenwaarde telt."
+     }
+    },
+    "required": [
+     "id",
+     "on",
+     "design",
+     "khFactor",
+     "lowWater",
+     "resultFactor"
+    ]
+   },
+   "CurSetup": {
+    "type": "object",
+    "properties": {
+     "enabled": {
+      "type": "boolean"
+     },
+     "steps": {
+      "type": "array",
+      "items": {
+       "$ref": "#/$defs/CurStep"
+      }
+     },
+     "skipFreeWater": {
+      "type": "boolean",
+      "description": "Laat de stappen met een hogere waterstand aan de lage zijde weg als daar in elke fase vrij water staat."
+     }
+    },
+    "required": [
+     "enabled",
+     "steps",
+     "skipFreeWater"
+    ]
+   },
+   "WallExtraChecks": {
+    "type": "object",
+    "properties": {
+     "deformation": {
+      "type": "object",
+      "properties": {
+       "enabled": {
+        "type": "boolean"
+       },
+       "ratio": {
+        "type": "number"
+       },
+       "maxMm": {
+        "type": "number",
+        "x-unit": "mm"
+       }
+      },
+      "required": [
+       "enabled",
+       "ratio",
+       "maxMm"
+      ],
+      "description": "Grootste verplaatsing (representatief) tegen kerende hoogte / ratio, met een maximum."
+     },
+     "vertical": {
+      "type": "object",
+      "properties": {
+       "enabled": {
+        "type": "boolean"
+       },
+       "qbMaxMPa": {
+        "type": "number"
+       },
+       "xi": {
+        "type": "number"
+       },
+       "gammaB": {
+        "type": "number"
+       }
+      },
+      "required": [
+       "enabled",
+       "qbMaxMPa",
+       "xi",
+       "gammaB"
+      ],
+      "description": "Neerwaartse kracht op de wand tegen de puntweerstand: q_b;max · A_punt / (ξ · γ_b)."
+     }
+    },
+    "required": [
+     "deformation",
+     "vertical"
+    ]
+   },
+   "SurfaceLoad": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "side": {
+      "enum": [
+       "low",
+       "high"
+      ]
+     },
+     "kind": {
+      "enum": [
+       "strip",
+       "line"
+      ]
+     },
+     "value": {
+      "type": "number",
+      "description": "Strook: q [kPa]; lijnlast: P [kN/m]. Representatief; de factor op de bovenbelasting geldt ook hiervoor.",
+      "x-unit": "kPa"
+     },
+     "fromM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "toM": {
+      "type": "number",
+      "x-unit": "m"
+     }
+    },
+    "required": [
+     "side",
+     "kind",
+     "value",
+     "fromM",
+     "toM"
+    ]
+   },
+   "WallFactors": {
+    "type": "object",
+    "properties": {
+     "gammaPhi": {
+      "type": "number",
+      "description": "Op tan φ', c' en cu."
+     },
+     "gammaC": {
+      "type": "number"
+     },
+     "gammaCu": {
+      "type": "number"
+     },
+     "gammaGamma": {
+      "type": "number",
+      "description": "Op het volumegewicht."
+     },
+     "gammaQ": {
+      "type": "number",
+      "description": "Op de bovenbelasting."
+     },
+     "gammaK": {
+      "type": "number",
+      "description": "Deler op de beddingsconstante."
+     },
+     "deltaAPct": {
+      "type": "number",
+      "description": "Toeslag op de kerende hoogte: percentage van de hoogte, met een maximum [m].",
+      "x-unit": "m"
+     },
+     "deltaAMaxM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "deltaWaterHighM": {
+      "type": "number",
+      "description": "Verhoging van de waterstand aan de hoge zijde en verlaging aan de lage zijde [m].",
+      "x-unit": "m"
+     },
+     "deltaWaterLowM": {
+      "type": "number",
+      "x-unit": "m"
+     },
+     "gammaM0": {
+      "type": "number",
+      "description": "Op de vloeigrens van het staal."
+     }
+    },
+    "required": [
+     "gammaPhi",
+     "gammaC",
+     "gammaCu",
+     "gammaGamma",
+     "gammaQ",
+     "gammaK",
+     "deltaAPct",
+     "deltaAMaxM",
+     "deltaWaterHighM",
+     "deltaWaterLowM",
+     "gammaM0"
+    ]
+   },
+   "CorrosionFace": {
+    "type": "object",
+    "properties": {
+     "source": {
+      "enum": [
+       "table",
+       "none",
+       "custom"
+      ]
+     },
+     "environment": {
+      "enum": [
+       "soil-undisturbed",
+       "soil-polluted",
+       "soil-aggressive",
+       "fill-loose",
+       "fill-compacted",
+       "fill-aggressive-loose",
+       "fill-aggressive-compacted",
+       "fresh-water",
+       "fresh-water-polluted",
+       "sea-splash",
+       "sea-immersion"
+      ]
+     },
+     "lifeYears": {
+      "enum": [
+       5,
+       25,
+       50,
+       75,
+       100
+      ]
+     },
+     "customMm": {
+      "type": "number",
+      "description": "Eigen dikteverlies [mm].",
+      "x-unit": "mm"
+     }
+    },
+    "required": [
+     "source",
+     "environment",
+     "lifeYears",
+     "customMm"
+    ]
+   },
+   "WallCorrosion": {
+    "type": "object",
+    "properties": {
+     "high": {
+      "$ref": "#/$defs/CorrosionFace",
+      "description": "Hoge en lage zijde, over de hele wand of in de bovenste zone."
+     },
+     "low": {
+      "$ref": "#/$defs/CorrosionFace"
+     },
+     "zoned": {
+      "type": "boolean",
+      "description": "Twee zones: onder `zoneNap` gelden `highBelow` en `lowBelow`."
+     },
+     "zoneNap": {
+      "type": "number",
+      "x-unit": "m NAP"
+     },
+     "highBelow": {
+      "$ref": "#/$defs/CorrosionFace"
+     },
+     "lowBelow": {
+      "$ref": "#/$defs/CorrosionFace"
+     },
+     "reducedStiffness": {
+      "type": "boolean",
+      "description": "Rekent de krachtsverdeling met de EI na afroesting (de kleinste over de zones); standaard met de oorspronkelijke."
+     },
+     "classChoice": {
+      "enum": [
+       2,
+       3,
+       4
+      ],
+      "description": "Doorsnedeklasse na afroesting als die uit de catalogus niet vast te stellen is; leeg = de ongunstigste."
+     }
+    },
+    "required": [
+     "high",
+     "low",
+     "zoned",
+     "zoneNap",
+     "highBelow",
+     "lowBelow",
+     "reducedStiffness"
+    ]
+   }
+  }
+ },
+ "foundation-advice": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:foundation-advice:input",
+  "type": "object",
+  "properties": {
+   "reference": {
+    "type": "string",
+    "description": "Kenmerk of documentnummer, bijvoorbeeld \"2321-FA-01\"."
+   },
+   "version": {
+    "type": "string"
+   },
+   "status": {
+    "enum": [
+     "concept",
+     "definitief"
+    ]
+   },
+   "advisor": {
+    "type": "string"
+   },
+   "checker": {
+    "type": "string"
+   },
+   "structure": {
+    "type": "string",
+    "description": "Omschrijving van het bouwwerk en de belastingen."
+   },
+   "consequenceClass": {
+    "enum": [
+     "CC1",
+     "CC2",
+     "CC3"
+    ]
+   },
+   "designLifeYears": {
+    "type": "number",
+    "x-unit": "jaar"
+   },
+   "floorLevelNap": {
+    "type": "number",
+    "description": "Vloerpeil (peil = 0) in m NAP; leeg = niet opgegeven.",
+    "x-unit": "m NAP"
+   },
+   "groundwaterNap": {
+    "type": "number",
+    "description": "Grondwaterstand voor het ontwerp, m NAP.",
+    "x-unit": "m NAP"
+   },
+   "bearingQcMpa": {
+    "type": "number",
+    "description": "Indicatieve draagkrachtige laag: qc ≥ bearingQcMpa over minstens bearingMinThicknessM.",
+    "x-unit": "MPa"
+   },
+   "bearingMinThicknessM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "cptIds": {
+    "type": "array",
+    "items": {
+     "type": "string"
+    },
+    "description": "Opgenomen sonderingen en berekeningen; ontbrekend = alles."
+   },
+   "calcIds": {
+    "type": "array",
+    "items": {
+     "type": "string"
+    }
+   },
+   "appendixCpts": {
+    "type": "boolean",
+    "description": "Bijlagen."
+   },
+   "appendixCalcs": {
+    "type": "boolean"
+   },
+   "soilModel3d": {
+    "type": "boolean",
+    "description": "Twee aanzichten van het 3D-grondmodel in de bodemopbouw; ontbrekend = ja."
+   },
+   "introNote": {
+    "type": "string",
+    "description": "Vrije teksten die het advies aanvullen."
+   },
+   "remarks": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "reference",
+   "version",
+   "status",
+   "advisor",
+   "checker",
+   "structure",
+   "consequenceClass",
+   "designLifeYears",
+   "bearingQcMpa",
+   "bearingMinThicknessM",
+   "appendixCpts",
+   "appendixCalcs",
+   "introNote",
+   "remarks"
+  ]
+ },
+ "pad-foundation": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:pad-foundation:input",
+  "type": "object",
+  "properties": {
+   "widthM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "lengthM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "verticalDesignLoadKn": {
+    "type": "number",
+    "x-unit": "kN"
+   },
+   "frictionDesignDeg": {
+    "type": "number",
+    "x-unit": "°"
+   },
+   "cohesionDesignKpa": {
+    "type": "number",
+    "x-unit": "kPa"
+   },
+   "surchargeDesignKpa": {
+    "type": "number",
+    "x-unit": "kPa"
+   },
+   "effectiveUnitWeightKnM3": {
+    "type": "number",
+    "x-unit": "kN/m³"
+   },
+   "resistanceFactor": {
+    "type": "number"
+   }
+  },
+  "required": [
+   "widthM",
+   "lengthM",
+   "verticalDesignLoadKn",
+   "frictionDesignDeg",
+   "cohesionDesignKpa",
+   "surchargeDesignKpa",
+   "effectiveUnitWeightKnM3",
+   "resistanceFactor"
+  ]
+ },
+ "settlement": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:settlement:input",
+  "type": "object",
+  "properties": {
+   "thicknessM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "stressIncreaseKpa": {
+    "type": "number",
+    "x-unit": "kPa"
+   },
+   "constrainedModulusMpa": {
+    "type": "number",
+    "x-unit": "MPa"
+   }
+  },
+  "required": [
+   "thicknessM",
+   "stressIncreaseKpa",
+   "constrainedModulusMpa"
+  ]
+ },
+ "kalendering": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openaec:geotechniek:kalendering:input",
+  "type": "object",
+  "properties": {
+   "valblokId": {
+    "type": "string",
+    "description": "Geselecteerde valblok-id (uit catalog) of \"custom\"."
+   },
+   "customMassaKg": {
+    "type": "number",
+    "description": "Custom valblok-data (gebruikt als valblokId === \"custom\").",
+    "x-unit": "kg"
+   },
+   "customValhoogteM": {
+    "type": "number",
+    "x-unit": "m"
+   },
+   "paalSoort": {
+    "enum": [
+     "rond",
+     "rechthoekig"
+    ],
+    "description": "Paal-doorsnede type."
+   },
+   "diameterMm": {
+    "type": "number",
+    "description": "Diameter [mm] (rond) of langste zijde [mm] (rechthoekig).",
+    "x-unit": "mm"
+   },
+   "zijdeBMm": {
+    "type": "number",
+    "description": "Voor rechthoekige paal: tweede zijde [mm]. Genegeerd voor rond.",
+    "x-unit": "mm"
+   },
+   "conusweerstandMpa": {
+    "type": "number",
+    "description": "Conusweerstand q_c op paalpunt-niveau [MPa].",
+    "x-unit": "MPa"
+   },
+   "slagSetMm": {
+    "type": "number",
+    "description": "Slag-set in mm — over welke zakkings-afstand we de slagen tellen. Standaard 400 mm (= 40 cm) zoals in de Excel-formule.",
+    "x-unit": "mm"
+   }
+  },
+  "required": [
+   "valblokId",
+   "customMassaKg",
+   "customValhoogteM",
+   "paalSoort",
+   "diameterMm",
+   "zijdeBMm",
+   "conusweerstandMpa",
+   "slagSetMm"
+  ]
+ }
+}

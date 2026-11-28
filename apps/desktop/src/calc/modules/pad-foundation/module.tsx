@@ -1,10 +1,6 @@
 import type { CalcModule, PanelProps } from "../../framework/types";
-import {
-  computePad,
-  padExample,
-  type PadInput,
-  type PadResult,
-} from "./compute";
+import { padExample, type PadInput, type PadResult } from "./compute";
+import { padHeadless } from "./headless";
 import "../settlement/styles.css";
 type Props = PanelProps<PadInput, PadResult>;
 const f = (value: number, digits = 2) =>
@@ -293,21 +289,8 @@ function ResultPanel({ input, result }: Props) {
   );
 }
 export const padFoundationModule = {
-  id: "pad-foundation",
-  name: "Poer op staal",
-  subtitle:
-    "Gedraineerde draagkracht van een centrisch belaste rechthoekige poer",
-  category: "spread",
-  icon: "▰",
-  norm: "EN 1997-1 · Annex D · ontwerpwaarden als invoer",
-  status: "experimental",
-  defaultInput: () => ({ ...padExample }),
-  compute: computePad,
+  ...padHeadless,
   InputPanel,
   VisualPanel,
   ResultPanel,
-  statusLine: (r: PadResult) => ({
-    text: r.ok ? `Vd/Rd = ${f(r.utilization, 3)}` : r.error,
-    ok: r.ok && r.passes,
-  }),
 } as unknown as CalcModule;

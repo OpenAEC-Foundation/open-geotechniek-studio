@@ -31,6 +31,8 @@ export interface ReportSections {
   boreLogs?: boolean;
   /** Boringen voor de boorstaten; zonder deze lijst gelden de boringen van het actieve document. */
   bores?: import("../types/bore").Bore[];
+  /** Luchtfoto en kadaster op de overzichtskaart ophalen; alleen `false` tekent zonder (RD-raster). */
+  basemap?: boolean;
   /** Teksten voor een document zonder project; anders gelden de teksten van het project. */
   reportTexts?: ReportTexts;
 }

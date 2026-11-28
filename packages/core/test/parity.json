@@ -1,0 +1,799 @@
+[
+ {
+  "moduleId": "pile-bearing-capacity",
+  "cptFiles": [
+   "121882_1.gef"
+  ],
+  "input": {
+   "cptId": "1",
+   "standard": "nen-9997-2017",
+   "pileTypeId": "steel-pipe-driven-closed-2017",
+   "diameterMm": 219,
+   "wallThicknessMm": 8,
+   "pileTopNap": 1.18,
+   "pileToeNap": -13.16,
+   "waterNap": 0.33999999999999997,
+   "excavationNap": 0.84,
+   "nEd": 300,
+   "nEk": 230,
+   "gammaM": 1.2,
+   "gammaFnk": 1,
+   "negKleefBottomNap": -7.16,
+   "posKleefTopNap": -7.16,
+   "ksMinFactor": 0.25,
+   "soilProfile": [
+    {
+     "kind": "clay",
+     "startNap": 1.18,
+     "endNap": 0.33999999999999997,
+     "gammaK": 18,
+     "gammaW": 0,
+     "phi": 22.5
+    },
+    {
+     "kind": "clay",
+     "startNap": 0.33999999999999997,
+     "endNap": -13.16,
+     "gammaK": 18,
+     "gammaW": 10,
+     "phi": 22.5
+    }
+   ]
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "u.c. 2.05",
+    "ok": false,
+    "pending": false
+   },
+   "checks": [
+    {
+     "label": "Rb;cal;max",
+     "value": "213 kN"
+    },
+    {
+     "label": "Rs;cal;max",
+     "value": "130 kN"
+    },
+    {
+     "label": "Fnk;d",
+     "value": "59 kN"
+    },
+    {
+     "label": "Rc;net;d",
+     "value": "147 kN"
+    },
+    {
+     "label": "draagvermogen",
+     "value": "NEd 300 kN",
+     "uc": 2.047592271067904
+    }
+   ],
+   "digest": "d5933376-9480"
+  }
+ },
+ {
+  "moduleId": "tension-pile",
+  "cptFiles": [
+   "121882_1.gef"
+  ],
+  "input": {
+   "cptId": "1",
+   "pileTypeId": "prefab-concrete",
+   "sizeMm": 290,
+   "pileTopNap": 0.34,
+   "pileToeNap": -14.66,
+   "waterNap": -0.16,
+   "excavationReduction": "sqrt",
+   "ftMaxRepKn": 0,
+   "ftMinRepKn": 0,
+   "ftDKn": 100,
+   "cptCount": 1,
+   "stiffStructure": false,
+   "includeCohesive": true,
+   "halveCohesive": true
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "u.c. 0,51",
+    "ok": true,
+    "pending": false
+   },
+   "checks": [
+    {
+     "label": "Rt;wrijving;d",
+     "value": "179 kN"
+    },
+    {
+     "label": "G′paal;d",
+     "value": "15 kN"
+    },
+    {
+     "label": "Rt;d",
+     "value": "194 kN"
+    },
+    {
+     "label": "trek",
+     "value": "Ft;d 100 kN",
+     "uc": 0.5148526640983213
+    }
+   ],
+   "digest": "b4a9c953-11078"
+  }
+ },
+ {
+  "moduleId": "laterally-loaded-pile",
+  "cptFiles": [],
+  "input": {
+   "lengthM": 12,
+   "maxElementM": 0.5,
+   "headForceKn": 30,
+   "headMomentKnM": 20,
+   "nEdKn": 0,
+   "headFixedRotation": false,
+   "toeFixed": false,
+   "springWidthM": 0.4,
+   "scenario": "low",
+   "surchargeKpa": 0,
+   "surchargeMode": "unresolved",
+   "surchargeWidthM": 1,
+   "surchargeSign": 1,
+   "section": {
+    "kind": "concrete-square",
+    "diameterMm": 400,
+    "wallMm": 10,
+    "concreteEMpa": 30000,
+    "steelEMpa": 210000,
+    "rebarEMpa": 200000,
+    "concreteFactor": 1,
+    "creepCoefficient": 0,
+    "tubeParticipates": false,
+    "barCount": 8,
+    "barDiameterMm": 20,
+    "coverToBarCentreMm": 50,
+    "fckMpa": 30,
+    "fcdMpa": 20,
+    "fydMpa": 435,
+    "tubeFydMpa": 355
+   },
+   "analysisMode": "nonlinear",
+   "layerCorrection": "georgiadis",
+   "layers": [
+    {
+     "topM": 0,
+     "bottomM": 4,
+     "springId": "clay-soft",
+     "manualKhKnM3": 2000,
+     "frictionDeg": 20,
+     "netPressureKpa": 0,
+     "ultimate": {
+      "atSurfaceKnM": 30,
+      "gradientKnM2": 16.5,
+      "capKnM": 90
+     }
+    },
+    {
+     "topM": 4,
+     "bottomM": 12,
+     "springId": "sand-medium",
+     "manualKhKnM3": 20000,
+     "frictionDeg": 30,
+     "netPressureKpa": 0,
+     "ultimate": {
+      "atSurfaceKnM": 0,
+      "gradientKnM2": 60,
+      "capKnM": 500
+     }
+    }
+   ]
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "u.c. 0,37 · Dwarskracht zonder dwarskrachtwapening",
+    "ok": true
+   },
+   "checks": [
+    {
+     "label": "y kop",
+     "value": "12,85 mm"
+    },
+    {
+     "label": "M max",
+     "value": "44,17 kNm"
+    },
+    {
+     "label": "V max",
+     "value": "30 kN"
+    },
+    {
+     "label": "doorsnede",
+     "value": "MRd 173,17 kNm",
+     "uc": 0.2550735809401977
+    },
+    {
+     "label": "materiaal",
+     "value": "Dwarskracht zonder dwarskrachtwapening",
+     "uc": 0.37343661147629426
+    }
+   ],
+   "digest": "fa431c8e-310325"
+  }
+ },
+ {
+  "moduleId": "driving-assessment",
+  "cptFiles": [
+   "121882_1.gef"
+  ],
+  "input": {
+   "cptId": "1",
+   "ramMassKg": 5000,
+   "dropHeightM": 0.8,
+   "shape": "square",
+   "sizeMm": 350,
+   "sizeBMm": 350,
+   "tochtMm": 250,
+   "fromM": 14,
+   "toM": 19,
+   "rows": [],
+   "tolerancePct": 50
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "verwacht 14 slagen per tocht",
+    "ok": true
+   },
+   "checks": [
+    {
+     "label": "verwacht",
+     "value": "14 / 250 mm"
+    },
+    {
+     "label": "slagenergie",
+     "value": "39,2 kNm"
+    }
+   ],
+   "digest": "787ba116-1175"
+  }
+ },
+ {
+  "moduleId": "spread-foundation",
+  "cptFiles": [
+   "121882_1.gef"
+  ],
+  "input": {
+   "cptId": "1",
+   "shape": "strip",
+   "widthM": 1,
+   "lengthM": 2,
+   "foundationNap": 0.04,
+   "groundNap": 0.84,
+   "waterNap": -0.66,
+   "vDKn": 150,
+   "hDKn": 0,
+   "hDirection": "B",
+   "hArmM": 0,
+   "eccBM": 0,
+   "eccLM": 0,
+   "momentDKnm": 0,
+   "slopeDeg": 0,
+   "baseTiltDeg": 0,
+   "castInPlace": true,
+   "passiveDKn": 0,
+   "gapPossible": false,
+   "factors": {
+    "gammaPhi": 1.15,
+    "gammaC": 1.6,
+    "gammaCu": 1.35,
+    "gammaGamma": 1.1,
+    "gammaGPunch": 1.2,
+    "gammaGStb": 0.9,
+    "gammaGDst": 1.1,
+    "gammaQDst": 1.5
+   },
+   "layers": [
+    {
+     "topNap": 0.84,
+     "name": "Veen",
+     "gamma": 11,
+     "gammaSat": 11,
+     "phi": 15,
+     "c": 1,
+     "cu": 10,
+     "soilId": "peat"
+    },
+    {
+     "topNap": -3.69,
+     "name": "Klei, slap",
+     "gamma": 14,
+     "gammaSat": 14,
+     "phi": 17.5,
+     "c": 0,
+     "cu": 25,
+     "soilId": "clay-soft"
+    },
+    {
+     "topNap": -3.99,
+     "name": "Veen",
+     "gamma": 11,
+     "gammaSat": 11,
+     "phi": 15,
+     "c": 1,
+     "cu": 10,
+     "soilId": "peat"
+    },
+    {
+     "topNap": -4.75,
+     "name": "Klei, slap",
+     "gamma": 14,
+     "gammaSat": 14,
+     "phi": 17.5,
+     "c": 0,
+     "cu": 25,
+     "soilId": "clay-soft"
+    },
+    {
+     "topNap": -4.89,
+     "name": "Veen",
+     "gamma": 11,
+     "gammaSat": 11,
+     "phi": 15,
+     "c": 1,
+     "cu": 10,
+     "soilId": "peat"
+    },
+    {
+     "topNap": -6.57,
+     "name": "Klei, matig",
+     "gamma": 17,
+     "gammaSat": 17,
+     "phi": 17.5,
+     "c": 5,
+     "cu": 50,
+     "soilId": "clay-medium"
+    },
+    {
+     "topNap": -6.99,
+     "name": "Zand, kleiig of siltig",
+     "gamma": 18,
+     "gammaSat": 20,
+     "phi": 27.5,
+     "c": 0,
+     "cu": 0,
+     "soilId": "sand-clayey"
+    },
+    {
+     "topNap": -7.13,
+     "name": "Klei, matig",
+     "gamma": 17,
+     "gammaSat": 17,
+     "phi": 17.5,
+     "c": 5,
+     "cu": 50,
+     "soilId": "clay-medium"
+    },
+    {
+     "topNap": -8.39,
+     "name": "Veen",
+     "gamma": 11,
+     "gammaSat": 11,
+     "phi": 15,
+     "c": 1,
+     "cu": 10,
+     "soilId": "peat"
+    },
+    {
+     "topNap": -9.79,
+     "name": "Klei, matig",
+     "gamma": 17,
+     "gammaSat": 17,
+     "phi": 17.5,
+     "c": 5,
+     "cu": 50,
+     "soilId": "clay-medium"
+    },
+    {
+     "topNap": -11.77,
+     "name": "Zand, matig",
+     "gamma": 18,
+     "gammaSat": 20,
+     "phi": 32.5,
+     "c": 0,
+     "cu": 0,
+     "soilId": "sand-medium"
+    },
+    {
+     "topNap": -12.55,
+     "name": "Zand, vast",
+     "gamma": 19,
+     "gammaSat": 21,
+     "phi": 35,
+     "c": 0,
+     "cu": 0,
+     "soilId": "sand-dense"
+    },
+    {
+     "topNap": -15.76,
+     "name": "Zand, matig",
+     "gamma": 18,
+     "gammaSat": 20,
+     "phi": 32.5,
+     "c": 0,
+     "cu": 0,
+     "soilId": "sand-medium"
+    },
+    {
+     "topNap": -16.04,
+     "name": "Zand, vast",
+     "gamma": 19,
+     "gammaSat": 21,
+     "phi": 35,
+     "c": 0,
+     "cu": 0,
+     "soilId": "sand-dense"
+    },
+    {
+     "topNap": -17.82,
+     "name": "Zand, matig",
+     "gamma": 18,
+     "gammaSat": 20,
+     "phi": 32.5,
+     "c": 0,
+     "cu": 0,
+     "soilId": "sand-medium"
+    }
+   ]
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "u.c. 4,01 (draagvermogen gedraineerd)",
+    "ok": false
+   },
+   "checks": [
+    {
+     "label": "draagvermogen gedraineerd",
+     "value": "37 kN/m",
+     "uc": 4.005977804513673
+    },
+    {
+     "label": "draagvermogen ongedraineerd",
+     "value": "46 kN/m",
+     "uc": 3.2547936079222364
+    },
+    {
+     "label": "doorponsen gedraineerd NAP -7,13 m",
+     "value": "322 kN/m",
+     "uc": 0.6101753695414689
+    },
+    {
+     "label": "doorponsen ongedraineerd NAP -7,13 m",
+     "value": "174 kN/m",
+     "uc": 1.1285382598039002
+    },
+    {
+     "label": "excentriciteit",
+     "value": "0,33 m",
+     "uc": 0
+    }
+   ],
+   "digest": "adeb6743-13392"
+  }
+ },
+ {
+  "moduleId": "sheet-pile-wall",
+  "cptFiles": [],
+  "input": {
+   "construction": "sheet-pile",
+   "material": "timber",
+   "timber": {
+    "classId": "D40",
+    "fmK": 40,
+    "fvK": 4.2,
+    "eMeanMPa": 13000,
+    "kmod": 0.5,
+    "gammaM": 1.3,
+    "kcr": 0.67
+   },
+   "plankMm": 50,
+   "custom": {
+    "eiKnM2": 100,
+    "mRdKnM": 10,
+    "vRdKn": 0
+   },
+   "posts": {
+    "spacingM": 1,
+    "shape": "round",
+    "sizeMm": 140,
+    "spatialFactor": 3,
+    "boardMm": 30,
+    "boardBottomNap": -4.3
+   },
+   "cptId": null,
+   "groundHighNap": 0,
+   "groundLowNap": 0,
+   "excavationNap": -4,
+   "waterHighNap": -1.5,
+   "waterLowNap": -4,
+   "surchargeKpa": 10,
+   "layersHigh": [
+    {
+     "topNap": 0,
+     "name": "Zand, matig",
+     "soilId": "sand-medium",
+     "gamma": 18,
+     "gammaSat": 20,
+     "phi": 32.5,
+     "c": 0,
+     "delta": 21.7,
+     "undrained": false,
+     "cu": 0,
+     "kh": 20000
+    },
+    {
+     "topNap": -7,
+     "name": "Zand, vast",
+     "soilId": "sand-dense",
+     "gamma": 19,
+     "gammaSat": 21,
+     "phi": 35,
+     "c": 0,
+     "delta": 23.3,
+     "undrained": false,
+     "cu": 0,
+     "kh": 40000
+    }
+   ],
+   "lowSameAsHigh": true,
+   "layersLow": [],
+   "profileId": "AZ 18-700",
+   "manufacturer": "ArcelorMittal",
+   "grade": "S355GP",
+   "betaB": 1,
+   "wallTopNap": 0,
+   "toeNap": -9,
+   "normalForceKn": 0,
+   "anchor": {
+    "enabled": true,
+    "levelNap": -1,
+    "angleDeg": 30,
+    "rigid": false,
+    "stiffnessKnPerM": 30000,
+    "spacingM": 2.8
+   },
+   "passiveMethod": "auto",
+   "factors": {
+    "gammaPhi": 1.175,
+    "gammaC": 1.25,
+    "gammaCu": 1.6,
+    "gammaGamma": 1,
+    "gammaQ": 1,
+    "gammaK": 1,
+    "deltaAPct": 10,
+    "deltaAMaxM": 0.5,
+    "deltaWaterHighM": 0,
+    "deltaWaterLowM": 0,
+    "gammaM0": 1
+   }
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "u.c. 0,58 (inheidiepte)",
+    "ok": true
+   },
+   "checks": [
+    {
+     "label": "M max",
+     "value": "90 kNm/m"
+    },
+    {
+     "label": "anker",
+     "value": "202 kN"
+    },
+    {
+     "label": "y kop",
+     "value": "5,2 mm"
+    },
+    {
+     "label": "buiging",
+     "value": "639 kNm/m",
+     "uc": 0.14045585648828576
+    },
+    {
+     "label": "normaalkracht",
+     "value": "634 kNm/m",
+     "uc": 0.14148905386359278
+    },
+    {
+     "label": "dwarskracht",
+     "value": "1.083 kN/m",
+     "uc": 0.052332325231516395
+    },
+    {
+     "label": "passieve weerstand",
+     "value": "524 kN/m",
+     "uc": 0.5301287128316471
+    },
+    {
+     "label": "inheidiepte",
+     "value": "4,70 m",
+     "uc": 0.5774578524362292
+    }
+   ],
+   "digest": "47f96a9b-694271"
+  }
+ },
+ {
+  "moduleId": "foundation-advice",
+  "cptFiles": [
+   "121882_1.gef",
+   "121882_2.gef"
+  ],
+  "input": {
+   "reference": "",
+   "version": "1.0",
+   "status": "concept",
+   "advisor": "",
+   "checker": "",
+   "structure": "",
+   "consequenceClass": "CC2",
+   "designLifeYears": 50,
+   "bearingQcMpa": 10,
+   "bearingMinThicknessM": 1,
+   "appendixCpts": true,
+   "appendixCalcs": true,
+   "soilModel3d": true,
+   "introNote": "",
+   "remarks": ""
+  },
+  "calculations": [
+   {
+    "id": "paal-1",
+    "moduleId": "pile-bearing-capacity",
+    "name": "Paal 1",
+    "input": {
+     "cptId": "1",
+     "standard": "nen-9997-2017",
+     "pileTypeId": "steel-pipe-driven-closed-2017",
+     "diameterMm": 219,
+     "wallThicknessMm": 8,
+     "pileTopNap": 1.18,
+     "pileToeNap": -13.16,
+     "waterNap": 0.33999999999999997,
+     "excavationNap": 0.84,
+     "nEd": 300,
+     "nEk": 230,
+     "gammaM": 1.2,
+     "gammaFnk": 1,
+     "negKleefBottomNap": -7.16,
+     "posKleefTopNap": -7.16,
+     "ksMinFactor": 0.25,
+     "soilProfile": [
+      {
+       "kind": "clay",
+       "startNap": 1.18,
+       "endNap": 0.33999999999999997,
+       "gammaK": 18,
+       "gammaW": 0,
+       "phi": 22.5
+      },
+      {
+       "kind": "clay",
+       "startNap": 0.33999999999999997,
+       "endNap": -13.16,
+       "gammaK": 18,
+       "gammaW": 10,
+       "phi": 22.5
+      }
+     ]
+    }
+   }
+  ],
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "2 sonderingen · 1 berekening",
+    "ok": true,
+    "pending": true
+   },
+   "checks": [],
+   "digest": "ce3a9cde-5307"
+  }
+ },
+ {
+  "moduleId": "pad-foundation",
+  "cptFiles": [],
+  "input": {
+   "widthM": 2,
+   "lengthM": 2,
+   "verticalDesignLoadKn": 500,
+   "frictionDesignDeg": 30,
+   "cohesionDesignKpa": 0,
+   "surchargeDesignKpa": 20,
+   "effectiveUnitWeightKnM3": 10,
+   "resistanceFactor": 1.4
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "Vd/Rd = 0,253",
+    "ok": true
+   },
+   "checks": [
+    {
+     "label": "Rd",
+     "value": "1.979 kN"
+    },
+    {
+     "label": "Vd/Rd",
+     "value": "Vd 500 kN",
+     "uc": 0.2526399930350275
+    }
+   ],
+   "digest": "a3066a20-362"
+  }
+ },
+ {
+  "moduleId": "settlement",
+  "cptFiles": [],
+  "input": {
+   "thicknessM": 2,
+   "stressIncreaseKpa": 50,
+   "constrainedModulusMpa": 5
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "20 mm zetting",
+    "ok": true
+   },
+   "checks": [
+    {
+     "label": "s",
+     "value": "20 mm"
+    },
+    {
+     "label": "ε",
+     "value": "1 %"
+    }
+   ],
+   "digest": "016f988b-58"
+  }
+ },
+ {
+  "moduleId": "kalendering",
+  "cptFiles": [],
+  "input": {
+   "valblokId": "vb-3000-1.2",
+   "customMassaKg": 3000,
+   "customValhoogteM": 1.2,
+   "paalSoort": "rond",
+   "diameterMm": 350,
+   "zijdeBMm": 350,
+   "conusweerstandMpa": 15,
+   "slagSetMm": 400
+  },
+  "expected": {
+   "ok": true,
+   "status": {
+    "text": "21 slagen / set",
+    "ok": true
+   },
+   "checks": [
+    {
+     "label": "E",
+     "value": "35.3 kNm"
+    },
+    {
+     "label": "N",
+     "value": "21 / 400 mm"
+    }
+   ],
+   "digest": "f5b7edf5-95"
+  }
+ }
+]

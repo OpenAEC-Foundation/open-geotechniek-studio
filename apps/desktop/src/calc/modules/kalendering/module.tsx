@@ -7,48 +7,14 @@
 //   toont een prominente amber tussenstand-banner zodra deze module actief
 //   is. Voor projectberekeningen blijft de Funderingspaal-module leidend.
 //
-import type { CalcModule, ProjectContext } from "../../framework/types";
+import type { CalcModule } from "../../framework/types";
 import type { KalenderingInput, KalenderingResult } from "./types";
-import { computeKalendering } from "./compute";
-import { DEFAULT_VALBLOK_ID } from "./catalog";
+import { kalenderingHeadless } from "./headless";
 import { InputPanel } from "./ui/InputPanel";
 import { VisualPanel } from "./ui/VisualPanel";
 import { ResultPanel } from "./ui/ResultPanel";
 
-function defaultInput(_ctx: ProjectContext): KalenderingInput {
-  void _ctx;
-  return {
-    valblokId: DEFAULT_VALBLOK_ID,
-    customMassaKg: 3000,
-    customValhoogteM: 1.2,
-    paalSoort: "rond",
-    diameterMm: 350,
-    zijdeBMm: 350,
-    conusweerstandMpa: 15,
-    slagSetMm: 400,
-  };
-}
-
-const kalenderingModuleTyped: CalcModule<KalenderingInput, KalenderingResult> = {
-  id: "kalendering",
-  name: "Kalendering",
-  subtitle: "Verwacht aantal heislagen per set",
-  category: "pile",
-  icon: "🔨",
-  norm: "Empirische projectformule (≠ norm)",
-  status: "experimental",
-  defaultInput,
-  compute: (input) => computeKalendering(input),
-  InputPanel,
-  VisualPanel,
-  ResultPanel,
-  statusLine: (r) => ({
-    text: r.ok
-      ? `${r.slagenPerSet} slagen / set`
-      : `Fout: ${r.error ?? "—"}`,
-    ok: r.ok,
-  }),
-};
+const kalenderingModuleTyped: CalcModule<KalenderingInput, KalenderingResult> = { ...kalenderingHeadless, InputPanel, VisualPanel, ResultPanel };
 
 /** Geëxporteerd als unknown-getypeerde CalcModule zodat hij in
  *  CALC_REGISTRY (CalcModule[]) past — generieke parameters zijn

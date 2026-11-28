@@ -11,7 +11,7 @@ import { getStandard } from '../pile-bearing-capacity/standards';
 import { chooseLevels, computeCapacityMatrix, defaultCapacityConfig, type SizeChoice } from '../pile-bearing-capacity/capacity-table';
 import type { LateralInput } from '../laterally-loaded-pile/compute';
 import { computePileTable } from '../laterally-loaded-pile/pile-table';
-import { sectionText } from '../laterally-loaded-pile/LateralSheet';
+import { sectionText } from '../laterally-loaded-pile/lateral-summary';
 import type { AdviceInput } from './types';
 import { bearingLayerTop } from '../../../utils/bearingLayer';
 

@@ -222,7 +222,19 @@ function calculationPatch(moduleId:string,input:unknown,patch:unknown) {
   if(moduleId==='laterally-loaded-pile')return lateralPatch(input,patch);
   if(moduleId==='foundation-advice')return advicePatch(input,patch);
   if(moduleId==='driving-assessment')return drivingPatch(input,patch);
-  throw new Error('Rekenmodule niet beschikbaar voor Studio MCP');
+  return genericPatch(moduleId,input,patch);
+}
+/** Overige modules: velden op het hoogste niveau vervangen (een object als geheel), daarna één keer rekenen
+ *  zodat invoer die de module niet kan lezen meteen wordt geweigerd. De velden staan in het invoerschema
+ *  van de headless rekenkern (packages/core, moduleSchema). */
+function genericPatch(moduleId:string,input:unknown,patch:unknown){
+  const module=getCalcModule(moduleId);
+  if(!module)throw new Error('Rekenmodule niet beschikbaar voor Studio MCP');
+  const fields=object(patch,'Invoerpatch');
+  for(const [key,value] of Object.entries(fields)){if(value===undefined||typeof value==='function')throw new Error(`Ongeldig veld: ${key}`);}
+  const next={...structuredClone(object(input,'Berekeningsinvoer')),...structuredClone(fields)};
+  try{module.compute(next,context());}catch(e){throw new Error(`Invoer niet bruikbaar: ${e instanceof Error?e.message:String(e)}`);}
+  return next;
 }
 
 function snapshot() {

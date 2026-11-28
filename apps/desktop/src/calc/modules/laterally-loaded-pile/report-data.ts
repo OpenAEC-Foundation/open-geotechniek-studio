@@ -5,8 +5,8 @@ import { usesUltimate } from './spring-types';
 import type { LateralInput, LateralResult } from './compute';
 import { SOIL_SPRINGS } from './soil';
 import { sectionCapacity } from './section';
-import { mobilisation } from './SpringField';
-import { valueAt } from './ForceDiagrams';
+import { mobilisation } from './spring-visual';
+import { valueAt } from './diagram-math';
 
 type Ok = Extract<LateralResult, { ok: true }>;
 

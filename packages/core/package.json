@@ -2,10 +2,28 @@
   "name": "@openaec/geotechniek-core",
   "version": "2026.48.2",
   "type": "module",
-  "description": "Headless geotechnical parsing, validation and settlement calculations",
+  "description": "Headless Open Geotechniek Studio: CPT parsing and validation, all calculation modules, their PDF reports and the CPT report, for Node and the browser",
   "license": "MIT",
   "main": "dist/index.mjs",
-  "exports": "./dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/browser.mjs",
+      "node": "./dist/index.mjs",
+      "default": "./dist/browser.mjs"
+    },
+    "./browser": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/browser.mjs"
+    },
+    "./schemas.json": "./dist/schemas.json",
+    "./openapi.json": "./dist/openapi.json",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "ogs": "dist/cli.mjs"
+  },
   "files": [
     "dist",
     "README.md",
@@ -20,6 +38,7 @@
     "build": "node ../../scripts/build-core.mjs",
     "test": "node --test test.mjs",
     "serve": "node dist/server.mjs",
-    "mcp": "node dist/mcp.mjs"
+    "mcp": "node dist/mcp.mjs",
+    "ogs": "node dist/cli.mjs"
   }
 }

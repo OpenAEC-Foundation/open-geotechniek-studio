@@ -1,5 +1,6 @@
 import type { CalcModule, PanelProps } from '../../framework/types';
-import { computeSettlement, type SettlementInput, type SettlementResult } from './compute';
+import type { SettlementInput, SettlementResult } from './compute';
+import { settlementHeadless } from './headless';
 import './styles.css';
 import { OaIcon } from '../../../components/icons/oaIcon';
 
@@ -61,11 +62,5 @@ function ResultPanel({ input, result }: Props) {
     <details className="settlement-reference"><summary>Methode & controlevoorbeeld</summary><p>Lineaire 1D-compressie volgens USACE EM 1110-1-1905 (31 juli 2025), §7–7. Geen normtoets of nationale bijlage; geen partiële factoren toegepast (factoren 1,0). M is de samendrukkingsmodulus, niet de elasticiteitsmodulus E.</p><p>Controle: 2 m × 50 kPa / 5.000 kPa = 0,020 m = 20 mm.</p></details>
   </div>;
 }
-const module: CalcModule<SettlementInput, SettlementResult> = {
-  id: 'settlement', name: 'Zetting van één laag', subtitle: 'Eendimensionale zetting met een constante samendrukkingsmodulus',
-  category: 'spread', icon: '↓', norm: '1D-compressie · USACE EM 1110-1-1905 (2025), §7–7',
-  status: 'experimental', defaultInput: () => ({ ...example }),
-  compute: computeSettlement, InputPanel, VisualPanel, ResultPanel,
-  statusLine: (result) => ({ text: result.ok ? `${format(result.settlementMm)} mm zetting` : result.error, ok: result.ok }),
-};
+const module: CalcModule<SettlementInput, SettlementResult> = { ...settlementHeadless, InputPanel, VisualPanel, ResultPanel };
 export const settlementModule = module as unknown as CalcModule;
