@@ -4,7 +4,7 @@
 // die voldoet.
 import { computeLateral, type LateralInput, type LateralResult } from './compute';
 import type { SectionKind } from './section';
-import { mobilisation } from './SpringField';
+import { mobilisation } from './spring-visual';
 import { PREFAB_SQUARE, STEEL_TUBE_OD } from '../pile-bearing-capacity/standard-sizes';
 import { ct } from '../../i18n';
 

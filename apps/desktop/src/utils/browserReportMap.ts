@@ -32,16 +32,17 @@ let cached: {
     photo: Uint8Array;
     overlay: Uint8Array | null;
 } | null = null;
-export async function drawOverviewMap(doc: jsPDF, cpts: Cpt[]): Promise<void> {
-    let bounds = overviewBounds(cpts, true);
+export async function drawOverviewMap(doc: jsPDF, cpts: Cpt[], options: { basemap?: boolean } = {}): Promise<void> {
+    const basemap = options.basemap !== false;
+    let bounds = overviewBounds(cpts, basemap);
     if (!bounds) {
         doc.text("Geen locatiegegevens beschikbaar voor de overzichtskaart.", 15, 35);
         return;
     }
     const key = [bounds.xmin, bounds.ymin, bounds.xmax, bounds.ymax].map(v => v.toFixed(1)).join(',');
     const query = '?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:28992&bbox=' + key + '&width=1200&height=1200&styles=';
-    let images = cached?.key === key ? cached : null;
-    if (!images) {
+    let images = basemap && cached?.key === key ? cached : null;
+    if (!images && basemap) {
         const [photo, overlay] = await Promise.all([
             imageBytes('https://service.pdok.nl/hwh/luchtfotorgb/wms/v1_0' + query + '&layers=Actueel_orthoHR&format=image/jpeg', [255, 216]),
             imageBytes('https://service.pdok.nl/kadaster/kadastralekaart/wms/v5_0' + query + '&layers=Kadastralekaart&format=image/png&transparent=true', [137, 80, 78, 71])
